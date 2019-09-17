@@ -1,0 +1,21 @@
+{
+  "name": "ia-aip-frontend-tmp",
+  "description": "Immigration & Asylum appeal frontend",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "webpack": "^4.40.2"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.5",
+    "ts-loader": "^6.1.0",
+    "typescript": "^3.6.3",
+    "webpack-cli": "^3.3.9",
+    "webpack-node-externals": "^1.7.2"
+  }
+}

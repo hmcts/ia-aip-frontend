@@ -5,9 +5,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "cross-env NODE_PATH=. node build/index.js",
     "build": "webpack"
   },
   "dependencies": {
+    "cross-env": "^5.2.1",
     "express": "^4.17.1",
     "webpack": "^4.40.2"
   },

@@ -25,5 +25,6 @@ module.exports = {
       }
     ]
   },
-  externals: [ nodeExternals() ]
+  externals: [ nodeExternals() ],
+  watch: NODE_ENV === 'development'
 };

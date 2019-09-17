@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "cross-env NODE_PATH=. node build/index.js",
-    "build": "webpack"
+    "build": "webpack",
+    "dev": "concurrently \"NODE_ENV=development webpack\" \"NODE_ENV=development nodemon build/index.js\""
   },
   "dependencies": {
     "cross-env": "^5.2.1",
@@ -14,7 +15,9 @@
     "webpack": "^4.40.2"
   },
   "devDependencies": {
+    "concurrently": "^4.1.2",
     "@types/node": "^12.7.5",
+    "nodemon": "^1.19.2",
     "ts-loader": "^6.1.0",
     "typescript": "^3.6.3",
     "webpack-cli": "^3.3.9",

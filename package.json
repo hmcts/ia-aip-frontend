@@ -9,7 +9,15 @@
     "dev": "NODE_ENV=development webpack --config webpack.config.js",
     "run:dev": "NODE_ENV=development nodemon build/main.js",
     "lint": "exit 0",
-    "tslint": "tslint --project ."
+    "tslint": "tslint --project .",
+    "test": "exit 0",
+    "test:unit": "exit 0",
+    "test:functional": "exit 0",
+    "test:smoke": "exit 0",
+    "test:coverage": "exit 0",
+    "test:a11y": "exit 0",
+    "test:nsp": "exit 0",
+    "sonar-scan": "exit 0"
   },
   "dependencies": {
     "cross-env": "^5.2.1",

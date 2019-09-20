@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <h1 class="govuk-heading-m">Hello World!</h1>
+  <p>{{ data }}</p>
+
+  {{ govukButton({
+    text: "Save and continue"
+  }) }}
+
+{% endblock %}

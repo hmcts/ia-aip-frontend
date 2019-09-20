@@ -1,0 +1,108 @@
+{% extends "govuk/template.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
+
+{% macro errorSummary(errors) %}
+    {%  if errors %}
+        {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors.errorList
+        }) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro input(label, id, value='') %}
+    {{ govukInput({
+        label: {
+            text: label
+        },
+        id: id,
+        name: id,
+        classes: "govuk-input--width-20",
+        value: value,
+        errorMessage: errors.fieldErrors[id]
+    }) }}
+{% endmacro %}
+
+{%  macro contactUs() %}
+    {{ govukDetails({
+        summaryText: "Contact us for help",
+        html: "<div><h2>Telephone</h2><p>0330 123 1234</p><h2>Email</h2><p>support@hmcts.net</p></div>"
+    }) }}
+{% endmacro %}
+
+{% macro saveButtons() %}
+    {{ govukButton({
+        text: "Save and continue"
+    }) }}
+
+    {{ govukButton({
+        text: "Save for later",
+        name: "saveForLater",
+        value: "saveForLater",
+        classes: "govuk-button--secondary"
+    }) }}
+{% endmacro %}
+
+{% block head %}
+  <!--[if !IE 8]><!-->
+    <link href="/public/main.css" rel="stylesheet" />
+  <!--<![endif]-->
+
+  {# For Internet Explorer 8, you need to compile specific stylesheet #}
+  {# see https://github.com/alphagov/govuk-frontend/blob/master/docs/installation/supporting-internet-explorer-8.md #}
+  <!--[if IE 8]>
+    <link href="/govuk-frontend/all-ie8.css" rel="stylesheet" />
+  <![endif]-->
+
+  {# For older browsers to allow them to recognise HTML5 elements such as `<header>` #}
+  <!--[if lt IE 9]>
+    <script src="/html5-shiv/html5shiv.js"></script>
+  <![endif]-->
+{% endblock %}
+
+{% block pageTitle %}
+    Title is {{ i18n.pageTitle }}
+{% endblock %}
+
+{% block header %}
+    {% if not hideSignOut %}
+        {{ govukHeader({
+            homepageUrl: "#",
+            containerClasses: "govuk-width-container",
+            navigationClasses: "sign-out",
+            navigation: [
+                {
+                    href: "#",
+                    text: "Sign out",
+                    active: true
+                }
+            ]
+        }) }}
+    {% else %}
+        {{ govukHeader({
+            homepageUrl: "#",
+            containerClasses: "govuk-width-container"
+        }) }}
+    {% endif %}
+
+{% endblock %}
+
+{% block beforeContent %}
+    {% if not hideBackLink %}
+        {{ govukBackLink({
+            text: "Back",
+            href: previousPage,
+            attributes : { onclick: "history.go(-1); return false;" }
+        }) }}
+    {% endif %}
+{% endblock %}
+
+{% block bodyEnd %}
+  {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+  <script src="/public/all.js"></script>
+{% endblock %}

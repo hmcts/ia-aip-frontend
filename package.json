@@ -2,13 +2,12 @@
   "name": "ia-aip-frontend-tmp",
   "description": "Immigration & Asylum appeal frontend",
   "version": "0.0.1",
-  "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "cross-env NODE_PATH=. node build/index.js",
+    "start": "cross-env NODE_PATH=. node build/main.js",
     "build": "webpack --config webpack.config.js",
     "dev": "NODE_ENV=development webpack --config webpack.config.js",
-    "run:dev": "NODE_ENV=development nodemon build/index.js"
+    "run:dev": "NODE_ENV=development nodemon build/main.js"
   },
   "dependencies": {
     "cross-env": "^5.2.1",

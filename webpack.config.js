@@ -1,13 +1,12 @@
 const nodeExternals = require('webpack-node-externals');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
 const path = require('path');
 const { NODE_ENV = 'production' } = process.env;
 
-module.exports = {
+const serverConfig = {
   entry: [
     './app/app.ts',
     './app/assets/scss/application.scss'
@@ -18,17 +17,16 @@ module.exports = {
     new WebpackShellPlugin({
       onBuildEnd: ['yarn run:dev']
     }),
-    new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([
-      { from: 'node_modules/govuk-frontend/govuk/all.js', to: 'public' }
-    ]),
+    // new CopyWebpackPlugin([
+    //   { from: './app/views', to: 'views'}
+    // ]),
     new MiniCSSExtractPlugin({
       filename: 'public/[name].css'
     })
   ],
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'index.js'
+    filename: '[name].js'
   },
   resolve: {
     extensions: ['.ts', '.js'],
@@ -53,3 +51,15 @@ module.exports = {
     ]
   },
 };
+
+const clientConfig = {
+  entry: './client/main.ts',
+  mode: NODE_ENV,
+  target: 'web',
+  output: {
+    path: path.resolve(__dirname, 'build/public'),
+    filename: 'all.js'
+  }
+};
+
+module.exports = [ serverConfig, clientConfig ];

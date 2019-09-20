@@ -1,10 +1,9 @@
 const path = require('path');
 import * as express from 'express';
-import { Request, Response } from 'express';
 import * as nunjucks from 'nunjucks';
 
 const { PORT = 3000 } = process.env;
-const isDev = () => process.env.NODE_ENV === 'development';
+const isDev: Function = () => process.env.NODE_ENV === 'development';
 
 const app = express();
 
@@ -19,10 +18,11 @@ nunjucks.configure([
 
 app.use(express.static('build', { maxAge: 31557600000 }));
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (req: express.Request, res: express.Response) => {
   res.render('index.html', { data: 'Hello from the other side' });
 });
 
 app.listen(PORT, () => {
-    console.log('server started at http://localhost:' + PORT);
+  // tslint:disable-next-line no-console
+  console.log('server started at http://localhost:' + PORT);
 });

@@ -8,7 +8,8 @@
     "build": "webpack --config webpack.config.js",
     "dev": "NODE_ENV=development webpack --config webpack.config.js",
     "run:dev": "NODE_ENV=development nodemon build/main.js",
-    "lint": "exit 0"
+    "lint": "exit 0",
+    "tslint": "tslint --project ."
   },
   "dependencies": {
     "cross-env": "^5.2.1",
@@ -28,6 +29,9 @@
     "nodemon": "^1.19.2",
     "sass-loader": "^8.0.0",
     "ts-loader": "^6.1.0",
+    "tslint": "^5.20.0",
+    "tslint-config-standard": "^8.0.1",
+    "tslint-no-unused-expression-chai": "^0.1.4",
     "typescript": "^3.6.3",
     "webpack-cli": "^3.3.9",
     "webpack-node-externals": "^1.7.2",

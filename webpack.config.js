@@ -17,11 +17,11 @@ const serverConfig = {
     new WebpackShellPlugin({
       onBuildEnd: ['yarn run:dev']
     }),
-    // new CopyWebpackPlugin([
-    //   { from: './app/views', to: 'views'}
-    // ]),
+    new CopyWebpackPlugin([
+      { from: path.resolve('node_modules/govuk-frontend/govuk/assets/'), to: 'assets' },
+    ]),
     new MiniCSSExtractPlugin({
-      filename: 'public/[name].css'
+      filename: 'assets/css/[name].css'
     })
   ],
   output: {
@@ -57,7 +57,7 @@ const clientConfig = {
   mode: NODE_ENV,
   target: 'web',
   output: {
-    path: path.resolve(__dirname, 'build/public'),
+    path: path.resolve(__dirname, 'build/assets/js/'),
     filename: 'all.js'
   }
 };

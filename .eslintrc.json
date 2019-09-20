@@ -1,0 +1,29 @@
+{
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true,
+    "browser": true
+  },
+  "extends": "@hmcts",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2018
+  },
+  "rules": {
+    "no-process-env": "off",
+    "no-trailing-spaces": ["error", { "skipBlankLines": true }],
+    "multiline-ternary": ["error", "always-multiline"],
+    "operator-linebreak": ["error", "after"],
+    "newline-per-chained-call": "off",
+    "object-curly-newline": ["error", {
+      "consistent": true
+    }],
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ]
+  }
+}

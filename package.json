@@ -7,7 +7,8 @@
     "start": "cross-env NODE_PATH=. node build/main.js",
     "build": "webpack --config webpack.config.js",
     "dev": "NODE_ENV=development webpack --config webpack.config.js",
-    "run:dev": "NODE_ENV=development nodemon build/main.js"
+    "run:dev": "NODE_ENV=development nodemon build/main.js",
+    "lint": "exit 0"
   },
   "dependencies": {
     "cross-env": "^5.2.1",

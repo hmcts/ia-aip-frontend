@@ -1,0 +1,17 @@
+{
+  "appInsights": {
+    "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
+  },
+  "node": {
+    "protocol": "HTTP_PROTOCOL",
+    "hostname": "EXTERNAL_HOSTNAME",
+    "port": "PORT"
+  },
+  "ssl": {
+    "hpkp": {
+      "maxAge": "HPKP_MAXAGE",
+      "sha256s": "HPKP_SHA256",
+      "sha256sBackup": "HPKP_SHA256_BACKUP"
+    }
+  }
+}

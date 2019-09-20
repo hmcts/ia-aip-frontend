@@ -24,7 +24,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline("nodejs", product, component) {
     after('checkout') {sh 'yarn cache clean'}
     after('build') {sh 'yarn build'}
-    loadVaultSecrets(secrets)
+//    loadVaultSecrets(secrets)
     enableDockerBuild()
     installCharts()
 

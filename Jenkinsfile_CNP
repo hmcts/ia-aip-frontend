@@ -1,0 +1,36 @@
+#!groovy
+properties(
+        [[$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend-tmp'],
+         pipelineTriggers([[$class: 'GitHubPushTrigger']])]
+)
+
+@Library("Infrastructure")
+
+def product = "ia"
+def component = "aip-frontend"
+
+def secrets = [
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [$class     : 'AzureKeyVaultSecret',
+     secretType : 'Secret',
+     name       : secretName,
+     version    : '',
+     envVariable: envVar
+    ]
+}
+
+withPipeline("nodejs", product, component) {
+    after('checkout') {sh 'yarn cache clean'}
+    after('build') {sh 'yarn build'}
+    loadVaultSecrets(secrets)
+    enableDockerBuild()
+    installCharts()
+
+    before('buildinfra:prod') {
+        currentBuild.result = 'Success'
+        currentBuild.description = "Success"
+        error 'ia aip projects are not authorised to be in production environments yet.'
+    }
+}

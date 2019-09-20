@@ -1,0 +1,3 @@
+nodejs:
+  environment:
+    HTTP_PROTOCOL: http

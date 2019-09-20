@@ -1,0 +1,18 @@
+{
+  "appInsights": {
+    "instrumentationKey": "iKey"
+  },
+  "node": {
+    "protocol": "http",
+    "hostname": "localhost",
+    "port": 3000
+  },
+  "ssl": {
+    "hpkp": {
+      "maxAge": "3600",
+      "sha256s": "AbCdEf123=",
+      "sha256sBackup": "ZyXwVu456="
+    }
+  },
+  "microservice": "iac"
+}

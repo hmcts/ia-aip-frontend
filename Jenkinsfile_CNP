@@ -7,7 +7,7 @@ properties(
 @Library("Infrastructure")
 
 def product = "ia"
-def component = "aip-frontend"
+def component = "aip-frontend-tmp"
 
 def secrets = [
         'sscs-${env}': [

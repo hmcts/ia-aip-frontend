@@ -22,6 +22,13 @@ app.get('/', (req: express.Request, res: express.Response) => {
   res.render('index.html', { data: 'Hello from the other side' });
 });
 
+app.get('/health', (req: express.Request, res: express.Response) => {
+  res.json({status: 'UP'});
+});
+app.get('/liveness', (req: express.Request, res: express.Response) => {
+  res.json({});
+});
+
 app.listen(PORT, () => {
   // tslint:disable-next-line no-console
   console.log('server started at http://localhost:' + PORT);

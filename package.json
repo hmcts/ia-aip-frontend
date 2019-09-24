@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "start": "node build/main.js",
+    "start": "cross-env NODE_PATH=. node build/main.js",
     "build": "webpack --config webpack.config.js",
     "dev": "NODE_ENV=development webpack --config webpack.config.js",
     "run:dev": "NODE_ENV=development nodemon build/main.js",

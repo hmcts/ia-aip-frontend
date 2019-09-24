@@ -19,6 +19,7 @@ const serverConfig = {
     }),
     new CopyWebpackPlugin([
       { from: path.resolve('node_modules/govuk-frontend/govuk/assets/'), to: 'assets' },
+      { from: path.resolve('views'), to: 'views' },
     ]),
     new MiniCSSExtractPlugin({
       filename: 'assets/css/[name].css'

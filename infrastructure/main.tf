@@ -22,7 +22,7 @@ data "azurerm_key_vault" "ia_key_vault" {
   resource_group_name = "${local.key_vault_name}"
 }
 
-module "ia_aip_frontend" {
+module "ia_aip_frontend_tmp" {
   source               = "git@github.com:hmcts/cnp-module-webapp?ref=master"
   product              = "${var.product}-${var.component}"
   location             = "${var.location}"

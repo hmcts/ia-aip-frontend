@@ -7,9 +7,15 @@ properties(
 @Library("Infrastructure")
 
 def product = "ia"
-def component = "aip-frontend"
+def component = "aip-frontend-tmp"
 
 def secrets = [
+        'sscs-${env}': [
+                secret('sscs-s2s-secret', 'S2S_SECRET')
+        ],
+        'ia-${env}': [
+                secret('idam-secret', 'IDAM_CLIENT_SECRET')
+        ]
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -24,7 +30,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline("nodejs", product, component) {
     after('checkout') {sh 'yarn cache clean'}
     after('build') {sh 'yarn build'}
-//    loadVaultSecrets(secrets)
+    loadVaultSecrets(secrets)
     enableDockerBuild()
     installCharts()
 

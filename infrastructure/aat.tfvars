@@ -1,2 +1,2 @@
 infrastructure_env  = "preprod"
-additional_hostname = "ia-api-frontend.nonprod.platform.hmcts.net"
+additional_hostname = "ia-aip-frontend-tmp.nonprod.platform.hmcts.net"

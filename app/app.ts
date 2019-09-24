@@ -23,7 +23,7 @@ app.get('/', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/health', (req: express.Request, res: express.Response) => {
-  res.json({status: 'UP'});
+  res.json({ status: 'UP' });
 });
 app.get('/liveness', (req: express.Request, res: express.Response) => {
   res.json({});

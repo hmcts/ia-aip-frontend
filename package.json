@@ -6,6 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_PATH=. node build/main.js",
     "build": "webpack --config webpack.config.js",
+    "build:dev": "webpack --config webpack/webpack.dev.js",
     "dev": "NODE_ENV=development webpack --config webpack.config.js",
     "run:dev": "cross-env NODE_PATH=. NODE_ENV=development nodemon build/main.js",
     "lint": "tslint --project .",
@@ -56,6 +57,7 @@
     "tslint-no-unused-expression-chai": "^0.1.4",
     "typescript": "^3.6.3",
     "webpack-cli": "^3.3.9",
+    "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^1.7.2",
     "webpack-shell-plugin": "^0.5.0"
   }

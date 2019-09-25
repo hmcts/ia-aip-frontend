@@ -4,20 +4,20 @@ import { expect, sinon } from '../config';
 
 describe('Index Controller', function() {
   let sandbox: sinon.SinonSandbox;
-  let req: Request;
-  let res: Response;
+  let req: Partial<Request>;
+  let res: Partial<Response>;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
       session: {},
       cookies: {}
-    } as Request;
+    } as Partial<Request>;
 
     res = {
       render: sandbox.stub(),
       send: sandbox.stub()
-    } as Response;
+    } as Partial<Response>;
   });
 
   afterEach(() => {
@@ -25,7 +25,7 @@ describe('Index Controller', function() {
   });
 
   it('get Index should render index.html', function() {
-    getIndex(req, res);
+    getIndex(req as Request, res as Response);
     expect(res.render).to.have.been.calledOnce.calledWith('index.html');
   });
 });

@@ -2,6 +2,8 @@ const path = require('path');
 import * as express from 'express';
 import * as nunjucks from 'nunjucks';
 
+import { router } from './routes';
+
 const { PORT = 3000 } = process.env;
 const isDev: Function = () => process.env.NODE_ENV === 'development';
 
@@ -17,10 +19,7 @@ nunjucks.configure([
 });
 
 app.use(express.static('build', { maxAge: 31557600000 }));
-
-app.get('/', (req: express.Request, res: express.Response) => {
-  res.render('index.html', { data: 'Hello from the other side' });
-});
+app.use(router);
 
 app.get('/health', (req: express.Request, res: express.Response) => {
   res.json({ status: 'UP' });

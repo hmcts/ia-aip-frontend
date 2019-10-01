@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 function getIndex(req: Request, res: Response) {
-  res.render('index.html', { data: 'Hello from the other side' });
+  res.render('index.html', { data: 'Hello from the OTHER world!!!' });
 }
 
 function setupIndexController(deps?: any): Router {

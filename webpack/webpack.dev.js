@@ -1,12 +1,24 @@
+const webpack = require('webpack');
 const merge = require('webpack-merge');
 const commonConfig = require('./webpack.common');
 
-console.log('commonConfig', JSON.stringify(commonConfig));
+const serverConfig = {
+  mode: "development",
+  devServer: {
+    contentBase: 'build',
+    overlay: true
+  },
+  plugins: []
+};
 
-const devConfig = {}
+const clientConfig = {
+  mode: "development",
+  plugins: []
+};
 
-const merged = merge.multiple(commonConfig, devConfig);
-
-console.log('merged', JSON.stringify(merged));
+const devConfig = {
+  server: serverConfig,
+  client: clientConfig
+}
 
 module.exports = merge.multiple(commonConfig, devConfig)

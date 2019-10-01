@@ -40,7 +40,7 @@ module "ia_aip_frontend_tmp" {
   asp_rg               = "${local.app_service_plan}"
 
   app_settings = {
-    WEBSITE_NODE_DEFAULT_VERSION = "10.16.3"
+    WEBSITE_NODE_DEFAULT_VERSION = "10.14.1"
     NODE_ENV                     = "${var.infrastructure_env}"
   }
 }

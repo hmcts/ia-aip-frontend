@@ -1,5 +1,4 @@
 const nodeExternals = require('webpack-node-externals');
-const WebpackShellPlugin = require('webpack-shell-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
@@ -11,12 +10,8 @@ const serverConfig = {
     './app/app.ts',
     './app/assets/scss/application.scss'
   ],
-  mode: NODE_ENV,
   target: 'node',
   plugins: [
-    new WebpackShellPlugin({
-      // onBuildEnd: ['yarn run:dev']
-    }),
     new CopyWebpackPlugin([
       { from: path.resolve('node_modules/govuk-frontend/govuk/assets/'), to: 'assets' },
       { from: path.resolve('views'), to: 'views' },
@@ -55,11 +50,11 @@ const serverConfig = {
 
 const clientConfig = {
   entry: './client/main.ts',
-  mode: NODE_ENV,
   target: 'web',
   output: {
     path: path.resolve('build/assets/js/'),
-    filename: 'all.js'
+    filename: 'all.js',
+    publicPath: '/assets/js'
   }
 };
 

@@ -1,14 +1,14 @@
 import * as http from 'http';
+import path from 'path';
+import express from 'express';
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
 import * as nunjucks from 'nunjucks';
+import webpackDevConfig from '../webpack/webpack.dev.js';
 
 import { router } from './routes';
 
-const path = require('path');
-import express = require('express');
-
 const port: number | string = process.env.PORT || 3000;
-const isDev: boolean = process.env.NODE_ENV === 'development';
-
 const app: express.Application = express();
 
 nunjucks.configure([
@@ -19,6 +19,12 @@ nunjucks.configure([
   express: app,
   noCache: true
 });
+
+if (process.env.NODE_ENV === 'development') {
+  const compiler = webpack(webpackDevConfig);
+  const wpDevMiddleware = webpackDevMiddleware(compiler, webpackDevConfig.devServer);
+  app.use(wpDevMiddleware);
+}
 
 app.use(express.static('build', { maxAge: 31557600000 }));
 app.use(router);

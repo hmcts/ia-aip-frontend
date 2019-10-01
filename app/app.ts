@@ -22,7 +22,7 @@ app.use(express.static('build', { maxAge: 31557600000 }));
 app.use(router);
 
 app.get('/health', (req: express.Request, res: express.Response) => {
-  res.json({ status: 'UP' });
+  res.json({ status: 'UP', version: process.version });
 });
 app.get('/liveness', (req: express.Request, res: express.Response) => {
   res.json({});

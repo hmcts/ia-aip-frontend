@@ -4,12 +4,12 @@
 properties([
   parameters([
     string(name: 'PRODUCT_NAME', defaultValue: 'ia', description: ''),
-    string(name: 'APP', defaultValue: 'aip-frontend-tmp', description: ''),
+    string(name: 'APP', defaultValue: 'aip-frontend', description: ''),
     string(name: 'TYPE', defaultValue: 'nodejs', description: ''),
     string(name: 'ENVIRONMENT', defaultValue: 'saat', description: 'Environment where code should be build and deployed'),
     choice(name: 'SUBSCRIPTION', choices: 'sandbox\nnonprod\nprod', description: 'Azure subscriptions available to build in')
   ]),
-  [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend-tmp'],
+  [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 

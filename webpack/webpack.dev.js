@@ -1,19 +1,14 @@
-const webpack = require('webpack');
 const merge = require('webpack-merge');
 const commonConfig = require('./webpack.common');
 
 const serverConfig = {
   mode: "development",
-  devServer: {
-    contentBase: 'build',
-    overlay: true
-  },
-  plugins: []
+  devtool: 'inline-source-map'
 };
 
 const clientConfig = {
   mode: "development",
-  plugins: []
+  devtool: 'inline-source-map'
 };
 
 const devConfig = {

@@ -11,10 +11,10 @@
     "lint": "tslint --project .",
     "test": "yarn test:unit",
     "test:all": "yarn test:functional && yarn test:a11y && yarn test:coverage",
-    "test:browser": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test mocha test/accessibility/*.ts --exit",
+    "test:accessibility": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test mocha test/accessibility/*.ts --exit",
     "test:unit": "mocha test/unit/**/*.test.ts",
     "test:coverage": "nyc mocha test/**/*.test.ts",
-    "test:a11y": "yarn test:browser",
+    "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",
     "test:smoke": "exit 0",
     "test:functional": "exit 0"

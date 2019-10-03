@@ -1,8 +1,9 @@
-import { HealthPage } from './page-objects/HealthPage';
+import { HealthPage } from '../page-objects/HealthPage';
+
+import { Browser, Page } from 'puppeteer';
+import { expect } from './config';
 
 const puppeteer = require('puppeteer');
-import { Page, Browser } from 'puppeteer';
-import { expect } from './config';
 const config = require('config');
 const httpProxy = config.get('httpProxy');
 

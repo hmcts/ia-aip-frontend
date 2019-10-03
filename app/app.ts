@@ -27,6 +27,9 @@ app.get('/health', (req: express.Request, res: express.Response) => {
 app.get('/liveness', (req: express.Request, res: express.Response) => {
   res.json({});
 });
+app.get('/health/liveness', (req: express.Request, res: express.Response) => {
+  res.json({});
+});
 
 app.listen(PORT, () => {
   // tslint:disable-next-line no-console

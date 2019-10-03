@@ -14,14 +14,17 @@
     "test:coverage": "exit 0",
     "test:a11y": "exit 0",
     "sonar-scan": "sonar-scanner",
-    "test:smoke": "exit 0",
-    "test:functional": "exit 0"
+    "test:browser": "mocha test/functional/**/*.test.ts --exit --timeout=180000",
+    "test:smoke": "yarn test:browser -g @smoke",
+    "test:functional": "yarn test:browser -g @smoke --invert"
   },
   "dependencies": {
+    "config": "^3.2.2",
     "cross-env": "^5.2.1",
     "express": "^4.17.1",
     "govuk-frontend": "^3.2.0",
     "nunjucks": "^3.2.0",
+    "puppeteer": "^1.20.0",
     "webpack": "^4.40.2"
   },
   "devDependencies": {

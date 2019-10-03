@@ -24,8 +24,8 @@ export class BasePage {
     await this.page.close();
   }
 
-  async gotoPage() {
-    return await this.page.goto(`${testUrl}${this.pagePath}`);
+  async gotoPage(): Promise<any> {
+    return this.page.goto(`${testUrl}${this.pagePath}`);
   }
 
   async screenshot(filename) {

@@ -2,7 +2,7 @@ import { HealthPage } from './page-objects/HealthPage';
 
 const puppeteer = require('puppeteer');
 import { Page, Browser } from 'puppeteer';
-import { expect } from "./config";
+import { expect } from './config';
 const config = require('config');
 const httpProxy = config.get('httpProxy');
 
@@ -39,6 +39,7 @@ describe('Check health check @smoke', () => {
 
   it('is healthy', async () => {
     const response = await healthPage.gotoPage();
+    // tslint:disable-next-line
     expect(response.ok()).to.be.true;
   });
 });

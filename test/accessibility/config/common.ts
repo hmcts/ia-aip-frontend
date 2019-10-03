@@ -1,7 +1,7 @@
 /* tslint:disable:no-console */
 import * as http from 'http';
 import { Browser, Page } from 'puppeteer';
-
+import { getServer } from '../../../app/app';
 import config = require('config');
 
 const puppeteer = require('puppeteer');
@@ -53,7 +53,7 @@ export async function startBrowser() {
 
 export async function startAppServer(): Promise<{ browser: Browser; page: Page }> {
   if (!server && localhost) {
-    server = setup();
+    server = getServer();
     const browser = await startBrowser();
     try {
       page = await browser.newPage();

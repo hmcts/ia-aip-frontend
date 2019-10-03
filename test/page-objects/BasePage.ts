@@ -1,7 +1,8 @@
 import { Page } from 'puppeteer';
+import { expect } from '../unit/config';
+const config = require('config');
 
-const { expect } = require('../unit/config');
-const testUrl = require('config').get('testUrl');
+const testUrl = config.get('testUrl');
 
 export class BasePage {
   public page: Page;
@@ -17,14 +18,20 @@ export class BasePage {
   async verifyPage() {
     const title = await this.page.title();
     expect(title).to.equal(this.pageTitle);
-    expect(this.page.url()).to.contain(`${testUrl}${this.pagePath}`);
   }
 
   async close() {
     await this.page.close();
   }
 
-  async gotoPage() {
-    await this.page.goto(`${testUrl}${this.pagePath}`);
+  async gotoPage(): Promise<any> {
+    return this.page.goto(`${testUrl}${this.pagePath}`);
+  }
+
+  async screenshot(filename) {
+    await this.page.screenshot({
+      fullPage: true,
+      path: `functional-output/functional-screenshots/${filename}.png`
+    });
   }
 }

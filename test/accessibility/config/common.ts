@@ -1,9 +1,11 @@
 /* tslint:disable:no-console */
 import * as http from 'http';
 import { Browser, Page } from 'puppeteer';
-import { startBrowser } from '../../common';
 
-const config = require('config');
+import config = require('config');
+
+const puppeteer = require('puppeteer');
+const httpProxy = config.get('httpProxy');
 const testUrl = config.get('testUrl');
 
 const localhost = testUrl.indexOf('localhost') !== -1;
@@ -29,6 +31,24 @@ export async function tearDown() {
     console.log('Killing server');
     server.close();
   }
+}
+
+export async function startBrowser() {
+  if (!browser) {
+    const args = ['--no-sandbox', '--start-maximized'];
+    if (httpProxy) {
+      args.push(`-proxy-server=${httpProxy}`);
+    }
+
+    const opts = {
+      args,
+      headless: true,
+      timeout: 10000,
+      ignoreHTTPSErrors: true
+    };
+    browser = await puppeteer.launch(opts);
+  }
+  return browser;
 }
 
 export async function startAppServer(): Promise<{ browser: Browser; page: Page }> {

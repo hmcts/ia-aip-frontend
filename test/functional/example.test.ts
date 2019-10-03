@@ -1,9 +1,27 @@
 import { IndexPage } from '../page-objects/IndexPage';
 import { Browser, Page } from 'puppeteer';
-import { startBrowser } from '../common';
+
+const puppeteer = require('puppeteer');
+const config = require('config');
+const httpProxy = config.get('httpProxy');
 
 describe('Load index page', () => {
   let indexPage: IndexPage;
+
+  async function startBrowser() {
+    const args = ['--no-sandbox', '--start-maximized'];
+    if (httpProxy) {
+      args.push(`-proxy-server=${httpProxy}`);
+    }
+
+    const opts = {
+      args,
+      headless: true,
+      timeout: 10000,
+      ignoreHTTPSErrors: true
+    };
+    return puppeteer.launch(opts);
+  }
 
   before('start services and bootstrap data in CCD/COH', async () => {
     const browser: Browser = await startBrowser();

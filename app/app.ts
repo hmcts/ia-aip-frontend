@@ -21,8 +21,10 @@ nunjucks.configure([
 });
 
 if (process.env.NODE_ENV === 'development') {
-  const compiler = webpack(webpackDevConfig);
-  const wpDevMiddleware = webpackDevMiddleware(compiler, webpackDevConfig.devServer);
+  const [ serverDevConfig, clientDevConfig] = webpackDevConfig;
+  const compiler = webpack([ serverDevConfig, clientDevConfig ]);
+  const wpDevMiddleware = webpackDevMiddleware(compiler);
+
   app.use(wpDevMiddleware);
 }
 

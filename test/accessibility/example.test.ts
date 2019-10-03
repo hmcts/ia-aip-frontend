@@ -1,5 +1,5 @@
-import { pa11yConfig, startAppServer, tearDown } from './config/common';
-import { Page } from 'puppeteer';
+import { pa11yConfig, startBrowser, tearDown } from './config/common';
+import { Browser, Page } from 'puppeteer';
 import { IndexPage } from '../page-objects/IndexPage';
 import { expect } from '../unit/config';
 
@@ -11,8 +11,9 @@ describe('Home page ', () => {
   let indexPage: IndexPage;
 
   before('start service', async () => {
-    const res = await startAppServer();
-    indexPage = new IndexPage(res.page);
+    const browser: Browser = await startBrowser();
+    const page: Page = await browser.newPage();
+    indexPage = new IndexPage(page);
     await indexPage.gotoPage();
   });
 
@@ -27,7 +28,7 @@ describe('Home page ', () => {
     await indexPage.verifyPage();
   });
 
-  it('checks "/" does not have issues ', async function() {
+  it('checks "/" does not have issues ', async function () {
     const result = await pa11y(`${testUrl}${indexPage.pagePath}`, pa11yConfig);
     expect(result.issues.length).to.equal(0);
   });

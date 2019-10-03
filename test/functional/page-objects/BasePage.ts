@@ -27,4 +27,11 @@ export class BasePage {
   async gotoPage() {
     await this.page.goto(`${testUrl}${this.pagePath}`);
   }
+
+  async screenshot(filename) {
+    await this.page.screenshot({
+      fullPage: true,
+      path: `functional-output/functional-screenshots/${filename}.png`
+    });
+  }
 }

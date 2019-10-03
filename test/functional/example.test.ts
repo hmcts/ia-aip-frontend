@@ -28,6 +28,7 @@ describe('Load index page', () => {
     const page: Page = await browser.newPage();
     indexPage = new IndexPage(page);
     await indexPage.gotoPage();
+    await indexPage.screenshot('start_service');
   });
 
   after(async () => {

@@ -1,9 +1,9 @@
-import { HealthPage } from '../page-objects/HealthPage';
-
 import { Page } from 'puppeteer';
 import { expect } from '../utils/testUtils';
 import { getNewPage, tearDown } from '../utils/common';
+import { HealthPage } from './page-objects/HealthPage';
 
+const puppeteer = require('puppeteer');
 describe('Check health check @smoke', () => {
   let healthPage: HealthPage;
 

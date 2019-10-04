@@ -12,7 +12,7 @@
     "test": "yarn test:unit",
     "test:accessibility": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test mocha test/accessibility/*.ts --exit",
     "test:unit": "mocha test/unit/**/*.test.ts",
-    "test:coverage": "nyc mocha test/**/*.test.ts",
+    "test:coverage": "nyc mocha test/**/*.test.ts --exit",
     "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",
     "test:browser": "mocha test/functional/**/*.test.ts --exit --timeout=180000",

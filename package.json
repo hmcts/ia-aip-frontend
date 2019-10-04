@@ -15,7 +15,7 @@
     "test:coverage": "nyc mocha test/**/*.test.ts --exit",
     "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",
-    "test:browser": "mocha test/functional/**/*.test.ts --exit --timeout=180000",
+    "test:browser": "mocha test/functional/**/*.test.ts --exit",
     "test:smoke": "yarn test:browser -g @smoke",
     "test:functional": "yarn test:browser -g @smoke --invert"
   },

@@ -38,17 +38,20 @@ export async function getNewPage() {
 }
 
 export async function startBrowser() {
-  const args = ['--no-sandbox',
-    '--headless',
-    '--disable-gpu',
-    '--disable-dev-shm-usage',
-    '--start-maximized'];
 
+  const args = ['--no-sandbox', '--start-maximized'];
   if (httpProxy) {
     args.push(`-proxy-server=${httpProxy}`);
   }
 
-  browser = await puppeteer.launch({ args });
+  const opts = {
+    args,
+    headless: true,
+    timeout: 10000,
+    ignoreHTTPSErrors: true
+  };
+
+  browser = await puppeteer.launch({ opts });
 
   // If browser crashes try to reconnect
   browser.on('disconnected', startBrowser);

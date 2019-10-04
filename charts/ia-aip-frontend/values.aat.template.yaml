@@ -7,3 +7,5 @@ nodejs:
     IDAM_SYSTEMUPDATE_USER: ia.legalrep.a.ccd@gmail.com
     CCD_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
     IDAM_REDIRECT_URL: https://ia-case-api-aat.service.core-compute-aat.internal/oauth2/callback
+    REDIS_URL: redis://${SERVICE_NAME}-redis-master
+    SESSION_SECRET:

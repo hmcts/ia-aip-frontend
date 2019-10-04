@@ -46,3 +46,8 @@ variable "instance_size" {
 variable "additional_hostname" {
   default = "ia-apfr.sandbox.platform.hmcts.net"
 }
+
+variable "secure_session" {
+  description = "Whether a secure session is required"
+  default     = "true"
+}

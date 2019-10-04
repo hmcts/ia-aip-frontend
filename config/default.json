@@ -1,4 +1,6 @@
 {
+  "testUrl": "http://localhost:3000",
+  "httpProxy": false,
   "appInsights": {
     "instrumentationKey": "iKey"
   },

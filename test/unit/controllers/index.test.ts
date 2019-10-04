@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { getIndex } from '../../../app/controllers/index';
-import { expect, sinon } from '../config';
+import { getIndex } from '../../../app/controllers';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('Index Controller', function() {
   let sandbox: sinon.SinonSandbox;

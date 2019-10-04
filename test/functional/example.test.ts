@@ -1,5 +1,6 @@
 import { Browser, Page } from 'puppeteer';
 import { IndexPage } from '../page-objects/IndexPage';
+import { startAppServer, tearDown } from '../accessibility/config/common';
 
 const puppeteer = require('puppeteer');
 const config = require('config');
@@ -24,8 +25,14 @@ describe('Load index page', () => {
   }
 
   before('setup browser', async () => {
-    const browser: Browser = await startBrowser();
-    const page: Page = await browser.newPage();
+    let page: Page;
+    if (process.env.NODE_ENV === 'development') {
+      const server = await startAppServer();
+      page = server.page;
+    } else {
+      const browser: Browser = await startBrowser();
+      page = await browser.newPage();
+    }
     indexPage = new IndexPage(page);
     await indexPage.gotoPage();
     await indexPage.screenshot('start_service');
@@ -35,6 +42,7 @@ describe('Load index page', () => {
     if (indexPage && indexPage.close) {
       await indexPage.close();
     }
+    await tearDown();
   });
 
   it('load index page check title', () => {

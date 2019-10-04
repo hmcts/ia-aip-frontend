@@ -1,4 +1,4 @@
-import { pa11yConfig, startBrowser, tearDown } from './config/common';
+import { pa11yConfig, startAppServer, startBrowser, tearDown } from './config/common';
 import { Browser, Page } from 'puppeteer';
 import { IndexPage } from '../page-objects/IndexPage';
 import { expect } from '../unit/config';
@@ -11,8 +11,14 @@ describe('Home page ', () => {
   let indexPage: IndexPage;
 
   before('start service', async () => {
-    const browser: Browser = await startBrowser();
-    const page: Page = await browser.newPage();
+    let page: Page;
+    if (process.env.NODE_ENV === 'development') {
+      const server = await startAppServer();
+      page = server.page;
+    } else {
+      const browser: Browser = await startBrowser();
+      page = await browser.newPage();
+    }
     indexPage = new IndexPage(page);
     await indexPage.gotoPage();
   });

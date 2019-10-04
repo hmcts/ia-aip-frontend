@@ -2,6 +2,7 @@ import { HealthPage } from '../page-objects/HealthPage';
 
 import { Browser, Page } from 'puppeteer';
 import { expect } from './config';
+import { startAppServer, tearDown } from '../accessibility/config/common';
 
 const puppeteer = require('puppeteer');
 const config = require('config');
@@ -26,8 +27,14 @@ describe('Check health check @smoke', () => {
   }
 
   before('setup browser', async () => {
-    const browser: Browser = await startBrowser();
-    const page: Page = await browser.newPage();
+    let page: Page;
+    if (process.env.NODE_ENV === 'development') {
+      const server = await startAppServer();
+      page = server.page;
+    } else {
+      const browser: Browser = await startBrowser();
+      page = await browser.newPage();
+    }
     healthPage = new HealthPage(page);
 
   });
@@ -36,6 +43,7 @@ describe('Check health check @smoke', () => {
     if (healthPage && healthPage.close) {
       await healthPage.close();
     }
+    await tearDown();
   });
 
   it('is healthy', async () => {

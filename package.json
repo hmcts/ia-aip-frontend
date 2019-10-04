@@ -16,16 +16,20 @@
     "sonar-scan": "sonar-scanner",
     "test:browser": "mocha test/functional/**/*.test.ts --exit",
     "test:smoke": "yarn test:browser -g @smoke",
-    "test:functional": "yarn test:browser -g @smoke --invert"
+    "test:functional": "yarn test:browser -g @smoke --invert",
+    "test:all": "yarn build && yarn test && yarn start & && sleep 10 && yarn test:functional"
   },
   "dependencies": {
     "config": "^3.2.2",
+    "connect-redis": "^4.0.3",
     "cross-env": "^5.2.1",
     "express": "^4.17.1",
+    "express-session": "^1.16.2",
     "govuk-frontend": "^3.2.0",
     "nunjucks": "^3.2.0",
     "pa11y": "^5.3.0",
     "puppeteer": "^1.20.0",
+    "redis": "^2.8.0",
     "webpack": "^4.40.2"
   },
   "devDependencies": {

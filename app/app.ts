@@ -1,13 +1,15 @@
-const path = require('path');
-import express from 'express';
+import * as http from 'http';
 import * as nunjucks from 'nunjucks';
 
 import { router } from './routes';
 
-const { PORT = 3000 } = process.env;
-const isDev: Function = () => process.env.NODE_ENV === 'development';
+const path = require('path');
+import express = require('express');
 
-const app = express();
+const port: number | string = process.env.PORT || 3000;
+const isDev: boolean = process.env.NODE_ENV === 'development';
+
+const app: express.Application = express();
 
 nunjucks.configure([
   'views',
@@ -15,7 +17,7 @@ nunjucks.configure([
 ], {
   autoescape: true,
   express: app,
-  noCache:  true
+  noCache: true
 });
 
 app.use(express.static('build', { maxAge: 31557600000 }));
@@ -31,7 +33,11 @@ app.get('/health/liveness', (req: express.Request, res: express.Response) => {
   res.json({});
 });
 
-app.listen(PORT, () => {
+const server: http.Server = app.listen(port, () => {
   // tslint:disable-next-line no-console
-  console.log('server started at http://localhost:' + PORT);
+  console.log('server started at http://localhost:' + port);
 });
+
+export function getServer() {
+  return server;
+}

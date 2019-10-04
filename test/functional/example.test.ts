@@ -1,40 +1,22 @@
-import { IndexPage } from './page-objects/IndexPage';
-
-const puppeteer = require('puppeteer');
-import { Page, Browser } from 'puppeteer';
-const config = require('config');
-const httpProxy = config.get('httpProxy');
+import { Page } from 'puppeteer';
+import { IndexPage } from '../page-objects/IndexPage';
+import { getNewPage, tearDown } from '../utils/common';
 
 describe('Load index page', () => {
   let indexPage: IndexPage;
 
-  async function startBrowser() {
-    const args = ['--no-sandbox', '--start-maximized'];
-    if (httpProxy) {
-      args.push(`-proxy-server=${httpProxy}`);
-    }
-
-    const opts = {
-      args,
-      headless: true,
-      timeout: 10000,
-      ignoreHTTPSErrors: true
-    };
-    return puppeteer.launch(opts);
-  }
-
   before('setup browser', async () => {
-    const browser: Browser = await startBrowser();
-    const page: Page = await browser.newPage();
+    const page: Page = await getNewPage();
     indexPage = new IndexPage(page);
     await indexPage.gotoPage();
-    await indexPage.screenshot('start_service');
+    await indexPage.screenshot('functional-screenshots', 'start_service');
   });
 
   after(async () => {
     if (indexPage && indexPage.close) {
       await indexPage.close();
     }
+    await tearDown();
   });
 
   it('load index page check title', () => {

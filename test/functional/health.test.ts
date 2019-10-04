@@ -1,32 +1,14 @@
-import { HealthPage } from './page-objects/HealthPage';
+import { HealthPage } from '../page-objects/HealthPage';
 
-const puppeteer = require('puppeteer');
-import { Page, Browser } from 'puppeteer';
-import { expect } from './config';
-const config = require('config');
-const httpProxy = config.get('httpProxy');
+import { Page } from 'puppeteer';
+import { expect } from '../utils/testUtils';
+import { getNewPage, tearDown } from '../utils/common';
 
 describe('Check health check @smoke', () => {
   let healthPage: HealthPage;
 
-  async function startBrowser() {
-    const args = ['--no-sandbox', '--start-maximized'];
-    if (httpProxy) {
-      args.push(`-proxy-server=${httpProxy}`);
-    }
-
-    const opts = {
-      args,
-      headless: true,
-      timeout: 10000,
-      ignoreHTTPSErrors: true
-    };
-    return puppeteer.launch(opts);
-  }
-
   before('setup browser', async () => {
-    const browser: Browser = await startBrowser();
-    const page: Page = await browser.newPage();
+    const page: Page = await getNewPage();
     healthPage = new HealthPage(page);
 
   });
@@ -35,6 +17,7 @@ describe('Check health check @smoke', () => {
     if (healthPage && healthPage.close) {
       await healthPage.close();
     }
+    await tearDown();
   });
 
   it('is healthy', async () => {

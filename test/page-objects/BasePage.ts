@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { expect } from '../unit/config';
+import { expect } from '../utils/testUtils';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -28,10 +28,10 @@ export class BasePage {
     return this.page.goto(`${testUrl}${this.pagePath}`);
   }
 
-  async screenshot(filename) {
+  async screenshot(folder, filename) {
     await this.page.screenshot({
       fullPage: true,
-      path: `functional-output/functional-screenshots/${filename}.png`
+      path: `functional-output/${folder}/${filename}.png`
     });
   }
 }

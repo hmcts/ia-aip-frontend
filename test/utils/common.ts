@@ -1,13 +1,11 @@
 /* tslint:disable:no-console */
 import * as http from 'http';
-import { Browser, Page } from 'puppeteer';
+import puppeteer, { Browser, LaunchOptions, Page } from 'puppeteer';
 import { getServer } from '../../app/app';
 import config = require('config');
 
-const puppeteer = require('puppeteer');
 const httpProxy = config.get('httpProxy');
 const testUrl = config.get('testUrl');
-
 const localhost = testUrl.indexOf('localhost') !== -1;
 
 let server: http.Server;
@@ -44,14 +42,14 @@ export async function startBrowser() {
     args.push(`-proxy-server=${httpProxy}`);
   }
 
-  const opts = {
+  const opts: LaunchOptions = {
     args,
     headless: true,
     timeout: 10000,
     ignoreHTTPSErrors: true
   };
 
-  browser = await puppeteer.launch({ opts });
+  browser = await puppeteer.launch(opts);
 
   // If browser crashes try to reconnect
   browser.on('disconnected', startBrowser);

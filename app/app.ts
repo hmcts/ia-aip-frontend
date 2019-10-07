@@ -16,33 +16,42 @@ import config from 'config';
 const port: number | string = process.env.PORT || 3000;
 const app: express.Application = express();
 
-const redisStore: expressSession.Store = redisConnect(expressSession);
-const redisClient = redis.createClient();
-redisClient.on('error', (err) => {
-  // tslint:disable-next-line no-console
-  console.log('Redis error: ', err);
-});
-
-const store = new redisStore({
-  url: config.get('session.redis.url'),
-  ttl: config.get('session.redis.ttlInSeconds'),
-  client: redisClient
-});
-
+const useReddis = config.get('session.useReddis') === 'true';
 const isSecure = config.get('session.cookie.secure') === 'true';
 
-app.use(expressSession({
-  cookie: {
-    httpOnly: true,
-    maxAge: config.get('session.cookie.maxAgeInMs'),
-    secure: isSecure
-  },
-  resave: true,
-  saveUninitialized: true,
-  secret: config.get('session.redis.secret'),
-  rolling: true,
-  store
-}));
+if (useReddis) {
+  const redisStore: expressSession.Store = redisConnect(expressSession);
+  const redisClient = redis.createClient();
+
+  redisClient.on('error', (err) => {
+    // tslint:disable-next-line no-console
+    console.log('Redis error: ', err);
+  });
+  const store = new redisStore({
+    url: config.get('session.redis.url'),
+    ttl: config.get('session.redis.ttlInSeconds'),
+    client: redisClient
+  });
+  app.use(expressSession({
+    cookie: {
+      httpOnly: true,
+      maxAge: config.get('session.cookie.maxAgeInMs'),
+      secure: isSecure
+    },
+    resave: true,
+    saveUninitialized: true,
+    secret: config.get('session.redis.secret'),
+    rolling: true,
+    store
+  }));
+} else {
+  app.use(expressSession({
+    secret: config.get('session.redis.secret'),
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }));
+}
 
 nunjucks.configure([
   'views',

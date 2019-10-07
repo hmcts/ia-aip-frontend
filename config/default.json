@@ -18,6 +18,7 @@
   },
   "microservice": "iac",
   "session": {
+    "useReddis": true,
     "redis": {
       "url": "redis://127.0.0.1:6379",
       "secret": "defaultsecret",

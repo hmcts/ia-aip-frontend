@@ -9,7 +9,7 @@
     "dev": "cross-env NODE_ENV=development nodemon app/app.ts",
     "lint": "tslint --project .",
     "test": "yarn test:unit",
-    "test:accessibility": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test mocha test/accessibility/*.ts --exit",
+    "test:accessibility": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test USE_REDDIS=false mocha test/accessibility/*.ts --exit",
     "test:unit": "mocha test/unit/**/*.test.ts",
     "test:coverage": "exit 0",
     "test:a11y": "yarn test:accessibility",

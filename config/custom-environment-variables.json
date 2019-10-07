@@ -15,5 +15,8 @@
       "sha256s": "HPKP_SHA256",
       "sha256sBackup": "HPKP_SHA256_BACKUP"
     }
+  },
+  "session": {
+    "useReddis": "USE_REDDIS"
   }
 }

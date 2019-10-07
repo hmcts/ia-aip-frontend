@@ -42,5 +42,18 @@ module "ia_aip_frontend" {
   app_settings = {
     WEBSITE_NODE_DEFAULT_VERSION = "10.14.1"
     NODE_ENV                     = "${var.infrastructure_env}"
+
+    REDIS_URL                    = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
+    SESSION_SECRET               = "${module.redis-cache.access_key}"
+    SECURE_SESSION               = "${var.secure_session}"
   }
+}
+
+module "redis-cache" {
+  source      = "git@github.com:contino/moj-module-redis?ref=master"
+  product     = "${var.product}-redis"
+  location    = "${var.location}"
+  env         = "${var.env}"
+  subnetid    = "${data.terraform_remote_state.core_apps_infrastructure.subnet_ids[1]}"
+  common_tags = "${var.common_tags}"
 }

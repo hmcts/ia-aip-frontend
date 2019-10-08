@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { paths } from '../paths';
 
 function getIndex(req: Request, res: Response) {
   res.render('index.html', { data: 'Hello from the OTHER world!!!' });
@@ -6,7 +7,7 @@ function getIndex(req: Request, res: Response) {
 
 function setupIndexController(deps?: any): Router {
   const router = Router();
-  router.get('/', getIndex);
+  router.get(paths.index, getIndex);
   return router;
 }
 

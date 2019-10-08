@@ -17,6 +17,6 @@
     }
   },
   "session": {
-    "useReddis": "USE_REDDIS"
+    "useRedis": "USE_REDIS"
   }
 }

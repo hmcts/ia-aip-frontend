@@ -73,17 +73,6 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.static('build', { maxAge: 31557600000 }));
 app.use(router);
 
-app.get('/health', (req: expressSession.Request, res: expressSession.Response) => {
-  req.session.health = req.session.health ? req.session.health + 1 : 1;
-  res.json({ status: 'UP', count: req.session.health });
-});
-app.get('/liveness', (req: expressSession.Request, res: expressSession.Response) => {
-  res.json({});
-});
-app.get('/health/liveness', (req: expressSession.Request, res: expressSession.Response) => {
-  res.json({});
-});
-
 const server: http.Server = app.listen(port, () => {
   // tslint:disable-next-line no-console
   console.log('server started at http://localhost:' + port);

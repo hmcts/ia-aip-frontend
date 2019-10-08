@@ -1,19 +1,15 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint-config-standard"
-    ],
-    "jsRules": {},
-    "rules": {
-        "quotemark": [true, "single", "avoid-escape"],
-        "semicolon": [true, "always"],
-        "space-before-function-paren": false,
-        "strict-type-predicates": false,
-        "no-console": true,
-        "no-unused-expression": true,
-        "no-unused-expression-chai": [true, "should"]
-    },
-    "rulesDirectory": [
-      "tslint-no-unused-expression-chai"
-    ]
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint-config-standard",
+    "tslint-no-unused-expression-chai"
+  ],
+  "jsRules": {},
+  "rules": {
+    "quotemark": [true, "single", "avoid-escape"],
+    "semicolon": [true, "always"],
+    "space-before-function-paren": false,
+    "strict-type-predicates": false,
+    "no-console": true
+  }
 }

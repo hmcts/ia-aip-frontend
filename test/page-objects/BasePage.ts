@@ -1,5 +1,6 @@
 import { Page } from 'puppeteer';
 import { expect } from '../utils/testUtils';
+import internationalization from '../../locale/en.json';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -11,7 +12,7 @@ export class BasePage {
 
   constructor(page: Page, pageTitle: String, pagePath: String) {
     this.page = page;
-    this.pageTitle = pageTitle;
+    this.pageTitle = [pageTitle, internationalization.serviceName, internationalization.provider].join(' - ');
     this.pagePath = pagePath;
   }
 

@@ -1,0 +1,27 @@
+{
+  "provider": "GOV.UK",
+  "pageTitle": "Immigration & Asylum",
+  "serviceName": "Immigration & Asylum",
+  "serviceUrl": "#",
+  "pages": {
+    "index": {
+      "title": "Home"
+    }
+  },
+  "error": {
+    "error404": {
+      "title": "Page not found",
+      "header": "Page not found",
+      "webAddress": "If you typed the web address, check it is correct.",
+      "pasted": "If you pasted the web address, check you copied the entire address.",
+      "link": "If the web address is correct or you selected a link or button"
+    },
+    "error500": {
+      "title": "Service unavailable",
+      "header": "Sorry, there is a problem with the service",
+      "tryAgain": "Try again later.",
+      "savedAnswers": "We saved your answers. They will be available for 30 days."
+    }
+  }
+}
+

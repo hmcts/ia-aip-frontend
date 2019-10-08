@@ -1,13 +1,17 @@
 {
   "extends": "@istanbuljs/nyc-config-typescript",
+  "include": [
+    "app/**/*.ts"
+  ],
   "extension": [
-    ".ts",
-    ".tsx"
+    ".ts"
   ],
   "exclude": [
     "**/*.d.ts"
   ],
   "reporter": [
+    "lcov",
+    "text",
     "html"
   ],
   "report-dir": "./test/coverage/html",

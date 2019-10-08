@@ -10,6 +10,7 @@ import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handle
 const path = require('path');
 
 import express = require('express');
+
 import { setupSession } from './session';
 
 const port: number | string = process.env.PORT || 3000;

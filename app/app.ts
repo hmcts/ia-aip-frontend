@@ -16,10 +16,10 @@ import config from 'config';
 const port: number | string = process.env.PORT || 3000;
 const app: express.Application = express();
 
-const useReddis = config.get('session.useReddis') === 'true';
+const useRedis = config.get('session.useRedis') === 'true';
 const isSecure = config.get('session.cookie.secure') === 'true';
 
-if (useReddis) {
+if (useRedis) {
   const redisStore: expressSession.Store = redisConnect(expressSession);
   const redisClient = redis.createClient();
 

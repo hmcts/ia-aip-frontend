@@ -12,6 +12,7 @@
     "test:accessibility": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test USE_REDDIS=false mocha test/accessibility/*.ts --exit",
     "test:unit": "nyc mocha test/unit/**/*.test.ts",
     "test:coverage": "nyc report",
+    "test:unit:watch": "mocha --watch-extensions ts --watch test/unit/**/*.test.ts",
     "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",
     "test:browser": "mocha test/functional/**/*.test.ts --exit",
@@ -25,6 +26,7 @@
     }
   },
   "dependencies": {
+    "applicationinsights": "^1.4.2",
     "config": "^3.2.2",
     "connect-redis": "^4.0.3",
     "copy-webpack-plugin": "^5.0.4",

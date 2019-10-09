@@ -6,6 +6,9 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
 
+{% set serviceName = i18n.serviceName %}
+{% set serviceUrl = i18n.serviceUrl %}
+
 {% macro errorSummary(errors) %}
     {%  if errors %}
         {{ govukErrorSummary({
@@ -48,18 +51,24 @@
     }) }}
 {% endmacro %}
 
+{% macro contactUsErrorLink() %}
+    <a class="govuk-link" href="#">Contact the {{i18n.serviceName}} Helpline</a> if you need to make changes to your application or speak to someone about your tax credits.
+{% endmacro %}
+
 {% block head %}
   <link href="/main.css" rel="stylesheet" />
 {% endblock %}
 
 {% block pageTitle %}
-    Title is {{ i18n.pageTitle }}
+  {{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
 {% endblock %}
 
 {% block header %}
     {% if not hideSignOut %}
         {{ govukHeader({
             homepageUrl: "#",
+            serviceName:  serviceName,
+            serviceUrl: serviceUrl,
             containerClasses: "govuk-width-container",
             navigationClasses: "sign-out",
             navigation: [
@@ -73,7 +82,9 @@
     {% else %}
         {{ govukHeader({
             homepageUrl: "#",
-            containerClasses: "govuk-width-container"
+            containerClasses: "govuk-width-container",
+            serviceName: serviceName,
+            serviceUrl: serviceUrl
         }) }}
     {% endif %}
 

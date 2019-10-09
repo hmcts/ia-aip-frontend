@@ -5,6 +5,7 @@ function getIndex(req: Request, res: Response) {
   res.render('index.html', { data: 'Hello from the OTHER world!!!' });
 }
 
+/* istanbul ignore next */
 function setupIndexController(deps?: any): Router {
   const router = Router();
   router.get(paths.index, getIndex);

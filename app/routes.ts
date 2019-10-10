@@ -1,6 +1,6 @@
 import * as express from 'express';
-import { setupIndexController } from './controllers/index';
 import { setupHealthController } from './controllers/health';
+import { setupIndexController } from './controllers/index';
 
 const router = express.Router();
 

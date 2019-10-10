@@ -1,7 +1,7 @@
 import { Page } from 'puppeteer';
 import { expect } from '../utils/testUtils';
-import internationalization from '../../locale/en.json';
 const config = require('config');
+import internationalization from '../../locale/en.json';
 
 const testUrl = config.get('testUrl');
 

@@ -1,6 +1,6 @@
-import { getNewPage, tearDown } from '../utils/common';
 import { Page } from 'puppeteer';
 import { IndexPage } from '../page-objects/IndexPage';
+import { getNewPage, tearDown } from '../utils/common';
 import { expect } from '../utils/testUtils';
 import { pa11yConfig } from './config/common';
 

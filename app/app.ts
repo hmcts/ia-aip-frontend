@@ -1,23 +1,17 @@
 import config from 'config';
+import express = require('express');
 import * as http from 'http';
+import * as nunjucks from 'nunjucks';
+import path from 'path';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
-import * as nunjucks from 'nunjucks';
-import { router } from './routes';
-import internationalization from './../locale/en.json';
+import internationalization from '../locale/en.json';
+import webpackDevConfig from '../webpack/webpack.dev.js';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
-
-const path = require('path');
-
-import express = require('express');
-
+import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
+import { router } from './routes';
 import { setupSession } from './session';
 import Logger from './utils/logger';
-import webpackDevConfig from '../webpack/webpack.dev.js';
-import {
-  logErrorMiddleware,
-  logRequestMiddleware
-} from './middleware/logger';
 
 const port: number | string = process.env.PORT || 3000;
 const app: express.Application = express();

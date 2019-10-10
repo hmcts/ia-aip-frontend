@@ -1,7 +1,7 @@
+import config from 'config';
+import redisConnect from 'connect-redis';
 import expressSession from 'express-session';
 import * as redis from 'redis';
-import redisConnect from 'connect-redis';
-import config from 'config';
 
 const useRedis = config.get('session.useRedis') === 'true';
 const isSecure = config.get('session.cookie.secure') === 'true';

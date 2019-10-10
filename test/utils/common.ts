@@ -1,8 +1,8 @@
 /* tslint:disable:no-console */
+import config = require('config');
 import * as http from 'http';
 import puppeteer, { Browser, LaunchOptions, Page } from 'puppeteer';
 import { getServer } from '../../app/app';
-import config = require('config');
 
 const httpProxy = config.get('httpProxy');
 const testUrl = config.get('testUrl');

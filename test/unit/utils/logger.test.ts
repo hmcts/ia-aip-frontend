@@ -1,7 +1,7 @@
-const applicationInsights = require('applicationinsights');
-import { expect, sinon } from '../../utils/testUtils';
+import * as applicationInsights from 'applicationinsights';
+import { SinonSpy, SinonStub } from 'sinon';
 import Logger from '../../../app/utils/logger';
-import { SinonStub, SinonSpy } from 'sinon';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('Utils logger', () => {
   let sandbox: sinon.SinonSandbox;

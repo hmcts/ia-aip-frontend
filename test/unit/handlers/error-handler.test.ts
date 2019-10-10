@@ -1,6 +1,6 @@
 import { INTERNAL_SERVER_ERROR, NOT_FOUND } from 'http-status-codes';
-import { expect, sinon } from '../../utils/testUtils';
 import { pageNotFoundHandler, serverErrorHandler } from '../../../app/handlers/error-handler';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('Error Handler', () => {
   let req;

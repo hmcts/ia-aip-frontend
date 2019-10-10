@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
 import { paths } from '../paths';
 
 function health (req: Request, res: Response) {

@@ -1,5 +1,5 @@
+import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import { NextFunction, Router, Request, Response } from 'express';
 import Logger from '../utils/logger';
 
 const logLabel: string = 'controllers/index.ts';

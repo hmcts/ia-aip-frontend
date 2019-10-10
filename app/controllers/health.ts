@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { paths } from '../paths';
 
-function health (req: Request, res: Response) {
+function health(req: Request, res: Response) {
   res.json({ status: 'UP' });
 }
 

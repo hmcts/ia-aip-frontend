@@ -1,5 +1,5 @@
 import config from 'config';
-import express = require('express');
+import express from 'express';
 import * as http from 'http';
 import * as nunjucks from 'nunjucks';
 import path from 'path';
@@ -16,11 +16,28 @@ import Logger from './utils/logger';
 const port: number | string = process.env.PORT || 3000;
 const app: express.Application = express();
 
-app.use(setupSession());
-const iKey = config.get('appInsights.instrumentationKey');
-const logger: Logger = new Logger(iKey);
-app.locals.logger = logger;
+/**
+ * Development Configuration
+ */
+if (process.env.NODE_ENV === 'development') {
+  const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
+  const compiler = webpack([ serverDevConfig, clientDevConfig ]);
+  const wpDevMiddleware = webpackDevMiddleware(compiler);
 
+  app.use(wpDevMiddleware);
+}
+
+app.use(express.static('build', { maxAge: 31557600000 }));
+app.use(router);
+
+/**
+ * Redis Session Configuration
+ */
+app.use(setupSession());
+
+/**
+ * Nunjucks Views configurations
+ */
 nunjucks.configure([
   'views',
   path.resolve('node_modules/govuk-frontend/')
@@ -30,22 +47,20 @@ nunjucks.configure([
   noCache: true
 });
 
-if (process.env.NODE_ENV === 'development') {
-  const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
-  const compiler = webpack([ serverDevConfig, clientDevConfig ]);
-  const wpDevMiddleware = webpackDevMiddleware(compiler);
+/**
+ *  Logger Config
+ */
+const iKey = config.get('appInsights.instrumentationKey');
+const logger: Logger = new Logger(iKey);
+app.locals.logger = logger;
 
-  app.use(wpDevMiddleware);
-}
+app.use(logRequestMiddleware);
+app.use(logErrorMiddleware);
+
 /**
  *  Internationalization Config
  */
 app.locals.i18n = internationalization;
-
-app.use(logRequestMiddleware);
-app.use(express.static('build', { maxAge: 31557600000 }));
-app.use(router);
-app.use(logErrorMiddleware);
 
 /**
  *  Error Handlers
@@ -54,8 +69,7 @@ app.use(pageNotFoundHandler);
 app.use(serverErrorHandler);
 
 const server: http.Server = app.listen(port, () => {
-  // tslint:disable-next-line no-console
-  console.log('server started at http://localhost:' + port);
+  logger.trace('server started at http://localhost' + port, 'APP');
 });
 
 export function getServer() {

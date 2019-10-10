@@ -34,8 +34,8 @@ describe('Index Controller', function() {
     sandbox.restore();
   });
 
-  it('get Index should render index.html', function() {
+  it('get Index should render index.njk', function() {
     getIndex(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('index.html');
+    expect(res.render).to.have.been.calledOnce.calledWith('index.njk');
   });
 });

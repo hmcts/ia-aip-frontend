@@ -7,7 +7,12 @@
     ".ts"
   ],
   "exclude": [
-    "**/*.d.ts"
+    "**/*.d.ts",
+    "app/assets/**",
+    "app/app.ts",
+    "app/paths.ts",
+    "app/routes.ts",
+    "app/session.ts"
   ],
   "reporter": [
     "lcov",

@@ -1,12 +1,14 @@
 /* tslint:disable:no-console */
-import config = require('config');
+import config from 'config';
 import * as http from 'http';
 import puppeteer, { Browser, LaunchOptions, Page } from 'puppeteer';
-import { getServer } from '../../app/app';
+import { createApp } from '../../app/app';
+import Logger from '../../app/utils/logger';
 
 const httpProxy = config.get('httpProxy');
 const testUrl = config.get('testUrl');
-const localhost = testUrl.indexOf('localhost') !== -1;
+const port: number | string = process.env.PORT || 3000;
+const logger: Logger = new Logger();
 
 let server: http.Server;
 let browser: Browser;
@@ -25,7 +27,8 @@ export async function tearDown() {
 
 export async function getNewPage() {
   let page: Page;
-  if (process.env.NODE_ENV === 'development') {
+  const testingLocalhost = testUrl.indexOf('localhost') !== -1;
+  if (testingLocalhost) {
     const server = await startAppServer();
     page = server.page;
   } else {
@@ -57,8 +60,18 @@ export async function startBrowser() {
 }
 
 export async function startAppServer(): Promise<{ browser: Browser; page: Page }> {
-  if (!server && localhost) {
-    server = getServer();
+  const logLabel: string = 'common.ts::startAppServer';
+  const testingLocalhost = testUrl.indexOf('localhost') !== -1;
+  if (!server && testingLocalhost) {
+    server = createApp().listen(port, () => {
+      logger.trace(`Server listening on port ${port}`, logLabel);
+    })
+    .on('error',
+      (error: Error) => {
+        logger.exception(`Unable to start server because of ${error.message}`, logLabel);
+      }
+    );
+
     const browser = await startBrowser();
     try {
       page = await browser.newPage();

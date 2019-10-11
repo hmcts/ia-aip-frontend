@@ -54,7 +54,7 @@ export default class Logger implements ILogger {
         console.log(chalk.white(`Request: ${log}`));
         break;
       case SEVERITY.TRACE:
-        console.warn(chalk.green(`Info: ${log} end`));
+        console.warn(chalk.green(`Info: ${log} `));
         break;
       case SEVERITY.EXCEPTION:
         console.error(chalk.red(`Exception: ${log}`));

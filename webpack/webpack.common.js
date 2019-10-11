@@ -6,7 +6,7 @@ const path = require('path');
 
 const serverConfig = {
   entry: [
-    './app/app.ts'
+    './app/server.ts'
   ],
   target: 'node',
   output: {

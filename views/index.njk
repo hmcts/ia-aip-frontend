@@ -2,12 +2,16 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
+
 {% block content %}
   <h1 class="govuk-heading-m testing-class">Hello World!</h1>
+
   <p>{{ data }}</p>
-
+<form type="submit" method="get" action="/testPost">
   {{ govukButton({
-    text: "Save and continue"
-  }) }}
+    text: "Save and continue",
+    type: "submit"
 
+  }) }}
+</form>
 {% endblock %}

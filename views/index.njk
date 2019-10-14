@@ -1,15 +1,33 @@
 {% set pageTitleName = i18n.pages.index.title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
 
 {% block content %}
   <h1 class="govuk-heading-m testing-class">Hello World!</h1>
   <p>{{ data }}</p>
 
-  <p>{{ user.forename }} {{ user.surname }}</p>
+    <p>{{ user.forename }} {{ user.surname }}</p>
+<form type="submit" method="post" action="/testPost">
+    {{ govukInput({
+        label: {
+            text: "First Name"
+        },
+        classes: "govuk-input--width-20",
+        id: "firstName",
+        name: "firstName"
+    }) }}
+    {{ govukInput({
+        label: {
+            text: "Last Name"
+        },
+        classes: "govuk-input--width-20",
+        id: "lastName",
+        name: "lastName"
+    }) }}
 
-<form type="submit" method="get" action="/testPost">
-  {{ govukButton({
+    {{ govukButton({
     text: "Save and continue",
     type: "submit"
 

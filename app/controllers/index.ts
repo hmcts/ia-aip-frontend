@@ -18,10 +18,11 @@ function getIndex(req: Request, res: Response, next: NextFunction) {
 function getTestPage(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
+    const { firstName, lastName } = req.body;
     const dataObj: Object = {
       data: 'Hello from the Test Router',
-      firstName: 'Lewis',
-      lastName: 'Williams'
+      firstName: firstName,
+      lastName: lastName
     };
     logger.trace('getTestPage', logLabel);
     res.render('test-page.njk', dataObj);
@@ -35,7 +36,7 @@ function getTestPage(req: Request, res: Response, next: NextFunction) {
 function setupIndexController(deps?: any): Router {
   const router = Router();
   router.get(paths.index, getIndex);
-  router.get(paths.testPost, getTestPage);
+  router.post(paths.testPost, getTestPage);
   return router;
 }
 

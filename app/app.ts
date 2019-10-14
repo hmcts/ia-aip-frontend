@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
-import express = require('express');
+import cookieParser from 'cookie-parser';
+import express from 'express';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
@@ -19,6 +20,7 @@ function createApp() {
   app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(cookieParser());
 
   if (process.env.NODE_ENV === 'development') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;

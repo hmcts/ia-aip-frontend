@@ -29,6 +29,7 @@
     "applicationinsights": "^1.4.2",
     "config": "^3.2.2",
     "connect-redis": "^4.0.3",
+    "cookie-parser": "^1.4.4",
     "copy-webpack-plugin": "^5.0.4",
     "cross-env": "^5.2.1",
     "express": "^4.17.1",

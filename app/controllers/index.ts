@@ -16,10 +16,27 @@ function getIndex(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getTestPage(req: Request, res: Response, next: NextFunction) {
+  const logger: Logger = req.app.locals.logger;
+  try {
+    const dataObj: Object = {
+      data: 'Hello from the Test Router',
+      firstName: 'Lewis',
+      lastName: 'Williams'
+    };
+    logger.trace('getTestPage', logLabel);
+    res.render('test-page.njk', dataObj);
+  } catch (e) {
+    logger.exception(e.message, logLabel);
+    next(e);
+  }
+}
+
 /* istanbul ignore next */
 function setupIndexController(deps?: any): Router {
   const router = Router();
   router.get(paths.index, getIndex);
+  router.get(paths.testPost, getTestPage);
   return router;
 }
 

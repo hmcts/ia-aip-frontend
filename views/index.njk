@@ -8,8 +8,11 @@
 
   <p>{{ user.forename }} {{ user.surname }}</p>
 
+<form type="submit" method="get" action="/testPost">
   {{ govukButton({
-    text: "Save and continue"
-  }) }}
+    text: "Save and continue",
+    type: "submit"
 
+  }) }}
+</form>
 {% endblock %}

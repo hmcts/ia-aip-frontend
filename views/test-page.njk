@@ -1,0 +1,14 @@
+{% set pageTitleName = i18n.pages.index.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+    <h1 class="govuk-heading-m testing-class">Hello World! From second page</h1>
+    <p>{{ data }}</p>
+    <p id="firstName">{{ firstName }}</p>
+    <p id="secondName">{{ lastName }}</p>
+    {{ govukButton({
+        text: "Save and continue"
+    }) }}
+
+{% endblock %}

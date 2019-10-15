@@ -1,8 +1,9 @@
 /// <reference types="Cypress" />
+import {} from 'cypress';
 
 context('Run e2e happy path', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000')
+    cy.visit('http://localhost:3000');
     cy.get('.testing-class');
     cy.get('p').contains('Hello from the OTHER world!!!');
   });
@@ -23,6 +24,6 @@ context('Run e2e happy path', () => {
     cy.get('#lastName').click().type('Williams');
     cy.get('.govuk-button').click();
     cy.wait(3000);
-    cy.get('.govuk-error-summary').contains('Dont enter first name as \'Joe\'')
-  })
+    cy.get('.govuk-error-summary').contains('Dont enter first name as \'Joe\'');
+  });
 });

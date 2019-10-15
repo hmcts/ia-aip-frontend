@@ -19,10 +19,13 @@ function getTestPage(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
     const { firstName, lastName } = req.body;
+    let variable: boolean = false;
+    if (firstName === 'Joe') variable = true;
     const dataObj: Object = {
       data: 'Hello from the Test Router',
       firstName: firstName,
-      lastName: lastName
+      lastName: lastName,
+      variable: variable
     };
     logger.trace('getTestPage', logLabel);
     res.render('test-page.njk', dataObj);

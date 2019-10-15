@@ -1,5 +1,4 @@
 /// <reference types="Cypress" />
-import {} from 'cypress';
 
 context('Run e2e happy path', () => {
   beforeEach(() => {

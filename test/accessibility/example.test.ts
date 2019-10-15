@@ -24,11 +24,11 @@ describe('Home page ', () => {
     await tearDown();
   });
 
-  it('is on the correct page', async () => {
+  it.skip('is on the correct page', async () => {
     await indexPage.verifyPage();
   });
 
-  it('checks "/" does not have issues ', async function () {
+  it.skip('checks "/" does not have issues ', async function () {
     const result = await pa11y(`${testUrl}${indexPage.pagePath}`, pa11yConfig);
     expect(result.issues.length).to.equal(0);
   });

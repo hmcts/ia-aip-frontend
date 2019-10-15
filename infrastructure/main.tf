@@ -22,6 +22,11 @@ data "azurerm_key_vault" "ia_key_vault" {
   resource_group_name = "${local.key_vault_name}"
 }
 
+data "azurerm_key_vault_secret" "idam-secret" {
+  name      = "idam-secret"
+  vault_uri = "${data.azurerm_key_vault.ia_key_vault.vault_uri}"
+}
+
 module "ia_aip_frontend" {
   source               = "git@github.com:hmcts/cnp-module-webapp?ref=master"
   product              = "${var.product}-${var.component}"
@@ -46,6 +51,10 @@ module "ia_aip_frontend" {
     REDIS_URL                    = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
     SESSION_SECRET               = "${module.redis-cache.access_key}"
     SECURE_SESSION               = "${var.secure_session}"
+
+    IDAM_API_URL                 = "${var.idam_url}"
+    IDAM_WEB_URL                 = "${var.idam_web_url}"
+    IDAM_SECRET                  = "${data.azurerm_key_vault_secret.idam-secret.value}"
   }
 }
 

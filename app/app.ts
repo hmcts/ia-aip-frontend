@@ -28,6 +28,7 @@ function createApp() {
     const wpDevMiddleware = webpackDevMiddleware(compiler);
     app.use(wpDevMiddleware);
   }
+
   app.use(router);
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);

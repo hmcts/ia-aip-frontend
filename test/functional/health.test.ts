@@ -9,7 +9,6 @@ describe('Check health check @smoke', () => {
   before('setup browser', async () => {
     const page: Page = await getNewPage();
     healthPage = new HealthPage(page);
-
   });
 
   after(async () => {

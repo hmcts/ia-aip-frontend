@@ -51,3 +51,13 @@ variable "secure_session" {
   description = "Whether a secure session is required"
   default     = "true"
 }
+
+variable "idam_url" {
+  description = "Url of the idam api"
+  type = "string"
+}
+
+variable "idam_web_url" {
+  description = "Url of the idam login pages"
+  type = "string"
+}

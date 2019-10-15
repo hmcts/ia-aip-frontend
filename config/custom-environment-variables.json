@@ -18,5 +18,15 @@
   },
   "session": {
     "useRedis": "USE_REDIS"
+  },
+  "s2s": {
+    "microserviceName": "S2S_MICROSERVICE_NAME",
+    "secret": "S2S_SECRET",
+    "url": "S2S_URL"
+  },
+  "idam": {
+    "apiUrl": "IDAM_API_URL",
+    "webUrl": "IDAM_WEB_URL",
+    "secret": "IDAM_SECRET"
   }
 }

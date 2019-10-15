@@ -6,7 +6,7 @@ const path = require('path');
 
 const serverConfig = {
   entry: [
-    './app/app.ts'
+    './app/server.ts'
   ],
   target: 'node',
   output: {
@@ -26,7 +26,7 @@ const serverConfig = {
         ]
       }
     ]
-  }
+  },
 };
 
 const clientConfig = {
@@ -65,6 +65,6 @@ const clientConfig = {
 const commonConfig = {
     server: serverConfig,
     client: clientConfig
-}
+};
 
 module.exports = commonConfig;

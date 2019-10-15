@@ -28,7 +28,7 @@ function pageNotFoundHandler(req: Request, res: Response, next: NextFunction) {
  */
 function serverErrorHandler(err: any, req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
-  logger.trace(err, logLabel);
+  logger.exception(err, logLabel);
 
   res.status(INTERNAL_SERVER_ERROR);
 

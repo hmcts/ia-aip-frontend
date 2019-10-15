@@ -19,7 +19,7 @@ describe('Load index page', () => {
     await tearDown();
   });
 
-  it('load index page check title', () => {
+  it.skip('load index page check title', () => {
     return indexPage.verifyPage();
   });
 });

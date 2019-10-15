@@ -29,5 +29,10 @@
       "maxAgeInMs": 1200000,
       "secure": "false"
     }
+  },
+  "idam": {
+    "apiUrl": "http://changeme",
+    "webUrl": "https://changeme",
+    "secret": "CHANGE_ME"
   }
 }

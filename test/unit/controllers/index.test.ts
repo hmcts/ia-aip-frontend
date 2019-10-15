@@ -1,5 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { getIndex } from '../../../app/controllers';
+import { Request } from '../../../app/domain/request';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -15,6 +16,9 @@ describe('Index Controller', function() {
     req = {
       session: {},
       cookies: {},
+      idam: {
+        userDetails: {}
+      },
       app: {
         locals: {
           logger

@@ -4,6 +4,10 @@
   "serviceName": "Immigration & Asylum",
   "serviceUrl": "#",
   "common": {
+    "buttons": {
+      "saveAndContinue": "Save and continue",
+      "saveForLater": "Save for later"
+    },
     "requirements": {
       "heading": "You will need to:"
     }
@@ -39,14 +43,74 @@
         "htmlLink": "<a href='/contact-details' title='Your contact details'>Your contact details</a>"
       },
       "typeOfAppeal": {
-        "htmlLink": "<a href='/appeal-details' title='Type of appeal'>Type of appeal</a>"
+        "htmlLink": "<a href='/type-of-appeal' title='Type of appeal'>Type of appeal</a>"
       },
       "checkAndSend": {
         "htmlLink": "<a href='/check-and-send' title='Check and send your appeal'>Check and send your appeal</a>"
       }
+    },
+    "appealType": {
+      "header": "What type of appeal will you make?",
+      "pageHint": [
+        "Select at least one of the options below",
+        "You can change this at a later date"
+      ],
+      "exampleSummaryText": "See examples",
+      "errorMessage": "You must select at least one option",
+      "options": {
+        "protection": {
+          "name": "Protection",
+          "description": "You will be persecuted or harmed in some way if you are removed from the UK",
+          "example": {
+            "id": "protection-example",
+            "name": "Example number one",
+            "description": "Description of example"
+          }
+        },
+        "humanRights": {
+          "name": "Human Rights",
+          "description": "You have a family and/or private life in the UK, or a serious medical condition",
+          "example": {
+            "id": "human-rights-example",
+            "name": "Example number one",
+            "description": "Description of example"
+          }
+        },
+        "eea": {
+          "id": "eea",
+          "name": "European Economic Area (EEA)",
+          "description": "You are, or a family member is, an EEA/Swiss national",
+          "example": {
+            "id": "eea-example",
+            "name": "Example number one",
+            "description": "Description of example"
+          }
+        },
+        "revocation": {
+          "name": "Revocation of Protection Status",
+          "description": "Your protection status was taken away",
+          "example": {
+            "id": "revocation-example",
+            "name": "Example number one",
+            "description": "Description of example"
+          }
+        },
+        "deprivation": {
+          "name": "Deprivation of Citizenship",
+          "description": "Your British citizenship was taken way",
+          "example": {
+            "id": "deprivation-example",
+            "name": "Example number one",
+            "description": "Description of example"
+          }
+        }
+      }
     }
   },
   "error": {
+    "summary": {
+      "title": "There is a problem"
+    },
     "error404": {
       "title": "Page not found",
       "header": "Page not found",
@@ -75,9 +139,10 @@
       "description": "You can find this on the top right-hand side of the decision letter."
     }
   },
-  "fieldsValidations": {
+  "validationErrors": {
     "empty": "The field is required",
-    "homeOfficeRef": "The Home Office Number is not correct. Please review it."
+    "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
+    "atLeastOneOption": "You must select at least one option"
   }
 }
 

@@ -10,6 +10,6 @@ describe('fields-validations', () => {
 
   it('should fail validation and return empty warning message', () => {
     const validations = homeOfficeNumberValidation('');
-    expect(validations).to.equal(i18n.fieldsValidations.empty);
+    expect(validations).to.equal(i18n.validationErrors.empty);
   });
 });

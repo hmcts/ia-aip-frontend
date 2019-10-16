@@ -39,19 +39,6 @@
     }) }}
 {% endmacro %}
 
-{% macro saveButtons() %}
-    {{ govukButton({
-        text: "Save and continue"
-    }) }}
-
-    {{ govukButton({
-        text: "Save for later",
-        name: "saveForLater",
-        value: "saveForLater",
-        classes: "govuk-button--secondary"
-    }) }}
-{% endmacro %}
-
 {% macro contactUsErrorLink() %}
     <a class="govuk-link" href="#">Contact the {{i18n.serviceName}} Helpline</a> if you need to make changes to your application or speak to someone about your tax credits.
 {% endmacro %}

@@ -7,8 +7,8 @@ function homeOfficeNumberValidation(reference: string) {
     .required()
     .regex(/^[a-zA-Z]{1}[0-9]{7}$/)
     .messages({
-      'string.empty': i18n.fieldsValidations.empty,
-      'string.pattern.base': i18n.fieldsValidations.homeOfficeRef
+      'string.empty': i18n.validationErrors.empty,
+      'string.pattern.base': i18n.validationErrors.homeOfficeRef
     });
   const result = schema.validate(reference);
   if (result.error) {

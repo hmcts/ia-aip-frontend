@@ -1,7 +1,9 @@
 import { NextFunction, Response, Router } from 'express';
+import joi from 'joi';
 import { Request } from '../domain/request';
 import { paths } from '../paths';
 import Logger from '../utils/logger';
+import { testSchema } from './schema';
 
 const logLabel: string = 'controllers/index.ts';
 
@@ -20,16 +22,13 @@ function getTestPage(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
     const { firstName, lastName } = req.body;
-    let variable: boolean = false;
-    if (firstName === 'Joe') variable = true;
-    const dataObj: Object = {
-      data: 'Hello from the Test Router',
-      firstName: firstName,
-      lastName: lastName,
-      variable: variable
-    };
     logger.trace('getTestPage', logLabel);
-    res.render('test-page.njk', dataObj);
+    const { error, value } = joi.validate({ name: firstName, mobileNumber: mobileNumber }, testSchema);
+    if (error) {
+      res.render('test-page.njk',{ variable: true, errors: error.details[0].message });
+    } else {
+      res.render('test-page.njk', { firstName: value.name, mobileNumber: value.mobileNumber });
+    }
   } catch (e) {
     logger.exception(e.message, logLabel);
     next(e);

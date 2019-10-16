@@ -1,6 +1,6 @@
 import * as applicationInsights from 'applicationinsights';
 import { SinonSpy, SinonStub } from 'sinon';
-import Logger from '../../../app/utils/logger';
+import Logger, { getLogLabel } from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Utils logger', () => {
@@ -92,5 +92,17 @@ describe('Utils logger', () => {
     logger.exception(message, label);
     expect(applicationInsightsExceptionSpy).to.have.been.calledOnce;
     expect(consoleErrorStub).to.have.been.calledOnce;
+  });
+
+  it('correctly gets path', () => {
+    const path: string = '/ia-aip-frontend/test/unit/utils/logger.test.ts';
+    const pathReturned = getLogLabel(path);
+    expect(pathReturned).to.eq('utils/logger.test.ts');
+  });
+
+  it('correctly gets path and discards backslashes', () => {
+    const path: string = 'something:\\ia-aip-frontend/test/unit/utils/logger.test.ts';
+    const pathReturned = getLogLabel(path);
+    expect(pathReturned).to.eq('utils/logger.test.ts');
   });
 });

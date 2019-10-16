@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { INTERNAL_SERVER_ERROR, NOT_FOUND } from 'http-status-codes';
-import Logger from '../utils/logger';
+import Logger, { getLogLabel } from '../utils/logger';
 
-const logLabel: string = 'handlers/error-handler.ts';
-
+const logLabel: string = getLogLabel(__filename);
 /**
  * Page not found errors (404) with content negotiation that returns a html page when supported or error as json or text if unsupported
  */

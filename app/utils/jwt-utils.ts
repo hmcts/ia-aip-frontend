@@ -1,15 +1,15 @@
 import jwt from 'jsonwebtoken';
-import Logger from './logger';
+import Logger, { getLogLabel } from './logger';
 
 const logger: Logger = new Logger();
-const label: string = 'jwt-utils.ts';
+const logLabel: string = getLogLabel(__filename);
 
 export function decodeJWTToken(jwtToken: string) {
   let decoded;
   try {
     decoded = jwt.decode(jwtToken);
   } catch (err) {
-    logger.exception(err, label);
+    logger.exception(err, logLabel);
     throw new Error(err);
   }
   return decoded;

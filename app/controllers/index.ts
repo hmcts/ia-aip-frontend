@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import Logger from '../utils/logger';
 
 function getIndex(req: Request, res: Response, next: NextFunction) {
-  const logger: Logger = req.app.locals.logger;
   try {
-    res.render('index.njk', { data: 'Hello from the OTHER world!!!' });
+    res.render('index.njk', { data:  JSON.stringify(req.session) });
   } catch (e) {
     next(e);
   }

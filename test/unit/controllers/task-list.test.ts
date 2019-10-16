@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { getTaskList, setupTaskListController } from '../../../app/controllers/task-list';
-import { Section } from '../../../app/domain/section';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -54,18 +53,26 @@ describe('Task List Controller', () => {
   });
 
   it('getTaskList should render task-list.njk with status data', () => {
-    const mockData: Section = {
-      'sectionId': 'appealDetails',
-      'tasks': [
-        {
-          'id': 'typeOfAppeal',
-          'saved': true,
-          'complete': true
-        }
-      ]
-    };
+    const mockData = [
+      {
+        'sectionId': 'yourDetails',
+        'tasks': [
+          { 'id': 'homeOfficeDetails', 'saved': false, 'complete': false },
+          { 'id': 'personalDetails', 'saved': false, 'complete': false },
+          { 'id': 'contactDetails', 'saved': false, 'complete': false } ]
+      },
+      {
+        'sectionId': 'appealDetails',
+        'tasks': [ { 'id': 'typeOfAppeal', 'saved': true, 'complete': false } ]
+      },
+      {
+        'sectionId': 'checkAndSend',
+        'tasks': [ { 'id': 'checkAndSend', 'saved': false, 'complete': false } ]
+      } ];
+
+    req.session.typeOfAppeal = [ 'typeOfAppeal' ];
     getTaskList(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('task-list.njk');
+    expect(res.render).to.have.been.calledOnce.calledWith('task-list.njk', { data: mockData });
   });
 
   it('getTaskList should catch an exception and call next()', () => {

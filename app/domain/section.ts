@@ -1,10 +1,20 @@
-export interface Task {
+interface ITask {
   id: string;
   saved: boolean;
   complete: boolean;
 }
 
-export interface Section {
+export class Task {
+  constructor(public data: ITask) {
+  }
+}
+
+interface ISection {
   sectionId: string;
-  tasks: [ Task ];
+  tasks: Task[];
+}
+
+export class Section {
+  constructor(public data: ISection) {
+  }
 }

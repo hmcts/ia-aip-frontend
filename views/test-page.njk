@@ -9,7 +9,7 @@
             "titleText": "There is a problem",
             "errorList": [
                 {
-                    "text": "Dont enter first name as 'Joe'",
+                    "text": errors,
                     "href": "#"
                 }
             ]
@@ -18,7 +18,7 @@
     <h1 class="govuk-heading-m testing-class">Hello World! From second page</h1>
     <p>{{ data }}</p>
     <p id="firstName">{{ firstName }}</p>
-    <p id="secondName">{{ lastName }}</p>
+    <p id="secondName">{{ mobileNumber }}</p>
     {{ govukButton({
         text: "Save and continue"
     }) }}

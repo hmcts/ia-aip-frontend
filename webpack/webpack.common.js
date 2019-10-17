@@ -40,8 +40,17 @@ const clientConfig = {
     path: path.resolve(__dirname, '../build'),
     filename: 'all.js'
   },
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
   module: {
     rules: [
+      {
+        test: /\.ts$/,
+        use: [
+          'ts-loader',
+        ]
+      },
       {
         test: /\.(sa|sc|c)ss$/,
         loader: [

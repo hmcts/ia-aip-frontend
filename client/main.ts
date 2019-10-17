@@ -1,4 +1,5 @@
 import * as govUK from 'govuk-frontend';
+import CookiesBanner from './cookies-banner';
 
 const ready = (callback) => {
   if (document.readyState !== 'loading') callback();
@@ -6,6 +7,11 @@ const ready = (callback) => {
 };
 
 ready(() => {
-  govUK.initAll(
-  );
+  const cookies: CookiesBanner = new CookiesBanner();
+  cookies.init();
+  govUK.initAll();
 });
+
+export {
+  ready
+};

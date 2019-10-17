@@ -21,7 +21,7 @@ function getIndex(req: Request, res: Response, next: NextFunction) {
 function getTestPage(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
-    const { firstName, lastName } = req.body;
+    const { firstName, mobileNumber } = req.body;
     logger.trace('getTestPage', logLabel);
     const { error, value } = joi.validate({ name: firstName, mobileNumber: mobileNumber }, testSchema);
     if (error) {

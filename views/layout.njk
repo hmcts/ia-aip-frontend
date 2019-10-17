@@ -64,6 +64,9 @@
 {% endblock %}
 
 {% block header %}
+    <div id="cookie-banner" >
+        <p class="govuk-width-container">{{ i18n.cookieBanner.content | safe }}</p>
+    </div>
     {% if not hideSignOut %}
         {{ govukHeader({
             homepageUrl: "#",

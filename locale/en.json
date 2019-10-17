@@ -22,6 +22,9 @@
       "tryAgain": "Try again later.",
       "savedAnswers": "We saved your answers. They will be available for 30 days."
     }
+  },
+  "cookieBanner": {
+    "content": "GOV.UK uses cookies to make the site simpler. <a href='/cookie-policy class='govuk-link' title='Find out more about cookies'>Find out more about cookies</a>"
   }
 }
 

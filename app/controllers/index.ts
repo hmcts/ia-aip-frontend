@@ -1,5 +1,4 @@
-// tslint:disable-next-line:no-multi-spaces
-import { NextFunction,  Response, Router } from 'express';
+import { NextFunction, Response, Router } from 'express';
 import joi from 'joi';
 import { Request } from '../domain/request';
 import { paths } from '../paths';

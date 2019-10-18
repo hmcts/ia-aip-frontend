@@ -2,10 +2,10 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackDevMiddleware, { Options } from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
-import { configureLogger, configureNunjucks } from './app-config';
+import { configureLogger, configureNunjucks, configureS2S } from './app-config';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
 import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
 import { router } from './routes';
@@ -16,6 +16,8 @@ function createApp() {
   app.use(setupSession());
   configureLogger(app);
   configureNunjucks(app);
+  configureS2S(app);
+
   app.locals.i18n = internationalization;
   app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));
@@ -25,7 +27,8 @@ function createApp() {
   if (process.env.NODE_ENV === 'development') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
-    const wpDevMiddleware = webpackDevMiddleware(compiler);
+    const options = { stats: 'errors-only' } as Options;
+    const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);
   }
 

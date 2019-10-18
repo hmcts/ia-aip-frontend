@@ -1,6 +1,10 @@
 {
   "testUrl": "http://localhost:3000",
   "httpProxy": false,
+  "proxy": {
+    "host": "proxyout.reform.hmcts.net",
+    "port" : 8080
+  },
   "appInsights": {
     "instrumentationKey": ""
   },
@@ -29,6 +33,11 @@
       "maxAgeInMs": 1200000,
       "secure": "false"
     }
+  },
+  "s2s": {
+    "microserviceName": "iac",
+    "secret": "AAAAAAAAAAA",
+    "url": "http://localhost"
   },
   "idam": {
     "apiUrl": "http://changeme",

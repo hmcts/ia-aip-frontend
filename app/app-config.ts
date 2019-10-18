@@ -2,6 +2,7 @@ import config from 'config';
 import express from 'express';
 import * as nunjucks from 'nunjucks';
 import path from 'path';
+import S2SService from './service/s2s-service';
 import Logger from './utils/logger';
 
 function configureLogger(app: express.Application) {
@@ -21,7 +22,12 @@ function configureNunjucks(app: express.Application) {
   });
 }
 
+function configureS2S(app: express.Application) {
+  const s2s = S2SService.getInstance();
+  app.locals.s2s = s2s;
+}
 export {
   configureLogger,
-  configureNunjucks
+  configureNunjucks,
+  configureS2S
 };

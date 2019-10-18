@@ -26,7 +26,7 @@ const serverConfig = {
         ]
       }
     ]
-  }
+  },
 };
 
 const clientConfig = {
@@ -74,6 +74,6 @@ const clientConfig = {
 const commonConfig = {
     server: serverConfig,
     client: clientConfig
-}
+};
 
 module.exports = commonConfig;

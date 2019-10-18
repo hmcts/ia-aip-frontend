@@ -17,6 +17,7 @@ function createApp() {
   configureLogger(app);
   configureNunjucks(app);
   configureS2S(app);
+
   app.locals.i18n = internationalization;
   app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));

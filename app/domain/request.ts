@@ -1,4 +1,5 @@
 import * as Express from 'express';
+import { Section } from './section';
 
 export interface Request extends Express.Request {
   session: {
@@ -7,4 +8,5 @@ export interface Request extends Express.Request {
     hearingRequirements: any
   };
   idam: any;
+  sectionStatuses: [ Section ];
 }

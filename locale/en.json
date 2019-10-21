@@ -3,9 +3,47 @@
   "pageTitle": "Immigration & Asylum",
   "serviceName": "Immigration & Asylum",
   "serviceUrl": "#",
+  "common": {
+    "requirements": {
+      "heading": "You will need to:"
+    }
+  },
   "pages": {
     "index": {
       "title": "Home"
+    },
+    "start": {
+      "title": "Home",
+      "header": "Appeal an immigration or asylum decision",
+      "description": "We need to ask you a few questions to start your appeal.",
+      "requirements": [
+        "create an account if you haven't already got one",
+        "have your Home Office decision letter with you"
+      ]
+    },
+    "taskList": {
+      "title": "Task List",
+      "header": "Start your appeal",
+      "sections": {
+        "yourDetails": "Your Details",
+        "appealDetails": "Appeal Details",
+        "checkAndSend": "Check and Send"
+      },
+      "homeOfficeDetails": {
+        "htmlLink": "<a href='/home-office-details' title='Your Home office details'>Your Home Office details</a>"
+      },
+      "personalDetails": {
+        "htmlLink": "<a href='/personal-details' title='Your personal details'>Your personal details</a>"
+      },
+      "contactDetails": {
+        "htmlLink": "<a href='/contact-details' title='Your contact details'>Your contact details</a>"
+      },
+      "typeOfAppeal": {
+        "htmlLink": "<a href='/appeal-details' title='Type of appeal'>Type of appeal</a>"
+      },
+      "checkAndSend": {
+        "htmlLink": "<a href='/check-and-send' title='Check and send your appeal'>Check and send your appeal</a>"
+      }
     }
   },
   "error": {

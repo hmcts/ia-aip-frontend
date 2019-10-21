@@ -3,6 +3,10 @@ const paths = {
   health: '/health',
   liveness: '/liveness',
   healthLiveness: '/health/liveness',
+  taskList: '/task-list',
+  login: '/login',
+  logout: '/logout',
+  start: '/start',
   homeOfficeDetails: '/home-office-details'
 };
 

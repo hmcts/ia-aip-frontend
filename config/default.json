@@ -40,8 +40,8 @@
     "url": "http://localhost"
   },
   "idam": {
-    "apiUrl": "http://changeme",
-    "webUrl": "https://changeme",
-    "secret": "CHANGE_ME"
+    "apiUrl": "IDAM_API_URL",
+    "webUrl": "IDAM_WEB_URL",
+    "secret": "IDAM_SECRET"
   }
 }

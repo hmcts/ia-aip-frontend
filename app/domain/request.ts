@@ -1,6 +1,10 @@
 import * as Express from 'express';
 
 export interface Request extends Express.Request {
-  session: [any];
+  session: {
+    appealApplication: any,
+    caseBuilding: any,
+    hearingRequirements: any
+  };
   idam: any;
 }

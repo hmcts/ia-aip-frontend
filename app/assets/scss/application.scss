@@ -1,6 +1,10 @@
 @import "node_modules/govuk-frontend/govuk/all";
 @import "_cookie-banner";
 
+body {
+  @extend .govuk-body;
+}
+
 .testing-class {
   color: red;
 }

@@ -1,6 +1,7 @@
 import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
 import config from 'config';
 import { Router } from 'express';
+import { Request } from '../domain/request';
 import { getRedirectUrl } from '../utils/url-utils';
 
 function setupIdamController(): Router {
@@ -15,7 +16,9 @@ function setupIdamController(): Router {
 
   const router = Router();
 
-  router.get('/redirectUrl', idamExpressMiddleware.landingPage(idamArgs), (req, res) => {
+  router.get('/redirectUrl', idamExpressMiddleware.landingPage(idamArgs), (req: Request, res) => {
+    // Initializing the session, to replace with the proper call to CCD api to get the case
+    req.session.appealApplication = {};
     res.redirect('/');
   });
   router.use(idamExpressMiddleware.userDetails(idamArgs));

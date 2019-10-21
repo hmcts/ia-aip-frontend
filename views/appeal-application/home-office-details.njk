@@ -1,0 +1,44 @@
+{% set pageTitleName = i18n.pages.index.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% block content %}
+  {% if error %}
+    {{ govukErrorSummary({
+      titleText: i18n.errorSummary.titleText,
+      descriptionText: i18n.errorSummary.descriptionText,
+      errorList: [{
+        text: error,
+        href: "#homeOfficeRefNumber"
+      }]
+    }) 
+    }}
+  {% endif %}
+  <h1 class="govuk-heading-l">{{ i18n.appealApplication.homeOfficePage.title }}</h1>
+
+  <p>{{ i18n.appealApplication.homeOfficePage.description }}</p>
+
+  <p>{{ application | dump }}</p>
+
+  <img src="/assets/images/home_office_letter.png" class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"/>
+
+  <form action="/home-office-details" method="post">
+    {{ govukInput({
+      label: {
+        text: "Home Office reference number"
+      },
+      classes: "govuk-input--width-20",
+      id: "homeOfficeRefNumber",
+      name: "homeOfficeRefNumber",
+      errorMessage: {
+        text: error
+      } if error
+    }) }}
+
+    {{ govukButton({
+      text: "Save and continue"
+    }) }}
+  </form>
+
+{% endblock %}

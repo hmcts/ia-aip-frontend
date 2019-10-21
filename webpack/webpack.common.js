@@ -63,7 +63,8 @@ const clientConfig = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: path.resolve('node_modules/govuk-frontend/govuk/assets/'), to: 'assets' }
+      { from: path.resolve('node_modules/govuk-frontend/govuk/assets/'), to: 'assets' },
+      { from: path.resolve('app/assets/images/'), to: 'assets/images' }
     ]),
     new MiniCSSExtractPlugin({
       filename: '[name].css'

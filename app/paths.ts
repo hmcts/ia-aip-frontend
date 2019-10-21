@@ -2,6 +2,7 @@ const paths = {
   index: '/',
   health: '/health',
   liveness: '/liveness',
+  enterName: '/enter-name',
   healthLiveness: '/health/liveness',
   taskList: '/task-list',
   login: '/login',

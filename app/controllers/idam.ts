@@ -2,6 +2,7 @@ import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
 import config from 'config';
 import { Router } from 'express';
 import { Request } from '../domain/request';
+import { paths } from '../paths';
 import { getRedirectUrl } from '../utils/url-utils';
 
 function setupIdamController(): Router {
@@ -19,7 +20,7 @@ function setupIdamController(): Router {
   router.get('/redirectUrl', idamExpressMiddleware.landingPage(idamArgs), (req: Request, res) => {
     // Initializing the session, to replace with the proper call to CCD api to get the case
     req.session.appealApplication = {};
-    res.redirect('/');
+    res.redirect(paths.taskList);
   });
   router.use(idamExpressMiddleware.userDetails(idamArgs));
   router.use('/login', (req, res, next) => {
@@ -27,13 +28,13 @@ function setupIdamController(): Router {
     loginIdamArgs.redirectUri = getRedirectUrl(req);
     return idamExpressMiddleware.authenticate(idamArgs)(req, res, next);
   });
-  router.get('/start', (req, res) => {
-    res.end(`<p>This will be the start page </p><a href='/login'>Login</a>`);
+  router.get(paths.start, (req, res) => {
+    res.render('start.njk');
   });
-  router.get('/logout', idamExpressMiddleware.logout(idamArgs));
+  router.get(paths.logout, idamExpressMiddleware.logout(idamArgs));
   router.use(idamExpressMiddleware.protect(idamArgs));
-  router.get('/login', (req, res) => {
-    res.redirect('/');
+  router.get(paths.login, (req, res) => {
+    res.redirect(paths.index);
   });
 
   return router;

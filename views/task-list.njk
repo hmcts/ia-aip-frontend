@@ -1,0 +1,37 @@
+{% set pageTitleName = i18n.pages.taskList.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% import "components/text-components.njk" as text with context %}
+
+
+{% block content %}
+    <h1 class="govuk-heading-xl">{{ i18n.pages.taskList.header }}</h1>
+    {% for section in data %}
+        <h2 class="govuk-heading-l">
+            <span class="app-task-list__section-number">  {{ loop.index }}. </span> {{ text.getSectionTranslationFrom(section.sectionId) }}
+        </h2>
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        {% for task in section.tasks %}
+            <ul class="govuk-list">
+                <li class="govuk-body-l">
+                  <span class="govuk-link">
+                      {{ text.getTaskTranslationFrom(task.id) }}
+                  </span>
+                    {% if task.saved and task.complete %}
+                        {{ govukTag({
+                            text: "Completed"
+                        }) }}
+                    {% endif %}
+                    {% if task.saved and task.complete == false %}
+                        {{ govukTag({
+                            text: "Saved"
+                        }) }}
+                    {% endif %}
+                </li>
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+            </ul>
+        {% endfor %}
+
+    {% endfor %}
+{% endblock %}

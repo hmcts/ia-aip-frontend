@@ -35,9 +35,9 @@
     }
   },
   "s2s": {
-    "microserviceName": "iac",
-    "secret": "AAAAAAAAAAA",
-    "url": "http://localhost"
+    "microserviceName": "S2S_MICROSERVICE_NAME",
+    "secret": "S2S_SECRET",
+    "url": "S2S_URL"
   },
   "idam": {
     "apiUrl": "IDAM_API_URL",

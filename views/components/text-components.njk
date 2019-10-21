@@ -1,0 +1,40 @@
+{% macro listItems(requirements) %}
+    <ul class="govuk-list govuk-list--bullet">
+        {% for require in requirements %}
+            <li>{{ require }}</li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro getSectionTranslationFrom(id) %}
+
+    {% switch id %}
+    {% case 'yourDetails' %}
+        {{ i18n.pages.taskList.sections.yourDetails }}
+    {% case 'appealDetails' %}
+        {{ i18n.pages.taskList.sections.appealDetails }}
+    {% case 'checkAndSend' %}
+        {{ i18n.pages.taskList.sections.checkAndSend }}
+    {% default %}
+        {# Cannot find tanslation #}
+    {% endswitch %}
+{% endmacro %}
+
+{% macro getTaskTranslationFrom(id) %}
+
+    {% switch id %}
+    {% case 'homeOfficeDetails' %}
+        {{ i18n.pages.taskList.homeOfficeDetails.htmlLink | safe }}
+    {% case 'personalDetails' %}
+        {{ i18n.pages.taskList.personalDetails.htmlLink | safe }}
+    {% case 'contactDetails' %}
+        {{ i18n.pages.taskList.contactDetails.htmlLink | safe }}
+    {% case 'typeOfAppeal' %}
+        {{ i18n.pages.taskList.typeOfAppeal.htmlLink | safe }}
+    {% case 'checkAndSend' %}
+        {{ i18n.pages.taskList.checkAndSend.htmlLink | safe }}
+    {% default %}
+        {# Cannot find tanslation #}
+    {% endswitch %}
+{% endmacro %}
+

@@ -1,6 +1,7 @@
 import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
 import config from 'config';
 import { Router } from 'express';
+import { getRedirectUrl } from '../utils/url-utils';
 
 function setupIdamController(): Router {
   const idamArgs = {
@@ -18,7 +19,11 @@ function setupIdamController(): Router {
     res.redirect('/');
   });
   router.use(idamExpressMiddleware.userDetails(idamArgs));
-  router.use('/login', idamExpressMiddleware.authenticate(idamArgs));
+  router.use('/login', (req, res, next) => {
+    const loginIdamArgs = idamArgs;
+    loginIdamArgs.redirectUri = getRedirectUrl(req);
+    return idamExpressMiddleware.authenticate(idamArgs)(req, res, next);
+  });
   router.get('/start', (req, res) => {
     res.end(`<p>This will be the start page </p><a href='/login'>Login</a>`);
   });

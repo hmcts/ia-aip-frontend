@@ -1,14 +1,15 @@
 import config from 'config';
 import redisConnect from 'connect-redis';
+import express from 'express';
 import expressSession from 'express-session';
 import * as redis from 'redis';
 
 const useRedis = config.get('session.useRedis') === 'true';
 const isSecure = config.get('session.cookie.secure') === 'true';
 
-function setupSession(): expressSession.Session {
+function setupSession(): express.RequestHandler {
   if (useRedis) {
-    const redisStore: expressSession.Store = redisConnect(expressSession);
+    const redisStore: redisConnect.RedisStore = redisConnect(expressSession);
     const redisClient = redis.createClient();
 
     redisClient.on('error', (err) => {

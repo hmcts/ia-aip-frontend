@@ -1,6 +1,5 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { getTaskList, setupTaskListController } from '../../../app/controllers/task-list';
-import { Request } from '../../../app/domain/request';
 import { Section } from '../../../app/domain/section';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
@@ -18,7 +17,7 @@ describe('Task List Controller', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
-      session: {},
+      session: {} as any,
       sectionStatuses: {},
       cookies: {},
       idam: {
@@ -65,9 +64,8 @@ describe('Task List Controller', () => {
         }
       ]
     };
-    req.sectionStatuses = [ mockData ];
     getTaskList(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('task-list.njk', { 'data': [ mockData ] });
+    expect(res.render).to.have.been.calledOnce.calledWith('task-list.njk');
   });
 
   it('getTaskList should catch an exception and call next()', () => {

@@ -1,37 +1,36 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import Logger from '../utils/logger';
 import { enterDetailsValidation } from '../utils/personal-details-schema';
 
-const logLabel: string = __filename;
-
 function getNamePage(req: Request, res: Response, next: NextFunction) {
-  const logger: Logger = req.app.locals.logger;
   try {
     res.render('get-names-page.njk');
   } catch (e) {
-    logger.exception(e.message, logLabel);
     next(e);
   }
 }
 
 function postNamePage(req: Request, res: Response, next: NextFunction) {
-  const logger: Logger = req.app.locals.logger;
   try {
     const validation = enterDetailsValidation(req.body);
     let errors = null;
     if (validation) {
       errors = validation;
-      res.render('get-names-page.njk', { errors: { errorList: errors, fieldErrors: {  givenNames: { text: errors[0].text }, familyName: { text: errors[1].text } } } });
+      res.render('get-names-page.njk', {
+        errors: {
+          errorList: errors,
+          fieldErrors: { givenNames: { text: errors[0].text }, familyName: { text: errors[1].text } }
+        }
+      });
     } else {
-      res.render('get-names-page.njk', {  familyName: req.body.familyName, givenNames: req.body.givenNames });
+      res.render('get-names-page.njk', { familyName: req.body.familyName, givenNames: req.body.givenNames });
     }
   } catch (e) {
-    logger.exception(e.message, logLabel);
     next(e);
   }
 
 }
+
 function setupPersonalDetailsController(deps?: any): Router {
   const router = Router();
   router.get(paths.enterName, getNamePage);
@@ -40,7 +39,7 @@ function setupPersonalDetailsController(deps?: any): Router {
 }
 
 export {
-    setupPersonalDetailsController,
-    getNamePage,
-    postNamePage
+  setupPersonalDetailsController,
+  getNamePage,
+  postNamePage
 };

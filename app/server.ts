@@ -2,12 +2,12 @@ import express from 'express';
 import fs from 'graceful-fs';
 import https from 'https';
 import { createApp } from './app';
-import Logger from './utils/logger';
+import Logger, { getLogLabel } from './utils/logger';
 
 const app: express.Application = createApp();
 const port: number | string = process.env.PORT || 3000;
 const logger: Logger = new Logger();
-const logLabel: string = 'server.ts';
+const logLabel: string = getLogLabel(__filename);
 
 if (process.env.NODE_ENV === 'development') {
   https.createServer({

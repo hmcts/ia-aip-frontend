@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { isJWTExpired } from '../utils/jwt-utils';
-import Logger from '../utils/logger';
+import Logger, { getLogLabel } from '../utils/logger';
 
 const config = require('config');
 const otp = require('otp');
@@ -11,8 +11,7 @@ const proxyPort = config.get('proxy.port');
 const microServiceName = config.get('s2s.microserviceName');
 
 const logger: Logger = new Logger();
-const label = 's2s-service.ts';
-
+const logLabel: string = getLogLabel(__filename);
 interface IS2SService {
   buildRequest: () => {};
   requestServiceToken: () => void;
@@ -64,7 +63,7 @@ export default class S2SService implements IS2SService {
    * Note: This token is stored in memory and this token is only valid for 3 hours.
    */
   async requestServiceToken() {
-    logger.trace('Attempting to request a S2S token', label);
+    logger.trace('Attempting to request a S2S token', logLabel);
     const request = this.buildRequest();
     let proxyConfig;
     if (process.env.NODE_ENV === 'development') {
@@ -74,13 +73,13 @@ export default class S2SService implements IS2SService {
     try {
       res = await axios.post(request.uri, request.body, proxyConfig);
     } catch (err) {
-      logger.exception(err, label);
+      logger.exception(err, logLabel);
     }
     if (res && res.data) {
       this.serviceToken = res.data;
-      logger.trace('Received S2S token and stored token', label);
+      logger.trace('Received S2S token and stored token', logLabel);
     } else {
-      logger.exception('Could not retrieve S2S token', label);
+      logger.exception('Could not retrieve S2S token', logLabel);
     }
   }
 
@@ -90,7 +89,7 @@ export default class S2SService implements IS2SService {
    */
   async getServiceToken() {
     if (isJWTExpired(this.serviceToken)) {
-      logger.trace('Token expired Attempting to acquire a new one.', label);
+      logger.trace('Token expired Attempting to acquire a new one.', logLabel);
       await this.requestServiceToken();
     }
     return this.serviceToken;

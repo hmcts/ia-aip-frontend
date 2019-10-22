@@ -9,7 +9,7 @@ function getIndex(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
     logger.trace('getIndex', logLabel);
-    res.render('index.njk', { data: 'Hello from the OTHER world!!!', user: req.idam.userDetails });
+    res.render('index.njk', { data: 'Hello from the OTHER world!!!' });
   } catch (e) {
     logger.exception(e.message, logLabel);
     next(e);

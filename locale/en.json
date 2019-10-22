@@ -105,6 +105,11 @@
           }
         }
       }
+    },
+    "DOB": {
+      "heading": "What is your date of birth? ",
+      "hint": "For example, 31 3 1980",
+      "title": "Date of Birth"
     }
   },
   "error": {

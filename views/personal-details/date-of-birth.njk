@@ -1,0 +1,18 @@
+{% set pageTitleName = i18n.pages.DOB.title %}
+{% extends 'layout.njk'  %}
+
+
+{%  block content %}
+    {{ errorSummary(errors) }}
+    <h1 class="govuk-heading-xl">{{ i18n.pages.DOB.heading }}</h1>
+        <span class="govuk-caption-m">{{ i18n.pages.DOB.hint  }}</span>
+    <div>
+    <form method="post" action="/date-of-birth" type="submit">
+        {{ dateInput("Day","day",day) }}
+        {{ dateInput("Month","month",month) }}
+        {{ dateInput("Year","year",year) }}
+    {{ saveButtons() }}
+    </form>
+    </div>
+    {{ contactUs() }}
+{% endblock  %}

@@ -5,6 +5,7 @@ import { setupHomeOfficeDetailsController } from './controllers/home-office-deta
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
 import { setupPersonalDetailsController } from './controllers/personal-details-get-names';
+import { setupDateOfBirthController } from './controllers/personal-details/date-of-birth';
 import { setupTaskListController } from './controllers/task-list';
 import { setupTypeOfAppealController } from './controllers/type-of-appeal';
 
@@ -16,6 +17,7 @@ const idamController = setupIdamController();
 const taskListController = setupTaskListController();
 const homeOfficeDetailsController = setupHomeOfficeDetailsController();
 const personalDetailsController = setupPersonalDetailsController();
+const dateOfBirthController = setupDateOfBirthController();
 const typeOfAppealController = setupTypeOfAppealController();
 const devNextPageController = setupDevNextPageController();
 
@@ -24,6 +26,7 @@ router.use(healthController);
 
 // protected by idam
 router.use(idamController);
+router.use(dateOfBirthController);
 router.use(indexController);
 router.use(taskListController);
 router.use(homeOfficeDetailsController);

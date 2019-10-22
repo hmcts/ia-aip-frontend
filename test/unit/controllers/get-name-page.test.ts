@@ -90,7 +90,11 @@ describe('Home Office Details Controller', function() {
           'get-names-page.njk',
         {
           errors: {
-            errorList: [{ href: '#', text: 'Please Enter Given Names' }, { href: '#', text: 'Please Enter Family Name' }]
+            errorList: [{ href: '#', text: 'Please Enter Given Names' }, { href: '#', text: 'Please Enter Family Name' }],
+            fieldErrors: {
+              familyName: { text: 'Please Enter Family Name' },
+              givenNames: { text: 'Please Enter Given Names' }
+            }
           }
         });
     });

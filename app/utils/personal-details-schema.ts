@@ -1,9 +1,10 @@
 import Joi from '@hapi/joi';
 
-function EnterDetailsValidation(obj: object) {
+function enterDetailsValidation(obj: object) {
   const schema = Joi.object({
-    givenNames: Joi.string().min(3).max(30).required().messages({ 'string.empty': 'Please Enter Given Names' }),
-    familyName: Joi.string().min(3).max(30).required().messages({ 'string.empty': 'Please Enter Family Name' })
+    givenNames: Joi.string().required().messages({ 'string.empty': 'Please Enter Given Names' }),
+    familyName: Joi.string().required().messages({ 'string.empty': 'Please Enter Family Name' })
+
   });
   const result = schema.validate(obj, { abortEarly: false });
   if (result.error) {
@@ -20,5 +21,5 @@ function EnterDetailsValidation(obj: object) {
 }
 
 export {
-    EnterDetailsValidation
+  enterDetailsValidation
 };

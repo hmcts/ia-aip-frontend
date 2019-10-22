@@ -90,7 +90,7 @@ describe('Home Office Details Controller', function() {
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office-details.njk',
         {
-          error: i18n.fieldsValidations.homeOfficeRef,
+          error: i18n.validationErrors.homeOfficeRef,
           application: {}
         });
     });

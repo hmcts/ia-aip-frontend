@@ -8,7 +8,9 @@ const paths = {
   login: '/login',
   logout: '/logout',
   start: '/start',
-  homeOfficeDetails: '/home-office-details'
+  homeOfficeDetails: '/home-office-details',
+  typeOfAppeal: '/type-of-appeal',
+  devNextPage: '/dev-next-page'
 };
 
 export {

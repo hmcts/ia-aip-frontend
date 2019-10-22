@@ -1,5 +1,4 @@
-import { NextFunction, Response, Router } from 'express';
-import { Request } from '../domain/request';
+import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 import Logger from '../utils/logger';
 

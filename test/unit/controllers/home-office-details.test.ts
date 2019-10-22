@@ -1,7 +1,6 @@
 const express = require('express');
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { getHomeOfficeDetails, postHomeOfficeDetails, setupHomeOfficeDetailsController } from '../../../app/controllers/home-office-details';
-import { Request } from '../../../app/domain/request';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
@@ -20,7 +19,7 @@ describe('Home Office Details Controller', function() {
       body: {},
       session: {
         appealApplication: {}
-      },
+      } as any,
       cookies: {},
       idam: {
         userDetails: {}

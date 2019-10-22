@@ -1,7 +1,6 @@
 const express = require('express');
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { getNamePage, postNamePage, setupPersonalDetailsController } from '../../../app/controllers/personal-details-get-names';
-import { Request } from '../../../app/domain/request';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';

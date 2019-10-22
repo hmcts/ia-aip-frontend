@@ -1,7 +1,6 @@
 import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
 import config from 'config';
-import { Router } from 'express';
-import { Request } from '../domain/request';
+import { Request, Router } from 'express';
 import { paths } from '../paths';
 import { getRedirectUrl } from '../utils/url-utils';
 

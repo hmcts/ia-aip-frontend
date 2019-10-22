@@ -1,6 +1,6 @@
-import { NextFunction, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import mockSectionsData from '../data/mockSectionsData.json';
-import { Request } from '../domain/request';
+
 import { paths } from '../paths';
 import Logger from '../utils/logger';
 
@@ -10,7 +10,7 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
     // TODO: call CCD to get section statuses and remove mockSectionData
-    const statusOverview = req.sectionStatuses || JSON.parse(JSON.stringify(mockSectionsData));
+    const statusOverview = JSON.parse(JSON.stringify(mockSectionsData));
     logger.trace('getTaskList', logLabel);
     res.render('task-list.njk', { data: statusOverview });
   } catch (e) {

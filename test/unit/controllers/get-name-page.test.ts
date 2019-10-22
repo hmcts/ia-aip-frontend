@@ -72,4 +72,27 @@ describe('Home Office Details Controller', function() {
         });
     });
   });
+
+  describe('Should catch an error.', function () {
+    it('getPageName should catch an exception and call next()', () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      getNamePage(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('should fail validation and render get-names-page.njk with error', () => {
+      req.body.givenNames = '';
+      req.body.familyName = '';
+      postNamePage(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith(
+          'get-names-page.njk',
+        {
+          errors: {
+            errorList: [{ href: '#', text: 'Please Enter Given Names' }, { href: '#', text: 'Please Enter Family Name' }]
+          }
+        });
+    });
+  });
 });

@@ -9,7 +9,6 @@ const logLabel: string = __filename;
 function getNamePage(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
-    // res.render('index.njk', { data: 'Hello from the OTHER world!!!', user: req.idam.userDetails });
     res.render('get-names-page.njk');
   } catch (e) {
     logger.exception(e.message, logLabel);
@@ -24,10 +23,9 @@ function postNamePage(req: Request, res: Response, next: NextFunction) {
     let errors = null;
     if (validation) {
       errors = validation;
-      res.render('get-names-page.njk', { errors: { errorList: errors } , familyName: req.body.familyName, givenNames: req.body.givenNames });
+      res.render('get-names-page.njk', { errors: { errorList: errors } });
     } else {
       res.render('get-names-page.njk', {  familyName: req.body.familyName, givenNames: req.body.givenNames });
-      // res.render('get-names-page.njk', { data: 'Hello from the OTHER world!!!', user: req.idam.userDetails });
     }
   } catch (e) {
     logger.exception(e.message, logLabel);

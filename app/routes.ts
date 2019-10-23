@@ -29,6 +29,5 @@ router.use(homeOfficeDetailsController);
 router.use(personalDetailsController);
 router.use(typeOfAppealController);
 router.use(devNextPageController);
-router.use(personalDetailsController);
 
 export { router };

@@ -1,6 +1,8 @@
 import {
   dateValidation,
-  homeOfficeNumberValidation
+  emailValidation,
+  homeOfficeNumberValidation,
+  phoneValidation
 } from '../../../app/utils/fields-validations';
 import i18n from '../../../locale/en.json';
 import { expect } from '../../utils/testUtils';
@@ -46,5 +48,82 @@ describe('fields-validations', () => {
         }
       );
     });
+  });
+
+  it('should validate an email Address', () => {
+    const object = { 'email-value': 'alejandro@exmple.net' };
+    const validationResult = emailValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should fail email validation and return "string.empty" type', () => {
+    const object = { 'email-value': '' };
+    const validationResult = emailValidation(object);
+    const expectedResponse = {
+      'email-value': {
+        'key': 'email-value',
+        'text': 'Enter an email address',
+        'href': '#email-value'
+      }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
+
+  it('should fail email validation and return "string.format" type', () => {
+    const object = { 'email-value': 'thisisnotanemailexample.net' };
+    const validationResult = emailValidation(object);
+
+    const expectedResponse = {
+      'email-value': {
+        'key': 'email-value',
+        'text': 'Enter an email address in the correct format, like name@example.com',
+        'href': '#email-value'
+      }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
+
+  it('should validate a landline phone number', () => {
+    const object = { 'text-message-value': '01632960001' };
+    const validationResult = phoneValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should validate a mobile phone number', () => {
+    const object = { 'text-message-value': '07700900982' };
+    const validationResult = phoneValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should validate a phone number with prefix', () => {
+    const object = { 'text-message-value': '+448081570192' };
+    const validationResult = phoneValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should fail phone validation and return "string.empty" type', () => {
+    const object = { 'text-message-value': '' };
+    const validationResult = phoneValidation(object);
+    const expectedResponse = {
+      'text-message-value': {
+        'key': 'text-message-value',
+        'text': 'Enter a phone number',
+        'href': '#text-message-value'
+      }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
+
+  it('should fail phone validation and return "string.format" type', () => {
+    const object = { 'text-message-value': '1234567890' };
+    const validationResult = phoneValidation(object);
+    const expectedResponse = {
+      'text-message-value': {
+        'key': 'text-message-value',
+        'text': 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192',
+        'href': '#text-message-value'
+      }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
   });
 });

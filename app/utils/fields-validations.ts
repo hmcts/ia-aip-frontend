@@ -1,5 +1,4 @@
 import Joi from '@hapi/joi';
-import moment from 'moment';
 import i18n from '../../locale/en.json';
 
 function homeOfficeNumberValidation(reference: string) {
@@ -30,50 +29,34 @@ interface ValidationErrors {
 
 function dateValidation(obj: object): boolean | ValidationErrors {
   const schema = Joi.object({
-    day: Joi
-      .number()
-      .min(1)
-      .max(31)
-      .required()
-      .messages({
-        'number.base': 'Please Enter a day',
-        'number.max': 'Needs to be a valid date.',
-        'number.min': 'Needs to be above 0.'
-      }),
-    month: Joi
-      .number()
-      .min(1)
-      .max(12)
-      .required()
-      .messages({
-        'number.base': 'Please Enter a month',
-        'number.max': 'Needs to be a valid date.',
-        'number.min': 'Needs to be above 0.'
-      }),
-    year: Joi
-      .number()
-      .min(1111)
-      .max(moment().year())
-      .required()
-      .messages({
-        'number.base': 'Please Enter a year',
-        'number.min': 'Needs to be above 0.',
-        'number.max': 'Needs to be a valid date.'
-      })
-
+    day: Joi.number().min(1).max(31).required().messages({
+      'number.base': 'Please Enter a day',
+      'number.max': 'Needs to be a valid date.',
+      'number.min': 'Needs to be above 0.'
+    }),
+    month: Joi.number().min(1).max(12).required().messages({
+      'number.base': 'Please Enter a month',
+      'number.max': 'Needs to be a valid date.',
+      'number.min': 'Needs to be above 0.'
+    }),
+    year: Joi.number().min(1111).max(2019).required().messages({
+      'number.base': 'Please Enter a year',
+      'number.min': 'Needs to be above 0.',
+      'number.max': 'Needs to be a valid date.'
+    })
   });
 
   const result = schema.validate(obj, { abortEarly: false });
   if (result.error) {
     const errors: ValidationErrors =
-    result.error.details.reduce((acc, curr): ValidationError => {
-      acc[curr.context.key] = {
-        key: curr.context.key,
-        text: curr.message,
-        href: `#${curr.context.key}`
-      };
-      return acc;
-    }, {});
+      result.error.details.reduce((acc, curr): ValidationError => {
+        acc[curr.context.key] = {
+          key: curr.context.key,
+          text: curr.message,
+          href: `#${curr.context.key}`
+        };
+        return acc;
+      }, {});
     return errors;
   }
   return false;
@@ -104,8 +87,8 @@ function nationalityValidation(obj: object) {
     stateless: Joi.string().optional(),
     nationality: Joi.string().optional().empty('')
 
-  }).xor('nationality','stateless').messages({ 'object.xor': 'Please select one option.' })
-      .xor('nationality','stateless').messages({ 'object.missing': 'Please select a nationality.' });
+  }).xor('nationality', 'stateless').messages({ 'object.xor': 'Please select one option.' })
+    .xor('nationality', 'stateless').messages({ 'object.missing': 'Please select a nationality.' });
   const result = schema.validate(obj, { abortEarly: true });
   if (result.error) {
     const errors: Array<object> = [];
@@ -120,9 +103,80 @@ function nationalityValidation(obj: object) {
   return false;
 }
 
+/**
+ * Validates an email address using joi validation
+ * @param obj containing the property 'email-value' to validate the email
+ * @return
+ * 'string.empty': if email string is empty
+ * 'string.email': if email address does not match format
+ * 'null': if no errors were found
+ */
+function emailValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    'email-value': Joi.string()
+      .required()
+      .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net', 'co.uk' ] } })
+      .messages({
+        'string.empty': i18n.validationErrors.emailEmpty,
+        'string.email': i18n.validationErrors.emailFormat
+      })
+  }).unknown();
+
+  const result = schema.validate(obj, { abortEarly: false });
+
+  if (result.error) {
+    return result.error.details.reduce((acc, curr): ValidationError => {
+      acc[curr.context.key] = {
+        key: curr.context.key,
+        text: curr.message,
+        href: `#${curr.context.key}`
+      };
+      return acc;
+    }, {});
+  }
+  return null;
+}
+
+/**
+ * Validates a phone number using using joi validation with regex
+ * @param obj containing the property 'text-message-value' to validate the phone number
+ * @return
+ * 'string.empty': if phone number string is empty
+ * 'string.pattern.base': if phone number does not match format
+ * 'null': if no errors were found
+ */
+function phoneValidation(obj: object) {
+  const emailPattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
+  const schema = Joi.object({
+    'text-message-value': Joi.string()
+    .required()
+    .regex(emailPattern)
+    .messages({
+      'string.empty': i18n.validationErrors.phoneEmpty,
+      'string.pattern.base': i18n.validationErrors.phoneFormat
+    })
+  }).unknown();
+
+  const result = schema.validate(obj, { abortEarly: false });
+
+  if (result.error) {
+    return result.error.details.reduce((acc, curr): ValidationError => {
+      acc[curr.context.key] = {
+        key: curr.context.key,
+        text: curr.message,
+        href: `#${curr.context.key}`
+      };
+      return acc;
+    }, {});
+  }
+  return null;
+}
+
 export {
   homeOfficeNumberValidation,
-  nationalityValidation,
+  dateValidation,
   appellantNamesValidation,
-  dateValidation
+  nationalityValidation,
+  emailValidation,
+  phoneValidation
 };

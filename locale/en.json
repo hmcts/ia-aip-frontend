@@ -49,6 +49,10 @@
         "htmlLink": "<a href='/check-and-send' title='Check and send your appeal'>Check and send your appeal</a>"
       }
     },
+    "contactDetails": {
+      "header": "How do you want us to contact you?",
+      "hint": "Select at least one of the option below"
+    },
     "appealType": {
       "header": "What type of appeal will you make?",
       "pageHint": [
@@ -157,9 +161,20 @@
     }
   },
   "validationErrors": {
+    "errorSummary": "There is a problem",
     "empty": "The field is required",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
-    "atLeastOneOption": "You must select at least one option"
+    "atLeastOneOption": "You must select at least one option",
+    "emailEmpty": "Enter an email address",
+    "emailFormat": "Enter an email address in the correct format, like name@example.com",
+    "phoneEmpty": "Enter a phone number",
+    "phoneFormat": "Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192"
+  },
+  "fields": {
+    "textMessage": "Text message",
+    "mobilePhone": "Mobile phone number",
+    "email": "Email",
+    "emailAddress": "Email address"
   }
 }
 

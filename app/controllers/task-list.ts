@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { Section, Task } from '../domain/section';
 import { paths } from '../paths';
 
 /**
@@ -10,7 +9,7 @@ import { paths } from '../paths';
  * @param ccdResponse the ccdResponse
  */
 function buildSectionObject(sectionId: string, taskIds: string[], req: Request, ccdResponse: any) {
-  const tasks = [];
+  const tasks: Task[] = [];
 
   // Checks inside the session to see if the data exists in the session
   function isSaved(taskId: string) {
@@ -25,15 +24,12 @@ function buildSectionObject(sectionId: string, taskIds: string[], req: Request, 
   taskIds.forEach((taskId) => {
     const complete: boolean = isComplete(taskId);
     const saved: boolean = isSaved(taskId);
-    const task = new Task({ id: taskId, saved, complete }).data;
+    const task: Task = { id: taskId, saved, complete };
     tasks.push(task);
   });
 
-  return new Section(
-    {
-      sectionId: sectionId,
-      tasks
-    }).data;
+  const section: Section = { sectionId, tasks };
+  return section;
 }
 
 function getAppealStageStatus(session: Request, ccdResponse: any) {

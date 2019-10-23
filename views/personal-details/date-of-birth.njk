@@ -6,13 +6,19 @@
     {{ errorSummary(errors) }}
     <h1 class="govuk-heading-xl">{{ i18n.pages.DOB.heading }}</h1>
         <span class="govuk-caption-m">{{ i18n.pages.DOB.hint  }}</span>
-    <div>
     <form method="post" action="/date-of-birth" type="submit">
+    <div style="display: flex">
+        <div style=" margin-right: 40px">
         {{ dateInput("Day","day",day) }}
+        </div>
+        <div style=" margin-right: 40px">
         {{ dateInput("Month","month",month) }}
+        </div>
+        <div style="margin-right: 40px">
         {{ dateInput("Year","year",year) }}
+        </div>
+    </div>
     {{ saveButtons() }}
     </form>
-    </div>
     {{ contactUs() }}
 {% endblock  %}

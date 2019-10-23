@@ -32,13 +32,6 @@ function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function setupDateOfBirthController(deps?: any): Router {
-  const router = Router();
-  router.get(paths.DOB, getDateOfBirthPage);
-  router.post(paths.DOB, postDateOfBirth);
-  return router;
-}
-
 function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
     res.render('appeal-application/appellant-names-page.njk');
@@ -80,7 +73,6 @@ export {
     setupPersonalDetailsController,
     getNamePage,
     postNamePage,
-    setupDateOfBirthController,
     getDateOfBirthPage,
     postDateOfBirth
 };

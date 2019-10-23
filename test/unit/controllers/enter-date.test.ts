@@ -1,6 +1,6 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import { getDateOfBirthPage, postDateOfBirth, setupDateOfBirthController } from '../../../app/controllers/personal-details';
+import { getDateOfBirthPage, postDateOfBirth, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -44,7 +44,7 @@ describe('Home Office Details Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-      setupDateOfBirthController();
+      setupPersonalDetailsController();
       expect(routerGetStub).to.have.been.calledWith(paths.DOB);
       expect(routerPOSTStub).to.have.been.calledWith(paths.DOB);
     });

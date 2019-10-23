@@ -1,6 +1,6 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import { getDateOfBirthPage, postDateOfBirth, setupDateOfBirthController } from '../../../app/controllers/personal-details/date-of-birth';
+import { getDateOfBirthPage, postDateOfBirth, setupDateOfBirthController } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -51,20 +51,20 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('getDateOfBirthPage', () => {
-    it('should render personal-details/date-of-birth.njk', function () {
+    it('should render appeal-application/date-of-birth.njk', function () {
       getDateOfBirthPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('personal-details/date-of-birth.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/date-of-birth.njk');
     });
   });
 
   describe('postDateOfBirth', () => {
-    it('should validate and render personal-details/date-of-birth.njk', () => {
+    it('should validate and render appeal-application/date-of-birth.njk', () => {
       postDateOfBirth(req as Request, res as Response, next);
       req.body.day = 1;
       req.body.month = 19;
       req.body.year = 1993;
 
-      expect(res.render).to.have.been.calledWith('personal-details/date-of-birth.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/date-of-birth.njk');
     });
   });
 
@@ -76,14 +76,14 @@ describe('Home Office Details Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render personal-details/date-of-birth.njk with error', () => {
+    it('should fail validation and render appeal-application/date-of-birth.njk with error', () => {
       postDateOfBirth(req as Request, res as Response, next);
       req.body.day = 0;
       req.body.month = 0;
       req.body.year = 0;
 
       expect(res.render).to.have.been.calledWith(
-                'personal-details/date-of-birth.njk',
+                'appeal-application/date-of-birth.njk',
         {
           errors: {
             errorList: [{ href: '#', text: '"day" is required' }, { href: '#', text: '"month" is required' }, { href: '#', text: '"year" is required' }],

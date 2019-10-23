@@ -1,7 +1,6 @@
 {% set pageTitleName = i18n.pages.DOB.title %}
 {% extends 'layout.njk'  %}
 
-
 {%  block content %}
     {{ errorSummary(errors) }}
     <h1 class="govuk-heading-xl">{{ i18n.pages.DOB.heading }}</h1>
@@ -22,3 +21,4 @@
     </form>
     {{ contactUs() }}
 {% endblock  %}
+

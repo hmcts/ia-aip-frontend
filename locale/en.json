@@ -110,6 +110,11 @@
       "heading": "What is your date of birth? ",
       "hint": "For example, 31 3 1980",
       "title": "Date of Birth"
+    },
+    "nationality": {
+      "heading": "What is your nationality? ",
+      "title": "Nationality",
+      "stateless": "I am stateless (A stateless person is not a citizen of any country)."
     }
   },
   "error": {

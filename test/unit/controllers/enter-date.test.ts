@@ -43,7 +43,6 @@ describe('Home Office Details Controller', function() {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-
       setupPersonalDetailsController();
       expect(routerGetStub).to.have.been.calledWith(paths.DOB);
       expect(routerPOSTStub).to.have.been.calledWith(paths.DOB);

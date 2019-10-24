@@ -58,8 +58,30 @@ function appellantNamesValidation(obj: object) {
   return false;
 }
 
+function nationalityValidation(obj: object) {
+  const schema = Joi.object({
+    stateless: Joi.string().optional(),
+    nationality: Joi.string().optional().empty('')
+
+  }).xor('nationality','stateless').messages({ 'object.xor': 'Please select one option.' })
+      .xor('nationality','stateless').messages({ 'object.missing': 'Please select a nationality.' });
+  const result = schema.validate(obj, { abortEarly: true });
+  if (result.error) {
+    const errors: Array<object> = [];
+    result.error.details.map(error => {
+      errors.push({
+        text: error.message,
+        href: '#'
+      });
+    });
+    return errors;
+  }
+  return false;
+}
+
 export {
   homeOfficeNumberValidation,
     dateOfBirthValidation,
-    appellantNamesValidation
+    appellantNamesValidation,
+    nationalityValidation
 };

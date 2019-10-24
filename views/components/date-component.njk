@@ -1,0 +1,46 @@
+{% from "govuk/components/input/macro.njk" import govukInput with context %}
+
+{% macro dateInput(title, hint, error, day, month, year) %}
+  {% if title %} <h2 class="govuk-heading-s">{{ title }}</h2> {% endif %}
+  {% if hint %} <span class="govuk-caption-m">{{ hint }}</span> {% endif %}
+  <div class="date-input testing-class">
+    {{ govukInput({
+        label: {
+            text: 'Day'
+        },
+        id: 'day',
+        name: 'day',
+        classes: "govuk-input--width-4 govuk-!-margin-right-5",
+        value: day,
+        errorMessage: {
+          text: error.day.text
+        } if error.day
+    }) }}
+
+    {{ govukInput({
+        label: {
+            text: 'Month'
+        },
+        id: 'month',
+        name: 'month',
+        classes: "govuk-input--width-4 govuk-!-margin-right-5",
+        value: month,
+        errorMessage: {
+          text: error.month.text
+        } if error.month
+    }) }}
+
+    {{ govukInput({
+        label: {
+            text: 'Year'
+        },
+        id: 'year',
+        name: 'year',
+        classes: "govuk-input--width-4",
+        value: year,
+        errorMessage: {
+          text: error.year.text
+        } if error.year
+    }) }}
+  </div>
+{% endmacro %}

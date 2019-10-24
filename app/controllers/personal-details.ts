@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import { appellantNamesValidation, dateOfBirthValidation, nationalityValidation } from '../utils/fields-validations';
+import { appellantNamesValidation, dateValidation, nationalityValidation } from '../utils/fields-validations';
 import Logger from '../utils/logger';
 import { nationalities } from '../utils/nationalities';
 const logLabel: string = __filename;
@@ -18,7 +18,7 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
 function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
-    const validation = dateOfBirthValidation(req.body);
+    const validation = dateValidation(req.body);
     let errors = null;
     if (validation) {
       errors = validation;

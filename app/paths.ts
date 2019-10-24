@@ -9,6 +9,7 @@ const paths = {
   logout: '/logout',
   start: '/start',
   homeOfficeDetails: '/home-office-details',
+  homeOfficeLetterSent: '/home-office-letter-sent',
   typeOfAppeal: '/type-of-appeal',
   devNextPage: '/dev-next-page',
   DOB: '/date-of-birth',

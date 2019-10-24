@@ -1,6 +1,12 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import { getHomeOfficeDetails, postHomeOfficeDetails, setupHomeOfficeDetailsController } from '../../../app/controllers/home-office-details';
+import {
+  getDateLetterSent,
+  getHomeOfficeDetails,
+  postDateLetterSent,
+  postHomeOfficeDetails,
+  setupHomeOfficeDetailsController
+} from '../../../app/controllers/home-office-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
@@ -33,7 +39,8 @@ describe('Home Office Details Controller', function() {
 
     res = {
       render: sandbox.stub(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
+      redirect: sandbox.spy()
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
@@ -73,14 +80,8 @@ describe('Home Office Details Controller', function() {
       req.body['homeOfficeRefNumber'] = 'A1234567';
       postHomeOfficeDetails(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith(
-        'appeal-application/home-office-details.njk',
-        {
-          error: null,
-          application: {
-            homeOfficeReference: 'A1234567'
-          }
-        });
+      expect(req.session.appealApplication['homeOfficeReference']).to.be.eql('A1234567');
+      expect(res.redirect).to.have.been.calledWith(paths.homeOfficeLetterSent);
     });
 
     it('should fail validation and render home-office-details.njk with error', () => {
@@ -99,6 +100,68 @@ describe('Home Office Details Controller', function() {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       postHomeOfficeDetails(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getDateLetterSent', () => {
+    it('should render home-office-letter-sent.njk', () => {
+      getDateLetterSent(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk');
+    });
+
+    it('should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getDateLetterSent(req as Request, res as Response, next);
+
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postDateLetterSent', () => {
+    it('should validate and render home-office-letter-sent.njk', () => {
+      req.body['day'] = '1';
+      req.body['month'] = '1';
+      req.body['year'] = '2019';
+      postDateLetterSent(req as Request, res as Response, next);
+
+      const { homeOfficeDateLetterSent } = req.session.appealApplication;
+      expect(homeOfficeDateLetterSent.day).to.be.eql('1');
+      expect(homeOfficeDateLetterSent.month).to.be.eql('1');
+      expect(homeOfficeDateLetterSent.year).to.be.eql('2019');
+
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk');
+    });
+
+    it('should fail validation and render error', () => {
+      req.body['day'] = '1';
+      req.body['month'] = '1';
+      req.body['year'] = '20190';
+      const yearError = {
+        text: 'Needs to be a valid date.',
+        href: '#year'
+      };
+      const error = {
+        year: yearError
+      };
+      const errorList = [ yearError ];
+      postDateLetterSent(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk',
+        {
+          error,
+          errorList
+        }
+      );
+    });
+
+    it('should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      postDateLetterSent(req as Request, res as Response, next);
+
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

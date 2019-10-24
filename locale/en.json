@@ -147,6 +147,12 @@
     "homeOfficePage": {
       "title": "What is your Home Office reference number?",
       "description": "You can find this on the top right-hand side of the decision letter."
+    },
+    "homeOfficeLetterSent": {
+      "title": "What date was the letter sent?",
+      "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
+      "dateTitle": "Date letter sent",
+      "dateHint": "For example, 31 3 2019"
     }
   },
   "validationErrors": {

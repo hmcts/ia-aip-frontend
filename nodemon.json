@@ -1,6 +1,6 @@
 {
-  "watch": ["app/**/*"],
-  "ext": "ts,js,json,html,css",
+  "watch": ["app/**/*", "views/**/*"],
+  "ext": "ts,js,json,html,css,scss",
   "restartable": "rs",
   "ignore": [".git", "node_modules/**/node_modules"],
   "verbose": true,

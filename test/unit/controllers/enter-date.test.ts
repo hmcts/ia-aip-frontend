@@ -85,7 +85,20 @@ describe('Home Office Details Controller', function() {
                 'appeal-application/date-of-birth.njk',
         {
           errors: {
-            errorList: [{ href: '#', text: '"day" is required' }, { href: '#', text: '"month" is required' }, { href: '#', text: '"year" is required' }],
+            errorList: [
+              {
+                href: '#day',
+                key: 'day',
+                text: '"day" is required'
+              }, {
+                href: '#month',
+                key: 'month',
+                text: '"month" is required'
+              }, {
+                href: '#year',
+                key: 'year',
+                text: '"year" is required'
+              }],
             fieldErrors: {
               day: { text: '"day" is required' },
               month: { text: '"month" is required' },

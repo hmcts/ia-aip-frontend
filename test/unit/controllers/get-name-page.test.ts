@@ -89,7 +89,7 @@ describe('Home Office Details Controller', function() {
           'appeal-application/appellant-names-page.njk',
         {
           errors: {
-            errorList: [{ href: '#', text: 'Please Enter Given Names' }, { href: '#', text: 'Please Enter Family Name' }],
+            errorList: [{ href: '#givenNames', text: 'Please Enter Given Names' }, { href: '#familyName', text: 'Please Enter Family Name' }],
             fieldErrors: {
               familyName: { text: 'Please Enter Family Name' },
               givenNames: { text: 'Please Enter Given Names' }

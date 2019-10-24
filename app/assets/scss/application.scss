@@ -1,5 +1,6 @@
 @import "node_modules/govuk-frontend/govuk/all";
 @import "_cookie-banner";
+@import "_date-component";
 
 body {
   @extend .govuk-body;

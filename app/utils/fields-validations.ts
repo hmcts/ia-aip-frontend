@@ -1,4 +1,5 @@
 import Joi from '@hapi/joi';
+import moment from 'moment';
 import i18n from '../../locale/en.json';
 
 function homeOfficeNumberValidation(reference: string) {
@@ -17,11 +18,38 @@ function homeOfficeNumberValidation(reference: string) {
   return false;
 }
 
-function dateOfBirthValidation(obj: object) {
+function dateValidation(obj: object) {
   const schema = Joi.object({
-    day: Joi.number().min(1).max(31).required().messages({ 'number.base': 'Please Enter a day', 'number.max': 'Needs to be a valid date.', 'number.min': 'Needs to be above 0.' }),
-    month: Joi.number().min(1).max(12).required().messages({ 'number.base': 'Please Enter a month', 'number.max': 'Needs to be a valid date.', 'number.min': 'Needs to be above 0.' }),
-    year: Joi.number().min(1111).max(2019).required().messages({ 'number.base': 'Please Enter a year', 'number.min': 'Needs to be above 0.', 'number.max': 'Needs to be a valid date.' })
+    day: Joi
+      .number()
+      .min(1)
+      .max(31)
+      .required()
+      .messages({
+        'number.base': 'Please Enter a day',
+        'number.max': 'Needs to be a valid date.',
+        'number.min': 'Needs to be above 0.'
+      }),
+    month: Joi
+      .number()
+      .min(1)
+      .max(12)
+      .required()
+      .messages({
+        'number.base': 'Please Enter a month',
+        'number.max': 'Needs to be a valid date.',
+        'number.min': 'Needs to be above 0.'
+      }),
+    year: Joi
+      .number()
+      .min(1111)
+      .max(moment().year())
+      .required()
+      .messages({
+        'number.base': 'Please Enter a year',
+        'number.min': 'Needs to be above 0.',
+        'number.max': 'Needs to be a valid date.'
+      })
 
   });
   const result = schema.validate(obj, { abortEarly: false });
@@ -29,8 +57,9 @@ function dateOfBirthValidation(obj: object) {
     const errors: Array<object> = [];
     result.error.details.map(error => {
       errors.push({
+        key: error.context.key,
         text: error.message,
-        href: '#'
+        href: `#${error.context.key}`
       });
     });
     return errors;
@@ -50,7 +79,7 @@ function appellantNamesValidation(obj: object) {
     result.error.details.map(error => {
       errors.push({
         text: error.message,
-        href: '#'
+        href: `#${error.context.key}`
       });
     });
     return errors;
@@ -81,7 +110,7 @@ function nationalityValidation(obj: object) {
 
 export {
   homeOfficeNumberValidation,
-    dateOfBirthValidation,
-    appellantNamesValidation,
-    nationalityValidation
+  nationalityValidation,
+  appellantNamesValidation,
+  dateValidation
 };

@@ -44,6 +44,7 @@
     "jsdom-global": "^3.0.2",
     "jsonwebtoken": "^8.5.1",
     "mini-css-extract-plugin": "^0.8.0",
+    "moment": "^2.24.0",
     "nunjucks": "^3.2.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "otp": "^0.1.3",

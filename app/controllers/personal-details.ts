@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import { appellantNamesValidation, dateOfBirthValidation } from '../utils/fields-validations';
+import { appellantNamesValidation, dateOfBirthValidation, nationalityValidation } from '../utils/fields-validations';
 import Logger from '../utils/logger';
-
+import { nationalities } from '../utils/nationalities';
 const logLabel: string = __filename;
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
@@ -60,12 +60,38 @@ function postNamePage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getNationalityPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('appeal-application/nationality.njk',{ nationalities:  nationalities });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postNationalityPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const validation = nationalityValidation(req.body);
+    let errors = null;
+    if (validation) {
+      errors = validation;
+      res.render('appeal-application/nationality.njk',{ nationalities:  nationalities, errors: { errorList: errors } });
+    } else {
+      // TODO - add nationality to session.
+      res.render('appeal-application/nationality.njk',{ nationalities:  nationalities });
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
 function setupPersonalDetailsController(deps?: any): Router {
   const router = Router();
   router.get(paths.enterName, getNamePage);
   router.post(paths.enterName, postNamePage);
   router.get(paths.DOB, postDateOfBirth);
   router.post(paths.DOB, getDateOfBirthPage);
+  router.get(paths.nationality, getNationalityPage);
+  router.post(paths.nationality, postNationalityPage);
   return router;
 }
 
@@ -74,5 +100,7 @@ export {
     getNamePage,
     postNamePage,
     getDateOfBirthPage,
-    postDateOfBirth
+    postDateOfBirth,
+    postNationalityPage,
+    getNationalityPage
 };

@@ -11,7 +11,8 @@ const paths = {
   homeOfficeDetails: '/home-office-details',
   typeOfAppeal: '/type-of-appeal',
   devNextPage: '/dev-next-page',
-  DOB: '/date-of-birth'
+  DOB: '/date-of-birth',
+  nationality: '/nationality'
 };
 
 export {

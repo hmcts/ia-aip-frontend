@@ -1,6 +1,6 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import { getNamePage, postNamePage, setupPersonalDetailsController } from '../../../app/controllers/personal-details-get-names';
+import { getNamePage, postNamePage, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -51,20 +51,20 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('getNamesPage', () => {
-    it('should render get-names-page.njk', function () {
+    it('should render appellant-names-page.njk', function () {
       getNamePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('get-names-page.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/appellant-names-page.njk');
     });
   });
 
   describe('postNamePage', () => {
-    it('should validate and render get-names-page.njk', () => {
+    it('should validate and render appellant-names-page.njk', () => {
       req.body.givenNames = 'Lewis';
       req.body.familyName = 'Williams';
       postNamePage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
-                'get-names-page.njk',
+                'appeal-application/appellant-names-page.njk',
         {
           familyName: 'Williams',
           givenNames: 'Lewis'
@@ -80,13 +80,13 @@ describe('Home Office Details Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render get-names-page.njk with error', () => {
+    it('should fail validation and render appellant-names-page.njk with error', () => {
       req.body.givenNames = '';
       req.body.familyName = '';
       postNamePage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
-          'get-names-page.njk',
+          'appeal-application/appellant-names-page.njk',
         {
           errors: {
             errorList: [{ href: '#', text: 'Please Enter Given Names' }, { href: '#', text: 'Please Enter Family Name' }],

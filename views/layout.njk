@@ -19,6 +19,32 @@
     {% endif %}
 {% endmacro %}
 
+{% macro dateInput(label, id, value='')  %}
+    {{ govukInput({
+        label: {
+            text: label
+        },
+        id: id,
+        name: id,
+        classes: "govuk-input--width-3",
+        value: value,
+        errorMessage: errors.fieldErrors[id]
+    }) }}
+{% endmacro %}
+
+{% macro saveButtons() %}
+    {{ govukButton({
+        text: "Save and continue"
+    }) }}
+
+    {{ govukButton({
+        text: "Save for later",
+        name: "saveForLater",
+        value: "saveForLater",
+        classes: "govuk-button--secondary"
+    }) }}
+{% endmacro %}
+
 {% macro input(label, id, value='') %}
     {{ govukInput({
         label: {

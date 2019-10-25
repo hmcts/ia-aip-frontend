@@ -19,10 +19,8 @@ function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
     const validation = dateValidation(req.body);
-    let errors = null;
     if (validation) {
-      errors = validation;
-      res.render('appeal-application/date-of-birth.njk', { errors: { errorList: errors, fieldErrors: {  day: { text: errors[0].text }, month: { text: errors[1].text }, year: { text: errors[2].text } } } });
+      res.render('appeal-application/date-of-birth.njk', { errors: validation, errorList: Object.values(validation) });
     } else {
       res.render('appeal-application/date-of-birth.njk');
     }
@@ -88,8 +86,8 @@ function setupPersonalDetailsController(deps?: any): Router {
   const router = Router();
   router.get(paths.enterName, getNamePage);
   router.post(paths.enterName, postNamePage);
-  router.get(paths.DOB, postDateOfBirth);
-  router.post(paths.DOB, getDateOfBirthPage);
+  router.get(paths.DOB, getDateOfBirthPage);
+  router.post(paths.DOB, postDateOfBirth);
   router.get(paths.nationality, getNationalityPage);
   router.post(paths.nationality, postNationalityPage);
   return router;

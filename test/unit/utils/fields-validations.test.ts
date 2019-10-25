@@ -36,13 +36,15 @@ describe('fields-validations', () => {
         year: '20290'
       };
       const validations = dateValidation(notValidDate);
-      expect(validations).to.deep.equal([
+      expect(validations).to.deep.equal(
         {
-          href: '#year',
-          key: 'year',
-          text: 'Needs to be a valid date.'
+          year: {
+            href: '#year',
+            key: 'year',
+            text: 'Needs to be a valid date.'
+          }
         }
-      ]);
+      );
     });
   });
 });

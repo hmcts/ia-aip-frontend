@@ -42,17 +42,10 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = dateValidation(req.body);
     if (validation) {
-      const errorList = [];
-      const error = validation.reduce((acc, curr: any) => {
-        const currError = {
-          text: curr.text,
-          href: curr.href
-        };
-        acc[curr['key']] = currError;
-        errorList.push(currError);
-        return acc;
-      }, {});
-      return res.render('appeal-application/home-office-letter-sent.njk', { error, errorList });
+      return res.render('appeal-application/home-office-letter-sent.njk', {
+        error: validation,
+        errorList: Object.values(validation)
+      });
     }
     req.session.appealApplication['homeOfficeDateLetterSent'] = {
       day: req.body['day'],

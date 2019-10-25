@@ -119,7 +119,8 @@
   },
   "error": {
     "summary": {
-      "title": "There is a problem"
+      "title": "There is a problem",
+      "description": "This is a description."
     },
     "error404": {
       "title": "Page not found",

@@ -18,7 +18,17 @@ function homeOfficeNumberValidation(reference: string) {
   return false;
 }
 
-function dateValidation(obj: object) {
+interface ValidationError {
+  key: string;
+  text: string;
+  href: string;
+}
+
+interface ValidationErrors {
+  [key: string]: ValidationError;
+}
+
+function dateValidation(obj: object): boolean | ValidationErrors {
   const schema = Joi.object({
     day: Joi
       .number()
@@ -52,16 +62,18 @@ function dateValidation(obj: object) {
       })
 
   });
+
   const result = schema.validate(obj, { abortEarly: false });
   if (result.error) {
-    const errors: Array<object> = [];
-    result.error.details.map(error => {
-      errors.push({
-        key: error.context.key,
-        text: error.message,
-        href: `#${error.context.key}`
-      });
-    });
+    const errors: ValidationErrors =
+    result.error.details.reduce((acc, curr): ValidationError => {
+      acc[curr.context.key] = {
+        key: curr.context.key,
+        text: curr.message,
+        href: `#${curr.context.key}`
+      };
+      return acc;
+    }, {});
     return errors;
   }
   return false;

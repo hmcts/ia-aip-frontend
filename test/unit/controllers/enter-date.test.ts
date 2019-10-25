@@ -58,10 +58,10 @@ describe('Home Office Details Controller', function() {
 
   describe('postDateOfBirth', () => {
     it('should validate and render appeal-application/date-of-birth.njk', () => {
-      postDateOfBirth(req as Request, res as Response, next);
       req.body.day = 1;
-      req.body.month = 19;
+      req.body.month = 11;
       req.body.year = 1993;
+      postDateOfBirth(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('appeal-application/date-of-birth.njk');
     });
@@ -76,35 +76,38 @@ describe('Home Office Details Controller', function() {
     });
 
     it('should fail validation and render appeal-application/date-of-birth.njk with error', () => {
-      postDateOfBirth(req as Request, res as Response, next);
       req.body.day = 0;
       req.body.month = 0;
       req.body.year = 0;
+      postDateOfBirth(req as Request, res as Response, next);
+
+      const errorDay = {
+        href: '#day',
+        key: 'day',
+        text: 'Needs to be above 0.'
+      };
+
+      const errorMonth = {
+        href: '#month',
+        key: 'month',
+        text: 'Needs to be above 0.'
+      };
+
+      const errorYear = {
+        href: '#year',
+        key: 'year',
+        text: 'Needs to be above 0.'
+      };
 
       expect(res.render).to.have.been.calledWith(
-                'appeal-application/date-of-birth.njk',
+        'appeal-application/date-of-birth.njk',
         {
           errors: {
-            errorList: [
-              {
-                href: '#day',
-                key: 'day',
-                text: '"day" is required'
-              }, {
-                href: '#month',
-                key: 'month',
-                text: '"month" is required'
-              }, {
-                href: '#year',
-                key: 'year',
-                text: '"year" is required'
-              }],
-            fieldErrors: {
-              day: { text: '"day" is required' },
-              month: { text: '"month" is required' },
-              year: { text: '"year" is required' }
-            }
-          }
+            day: errorDay,
+            month: errorMonth,
+            year: errorYear
+          },
+          errorList: [ errorDay, errorMonth, errorYear ]
         });
     });
   });

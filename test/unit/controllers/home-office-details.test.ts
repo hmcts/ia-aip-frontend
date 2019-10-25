@@ -141,7 +141,8 @@ describe('Home Office Details Controller', function() {
       req.body['year'] = '20190';
       const yearError = {
         text: 'Needs to be a valid date.',
-        href: '#year'
+        href: '#year',
+        key: 'year'
       };
       const error = {
         year: yearError

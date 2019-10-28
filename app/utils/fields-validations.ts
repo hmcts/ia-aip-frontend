@@ -1,4 +1,5 @@
 import Joi from '@hapi/joi';
+import moment from 'moment';
 import i18n from '../../locale/en.json';
 
 function textAreaValidation(text: string, theKey: string): boolean | ValidationErrors {
@@ -28,13 +29,13 @@ function textAreaValidation(text: string, theKey: string): boolean | ValidationE
 
 function homeOfficeNumberValidation(reference: string) {
   const schema = Joi
-    .string()
-    .required()
-    .regex(/^[a-zA-Z]{1}[0-9]{7}$/)
-    .messages({
-      'string.empty': i18n.validationErrors.empty,
-      'string.pattern.base': i18n.validationErrors.homeOfficeRef
-    });
+        .string()
+        .required()
+        .regex(/^[a-zA-Z]{1}[0-9]{7}$/)
+        .messages({
+          'string.empty': i18n.validationErrors.empty,
+          'string.pattern.base': i18n.validationErrors.homeOfficeRef
+        });
   const result = schema.validate(reference);
   if (result.error) {
     return result.error.details[0].message;
@@ -138,14 +139,14 @@ function nationalityValidation(obj: object) {
  */
 function emailValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    'email-value': Joi.string()
-      .required()
-      .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net', 'co.uk' ] } })
-      .messages({
-        'string.empty': i18n.validationErrors.emailEmpty,
-        'string.email': i18n.validationErrors.emailFormat
-      })
-  }).unknown();
+        'email-value': Joi.string()
+            .required()
+            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'co.uk'] } })
+            .messages({
+                'string.empty': i18n.validationErrors.emailEmpty,
+                'string.email': i18n.validationErrors.emailFormat
+            })
+    }).unknown();
 
   const result = schema.validate(obj, { abortEarly: false });
 

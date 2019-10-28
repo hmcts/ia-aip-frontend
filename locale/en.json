@@ -120,6 +120,11 @@
       "heading": "What is your nationality? ",
       "title": "Nationality",
       "stateless": "I am stateless (A stateless person is not a citizen of any country)."
+    },
+    "enterPostcode": {
+      "heading": "What is your address?",
+      "title": "Address",
+      "hint": "Enter a UK postcode"
     }
   },
   "error": {

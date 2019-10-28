@@ -42,6 +42,16 @@ function homeOfficeNumberValidation(reference: string) {
   return false;
 }
 
+interface ValidationError {
+  key: string;
+  text: string;
+  href: string;
+}
+
+interface ValidationErrors {
+  [key: string]: ValidationError;
+}
+
 function dateValidation(obj: object): boolean | ValidationErrors {
   const schema = Joi.object({
     day: Joi.number().min(1).max(31).required().messages({
@@ -187,6 +197,26 @@ function phoneValidation(obj: object) {
   return null;
 }
 
+function postcodeValidation(obj: object) {
+  const postcodeRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
+
+  const schema = Joi.object({
+    postcode: Joi.string().regex(postcodeRegex).messages({ 'string.empty': 'Enter your postcode', 'string.pattern.base': 'Enter a valid postcode' })
+  });
+  const result = schema.validate(obj, { abortEarly: true, allowUnknown: true });
+  if (result.error) {
+    const errors: Array<object> = [];
+    result.error.details.map(error => {
+      errors.push({
+        text: error.message,
+        href: '#'
+      });
+    });
+    return errors;
+  }
+  return false;
+}
+
 export {
   homeOfficeNumberValidation,
   dateValidation,
@@ -194,5 +224,6 @@ export {
   nationalityValidation,
   emailValidation,
   phoneValidation,
-  textAreaValidation
+  textAreaValidation,
+  postcodeValidation
 };

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import { appellantNamesValidation, dateValidation, nationalityValidation } from '../utils/fields-validations';
+import { appellantNamesValidation, dateValidation, nationalityValidation, postcodeValidation } from '../utils/fields-validations';
+import Logger from '../utils/logger';
 import { nationalities } from '../utils/nationalities';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
@@ -91,6 +92,31 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('appeal-application/enter-postcode.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const validation = postcodeValidation(req.body);
+    let errors = null;
+    if (validation) {
+      errors = validation;
+      res.render('appeal-application/enter-postcode.njk',{ errors: { errorList: errors, fieldErrors: { postcode: { text: errors[0].text } } } });
+    } else {
+      // TODO - add postcode to session.
+      // TODO - Fetch the address from the valid postcode.
+      res.render('appeal-application/enter-postcode.njk');
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
 function setupPersonalDetailsController(deps?: any): Router {
   const router = Router();
   router.get(paths.personalDetails.name, getNamePage);
@@ -99,15 +125,19 @@ function setupPersonalDetailsController(deps?: any): Router {
   router.post(paths.personalDetails.dob, postDateOfBirth);
   router.get(paths.personalDetails.nationality, getNationalityPage);
   router.post(paths.personalDetails.nationality, postNationalityPage);
+  router.get(paths.personalDetails.enterPostcode, getEnterPostcodePage);
+  router.post(paths.personalDetails.enterPostcode, postEnterPostcodePage);
   return router;
 }
 
 export {
-  setupPersonalDetailsController,
-  getNamePage,
-  postNamePage,
-  getDateOfBirthPage,
-  postDateOfBirth,
-  postNationalityPage,
-  getNationalityPage
+    setupPersonalDetailsController,
+    getNamePage,
+    postNamePage,
+    getDateOfBirthPage,
+    postDateOfBirth,
+    postNationalityPage,
+    getNationalityPage,
+    postEnterPostcodePage,
+    getEnterPostcodePage
 };

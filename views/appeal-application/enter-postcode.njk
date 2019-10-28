@@ -1,0 +1,20 @@
+{% extends '../layout.njk' %}
+{% set pageTitleName = i18n.pages.enterPostcode.title %}
+
+
+
+{% block content %}
+    {{ errorSummary(errors) }}
+    <h1 class="govuk-heading-xl">{{ i18n.pages.enterPostcode.heading }}</h1>
+    <form action="/enter-postcode" method="post">
+    {{ input(i18n.pages.enterPostcode.hint,'postcode')}}
+    {{ govukButton({
+        text: 'Find address',
+        name: "buttton",
+        value: "submit",
+        classes: "govuk-!-margin-right-1"
+    }) }}
+    </form>
+    {{ contactUs() }}
+{% endblock  %}
+

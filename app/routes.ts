@@ -1,4 +1,5 @@
 import * as express from 'express';
+import { setupContactDetailsController } from './controllers/contact-details';
 import { setupDevNextPageController } from './controllers/dev-next-page';
 import { setupHealthController } from './controllers/health';
 import { setupHomeOfficeDetailsController } from './controllers/home-office-details';
@@ -18,6 +19,8 @@ const homeOfficeDetailsController = setupHomeOfficeDetailsController();
 const typeOfAppealController = setupTypeOfAppealController();
 const devNextPageController = setupDevNextPageController();
 const personalDetailsController = setupPersonalDetailsController();
+const contactDetailsController = setupContactDetailsController();
+
 // not protected by idam
 router.use(healthController);
 
@@ -29,5 +32,6 @@ router.use(homeOfficeDetailsController);
 router.use(personalDetailsController);
 router.use(typeOfAppealController);
 router.use(devNextPageController);
+router.use(contactDetailsController);
 
 export { router };

@@ -1,0 +1,107 @@
+{% set pageTitleName = i18n.pages.appealType.header %}
+{% extends "layout.njk" %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% import "helpers/text-helpers.njk" as text %}
+{% import "components/button-components.njk" as button %}
+{% import "components/error-components.njk" as error with context %}
+
+{% block content %}
+
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+
+    {% if errors['selections'] == 0 %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: [{
+                text: i18n.validationErrors.atLeastOneOption,
+                href: "#contactDetails"
+            }]
+        }) }}
+    {% endif %}
+
+    {% set emailHtml %}
+        {{ govukInput({
+            id: "email-value",
+            name: "email-value",
+            type: "email",
+            value: data.email.value,
+            classes: "govuk-!-width-one-third",
+            label: {
+                text: i18n.fields.emailAddress
+            },
+            attributes: {
+                spellcheck: "false"
+            },
+            errorMessage: {
+                text:  errors['email-value'].text
+            } if errors['email-value']
+        }) }}
+    {% endset %}
+
+    {% set textHtml %}
+        {{ govukInput({
+            id: "text-message-value",
+            name: "text-message-value",
+            type: "tel",
+            value: data.textMessage.value,
+            classes: "govuk-!-width-one-third",
+            label: {
+                text: i18n.fields.mobilePhone
+            },
+            errorMessage: {
+                text: errors['text-message-value'].text
+            }if errors['text-message-value']
+        }) }}
+    {% endset %}
+
+    <form action="/contact-details" method="post" novalidate>
+        {{ govukCheckboxes({
+            idPrefix: "contactDetails",
+            name: "selections",
+            fieldset: {
+                legend: {
+                    text: i18n.pages.contactDetails.header,
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--xl"
+                }
+            },
+            hint: {
+                text: i18n.pages.contactDetails.hint
+            },
+            items: [
+                {
+                    value: "email",
+                    text: i18n.fields.email,
+                    conditional: {
+                    html: emailHtml
+                },
+                    checked: true if errors['email-value']
+                },
+                {
+                    value: "text-message",
+                    text: i18n.fields.textMessage,
+                    conditional: {
+                    html: textHtml
+                },
+                    checked: true if errors['text-message-value']
+                }
+            ],
+            errorMessage: {
+                text: i18n.validationErrors.atLeastOneOption
+            } if errors['selections'] == 0
+        }) }}
+        <div class="buttons__container">
+            {{ button.saveButtons(i18n.common.buttons.saveAndContinue, i18n.common.buttons.saveForLater) }}
+        </div>
+    </form>
+
+    {{ contactUs() }}
+
+{% endblock %}

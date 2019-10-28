@@ -13,7 +13,8 @@ const paths = {
   typeOfAppeal: '/type-of-appeal',
   devNextPage: '/dev-next-page',
   DOB: '/date-of-birth',
-  nationality: '/nationality'
+  nationality: '/nationality',
+  contactDetails: '/contact-details'
 };
 
 export {

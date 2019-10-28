@@ -45,14 +45,6 @@ function getContactDetails(req: Request, res: Response, next: NextFunction) {
 function postContactDetails(req: Request, res: Response, next: NextFunction) {
   const request = req.body;
 
-  const flattenToErrorList = (validationErrors: {}) => {
-    const errorList = [];
-    for (let key in validationErrors) {
-      errorList.push(validationErrors[key]);
-    }
-    return errorList;
-  };
-
   try {
     const data = {
       email: { value: request['email-value'] },
@@ -67,7 +59,7 @@ function postContactDetails(req: Request, res: Response, next: NextFunction) {
       return res.render('contact-details.njk', {
         data: data,
         errors: validationErrors,
-        errorList: flattenToErrorList(validationErrors)
+        errorList: Object.values(validationErrors)
       });
 
     }

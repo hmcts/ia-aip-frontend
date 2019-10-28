@@ -1,8 +1,0 @@
-{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
-
-{% macro displayErrorSummary(errorList) %}
-    {{ govukErrorSummary({
-        titleText: i18n.validationErrors.errorSummary,
-        errorList: errorList
-    }) }}
-{% endmacro %}

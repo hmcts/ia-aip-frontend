@@ -146,11 +146,11 @@ function emailValidation(obj: object): null | ValidationErrors {
  * 'null': if no errors were found
  */
 function phoneValidation(obj: object) {
-  const emailPattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
+  const phonePattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
   const schema = Joi.object({
     'text-message-value': Joi.string()
     .required()
-    .regex(emailPattern)
+    .regex(phonePattern)
     .messages({
       'string.empty': i18n.validationErrors.phoneEmpty,
       'string.pattern.base': i18n.validationErrors.phoneFormat

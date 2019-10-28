@@ -9,9 +9,11 @@
 
 {% block content %}
 
-    {{ errorsList | dump }}
     {% if errorList %}
-        {{ error.displayErrorSummary(errorList) }}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
     {% endif %}
 
     {% if errors['selections'] == 0 %}

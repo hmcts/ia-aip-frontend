@@ -49,7 +49,7 @@ describe('Task List Controller', () => {
 
   it('getTaskList should render task-list.njk', () => {
     getTaskList(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('task-list.njk');
+    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/task-list.njk');
   });
 
   it('getTaskList should render task-list.njk with status data', () => {
@@ -72,7 +72,7 @@ describe('Task List Controller', () => {
 
     req.session.typeOfAppeal = [ 'typeOfAppeal' ];
     getTaskList(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('task-list.njk', { data: mockData });
+    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/task-list.njk', { data: mockData });
   });
 
   it('getTaskList should catch an exception and call next()', () => {

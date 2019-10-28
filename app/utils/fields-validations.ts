@@ -164,12 +164,12 @@ function phoneValidation(obj: object) {
   const phonePattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
   const schema = Joi.object({
     'text-message-value': Joi.string()
-    .required()
-    .regex(phonePattern)
-    .messages({
-      'string.empty': i18n.validationErrors.phoneEmpty,
-      'string.pattern.base': i18n.validationErrors.phoneFormat
-    })
+      .required()
+      .regex(phonePattern)
+      .messages({
+        'string.empty': i18n.validationErrors.phoneEmpty,
+        'string.pattern.base': i18n.validationErrors.phoneFormat
+      })
   }).unknown();
 
   const result = schema.validate(obj, { abortEarly: false });

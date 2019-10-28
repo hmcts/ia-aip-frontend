@@ -1,4 +1,3 @@
-const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import {
@@ -15,7 +14,9 @@ import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Home Office Details Controller', function() {
+const express = require('express');
+
+describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -59,22 +60,22 @@ describe('Home Office Details Controller', function() {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
       setupHomeOfficeDetailsController();
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOfficeDetails);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOfficeDetails);
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOfficeLetterSent);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOfficeLetterSent);
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOfficeAppealLate);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOfficeAppealLate);
+      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.details);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.details);
+      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.letterSent);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.letterSent);
+      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.appealLate);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
   });
 
   describe('getHomeOfficeDetails', () => {
-    it('should render home-office-details.njk', function() {
+    it('should render home-office/details.njk', function () {
       getHomeOfficeDetails(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office-details.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/details.njk');
     });
 
-    it('should catch exception and call next with the error', function() {
+    it('should catch exception and call next with the error', function () {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       getHomeOfficeDetails(req as Request, res as Response, next);
@@ -83,27 +84,27 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('postHomeOfficeDetails', () => {
-    it('should validate and render home-office-details.njk', () => {
+    it('should validate and redirect home-office/details.njk', () => {
       req.body['homeOfficeRefNumber'] = 'A1234567';
       postHomeOfficeDetails(req as Request, res as Response, next);
 
       expect(req.session.appealApplication['homeOfficeReference']).to.be.eql('A1234567');
-      expect(res.redirect).to.have.been.calledWith(paths.homeOfficeLetterSent);
+      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
     });
 
-    it('should fail validation and render home-office-details.njk with error', () => {
+    it('should fail validation and render home-office/details.njk with error', () => {
       req.body['homeOfficeRefNumber'] = 'notValid';
       postHomeOfficeDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
-        'appeal-application/home-office-details.njk',
+        'appeal-application/home-office/details.njk',
         {
           error: i18n.validationErrors.homeOfficeRef,
           application: {}
         });
     });
 
-    it('should catch exception and call next with the error', function() {
+    it('should catch exception and call next with the error', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       postHomeOfficeDetails(req as Request, res as Response, next);
@@ -112,10 +113,10 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('getDateLetterSent', () => {
-    it('should render home-office-letter-sent.njk', () => {
+    it('should render home-office/letter-sent.njk', () => {
       getDateLetterSent(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
     it('should catch exception and call next with the error', () => {
@@ -155,7 +156,7 @@ describe('Home Office Details Controller', function() {
       expect(homeOfficeDateLetterSent.month).to.be.eql(date.format('MM'));
       expect(homeOfficeDateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.homeOfficeAppealLate);
+      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
 
     it('should fail validation if the date is in the future and render error', () => {
@@ -165,7 +166,7 @@ describe('Home Office Details Controller', function() {
       req.body['year'] = date.format('YYYY');
       postDateLetterSent(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
     it('should fail validation and render error', () => {
@@ -183,7 +184,7 @@ describe('Home Office Details Controller', function() {
       const errorList = [ yearError ];
       postDateLetterSent(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk',
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList

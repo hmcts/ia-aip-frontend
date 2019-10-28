@@ -57,7 +57,7 @@ describe('Type of appeal Controller', () => {
 
   it('getTypeOfAppeal should render type-of-appeal.njk', () => {
     getTypeOfAppeal(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('type-of-appeal.njk');
+    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk');
   });
 
   it('postTypeOfAppeal when clicked on save-and-continue with no selections should render type-of-appeal.njk with a validation error', () => {
@@ -67,7 +67,7 @@ describe('Type of appeal Controller', () => {
 
     const appealTypes = new AppealTypes();
     const expectedError = 'You must select at least one option';
-    expect(res.render).to.have.been.calledOnce.calledWith('type-of-appeal.njk', { appealTypes, error: expectedError });
+    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { appealTypes, error: expectedError });
   });
 
   it('postTypeOfAppeal when clicked on save-and-continue with only one selection should redirect to the next page', () => {
@@ -75,7 +75,7 @@ describe('Type of appeal Controller', () => {
 
     postTypeOfAppeal(req as Request, res as Response, next);
 
-    expect(res.redirect).to.have.been.calledOnce.calledWith('/dev-next-page');
+    expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
   });
 
   it('postTypeOfAppeal when clicked on save-for-later with no selections should render type-of-appeal.njk with a validation error', () => {
@@ -85,7 +85,7 @@ describe('Type of appeal Controller', () => {
 
     const appealTypes = new AppealTypes();
     const expectedError = 'You must select at least one option';
-    expect(res.render).to.have.been.calledOnce.calledWith('type-of-appeal.njk', { appealTypes, error: expectedError });
+    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { appealTypes, error: expectedError });
 
   });
 
@@ -94,7 +94,7 @@ describe('Type of appeal Controller', () => {
 
     postTypeOfAppeal(req as Request, res as Response, next);
 
-    expect(res.redirect).to.have.been.calledOnce.calledWith('/dev-next-page');
+    expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
   });
 
   it('postTypeOfAppeal when clicked on save-for-later with only one selection should redirect to the home page', () => {

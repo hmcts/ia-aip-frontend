@@ -1,0 +1,38 @@
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% extends "layout.njk" %}
+
+{% set stateless = 'stateless' %}
+{% block content %}
+    {{ errorSummary(errors) }}
+    <form method="post" action="/personal-details/nationality">
+        {% call govukFieldset({
+            legend: {
+                text: i18n.pages.nationality.heading,
+                classes: "govuk-fieldset__legend--xl",
+                isPageHeading: true
+            }
+        }) %}
+            {{ govukSelect({
+                id: "nationality",
+                name: "nationality",
+                items: nationalities
+            }) }}
+
+            {{ govukCheckboxes({
+                id: "stateless",
+                name: "stateless",
+                items: [
+                    {
+                        value: stateless,
+                        text: i18n.pages.nationality.stateless
+                    }
+                ]
+            }) }}
+        {% endcall %}
+        {{ saveButtons() }}
+    </form>
+    {{ contactUs() }}
+{% endblock %}

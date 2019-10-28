@@ -49,7 +49,7 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
     // TODO: call CCD to get section statuses and remove mockSectionData
     const ccdResponse = [];
     const statusOverview = getAppealStageStatus(req, ccdResponse);
-    res.render('task-list.njk', { data: statusOverview });
+    return res.render('appeal-application/task-list.njk', { data: statusOverview });
   } catch (e) {
     next(e);
   }

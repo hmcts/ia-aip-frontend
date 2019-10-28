@@ -36,7 +36,7 @@ function getContactDetails(req: Request, res: Response, next: NextFunction) {
       email: { value: '' },
       textMessage: { value: '' }
     };
-    res.render('contact-details.njk', { data: data });
+    return res.render('appeal-application/contact-details.njk', { data: data });
   } catch (error) {
     next(error);
   }
@@ -52,11 +52,11 @@ function postContactDetails(req: Request, res: Response, next: NextFunction) {
     };
 
     if (!hasSelections(request.selections)) {
-      return res.render('contact-details.njk', { data: data, errors: { selections: 0 } });
+      return res.render('appeal-application/contact-details.njk', { data: data, errors: { selections: 0 } });
     }
     const validationErrors = validate(request);
     if (validationErrors != null) {
-      return res.render('contact-details.njk', {
+      return res.render('appeal-application/contact-details.njk', {
         data: data,
         errors: validationErrors,
         errorList: Object.values(validationErrors)

@@ -10,7 +10,7 @@
       titleText: i18n.errorSummary.titleText,
       descriptionText: i18n.errorSummary.descriptionText,
       errorList: errorList
-    }) 
+    })
     }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.appealApplication.homeOfficeLetterSent.title }}</h1>
@@ -19,9 +19,9 @@
 
   <img src="/assets/images/home_office_letter_date.png" class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"/>
 
-  <form action="/home-office-letter-sent" method="post">
+  <form action="/home-office/letter-sent" method="post">
 
-    {{ 
+    {{
       dateInput(
         i18n.appealApplication.homeOfficeLetterSent.dateTitle,
         i18n.appealApplication.homeOfficeLetterSent.dateHint,

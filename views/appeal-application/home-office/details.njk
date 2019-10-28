@@ -12,7 +12,7 @@
         text: error,
         href: "#homeOfficeRefNumber"
       }]
-    }) 
+    })
     }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.appealApplication.homeOfficePage.title }}</h1>
@@ -21,7 +21,7 @@
 
   <img src="/assets/images/home_office_ref_number.png" class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"/>
 
-  <form action="/home-office-details" method="post">
+  <form action="/home-office/details" method="post">
     {{ govukInput({
       label: {
         text: "Home Office reference number"

@@ -4,7 +4,7 @@ import { dateValidation, homeOfficeNumberValidation } from '../utils/fields-vali
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/home-office-details.njk', { application: req.session.appealApplication });
+    res.render('appeal-application/home-office/details.njk', { application: req.session.appealApplication });
   } catch (e) {
     next(e);
   }
@@ -15,7 +15,7 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
     const homeOfficeDetails = req.body['homeOfficeRefNumber'];
     const validation = homeOfficeNumberValidation(homeOfficeDetails);
     if (validation) {
-      return res.render('appeal-application/home-office-details.njk',
+      return res.render('appeal-application/home-office/details.njk',
         {
           error: validation,
           application: req.session.appealApplication
@@ -24,7 +24,7 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
     }
 
     req.session.appealApplication['homeOfficeReference'] = homeOfficeDetails;
-    return res.redirect(paths.homeOfficeLetterSent);
+    return res.redirect(paths.homeOffice.letterSent);
   } catch (e) {
     next(e);
   }
@@ -32,7 +32,7 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
 
 function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/home-office-letter-sent.njk');
+    res.render('appeal-application/home-office/letter-sent.njk');
   } catch (e) {
     next(e);
   }
@@ -42,7 +42,7 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = dateValidation(req.body);
     if (validation) {
-      return res.render('appeal-application/home-office-letter-sent.njk', {
+      return res.render('appeal-application/home-office/letter-sent.njk', {
         error: validation,
         errorList: Object.values(validation)
       });
@@ -52,7 +52,7 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
       month: req.body['month'],
       year: req.body['year']
     };
-    res.render('appeal-application/home-office-letter-sent.njk', { application: req.session.appealApplication });
+    res.render('appeal-application/home-office/letter-sent.njk', { application: req.session.appealApplication });
   } catch (e) {
     next(e);
   }
@@ -60,10 +60,10 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
 
 function setupHomeOfficeDetailsController(): Router {
   const router = Router();
-  router.get(paths.homeOfficeDetails, getHomeOfficeDetails);
-  router.post(paths.homeOfficeDetails, postHomeOfficeDetails);
-  router.get(paths.homeOfficeLetterSent, getDateLetterSent);
-  router.post(paths.homeOfficeLetterSent, postDateLetterSent);
+  router.get(paths.homeOffice.details, getHomeOfficeDetails);
+  router.post(paths.homeOffice.details, postHomeOfficeDetails);
+  router.get(paths.homeOffice.letterSent, getDateLetterSent);
+  router.post(paths.homeOffice.letterSent, postDateLetterSent);
   return router;
 }
 

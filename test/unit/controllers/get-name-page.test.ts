@@ -5,7 +5,7 @@ import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Home Office Details Controller', function() {
+describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -17,6 +17,7 @@ describe('Home Office Details Controller', function() {
     req = {
       body: {},
       cookies: {},
+      session: {},
       idam: {
         userDetails: {}
       },
@@ -29,7 +30,8 @@ describe('Home Office Details Controller', function() {
 
     res = {
       render: sandbox.stub(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
+      redirect: sandbox.spy()
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
@@ -45,34 +47,31 @@ describe('Home Office Details Controller', function() {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
       setupPersonalDetailsController();
-      expect(routerGetStub).to.have.been.calledWith(paths.enterName);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.enterName);
+      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.name);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.name);
     });
   });
 
   describe('getNamesPage', () => {
-    it('should render appellant-names-page.njk', function () {
+    it('should render personal-details/name.njk', function () {
       getNamePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/appellant-names-page.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk');
     });
   });
 
   describe('postNamePage', () => {
-    it('should validate and render appellant-names-page.njk', () => {
+    it('should validate and redirect to next page personal-details/date-of-birth', () => {
       req.body.givenNames = 'Lewis';
       req.body.familyName = 'Williams';
+      req.session.personalDetails = {};
+
       postNamePage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith(
-                'appeal-application/appellant-names-page.njk',
-        {
-          familyName: 'Williams',
-          givenNames: 'Lewis'
-        });
+      expect(res.redirect).to.have.been.calledWith(paths.personalDetails.dob);
     });
   });
 
-  describe('Should catch an error.', function () {
+  describe('Should catch an error.', () => {
     it('getPageName should catch an exception and call next()', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
@@ -80,16 +79,19 @@ describe('Home Office Details Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render appellant-names-page.njk with error', () => {
+    it('should fail validation and render personal-details/name.njk with error', () => {
       req.body.givenNames = '';
       req.body.familyName = '';
       postNamePage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
-          'appeal-application/appellant-names-page.njk',
+        'appeal-application/personal-details/name.njk',
         {
           errors: {
-            errorList: [{ href: '#givenNames', text: 'Please Enter Given Names' }, { href: '#familyName', text: 'Please Enter Family Name' }],
+            errorList: [ { href: '#givenNames', text: 'Please Enter Given Names' }, {
+              href: '#familyName',
+              text: 'Please Enter Family Name'
+            } ],
             fieldErrors: {
               familyName: { text: 'Please Enter Family Name' },
               givenNames: { text: 'Please Enter Given Names' }

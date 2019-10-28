@@ -34,10 +34,10 @@
         "checkAndSend": "Check and Send"
       },
       "homeOfficeDetails": {
-        "htmlLink": "<a href='/home-office-details' title='Your Home office details'>Your Home Office details</a>"
+        "htmlLink": "<a href='/home-office/details' title='Your Home office details'>Your Home Office details</a>"
       },
       "personalDetails": {
-        "htmlLink": "<a href='/personal-details' title='Your personal details'>Your personal details</a>"
+        "htmlLink": "<a href='/personal-details/name' title='Your personal details'>Your personal details</a>"
       },
       "contactDetails": {
         "htmlLink": "<a href='/contact-details' title='Your contact details'>Your contact details</a>"

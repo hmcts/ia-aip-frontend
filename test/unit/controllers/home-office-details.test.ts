@@ -56,15 +56,15 @@ describe('Home Office Details Controller', function() {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
       setupHomeOfficeDetailsController();
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOfficeDetails);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOfficeDetails);
+      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.details);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.details);
     });
   });
 
   describe('getHomeOfficeDetails', () => {
-    it('should render home-office-details.njk', function() {
+    it('should render home-office/details.njk', function() {
       getHomeOfficeDetails(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office-details.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/details.njk');
     });
 
     it('should catch exception and call next with the error', function() {
@@ -76,20 +76,20 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('postHomeOfficeDetails', () => {
-    it('should validate and render home-office-details.njk', () => {
+    it('should validate and redirect home-office/details.njk', () => {
       req.body['homeOfficeRefNumber'] = 'A1234567';
       postHomeOfficeDetails(req as Request, res as Response, next);
 
       expect(req.session.appealApplication['homeOfficeReference']).to.be.eql('A1234567');
-      expect(res.redirect).to.have.been.calledWith(paths.homeOfficeLetterSent);
+      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
     });
 
-    it('should fail validation and render home-office-details.njk with error', () => {
+    it('should fail validation and render home-office/details.njk with error', () => {
       req.body['homeOfficeRefNumber'] = 'notValid';
       postHomeOfficeDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
-        'appeal-application/home-office-details.njk',
+        'appeal-application/home-office/details.njk',
         {
           error: i18n.validationErrors.homeOfficeRef,
           application: {}
@@ -105,10 +105,10 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('getDateLetterSent', () => {
-    it('should render home-office-letter-sent.njk', () => {
+    it('should render home-office/letter-sent.njk', () => {
       getDateLetterSent(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
     it('should catch exception and call next with the error', () => {
@@ -121,7 +121,7 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('postDateLetterSent', () => {
-    it('should validate and render home-office-letter-sent.njk', () => {
+    it('should validate and render home-office/letter-sent.njk', () => {
       req.body['day'] = '1';
       req.body['month'] = '1';
       req.body['year'] = '2019';
@@ -132,7 +132,7 @@ describe('Home Office Details Controller', function() {
       expect(homeOfficeDateLetterSent.month).to.be.eql('1');
       expect(homeOfficeDateLetterSent.year).to.be.eql('2019');
 
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
     it('should fail validation and render error', () => {
@@ -150,7 +150,7 @@ describe('Home Office Details Controller', function() {
       const errorList = [ yearError ];
       postDateLetterSent(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk',
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
         {
           error,
           errorList

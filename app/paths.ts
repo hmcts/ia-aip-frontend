@@ -2,19 +2,24 @@ const paths = {
   index: '/',
   health: '/health',
   liveness: '/liveness',
-  enterName: '/enter-name',
   healthLiveness: '/health/liveness',
   taskList: '/task-list',
   login: '/login',
   logout: '/logout',
   start: '/start',
-  homeOfficeDetails: '/home-office-details',
-  homeOfficeLetterSent: '/home-office-letter-sent',
+  personalDetails: {
+    name: '/personal-details/name',
+    nationality: '/personal-details/nationality',
+    dob: '/personal-details/date-of-birth'
+  },
+  homeOffice: {
+    details: '/home-office/details',
+    letterSent: '/home-office/letter-sent'
+  },
   typeOfAppeal: '/type-of-appeal',
   devNextPage: '/dev-next-page',
-  DOB: '/date-of-birth',
-  nationality: '/nationality',
-  contactDetails: '/contact-details'
+  contactDetails: '/contact-details',
+  checkAndSend: '/check-and-send'
 };
 
 export {

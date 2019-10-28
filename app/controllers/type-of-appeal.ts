@@ -7,7 +7,7 @@ const appealTypes = new AppealTypes();
 
 function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('type-of-appeal.njk', { appealTypes });
+    res.render('appeal-application/type-of-appeal.njk', { appealTypes });
   } catch (error) {
     next(error);
   }
@@ -22,14 +22,14 @@ function postTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
   try {
 
     if (!validate(request.data)) {
-      return res.render('type-of-appeal.njk', { appealTypes, error: i18n.validationErrors.atLeastOneOption });
+      return res.render('appeal-application/type-of-appeal.njk', { appealTypes, error: i18n.validationErrors.atLeastOneOption });
     }
     // Saving data in session for now should save to CCD once implementation is finished
     req.session.typeOfAppeal = request.data;
     switch (request.button) {
       case 'save-and-continue':
         // TODO: replace devNextPage with real next pages
-        return res.redirect(paths.devNextPage);
+        return res.redirect(paths.taskList);
       case 'save-for-later':
         // TODO: re-direct to the dashboard page ?
         return res.redirect(paths.taskList);

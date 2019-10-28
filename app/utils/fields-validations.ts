@@ -221,9 +221,9 @@ export {
   homeOfficeNumberValidation,
   dateValidation,
   appellantNamesValidation,
+  postcodeValidation,
   nationalityValidation,
   emailValidation,
   phoneValidation,
-  textAreaValidation,
-  postcodeValidation
+  textAreaValidation
 };

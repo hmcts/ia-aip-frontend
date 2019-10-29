@@ -1,0 +1,23 @@
+{% set pageTitleName = i18n.pages.DOB.title %}
+{% extends 'layout.njk' %}
+{% from "components/date-component.njk" import dateInput %}
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.error.summary.title,
+            descriptionText: i18n.error.summary.descriptionText,
+            errorList: errorList
+        }) }}
+    {% endif %}
+    <h1 class="govuk-heading-xl">{{ i18n.pages.DOB.heading }}</h1>
+    <span class="govuk-caption-m">{{ i18n.pages.DOB.hint }}</span>
+    <form method="post" action="/personal-details/date-of-birth" type="submit">
+        {{ dateInput(
+            error=errors
+        ) }}
+
+        {{ saveButtons() }}
+    </form>
+    {{ contactUs() }}
+{% endblock %}

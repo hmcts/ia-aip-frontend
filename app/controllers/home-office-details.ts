@@ -3,15 +3,11 @@ import moment from 'moment';
 import multer from 'multer';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
-import {
-  dateValidation,
-  homeOfficeNumberValidation,
-  textAreaValidation
-} from '../utils/fields-validations';
+import { dateValidation, homeOfficeNumberValidation, textAreaValidation } from '../utils/fields-validations';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/home-office-details.njk', { application: req.session.appealApplication });
+    res.render('appeal-application/home-office/details.njk', { application: req.session.appealApplication });
   } catch (e) {
     next(e);
   }
@@ -22,7 +18,7 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
     const homeOfficeDetails = req.body['homeOfficeRefNumber'];
     const validation = homeOfficeNumberValidation(homeOfficeDetails);
     if (validation) {
-      return res.render('appeal-application/home-office-details.njk',
+      return res.render('appeal-application/home-office/details.njk',
         {
           error: validation,
           application: req.session.appealApplication
@@ -31,7 +27,7 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
     }
 
     req.session.appealApplication['homeOfficeReference'] = homeOfficeDetails;
-    return res.redirect(paths.homeOfficeLetterSent);
+    return res.redirect(paths.homeOffice.letterSent);
   } catch (e) {
     next(e);
   }
@@ -39,7 +35,7 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
 
 function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/home-office-letter-sent.njk');
+    res.render('appeal-application/home-office/letter-sent.njk');
   } catch (e) {
     next(e);
   }
@@ -49,7 +45,7 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = dateValidation(req.body);
     if (validation) {
-      return res.render('appeal-application/home-office-letter-sent.njk', {
+      return res.render('appeal-application/home-office/letter-sent.njk', {
         error: validation,
         errorList: Object.values(validation)
       });
@@ -61,7 +57,7 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
         text: i18n.validationErrors.futureDate,
         href: '#day'
       };
-      return res.render('appeal-application/home-office-letter-sent.njk', {
+      return res.render('appeal-application/home-office/letter-sent.njk', {
         errorList: [ error ]
       });
     }
@@ -73,7 +69,7 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
     };
 
     if (diffInDays <= 14) return res.redirect(paths.taskList);
-    res.redirect(paths.homeOfficeAppealLate);
+    res.redirect(paths.homeOffice.appealLate);
   } catch (e) {
     next(e);
   }
@@ -104,11 +100,14 @@ function postAppealLate(req: Request, res: Response, next: NextFunction) {
       };
       const appealLate: string = req.session.appealApplication['appeal-late'] || null;
       const evidences = req.session.appealApplication.files;
-      return res.render('appeal-application/home-office-appeal-late.njk', { appealLate, evidences: Object.values(evidences) });
+      return res.render('appeal-application/home-office-appeal-late.njk', {
+        appealLate,
+        evidences: Object.values(evidences)
+      });
     } else if (req.body.delete) {
       const fileId = Object.keys(req.body.delete)[0];
       delete req.session.appealApplication.files[fileId];
-      return res.redirect(paths.homeOfficeAppealLate);
+      return res.redirect(paths.homeOffice.appealLate);
     }
     const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
     const evidences = req.session.appealApplication.files || {};
@@ -135,12 +134,12 @@ const upload = multer().single('file-upload');
 
 function setupHomeOfficeDetailsController(): Router {
   const router = Router();
-  router.get(paths.homeOfficeDetails, getHomeOfficeDetails);
-  router.post(paths.homeOfficeDetails, postHomeOfficeDetails);
-  router.get(paths.homeOfficeLetterSent, getDateLetterSent);
-  router.post(paths.homeOfficeLetterSent, postDateLetterSent);
-  router.get(paths.homeOfficeAppealLate, getAppealLate);
-  router.post(paths.homeOfficeAppealLate, upload, postAppealLate);
+  router.get(paths.homeOffice.details, getHomeOfficeDetails);
+  router.post(paths.homeOffice.details, postHomeOfficeDetails);
+  router.get(paths.homeOffice.letterSent, getDateLetterSent);
+  router.post(paths.homeOffice.letterSent, postDateLetterSent);
+  router.get(paths.homeOffice.appealLate, getAppealLate);
+  router.post(paths.homeOffice.appealLate, upload, postAppealLate);
   return router;
 }
 

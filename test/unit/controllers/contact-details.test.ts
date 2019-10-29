@@ -56,7 +56,7 @@ describe('Contact details Controller', () => {
 
   it('getContactDetails should render type-of-appeal.njk', () => {
     getContactDetails(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('contact-details.njk');
+    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/contact-details.njk');
   });
 
   it('getContactDetails should catch an exception and call next()', () => {
@@ -76,7 +76,7 @@ describe('Contact details Controller', () => {
       data: { email: { value: undefined }, textMessage: { value: undefined } },
       errors: { selections: 0 }
     };
-    expect(res.render).to.have.been.calledWith('contact-details.njk', expectedData);
+    expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
   });
 
   it('email on success when click on save-and-continue should validate and redirect to task-list.njk', () => {
@@ -104,7 +104,7 @@ describe('Contact details Controller', () => {
       'errors': { 'email-value': { 'key': 'email-value', 'text': 'Enter an email address', 'href': '#email-value' } },
       'errorList': [ { 'key': 'email-value', 'text': 'Enter an email address', 'href': '#email-value' } ]
     };
-    expect(res.render).to.have.been.calledWith('contact-details.njk', expectedData);
+    expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
   });
 
   it('postContactDetails when click on save-and-continue with email selected and invalid format value should show validation error', () => {
@@ -131,7 +131,7 @@ describe('Contact details Controller', () => {
       } ]
     };
 
-    expect(res.render).to.have.been.calledWith('contact-details.njk', expectedData);
+    expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
   });
 
   it('phone on success when click on save-and-continue should validate and redirect to task-list.njk', () => {
@@ -165,7 +165,7 @@ describe('Contact details Controller', () => {
       },
       'errorList': [ { 'key': 'text-message-value', 'text': 'Enter a phone number', 'href': '#text-message-value' } ]
     };
-    expect(res.render).to.have.been.calledWith('contact-details.njk', expectedData);
+    expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
   });
 
   it('postContactDetails when click on save-and-continue with text message selected and invalid format value should show validation error', () => {
@@ -192,7 +192,7 @@ describe('Contact details Controller', () => {
       } ]
     };
 
-    expect(res.render).to.have.been.calledWith('contact-details.njk', expectedData);
+    expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
   });
 
 });

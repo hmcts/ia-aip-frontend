@@ -46,33 +46,33 @@ describe('Nationalities Controller', function() {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
       setupPersonalDetailsController();
-      expect(routerGetStub).to.have.been.calledWith(paths.nationality);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.nationality);
+      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.nationality);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.nationality);
     });
   });
 
   describe('getNationalityPage', () => {
-    it('should render appeal-application/nationality.njk', function () {
+    it('should render personal-details/nationality.njk', function () {
       getNationalityPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/nationality.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/nationality.njk');
     });
   });
 
   describe('postNationality', () => {
-    it('should validate and render appeal-application/nationality.njk', () => {
+    it('should validate and render personal-details/nationality.njk', () => {
       postNationalityPage(req as Request, res as Response, next);
       req.body.stateless = 'stateless';
       req.body.nationality = '';
 
-      expect(res.render).to.have.been.calledWith('appeal-application/nationality.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk');
     });
 
-    it('should validate and render appeal-application/nationality.njk', () => {
+    it('should validate and render personal-details/nationality.njk', () => {
       postNationalityPage(req as Request, res as Response, next);
       req.body.stateless = '';
       req.body.nationality = 'British';
 
-      expect(res.render).to.have.been.calledWith('appeal-application/nationality.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk');
     });
   });
 
@@ -84,22 +84,22 @@ describe('Nationalities Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render appeal-application/nationality.njk with error', () => {
+    it('should fail validation and render personal-details/nationality.njk with error', () => {
       postNationalityPage(req as Request, res as Response, next);
       req.body.stateless = '';
       req.body.nationality = '';
-      expect(res.render).to.have.been.calledWith('appeal-application/nationality.njk',
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errors: { errorList: [{ href: '#', text: 'Please select a nationality.' }] },
           nationalities: nationalities
         });
     });
 
-    it('should fail validation and render appeal-application/nationality.njk with error', () => {
+    it('should fail validation and render personal-details/nationality.njk with error', () => {
       postNationalityPage(req as Request, res as Response, next);
       req.body.stateless = 'stateless';
       req.body.nationality = 'British';
-      expect(res.render).to.have.been.calledWith('appeal-application/nationality.njk',
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errors: { errorList: [{ href: '#', text: 'Please select a nationality.' }] },
           nationalities: nationalities

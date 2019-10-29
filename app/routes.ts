@@ -20,7 +20,6 @@ const typeOfAppealController = setupTypeOfAppealController();
 const devNextPageController = setupDevNextPageController();
 const personalDetailsController = setupPersonalDetailsController();
 const contactDetailsController = setupContactDetailsController();
-
 // not protected by idam
 router.use(healthController);
 

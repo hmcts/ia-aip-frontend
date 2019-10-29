@@ -3,7 +3,7 @@ import { paths } from '../paths';
 
 function getIndex(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('index.njk', { data:  JSON.stringify(req.session) });
+    return res.render('index.njk', { data:  JSON.stringify(req.session) });
   } catch (e) {
     next(e);
   }

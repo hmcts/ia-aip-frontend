@@ -3,8 +3,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
-  <h1 class="govuk-heading-m testing-class">Dev - Test Next Page</h1>
+    <h1 class="govuk-heading-m testing-class">Dev - Test Next Page</h1>
     <p>Data Stored: </p>
-    <p>{{ data }}</p>
+    <p>{{ data | dump }}</p>
 
 {% endblock %}

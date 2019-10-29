@@ -18,7 +18,9 @@ function setupIdamController(): Router {
 
   router.get('/redirectUrl', idamExpressMiddleware.landingPage(idamArgs), (req: Request, res) => {
     // Initializing the session, to replace with the proper call to CCD api to get the case
-    req.session.appealApplication = {};
+    req.session.appealApplication = {
+      files: {}
+    };
     res.redirect(paths.taskList);
   });
   router.use(idamExpressMiddleware.userDetails(idamArgs));

@@ -1,0 +1,56 @@
+{% set pageTitleName = i18n.pages.index.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "components/evidence-list.njk" import evidenceList with context %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.errorSummary.titleText,
+      descriptionText: i18n.errorSummary.descriptionText,
+      errorList: errorList
+    }) 
+    }}
+  {% endif %}
+  <h1 class="govuk-heading-l">{{ i18n.appealApplication.homeOfficeAppealLate.title }}</h1>
+
+  <p>{{ i18n.appealApplication.homeOfficeAppealLate.description | safe }}</p>
+
+  <form action="/home-office-appeal-late" method="post" enctype="multipart/form-data">
+    {{ govukTextarea({
+      name: "appeal-late",
+      id: "appeal-late",
+      value: appealLate,
+      errorMessage: {
+        text: error["appeal-late"].text
+      } if error["appeal-late"]
+    }) }}
+
+    <h2 class="govuk-heading-m">{{ i18n.appealApplication.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
+    <div class="govuk-inset-text">
+      {{ govukFileUpload({
+        id: "file-upload",
+        name: "file-upload",
+        label: {
+          text: i18n.appealApplication.homeOfficeAppealLate.fileUploadTitle
+        }
+      }) }}
+
+      {{ govukButton({
+        text: i18n.common.buttons.uploadFile,
+        name: 'uploadFile',
+        classes: "govuk-button--secondary"
+      }) }}
+    </div>
+
+    {{ evidenceList(evidences) }}
+
+    {{ govukButton({
+      text: i18n.common.buttons.saveAndContinue,
+      name: 'saveAndContinue'
+    }) }}
+  </form>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% macro evidenceList(evidences) %}
+  <table class="govuk-table" id="files-uploaded">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" colspan="2">{{ i18n.components.evidenceList.title }}</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      {% for evidence in evidences %}
+      <tr class="govuk-table__row evidence">
+        <td class="govuk-table__cell">{{ evidence.file_name }}</td>
+        <td class="govuk-table__cell">
+          <input type="submit" name="delete[{{ evidence.file_name }}]" value="{{ i18n.components.evidenceList.delete }}" class="govuk-link">
+        </td>
+      </tr>
+      {% else %}
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">{{ i18n.components.evidenceList.emptyList }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endmacro %}

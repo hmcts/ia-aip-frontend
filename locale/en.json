@@ -125,6 +125,16 @@
       "heading": "What is your address?",
       "title": "Address",
       "hint": "Enter a UK postcode"
+    },
+    "enterAddress": {
+      "heading": "What is your address?",
+      "title": "Address",
+      "inputs": {
+        "building": "Building and street",
+        "town": "Town or city",
+        "country": "Country",
+        "postcode": "Postcode"
+      }
     }
   },
   "error": {

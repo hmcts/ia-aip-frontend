@@ -1,5 +1,4 @@
 import Joi from '@hapi/joi';
-import moment from 'moment';
 import i18n from '../../locale/en.json';
 
 function textAreaValidation(text: string, theKey: string): boolean | ValidationErrors {
@@ -128,7 +127,30 @@ function nationalityValidation(obj: object) {
   }
   return false;
 }
+function postcodeValidation(obj: object): ValidationError | boolean {
+  const postcodeRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
 
+  const schema = Joi.object({
+    postcode: Joi.string().regex(postcodeRegex).messages({
+      'string.empty': 'Enter your postcode',
+      'string.pattern.base': 'Enter a valid postcode'
+    })
+  });
+  const result = schema.validate(obj, { abortEarly: true, allowUnknown: true });
+  if (result.error) {
+    const errors: ValidationError =
+            result.error.details.reduce((acc, curr): ValidationError => {
+              acc[curr.context.key] = {
+                key: curr.context.key,
+                text: curr.message,
+                href: `#${curr.context.key}`
+              };
+              return acc;
+            }, {});
+    return errors;
+  }
+  return false;
+}
 /**
  * Validates an email address using joi validation
  * @param obj containing the property 'email-value' to validate the email
@@ -198,24 +220,27 @@ function phoneValidation(obj: object) {
   return null;
 }
 
-function postcodeValidation(obj: object) {
-  const postcodeRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
-
+function addressValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    postcode: Joi.string().regex(postcodeRegex).messages({ 'string.empty': 'Enter your postcode', 'string.pattern.base': 'Enter a valid postcode' })
+    ['address-line-1']: Joi.string().required().messages({ 'string.empty': 'Enter a building number and street name.' }),
+    ['address-town']: Joi.string().required().messages({ 'string.empty': 'Enter Town or City.' }),
+    ['address-county']: Joi.string().required().messages({ 'string.empty': 'Enter a County.' }),
+    ['address-line-2']: Joi.string().optional().empty(''),
+    ['address-postcode']: Joi.string().optional().empty('')
   });
-  const result = schema.validate(obj, { abortEarly: true, allowUnknown: true });
+  const result = schema.validate(obj, { abortEarly: false });
+    // console.log(JSON.stringify(result));
   if (result.error) {
-    const errors: Array<object> = [];
-    result.error.details.map(error => {
-      errors.push({
-        text: error.message,
-        href: '#'
-      });
-    });
-    return errors;
+    return result.error.details.reduce((acc, curr): ValidationError => {
+      acc[curr.context.key] = {
+        key: curr.context.key,
+        text: curr.message,
+        href: `#${curr.context.key}`
+      };
+      return acc;
+    }, {});
   }
-  return false;
+  return null;
 }
 
 export {
@@ -226,5 +251,6 @@ export {
   nationalityValidation,
   emailValidation,
   phoneValidation,
-  textAreaValidation
+  textAreaValidation,
+  addressValidation
 };

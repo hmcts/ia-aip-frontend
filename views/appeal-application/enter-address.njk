@@ -1,0 +1,82 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% set pageTitleName = i18n.pages.enterAddress.title %}
+{% extends '../layout.njk' %}
+
+
+{% block content %}
+    {% if error %}
+        {{ govukErrorSummary({
+            titleText: i18n.error.summary.title,
+            descriptionText: i18n.error.summary.descriptionText,
+            errorList: errorList
+        })
+        }}
+    {% endif %}
+    <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.enterAddress.heading}}</h1>
+    <h3>{{ i18n.pages.enterAddress.inputs.postcode }}</h3>
+    <div>
+        <h4>SW11 AA</h4>
+        <a href="#">Change</a>
+    </div>
+    <form action="/enter-address" method="post">
+    {% call govukFieldset({
+
+    }) %}
+
+        {{ govukInput({
+            label: {
+                html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+            },
+            id: "address-line-1",
+            name: "address-line-1",
+            errorMessage: {
+                text:  error['address-line-1'].text
+            } if error['address-line-1']
+        }) }}
+
+        {{ govukInput({
+            label: {
+                html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+            },
+            id: "address-line-2",
+            name: "address-line-2"
+        }) }}
+
+        {{ govukInput({
+            label: {
+                text: "Town or city"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "address-town",
+            name: "address-town",
+            errorMessage: {
+                text:  error['address-town'].text
+        } if error['address-town']
+        }) }}
+
+        {{ govukInput({
+            label: {
+                text: "County"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "address-county",
+            name: "address-county",
+            errorMessage: {
+                text:  error['address-county'].text
+        } if error['address-county']
+        }) }}
+
+        {{ govukInput({
+            label: {
+                text: "Postcode"
+            },
+            classes: "govuk-input--width-10",
+            id: "address-postcode",
+            name: "address-postcode"
+        }) }}
+        {{ saveButtons('Save and continue', 'Save for later') }}
+        </form>
+    {% endcall %}
+    {{ contactUs() }}
+{% endblock %}

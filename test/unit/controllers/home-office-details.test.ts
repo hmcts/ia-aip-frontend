@@ -1,8 +1,11 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
+import moment from 'moment';
 import {
+  getAppealLate,
   getDateLetterSent,
   getHomeOfficeDetails,
+  postAppealLate,
   postDateLetterSent,
   postHomeOfficeDetails,
   setupHomeOfficeDetailsController
@@ -58,6 +61,10 @@ describe('Home Office Details Controller', function() {
       setupHomeOfficeDetailsController();
       expect(routerGetStub).to.have.been.calledWith(paths.homeOfficeDetails);
       expect(routerPOSTStub).to.have.been.calledWith(paths.homeOfficeDetails);
+      expect(routerGetStub).to.have.been.calledWith(paths.homeOfficeLetterSent);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOfficeLetterSent);
+      expect(routerGetStub).to.have.been.calledWith(paths.homeOfficeAppealLate);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOfficeAppealLate);
     });
   });
 
@@ -121,16 +128,42 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('postDateLetterSent', () => {
-    it('should validate and render home-office-letter-sent.njk', () => {
-      req.body['day'] = '1';
-      req.body['month'] = '1';
-      req.body['year'] = '2019';
+    it('should validate and redirect to Task list page if letter is not older than 14 days', () => {
+      const date = moment().subtract(14, 'd');
+      req.body['day'] = date.format('DD');
+      req.body['month'] = date.format('MM');
+      req.body['year'] = date.format('YYYY');
       postDateLetterSent(req as Request, res as Response, next);
 
       const { homeOfficeDateLetterSent } = req.session.appealApplication;
-      expect(homeOfficeDateLetterSent.day).to.be.eql('1');
-      expect(homeOfficeDateLetterSent.month).to.be.eql('1');
-      expect(homeOfficeDateLetterSent.year).to.be.eql('2019');
+      expect(homeOfficeDateLetterSent.day).to.be.eql(date.format('DD'));
+      expect(homeOfficeDateLetterSent.month).to.be.eql(date.format('MM'));
+      expect(homeOfficeDateLetterSent.year).to.be.eql(date.format('YYYY'));
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('should validate and redirect to Appeal Late page', () => {
+      const date = moment().subtract(15, 'd');
+      req.body['day'] = date.format('DD');
+      req.body['month'] = date.format('MM');
+      req.body['year'] = date.format('YYYY');
+      postDateLetterSent(req as Request, res as Response, next);
+
+      const { homeOfficeDateLetterSent } = req.session.appealApplication;
+      expect(homeOfficeDateLetterSent.day).to.be.eql(date.format('DD'));
+      expect(homeOfficeDateLetterSent.month).to.be.eql(date.format('MM'));
+      expect(homeOfficeDateLetterSent.year).to.be.eql(date.format('YYYY'));
+
+      expect(res.redirect).to.have.been.calledWith(paths.homeOfficeAppealLate);
+    });
+
+    it('should fail validation if the date is in the future and render error', () => {
+      const date = moment().add(10, 'd');
+      req.body['day'] = date.format('DD');
+      req.body['month'] = date.format('MM');
+      req.body['year'] = date.format('YYYY');
+      postDateLetterSent(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('appeal-application/home-office-letter-sent.njk');
     });
@@ -167,4 +200,73 @@ describe('Home Office Details Controller', function() {
     });
   });
 
+  describe('getAppealLate', () => {
+    it('should render home-office-letter-sent.njk', () => {
+      getAppealLate(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office-appeal-late.njk');
+    });
+
+    it('should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getAppealLate(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postAppealLate', () => {
+    it('should fail validation and render home-office-appeal-late.njk with errors', () => {
+      postAppealLate(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office-appeal-late.njk');
+    });
+
+    it('should validate and render home-office-appeal-late.njk with errors', () => {
+      req.body['appeal-late'] = 'My exlplanation why am late';
+      postAppealLate(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('should upload file and render home-office-appeal-late.njk', () => {
+      const file = {
+        originalname: 'file.png',
+        mimetype: 'type'
+      };
+      const fileList = {
+        [file.originalname]: {
+          file_name: file.originalname,
+          value: file.mimetype
+        }
+      };
+      req.file = file as Express.Multer.File;
+
+      postAppealLate(req as Request, res as Response, next);
+      expect(req.session.appealApplication.files).to.be.deep.equal(fileList);
+    });
+
+    it('should delete file', () => {
+      const file = {
+        originalname: 'file.png',
+        mimetype: 'type'
+      };
+      const fileList = {
+        [file.originalname]: {
+          file_name: file.originalname,
+          value: file.mimetype
+        }
+      };
+
+      req.session.appealApplication.files = fileList;
+      req.body.delete = { 'file.png': 'delete' };
+      postAppealLate(req as Request, res as Response, next);
+      expect(req.session.appealApplication.files).to.be.deep.equal({});
+    });
+
+    it('should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      postAppealLate(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
 });

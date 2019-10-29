@@ -5,7 +5,7 @@
 {% from "components/date-component.njk" import dateInput %}
 
 {% block content %}
-  {% if error %}
+  {% if errorList %}
     {{ govukErrorSummary({
       titleText: i18n.errorSummary.titleText,
       descriptionText: i18n.errorSummary.descriptionText,
@@ -14,8 +14,6 @@
     }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.appealApplication.homeOfficeLetterSent.title }}</h1>
-
-  <p>{{ application | dump }}</p>
 
   <p>{{ i18n.appealApplication.homeOfficeLetterSent.description }}</p>
 

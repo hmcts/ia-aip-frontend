@@ -1,6 +1,31 @@
 import Joi from '@hapi/joi';
 import i18n from '../../locale/en.json';
 
+function textAreaValidation(text: string, theKey: string): boolean | ValidationErrors {
+  const schema = Joi
+    .string()
+    .required()
+    .min(3)
+    .messages({
+      'any.required': i18n.validationErrors.required,
+      'string.empty': i18n.validationErrors.empty,
+      'string.min': i18n.validationErrors.stringMin
+    });
+  const result = schema.validate(text);
+  if (result.error) {
+    const error: ValidationErrors = {
+      [theKey]: {
+        key: theKey,
+        text: result.error.details[0].message,
+        href: `#${theKey}`
+      }
+    };
+
+    return error;
+  }
+  return false;
+}
+
 function homeOfficeNumberValidation(reference: string) {
   const schema = Joi
     .string()
@@ -15,16 +40,6 @@ function homeOfficeNumberValidation(reference: string) {
     return result.error.details[0].message;
   }
   return false;
-}
-
-interface ValidationError {
-  key: string;
-  text: string;
-  href: string;
-}
-
-interface ValidationErrors {
-  [key: string]: ValidationError;
 }
 
 function dateValidation(obj: object): boolean | ValidationErrors {
@@ -178,5 +193,6 @@ export {
   appellantNamesValidation,
   nationalityValidation,
   emailValidation,
-  phoneValidation
+  phoneValidation,
+  textAreaValidation
 };

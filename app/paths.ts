@@ -10,6 +10,7 @@ const paths = {
   start: '/start',
   homeOfficeDetails: '/home-office-details',
   homeOfficeLetterSent: '/home-office-letter-sent',
+  homeOfficeAppealLate: '/home-office-appeal-late',
   typeOfAppeal: '/type-of-appeal',
   devNextPage: '/dev-next-page',
   DOB: '/date-of-birth',

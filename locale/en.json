@@ -6,7 +6,8 @@
   "common": {
     "buttons": {
       "saveAndContinue": "Save and continue",
-      "saveForLater": "Save for later"
+      "saveForLater": "Save for later",
+      "uploadFile": "Upload file"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -158,23 +159,40 @@
       "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
       "dateTitle": "Date letter sent",
       "dateHint": "For example, 31 3 2019"
+    },
+    "homeOfficeAppealLate": {
+      "title": "Your appeal is late",
+      "description": "Appeals should be made within 14 days from the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late below, and provide supporting evidence if you have it.",
+      "provideEvidenceTitle": "Provide supporting evidence",
+      "fileUploadTitle": "Upload a file"
     }
   },
   "validationErrors": {
     "errorSummary": "There is a problem",
+    "required": "The field is required",
     "empty": "The field is required",
+    "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "atLeastOneOption": "You must select at least one option",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
-    "phoneFormat": "Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192"
+    "phoneFormat": "Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192",
+    "futureDate": "The date is in the future, please re-enter the date."
   },
   "fields": {
     "textMessage": "Text message",
     "mobilePhone": "Mobile phone number",
     "email": "Email",
     "emailAddress": "Email address"
+  },
+
+  "components": {
+    "evidenceList": {
+      "title": "Uploaded files",
+      "emptyList": "No files uploaded",
+      "delete": "Delete"
+    }
   }
 }
 

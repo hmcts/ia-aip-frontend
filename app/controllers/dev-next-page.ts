@@ -8,7 +8,7 @@ function getDevNextPage(req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
   try {
     logger.trace('getDevNextPage', logLabel);
-    return res.render('dev-next-page.njk', { data: JSON.stringify(req.session) });
+    return res.render('appeal-application/dev-next-page.njk', { data: JSON.stringify(req.session) });
   } catch (e) {
     logger.exception(e.message, logLabel);
     next(e);

@@ -105,7 +105,7 @@ describe('Home Office Details Controller', function() {
 
       postEnterPostcodePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
-          'appeal-application/personal-details/enter-postcode.njk',
+        'appeal-application/personal-details/enter-postcode.njk',
         {
           error: { postcode },
           errorList: emptyPostcodeText

@@ -5,8 +5,7 @@ import {
   appellantNamesValidation,
   dateValidation,
   nationalityValidation,
-  postcodeValidation,
-  selectPostcodeValidation
+  postcodeValidation, selectPostcodeValidation
 } from '../utils/fields-validations';
 import { nationalities } from '../utils/nationalities';
 
@@ -21,7 +20,7 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
 function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = dateValidation(req.body);
-    if (validation) {
+    if (validation != null) {
       return res.render('appeal-application/personal-details/date-of-birth.njk', {
         errors: validation,
         errorList: Object.values(validation)
@@ -109,16 +108,16 @@ function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
 function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = postcodeValidation(req.body);
-    if (validation) {
+    if (validation !== null) {
       res.render('appeal-application/personal-details/enter-postcode.njk', {
         error: validation,
         errorList: Object.values(validation)
       });
-    } else {
-      // TODO - add postcode to session.
-      // TODO - Fetch the address from the valid postcode.
-      res.render('appeal-application/personal-details/enter-postcode.njk');
     }
+    // TODO - add postcode to session.
+    // TODO - Fetch the address from the valid postcode.
+    return res.render('appeal-application/personal-details/enter-postcode.njk');
+
   } catch (e) {
     next(e);
   }
@@ -135,18 +134,17 @@ function getManualEnterAddressPage(req: Request, res: Response, next: NextFuncti
 function postManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = addressValidation(req.body);
-    if (validation) {
-      // console.log(JSON.stringify(validation))
+    if (validation !== null) {
       res.render('appeal-application/personal-details/enter-address.njk', {
         error: validation,
         errorList: Object.values(validation)
       });
-    } else {
-      // TODO - add postcode to session.
-      res.render('appeal-application/personal-details/enter-address.njk');
-      req.session.personalDetails.address = req.body;
-      // TODO - Fetch the address from the valid postcode.
     }
+    req.session.personalDetails.address = req.body;
+    // TODO - add postcode to session.
+    // TODO - Fetch the address from the valid postcode.
+    return res.render('appeal-application/personal-details/enter-address.njk');
+
   } catch (e) {
     next(e);
   }
@@ -179,7 +177,7 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
     {
       value: '60 GPS London United Kingdom  W1W 7RT',
       text: '60 GPS London United Kingdom  W1W 7RT'
-    }];
+    } ];
   try {
     const validation = selectPostcodeValidation(req.body);
     if (validation !== null) {

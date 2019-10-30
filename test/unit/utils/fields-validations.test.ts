@@ -3,6 +3,7 @@ import {
   emailValidation,
   homeOfficeNumberValidation,
   phoneValidation,
+  statementOfTruthValidation,
   textAreaValidation
 } from '../../../app/utils/fields-validations';
 import i18n from '../../../locale/en.json';
@@ -29,7 +30,7 @@ describe('fields-validations', () => {
         year: '2019'
       };
       const validations = dateValidation(validDate);
-      expect(validations).to.deep.equal(false);
+      expect(validations).to.deep.equal(null);
     });
 
     it('should fail validation and return empty warning message', () => {
@@ -156,5 +157,27 @@ describe('fields-validations', () => {
         }
       );
     });
+  });
+
+  describe('statementOfTruthValidation', () => {
+    it('should validate if statement present', () => {
+      const object = { 'statement': 'acceptance' };
+      const validationResult = statementOfTruthValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation and return "any.required" type', () => {
+      const object = {};
+      const validationResult = statementOfTruthValidation(object);
+      const expectedResponse = {
+        statement: {
+          href: '#statement',
+          key: 'statement',
+          text: 'Select if you believe the information you have given is true.'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
   });
 });

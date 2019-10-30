@@ -1,9 +1,9 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import {
-    getManualEnterAddressPage,
-    postManualEnterAddressPage,
-    setupPersonalDetailsController
+  getManualEnterAddressPage,
+  postManualEnterAddressPage,
+  setupPersonalDetailsController
 } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
@@ -24,6 +24,7 @@ describe('Personal Details Controller', function () {
       idam: {
         userDetails: {}
       },
+      session: {},
       app: {
         locals: {
           logger
@@ -67,6 +68,9 @@ describe('Personal Details Controller', function () {
       req.body['address-county'] = 'London';
       req.body['address-line-2'] = '';
       req.body['address-postcode'] = 'W1W 7RT';
+      req.session.personalDetails = {
+        address: {}
+      };
       postManualEnterAddressPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
@@ -89,7 +93,7 @@ describe('Personal Details Controller', function () {
       req.body['address-postcode'] = '';
       postManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
-                'appeal-application/personal-details/enter-address.njk',
+        'appeal-application/personal-details/enter-address.njk',
         {
           error: {
             'address-county': { href: '#address-county', key: 'address-county', text: 'Enter a County.' },

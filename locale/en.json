@@ -7,10 +7,14 @@
     "buttons": {
       "saveAndContinue": "Save and continue",
       "saveForLater": "Save for later",
-      "uploadFile": "Upload file"
+      "uploadFile": "Upload file",
+      "send": "Send"
     },
     "requirements": {
       "heading": "You will need to:"
+    },
+    "links": {
+      "change": "Change"
     }
   },
   "pages": {
@@ -121,6 +125,12 @@
       "title": "Nationality",
       "stateless": "I am stateless (A stateless person is not a citizen of any country)."
     },
+    "checkYourAnswers": {
+      "title": "Check your answers",
+      "header": "Check your answers before clicking send",
+      "statement": "Statement of truth",
+      "agreement": "I believe the information I have given is true"
+    },
     "enterPostcode": {
       "heading": "What is your address?",
       "title": "Address",
@@ -199,13 +209,21 @@
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192",
-    "futureDate": "The date is in the future, please re-enter the date."
+    "futureDate": "The date is in the future, please re-enter the date.",
+    "acceptanceStatement": "Select if you believe the information you have given is true."
   },
   "fields": {
     "textMessage": "Text message",
     "mobilePhone": "Mobile phone number",
     "email": "Email",
-    "emailAddress": "Email address"
+    "emailAddress": "Email address",
+    "homeOfficeRefNumber": "Home Office reference number",
+    "dateLetterSent": "Date Letter Sent",
+    "name": "Name",
+    "dob": "Date of birth",
+    "nationality": "Nationality",
+    "contactDetails": "Contact Details",
+    "appealType": "Appeal type"
   },
 
   "components": {

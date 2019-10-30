@@ -229,7 +229,6 @@ function addressValidation(obj: object): null | ValidationErrors {
     ['address-postcode']: Joi.string().optional().empty('')
   });
   const result = schema.validate(obj, { abortEarly: false });
-    // console.log(JSON.stringify(result));
   if (result.error) {
     return result.error.details.reduce((acc, curr): ValidationError => {
       acc[curr.context.key] = {

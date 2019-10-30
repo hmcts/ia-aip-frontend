@@ -128,14 +128,15 @@ function postManualEnterAddressPage(req: Request, res: Response, next: NextFunct
   try {
     const validation = addressValidation(req.body);
     if (validation) {
+      // console.log(JSON.stringify(validation))
       res.render('appeal-application/enter-address.njk',{
         error: validation,
         errorList: Object.values(validation) });
     } else {
       // TODO - add postcode to session.
+      res.render('appeal-application/enter-address.njk');
       req.session.personalDetails.address = req.body;
       // TODO - Fetch the address from the valid postcode.
-      res.render('appeal-application/enter-address.njk');
     }
   } catch (e) {
     next(e);
@@ -166,5 +167,7 @@ export {
     postNationalityPage,
     getNationalityPage,
     postEnterPostcodePage,
-    getEnterPostcodePage
+    getEnterPostcodePage,
+    getManualEnterAddressPage,
+    postManualEnterAddressPage
 };

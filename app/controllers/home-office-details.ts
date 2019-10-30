@@ -79,7 +79,7 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const appealLate: string = req.session.appealApplication && req.session.appealApplication['appeal-late'] || null;
     const evidences = req.session.appealApplication && req.session.appealApplication.files || null;
-    res.render('appeal-application/home-office-appeal-late.njk', { appealLate, evidences });
+    res.render('appeal-application/home-office/appeal-late.njk', { appealLate, evidences });
   } catch (e) {
     next(e);
   }
@@ -100,7 +100,7 @@ function postAppealLate(req: Request, res: Response, next: NextFunction) {
       };
       const appealLate: string = req.session.appealApplication['appeal-late'] || null;
       const evidences = req.session.appealApplication.files;
-      return res.render('appeal-application/home-office-appeal-late.njk', {
+      return res.render('appeal-application/home-office/appeal-late.njk', {
         appealLate,
         evidences: Object.values(evidences)
       });
@@ -112,7 +112,7 @@ function postAppealLate(req: Request, res: Response, next: NextFunction) {
     const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
     const evidences = req.session.appealApplication.files || {};
     if (validation) {
-      return res.render('appeal-application/home-office-appeal-late.njk', {
+      return res.render('appeal-application/home-office/appeal-late.njk', {
         appealLate: req.body['appeal-late'],
         evidences: Object.values(evidences),
         error: validation,

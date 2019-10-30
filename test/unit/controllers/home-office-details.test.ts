@@ -204,7 +204,7 @@ describe('Home Office Details Controller', function () {
   describe('getAppealLate', () => {
     it('should render home-office-letter-sent.njk', () => {
       getAppealLate(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office-appeal-late.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
     });
 
     it('should catch exception and call next with the error', () => {
@@ -218,7 +218,7 @@ describe('Home Office Details Controller', function () {
   describe('postAppealLate', () => {
     it('should fail validation and render home-office-appeal-late.njk with errors', () => {
       postAppealLate(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office-appeal-late.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
     });
 
     it('should validate and render home-office-appeal-late.njk with errors', () => {

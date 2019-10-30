@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 import { addressValidation, appellantNamesValidation, dateValidation, nationalityValidation, postcodeValidation } from '../utils/fields-validations';
-import Logger from '../utils/logger';
 import { nationalities } from '../utils/nationalities';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
@@ -104,7 +103,8 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
   try {
     const validation = postcodeValidation(req.body);
     if (validation) {
-      res.render('appeal-application/enter-postcode.njk',{      error: validation,
+      res.render('appeal-application/enter-postcode.njk',{
+        error: validation,
         errorList: Object.values(validation) });
     } else {
       // TODO - add postcode to session.
@@ -118,7 +118,7 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
 
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/enter-address.njk');
+    res.render('appeal-application/personal-details/enter-address.njk');
   } catch (e) {
     next(e);
   }
@@ -129,12 +129,12 @@ function postManualEnterAddressPage(req: Request, res: Response, next: NextFunct
     const validation = addressValidation(req.body);
     if (validation) {
       // console.log(JSON.stringify(validation))
-      res.render('appeal-application/enter-address.njk',{
+      res.render('appeal-application/personal-details/enter-address.njk',{
         error: validation,
         errorList: Object.values(validation) });
     } else {
       // TODO - add postcode to session.
-      res.render('appeal-application/enter-address.njk');
+      res.render('appeal-application/personal-details/enter-address.njk');
       req.session.personalDetails.address = req.body;
       // TODO - Fetch the address from the valid postcode.
     }

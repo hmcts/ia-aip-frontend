@@ -48,20 +48,20 @@ describe('Personal Details Controller', function () {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       setupPersonalDetailsController();
-      expect(routerGetStub).to.have.been.calledWith(paths.enterPostcode);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.enterPostcode);
+      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.enterAddress);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.enterAddress);
     });
   });
 
   describe('getManualEnterAddressPage', () => {
-    it('should render appeal-application/enter-address.njk', function () {
+    it('should render appeal-application/personal-details/enter-address.njk', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/enter-address.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk');
     });
   });
 
   describe('postManualEnterAddress', () => {
-    it('should validate and render appeal-application/enter-address.njk', () => {
+    it('should validate and render appeal-application/personal-details/enter-address.njk', () => {
       req.body['address-line-1'] = '60 GPS';
       req.body['address-town'] = 'London';
       req.body['address-county'] = 'London';
@@ -69,7 +69,7 @@ describe('Personal Details Controller', function () {
       req.body['address-postcode'] = 'W1W 7RT';
       postManualEnterAddressPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('appeal-application/enter-address.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
     });
   });
 
@@ -81,7 +81,7 @@ describe('Personal Details Controller', function () {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render appeal-application/enter-address.njk with error', () => {
+    it('should fail validation and render appeal-application/personal-details/enter-address.njk with error', () => {
       req.body['address-line-1'] = '';
       req.body['address-town'] = '';
       req.body['address-county'] = '';
@@ -89,7 +89,7 @@ describe('Personal Details Controller', function () {
       req.body['address-postcode'] = '';
       postManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
-                'appeal-application/enter-address.njk',
+                'appeal-application/personal-details/enter-address.njk',
         {
           error: {
             'address-county': { href: '#address-county', key: 'address-county', text: 'Enter a County.' },

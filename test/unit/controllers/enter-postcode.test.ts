@@ -44,8 +44,8 @@ describe('Home Office Details Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       setupPersonalDetailsController();
-      expect(routerGetStub).to.have.been.calledWith(paths.enterPostcode);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.enterPostcode);
+      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.enterPostcode);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.enterPostcode);
     });
   });
 
@@ -75,32 +75,40 @@ describe('Home Office Details Controller', function() {
 
     it('should fail validation and render appeal-application/enter-postcode.njk with error', () => {
       req.body.postcode = 'invalid';
-      const invalidPostcode = [{ href: '#', text: 'Enter a valid postcode' }];
-      const invalidPostcodeText = { postcode: { text: 'Enter a valid postcode' } };
+      const postcode = { href: '#postcode', key: 'postcode', text: 'Enter a valid postcode' };
+      const invalidPostcodeText = [
+        {
+          key: 'postcode',
+          text: 'Enter a valid postcode',
+          href: '#postcode'
+        }
+      ];
       postEnterPostcodePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
         'appeal-application/enter-postcode.njk',
         {
-          errors: {
-            errorList : invalidPostcode,
-            fieldErrors: invalidPostcodeText
-          }
+          error: { postcode },
+          errorList: invalidPostcodeText
         });
     });
 
     it('should fail validation and render appeal-application/enter-postcode.njk with error', () => {
       req.body.postcode = '';
-      const emptyPostcode = [{ href: '#', text: 'Enter your postcode' }];
-      const emptyPostcodeText = { postcode: { text: 'Enter your postcode' } };
+      const postcode = { href: '#postcode', key: 'postcode', text: 'Enter your postcode' };
+      const emptyPostcodeText = [
+        {
+          key: 'postcode',
+          text: 'Enter your postcode',
+          href: '#postcode'
+        }
+      ];
 
       postEnterPostcodePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
           'appeal-application/enter-postcode.njk',
         {
-          errors: {
-            errorList : emptyPostcode,
-            fieldErrors: emptyPostcodeText
-          }
+          error: { postcode },
+          errorList: emptyPostcodeText
         });
     });
   });

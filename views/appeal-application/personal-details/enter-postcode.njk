@@ -1,0 +1,37 @@
+{% extends '../../layout.njk' %}
+{% set pageTitleName = i18n.pages.enterPostcode.title %}
+
+
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.error.summary.title,
+            descriptionText: i18n.error.summary.descriptionText,
+            errorList: errorList
+        })
+        }}
+    {% endif %}
+    <h1 class="govuk-heading-xl">{{ i18n.pages.enterPostcode.heading }}</h1>
+    <form action="/enter-postcode" method="post">
+        {{ govukInput({
+            label: {
+                text: i18n.pages.enterPostcode.hint
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "postcode",
+            name: "postcode",
+            errorMessage: {
+                text:  error['postcode'].text
+            } if error['postcode']
+        }) }}
+    {{ govukButton({
+        text: 'Find address',
+        name: "buttton",
+        value: "submit",
+        classes: "govuk-!-margin-right-1"
+    }) }}
+    </form>
+    {{ contactUs() }}
+{% endblock  %}
+

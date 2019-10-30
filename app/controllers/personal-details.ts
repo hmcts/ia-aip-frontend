@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import { appellantNamesValidation, dateValidation, nationalityValidation } from '../utils/fields-validations';
+import { addressValidation, appellantNamesValidation, dateValidation, nationalityValidation, postcodeValidation } from '../utils/fields-validations';
 import { nationalities } from '../utils/nationalities';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
@@ -91,6 +91,58 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('appeal-application/enter-postcode.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const validation = postcodeValidation(req.body);
+    if (validation) {
+      res.render('appeal-application/enter-postcode.njk',{
+        error: validation,
+        errorList: Object.values(validation) });
+    } else {
+      // TODO - add postcode to session.
+      // TODO - Fetch the address from the valid postcode.
+      res.render('appeal-application/enter-postcode.njk');
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('appeal-application/personal-details/enter-address.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const validation = addressValidation(req.body);
+    if (validation) {
+      // console.log(JSON.stringify(validation))
+      res.render('appeal-application/personal-details/enter-address.njk',{
+        error: validation,
+        errorList: Object.values(validation) });
+    } else {
+      // TODO - add postcode to session.
+      res.render('appeal-application/personal-details/enter-address.njk');
+      req.session.personalDetails.address = req.body;
+      // TODO - Fetch the address from the valid postcode.
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
 function setupPersonalDetailsController(deps?: any): Router {
   const router = Router();
   router.get(paths.personalDetails.name, getNamePage);
@@ -99,15 +151,23 @@ function setupPersonalDetailsController(deps?: any): Router {
   router.post(paths.personalDetails.dob, postDateOfBirth);
   router.get(paths.personalDetails.nationality, getNationalityPage);
   router.post(paths.personalDetails.nationality, postNationalityPage);
+  router.get(paths.personalDetails.enterPostcode, getEnterPostcodePage);
+  router.post(paths.personalDetails.enterPostcode, postEnterPostcodePage);
+  router.get(paths.personalDetails.enterAddress, getManualEnterAddressPage);
+  router.post(paths.personalDetails.enterAddress, postManualEnterAddressPage);
   return router;
 }
 
 export {
-  setupPersonalDetailsController,
-  getNamePage,
-  postNamePage,
-  getDateOfBirthPage,
-  postDateOfBirth,
-  postNationalityPage,
-  getNationalityPage
+    setupPersonalDetailsController,
+    getNamePage,
+    postNamePage,
+    getDateOfBirthPage,
+    postDateOfBirth,
+    postNationalityPage,
+    getNationalityPage,
+    postEnterPostcodePage,
+    getEnterPostcodePage,
+    getManualEnterAddressPage,
+    postManualEnterAddressPage
 };

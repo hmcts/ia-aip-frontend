@@ -15,10 +15,9 @@
     {% endif %}
     <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.enterAddress.heading}}</h1>
     <h3>{{ i18n.pages.enterAddress.inputs.postcode }}</h3>
-    <div>
-        <h4>SW11 AA</h4>
-        <a href="#">Change</a>
-    </div>
+    <span><b>SW11 AA</b> &emsp;  <a  class="govuk-link app-contact-panel__link"  href="#">Change</a></span>
+    </br>
+    </br>
     <form action="/enter-address" method="post">
     {% call govukFieldset({
 

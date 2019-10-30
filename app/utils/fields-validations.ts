@@ -242,6 +242,25 @@ function addressValidation(obj: object): null | ValidationErrors {
   return null;
 }
 
+function selectPostcodeValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    dropdown: Joi.string().required().messages({ 'string.empty': 'Select a address' })
+
+  });
+  const result = schema.validate(obj, { abortEarly: false });
+  if (result.error) {
+    return result.error.details.reduce((acc, curr): ValidationError => {
+      acc[curr.context.key] = {
+        key: curr.context.key,
+        text: curr.message,
+        href: `#${curr.context.key}`
+      };
+      return acc;
+    }, {});
+  }
+  return null;
+}
+
 export {
   homeOfficeNumberValidation,
   dateValidation,
@@ -251,5 +270,6 @@ export {
   emailValidation,
   phoneValidation,
   textAreaValidation,
-  addressValidation
+  addressValidation,
+  selectPostcodeValidation
 };

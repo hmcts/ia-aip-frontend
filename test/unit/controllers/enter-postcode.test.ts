@@ -50,18 +50,18 @@ describe('Home Office Details Controller', function() {
   });
 
   describe('getEnterPostcodePage', () => {
-    it('should render appeal-application/enter-postcode.njk', function () {
+    it('should render appeal-application/personal-details/enter-postcode.njk', function () {
       getEnterPostcodePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/enter-postcode.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-postcode.njk');
     });
   });
 
   describe('postEnterPostcodePage', () => {
-    it('should validate and render appeal-application/enter-postcode.njk', () => {
+    it('should validate and render appeal-application/personal-details/enter-postcode.njk', () => {
       req.body.postcode = 'W1W 7RT';
       postEnterPostcodePage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('appeal-application/enter-postcode.njk');
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-postcode.njk');
     });
   });
 
@@ -73,7 +73,7 @@ describe('Home Office Details Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render appeal-application/enter-postcode.njk with error', () => {
+    it('should fail validation and render appeal-application/personal-details/enter-postcode.njk with error', () => {
       req.body.postcode = 'invalid';
       const postcode = { href: '#postcode', key: 'postcode', text: 'Enter a valid postcode' };
       const invalidPostcodeText = [
@@ -85,14 +85,14 @@ describe('Home Office Details Controller', function() {
       ];
       postEnterPostcodePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
-        'appeal-application/enter-postcode.njk',
+        'appeal-application/personal-details/enter-postcode.njk',
         {
           error: { postcode },
           errorList: invalidPostcodeText
         });
     });
 
-    it('should fail validation and render appeal-application/enter-postcode.njk with error', () => {
+    it('should fail validation and render appeal-application/personal-details/enter-postcode.njk with error', () => {
       req.body.postcode = '';
       const postcode = { href: '#postcode', key: 'postcode', text: 'Enter your postcode' };
       const emptyPostcodeText = [
@@ -105,7 +105,7 @@ describe('Home Office Details Controller', function() {
 
       postEnterPostcodePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
-          'appeal-application/enter-postcode.njk',
+          'appeal-application/personal-details/enter-postcode.njk',
         {
           error: { postcode },
           errorList: emptyPostcodeText

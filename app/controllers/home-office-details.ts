@@ -79,7 +79,11 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const appealLate: string = req.session.appealApplication && req.session.appealApplication['appeal-late'] || null;
     const evidences = req.session.appealApplication && req.session.appealApplication.files || null;
-    res.render('appeal-application/home-office/appeal-late.njk', { appealLate, evidences });
+    res.render('appeal-application/home-office/appeal-late.njk',{
+      appealLate,
+      evidences: evidences ? Object.values(evidences) : null,
+      evidenceCTA: paths.homeOffice.deleteEvidence
+    });
   } catch (e) {
     next(e);
   }
@@ -87,28 +91,6 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
 
 function postAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
-    if (req.file) {
-      req.session.appealApplication = {
-        ...req.session.appealApplication,
-        files: {
-          ...req.session.appealApplication.files,
-          [req.file.originalname]: {
-            file_name: req.file.originalname,
-            value: req.file.mimetype
-          }
-        }
-      };
-      const appealLate: string = req.session.appealApplication['appeal-late'] || null;
-      const evidences = req.session.appealApplication.files;
-      return res.render('appeal-application/home-office/appeal-late.njk', {
-        appealLate,
-        evidences: Object.values(evidences)
-      });
-    } else if (req.body.delete) {
-      const fileId = Object.keys(req.body.delete)[0];
-      delete req.session.appealApplication.files[fileId];
-      return res.redirect(paths.homeOffice.appealLate);
-    }
     const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
     const evidences = req.session.appealApplication.files || {};
     if (validation) {
@@ -130,6 +112,49 @@ function postAppealLate(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (req.file) {
+      const fileDescription: string = req.body['file-description'];
+      const validation = textAreaValidation(fileDescription, 'file-description');
+      if (validation) {
+        const evidences = req.session.appealApplication.files || {};
+        return res.render('appeal-application/home-office/appeal-late.njk', {
+          appealLate: req.session.appealApplication && req.session.appealApplication['appeal-late'] || null,
+          evidences: Object.values(evidences),
+          error: validation,
+          errorList: Object.values(validation)
+        });
+      }
+      req.session.appealApplication = {
+        ...req.session.appealApplication || null,
+        files: {
+          [req.file.originalname]: {
+            file_name: req.file.originalname,
+            value: req.file.mimetype,
+            description: fileDescription
+          }
+        }
+      };
+    }
+    return res.redirect(paths.homeOffice.appealLate);
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postDeleteEvidence(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (req.body.delete) {
+      const fileId = Object.keys(req.body.delete)[0];
+      delete req.session.appealApplication.files[fileId];
+    }
+    return res.redirect(paths.homeOffice.appealLate);
+  } catch (e) {
+    next(e);
+  }
+}
+
 const upload = multer().single('file-upload');
 
 function setupHomeOfficeDetailsController(): Router {
@@ -140,6 +165,8 @@ function setupHomeOfficeDetailsController(): Router {
   router.post(paths.homeOffice.letterSent, postDateLetterSent);
   router.get(paths.homeOffice.appealLate, getAppealLate);
   router.post(paths.homeOffice.appealLate, upload, postAppealLate);
+  router.post(paths.homeOffice.uploadEvidence, upload, postUploadEvidence);
+  router.post(paths.homeOffice.deleteEvidence, upload, postDeleteEvidence);
   return router;
 }
 
@@ -150,5 +177,7 @@ export {
   postHomeOfficeDetails,
   getAppealLate,
   postAppealLate,
+  postDeleteEvidence,
+  postUploadEvidence,
   setupHomeOfficeDetailsController
 };

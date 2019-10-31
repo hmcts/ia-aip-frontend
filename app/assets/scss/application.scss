@@ -1,11 +1,8 @@
 @import "node_modules/govuk-frontend/govuk/all";
 @import "_cookie-banner";
 @import "_date-component";
+@import "_evidence-list";
 
 body {
   @extend .govuk-body;
-}
-
-.testing-class {
-  color: red;
 }

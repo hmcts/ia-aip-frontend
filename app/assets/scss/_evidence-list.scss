@@ -1,0 +1,12 @@
+.evidence-list__link {
+    @include govuk-font($size: 19);
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    color: $govuk-link-colour;
+    padding: 0;
+
+    &:hover {
+      color: govuk-colour("light-blue");
+    }
+  }

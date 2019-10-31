@@ -120,6 +120,27 @@
       "heading": "What is your nationality? ",
       "title": "Nationality",
       "stateless": "I am stateless (A stateless person is not a citizen of any country)."
+    },
+    "enterPostcode": {
+      "heading": "What is your address?",
+      "title": "Address",
+      "hint": "Enter a UK postcode"
+    },
+    "enterAddress": {
+      "heading": "What is your address?",
+      "title": "Address",
+      "inputs": {
+        "building": "Building and street",
+        "town": "Town or city",
+        "country": "Country",
+        "postcode": "Postcode"
+      }
+    },
+    "postcodeLookup": {
+      "heading": "What is your address?",
+      "title": "Postcode",
+      "select": "Select an address",
+      "cantFind": "I cant find my address in the list"
     }
   },
   "error": {

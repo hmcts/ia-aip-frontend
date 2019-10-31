@@ -1,6 +1,13 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import { addressValidation, appellantNamesValidation, dateValidation, nationalityValidation, postcodeValidation } from '../utils/fields-validations';
+import {
+  addressValidation,
+  appellantNamesValidation,
+  dateValidation,
+  nationalityValidation,
+  postcodeValidation,
+  selectPostcodeValidation
+} from '../utils/fields-validations';
 import { nationalities } from '../utils/nationalities';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
@@ -93,7 +100,7 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
 
 function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/enter-postcode.njk');
+    res.render('appeal-application/personal-details/enter-postcode.njk');
   } catch (e) {
     next(e);
   }
@@ -103,13 +110,14 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
   try {
     const validation = postcodeValidation(req.body);
     if (validation) {
-      res.render('appeal-application/enter-postcode.njk',{
+      res.render('appeal-application/personal-details/enter-postcode.njk', {
         error: validation,
-        errorList: Object.values(validation) });
+        errorList: Object.values(validation)
+      });
     } else {
       // TODO - add postcode to session.
       // TODO - Fetch the address from the valid postcode.
-      res.render('appeal-application/enter-postcode.njk');
+      res.render('appeal-application/personal-details/enter-postcode.njk');
     }
   } catch (e) {
     next(e);
@@ -129,15 +137,64 @@ function postManualEnterAddressPage(req: Request, res: Response, next: NextFunct
     const validation = addressValidation(req.body);
     if (validation) {
       // console.log(JSON.stringify(validation))
-      res.render('appeal-application/personal-details/enter-address.njk',{
+      res.render('appeal-application/personal-details/enter-address.njk', {
         error: validation,
-        errorList: Object.values(validation) });
+        errorList: Object.values(validation)
+      });
     } else {
       // TODO - add postcode to session.
       res.render('appeal-application/personal-details/enter-address.njk');
       req.session.personalDetails.address = req.body;
       // TODO - Fetch the address from the valid postcode.
     }
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
+  const addresses = [
+    {
+      value: '',
+      text: 'Select'
+    },
+    {
+      value: 'address',
+      text: '60 GPS London United Kingdom  W1W 7RT'
+    }
+  ];
+  try {
+    res.render('appeal-application/personal-details/postcode-lookup.njk', { addresses: addresses });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
+  const addresses = [
+    {
+      value: '',
+      text: 'Select'
+    },
+    {
+      value: '60 GPS London United Kingdom  W1W 7RT',
+      text: '60 GPS London United Kingdom  W1W 7RT'
+    }];
+  try {
+    const validation = selectPostcodeValidation(req.body);
+    if (validation !== null) {
+      return res.render('appeal-application/personal-details/postcode-lookup.njk', {
+        error: validation,
+        errorList: Object.values(validation),
+        addresses: addresses
+      });
+    }
+    // TODO - add postcode to session.
+    req.session.personalDetails = {
+      address: req.body.dropdown
+    };
+    return res.redirect(paths.taskList);
+    // TODO - Fetch the address from the valid postcode.
   } catch (e) {
     next(e);
   }
@@ -155,19 +212,23 @@ function setupPersonalDetailsController(deps?: any): Router {
   router.post(paths.personalDetails.enterPostcode, postEnterPostcodePage);
   router.get(paths.personalDetails.enterAddress, getManualEnterAddressPage);
   router.post(paths.personalDetails.enterAddress, postManualEnterAddressPage);
+  router.get(paths.personalDetails.postcodeLookup, getPostcodeLookupPage);
+  router.post(paths.personalDetails.postcodeLookup, postPostcodeLookupPage);
   return router;
 }
 
 export {
-    setupPersonalDetailsController,
-    getNamePage,
-    postNamePage,
-    getDateOfBirthPage,
-    postDateOfBirth,
-    postNationalityPage,
-    getNationalityPage,
-    postEnterPostcodePage,
-    getEnterPostcodePage,
-    getManualEnterAddressPage,
-    postManualEnterAddressPage
+  setupPersonalDetailsController,
+  getNamePage,
+  postNamePage,
+  getDateOfBirthPage,
+  postDateOfBirth,
+  postNationalityPage,
+  getNationalityPage,
+  postEnterPostcodePage,
+  getEnterPostcodePage,
+  getManualEnterAddressPage,
+  postManualEnterAddressPage,
+  getPostcodeLookupPage,
+  postPostcodeLookupPage
 };

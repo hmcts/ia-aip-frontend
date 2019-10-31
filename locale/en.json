@@ -135,6 +135,12 @@
         "country": "Country",
         "postcode": "Postcode"
       }
+    },
+    "postcodeLookup": {
+      "heading": "What is your address?",
+      "title": "Postcode",
+      "select": "Select an address",
+      "cantFind": "I cant find my address in the list"
     }
   },
   "error": {

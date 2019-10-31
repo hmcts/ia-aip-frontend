@@ -11,8 +11,9 @@ const paths = {
     name: '/personal-details/name',
     nationality: '/personal-details/nationality',
     dob: '/personal-details/date-of-birth',
-    enterPostcode: 'personal-details/enter-postcode',
-    enterAddress: 'personal-details/enter-address'
+    enterPostcode: '/personal-details/enter-postcode',
+    enterAddress: '/personal-details/enter-address',
+    postcodeLookup: '/personal-details/postcode-lookup'
   },
   homeOffice: {
     details: '/home-office/details',

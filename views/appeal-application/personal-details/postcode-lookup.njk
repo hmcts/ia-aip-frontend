@@ -1,0 +1,39 @@
+{% extends '../../layout.njk' %}
+{%  set pageTitleName = i18n.pages.postcodeLookup.title %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+
+
+{%  block content %}
+    {% if error %}
+        {{ govukErrorSummary({
+            titleText: i18n.error.summary.title,
+            descriptionText: i18n.error.summary.descriptionText,
+            errorList: errorList
+        })
+        }}
+    {% endif %}
+    <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.postcodeLookup.heading}}</h1>
+    <form method="post" action="/personal-details/postcode-lookup">
+    <p class="govuk-body-l">{{  i18n.pages.postcodeLookup.title}}</p>
+    <span><b>SW11 AA</b> &emsp;  <a  class="govuk-link app-contact-panel__link"  href="/personal-details/enter-postcode">Change</a></span>
+    </br>
+    </br>
+    {{ govukSelect({
+        id: "dropdown",
+        name: "dropdown",
+        label: {
+            text:  i18n.pages.postcodeLookup.select
+        },
+        items: addresses,
+        errorMessage: {
+            text:  error['dropdown'].text
+        } if error['dropdown']
+    }) }}
+    <a class="govuk-link app-contact-panel__link" href="/personal-details/enter-address">{{  i18n.pages.postcodeLookup.cantFind }}</a>
+    </br>
+    </br>
+    {{ saveButtons('Save and continue', 'Save for later') }}
+    {{ contactUs() }}
+    </form>
+{%  endblock  %}

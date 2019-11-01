@@ -7,6 +7,7 @@ const paths = {
   login: '/login',
   logout: '/logout',
   start: '/start',
+  confirmation: '/confirmation',
   personalDetails: {
     name: '/personal-details/name',
     nationality: '/personal-details/nationality',

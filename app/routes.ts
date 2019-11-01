@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { setupCheckAndSendController } from './controllers/check-and-send';
+import { setConfirmationController } from './controllers/confirmation-page';
 import { setupContactDetailsController } from './controllers/contact-details';
 import { setupDevNextPageController } from './controllers/dev-next-page';
 import { setupHealthController } from './controllers/health';
@@ -21,6 +22,7 @@ const typeOfAppealController = setupTypeOfAppealController();
 const devNextPageController = setupDevNextPageController();
 const personalDetailsController = setupPersonalDetailsController();
 const contactDetailsController = setupContactDetailsController();
+const confirmationController = setConfirmationController();
 const checkAndSendController = setupCheckAndSendController();
 // not protected by idam
 router.use(healthController);
@@ -34,6 +36,7 @@ router.use(personalDetailsController);
 router.use(typeOfAppealController);
 router.use(devNextPageController);
 router.use(contactDetailsController);
+router.use(confirmationController);
 router.use(checkAndSendController);
 
 export { router };

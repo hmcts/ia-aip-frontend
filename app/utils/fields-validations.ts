@@ -1,6 +1,28 @@
 import Joi from '@hapi/joi';
 import i18n from '../../locale/en.json';
 
+/**
+ * Uses Joi schema validation to validate and object and returns:
+ * an object containing list of errors if errors were found
+ * or null if no errors where found
+ * @param obj the object to be validated
+ * @param schema the schema to validate the object
+ */
+function validate(obj: object, schema: any) {
+  const result = schema.validate(obj, { abortEarly: false });
+  if (result.error) {
+    return result.error.details.reduce((acc, curr): ValidationError => {
+      acc[curr.context.key] = {
+        key: curr.context.key,
+        text: curr.message,
+        href: `#${curr.context.key}`
+      };
+      return acc;
+    }, {});
+  }
+  return null;
+}
+
 function textAreaValidation(text: string, theKey: string): boolean | ValidationErrors {
   const schema = Joi
     .string()
@@ -28,28 +50,18 @@ function textAreaValidation(text: string, theKey: string): boolean | ValidationE
 
 function homeOfficeNumberValidation(reference: string) {
   const schema = Joi
-        .string()
-        .required()
-        .regex(/^[a-zA-Z]{1}[0-9]{7}$/)
-        .messages({
-          'string.empty': i18n.validationErrors.empty,
-          'string.pattern.base': i18n.validationErrors.homeOfficeRef
-        });
+    .string()
+    .required()
+    .regex(/^[a-zA-Z]{1}[0-9]{7}$/)
+    .messages({
+      'string.empty': i18n.validationErrors.empty,
+      'string.pattern.base': i18n.validationErrors.homeOfficeRef
+    });
   const result = schema.validate(reference);
   if (result.error) {
     return result.error.details[0].message;
   }
   return false;
-}
-
-interface ValidationError {
-  key: string;
-  text: string;
-  href: string;
-}
-
-interface ValidationErrors {
-  [key: string]: ValidationError;
 }
 
 function dateValidation(obj: object): boolean | ValidationErrors {
@@ -71,20 +83,7 @@ function dateValidation(obj: object): boolean | ValidationErrors {
     })
   });
 
-  const result = schema.validate(obj, { abortEarly: false });
-  if (result.error) {
-    const errors: ValidationErrors =
-      result.error.details.reduce((acc, curr): ValidationError => {
-        acc[curr.context.key] = {
-          key: curr.context.key,
-          text: curr.message,
-          href: `#${curr.context.key}`
-        };
-        return acc;
-      }, {});
-    return errors;
-  }
-  return false;
+  return validate(obj, schema);
 }
 
 function appellantNamesValidation(obj: object) {
@@ -127,7 +126,8 @@ function nationalityValidation(obj: object) {
   }
   return false;
 }
-function postcodeValidation(obj: object): ValidationError | boolean {
+
+function postcodeValidation(obj: object): ValidationError | null {
   const postcodeRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
 
   const schema = Joi.object({
@@ -136,64 +136,41 @@ function postcodeValidation(obj: object): ValidationError | boolean {
       'string.pattern.base': 'Enter a valid postcode'
     })
   });
-  const result = schema.validate(obj, { abortEarly: true, allowUnknown: true });
-  if (result.error) {
-    const errors: ValidationError =
-            result.error.details.reduce((acc, curr): ValidationError => {
-              acc[curr.context.key] = {
-                key: curr.context.key,
-                text: curr.message,
-                href: `#${curr.context.key}`
-              };
-              return acc;
-            }, {});
-    return errors;
-  }
-  return false;
+  return validate(obj, schema);
 }
+
 /**
  * Validates an email address using joi validation
  * @param obj containing the property 'email-value' to validate the email
- * @return
+ *  Joi validation will return:
  * 'string.empty': if email string is empty
  * 'string.email': if email address does not match format
- * 'null': if no errors were found
+ * @return ValidationError object if there are issues, null if no errors found
  */
 function emailValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-        'email-value': Joi.string()
-            .required()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'co.uk'] } })
-            .messages({
-                'string.empty': i18n.validationErrors.emailEmpty,
-                'string.email': i18n.validationErrors.emailFormat
-            })
-    }).unknown();
+    'email-value': Joi.string()
+      .required()
+      .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net', 'co.uk' ] } })
+      .messages({
+        'string.empty': i18n.validationErrors.emailEmpty,
+        'string.email': i18n.validationErrors.emailFormat
+      })
+  }).unknown();
 
-  const result = schema.validate(obj, { abortEarly: false });
-
-  if (result.error) {
-    return result.error.details.reduce((acc, curr): ValidationError => {
-      acc[curr.context.key] = {
-        key: curr.context.key,
-        text: curr.message,
-        href: `#${curr.context.key}`
-      };
-      return acc;
-    }, {});
-  }
-  return null;
+  return validate(obj, schema);
 }
 
 /**
  * Validates a phone number using using joi validation with regex
  * @param obj containing the property 'text-message-value' to validate the phone number
  * @return
+ * Joi validation will return:
  * 'string.empty': if phone number string is empty
  * 'string.pattern.base': if phone number does not match format
- * 'null': if no errors were found
+ * @return ValidationError object if there are issues, null if no issues found
  */
-function phoneValidation(obj: object) {
+function phoneValidation(obj: object): null | ValidationErrors {
   const phonePattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
   const schema = Joi.object({
     'text-message-value': Joi.string()
@@ -205,19 +182,25 @@ function phoneValidation(obj: object) {
       })
   }).unknown();
 
-  const result = schema.validate(obj, { abortEarly: false });
+  return validate(obj, schema);
+}
 
-  if (result.error) {
-    return result.error.details.reduce((acc, curr): ValidationError => {
-      acc[curr.context.key] = {
-        key: curr.context.key,
-        text: curr.message,
-        href: `#${curr.context.key}`
-      };
-      return acc;
-    }, {});
-  }
-  return null;
+/**
+ * Validates whether the statement of truth checkbox has been checked by checking for object existence
+ * @param obj containing the property 'statement' to validate the existence
+ * Joi validation will return:
+ * 'any.required': if statement of truth object isn't present
+ * @return ValidationError object if there are issues, null if no issues found
+ */
+function statementOfTruthValidation(obj: object): null | ValidationErrors {
+
+  const schema = Joi.object({
+    statement: Joi.required().messages({
+      'any.required': i18n.validationErrors.acceptanceStatement
+    })
+  }).unknown();
+
+  return validate(obj, schema);
 }
 
 function addressValidation(obj: object): null | ValidationErrors {
@@ -228,18 +211,7 @@ function addressValidation(obj: object): null | ValidationErrors {
     ['address-line-2']: Joi.string().optional().empty(''),
     ['address-postcode']: Joi.string().optional().empty('')
   });
-  const result = schema.validate(obj, { abortEarly: false });
-  if (result.error) {
-    return result.error.details.reduce((acc, curr): ValidationError => {
-      acc[curr.context.key] = {
-        key: curr.context.key,
-        text: curr.message,
-        href: `#${curr.context.key}`
-      };
-      return acc;
-    }, {});
-  }
-  return null;
+  return validate(obj, schema);
 }
 
 function selectPostcodeValidation(obj: object): null | ValidationErrors {
@@ -247,18 +219,7 @@ function selectPostcodeValidation(obj: object): null | ValidationErrors {
     dropdown: Joi.string().required().messages({ 'string.empty': 'Select a address' })
 
   });
-  const result = schema.validate(obj, { abortEarly: false });
-  if (result.error) {
-    return result.error.details.reduce((acc, curr): ValidationError => {
-      acc[curr.context.key] = {
-        key: curr.context.key,
-        text: curr.message,
-        href: `#${curr.context.key}`
-      };
-      return acc;
-    }, {});
-  }
-  return null;
+  return validate(obj, schema);
 }
 
 export {
@@ -270,6 +231,7 @@ export {
   emailValidation,
   phoneValidation,
   textAreaValidation,
+  statementOfTruthValidation,
   addressValidation,
   selectPostcodeValidation
 };

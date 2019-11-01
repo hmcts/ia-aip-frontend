@@ -6,7 +6,9 @@ import {
   getHomeOfficeDetails,
   postAppealLate,
   postDateLetterSent,
+  postDeleteEvidence,
   postHomeOfficeDetails,
+  postUploadEvidence,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/home-office-details';
 import { paths } from '../../../app/paths';
@@ -228,7 +230,17 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
+    it('should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      postAppealLate(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postUploadEvidence', () => {
     it('should upload file and render home-office-appeal-late.njk', () => {
+      const description: string = 'an evidence description';
       const file = {
         originalname: 'file.png',
         mimetype: 'type'
@@ -236,15 +248,49 @@ describe('Home Office Details Controller', function () {
       const fileList = {
         [file.originalname]: {
           file_name: file.originalname,
-          value: file.mimetype
+          value: file.mimetype,
+          description
         }
       };
       req.file = file as Express.Multer.File;
-
-      postAppealLate(req as Request, res as Response, next);
+      req.body['file-description'] = description;
+      postUploadEvidence(req as Request, res as Response, next);
       expect(req.session.appealApplication.files).to.be.deep.equal(fileList);
+      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
 
+    it('should fail validation and render appeal-application/home-office/appeal-late.njk with errors', () => {
+      const file = {
+        originalname: 'file.png',
+        mimetype: 'type'
+      };
+
+      const error: ValidationError = {
+        key: 'file-description',
+        href: '#file-description',
+        text: i18n.validationErrors.required
+      };
+
+      req.file = file as Express.Multer.File;
+
+      postUploadEvidence(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk', {
+        appealLate: null,
+        evidences: [],
+        error: { 'file-description': error },
+        errorList: [ error ]
+      });
+    });
+
+    it('should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.redirect = sandbox.stub().throws(error);
+      postUploadEvidence(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postDeleteEvidence', () => {
     it('should delete file', () => {
       const file = {
         originalname: 'file.png',
@@ -259,14 +305,14 @@ describe('Home Office Details Controller', function () {
 
       req.session.appealApplication.files = fileList;
       req.body.delete = { 'file.png': 'delete' };
-      postAppealLate(req as Request, res as Response, next);
+      postDeleteEvidence(req as Request, res as Response, next);
       expect(req.session.appealApplication.files).to.be.deep.equal({});
     });
 
     it('should catch exception and call next with the error', () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      postAppealLate(req as Request, res as Response, next);
+      res.redirect = sandbox.stub().throws(error);
+      postDeleteEvidence(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

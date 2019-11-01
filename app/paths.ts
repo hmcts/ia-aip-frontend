@@ -18,7 +18,9 @@ const paths = {
   homeOffice: {
     details: '/home-office/details',
     letterSent: '/home-office/letter-sent',
-    appealLate: '/home-office/appeal-late'
+    appealLate: '/home-office/appeal-late',
+    uploadEvidence: '/home-office/upload-evidence',
+    deleteEvidence: '/home-office/delete-evidence'
   },
   typeOfAppeal: '/type-of-appeal',
   devNextPage: '/dev-next-page',

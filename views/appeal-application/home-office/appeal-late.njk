@@ -4,6 +4,7 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 {% from "components/evidence-list.njk" import evidenceList with context %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% block content %}
   {% if errorList %}
@@ -18,7 +19,7 @@
 
   <p>{{ i18n.appealApplication.homeOfficeAppealLate.description | safe }}</p>
 
-  <form action="/home-office-appeal-late" method="post" enctype="multipart/form-data">
+  <form action="/home-office/appeal-late" method="post" enctype="multipart/form-data">
     {{ govukTextarea({
       name: "appeal-late",
       id: "appeal-late",
@@ -38,14 +39,32 @@
         }
       }) }}
 
+      {{ govukInput({
+        label: {
+          text: "What is the file"
+        },
+        id: "file-description",
+        name: "file-description",
+        classes: "govuk-!-width-two-thirds",
+        attributes: {
+          placeholder: 'e.g. a country report or copy of birth certificate'
+        },
+        errorMessage: {
+          text: error["file-description"].text
+        } if error["file-description"]
+      }) }}
+
       {{ govukButton({
         text: i18n.common.buttons.uploadFile,
         name: 'uploadFile',
-        classes: "govuk-button--secondary"
+        classes: "govuk-button--secondary",
+        attributes: {
+          formaction: '/home-office/upload-evidence'
+        }
       }) }}
     </div>
 
-    {{ evidenceList(evidences) }}
+    {{ evidenceList(evidences, evidenceCTA) }}
 
     {{ govukButton({
       text: i18n.common.buttons.saveAndContinue,

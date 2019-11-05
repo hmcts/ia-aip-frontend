@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { getRedirectUrl } from '../../../app/utils/url-utils';
+import { getIdamRedirectUrl } from '../../../app/utils/url-utils';
 
 import { expect } from '../../utils/testUtils';
 
@@ -10,7 +10,7 @@ describe('creates url', () => {
       hostname: 'example.com'
     } as Partial<Request>;
 
-    const redirectUrl = getRedirectUrl(req as Request);
+    const redirectUrl = getIdamRedirectUrl(req as Request);
 
     expect(redirectUrl).eq('http://example.com/redirectUrl');
   });
@@ -21,7 +21,7 @@ describe('creates url', () => {
       hostname: 'localhost'
     } as Partial<Request>;
 
-    const redirectUrl = getRedirectUrl(req as Request);
+    const redirectUrl = getIdamRedirectUrl(req as Request);
 
     expect(redirectUrl).eq('http://localhost:3000/redirectUrl');
   });

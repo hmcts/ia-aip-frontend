@@ -8,12 +8,14 @@ import { setupHomeOfficeDetailsController } from './controllers/home-office-deta
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
 import { setupPersonalDetailsController } from './controllers/personal-details';
+import { setupStartController } from './controllers/startController';
 import { setupTaskListController } from './controllers/task-list';
 import { setupTypeOfAppealController } from './controllers/type-of-appeal';
 
 const router = express.Router();
 
 const indexController = setupIndexController();
+const startController = setupStartController();
 const healthController = setupHealthController();
 const idamController = setupIdamController();
 const taskListController = setupTaskListController();
@@ -26,6 +28,7 @@ const confirmationController = setConfirmationController();
 const checkAndSendController = setupCheckAndSendController();
 // not protected by idam
 router.use(healthController);
+router.use(startController);
 
 // protected by idam
 router.use(idamController);

@@ -7,7 +7,8 @@ import { dateValidation, homeOfficeNumberValidation, textAreaValidation } from '
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/home-office/details.njk', { application: req.session.appealApplication });
+    const { homeOfficeRefNumber } = req.session.appeal.application || null;
+    res.render('appeal-application/home-office/details.njk', { homeOfficeRefNumber });
   } catch (e) {
     next(e);
   }
@@ -20,13 +21,12 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
     if (validation) {
       return res.render('appeal-application/home-office/details.njk',
         {
-          error: validation,
-          application: req.session.appealApplication
+          error: validation
         }
       );
     }
 
-    req.session.appealApplication['homeOfficeReference'] = homeOfficeDetails;
+    req.session.appeal.application.homeOfficeRefNumber = homeOfficeDetails;
     return res.redirect(paths.homeOffice.letterSent);
   } catch (e) {
     next(e);
@@ -62,13 +62,14 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    req.session.appealApplication['homeOfficeDateLetterSent'] = {
+    req.session.appeal.application['dateLetterSent'] = {
       day,
       month,
       year
     };
 
     if (diffInDays <= 14) return res.redirect(paths.taskList);
+    req.session.appeal.application.isAppealLate = true;
     res.redirect(paths.homeOffice.appealLate);
   } catch (e) {
     next(e);
@@ -77,7 +78,8 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
 
 function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
-    const appealLate: string = req.session.appealApplication && req.session.appealApplication['appeal-late'] || null;
+    const { application } = req.session.appeal;
+    const appealLate: string = application.lateAppeal && application.lateAppeal.reason || null;
     const evidences = req.session.appealApplication && req.session.appealApplication.files || null;
     res.render('appeal-application/home-office/appeal-late.njk',{
       appealLate,
@@ -92,8 +94,9 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
 function postAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-    const evidences = req.session.appealApplication.files || {};
+    let { application } = req.session.appeal;
     if (validation) {
+      const evidences = application.lateAppeal && application.lateAppeal.evidences || {};
       return res.render('appeal-application/home-office/appeal-late.njk', {
         appealLate: req.body['appeal-late'],
         evidences: Object.values(evidences),
@@ -101,10 +104,10 @@ function postAppealLate(req: Request, res: Response, next: NextFunction) {
         errorList: Object.values(validation)
       });
     }
-    req.session.appealApplication = {
-      ...req.session.appealApplication,
-      'appeal-late': req.body['appeal-late']
+    const lateAppeal = {
+      reason: req.body['appeal-late']
     };
+    application.lateAppeal = lateAppeal;
 
     return res.redirect(paths.taskList);
   } catch (e) {

@@ -8,6 +8,6 @@ function getUrl(protocol: string, host: string, path: string): string {
   return protocol + '://' + host + portString + path;
 }
 
-export function getRedirectUrl(req: Request): string {
+export function getIdamRedirectUrl(req: Request): string {
   return getUrl(req.protocol, req.hostname, '/redirectUrl');
 }

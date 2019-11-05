@@ -30,8 +30,13 @@ describe('Home Office Details Controller', function () {
     req = {
       body: {},
       session: {
-        appealApplication: {}
-      } as any,
+        appealApplication: {},
+        appeal: {
+          application: {},
+          caseBuilding: {},
+          hearingRequirements: {}
+        } as Appeal
+      } as Partial<Express.Session>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -90,7 +95,7 @@ describe('Home Office Details Controller', function () {
       req.body['homeOfficeRefNumber'] = 'A1234567';
       postHomeOfficeDetails(req as Request, res as Response, next);
 
-      expect(req.session.appealApplication['homeOfficeReference']).to.be.eql('A1234567');
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
     });
 
@@ -101,8 +106,7 @@ describe('Home Office Details Controller', function () {
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
         {
-          error: i18n.validationErrors.homeOfficeRef,
-          application: {}
+          error: i18n.validationErrors.homeOfficeRef
         });
     });
 
@@ -138,10 +142,10 @@ describe('Home Office Details Controller', function () {
       req.body['year'] = date.format('YYYY');
       postDateLetterSent(req as Request, res as Response, next);
 
-      const { homeOfficeDateLetterSent } = req.session.appealApplication;
-      expect(homeOfficeDateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(homeOfficeDateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(homeOfficeDateLetterSent.year).to.be.eql(date.format('YYYY'));
+      const { dateLetterSent } = req.session.appeal.application;
+      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
+      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
+      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
@@ -153,10 +157,10 @@ describe('Home Office Details Controller', function () {
       req.body['year'] = date.format('YYYY');
       postDateLetterSent(req as Request, res as Response, next);
 
-      const { homeOfficeDateLetterSent } = req.session.appealApplication;
-      expect(homeOfficeDateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(homeOfficeDateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(homeOfficeDateLetterSent.year).to.be.eql(date.format('YYYY'));
+      const { dateLetterSent } = req.session.appeal.application;
+      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
+      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
+      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
@@ -218,7 +222,8 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postAppealLate', () => {
-    it('should fail validation and render home-office-appeal-late.njk with errors', () => {
+    it('should fail validation and render appeal-application/home-office/appeal-late.njk with errors', () => {
+      req.body['appeal-late'] = '';
       postAppealLate(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
     });

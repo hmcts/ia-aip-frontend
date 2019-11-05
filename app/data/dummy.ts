@@ -1,6 +1,6 @@
-export function createDummyAppealApplication() {
+export function createDummyAppealApplication(): Appeal {
   return {
-    appealApplication: {
+    application: {
       homeOfficeRefNumber: 'A1234567',
       dateLetterSent: {
         day: 1,
@@ -41,5 +41,5 @@ export function createDummyAppealApplication() {
     hearingRequirements: {
       data: {}
     }
-  } as Appeal;
+  };
 }

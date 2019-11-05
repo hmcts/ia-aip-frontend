@@ -20,7 +20,7 @@ interface ValidationErrors {
 }
 
 interface Appeal {
-  appealApplication: AppealApplication;
+  application: AppealApplication;
   caseBuilding: CaseBuilding;
   hearingRequirements: HearingRequirements;
 }
@@ -36,7 +36,7 @@ interface AppealApplication {
   isAppealLate: boolean;
   lateAppeal?: {
     reason: string;
-    evidences: [
+    evidences?: [
       {
         URL: string;
         name: string;
@@ -71,9 +71,9 @@ interface AppealApplication {
 }
 
 interface CaseBuilding {
-  data: {};
+  [key: string]: any;
 }
 
 interface HearingRequirements {
-  data: {};
+  [key: string]: any;
 }

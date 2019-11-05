@@ -9,8 +9,7 @@ function getIndex(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-/* istanbul ignore next */
-function setupIndexController(deps?: any): Router {
+function setupIndexController(): Router {
   const router = Router();
   router.get(paths.index, getIndex);
   return router;

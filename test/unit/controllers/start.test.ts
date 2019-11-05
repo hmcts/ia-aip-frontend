@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getIndex, setupIndexController } from '../../../app/controllers';
+import { getStart, setupStartController } from '../../../app/controllers/startController';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -40,16 +40,16 @@ describe('Index Controller', function() {
     sandbox.restore();
   });
 
-  describe('getIndex', () => {
+  describe('getStart', () => {
     it('get Index should render index.njk', function() {
-      getIndex(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('index.njk');
+      getStart(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('start.njk');
     });
 
     it('should catch exception and call next with the error', function () {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      getIndex(req as Request, res as Response, next);
+      getStart(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -58,8 +58,8 @@ describe('Index Controller', function() {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
-      setupIndexController();
-      expect(routerGetStub).to.have.been.calledWith(paths.index);
+      setupStartController();
+      expect(routerGetStub).to.have.been.calledWith(paths.start);
     });
   });
 });

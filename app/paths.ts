@@ -6,6 +6,7 @@ const paths = {
   taskList: '/task-list',
   login: '/login',
   logout: '/logout',
+  redirectUrl: '/redirectUrl',
   start: '/start',
   confirmation: '/confirmation',
   personalDetails: {

@@ -33,8 +33,8 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
     // TODO: Remove dummy data
-    const appealApplication = createDummyAppealApplication() || req.session.appealApplication;
-    const summaryRows = createSummaryRowsFrom(appealApplication.appealApplication);
+    const appeal = createDummyAppealApplication() || req.session.appealApplication;
+    const summaryRows = createSummaryRowsFrom(appeal.application);
     return res.render('appeal-application/check-and-send.njk', { summaryRows: summaryRows });
   } catch (error) {
     next(error);
@@ -44,8 +44,8 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSend(req: Request, res: Response, next: NextFunction) {
   const request = req.body;
   try {
-    const appealApplication = createDummyAppealApplication() || req.session.appealApplication;
-    const summaryRows = createSummaryRowsFrom(appealApplication.appealApplication);
+    const appeal = createDummyAppealApplication() || req.session.appealApplication;
+    const summaryRows = createSummaryRowsFrom(appeal.application);
     const validationResult = statementOfTruthValidation(request);
     if (validationResult) {
       return res.render('appeal-application/check-and-send.njk', {

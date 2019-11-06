@@ -114,7 +114,6 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
         errorList: Object.values(validation)
       });
     }
-    // TODO - add postcode to session.
     // TODO - Fetch the address from the valid postcode.
     return res.render('appeal-application/personal-details/enter-postcode.njk');
 
@@ -141,7 +140,7 @@ function postManualEnterAddressPage(req: Request, res: Response, next: NextFunct
       });
     }
     req.session.personalDetails.address = req.body;
-    // TODO - add postcode to session.
+    // TODO - add address to session.
     // TODO - Fetch the address from the valid postcode.
     return res.render('appeal-application/personal-details/enter-address.njk');
 

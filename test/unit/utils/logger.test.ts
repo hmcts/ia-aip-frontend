@@ -13,7 +13,7 @@ describe('Utils logger', () => {
   let consoleErrorStub: SinonStub;
   let consoleWarnStub: SinonStub;
   const message: string = 'Original';
-  const label: string = 'logger.test.ts';
+  const label: string = 'test.ts';
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();

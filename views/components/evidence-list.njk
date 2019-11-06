@@ -8,9 +8,9 @@
     <tbody class="govuk-table__body">
       {% for evidence in evidences %}
       <tr class="govuk-table__row evidence">
-        <td class="govuk-table__cell">{{ evidence.file_name }}</td>
+        <td class="govuk-table__cell">{{ evidence.name }}</td>
         <td class="govuk-table__cell">
-          <input type="submit" name="delete[{{ evidence.file_name }}]" value="{{ i18n.components.evidenceList.delete }}" class="evidence-list__link" formaction="{{ cta }}">
+          <input type="submit" name="delete[{{ evidence.name }}]" value="{{ i18n.components.evidenceList.delete }}" class="evidence-list__link" formaction="{{ cta }}">
         </td>
       </tr>
       {% else %}

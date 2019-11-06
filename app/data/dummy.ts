@@ -10,8 +10,8 @@ export function createDummyAppealApplication(): Appeal {
       appealType: 'Protection',
       isAppealLate: false,
       personalDetails: {
-        firstName: 'Pedro',
-        lastName: 'Jimenez',
+        givenNames: 'Pedro',
+        familyName: 'Jimenez',
         dob: {
           day: 10,
           month: 10,

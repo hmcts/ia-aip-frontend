@@ -14,7 +14,10 @@
     <span class="govuk-caption-m">{{ i18n.pages.DOB.hint }}</span>
     <form method="post" action="/personal-details/date-of-birth" type="submit">
         {{ dateInput(
-            error=errors
+            error=errors,
+            day=dob.day,
+            month=dob.month,
+            year=dob.year
         ) }}
 
         {{ saveButtons() }}

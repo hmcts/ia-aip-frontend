@@ -1,4 +1,5 @@
 import Joi from '@hapi/joi';
+import moment from 'moment';
 import i18n from '../../locale/en.json';
 
 /**
@@ -8,7 +9,7 @@ import i18n from '../../locale/en.json';
  * @param obj the object to be validated
  * @param schema the schema to validate the object
  */
-function validate(obj: object, schema: any) {
+function validate(obj: object, schema: any): ValidationErrors {
   const result = schema.validate(obj, { abortEarly: false });
   if (result.error) {
     return result.error.details.reduce((acc, curr): ValidationError => {
@@ -76,7 +77,7 @@ function dateValidation(obj: object): boolean | ValidationErrors {
       'number.max': 'Needs to be a valid date.',
       'number.min': 'Needs to be above 0.'
     }),
-    year: Joi.number().min(1111).max(2019).required().messages({
+    year: Joi.number().min(1111).max(moment().year()).required().messages({
       'number.base': 'Please Enter a year',
       'number.min': 'Needs to be above 0.',
       'number.max': 'Needs to be a valid date.'
@@ -127,7 +128,7 @@ function nationalityValidation(obj: object) {
   return false;
 }
 
-function postcodeValidation(obj: object): ValidationError | null {
+function postcodeValidation(obj: object): ValidationErrors | null {
   const postcodeRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
 
   const schema = Joi.object({

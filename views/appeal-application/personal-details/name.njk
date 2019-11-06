@@ -1,12 +1,12 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-    {{ errorSummary(errors) }}
+    {{ errorSummary(errorList) }}
     <h1 class="govuk-heading-l">What is your name?</h1>
 
     <form method="post" action="/personal-details/name" type="submit">
-        {{ input("Given names","givenNames",givenNames) }}
-        {{ input("Family name","familyName",familyName) }}
+        {{ input("Given names", "givenNames", personalDetails.givenNames) }}
+        {{ input("Family name", "familyName", personalDetails.familyName) }}
         {{ saveButtons() }}
     </form>
 {% endblock %}

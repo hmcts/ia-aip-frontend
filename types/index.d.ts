@@ -19,6 +19,16 @@ interface ValidationErrors {
   [key: string]: ValidationError;
 }
 
+interface Evidences {
+  [key: string]: Evidence;
+}
+
+interface Evidence {
+  url: string;
+  name: string;
+  description: string;
+}
+
 interface Appeal {
   application: AppealApplication;
   caseBuilding: CaseBuilding;
@@ -35,17 +45,12 @@ interface AppealApplication {
   appealType: string;
   isAppealLate: boolean;
   lateAppeal?: {
-    reason: string;
-    evidences?: [
-      {
-        URL: string;
-        name: string;
-      }
-    ]
-  };
+    reason?: string;
+    evidences?: Evidences;
+  }
   personalDetails: {
-    firstName: string;
-    lastName: string;
+    givenNames: string;
+    familyName: string;
     dob: {
       day: number;
       month: number;

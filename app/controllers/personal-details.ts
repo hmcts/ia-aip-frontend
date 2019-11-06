@@ -11,7 +11,9 @@ import { nationalities } from '../utils/nationalities';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('appeal-application/personal-details/date-of-birth.njk');
+    const { application } = req.session.appeal;
+    const dob = application.personalDetails && application.personalDetails.dob || null;
+    return res.render('appeal-application/personal-details/date-of-birth.njk', { dob });
   } catch (e) {
     next(e);
   }
@@ -27,10 +29,13 @@ function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
       });
     }
 
-    req.session.personalDetails.dob = {
-      day: req.body.day,
-      month: req.body.month,
-      year: req.body.year
+    req.session.appeal.application.personalDetails = {
+      ...req.session.appeal.application.personalDetails,
+      dob: {
+        day: req.body.day,
+        month: req.body.month,
+        year: req.body.year
+      }
     };
 
     return res.redirect(paths.personalDetails.nationality);
@@ -41,7 +46,8 @@ function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
 
 function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('appeal-application/personal-details/name.njk');
+    const { personalDetails } = req.session.appeal.application || null;
+    return res.render('appeal-application/personal-details/name.njk', { personalDetails });
   } catch (e) {
     next(e);
   }
@@ -60,8 +66,9 @@ function postNamePage(req: Request, res: Response, next: NextFunction) {
         }
       });
     }
-
-    req.session.personalDetails = {
+    const { application } = req.session.appeal;
+    application.personalDetails = {
+      ...application.personalDetails,
       familyName: req.body.familyName,
       givenNames: req.body.givenNames
     };

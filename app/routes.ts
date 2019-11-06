@@ -12,6 +12,8 @@ import { setupStartController } from './controllers/startController';
 import { setupTaskListController } from './controllers/task-list';
 import { setupTypeOfAppealController } from './controllers/type-of-appeal';
 
+import { initSession, logSession } from './middleware/session-middleware';
+
 const router = express.Router();
 
 const indexController = setupIndexController();
@@ -32,6 +34,8 @@ router.use(startController);
 
 // protected by idam
 router.use(idamController);
+router.use(initSession);
+if (process.env.NODE_ENV === 'development') router.use(logSession);
 router.use(indexController);
 router.use(taskListController);
 router.use(homeOfficeDetailsController);

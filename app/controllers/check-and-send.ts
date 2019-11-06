@@ -10,10 +10,11 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     addSummaryRow('homeOfficeRefNumber', [ appealApplication.homeOfficeRefNumber ], '/href'),
     addSummaryRow('dateLetterSent',
       [ appealApplication.dateLetterSent.day, moment.months(appealApplication.dateLetterSent.month - 1), appealApplication.dateLetterSent.year ],
-      paths.homeOffice.letterSent, Delimiter.SPACE
+      paths.homeOffice.letterSent,
+      Delimiter.SPACE
     ),
     addSummaryRow('name',
-      [ appealApplication.personalDetails.firstName, appealApplication.personalDetails.lastName ],
+      [ appealApplication.personalDetails.givenNames, appealApplication.personalDetails.familyName ],
       paths.personalDetails.name, Delimiter.SPACE),
     addSummaryRow('dob',
       [ appealApplication.personalDetails.dob.day, moment.months(appealApplication.personalDetails.dob.month - 1), appealApplication.personalDetails.dob.year ],
@@ -32,10 +33,9 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    // TODO: Remove dummy data
-    const appeal = createDummyAppealApplication() || req.session.appealApplication;
-    const summaryRows = createSummaryRowsFrom(appeal.application);
-    return res.render('appeal-application/check-and-send.njk', { summaryRows: summaryRows });
+    const { application } = req.session.appeal || createDummyAppealApplication();
+    const summaryRows = createSummaryRowsFrom(application);
+    return res.render('appeal-application/check-and-send.njk', { summaryRows });
   } catch (error) {
     next(error);
   }
@@ -44,8 +44,8 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSend(req: Request, res: Response, next: NextFunction) {
   const request = req.body;
   try {
-    const appeal = createDummyAppealApplication() || req.session.appealApplication;
-    const summaryRows = createSummaryRowsFrom(appeal.application);
+    const { application } = req.session.appeal || createDummyAppealApplication();
+    const summaryRows = createSummaryRowsFrom(application);
     const validationResult = statementOfTruthValidation(request);
     if (validationResult) {
       return res.render('appeal-application/check-and-send.njk', {

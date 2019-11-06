@@ -17,7 +17,11 @@ describe('Home Office Details Controller', function () {
     req = {
       body: {},
       cookies: {},
-      session: {},
+      session: {
+        appeal: {
+          application: {}
+        }
+      },
       idam: {
         userDetails: {}
       },

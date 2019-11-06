@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { initSession } from '../../../app/middleware/initSession';
+import { initSession } from '../../../app/middleware/session-middleware';
+import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('InitSession middleware', () => {
@@ -7,6 +8,7 @@ describe('InitSession middleware', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
+  const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -17,7 +19,9 @@ describe('InitSession middleware', () => {
         userDetails: {}
       },
       app: {
-        locals: {}
+        locals: {
+          logger
+        }
       } as any
     } as Partial<Request>;
 

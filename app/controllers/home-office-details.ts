@@ -35,7 +35,8 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
 
 function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/home-office/letter-sent.njk');
+    const { dateLetterSent } = req.session.appeal.application;
+    res.render('appeal-application/home-office/letter-sent.njk', { dateLetterSent });
   } catch (e) {
     next(e);
   }
@@ -53,7 +54,8 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
     const { day, month, year } = req.body;
     const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
     if (diffInDays < 0) {
-      const error = {
+      const error: ValidationError = {
+        key: 'day',
         text: i18n.validationErrors.futureDate,
         href: '#day'
       };
@@ -79,11 +81,12 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
 function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
-    const appealLate: string = application.lateAppeal && application.lateAppeal.reason || null;
+    const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
+    const appealLateEvidences = application.lateAppeal && application.lateAppeal.evidences || null;
     const evidences = req.session.appealApplication && req.session.appealApplication.files || null;
     res.render('appeal-application/home-office/appeal-late.njk',{
-      appealLate,
-      evidences: evidences ? Object.values(evidences) : null,
+      appealLateReason,
+      evidences: appealLateEvidences ? Object.values(appealLateEvidences) : null,
       evidenceCTA: paths.homeOffice.deleteEvidence
     });
   } catch (e) {
@@ -94,7 +97,7 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
 function postAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-    let { application } = req.session.appeal;
+    const { application } = req.session.appeal;
     if (validation) {
       const evidences = application.lateAppeal && application.lateAppeal.evidences || {};
       return res.render('appeal-application/home-office/appeal-late.njk', {
@@ -104,11 +107,10 @@ function postAppealLate(req: Request, res: Response, next: NextFunction) {
         errorList: Object.values(validation)
       });
     }
-    const lateAppeal = {
+    application.lateAppeal = {
+      ...application.lateAppeal,
       reason: req.body['appeal-late']
     };
-    application.lateAppeal = lateAppeal;
-
     return res.redirect(paths.taskList);
   } catch (e) {
     next(e);
@@ -120,24 +122,23 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
     if (req.file) {
       const fileDescription: string = req.body['file-description'];
       const validation = textAreaValidation(fileDescription, 'file-description');
+      const { application } = req.session.appeal;
       if (validation) {
-        const evidences = req.session.appealApplication.files || {};
+        const evidences = application.lateAppeal.evidences || {};
         return res.render('appeal-application/home-office/appeal-late.njk', {
-          appealLate: req.session.appealApplication && req.session.appealApplication['appeal-late'] || null,
+          appealLate: application.lateAppeal.reason || null,
           evidences: Object.values(evidences),
           error: validation,
           errorList: Object.values(validation)
         });
       }
-      req.session.appealApplication = {
-        ...req.session.appealApplication || null,
-        files: {
-          [req.file.originalname]: {
-            file_name: req.file.originalname,
-            value: req.file.mimetype,
-            description: fileDescription
-          }
-        }
+      application.lateAppeal.evidences = {
+        [req.file.originalname]: {
+          url: req.file.originalname,
+          name: req.file.originalname,
+          description: fileDescription
+        },
+        ...application.lateAppeal.evidences
       };
     }
     return res.redirect(paths.homeOffice.appealLate);
@@ -150,7 +151,7 @@ function postDeleteEvidence(req: Request, res: Response, next: NextFunction) {
   try {
     if (req.body.delete) {
       const fileId = Object.keys(req.body.delete)[0];
-      delete req.session.appealApplication.files[fileId];
+      delete req.session.appeal.application.lateAppeal.evidences[fileId];
     }
     return res.redirect(paths.homeOffice.appealLate);
   } catch (e) {

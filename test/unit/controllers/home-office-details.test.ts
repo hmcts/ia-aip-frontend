@@ -32,7 +32,9 @@ describe('Home Office Details Controller', function () {
       session: {
         appealApplication: {},
         appeal: {
-          application: {},
+          application: {
+            lateAppeal: {}
+          },
           caseBuilding: {},
           hearingRequirements: {}
         } as Appeal
@@ -228,7 +230,7 @@ describe('Home Office Details Controller', function () {
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
     });
 
-    it('should validate and render home-office-appeal-late.njk with errors', () => {
+    it('should validate and redirect to Task List', () => {
       req.body['appeal-late'] = 'My exlplanation why am late';
       postAppealLate(req as Request, res as Response, next);
 
@@ -252,15 +254,15 @@ describe('Home Office Details Controller', function () {
       };
       const fileList = {
         [file.originalname]: {
-          file_name: file.originalname,
-          value: file.mimetype,
+          name: file.originalname,
+          url: file.originalname,
           description
         }
       };
       req.file = file as Express.Multer.File;
       req.body['file-description'] = description;
       postUploadEvidence(req as Request, res as Response, next);
-      expect(req.session.appealApplication.files).to.be.deep.equal(fileList);
+      expect(req.session.appeal.application.lateAppeal.evidences).to.be.deep.equal(fileList);
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
 
@@ -303,15 +305,19 @@ describe('Home Office Details Controller', function () {
       };
       const fileList = {
         [file.originalname]: {
-          file_name: file.originalname,
-          value: file.mimetype
+          url: file.originalname,
+          name: file.originalname,
+          description: 'desc'
         }
       };
 
-      req.session.appealApplication.files = fileList;
+      req.session.appeal.application.lateAppeal = {
+        evidences: fileList
+      };
+
       req.body.delete = { 'file.png': 'delete' };
       postDeleteEvidence(req as Request, res as Response, next);
-      expect(req.session.appealApplication.files).to.be.deep.equal({});
+      expect(req.session.appeal.application.lateAppeal.evidences).to.be.deep.equal({});
     });
 
     it('should catch exception and call next with the error', () => {

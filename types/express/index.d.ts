@@ -1,11 +1,9 @@
 declare namespace Express {
   interface Request {
-    idam?: any
+    idam?: any;
   }
 
   interface SessionData {
-    appeal?: Appeal
+    appeal?: Appeal;
   }
 }
-
-

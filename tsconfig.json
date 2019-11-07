@@ -3,9 +3,11 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true, // do not check types in node_modules folder
     "typeRoots": [
       "./types",
-      "./node_modules/@types"
+      "./node_modules/@types",
+      "./node_modules/cypress/types/index.d.ts"
     ]
   }
 }

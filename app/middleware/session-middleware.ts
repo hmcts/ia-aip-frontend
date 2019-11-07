@@ -1,25 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
+import { CcdService } from '../service/ccd-service';
+import IdamService from '../service/idam-service';
+import S2SService from '../service/s2s-service';
+import UpdateAppealService from '../service/update-appeal-service';
 import Logger from '../utils/logger';
 
-function initSession(req: Request, res: Response, next: NextFunction) {
-  // TODO: CCD Integration
-  if (!req.session.appeal) {
-    const logger: Logger = req.app.locals.logger;
-    logger.trace('Initializing session', 'initSession');
-    req.session.appeal = {
-      application: {
-        homeOfficeRefNumber: null,
-        appealType: null,
-        contactDetails: {},
-        dateLetterSent: null,
-        isAppealLate: false,
-        lateAppeal: {},
-        personalDetails: null
-      },
-      caseBuilding: {},
-      hearingRequirements: {}
-    };
-  }
+const updateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
+
+async function initSession(req: Request, res: Response, next: NextFunction) {
+  await updateAppealService.loadAppeal(req);
   next();
 }
 

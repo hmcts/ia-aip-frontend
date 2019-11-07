@@ -38,23 +38,6 @@ describe('session-middleware', () => {
     sandbox.restore();
   });
 
-  it('initSession should initialize when appeal not present in session', () => {
-    const loggerTraceStub = sandbox.stub(logger, 'trace');
-    initSession(req as Request, res as Response, next);
-    expect(loggerTraceStub).to.be.called;
-    expect(req.session.appeal).to.be.an('object');
-    expect(next).to.be.called;
-  });
-
-  it('initSession should just call next when appeal is present in session', () => {
-    req.session.appeal = {} as Appeal;
-    const loggerTraceStub = sandbox.stub(logger, 'trace');
-    initSession(req as Request, res as Response, next);
-    expect(loggerTraceStub).not.to.be.called;
-    expect(req.session.appeal).to.be.an('object');
-    expect(next).to.be.called;
-  });
-
   it('logSession', () => {
     const loggerRequestStub = sandbox.stub(logger, 'request');
     logSession(req as Request, res as Response, next);

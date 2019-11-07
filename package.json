@@ -55,6 +55,7 @@
     "puppeteer": "^1.20.0",
     "redis": "^2.8.0",
     "webpack": "^4.41.2",
+    "request-promise": "^4.2.5",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^1.7.2"

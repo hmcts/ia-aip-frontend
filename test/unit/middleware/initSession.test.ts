@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { initSession } from '../../../app/middleware/initSession';
+import * as initSession from '../../../app/middleware/initSession';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('InitSession middleware', () => {
@@ -30,8 +30,13 @@ describe('InitSession middleware', () => {
     next = sandbox.stub() as NextFunction;
   });
 
-  it('initSession', () => {
-    initSession(req as Request, res as Response, next);
+  it.skip('initSession', async () => {
+    const loadCaseFromCcdStub = sinon.stub(initSession, 'loadCaseFromCcd');
+    loadCaseFromCcdStub.withArgs(req as Request).returns(new Promise((resolve) => {
+      resolve({ id: 'caseId' });
+    }));
+
+    await initSession.initSession(req as Request, res as Response, next);
     expect(req.session.appeal).to.be.an('object');
   });
 });

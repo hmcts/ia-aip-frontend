@@ -92,7 +92,7 @@ export default class S2SService implements IS2SService {
       logger.trace('Token expired Attempting to acquire a new one.', logLabel);
       await this.requestServiceToken();
     }
-    return this.serviceToken;
+    return `Bearer ${this.serviceToken}`;
   }
 
   setServiceToken(token: string) {

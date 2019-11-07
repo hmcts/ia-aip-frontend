@@ -32,7 +32,7 @@ describe('JWT Utils', () => {
 
     const result = await s2s.getServiceToken();
     expect(stub).has.been.calledOnce;
-    expect(result).eq('TheTokenInMemory');
+    expect(result).eq('Bearer TheTokenInMemory');
   });
 
   it('requests a new token when current token in memory is expired', async () => {
@@ -61,7 +61,7 @@ describe('JWT Utils', () => {
     expect(jwtStub).has.been.calledOnce;
     expect(buildStub).has.been.calledOnce;
     expect(restCall).has.been.calledOnce;
-    expect(result).eq('theNewToken');
+    expect(result).eq('Bearer theNewToken');
   });
 
   it('requests a new token when current token in memory is expired', async () => {
@@ -90,7 +90,7 @@ describe('JWT Utils', () => {
     expect(jwtStub).has.been.calledOnce;
     expect(buildStub).has.been.calledOnce;
     expect(restCall).has.been.calledOnce;
-    expect(result).eq('theNewToken');
+    expect(result).eq('Bearer theNewToken');
   });
 
 });

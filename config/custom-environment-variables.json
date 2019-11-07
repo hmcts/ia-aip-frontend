@@ -16,6 +16,7 @@
       "sha256sBackup": "HPKP_SHA256_BACKUP"
     }
   },
+  "microservice": "MICROSERVICE",
   "session": {
     "useRedis": "USE_REDIS"
   },
@@ -28,5 +29,8 @@
     "apiUrl": "IDAM_API_URL",
     "webUrl": "IDAM_WEB_URL",
     "secret": "IDAM_SECRET"
+  },
+  "ccd": {
+    "apiUrl": "CCD_API_URL"
   }
 }

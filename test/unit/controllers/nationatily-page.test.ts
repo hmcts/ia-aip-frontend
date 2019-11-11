@@ -1,12 +1,13 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import { getNationalityPage, postNationalityPage, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
+import { countryList } from '../../../app/data/country-list';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
-import { nationalities } from '../../../app/utils/nationalities';
+import { getNationalitiesOptions } from '../../../app/utils/nationalities';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Nationalities Controller', function() {
+describe('Personal details Controller', function() {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -25,7 +26,14 @@ describe('Nationalities Controller', function() {
         locals: {
           logger
         }
-      } as any
+      } as any,
+      session: {
+        appeal: {
+          application: {
+            personalDetails: {}
+          }
+        }
+      }
     } as unknown as Partial<Request>;
 
     res = {
@@ -40,7 +48,7 @@ describe('Nationalities Controller', function() {
     sandbox.restore();
   });
 
-  describe(' setupPersonalDetailsController', () => {
+  describe('setupPersonalDetailsController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
@@ -88,21 +96,23 @@ describe('Nationalities Controller', function() {
       postNationalityPage(req as Request, res as Response, next);
       req.body.stateless = '';
       req.body.nationality = '';
+      const nationalitiesOptions = getNationalitiesOptions(countryList, '');
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errors: { errorList: [{ href: '#', text: 'Please select a nationality.' }] },
-          nationalities: nationalities
+          nationalitiesOptions
         });
     });
 
     it('should fail validation and render personal-details/nationality.njk with error', () => {
       postNationalityPage(req as Request, res as Response, next);
       req.body.stateless = 'stateless';
-      req.body.nationality = 'British';
+      req.body.nationality = 'Taiwan';
+      const nationalitiesOptions = getNationalitiesOptions(countryList, '');
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errors: { errorList: [{ href: '#', text: 'Please select a nationality.' }] },
-          nationalities: nationalities
+          nationalitiesOptions
         });
     });
   });

@@ -210,7 +210,10 @@
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192",
     "futureDate": "The date is in the future, please re-enter the date.",
-    "acceptanceStatement": "Select if you believe the information you have given is true."
+    "acceptanceStatement": "Select if you believe the information you have given is true.",
+    "contactDetails": {
+      "selectOneOption": "Please let us know how you want us to communicate with you."
+    }
   },
   "fields": {
     "textMessage": "Text message",

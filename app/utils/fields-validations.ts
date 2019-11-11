@@ -92,7 +92,7 @@ function appellantNamesValidation(obj: object) {
     givenNames: Joi.string().required().messages({ 'string.empty': 'Please Enter Given Names' }),
     familyName: Joi.string().required().messages({ 'string.empty': 'Please Enter Family Name' })
 
-  });
+  }).unknown();
   const result = schema.validate(obj, { abortEarly: false });
   if (result.error) {
     const errors: Array<object> = [];
@@ -105,6 +105,34 @@ function appellantNamesValidation(obj: object) {
     return errors;
   }
   return false;
+}
+
+function contactDetailsValidation(obj: object) {
+  const phonePattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
+  const schema = Joi.object({
+    'email-value': Joi.string()
+      .optional()
+      .empty('')
+      .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net', 'co.uk' ] } })
+      .messages({
+        'string.empty': i18n.validationErrors.emailEmpty,
+        'string.email': i18n.validationErrors.emailFormat
+      }),
+    'text-message-value': Joi.string()
+      .optional()
+      .empty('')
+      .regex(phonePattern)
+      .messages({
+        'string.empty': i18n.validationErrors.phoneEmpty,
+        'string.pattern.base': i18n.validationErrors.phoneFormat
+      })
+  }).or('email-value', 'text-message-value')
+  .messages({
+    'object.missing': i18n.validationErrors.contactDetails.selectOneOption
+  })
+  .unknown();
+
+  return validate(obj, schema);
 }
 
 function nationalityValidation(obj: object) {
@@ -224,6 +252,7 @@ function selectPostcodeValidation(obj: object): null | ValidationErrors {
 }
 
 export {
+  contactDetailsValidation,
   homeOfficeNumberValidation,
   dateValidation,
   appellantNamesValidation,

@@ -1,71 +1,38 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import { emailValidation, phoneValidation } from '../utils/fields-validations';
-
-function hasSelections(data: []) {
-  return data !== undefined;
-}
-
-function validate(request: any) {
-
-  let validationErrors = {};
-  const selections = request.selections;
-
-  if (selections.includes('email')) {
-    // Validate email
-    const validationResult = emailValidation(request);
-    if (validationResult != null) {
-      validationErrors = { ...validationErrors, ...validationResult };
-    }
-  }
-
-  if (selections.includes('text-message')) {
-    // Validate phone number
-    const validationResult = phoneValidation(request);
-    if (validationResult != null) {
-      validationErrors = { ...validationErrors, ...validationResult };
-    }
-  }
-  return Object.keys(validationErrors).length === 0 ? null : validationErrors;
-}
+import { contactDetailsValidation } from '../utils/fields-validations';
 
 function getContactDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    // TODO: get email and phone from idam
-    const data = {
-      email: { value: '' },
-      textMessage: { value: '' }
-    };
-    return res.render('appeal-application/contact-details.njk', { data: data });
+    const { email, phone } = req.session.appeal.application.contactDetails || null;
+    return res.render('appeal-application/contact-details.njk', { email, phone });
   } catch (error) {
     next(error);
   }
 }
 
 function postContactDetails(req: Request, res: Response, next: NextFunction) {
-  const request = req.body;
-
   try {
-    const data = {
-      email: { value: request['email-value'] },
-      textMessage: { value: request['text-message-value'] }
-    };
+    const validation = contactDetailsValidation(req.body);
+    const { email, phone } = req.session.appeal.application.contactDetails || null;
 
-    if (!hasSelections(request.selections)) {
-      return res.render('appeal-application/contact-details.njk', { data: data, errors: { selections: 0 } });
-    }
-    const validationErrors = validate(request);
-    if (validationErrors != null) {
+    if (validation) {
       return res.render('appeal-application/contact-details.njk', {
-        data: data,
-        errors: validationErrors,
-        errorList: Object.values(validationErrors)
+        email,
+        phone,
+        errors: validation,
+        errorList: Object.values(validation)
       });
 
     }
     // TODO: Saving data in session for now should save to CCD once implementation is finished
     // as both buttons save-and-continue and save-for-later do the same thing we store the data and re-direct to task list
-    req.session.contactDetails = request.data;
+
+    req.session.appeal.application.contactDetails = {
+      ...req.session.appeal.application.contactDetails,
+      email: req.body['email-value'],
+      phone: req.body['text-message-value']
+    };
     return res.redirect(paths.taskList);
   } catch
     (error) {

@@ -1,11 +1,20 @@
-const nations = ['Venezuelan','Ugandan','Romanian','Mexican','Dutch','Lithuanian','Estonian','Finnish','Brazilian'];
-const nationalities = [{ text: 'Please select a nationality', value: '' }];
-nations.forEach((nation) => {
-  nationalities.push({
-    text: nation,
-    value: nation
+function getNationalitiesOptions(countriesList: string[], nationality: string) {
+  const options = countriesList.map((country) => {
+    const selected = nationality === country;
+    return {
+      text: country,
+      value: country,
+      selected
+    };
   });
-});
+  options.unshift({
+    text: 'Please select a nationality',
+    value: '',
+    selected: false
+  });
+  return options;
+}
+
 export {
-    nationalities
+  getNationalitiesOptions
 };

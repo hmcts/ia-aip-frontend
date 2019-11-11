@@ -59,13 +59,13 @@ interface AppealApplication {
     nationality: string;
   };
   contactDetails: {
-    preference: {
+    preference?: {
       email: boolean;
       textMessage: boolean;
     };
-    email: string;
-    phone: string;
-    address: {
+    email?: string;
+    phone?: string;
+    address?: {
       line1: string;
       line2: string;
       city: string;

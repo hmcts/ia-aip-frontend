@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import {
   addressValidation,
@@ -7,7 +8,7 @@ import {
   nationalityValidation,
   postcodeValidation, selectPostcodeValidation
 } from '../utils/fields-validations';
-import { nationalities } from '../utils/nationalities';
+import { getNationalitiesOptions } from '../utils/nationalities';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {
@@ -80,7 +81,10 @@ function postNamePage(req: Request, res: Response, next: NextFunction) {
 
 function getNationalityPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('appeal-application/personal-details/nationality.njk', { nationalities: nationalities });
+    const { application } = req.session.appeal;
+    const nationality = application.personalDetails && application.personalDetails.nationality || null;
+    const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
+    return res.render('appeal-application/personal-details/nationality.njk', { nationalitiesOptions });
   } catch (e) {
     next(e);
   }
@@ -89,15 +93,21 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
 function postNationalityPage(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = nationalityValidation(req.body);
-    let errors = null;
     if (validation) {
-      errors = validation;
+      const { application } = req.session.appeal;
+      const nationality = application.personalDetails && application.personalDetails.nationality || null;
+      const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
       return res.render('appeal-application/personal-details/nationality.njk', {
-        nationalities: nationalities,
-        errors: { errorList: errors }
+        nationalitiesOptions,
+        errors: { errorList: validation }
       });
     }
-    req.session.personalDetails.nationality = req.body.nationality;
+
+    const { application } = req.session.appeal;
+    application.personalDetails = {
+      ...application.personalDetails,
+      nationality: req.body.nationality
+    };
     return res.redirect(paths.taskList);
   } catch (e) {
     next(e);

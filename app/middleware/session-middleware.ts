@@ -10,7 +10,7 @@ function initSession(req: Request, res: Response, next: NextFunction) {
       application: {
         homeOfficeRefNumber: null,
         appealType: null,
-        contactDetails: null,
+        contactDetails: {},
         dateLetterSent: null,
         isAppealLate: false,
         lateAppeal: {},

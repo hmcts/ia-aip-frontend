@@ -3,7 +3,13 @@ import moment from 'moment';
 import multer from 'multer';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
+import { CcdService } from '../service/ccd-service';
+import IdamService from '../service/idam-service';
+import S2SService from '../service/s2s-service';
+import UpdateAppealService from '../service/update-appeal-service';
 import { dateValidation, homeOfficeNumberValidation, textAreaValidation } from '../utils/fields-validations';
+
+export const updateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
@@ -14,7 +20,7 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
+async function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
     const homeOfficeDetails = req.body['homeOfficeRefNumber'];
     const validation = homeOfficeNumberValidation(homeOfficeDetails);
@@ -27,6 +33,9 @@ function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) 
     }
 
     req.session.appeal.application.homeOfficeRefNumber = homeOfficeDetails;
+
+    await updateAppealService.updateAppeal(req);
+
     return res.redirect(paths.homeOffice.letterSent);
   } catch (e) {
     next(e);

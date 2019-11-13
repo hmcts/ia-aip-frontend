@@ -16,6 +16,7 @@
       "sha256sBackup": "HPKP_SHA256_BACKUP"
     }
   },
+  "microservice": "MICROSERVICE",
   "session": {
     "useRedis": "USE_REDIS"
   },

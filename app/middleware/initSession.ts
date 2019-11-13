@@ -1,36 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-import CcdService from '../service/ccd-service';
-import { getSecurityHeaders, SecurityHeaders } from '../service/getHeaders';
+import { CcdService } from '../service/ccd-service';
+import IdamService from '../service/idam-service';
+import S2SService from '../service/s2s-service';
+import UpdateAppealService from '../service/update-appeal-service';
 
-const ccdService = new CcdService();
-
-// todo need a type for the case data
-async function loadCaseFromCcd(req: Request): Promise<any> {
-  const securityHeaders: SecurityHeaders = await getSecurityHeaders(req);
-
-  return ccdService.loadOrCreateCase(req.idam.userDetails.id, securityHeaders);
-}
+const updateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
-  await loadCaseFromCcd(req);
-
-  req.session.appeal = {
-    application: {
-      homeOfficeRefNumber: null,
-      appealType: null,
-      contactDetails: null,
-      dateLetterSent: null,
-      isAppealLate: false,
-      lateAppeal: null,
-      personalDetails: null
-    },
-    caseBuilding: {},
-    hearingRequirements: {}
-  };
+  await updateAppealService.loadAppeal(req);
   next();
 }
 
 export {
-  initSession,
-  loadCaseFromCcd
+  initSession
 };

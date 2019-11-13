@@ -1,7 +1,7 @@
 import config from 'config';
 
 export const idamConfig = {
-  redirectUri: 'https://localhost:3001/redirectUrl',
+  redirectUri: 'https://localhost:3000/redirectUrl',
   indexUrl: '/start',
   idamApiUrl: config.get('idam.apiUrl'),
   idamLoginUrl: `${config.get('idam.webUrl')}/login`,

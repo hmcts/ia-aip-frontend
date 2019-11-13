@@ -9,7 +9,8 @@ import {
   postDeleteEvidence,
   postHomeOfficeDetails,
   postUploadEvidence,
-  setupHomeOfficeDetailsController
+  setupHomeOfficeDetailsController,
+  updateAppealService
 } from '../../../app/controllers/home-office-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
@@ -91,17 +92,21 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postHomeOfficeDetails', () => {
-    it('should validate and redirect home-office/details.njk', () => {
+    it('should validate and redirect home-office/details.njk', async () => {
+
+      // @ts-ignore
+      sinon.stub(updateAppealService, 'updateAppeal').resolves({});
+
       req.body['homeOfficeRefNumber'] = 'A1234567';
-      postHomeOfficeDetails(req as Request, res as Response, next);
+      await postHomeOfficeDetails(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
     });
 
-    it('should fail validation and render home-office/details.njk with error', () => {
+    it('should fail validation and render home-office/details.njk with error', async () => {
       req.body['homeOfficeRefNumber'] = 'notValid';
-      postHomeOfficeDetails(req as Request, res as Response, next);
+      await postHomeOfficeDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
@@ -110,10 +115,10 @@ describe('Home Office Details Controller', function () {
         });
     });
 
-    it('should catch exception and call next with the error', () => {
+    it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      postHomeOfficeDetails(req as Request, res as Response, next);
+      await postHomeOfficeDetails(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

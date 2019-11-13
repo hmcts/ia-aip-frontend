@@ -66,7 +66,7 @@ export default class S2SService implements IS2SService {
     logger.trace('Attempting to request a S2S token', logLabel);
     const request = this.buildRequest();
     let proxyConfig;
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' && !s2sUrl.startsWith('http://localhost')) {
       proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
     }
     let res;

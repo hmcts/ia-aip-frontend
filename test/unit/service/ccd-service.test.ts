@@ -1,11 +1,12 @@
 import rp from 'request-promise';
-import CcdService from '../../../app/service/ccd-service';
+import { CcdService } from '../../../app/service/ccd-service';
 import { SecurityHeaders } from '../../../app/service/getHeaders';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('idam-service', () => {
   const headers = {} as SecurityHeaders;
   const userId = 'userId';
+  const caseId = 'caseId';
   const expectedCase = { caseId: 1 };
   let loadedCase;
   let loadCaseStub;
@@ -15,7 +16,7 @@ describe('idam-service', () => {
     const ccdService = new CcdService();
 
     before(async () => {
-      loadCaseStub = sinon.stub(ccdService, 'loadCase');
+      loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
       loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
         resolve([expectedCase]);
       }));
@@ -38,7 +39,7 @@ describe('idam-service', () => {
     const ccdService = new CcdService();
 
     before(async () => {
-      loadCaseStub = sinon.stub(ccdService, 'loadCase');
+      loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
       loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
         resolve([]);
       }));
@@ -56,27 +57,114 @@ describe('idam-service', () => {
     });
   });
 
+  describe('createCase', () => {
+    const ccdService = new CcdService();
+
+    it('creates and submits case', async () => {
+      const startCreateCaseStub = sinon.stub(ccdService, 'startCreateCase');
+      startCreateCaseStub.resolves({
+        event_id: 'eventId',
+        token: 'token'
+      });
+
+      const submitCreateCaseStub = sinon.stub(ccdService, 'submitCreateCase');
+      const expectedResult = { } as any;
+      submitCreateCaseStub.withArgs(userId, headers, {
+        event: {
+          id: 'eventId',
+          summary: 'Create case AIP',
+          description: 'Create case AIP'
+        },
+        data: {
+          journeyType: 'aip'
+        },
+        event_token: 'token',
+        ignore_warning: true
+      }).resolves(expectedResult);
+
+      const ccdCaseDetails = await ccdService.createCase(userId, headers);
+
+      expect(ccdCaseDetails).eq(expectedResult);
+    });
+  });
+
+  describe('updateCase', () => {
+    const ccdService = new CcdService();
+    const expectedResult = { } as any;
+
+    it('updates case', async () => {
+      const startUpdateCaseStub = sinon.stub(ccdService, 'startUpdateCase');
+      startUpdateCaseStub.resolves({
+        event_id: 'eventId',
+        token: 'token'
+      });
+
+      const submitUpdateCaseStub = sinon.stub(ccdService, 'submitUpdateCase');
+      const caseData = { journeyType: 'AIP' };
+      submitUpdateCaseStub.withArgs(userId, caseId, headers, {
+        event: {
+          id: 'eventId',
+          summary: 'Update case AIP',
+          description: 'Update case AIP'
+        },
+        data: caseData,
+        event_token: 'token',
+        ignore_warning: true
+      }).resolves(expectedResult);
+
+      const caseDetails = await ccdService.updateCase(userId, {
+        id: caseId,
+        case_data: caseData
+      }, headers);
+
+      expect(caseDetails).eq(expectedResult);
+    });
+  });
+
   describe('calls ccd api', () => {
     const ccdService = new CcdService();
     const getRequest = sinon.stub(rp, 'get');
-    const expectedResult = new Promise((resolve) => {
+    const expectedResultGet = new Promise((resolve) => {
+      resolve();
+    });
+    const postRequest = sinon.stub(rp, 'post');
+    const expectedResultPost = new Promise((resolve) => {
       resolve();
     });
 
     before(async () => {
-      getRequest.returns(expectedResult);
+      getRequest.returns(expectedResultGet);
+      postRequest.returns(expectedResultPost);
     });
 
-    it('createCase', () => {
-      const createCase = ccdService.createCase(userId, headers);
+    it('startCreateCase', () => {
+      const createCase = ccdService.startCreateCase(userId, headers);
 
-      expect(createCase).eq(expectedResult);
+      expect(createCase).eq(expectedResultGet);
     });
 
-    it('loadCase', () => {
-      const createCase = ccdService.loadCase(userId, headers);
+    it('submitCreateCase', () => {
+      const submitCreateCase = ccdService.submitCreateCase(userId, headers, {} as any);
 
-      expect(createCase).eq(expectedResult);
+      expect(submitCreateCase).eq(expectedResultPost);
+    });
+
+    it('loadCasesForUser', () => {
+      const createCase = ccdService.loadCasesForUser(userId, headers);
+
+      expect(createCase).eq(expectedResultGet);
+    });
+
+    it('startUpdateCase', () => {
+      const updateCase = ccdService.startUpdateCase(userId, caseId, headers);
+
+      expect(updateCase).eq(expectedResultGet);
+    });
+
+    it('submitUpdateCase', () => {
+      const submitCreateCase = ccdService.submitUpdateCase(userId, caseId,headers, {} as any);
+
+      expect(submitCreateCase).eq(expectedResultPost);
     });
   });
 });

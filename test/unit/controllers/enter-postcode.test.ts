@@ -28,6 +28,7 @@ describe('Home Office Details Controller', function() {
     } as unknown as Partial<Request>;
 
     res = {
+      redirect: sandbox.spy(),
       render: sandbox.stub(),
       send: sandbox.stub()
     } as Partial<Response>;
@@ -61,7 +62,7 @@ describe('Home Office Details Controller', function() {
       req.body.postcode = 'W1W 7RT';
       postEnterPostcodePage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-postcode.njk');
+      expect(res.redirect).to.have.been.called;
     });
   });
 

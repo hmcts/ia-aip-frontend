@@ -64,56 +64,7 @@
         "Select at least one of the options below",
         "You can change this at a later date"
       ],
-      "exampleSummaryText": "See examples",
-      "errorMessage": "You must select at least one option",
-      "options": {
-        "protection": {
-          "name": "Protection",
-          "description": "You will be persecuted or harmed in some way if you are removed from the UK",
-          "example": {
-            "id": "protection-example",
-            "name": "Example number one",
-            "description": "Description of example"
-          }
-        },
-        "humanRights": {
-          "name": "Human Rights",
-          "description": "You have a family and/or private life in the UK, or a serious medical condition",
-          "example": {
-            "id": "human-rights-example",
-            "name": "Example number one",
-            "description": "Description of example"
-          }
-        },
-        "eea": {
-          "id": "eea",
-          "name": "European Economic Area (EEA)",
-          "description": "You are, or a family member is, an EEA/Swiss national",
-          "example": {
-            "id": "eea-example",
-            "name": "Example number one",
-            "description": "Description of example"
-          }
-        },
-        "revocation": {
-          "name": "Revocation of Protection Status",
-          "description": "Your protection status was taken away",
-          "example": {
-            "id": "revocation-example",
-            "name": "Example number one",
-            "description": "Description of example"
-          }
-        },
-        "deprivation": {
-          "name": "Deprivation of Citizenship",
-          "description": "Your British citizenship was taken way",
-          "example": {
-            "id": "deprivation-example",
-            "name": "Example number one",
-            "description": "Description of example"
-          }
-        }
-      }
+      "exampleSummaryText": "See examples"
     },
     "DOB": {
       "heading": "What is your date of birth? ",
@@ -235,6 +186,32 @@
       "emptyList": "No files uploaded",
       "delete": "Delete"
     }
+  },
+  "appealTypes": {
+    "protection": {
+      "value": "protection",
+      "title": "<b>Protection</b> (You will be persecuted or harmed in some way if you are removed from the UK)",
+      "examples": "<b>Example number one</b> (Description of example)"
+    },
+    "humanRights": {
+      "value": "human-rights",
+      "title": "<b>Human Rights</b> (You have a family and/or private life in the UK, or a serious medical condition)",
+      "examples": "<b>Example number one</b> (Description of example)"
+    },
+    "eea": {
+      "value": "eea",
+      "title": "<b>European Economic Area (EEA)</b> (You are, or a family member is, an EEA/Swiss national)",
+      "examples": "<b>Example number one</b> (Description of example)"
+    },
+    "revocation": {
+      "value": "revocation",
+      "title": "<b>Revocation of Protection Status</b> (Your protection status was taken away)",
+      "examples": "<b>Example number one</b> (Description of example)"
+    },
+    "deprivation": {
+      "value": "deprivation",
+      "title": "<b>Deprivation of Citizenship</b> (Your British citizenship was taken way)",
+      "examples": "<b>Example number one</b> (Description of example)"
+    }
   }
 }
-

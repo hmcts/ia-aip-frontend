@@ -108,7 +108,7 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
       ...application.personalDetails,
       nationality: req.body.nationality
     };
-    return res.redirect(paths.taskList);
+    return res.redirect(paths.personalDetails.enterPostcode);
   } catch (e) {
     next(e);
   }
@@ -126,41 +126,13 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
   try {
     const validation = postcodeValidation(req.body);
     if (validation !== null) {
-      res.render('appeal-application/personal-details/enter-postcode.njk', {
+      return res.render('appeal-application/personal-details/enter-postcode.njk', {
         error: validation,
         errorList: Object.values(validation)
       });
     }
     // TODO - Fetch the address from the valid postcode.
-    return res.render('appeal-application/personal-details/enter-postcode.njk');
-
-  } catch (e) {
-    next(e);
-  }
-}
-
-function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
-  try {
-    res.render('appeal-application/personal-details/enter-address.njk');
-  } catch (e) {
-    next(e);
-  }
-}
-
-function postManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
-  try {
-    const validation = addressValidation(req.body);
-    if (validation !== null) {
-      res.render('appeal-application/personal-details/enter-address.njk', {
-        error: validation,
-        errorList: Object.values(validation)
-      });
-    }
-    req.session.personalDetails.address = req.body;
-    // TODO - add address to session.
-    // TODO - Fetch the address from the valid postcode.
-    return res.render('appeal-application/personal-details/enter-address.njk');
-
+    return res.redirect(paths.personalDetails.postcodeLookup);
   } catch (e) {
     next(e);
   }
@@ -209,6 +181,32 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
     };
     return res.redirect(paths.taskList);
     // TODO - Fetch the address from the valid postcode.
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('appeal-application/personal-details/enter-address.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const validation = addressValidation(req.body);
+    if (validation !== null) {
+      res.render('appeal-application/personal-details/enter-address.njk', {
+        error: validation,
+        errorList: Object.values(validation)
+      });
+    }
+    req.session.personalDetails.address = req.body;
+    // TODO - add address to session.
+    // TODO - Fetch the address from the valid postcode.
+    return res.render('appeal-application/personal-details/enter-address.njk');
   } catch (e) {
     next(e);
   }

@@ -13,7 +13,7 @@
         }}
     {% endif %}
     <h1 class="govuk-heading-xl">{{ i18n.pages.enterPostcode.heading }}</h1>
-    <form action="/enter-postcode" method="post">
+    <form action="/personal-details/enter-postcode" method="post">
         {{ govukInput({
             label: {
                 text: i18n.pages.enterPostcode.hint
@@ -25,12 +25,12 @@
                 text:  error['postcode'].text
             } if error['postcode']
         }) }}
-    {{ govukButton({
-        text: 'Find address',
-        name: "buttton",
-        value: "submit",
-        classes: "govuk-!-margin-right-1"
-    }) }}
+        {{ govukButton({
+            text: 'Find address',
+            name: "buttton",
+            value: "submit",
+            classes: "govuk-!-margin-right-1"
+        }) }}
     </form>
     {{ contactUs() }}
 {% endblock  %}

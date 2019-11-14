@@ -42,7 +42,7 @@ interface AppealApplication {
     month: number;
     year: number;
   };
-  appealType: string;
+  appealType: string | any[];
   isAppealLate: boolean;
   lateAppeal?: {
     reason?: string;
@@ -81,4 +81,11 @@ interface CaseBuilding {
 
 interface HearingRequirements {
   [key: string]: any;
+}
+
+interface AppealType {
+  value: string;
+  title: string;
+  examples: string;
+  checked?: boolean;
 }

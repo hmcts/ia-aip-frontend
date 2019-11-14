@@ -4,7 +4,7 @@ import {
   postTypeOfAppeal,
   setupTypeOfAppealController
 } from '../../../app/controllers/type-of-appeal';
-import AppealTypes from '../../../app/domain/appeal-types';
+import { appealTypes } from '../../../app/data/appeal-types';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -21,7 +21,11 @@ describe('Type of appeal Controller', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
-      session: {} as any,
+      session: {
+        appeal: {
+          application: {}
+        }
+      } as Partial<Express.Session>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -46,85 +50,68 @@ describe('Type of appeal Controller', () => {
     sandbox.restore();
   });
 
-  it('should setup the routes', () => {
-    const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-    const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+  describe('setupTypeOfAppealController', () => {
+    it('should setup the routes', () => {
+      const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
+      const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-    setupTypeOfAppealController();
-    expect(routerGetStub).to.have.been.calledWith(paths.typeOfAppeal);
-    expect(routerPOSTStub).to.have.been.calledWith(paths.typeOfAppeal);
+      setupTypeOfAppealController();
+      expect(routerGetStub).to.have.been.calledWith(paths.typeOfAppeal);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.typeOfAppeal);
+    });
   });
 
-  it('getTypeOfAppeal should render type-of-appeal.njk', () => {
-    getTypeOfAppeal(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk');
+  describe('getTypeOfAppeal', () => {
+    it('should render type-of-appeal.njk', () => {
+      getTypeOfAppeal(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { types: appealTypes });
+    });
+
+    it('getTypeOfAppeal should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getTypeOfAppeal(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
   });
 
-  it('postTypeOfAppeal when clicked on save-and-continue with no selections should render type-of-appeal.njk with a validation error', () => {
-    req.body = { 'button': 'save-and-continue', 'data': [] };
+  describe('postTypeOfAppeal', () => {
+    it('should fail validation and render type-of-appeal.njk with a validation error', () => {
+      req.body = { 'button': 'save-and-continue', 'appealType': '' };
+      const expectedError: ValidationError = {
+        href: '#undefined',
+        key: undefined,
+        text: 'You must select at least one option'
+      };
 
-    postTypeOfAppeal(req as Request, res as Response, next);
+      postTypeOfAppeal(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
+        types: appealTypes,
+        errors: { undefined: expectedError },
+        errorList: [ expectedError ]
+      });
+    });
 
-    const appealTypes = new AppealTypes();
-    const expectedError = 'You must select at least one option';
-    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { appealTypes, error: expectedError });
-  });
+    it('should validate and redirect to the task-list page', () => {
+      req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
 
-  it('postTypeOfAppeal when clicked on save-and-continue with only one selection should redirect to the next page', () => {
-    req.body = { 'button': 'save-and-continue', 'data': [ 'human-rights' ] };
+      postTypeOfAppeal(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
+    });
 
-    postTypeOfAppeal(req as Request, res as Response, next);
+    it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', () => {
+      req.body = { 'button': 'save-and-continue', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
 
-    expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
-  });
+      postTypeOfAppeal(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
+    });
 
-  it('postTypeOfAppeal when clicked on save-for-later with no selections should render type-of-appeal.njk with a validation error', () => {
-    req.body = { 'button': 'save-for-later', 'data': [] };
-
-    postTypeOfAppeal(req as Request, res as Response, next);
-
-    const appealTypes = new AppealTypes();
-    const expectedError = 'You must select at least one option';
-    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { appealTypes, error: expectedError });
-
-  });
-
-  it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', () => {
-    req.body = { 'button': 'save-and-continue', 'data': [ 'human-rights', 'eea', 'protection' ] };
-
-    postTypeOfAppeal(req as Request, res as Response, next);
-
-    expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
-  });
-
-  it('postTypeOfAppeal when clicked on save-for-later with only one selection should redirect to the home page', () => {
-    req.body = { 'button': 'save-for-later', 'data': [ 'human-rights' ] };
-
-    postTypeOfAppeal(req as Request, res as Response, next);
-
-    expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
-  });
-
-  it('postTypeOfAppeal when clicked on save-for-later with multiple selections should redirect to the home page', () => {
-    req.body = { 'button': 'save-for-later', 'data': [ 'human-rights', 'eea', 'protection' ] };
-
-    postTypeOfAppeal(req as Request, res as Response, next);
-
-    expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
-  });
-
-  it('getTypeOfAppeal should catch exception and call next with the error', () => {
-    const error = new Error('an error');
-    res.render = sandbox.stub().throws(error);
-    getTypeOfAppeal(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce.calledWith(error);
-  });
-
-  it('postTypeOfAppeal should catch exception and call next with the error', () => {
-    const error = new Error('an error');
-    req.body = { 'button': 'save-for-later', 'data': [ 'human-rights', 'eea', 'protection' ] };
-    res.redirect = sandbox.stub().throws(error);
-    postTypeOfAppeal(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce.calledWith(error);
+    it('postTypeOfAppeal should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      req.body = { 'button': 'save-for-later', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
+      res.redirect = sandbox.stub().throws(error);
+      postTypeOfAppeal(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
   });
 });

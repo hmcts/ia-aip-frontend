@@ -80,6 +80,9 @@ describe('Contact details Controller', () => {
 
   describe('postContactDetails', () => {
     it('should show validation error if no option is populated', () => {
+      req.body = {
+        'email-value': ''
+      };
       const error: ValidationError = {
         href: '#undefined',
         key: undefined,

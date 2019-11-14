@@ -7,7 +7,7 @@ export enum Delimiter {
 
 export function addSummaryRow(key: string, values: (number | string | string[])[], href: string, delimiter?: Delimiter) {
   delimiter = delimiter ? delimiter : Delimiter.BREAK_LINE;
-  return {
+  const row = {
     key: {
       text: i18n.fields[key]
     },
@@ -23,4 +23,5 @@ export function addSummaryRow(key: string, values: (number | string | string[])[
       ]
     }
   };
+  return row;
 }

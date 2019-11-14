@@ -1,41 +1,35 @@
 import { NextFunction,Request, Response, Router } from 'express';
-import i18n from '../../locale/en.json';
-import AppealTypes from '../domain/appeal-types';
+import { appealTypes } from '../data/appeal-types';
 import { paths } from '../paths';
-
-const appealTypes = new AppealTypes();
+import { typeOfAppealValidation } from '../utils/fields-validations';
 
 function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('appeal-application/type-of-appeal.njk', { appealTypes });
+    const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
+    const types = appealTypes.map(type => {
+      if (appealType.includes(type.value)) type.checked = true;
+      else type.checked = false;
+      return type;
+    });
+
+    return res.render('appeal-application/type-of-appeal.njk', { types });
   } catch (error) {
     next(error);
   }
 }
 
-function validate(data: []) {
-  return !(!data || !data.length);
-}
-
 function postTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
-  const request = req.body;
   try {
-
-    if (!validate(request.data)) {
-      return res.render('appeal-application/type-of-appeal.njk', { appealTypes, error: i18n.validationErrors.atLeastOneOption });
+    const validation = typeOfAppealValidation(req.body);
+    if (validation) {
+      return res.render('appeal-application/type-of-appeal.njk', {
+        types: appealTypes,
+        errors: validation,
+        errorList: Object.values(validation)
+      });
     }
-    // Saving data in session for now should save to CCD once implementation is finished
-    req.session.typeOfAppeal = request.data;
-    switch (request.button) {
-      case 'save-and-continue':
-        // TODO: replace devNextPage with real next pages
-        return res.redirect(paths.taskList);
-      case 'save-for-later':
-        // TODO: re-direct to the dashboard page ?
-        return res.redirect(paths.taskList);
-      default:
-        break;
-    }
+    req.session.appeal.application.appealType = req.body['appealType'];
+    return res.redirect(paths.taskList);
   } catch (error) {
     next(error);
   }

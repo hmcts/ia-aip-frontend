@@ -164,7 +164,7 @@ function postcodeValidation(obj: object): ValidationErrors | null {
       'string.empty': 'Enter your postcode',
       'string.pattern.base': 'Enter a valid postcode'
     })
-  });
+  }).unknown();
   return validate(obj, schema);
 }
 
@@ -251,6 +251,22 @@ function selectPostcodeValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function typeOfAppealValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.alternatives().try(
+    Joi.object({
+      appealType: Joi.array().items(Joi.string()).required()
+    }).unknown(),
+    Joi.object({
+      appealType: Joi.string().required()
+    }).unknown()
+  ).messages({
+    'alternatives.match': i18n.validationErrors.atLeastOneOption,
+    'any.required': i18n.validationErrors.required
+  });
+
+  return validate(obj, schema);
+}
+
 export {
   contactDetailsValidation,
   homeOfficeNumberValidation,
@@ -263,5 +279,6 @@ export {
   textAreaValidation,
   statementOfTruthValidation,
   addressValidation,
-  selectPostcodeValidation
+  selectPostcodeValidation,
+  typeOfAppealValidation
 };

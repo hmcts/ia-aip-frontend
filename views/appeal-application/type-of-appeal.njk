@@ -7,37 +7,34 @@
 
 {% block content %}
 
-    {% if error %}
-        {{ govukErrorSummary({
-            titleText: i18n.errorSummary.titleText,
-            errorList: [{
-                text: error,
-                href: "#appealType"
-            }]
-        }) }}
+    {% if errorList %}
+      {{ govukErrorSummary({
+          titleText: i18n.errorSummary.titleText,
+          errorList: errorList
+      }) }}
     {% endif %}
-
     {% set options = [] %}
-    {% for item in appealTypes %}
+    {% for item in types %}
         {% set examples =
             govukDetails({
             summaryText: i18n.pages.appealType.exampleSummaryText,
-            html: text.bold(  item.example.name ) + " " + text.parentheses(item.example.description)
+            html: item.examples
         }) %}
 
         {% set options = (options.push(
-            {
-                value: item.id,
-                html: text.bold( item.name ) + " " + text.parentheses(item.description),
-                hint: { html: examples }
-            }), options) %}
+          {
+            value: item.value,
+            html: item.title,
+            checked: item.checked,
+            hint: { html: examples }
+          }), options) %}
     {% endfor %}
 
     <form action="/type-of-appeal" method="post">
         {{ govukCheckboxes({
             idPrefix: "appealType",
             id: "appealType",
-            name: "data",
+            name: "appealType",
             fieldset: {
                 legend: {
                     text:  i18n.pages.appealType.header,

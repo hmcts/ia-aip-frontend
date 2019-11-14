@@ -10,7 +10,7 @@
     "lint": "tslint --project .",
     "test": "yarn test:unit",
     "test:accessibility": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test USE_REDDIS=false mocha test/accessibility/*.ts --exit",
-    "test:unit": "nyc mocha test/unit/**/*.test.ts",
+    "test:unit": "rm -rf test/coverage && nyc mocha test/unit/**/*.test.ts",
     "test:coverage": "nyc report",
     "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",

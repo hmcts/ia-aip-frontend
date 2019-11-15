@@ -26,12 +26,30 @@ yarn dev
 
 These commands will download any required dependencies, and start a webserver listening on port `3000`
 
+### Running with mocks
+
+The application relies on having a running version of CCD and idam you can run mock versions of these with
+
+```
+yarn dev:mock
+```
+
+This will run the app and point it to the mocked IDAM and CCD services. It does not matter what username or password
+you enter but the following users will create different results.
+
+| Username | Behaviour |
+| -------- | --------- |
+| no-cases@example.com | Does not find a case to load in mock CCD so creates a new case |
+| has-case@example.com | Loads a case from mock CCD. This case can be updated in a session but changes will not be persisted when a user logs out |
+
+If the username is not recognised then no-cases@example.com behaviour will be used.
+
 ### Using the application
 
 To understand if the application is working, you can call it's health endpoint:
 
 ```
-curl http://localhost:3000/health
+curl https://localhost:3000/health
 ```
 
 If the API is running, you should see this response:

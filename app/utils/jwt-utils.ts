@@ -27,7 +27,7 @@ export function isJWTExpired(jwtToken: string) {
 
   const decoded = decodeJWTToken(jwtToken);
 
-  if (decoded.exp < (dateNow.getUTCMilliseconds() - offset)) {
+  if (decoded && decoded.exp < (dateNow.getUTCMilliseconds() - offset)) {
     isExpiredToken = true;
   }
   return isExpiredToken;

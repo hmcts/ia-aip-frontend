@@ -7,7 +7,7 @@
     "start": "cross-env NODE_PATH=. node build/main.js",
     "build": "webpack --config webpack/webpack.prod.js",
     "dev": "cross-env NODE_ENV=development nodemon app/server.ts",
-    "dev:mock": "concurrently \"yarn mock-ccd\" \"yarn mock-idam\"",
+    "dev:mock": "concurrently \"yarn mock-ccd\" \"yarn mock-idam\" \"IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 yarn dev\"",
     "mock-ccd": "dyson test/mock/ccd/services/ 20000",
     "mock-idam": "dyson test/mock/idam/services/ 20001",
     "lint": "tslint --project .",

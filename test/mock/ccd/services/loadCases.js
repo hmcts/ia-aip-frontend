@@ -1,6 +1,6 @@
 const usersToCaseData = {
-  '44': [],
-  '45': [{
+  '1': [],
+  '2': [{
     "id": 1573640323267110,
     "jurisdiction": "IA",
     "state": "appealStarted",
@@ -33,10 +33,6 @@ module.exports = {
   path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases',
   method: 'GET',
   template: params => {
-    console.log('Getting for user [' + params.userId +']');
-
-    const usersToCaseDatum = usersToCaseData[params.userId];
-
-    return usersToCaseDatum;
+    return usersToCaseData[params.userId];
   }
 };

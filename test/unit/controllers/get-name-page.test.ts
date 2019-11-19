@@ -1,6 +1,6 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import { getNamePage, postNamePage, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
+import { getNamePage, postNamePage, setupPersonalDetailsController, updateAppealService } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -64,12 +64,15 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postNamePage', () => {
-    it('should validate and redirect to next page personal-details/date-of-birth', () => {
+    it('should validate and redirect to next page personal-details/date-of-birth', async () => {
       req.body.givenNames = 'Lewis';
       req.body.familyName = 'Williams';
       req.session.personalDetails = {};
 
-      postNamePage(req as Request, res as Response, next);
+      // @ts-ignore
+      sinon.stub(updateAppealService, 'updateAppeal').resolves({});
+
+      await postNamePage(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.dob);
     });
@@ -83,10 +86,10 @@ describe('Home Office Details Controller', function () {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render personal-details/name.njk with error', () => {
+    it('should fail validation and render personal-details/name.njk with error', async () => {
       req.body.givenNames = '';
       req.body.familyName = '';
-      postNamePage(req as Request, res as Response, next);
+      await postNamePage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/name.njk',

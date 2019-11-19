@@ -89,6 +89,12 @@ export default class UpdateAppealService {
       const dateLetterSentIso = dateLetterSentString.toISOString().split('T')[0];
       caseData.homeOfficeDecisionDate = dateLetterSentIso;
     }
+    if (application.personalDetails.givenNames) {
+      caseData.appellantGivenNames = application.personalDetails.givenNames;
+    }
+    if (application.personalDetails.familyName) {
+      caseData.appellantFamilyName = application.personalDetails.familyName;
+    }
 
     return caseData;
   }

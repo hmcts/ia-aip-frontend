@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
+import { CcdService } from '../service/ccd-service';
+import IdamService from '../service/idam-service';
+import S2SService from '../service/s2s-service';
+import UpdateAppealService from '../service/update-appeal-service';
 import {
   addressValidation,
   appellantNamesValidation,
@@ -10,6 +14,8 @@ import {
   postcodeValidation
 } from '../utils/fields-validations';
 import { getNationalitiesOptions } from '../utils/nationalities';
+
+export const updateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {
@@ -55,7 +61,7 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postNamePage(req: Request, res: Response, next: NextFunction) {
+async function postNamePage(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = appellantNamesValidation(req.body);
     let errors = null;
@@ -74,6 +80,9 @@ function postNamePage(req: Request, res: Response, next: NextFunction) {
       familyName: req.body.familyName,
       givenNames: req.body.givenNames
     };
+
+    await updateAppealService.updateAppeal(req);
+
     return res.redirect(paths.personalDetails.dob);
   } catch (e) {
     next(e);

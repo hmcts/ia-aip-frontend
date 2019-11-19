@@ -15,6 +15,13 @@ describe('Home Office Details Controller', function() {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
+      session: {
+        appeal: {
+          application: {
+            contactDetails: null
+          }
+        } as Partial<Appeal>
+      } as Partial<Express.Session>,
       body: {},
       cookies: {},
       idam: {
@@ -25,7 +32,7 @@ describe('Home Office Details Controller', function() {
           logger
         }
       } as any
-    } as unknown as Partial<Request>;
+    } as Partial<Request>;
 
     res = {
       redirect: sandbox.spy(),

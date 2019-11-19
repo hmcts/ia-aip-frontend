@@ -24,17 +24,22 @@ describe('Personal Details Controller', function () {
       idam: {
         userDetails: {}
       },
-      session: {},
+      session: {
+        appeal: {
+          application: {}
+        } as Appeal
+      } as Partial<Express.Session>,
       app: {
         locals: {
           logger
         }
       } as any
-    } as unknown as Partial<Request>;
+    } as Partial<Request>;
 
     res = {
       render: sandbox.stub(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
+      redirect: sinon.spy()
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
@@ -55,73 +60,82 @@ describe('Personal Details Controller', function () {
   });
 
   describe('getManualEnterAddressPage', () => {
+    it('should redirect to enter postcode page if postcode not present', () => {
+      getManualEnterAddressPage(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.personalDetails.enterPostcode);
+    });
+
     it('should render appeal-application/personal-details/enter-address.njk', function () {
+      req.session.appeal.application.contactDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
+      };
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk');
     });
-  });
 
-  describe('postManualEnterAddress', () => {
-    it('should validate and render appeal-application/personal-details/enter-address.njk', () => {
-      req.body['address-line-1'] = '60 GPS';
-      req.body['address-town'] = 'London';
-      req.body['address-county'] = 'London';
-      req.body['address-line-2'] = '';
-      req.body['address-postcode'] = 'W1W 7RT';
-      req.session.personalDetails = {
-        address: {}
+    it('should catch an exception and call next()', () => {
+      req.session.appeal.application.contactDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
       };
-      postManualEnterAddressPage(req as Request, res as Response, next);
-
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
-    });
-  });
-
-  describe('Should catch an error.', function () {
-    it('getManualEnterAddressPage should catch an exception and call next()', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
+  });
 
-    it('should fail validation and render appeal-application/personal-details/enter-address.njk with error', () => {
-      req.body['address-line-1'] = '';
-      req.body['address-town'] = '';
-      req.body['address-county'] = '';
-      req.body['address-line-2'] = '';
-      req.body['address-postcode'] = '';
+  describe('postManualEnterAddress', () => {
+    it('should redirect to enter postcode page if postcode not present', () => {
       postManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
-        'appeal-application/personal-details/enter-address.njk',
-        {
-          error: {
-            'address-county': { href: '#address-county', key: 'address-county', text: 'Enter a County.' },
-            'address-line-1': {
-              href: '#address-line-1',
-              key: 'address-line-1',
-              text: 'Enter a building number and street name.'
-            },
-            'address-town': { href: '#address-town', key: 'address-town', text: 'Enter Town or City.' }
-          },
-          errorList: [
-            {
-              key: 'address-line-1',
-              text: 'Enter a building number and street name.',
-              href: '#address-line-1'
-            },
-            {
-              key: 'address-town',
-              text: 'Enter Town or City.',
-              href: '#address-town'
-            },
-            {
-              key: 'address-county',
-              text: 'Enter a County.',
-              href: '#address-county'
-            }
-          ]
-        });
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.personalDetails.enterPostcode);
+    });
+
+    it('should fail validation and render appeal-application/personal-details/enter-address.njk', () => {
+      req.session.appeal.application.contactDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
+      };
+      req.body['address-line-1'] = '60 GPS';
+      req.body['address-town'] = 'London';
+      req.body['address-county'] = 'London';
+      req.body['address-line-2'] = '';
+      req.body['address-postcode'] = 'W';
+
+      postManualEnterAddressPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
+    });
+
+    it('should validate and redirect to task list page', () => {
+      req.session.appeal.application.contactDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
+      };
+      req.body['address-line-1'] = '60 GPS';
+      req.body['address-town'] = 'London';
+      req.body['address-county'] = 'London';
+      req.body['address-line-2'] = '';
+      req.body['address-postcode'] = 'W1W 7RT';
+
+      postManualEnterAddressPage(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('should catch an exception and call next()', () => {
+      req.session.appeal.application.contactDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
+      };
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      postManualEnterAddressPage(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 });

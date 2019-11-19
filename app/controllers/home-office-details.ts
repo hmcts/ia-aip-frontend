@@ -88,7 +88,7 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
-    const evidences = application.lateAppeal && application.lateAppeal.evidences || {};
+    const evidences: Evidences = application.lateAppeal && application.lateAppeal.evidences || {};
     res.render('appeal-application/home-office/appeal-late.njk',{
       appealLateReason,
       evidences: Object.values(evidences),

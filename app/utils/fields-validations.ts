@@ -1,6 +1,7 @@
 import Joi from '@hapi/joi';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
+import { postcodeRegex } from './regular-expressions';
 
 /**
  * Uses Joi schema validation to validate and object and returns:
@@ -166,8 +167,6 @@ function nationalityValidation(obj: object) {
 }
 
 function postcodeValidation(obj: object): ValidationErrors | null {
-  const postcodeRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
-
   const schema = Joi.object({
     postcode: Joi.string().regex(postcodeRegex).messages({
       'string.empty': 'Enter your postcode',
@@ -247,7 +246,10 @@ function addressValidation(obj: object): null | ValidationErrors {
     ['address-town']: Joi.string().required().messages({ 'string.empty': 'Enter Town or City.' }),
     ['address-county']: Joi.string().required().messages({ 'string.empty': 'Enter a County.' }),
     ['address-line-2']: Joi.string().optional().empty(''),
-    ['address-postcode']: Joi.string().optional().empty('')
+    ['address-postcode']: Joi.string().regex(postcodeRegex).messages({
+      'string.empty': 'Enter your postcode',
+      'string.pattern.base': 'Enter a valid postcode'
+    })
   });
   return validate(obj, schema);
 }

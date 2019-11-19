@@ -19,6 +19,13 @@ describe('Personal Details Controller', function () {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
+      session: {
+        appeal: {
+          application: {
+            contactDetails: null
+          }
+        } as Partial<Appeal>
+      } as Partial<Express.Session>,
       body: {},
       cookies: {},
       idam: {
@@ -29,11 +36,12 @@ describe('Personal Details Controller', function () {
           logger
         }
       } as any
-    } as unknown as Partial<Request>;
+    } as Partial<Request>;
 
     res = {
       render: sandbox.stub(),
-      send: sandbox.stub()
+      send: sandbox.stub(),
+      redirect: sinon.spy()
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
@@ -54,39 +62,52 @@ describe('Personal Details Controller', function () {
   });
 
   describe('getPostcodeLookupPage', () => {
+    it('should redirect to enter postcode page if postcode not present', function () {
+      getPostcodeLookupPage(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.personalDetails.enterPostcode);
+    });
+
     it('should render appeal-application/personal-details/postcode-lookup.njk', function () {
+      req.session.appeal.application.contactDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
+      };
       getPostcodeLookupPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/postcode-lookup.njk');
     });
-  });
 
-  describe('Should catch an error.', function () {
-    it('getPostcodeLookupPage should catch an exception and call next()', () => {
+    it('should catch an exception and call next()', () => {
+      req.session.appeal.application.contactDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
+      };
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
       getPostcodeLookupPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
+  });
 
-    it('should fail validation and render appeal-application/personal-details/postcode-lookup.njk with error', () => {
+  describe('postPostcodeLookupPage', () => {
+    it('should fail validation and render postcode-lookup.njk', function () {
       req.body.address = '';
-
       postPostcodeLookupPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
-        'appeal-application/personal-details/postcode-lookup.njk',
-        {
-          addresses: [
-            { text: 'Select', value: '' },
-            { text: '60 GPS London United Kingdom  W1W 7RT', value: '60 GPS London United Kingdom  W1W 7RT' }
-          ],
-          error: { address: { href: '#address', key: 'address', text: 'Select a address' } },
-          errorList: [{
-            key: 'address',
-            text: 'Select a address',
-            href: '#address'
-          }]
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/postcode-lookup.njk');
+    });
 
-        });
+    it('should validate and redirect to task list page', function () {
+      req.body.address = 'an address';
+      postPostcodeLookupPage(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.taskList);
+    });
+
+    it('should catch an exception and call next()', () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      postPostcodeLookupPage(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 });

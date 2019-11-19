@@ -208,7 +208,10 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
 
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/personal-details/enter-address.njk');
+    const { application } = req.session.appeal;
+    const address = application.contactDetails && application.contactDetails.address || null;
+    if (!address || !address.postcode) return res.redirect(paths.personalDetails.enterPostcode);
+    res.render('appeal-application/personal-details/enter-address.njk', { address });
   } catch (e) {
     next(e);
   }
@@ -216,17 +219,29 @@ function getManualEnterAddressPage(req: Request, res: Response, next: NextFuncti
 
 function postManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
+    const { application } = req.session.appeal;
+    const postcode = application.contactDetails && application.contactDetails.address.postcode || null;
+    if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
     const validation = addressValidation(req.body);
     if (validation !== null) {
-      res.render('appeal-application/personal-details/enter-address.njk', {
+      return res.render('appeal-application/personal-details/enter-address.njk', {
+        postcode,
         error: validation,
         errorList: Object.values(validation)
       });
     }
-    req.session.personalDetails.address = req.body;
-    // TODO - add address to session.
-    // TODO - Fetch the address from the valid postcode.
-    return res.render('appeal-application/personal-details/enter-address.njk');
+
+    req.session.appeal.application.contactDetails = {
+      ...req.session.appeal.application.contactDetails,
+      address: {
+        line1: req.body['address-line-1'],
+        line2: req.body['address-line-2'],
+        city: req.body['address-town'],
+        country: req.body['address-county'],
+        postcode: req.body['address-postcode']
+      }
+    };
+    return res.redirect(paths.taskList);
   } catch (e) {
     next(e);
   }

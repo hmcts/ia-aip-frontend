@@ -48,7 +48,7 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
+async function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = dateValidation(req.body);
     if (validation) {
@@ -75,6 +75,8 @@ function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
       month,
       year
     };
+
+    await updateAppealService.updateAppeal(req);
 
     if (diffInDays <= 14) return res.redirect(paths.taskList);
     req.session.appeal.application.isAppealLate = true;

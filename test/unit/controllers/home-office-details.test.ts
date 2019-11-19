@@ -142,12 +142,12 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postDateLetterSent', () => {
-    it('should validate and redirect to Task list page if letter is not older than 14 days', () => {
+    it('should validate and redirect to Task list page if letter is not older than 14 days', async () => {
       const date = moment().subtract(14, 'd');
       req.body['day'] = date.format('DD');
       req.body['month'] = date.format('MM');
       req.body['year'] = date.format('YYYY');
-      postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
@@ -157,12 +157,12 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
-    it('should validate and redirect to Appeal Late page', () => {
+    it('should validate and redirect to Appeal Late page', async () => {
       const date = moment().subtract(15, 'd');
       req.body['day'] = date.format('DD');
       req.body['month'] = date.format('MM');
       req.body['year'] = date.format('YYYY');
-      postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
@@ -172,17 +172,17 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
 
-    it('should fail validation if the date is in the future and render error', () => {
+    it('should fail validation if the date is in the future and render error', async () => {
       const date = moment().add(10, 'd');
       req.body['day'] = date.format('DD');
       req.body['month'] = date.format('MM');
       req.body['year'] = date.format('YYYY');
-      postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
-    it('should fail validation and render error', () => {
+    it('should fail validation and render error', async () => {
       req.body['day'] = '1';
       req.body['month'] = '1';
       req.body['year'] = '20190';
@@ -195,7 +195,7 @@ describe('Home Office Details Controller', function () {
         year: yearError
       };
       const errorList = [ yearError ];
-      postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
         {
@@ -205,10 +205,10 @@ describe('Home Office Details Controller', function () {
       );
     });
 
-    it('should catch exception and call next with the error', () => {
+    it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

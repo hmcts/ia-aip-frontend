@@ -12,7 +12,7 @@ import { setupStartController } from './controllers/startController';
 import { setupTaskListController } from './controllers/task-list';
 import { setupTypeOfAppealController } from './controllers/type-of-appeal';
 
-import { initSession, logSession } from './middleware/session-middleware';
+import { logSession } from './middleware/session-middleware';
 
 const router = express.Router();
 

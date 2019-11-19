@@ -4,7 +4,8 @@ import { contactDetailsValidation } from '../utils/fields-validations';
 
 function getContactDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    const { email, phone } = req.session.appeal.application.contactDetails || null;
+    const { application } = req.session.appeal;
+    const { email, phone } = application && application.contactDetails || null;
     return res.render('appeal-application/contact-details.njk', { email, phone });
   } catch (error) {
     next(error);

@@ -31,11 +31,8 @@ async function postHomeOfficeDetails(req: Request, res: Response, next: NextFunc
         }
       );
     }
-
-    req.session.appeal.application.homeOfficeRefNumber = homeOfficeDetails;
-
     await updateAppealService.updateAppeal(req);
-
+    req.session.appeal.application.homeOfficeRefNumber = homeOfficeDetails;
     return res.redirect(paths.homeOffice.letterSent);
   } catch (e) {
     next(e);
@@ -91,11 +88,10 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
-    const appealLateEvidences = application.lateAppeal && application.lateAppeal.evidences || null;
-    const evidences = req.session.appealApplication && req.session.appealApplication.files || null;
+    const evidences = application.lateAppeal && application.lateAppeal.evidences || {};
     res.render('appeal-application/home-office/appeal-late.njk',{
       appealLateReason,
-      evidences: appealLateEvidences ? Object.values(appealLateEvidences) : null,
+      evidences: Object.values(evidences),
       evidenceCTA: paths.homeOffice.deleteEvidence
     });
   } catch (e) {
@@ -133,21 +129,25 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
       const validation = textAreaValidation(fileDescription, 'file-description');
       const { application } = req.session.appeal;
       if (validation) {
-        const evidences = application.lateAppeal.evidences || {};
+        const evidences = application.lateAppeal && application.lateAppeal.evidences || {};
         return res.render('appeal-application/home-office/appeal-late.njk', {
-          appealLate: application.lateAppeal.reason || null,
+          appealLate: application.lateAppeal && application.lateAppeal.reason || null,
           evidences: Object.values(evidences),
           error: validation,
           errorList: Object.values(validation)
         });
       }
-      application.lateAppeal.evidences = {
-        [req.file.originalname]: {
-          url: req.file.originalname,
-          name: req.file.originalname,
-          description: fileDescription
-        },
-        ...application.lateAppeal.evidences
+      application.lateAppeal = {
+        ...application.lateAppeal,
+        evidences: {
+          ...(application.lateAppeal && application.lateAppeal.evidences || {}),
+          [req.file.originalname]: {
+            url: req.file.originalname,
+            name: req.file.originalname,
+            description: fileDescription
+          },
+          ...(application.lateAppeal && application.lateAppeal.evidences || {})
+        }
       };
     }
     return res.redirect(paths.homeOffice.appealLate);

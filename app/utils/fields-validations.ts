@@ -9,7 +9,7 @@ import i18n from '../../locale/en.json';
  * @param obj the object to be validated
  * @param schema the schema to validate the object
  */
-function validate(obj: object, schema: any): ValidationErrors {
+function validate(obj: object, schema: any): ValidationErrors | null {
   const result = schema.validate(obj, { abortEarly: false });
   if (result.error) {
     return result.error.details.reduce((acc, curr): ValidationError => {
@@ -24,29 +24,38 @@ function validate(obj: object, schema: any): ValidationErrors {
   return null;
 }
 
-function textAreaValidation(text: string, theKey: string): boolean | ValidationErrors {
-  const schema = Joi
-    .string()
-    .required()
-    .min(3)
-    .messages({
-      'any.required': i18n.validationErrors.required,
-      'string.empty': i18n.validationErrors.empty,
-      'string.min': i18n.validationErrors.stringMin
-    });
-  const result = schema.validate(text);
-  if (result.error) {
-    const error: ValidationErrors = {
-      [theKey]: {
-        key: theKey,
-        text: result.error.details[0].message,
-        href: `#${theKey}`
-      }
-    };
+function textAreaValidation(text: string, theKey: string): ValidationErrors | null {
+  const schema = Joi.object({
+    [theKey]: Joi.string()
+      .required()
+      .min(3)
+      .messages({
+        'any.required': i18n.validationErrors.required,
+        'string.empty': i18n.validationErrors.empty,
+        'string.min': i18n.validationErrors.stringMin
+      })
+  });
 
-    return error;
-  }
-  return false;
+  const objectToValidate = {
+    [theKey]: text
+  };
+  return validate(objectToValidate, schema);
+}
+
+function dropdownValidation(text: string, theKey: string): ValidationErrors | null {
+  const schema = Joi.object({
+    [theKey]: Joi.string()
+      .required()
+      .messages({
+        'any.required': i18n.validationErrors.required,
+        'string.empty': i18n.validationErrors.empty
+      })
+  });
+
+  const objectToValidate = {
+    [theKey]: text
+  };
+  return validate(objectToValidate, schema);
 }
 
 function homeOfficeNumberValidation(reference: string) {
@@ -243,14 +252,6 @@ function addressValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function selectPostcodeValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.object({
-    dropdown: Joi.string().required().messages({ 'string.empty': 'Select a address' })
-
-  });
-  return validate(obj, schema);
-}
-
 function typeOfAppealValidation(obj: object): null | ValidationErrors {
   const schema = Joi.alternatives().try(
     Joi.object({
@@ -271,6 +272,7 @@ export {
   contactDetailsValidation,
   homeOfficeNumberValidation,
   dateValidation,
+  dropdownValidation,
   appellantNamesValidation,
   postcodeValidation,
   nationalityValidation,
@@ -279,6 +281,5 @@ export {
   textAreaValidation,
   statementOfTruthValidation,
   addressValidation,
-  selectPostcodeValidation,
   typeOfAppealValidation
 };

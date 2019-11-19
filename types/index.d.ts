@@ -47,7 +47,7 @@ interface AppealApplication {
   lateAppeal?: {
     reason?: string;
     evidences?: Evidences;
-  }
+  };
   personalDetails: {
     givenNames: string;
     familyName: string;

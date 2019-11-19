@@ -49,11 +49,11 @@ describe('update-appeal-service', () => {
       await updateAppealService.loadAppeal(req);
     });
 
-    it('set ccd case id', function () {
+    it('set ccd case id', () => {
       expect(req.session.ccdCaseId).eq(caseId);
     });
 
-    it('set case details', function () {
+    it('set case details', () => {
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('homeOfficeReferenceNumber');
       expect(req.session.appeal.application.personalDetails.givenNames).eq('appellantGivenNames');
       expect(req.session.appeal.application.personalDetails.familyName).eq('appellantFamilyName');
@@ -89,13 +89,13 @@ describe('update-appeal-service', () => {
       };
     });
 
-    it('converts empty application', function () {
+    it('converts empty application', () => {
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).eql({ journeyType: 'aip' });
     });
 
-    it('converts home office reference number', function () {
+    it('converts home office reference number', () => {
       emptyApplication.homeOfficeRefNumber = 'ref';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
@@ -103,26 +103,40 @@ describe('update-appeal-service', () => {
     });
 
     describe('converts home office letter date', () => {
-      it('full date', function () {
+      it('full date', () => {
         emptyApplication.dateLetterSent = { year: '2019', month: '12', day: '11' };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql({ journeyType: 'aip', homeOfficeDecisionDate: '2019-12-11' });
       });
 
-      it('day and month leading 0', function () {
+      it('day and month leading 0', () => {
         emptyApplication.dateLetterSent = { year: '2019', month: '12', day: '11' };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql({ journeyType: 'aip', homeOfficeDecisionDate: '2019-12-11' });
       });
 
-      it('day and month no leading 0', function () {
+      it('day and month no leading 0', () => {
         emptyApplication.dateLetterSent = { year: '2019', month: '2', day: '3' };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql({ journeyType: 'aip', homeOfficeDecisionDate: '2019-02-03' });
       });
+    });
+
+    it('converts given names', () => {
+      emptyApplication.personalDetails.givenNames = 'givenNames';
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData).eql({ journeyType: 'aip', appellantGivenNames: 'givenNames' });
+    });
+
+    it('converts family name', () => {
+      emptyApplication.personalDetails.familyName = 'familyName';
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData).eql({ journeyType: 'aip', appellantFamilyName: 'familyName' });
     });
   });
 
@@ -142,6 +156,10 @@ describe('update-appeal-service', () => {
                 year: '2019',
                 month: '12',
                 day: '11'
+              },
+              personalDetails: {
+                givenNames: 'givenNames',
+                familyName: 'familyName'
               }
             }
           },
@@ -156,6 +174,8 @@ describe('update-appeal-service', () => {
           case_data: {
             homeOfficeReferenceNumber: 'newRef',
             homeOfficeDecisionDate: '2019-12-11',
+            appellantFamilyName: 'familyName',
+            appellantGivenNames: 'givenNames',
             journeyType: 'aip'
           }
         },
@@ -166,7 +186,7 @@ describe('update-appeal-service', () => {
       await updateAppealService.updateAppeal(req);
     });
 
-    it('updates case with ccd', function () {
+    it('updates case with ccd', () => {
       ccdServiceMock.verify();
     });
   });

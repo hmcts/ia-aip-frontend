@@ -59,18 +59,14 @@ interface AppealApplication {
     nationality: string;
   };
   contactDetails: {
-    preference?: {
-      email: boolean;
-      textMessage: boolean;
-    };
     email?: string;
     phone?: string;
     address?: {
-      line1: string;
-      line2: string;
-      city: string;
-      postCode: string;
-      country: string;
+      line1?: string;
+      line2?: string;
+      city?: string;
+      postcode?: string;
+      country?: string;
     }
   };
 }

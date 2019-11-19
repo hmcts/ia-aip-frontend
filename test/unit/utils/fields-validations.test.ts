@@ -139,7 +139,7 @@ describe('fields-validations', () => {
       const key: string = 'aKey';
       const validations = textAreaValidation(text, key);
 
-      expect(validations).to.equal(false);
+      expect(validations).to.equal(null);
     });
 
     it('should fail validation', () => {

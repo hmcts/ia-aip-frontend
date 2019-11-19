@@ -69,7 +69,7 @@ describe('Personal Details Controller', function () {
     });
 
     it('should fail validation and render appeal-application/personal-details/postcode-lookup.njk with error', () => {
-      req.body.dropdown = '';
+      req.body.address = '';
 
       postPostcodeLookupPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
@@ -79,11 +79,11 @@ describe('Personal Details Controller', function () {
             { text: 'Select', value: '' },
             { text: '60 GPS London United Kingdom  W1W 7RT', value: '60 GPS London United Kingdom  W1W 7RT' }
           ],
-          error: { dropdown: { href: '#dropdown', key: 'dropdown', text: 'Select a address' } },
+          error: { address: { href: '#address', key: 'address', text: 'Select a address' } },
           errorList: [{
-            key: 'dropdown',
+            key: 'address',
             text: 'Select a address',
-            href: '#dropdown'
+            href: '#address'
           }]
 
         });

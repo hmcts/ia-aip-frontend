@@ -20,17 +20,13 @@ export function createDummyAppealApplication(): Appeal {
         nationality: 'Panamanian'
       },
       contactDetails: {
-        preference: {
-          email: true,
-          textMessage: false
-        },
         email: 'pedro.jimenez@example.net',
         phone: '07123456789',
         address: {
           line1: '60 Beautiful Street',
           line2: 'Flat 2',
           city: 'London',
-          postCode: 'W1W 7RT',
+          postcode: 'W1W 7RT',
           country: 'United Kingdom'
         }
       }

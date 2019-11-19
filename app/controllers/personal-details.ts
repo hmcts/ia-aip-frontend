@@ -5,8 +5,9 @@ import {
   addressValidation,
   appellantNamesValidation,
   dateValidation,
+  dropdownValidation,
   nationalityValidation,
-  postcodeValidation, selectPostcodeValidation
+  postcodeValidation
 } from '../utils/fields-validations';
 import { getNationalitiesOptions } from '../utils/nationalities';
 
@@ -116,7 +117,9 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
 
 function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('appeal-application/personal-details/enter-postcode.njk');
+    const { contactDetails } = req.session.appeal.application;
+    const postcode = contactDetails && contactDetails.address && contactDetails.address.postcode || null;
+    res.render('appeal-application/personal-details/enter-postcode.njk', { postcode });
   } catch (e) {
     next(e);
   }
@@ -131,7 +134,15 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
         errorList: Object.values(validation)
       });
     }
-    // TODO - Fetch the address from the valid postcode.
+    req.session.appeal.application.contactDetails = {
+      ...req.session.appeal.application.contactDetails,
+      address: {
+        ...(
+          req.session.appeal.application.contactDetails &&
+          req.session.appeal.application.contactDetails.address || {}),
+        postcode: req.body.postcode
+      }
+    };
     return res.redirect(paths.personalDetails.postcodeLookup);
   } catch (e) {
     next(e);
@@ -139,18 +150,22 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
 }
 
 function getPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
-  const addresses = [
-    {
-      value: '',
-      text: 'Select'
-    },
-    {
-      value: 'address',
-      text: '60 GPS London United Kingdom  W1W 7RT'
-    }
-  ];
   try {
-    res.render('appeal-application/personal-details/postcode-lookup.njk', { addresses: addresses });
+    const addresses = [
+      {
+        value: '',
+        text: 'Select'
+      },
+      {
+        value: '60 GPS London United Kingdom  W1W 7RT',
+        text: '60 GPS London United Kingdom  W1W 7RT'
+      }
+    ];
+    const { application } = req.session.appeal;
+    const postcode = application.contactDetails && application.contactDetails.address.postcode || null;
+    if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
+    // TODO: Get addresses from postcode previously entered - shall we use CCD service?
+    res.render('appeal-application/personal-details/postcode-lookup.njk', { addresses, postcode });
   } catch (e) {
     next(e);
   }
@@ -167,20 +182,25 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
       text: '60 GPS London United Kingdom  W1W 7RT'
     } ];
   try {
-    const validation = selectPostcodeValidation(req.body);
-    if (validation !== null) {
+    const validation = dropdownValidation(req.body.address, 'address');
+    if (validation) {
       return res.render('appeal-application/personal-details/postcode-lookup.njk', {
         error: validation,
         errorList: Object.values(validation),
         addresses: addresses
       });
     }
-    // TODO - add postcode to session.
-    req.session.personalDetails = {
-      address: req.body.dropdown
+    req.session.appeal.application.contactDetails = {
+      ...req.session.appeal.application.contactDetails,
+      address: {
+        ...(
+          req.session.appeal.application.contactDetails &&
+          req.session.appeal.application.contactDetails.address || {}),
+        line1: req.body.address
+      }
     };
+
     return res.redirect(paths.taskList);
-    // TODO - Fetch the address from the valid postcode.
   } catch (e) {
     next(e);
   }

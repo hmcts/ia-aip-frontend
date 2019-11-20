@@ -69,9 +69,6 @@ describe('Home Office Details Controller', function () {
       req.body.familyName = 'Williams';
       req.session.personalDetails = {};
 
-      // @ts-ignore
-      sinon.stub(updateAppealService, 'updateAppeal').resolves({});
-
       await postNamePage(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.dob);

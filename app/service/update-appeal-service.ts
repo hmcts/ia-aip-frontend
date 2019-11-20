@@ -20,7 +20,8 @@ export default class UpdateAppealService {
     const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.id, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
 
-    let dateLetterSent = this.getDate(ccdCase.case_data.homeOfficeDecisionDate);
+    const dateLetterSent = this.getDate(ccdCase.case_data.homeOfficeDecisionDate);
+    const dateOfBirth = this.getDate(ccdCase.case_data.appellantDateOfBirth);
 
     req.session.appeal = {
       application: {
@@ -36,7 +37,7 @@ export default class UpdateAppealService {
         personalDetails: {
           givenNames: ccdCase.case_data.appellantGivenNames,
           familyName: ccdCase.case_data.appellantFamilyName,
-          dob: null,
+          dob: dateOfBirth,
           nationality: null
         }
       },
@@ -45,14 +46,14 @@ export default class UpdateAppealService {
     };
   }
 
-  private getDate(homeOfficeDecisionDate) {
+  private getDate(ccdDate): AppealDate {
     let dateLetterSent = {
       year: null,
       month: null,
       day: null
     };
-    if (homeOfficeDecisionDate) {
-      const decisionDate = new Date(homeOfficeDecisionDate);
+    if (ccdDate) {
+      const decisionDate = new Date(ccdDate);
       dateLetterSent = {
         year: decisionDate.getFullYear().toString(),
         month: (decisionDate.getMonth() + 1).toString(),
@@ -84,10 +85,7 @@ export default class UpdateAppealService {
       caseData.homeOfficeReferenceNumber = application.homeOfficeRefNumber;
     }
     if (application.dateLetterSent.year) {
-      const dateLetterSent = application.dateLetterSent;
-      const dateLetterSentString = new Date(`${dateLetterSent.year}-${dateLetterSent.month}-${dateLetterSent.day}`);
-      const dateLetterSentIso = dateLetterSentString.toISOString().split('T')[0];
-      caseData.homeOfficeDecisionDate = dateLetterSentIso;
+      caseData.homeOfficeDecisionDate = this.toIsoDate(application.dateLetterSent);
     }
     if (application.personalDetails.givenNames) {
       caseData.appellantGivenNames = application.personalDetails.givenNames;
@@ -95,8 +93,17 @@ export default class UpdateAppealService {
     if (application.personalDetails.familyName) {
       caseData.appellantFamilyName = application.personalDetails.familyName;
     }
+    if (application.personalDetails.dob.year) {
+      caseData.appellantDateOfBirth = this.toIsoDate(application.personalDetails.dob);
+    }
 
     return caseData;
+  }
+
+  private toIsoDate(appealDate: AppealDate) {
+    const appealDateString = new Date(`${appealDate.year}-${appealDate.month}-${appealDate.day}`);
+    const dateLetterSentIso = appealDateString.toISOString().split('T')[0];
+    return dateLetterSentIso;
   }
 
   private async getSecurityHeaders(req: Request): Promise<SecurityHeaders> {

@@ -3,13 +3,8 @@ import moment from 'moment';
 import multer from 'multer';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
-import { CcdService } from '../service/ccd-service';
-import IdamService from '../service/idam-service';
-import S2SService from '../service/s2s-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { dateValidation, homeOfficeNumberValidation, textAreaValidation } from '../utils/fields-validations';
-
-export const updateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
@@ -19,24 +14,25 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
-
-async function postHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
-  try {
-    const homeOfficeDetails = req.body['homeOfficeRefNumber'];
-    const validation = homeOfficeNumberValidation(homeOfficeDetails);
-    if (validation) {
-      return res.render('appeal-application/home-office/details.njk',
-        {
-          error: validation
-        }
-      );
+function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const homeOfficeDetails = req.body['homeOfficeRefNumber'];
+      const validation = homeOfficeNumberValidation(homeOfficeDetails);
+      if (validation) {
+        return res.render('appeal-application/home-office/details.njk',
+          {
+            error: validation
+          }
+        );
+      }
+      await updateAppealService.updateAppeal(req);
+      req.session.appeal.application.homeOfficeRefNumber = homeOfficeDetails;
+      return res.redirect(paths.homeOffice.letterSent);
+    } catch (e) {
+      next(e);
     }
-    await updateAppealService.updateAppeal(req);
-    req.session.appeal.application.homeOfficeRefNumber = homeOfficeDetails;
-    return res.redirect(paths.homeOffice.letterSent);
-  } catch (e) {
-    next(e);
-  }
+  };
 }
 
 function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
@@ -47,43 +43,44 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
+function postDateLetterSent(updateAppealService: UpdateAppealService) {
+  return async function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = dateValidation(req.body);
+      if (validation) {
+        return res.render('appeal-application/home-office/letter-sent.njk', {
+          error: validation,
+          errorList: Object.values(validation)
+        });
+      }
+      const { day, month, year } = req.body;
+      const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
+      if (diffInDays < 0) {
+        const error: ValidationError = {
+          key: 'day',
+          text: i18n.validationErrors.futureDate,
+          href: '#day'
+        };
+        return res.render('appeal-application/home-office/letter-sent.njk', {
+          errorList: [error]
+        });
+      }
 
-async function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
-  try {
-    const validation = dateValidation(req.body);
-    if (validation) {
-      return res.render('appeal-application/home-office/letter-sent.njk', {
-        error: validation,
-        errorList: Object.values(validation)
-      });
-    }
-    const { day, month, year } = req.body;
-    const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
-    if (diffInDays < 0) {
-      const error: ValidationError = {
-        key: 'day',
-        text: i18n.validationErrors.futureDate,
-        href: '#day'
+      req.session.appeal.application['dateLetterSent'] = {
+        day,
+        month,
+        year
       };
-      return res.render('appeal-application/home-office/letter-sent.njk', {
-        errorList: [ error ]
-      });
+
+      await updateAppealService.updateAppeal(req);
+
+      if (diffInDays <= 14) return res.redirect(paths.taskList);
+      req.session.appeal.application.isAppealLate = true;
+      res.redirect(paths.homeOffice.appealLate);
+    } catch (e) {
+      next(e);
     }
-
-    req.session.appeal.application['dateLetterSent'] = {
-      day,
-      month,
-      year
-    };
-
-    await updateAppealService.updateAppeal(req);
-
-    if (diffInDays <= 14) return res.redirect(paths.taskList);
-    req.session.appeal.application.isAppealLate = true;
-    res.redirect(paths.homeOffice.appealLate);
-  } catch (e) {
-    next(e);
-  }
+  };
 }
 
 function getAppealLate(req: Request, res: Response, next: NextFunction) {
@@ -172,12 +169,12 @@ function postDeleteEvidence(req: Request, res: Response, next: NextFunction) {
 
 const upload = multer().single('file-upload');
 
-function setupHomeOfficeDetailsController(): Router {
+function setupHomeOfficeDetailsController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.homeOffice.details, getHomeOfficeDetails);
-  router.post(paths.homeOffice.details, postHomeOfficeDetails);
+  router.post(paths.homeOffice.details, postHomeOfficeDetails(updateAppealService));
   router.get(paths.homeOffice.letterSent, getDateLetterSent);
-  router.post(paths.homeOffice.letterSent, postDateLetterSent);
+  router.post(paths.homeOffice.letterSent, postDateLetterSent(updateAppealService));
   router.get(paths.homeOffice.appealLate, getAppealLate);
   router.post(paths.homeOffice.appealLate, upload, postAppealLate);
   router.post(paths.homeOffice.uploadEvidence, upload, postUploadEvidence);

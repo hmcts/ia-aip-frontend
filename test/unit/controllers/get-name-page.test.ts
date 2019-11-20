@@ -1,6 +1,8 @@
+import UpdateAppealService from '../../../app/service/update-appeal-service';
+
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
-import { getNamePage, postNamePage, setupPersonalDetailsController, updateAppealService } from '../../../app/controllers/personal-details';
+import { getNamePage, postNamePage, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -9,6 +11,7 @@ describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -38,6 +41,8 @@ describe('Home Office Details Controller', function () {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
+    updateAppealService = { updateAppeal: sandbox.stub() } as Partial<UpdateAppealService>;
+
     next = sandbox.stub() as NextFunction;
   });
 
@@ -50,7 +55,7 @@ describe('Home Office Details Controller', function () {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-      setupPersonalDetailsController();
+      setupPersonalDetailsController({ updateAppealService });
       expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.name);
       expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.name);
     });
@@ -69,7 +74,7 @@ describe('Home Office Details Controller', function () {
       req.body.familyName = 'Williams';
       req.session.personalDetails = {};
 
-      await postNamePage(req as Request, res as Response, next);
+      await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.dob);
     });
@@ -86,7 +91,7 @@ describe('Home Office Details Controller', function () {
     it('should fail validation and render personal-details/name.njk with error', async () => {
       req.body.givenNames = '';
       req.body.familyName = '';
-      await postNamePage(req as Request, res as Response, next);
+      await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/name.njk',

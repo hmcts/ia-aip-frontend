@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import { getNationalityPage, postNationalityPage, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
 import { countryList } from '../../../app/data/country-list';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
+
 import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
 import { expect, sinon } from '../../utils/testUtils';
@@ -11,6 +13,7 @@ describe('Personal details Controller', function() {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -42,6 +45,8 @@ describe('Personal details Controller', function() {
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
+
+    updateAppealService = { updateAppeal: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -53,7 +58,7 @@ describe('Personal details Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-      setupPersonalDetailsController();
+      setupPersonalDetailsController({ updateAppealService });
       expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.nationality);
       expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.nationality);
     });

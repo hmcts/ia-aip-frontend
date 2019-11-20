@@ -13,6 +13,12 @@ import { setupTaskListController } from './controllers/task-list';
 import { setupTypeOfAppealController } from './controllers/type-of-appeal';
 
 import { logSession } from './middleware/session-middleware';
+import { CcdService } from './service/ccd-service';
+import IdamService from './service/idam-service';
+import S2SService from './service/s2s-service';
+import UpdateAppealService from './service/update-appeal-service';
+
+export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 
 const router = express.Router();
 
@@ -21,10 +27,10 @@ const startController = setupStartController();
 const healthController = setupHealthController();
 const idamController = setupIdamController();
 const taskListController = setupTaskListController();
-const homeOfficeDetailsController = setupHomeOfficeDetailsController();
+const homeOfficeDetailsController = setupHomeOfficeDetailsController(updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController();
 const devNextPageController = setupDevNextPageController();
-const personalDetailsController = setupPersonalDetailsController();
+const personalDetailsController = setupPersonalDetailsController({ updateAppealService });
 const contactDetailsController = setupContactDetailsController();
 const confirmationController = setConfirmationController();
 const checkAndSendController = setupCheckAndSendController();

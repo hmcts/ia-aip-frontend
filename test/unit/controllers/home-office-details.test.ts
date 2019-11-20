@@ -9,10 +9,10 @@ import {
   postDeleteEvidence,
   postHomeOfficeDetails,
   postUploadEvidence,
-  setupHomeOfficeDetailsController,
-  updateAppealService
+  setupHomeOfficeDetailsController
 } from '../../../app/controllers/home-office-details';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -23,6 +23,7 @@ describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -58,6 +59,8 @@ describe('Home Office Details Controller', function () {
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
+
+    updateAppealService = { updateAppeal: sandbox.stub() };
   });
 
   afterEach(() => {
@@ -69,7 +72,7 @@ describe('Home Office Details Controller', function () {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-      setupHomeOfficeDetailsController();
+      setupHomeOfficeDetailsController(updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.details);
       expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.details);
       expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.letterSent);
@@ -95,12 +98,8 @@ describe('Home Office Details Controller', function () {
 
   describe('postHomeOfficeDetails', () => {
     it('should validate and redirect home-office/details.njk', async () => {
-
-      // @ts-ignore
-      sinon.stub(updateAppealService, 'updateAppeal').resolves({});
-
       req.body['homeOfficeRefNumber'] = 'A1234567';
-      await postHomeOfficeDetails(req as Request, res as Response, next);
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
@@ -108,7 +107,7 @@ describe('Home Office Details Controller', function () {
 
     it('should fail validation and render home-office/details.njk with error', async () => {
       req.body['homeOfficeRefNumber'] = 'notValid';
-      await postHomeOfficeDetails(req as Request, res as Response, next);
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
@@ -120,7 +119,7 @@ describe('Home Office Details Controller', function () {
     it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      await postHomeOfficeDetails(req as Request, res as Response, next);
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -147,7 +146,7 @@ describe('Home Office Details Controller', function () {
       req.body['day'] = date.format('DD');
       req.body['month'] = date.format('MM');
       req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
@@ -162,7 +161,7 @@ describe('Home Office Details Controller', function () {
       req.body['day'] = date.format('DD');
       req.body['month'] = date.format('MM');
       req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
@@ -177,7 +176,7 @@ describe('Home Office Details Controller', function () {
       req.body['day'] = date.format('DD');
       req.body['month'] = date.format('MM');
       req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
@@ -195,7 +194,7 @@ describe('Home Office Details Controller', function () {
         year: yearError
       };
       const errorList = [ yearError ];
-      await postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
         {
@@ -208,7 +207,7 @@ describe('Home Office Details Controller', function () {
     it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      await postDateLetterSent(req as Request, res as Response, next);
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

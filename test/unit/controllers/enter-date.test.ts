@@ -3,10 +3,10 @@ import { NextFunction, Request, Response } from 'express';
 import {
   getDateOfBirthPage,
   postDateOfBirth,
-  setupPersonalDetailsController,
-  updateAppealService
+  setupPersonalDetailsController
 } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -14,6 +14,7 @@ describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -44,6 +45,8 @@ describe('Home Office Details Controller', function () {
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
+
+    updateAppealService = { updateAppeal: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -54,7 +57,7 @@ describe('Home Office Details Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupPersonalDetailsController();
+      setupPersonalDetailsController({ updateAppealService });
       expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.dob);
       expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.dob);
     });
@@ -75,10 +78,7 @@ describe('Home Office Details Controller', function () {
 
       req.session.personalDetails = {};
 
-      // @ts-ignore
-      sinon.stub(updateAppealService, 'updateAppeal').resolves({});
-
-      await postDateOfBirth(req as Request, res as Response, next);
+      await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.nationality);
     });
@@ -97,7 +97,7 @@ describe('Home Office Details Controller', function () {
       req.body.month = 0;
       req.body.year = 0;
 
-      await postDateOfBirth(req as Request, res as Response, next);
+      await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const errorDay = {
         href: '#day',

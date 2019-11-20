@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
-import { CcdService } from '../service/ccd-service';
-import IdamService from '../service/idam-service';
-import S2SService from '../service/s2s-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import {
   addressValidation,
@@ -15,8 +12,6 @@ import {
 } from '../utils/fields-validations';
 import { getNationalitiesOptions } from '../utils/nationalities';
 
-export const updateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
-
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
@@ -27,31 +22,33 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
-  try {
-    const validation = dateValidation(req.body);
-    if (validation != null) {
-      return res.render('appeal-application/personal-details/date-of-birth.njk', {
-        errors: validation,
-        errorList: Object.values(validation)
-      });
-    }
-
-    req.session.appeal.application.personalDetails = {
-      ...req.session.appeal.application.personalDetails,
-      dob: {
-        day: req.body.day,
-        month: req.body.month,
-        year: req.body.year
+function postDateOfBirth(updateAppealService: UpdateAppealService) {
+  return async function(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = dateValidation(req.body);
+      if (validation != null) {
+        return res.render('appeal-application/personal-details/date-of-birth.njk', {
+          errors: validation,
+          errorList: Object.values(validation)
+        });
       }
-    };
 
-    await updateAppealService.updateAppeal(req);
+      req.session.appeal.application.personalDetails = {
+        ...req.session.appeal.application.personalDetails,
+        dob: {
+          day: req.body.day,
+          month: req.body.month,
+          year: req.body.year
+        }
+      };
 
-    return res.redirect(paths.personalDetails.nationality);
-  } catch (e) {
-    next(e);
-  }
+      await updateAppealService.updateAppeal(req);
+
+      return res.redirect(paths.personalDetails.nationality);
+    } catch (e) {
+      next(e);
+    }
+  };
 }
 
 function getNamePage(req: Request, res: Response, next: NextFunction) {
@@ -63,32 +60,34 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function postNamePage(req: Request, res: Response, next: NextFunction) {
-  try {
-    const validation = appellantNamesValidation(req.body);
-    let errors = null;
-    if (validation) {
-      errors = validation;
-      return res.render('appeal-application/personal-details/name.njk', {
-        errors: {
-          errorList: errors,
-          fieldErrors: { givenNames: { text: errors[0].text }, familyName: { text: errors[1].text } }
-        }
-      });
+function postNamePage(updateAppealService: UpdateAppealService) {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = appellantNamesValidation(req.body);
+      let errors = null;
+      if (validation) {
+        errors = validation;
+        return res.render('appeal-application/personal-details/name.njk', {
+          errors: {
+            errorList: errors,
+            fieldErrors: { givenNames: { text: errors[0].text }, familyName: { text: errors[1].text } }
+          }
+        });
+      }
+      const { application } = req.session.appeal;
+      application.personalDetails = {
+        ...application.personalDetails,
+        familyName: req.body.familyName,
+        givenNames: req.body.givenNames
+      };
+
+      await updateAppealService.updateAppeal(req);
+
+      return res.redirect(paths.personalDetails.dob);
+    } catch (e) {
+      next(e);
     }
-    const { application } = req.session.appeal;
-    application.personalDetails = {
-      ...application.personalDetails,
-      familyName: req.body.familyName,
-      givenNames: req.body.givenNames
-    };
-
-    await updateAppealService.updateAppeal(req);
-
-    return res.redirect(paths.personalDetails.dob);
-  } catch (e) {
-    next(e);
-  }
+  };
 }
 
 function getNationalityPage(req: Request, res: Response, next: NextFunction) {
@@ -261,9 +260,9 @@ function postManualEnterAddressPage(req: Request, res: Response, next: NextFunct
 function setupPersonalDetailsController(deps?: any): Router {
   const router = Router();
   router.get(paths.personalDetails.name, getNamePage);
-  router.post(paths.personalDetails.name, postNamePage);
+  router.post(paths.personalDetails.name, postNamePage(deps.updateAppealService));
   router.get(paths.personalDetails.dob, getDateOfBirthPage);
-  router.post(paths.personalDetails.dob, postDateOfBirth);
+  router.post(paths.personalDetails.dob, postDateOfBirth(deps.updateAppealService));
   router.get(paths.personalDetails.nationality, getNationalityPage);
   router.post(paths.personalDetails.nationality, postNationalityPage);
   router.get(paths.personalDetails.enterPostcode, getEnterPostcodePage);

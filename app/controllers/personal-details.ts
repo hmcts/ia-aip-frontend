@@ -27,7 +27,7 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
+async function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = dateValidation(req.body);
     if (validation != null) {
@@ -45,6 +45,8 @@ function postDateOfBirth(req: Request, res: Response, next: NextFunction) {
         year: req.body.year
       }
     };
+
+    await updateAppealService.updateAppeal(req);
 
     return res.redirect(paths.personalDetails.nationality);
   } catch (e) {

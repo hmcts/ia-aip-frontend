@@ -3,7 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import {
   getDateOfBirthPage,
   postDateOfBirth,
-  setupPersonalDetailsController
+  setupPersonalDetailsController,
+  updateAppealService
 } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
@@ -67,14 +68,17 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postDateOfBirth', () => {
-    it('should validate and redirect to next page personal-details/nationality', () => {
+    it('should validate and redirect to next page personal-details/nationality', async () => {
       req.body.day = 1;
       req.body.month = 11;
       req.body.year = 1993;
 
       req.session.personalDetails = {};
 
-      postDateOfBirth(req as Request, res as Response, next);
+      // @ts-ignore
+      sinon.stub(updateAppealService, 'updateAppeal').resolves({});
+
+      await postDateOfBirth(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.nationality);
     });
@@ -88,11 +92,12 @@ describe('Home Office Details Controller', function () {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render appeal-application/personal-details/date-of-birth.njk with error', () => {
+    it('should fail validation and render appeal-application/personal-details/date-of-birth.njk with error', async () => {
       req.body.day = 0;
       req.body.month = 0;
       req.body.year = 0;
-      postDateOfBirth(req as Request, res as Response, next);
+
+      await postDateOfBirth(req as Request, res as Response, next);
 
       const errorDay = {
         href: '#day',

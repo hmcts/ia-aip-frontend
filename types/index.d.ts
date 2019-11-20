@@ -35,13 +35,15 @@ interface Appeal {
   hearingRequirements: HearingRequirements;
 }
 
+interface AppealDate {
+  day: number;
+  month: number;
+  year: number;
+}
+
 interface AppealApplication {
   homeOfficeRefNumber: string;
-  dateLetterSent: {
-    day: number;
-    month: number;
-    year: number;
-  };
+  dateLetterSent: AppealDate;
   appealType: string | any[];
   isAppealLate: boolean;
   lateAppeal?: {
@@ -51,11 +53,7 @@ interface AppealApplication {
   personalDetails: {
     givenNames: string;
     familyName: string;
-    dob: {
-      day: number;
-      month: number;
-      year: number;
-    }
+    dob: AppealDate;
     nationality: string;
   };
   contactDetails: {

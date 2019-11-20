@@ -44,7 +44,7 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
   }
 }
 function postDateLetterSent(updateAppealService: UpdateAppealService) {
-  return async function postDateLetterSent(req: Request, res: Response, next: NextFunction) {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const validation = dateValidation(req.body);
       if (validation) {

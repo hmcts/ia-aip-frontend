@@ -19,7 +19,11 @@
 
   <p>{{ i18n.appealApplication.homeOfficePage.description }}</p>
 
-  <img src="/assets/images/home_office_ref_number.png" class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"/>
+  <img
+          src="/assets/images/home_office_ref_number.png"
+          class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
+          alt="{{  i18n.appealApplication.homeOfficePage.refImageAltText }}"
+  />
 
   <form action="/home-office/details" method="post">
     {{ govukInput({

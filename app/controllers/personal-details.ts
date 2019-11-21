@@ -53,7 +53,9 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
 
 function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
-    const { personalDetails } = req.session.appeal.application || null;
+    const personalDetails = req.session.appeal.application.personalDetails && (req.session.appeal.application.personalDetails.givenNames || req.session.appeal.application.personalDetails.familyName) ?
+      req.session.appeal.application.personalDetails : { givenNames: req.idam.userDetails.forename, familyName: req.idam.userDetails.surname };
+
     return res.render('appeal-application/personal-details/name.njk', { personalDetails });
   } catch (e) {
     next(e);
@@ -64,14 +66,14 @@ function postNamePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const validation = appellantNamesValidation(req.body);
-      let errors = null;
       if (validation) {
-        errors = validation;
         return res.render('appeal-application/personal-details/name.njk', {
-          errors: {
-            errorList: errors,
-            fieldErrors: { givenNames: { text: errors[0].text }, familyName: { text: errors[1].text } }
-          }
+          personalDetails: {
+            familyName: req.body.familyName,
+            givenNames: req.body.givenNames
+          },
+          error: validation,
+          errorList: Object.values(validation)
         });
       }
       const { application } = req.session.appeal;

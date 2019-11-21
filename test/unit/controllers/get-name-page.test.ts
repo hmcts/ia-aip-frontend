@@ -26,7 +26,10 @@ describe('Home Office Details Controller', function () {
         }
       },
       idam: {
-        userDetails: {}
+        userDetails: {
+          forename: 'forename',
+          surname: 'surname'
+        }
       },
       app: {
         locals: {
@@ -66,6 +69,21 @@ describe('Home Office Details Controller', function () {
       getNamePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk');
     });
+
+    it('gets name from session', function () {
+      req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName' };
+      getNamePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk',
+        { personalDetails: { familyName: 'familyName', givenNames: 'givenName' } }
+      );
+    });
+
+    it('gets name from idam', function () {
+      getNamePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk',
+        { personalDetails: { familyName: 'surname', givenNames: 'forename' } }
+      );
+    });
   });
 
   describe('postNamePage', () => {
@@ -93,19 +111,26 @@ describe('Home Office Details Controller', function () {
       req.body.familyName = '';
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      const familyNameError: ValidationError = {
+        href: '#familyName',
+        key: 'familyName',
+        text: 'Enter your family name or names'
+      };
+      const givenNameErrors: ValidationError = {
+        href: '#givenNames',
+        key: 'givenNames',
+        text: 'Enter your given name or names'
+      };
+
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/name.njk',
         {
-          errors: {
-            errorList: [ { href: '#givenNames', text: 'Please Enter Given Names' }, {
-              href: '#familyName',
-              text: 'Please Enter Family Name'
-            } ],
-            fieldErrors: {
-              familyName: { text: 'Please Enter Family Name' },
-              givenNames: { text: 'Please Enter Given Names' }
-            }
-          }
+          error: {
+            givenNames: givenNameErrors,
+            familyName: familyNameError
+          },
+          errorList: [ givenNameErrors, familyNameError ],
+          personalDetails: { familyName: '', givenNames: '' }
         });
     });
   });

@@ -1,4 +1,5 @@
 import {
+  appellantNamesValidation,
   dateValidation,
   emailValidation,
   homeOfficeNumberValidation,
@@ -49,6 +50,35 @@ describe('fields-validations', () => {
           }
         }
       );
+    });
+  });
+
+  describe('appellantNameValidation', () => {
+    it('should validate a name', () => {
+      const validationResult = appellantNamesValidation({ givenNames: 'givenNames', familyName: 'familyName' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation when given names is blank', () => {
+      const validationResult = appellantNamesValidation({ givenNames: '', familyName: 'familyName' });
+      expect(validationResult).to.deep.equal({
+        givenNames: {
+          href: '#givenNames',
+          key: 'givenNames',
+          text: 'Enter your given name or names'
+        }
+      });
+    });
+
+    it('should fail validation when family names is blank', () => {
+      const validationResult = appellantNamesValidation({ givenNames: 'givenName', familyName: '' });
+      expect(validationResult).to.deep.equal({
+        familyName: {
+          href: '#familyName',
+          key: 'familyName',
+          text: 'Enter your family name or names'
+        }
+      });
     });
   });
 

@@ -99,22 +99,11 @@ function dateValidation(obj: object): boolean | ValidationErrors {
 
 function appellantNamesValidation(obj: object) {
   const schema = Joi.object({
-    givenNames: Joi.string().required().messages({ 'string.empty': 'Please Enter Given Names' }),
-    familyName: Joi.string().required().messages({ 'string.empty': 'Please Enter Family Name' })
+    givenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.givenNames }),
+    familyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.familyName })
 
   }).unknown();
-  const result = schema.validate(obj, { abortEarly: false });
-  if (result.error) {
-    const errors: Array<object> = [];
-    result.error.details.map(error => {
-      errors.push({
-        text: error.message,
-        href: `#${error.context.key}`
-      });
-    });
-    return errors;
-  }
-  return false;
+  return validate(obj, schema);
 }
 
 function contactDetailsValidation(obj: object) {

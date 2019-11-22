@@ -19,10 +19,15 @@ function buildSectionObject(sectionId: string, taskIds: string[], req: Request) 
     return req.session.appeal.application.tasks[taskId].completed;
   }
 
+  function isActive(taskId: string) {
+    return req.session.appeal.application.tasks[taskId].active;
+  }
+
   taskIds.forEach((taskId) => {
-    const complete: boolean = isCompleted(taskId);
+    const completed: boolean = isCompleted(taskId);
     const saved: boolean = isSaved(taskId);
-    const task: Task = { id: taskId, saved, complete };
+    const active: boolean = isActive(taskId);
+    const task: Task = { id: taskId, saved, completed, active };
     tasks.push(task);
   });
 

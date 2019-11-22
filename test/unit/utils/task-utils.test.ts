@@ -24,23 +24,28 @@ describe('getStatus', () => {
       tasks: {
         homeOfficeDetails: {
           saved: false,
-          completed: false
+          completed: false,
+          active: true
         },
         personalDetails: {
           saved: true,
-          completed: false
+          completed: false,
+          active: false
         },
         contactDetails: {
           saved: false,
-          completed: false
+          completed: false,
+          active: false
         },
         typeOfAppeal: {
           saved: false,
-          completed: false
+          completed: false,
+          active: false
         },
         checkAndSend: {
           saved: false,
-          completed: false
+          completed: false,
+          active: false
         }
       }
     },
@@ -51,37 +56,43 @@ describe('getStatus', () => {
   const status = {
     homeOfficeDetails: {
       saved: true,
-      completed: false
+      completed: false,
+      active: true
     },
     personalDetails: {
       saved: true,
-      completed: false
+      completed: false,
+      active: false
     },
     contactDetails: {
       saved: false,
-      completed: false
+      completed: false,
+      active: false
     },
     typeOfAppeal: {
       saved: false,
-      completed: false
+      completed: false,
+      active: false
     },
     checkAndSend: {
       saved: false,
-      completed: false
+      completed: false,
+      active: false
     }
   };
 
-  it('should update status in session @only', () => {
+  it('should update status in session', () => {
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
-  it('should update status homeOfficeDetails as completed @only', () => {
+  it('should update status homeOfficeDetails as completed and mark active next task', () => {
     appeal.application.isAppealLate = false;
     status.homeOfficeDetails.completed = true;
+    status.personalDetails.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
-  it('should update status personalDetails as completed @only', () => {
+  it('should update status personalDetails as completed and mark active next task', () => {
     appeal.application.personalDetails.dob = {
       day: 1,
       month: 1,
@@ -95,40 +106,46 @@ describe('getStatus', () => {
       }
     };
     status.personalDetails.completed = true;
+    status.contactDetails.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
-  it('should update status contactDetails as completed @only', () => {
+  it('should update status contactDetails as completed and mark active next task', () => {
     appeal.application.contactDetails = {
       ...appeal.application.contactDetails,
       phone: '07769118762'
     };
     status.contactDetails = {
+      ...status.contactDetails,
       completed: true,
       saved: true
     };
+    status.typeOfAppeal.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
-  it('should update status contactDetails as completed @only', () => {
+  it('should update status contactDetails as completed', () => {
     appeal.application.contactDetails = {
       ...appeal.application.contactDetails,
       phone: undefined,
       email: 'email@test.com'
     };
     status.contactDetails = {
+      ...status.contactDetails,
       completed: true,
       saved: true
     };
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
-  it('should update status typeOfAppeal as completed @only', () => {
+  it('should update status typeOfAppeal as completed', () => {
     appeal.application.appealType = ['type'];
     status.typeOfAppeal = {
+      ...status.typeOfAppeal,
       completed: true,
       saved: true
     };
+    status.checkAndSend.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 });

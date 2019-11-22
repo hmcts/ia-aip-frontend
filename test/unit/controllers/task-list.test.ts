@@ -22,23 +22,28 @@ describe('Task List Controller', () => {
             tasks: {
               homeOfficeDetails: {
                 saved: false,
-                completed: false
+                completed: false,
+                active: true
               },
               personalDetails: {
                 saved: false,
-                completed: false
+                completed: false,
+                active: false
               },
               contactDetails: {
                 saved: false,
-                completed: false
+                completed: false,
+                active: false
               },
               typeOfAppeal: {
                 saved: false,
-                completed: false
+                completed: false,
+                active: false
               },
               checkAndSend: {
                 saved: false,
-                completed: false
+                completed: false,
+                active: false
               }
             }
           } as Partial<AppealApplication>,
@@ -86,17 +91,17 @@ describe('Task List Controller', () => {
       {
         'sectionId': 'yourDetails',
         'tasks': [
-          { 'id': 'homeOfficeDetails', 'saved': false, 'complete': false },
-          { 'id': 'personalDetails', 'saved': false, 'complete': false },
-          { 'id': 'contactDetails', 'saved': false, 'complete': false } ]
+          { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': true },
+          { 'id': 'personalDetails', 'saved': false, 'completed': false, 'active': false },
+          { 'id': 'contactDetails', 'saved': false, 'completed': false, 'active': false } ]
       },
       {
         'sectionId': 'appealDetails',
-        'tasks': [ { 'id': 'typeOfAppeal', 'saved': false, 'complete': false } ]
+        'tasks': [ { 'id': 'typeOfAppeal', 'saved': false, 'completed': false, 'active': false } ]
       },
       {
         'sectionId': 'checkAndSend',
-        'tasks': [ { 'id': 'checkAndSend', 'saved': false, 'complete': false } ]
+        'tasks': [ { 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false } ]
       } ];
 
     getTaskList(req as Request, res as Response, next);

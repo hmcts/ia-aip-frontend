@@ -1,7 +1,8 @@
 interface Task {
-  id: string;
+  id?: string;
   saved: boolean;
-  complete: boolean;
+  completed: boolean;
+  active: boolean;
 }
 
 interface Section {
@@ -68,10 +69,7 @@ interface AppealApplication {
     }
   };
   tasks?: {
-    [key: string]: {
-      saved: boolean;
-      completed: boolean;
-    } 
+    [key: string]: Task;
   }
 }
 

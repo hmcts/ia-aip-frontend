@@ -9,21 +9,23 @@
     <h1 class="govuk-heading-xl">{{ i18n.pages.taskList.header }}</h1>
     {% for section in data %}
         <h2 class="govuk-heading-l">
-            <span class="app-task-list__section-number">  {{ loop.index }}. </span> {{ text.getSectionTranslationFrom(section.sectionId) }}
+            <span class="app-task-list__section-number">  {{ loop.index }}. </span> {{ i18n.pages.taskList.sections[section.sectionId] }}
         </h2>
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
         {% for task in section.tasks %}
             <ul class="govuk-list">
                 <li class="govuk-body-l task-list__item">
-                  <span class="govuk-link">
-                      {{ text.getTaskTranslationFrom(task.id) }}
-                  </span>
-                    {% if task.saved and task.complete %}
+                    {% if task.active %}
+                        {{ i18n.pages.taskList[task.id].htmlLink | safe }}
+                    {% else %}
+                        {{ i18n.pages.taskList[task.id].title }}
+                    {% endif %}
+                    {% if task.saved and task.completed %}
                         {{ govukTag({
                             text: "Completed"
                         }) }}
                     {% endif %}
-                    {% if task.saved and task.complete == false %}
+                    {% if task.saved and task.completed == false %}
                         {{ govukTag({
                             text: "Saved"
                         }) }}

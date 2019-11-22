@@ -119,7 +119,7 @@ describe('Check and Send Controller', () => {
 
     postCheckAndSend(req as Request, res as Response, next);
 
-    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.devNextPage);
+    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.confirmation);
   });
 
   it('getCheckAndSend should catch exception and call next with the error', () => {

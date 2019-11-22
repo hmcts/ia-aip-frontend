@@ -7,7 +7,7 @@ import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Home Office Details Controller', function () {
+describe('Personal Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -71,10 +71,10 @@ describe('Home Office Details Controller', function () {
     });
 
     it('gets name from session', function () {
-      req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName' };
+      req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName', dob: null };
       getNamePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk',
-        { personalDetails: { familyName: 'familyName', givenNames: 'givenName' } }
+        { personalDetails: { dob: null, familyName: 'familyName', givenNames: 'givenName' } }
       );
     });
 

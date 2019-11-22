@@ -17,7 +17,8 @@ export function createDummyAppealApplication(): Appeal {
           month: 10,
           year: 1980
         },
-        nationality: 'Panamanian'
+        nationality: 'Panamanian',
+        stateless: false
       },
       contactDetails: {
         email: 'pedro.jimenez@example.net',
@@ -27,7 +28,7 @@ export function createDummyAppealApplication(): Appeal {
           line2: 'Flat 2',
           city: 'London',
           postcode: 'W1W 7RT',
-          country: 'United Kingdom'
+          county: 'London'
         }
       }
     },

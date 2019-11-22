@@ -2,32 +2,31 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
-{% import "helpers/text-helpers.njk" as text %}
 {% import "components/button-components.njk" as button %}
 
 {% block content %}
 
     {% if errorList %}
-      {{ govukErrorSummary({
-          titleText: i18n.errorSummary.titleText,
-          errorList: errorList
-      }) }}
+        {{ govukErrorSummary({
+            titleText: i18n.errorSummary.titleText,
+            errorList: errorList
+        }) }}
     {% endif %}
     {% set options = [] %}
     {% for item in types %}
         {% set examples =
             govukDetails({
-            summaryText: i18n.pages.appealType.exampleSummaryText,
+            summaryText: i18n.pages.appealType.exampleSummaryText + item.name,
             html: item.examples
         }) %}
 
         {% set options = (options.push(
-          {
-            value: item.value,
-            html: item.title,
-            checked: item.checked,
-            hint: { html: examples }
-          }), options) %}
+            {
+                value: item.value,
+                html: item.title,
+                checked: item.checked,
+                hint: { html: examples }
+            }), options) %}
     {% endfor %}
 
     <form action="/type-of-appeal" method="post">
@@ -43,7 +42,7 @@
                 }
             },
             hint: {
-                html:  text.addMultipleHintsText(i18n.pages.appealType.pageHint)
+                html:  i18n.pages.appealType.pageHint
             },
             errorMessage: {
                 text: i18n.validationErrors.atLeastOneOption

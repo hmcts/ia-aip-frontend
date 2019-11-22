@@ -153,7 +153,8 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
     if (validation !== null) {
       return res.render('appeal-application/personal-details/enter-postcode.njk', {
         error: validation,
-        errorList: Object.values(validation)
+        errorList: Object.values(validation),
+        postcode: req.body.postcode
       });
     }
     req.session.appeal.application.contactDetails = {
@@ -242,12 +243,16 @@ function getManualEnterAddressPage(req: Request, res: Response, next: NextFuncti
 function postManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
-    const postcode = application.contactDetails && application.contactDetails.address.postcode || null;
-    if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
     const validation = addressValidation(req.body);
     if (validation !== null) {
       return res.render('appeal-application/personal-details/enter-address.njk', {
-        postcode,
+        address: {
+          line1: req.body['address-line-1'],
+          line2: req.body['address-line-2'],
+          city: req.body['address-town'],
+          county: req.body['address-county'],
+          postcode: req.body['address-postcode']
+        },
         error: validation,
         errorList: Object.values(validation)
       });
@@ -259,7 +264,7 @@ function postManualEnterAddressPage(req: Request, res: Response, next: NextFunct
         line1: req.body['address-line-1'],
         line2: req.body['address-line-2'],
         city: req.body['address-town'],
-        country: req.body['address-county'],
+        county: req.body['address-county'],
         postcode: req.body['address-postcode']
       }
     };

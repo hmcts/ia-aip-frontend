@@ -87,24 +87,22 @@ describe('Home Office Details Controller', function() {
 
     it('should fail validation and render appeal-application/personal-details/enter-postcode.njk with error', () => {
       req.body.postcode = 'invalid';
-      const postcode = { href: '#postcode', key: 'postcode', text: 'Enter a valid postcode' };
-      const invalidPostcodeText = [
-        {
-          key: 'postcode',
-          text: 'Enter a valid postcode',
-          href: '#postcode'
-        }
-      ];
+      const error = {
+        key: 'postcode',
+        text: 'Enter a real postcode',
+        href: '#postcode'
+      };
       postEnterPostcodePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/enter-postcode.njk',
         {
-          error: { postcode },
-          errorList: invalidPostcodeText
+          error: { postcode: error },
+          errorList: [ error ],
+          postcode: 'invalid'
         });
     });
 
-    it('should fail validation and render appeal-application/personal-details/enter-postcode.njk with error', () => {
+    it('should fail validation and render appeal-application/personal-details/enter-postcode.njk with error 2', () => {
       req.body.postcode = '';
       const postcode = { href: '#postcode', key: 'postcode', text: 'Enter your postcode' };
       const emptyPostcodeText = [
@@ -120,7 +118,8 @@ describe('Home Office Details Controller', function() {
         'appeal-application/personal-details/enter-postcode.njk',
         {
           error: { postcode },
-          errorList: emptyPostcodeText
+          errorList: emptyPostcodeText,
+          postcode: ''
         });
     });
   });

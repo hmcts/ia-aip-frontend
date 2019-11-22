@@ -60,20 +60,14 @@ function dropdownValidation(text: string, theKey: string): ValidationErrors | nu
   return validate(objectToValidate, schema);
 }
 
-function homeOfficeNumberValidation(reference: string) {
-  const schema = Joi
-    .string()
-    .required()
-    .regex(/^[a-zA-Z]{1}[0-9]{7}$/)
-    .messages({
-      'string.empty': i18n.validationErrors.empty,
-      'string.pattern.base': i18n.validationErrors.homeOfficeRef
-    });
-  const result = schema.validate(reference);
-  if (result.error) {
-    return result.error.details[0].message;
-  }
-  return false;
+function homeOfficeNumberValidation(obj: object) {
+  const schema = Joi.object({
+    homeOfficeRefNumber: Joi.string().required().regex(/^[A-Za-z][0-9]{6}[0-9]?(|\/[0-9][0-9]?[0-9]?)$/).messages({
+        'string.empty': i18n.validationErrors.homeOfficeReference.required,
+        'string.pattern.base': i18n.validationErrors.homeOfficeReference.invalid
+    })
+  }).unknown();
+  return validate(obj, schema);
 }
 
 function dateLetterSentValidation(obj: object): boolean | ValidationErrors {

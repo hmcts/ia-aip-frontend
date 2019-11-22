@@ -21,13 +21,20 @@ describe('fields-validations', () => {
 
   describe('homeOfficeNumberValidation', () => {
     it('should validate', () => {
-      const validations = homeOfficeNumberValidation('A1234567');
-      expect(validations).to.equal(false);
+      const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: 'A1234567' });
+      expect(validations).to.equal(null);
     });
 
     it('should fail validation and return empty warning message', () => {
-      const validations = homeOfficeNumberValidation('');
-      expect(validations).to.equal(i18n.validationErrors.empty);
+      const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '' });
+
+      expect(validations).to.deep.equal({
+        homeOfficeRefNumber: {
+          href: '#homeOfficeRefNumber',
+          key: 'homeOfficeRefNumber',
+          text: 'Enter the Home Office reference number'
+        }
+      });
     });
   });
 

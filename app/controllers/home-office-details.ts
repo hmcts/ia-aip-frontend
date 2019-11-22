@@ -17,17 +17,18 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
 function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const homeOfficeDetails = req.body['homeOfficeRefNumber'];
-      const validation = homeOfficeNumberValidation(homeOfficeDetails);
+      const validation = homeOfficeNumberValidation(req.body);
       if (validation) {
         return res.render('appeal-application/home-office/details.njk',
           {
-            error: validation
+            errors: validation,
+            errorList: Object.values(validation),
+            homeOfficeRefNumber: req.body.homeOfficeRefNumber
           }
         );
       }
       await updateAppealService.updateAppeal(req);
-      req.session.appeal.application.homeOfficeRefNumber = homeOfficeDetails;
+      req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
       return res.redirect(paths.homeOffice.letterSent);
     } catch (e) {
       next(e);

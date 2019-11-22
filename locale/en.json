@@ -196,6 +196,10 @@
       "required": "Select your address",
       "line1Required": "Enter your building and street details",
       "postcodeRequired": "Enter your postcode"
+    },
+    "homeOfficeReference": {
+      "required": "Enter the Home Office reference number",
+      "invalid": "Enter the Home Office reference number in the correct format"
     }
 
   },

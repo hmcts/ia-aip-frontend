@@ -56,6 +56,7 @@ interface AppealApplication {
     familyName: string;
     dob: AppealDate;
     nationality: string;
+    stateless: boolean;
   };
   contactDetails: {
     email?: string;

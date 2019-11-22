@@ -183,6 +183,10 @@
       "missingYear": "Date letter sent must include a year",
       "incorrectFormat": "Enter the date in the correct format",
       "inPast": "The date letter was sent must be in the past"
+    },
+    "nationality": {
+      "atLeastOne": "Select your Nationality",
+      "onlyOne": "Only select one option"
     }
   },
   "fields": {

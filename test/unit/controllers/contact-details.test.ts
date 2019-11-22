@@ -84,14 +84,14 @@ describe('Contact details Controller', () => {
         'email-value': ''
       };
       const error: ValidationError = {
-        href: '#undefined',
-        key: undefined,
+        href: '#email-value-text-message-value',
+        key: 'email-value-text-message-value',
         text: i18n.validationErrors.contactDetails.selectOneOption
       };
       const expectedData = {
         email: undefined,
         phone: undefined,
-        errors: { 'undefined': error },
+        errors: { 'email-value-text-message-value': error },
         errorList: [ error ]
       };
 

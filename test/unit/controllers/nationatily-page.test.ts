@@ -9,7 +9,7 @@ import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Personal details Controller', function() {
+describe('Nationality details Controller', function() {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -97,27 +97,42 @@ describe('Personal details Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render personal-details/nationality.njk with error', () => {
+    it('should fail validation and render personal-details/nationality.njk with error when nothing selected', () => {
       postNationalityPage(req as Request, res as Response, next);
       req.body.stateless = '';
       req.body.nationality = '';
       const nationalitiesOptions = getNationalitiesOptions(countryList, '');
+      const error = {
+        href: '#nationality-statelessNationality',
+        key: 'nationality-statelessNationality',
+        text: 'Select your Nationality'
+      };
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
-          errors: { errorList: [{ href: '#', text: 'Please select a nationality.' }] },
-          nationalitiesOptions
+          errorList: [error],
+          errors: { 'nationality-statelessNationality': error },
+          nationalitiesOptions,
+          statelessNationality: undefined
         });
     });
 
-    it('should fail validation and render personal-details/nationality.njk with error', () => {
-      postNationalityPage(req as Request, res as Response, next);
-      req.body.stateless = 'stateless';
+    it('should fail validation and render personal-details/nationality.njk with error when nationality and state selected', () => {
+      req.body.statelessNationality = 'stateless';
       req.body.nationality = 'Taiwan';
-      const nationalitiesOptions = getNationalitiesOptions(countryList, '');
+      postNationalityPage(req as Request, res as Response, next);
+      const nationalitiesOptions = getNationalitiesOptions(countryList, req.body.nationality);
+      const error = {
+        href: '#nationality-statelessNationality',
+        key: 'nationality-statelessNationality',
+        text: 'Only select one option'
+      };
+
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
-          errors: { errorList: [{ href: '#', text: 'Please select a nationality.' }] },
-          nationalitiesOptions
+          errorList: [error],
+          errors: { 'nationality-statelessNationality': error },
+          nationalitiesOptions,
+          statelessNationality: 'stateless'
         });
     });
   });

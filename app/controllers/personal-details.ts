@@ -102,7 +102,10 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
     const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
-    return res.render('appeal-application/personal-details/nationality.njk', { nationalitiesOptions });
+    return res.render('appeal-application/personal-details/nationality.njk', {
+      nationalitiesOptions,
+      statelessNationality: application.personalDetails.stateless
+    });
   } catch (e) {
     next(e);
   }
@@ -112,19 +115,21 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = nationalityValidation(req.body);
     if (validation) {
-      const { application } = req.session.appeal;
-      const nationality = application.personalDetails && application.personalDetails.nationality || null;
+      const nationality = req.body.nationality;
       const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
       return res.render('appeal-application/personal-details/nationality.njk', {
         nationalitiesOptions,
-        errors: { errorList: validation }
+        statelessNationality: req.body.statelessNationality,
+        errors: validation,
+        errorList: Object.values(validation)
       });
     }
 
     const { application } = req.session.appeal;
     application.personalDetails = {
       ...application.personalDetails,
-      nationality: req.body.nationality ? req.body.nationality : req.body.stateless
+      nationality: req.body.nationality,
+      stateless: req.body.statelessNationality
     };
     return res.redirect(paths.personalDetails.enterPostcode);
   } catch (e) {

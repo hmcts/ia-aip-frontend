@@ -6,9 +6,10 @@ function appealApplicationStatus(appeal: Appeal) {
   const isAppealLate: boolean = _.get(appeal.application, 'isAppealLate');
   const apppealLateReason: boolean = !!_.get(appeal.application, 'lateAppeal.reason');
 
-  const homeOfficeDetails = {
+  const homeOfficeDetails: Task = {
     saved: homeOfficeRefNumber || dateLetterSent || apppealLateReason,
-    completed: homeOfficeRefNumber && dateLetterSent && (!isAppealLate || (isAppealLate && apppealLateReason))
+    completed: homeOfficeRefNumber && dateLetterSent && (!isAppealLate || (isAppealLate && apppealLateReason)),
+    active: true
   };
 
   const givenNames: boolean = !!_.get(appeal.application, 'personalDetails.givenNames');
@@ -17,26 +18,30 @@ function appealApplicationStatus(appeal: Appeal) {
   const nationality: boolean = !!_.get(appeal.application, 'personalDetails.nationality');
   const postcode: boolean = !!_.get(appeal.application, 'contactDetails.address.postcode');
   const line1: boolean = !!_.get(appeal.application, 'contactDetails.address.line1');
-  const personalDetails = {
+  const personalDetails: Task = {
     saved: givenNames || familyName || dob || nationality || postcode || line1,
-    completed: givenNames && familyName && dob && nationality && postcode && line1
+    completed: givenNames && familyName && dob && nationality && postcode && line1,
+    active: homeOfficeDetails.completed
   };
 
   const email: boolean = !!_.get(appeal.application, 'contactDetails.email');
   const phone: boolean = !!_.get(appeal.application, 'contactDetails.phone');
-  const contactDetails = {
+  const contactDetails: Task = {
     saved: email || phone,
-    completed: email || phone
+    completed: email || phone,
+    active: personalDetails.completed
   };
 
-  const typeOfAppeal = {
+  const typeOfAppeal: Task = {
     saved: !!_.get(appeal.application, 'appealType'),
-    completed: !!_.get(appeal.application, 'appealType')
+    completed: !!_.get(appeal.application, 'appealType'),
+    active: contactDetails.completed
   };
 
-  const checkAndSend = {
+  const checkAndSend: Task = {
     saved: false,
-    completed: false
+    completed: false,
+    active: typeOfAppeal.completed
   };
 
   return {

@@ -108,10 +108,19 @@ describe('Home Office Details Controller', function () {
       req.body['homeOfficeRefNumber'] = 'notValid';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      const error = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'Enter the Home Office reference number in the correct format'
+      };
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
         {
-          error: i18n.validationErrors.homeOfficeRef
+          errors: {
+            homeOfficeRefNumber: error
+          },
+          errorList: [ error ],
+          homeOfficeRefNumber: 'notValid'
         });
     });
 

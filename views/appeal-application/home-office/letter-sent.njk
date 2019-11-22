@@ -26,9 +26,9 @@
         i18n.appealApplication.homeOfficeLetterSent.dateTitle,
         i18n.appealApplication.homeOfficeLetterSent.dateHint,
         error,
-        dateLetterSent.day,
-        dateLetterSent.month,
-        dateLetterSent.year
+        dateLetterSent.day if dateLetterSent.day,
+        dateLetterSent.month if dateLetterSent.month,
+        dateLetterSent.year if dateLetterSent.year
       )
     }}
 

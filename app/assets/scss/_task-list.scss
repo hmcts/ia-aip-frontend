@@ -1,0 +1,8 @@
+.task-list__item {
+  display: flex;
+  justify-content: space-between;
+
+  .govuk-tag {
+    padding: .5rem;
+  }
+}

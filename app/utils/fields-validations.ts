@@ -150,8 +150,10 @@ function nationalityValidation(obj: object) {
     stateless: Joi.string().optional(),
     nationality: Joi.string().optional().empty('')
 
-  }).xor('nationality', 'stateless').messages({ 'object.xor': 'Please select one option.' })
-    .xor('nationality', 'stateless').messages({ 'object.missing': 'Please select a nationality.' });
+  }).xor('nationality', 'stateless').messages({
+    'object.xor': 'Please select one option.',
+    'object.missing': 'Please select a nationality.'
+  });
   const result = schema.validate(obj, { abortEarly: true });
   if (result.error) {
     const errors: Array<object> = [];

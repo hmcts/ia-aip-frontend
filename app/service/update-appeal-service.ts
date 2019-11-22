@@ -32,7 +32,7 @@ export default class UpdateAppealService {
           phone: null
         },
         dateLetterSent,
-        isAppealLate: false,
+        isAppealLate: null,
         lateAppeal: null,
         personalDetails: {
           givenNames: ccdCase.case_data.appellantGivenNames,
@@ -47,20 +47,21 @@ export default class UpdateAppealService {
   }
 
   private getDate(ccdDate): AppealDate {
-    let dateLetterSent = {
-      year: null,
-      month: null,
-      day: null
-    };
     if (ccdDate) {
+      let dateLetterSent = {
+        year: null,
+        month: null,
+        day: null
+      };
       const decisionDate = new Date(ccdDate);
       dateLetterSent = {
         year: decisionDate.getFullYear().toString(),
         month: (decisionDate.getMonth() + 1).toString(),
         day: decisionDate.getDate().toString()
       };
+      return dateLetterSent;
     }
-    return dateLetterSent;
+    return null;
   }
 
   async updateAppeal(req: Request) {
@@ -84,16 +85,16 @@ export default class UpdateAppealService {
     if (application.homeOfficeRefNumber) {
       caseData.homeOfficeReferenceNumber = application.homeOfficeRefNumber;
     }
-    if (application.dateLetterSent.year) {
+    if (application.dateLetterSent && application.dateLetterSent.year) {
       caseData.homeOfficeDecisionDate = this.toIsoDate(application.dateLetterSent);
     }
-    if (application.personalDetails.givenNames) {
+    if (application.personalDetails && application.personalDetails.givenNames) {
       caseData.appellantGivenNames = application.personalDetails.givenNames;
     }
-    if (application.personalDetails.familyName) {
+    if (application.personalDetails && application.personalDetails.familyName) {
       caseData.appellantFamilyName = application.personalDetails.familyName;
     }
-    if (application.personalDetails.dob.year) {
+    if (application.personalDetails.dob && application.personalDetails.dob.year) {
       caseData.appellantDateOfBirth = this.toIsoDate(application.personalDetails.dob);
     }
 

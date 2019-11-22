@@ -71,7 +71,7 @@ interface AppealApplication {
   };
   tasks?: {
     [key: string]: Task;
-  }
+  };
 }
 
 interface CaseBuilding {

@@ -66,7 +66,7 @@ interface AppealApplication {
       line2?: string;
       city?: string;
       postcode?: string;
-      country?: string;
+      county?: string;
     }
   };
   tasks?: {

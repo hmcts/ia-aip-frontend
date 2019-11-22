@@ -49,8 +49,8 @@ function dropdownValidation(text: string, theKey: string): ValidationErrors | nu
     [theKey]: Joi.string()
       .required()
       .messages({
-        'any.required': i18n.validationErrors.required,
-        'string.empty': i18n.validationErrors.empty
+        'any.required': i18n.validationErrors.address.required,
+        'string.empty': i18n.validationErrors.address.required
       })
   });
 
@@ -164,8 +164,8 @@ function nationalityValidation(obj: object) {
 function postcodeValidation(obj: object): ValidationErrors | null {
   const schema = Joi.object({
     postcode: Joi.string().regex(postcodeRegex).messages({
-      'string.empty': 'Enter your postcode',
-      'string.pattern.base': 'Enter a valid postcode'
+      'string.empty': i18n.validationErrors.postcode.empty,
+      'string.pattern.base': i18n.validationErrors.postcode.invalid
     })
   }).unknown();
   return validate(obj, schema);
@@ -237,13 +237,13 @@ function statementOfTruthValidation(obj: object): null | ValidationErrors {
 
 function addressValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    ['address-line-1']: Joi.string().required().messages({ 'string.empty': 'Enter a building number and street name.' }),
-    ['address-town']: Joi.string().required().messages({ 'string.empty': 'Enter Town or City.' }),
-    ['address-county']: Joi.string().required().messages({ 'string.empty': 'Enter a County.' }),
+    ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.address.line1Required }),
+    ['address-town']: Joi.string().optional().empty(''),
+    ['address-county']: Joi.string().optional().empty(''),
     ['address-line-2']: Joi.string().optional().empty(''),
     ['address-postcode']: Joi.string().regex(postcodeRegex).messages({
-      'string.empty': 'Enter your postcode',
-      'string.pattern.base': 'Enter a valid postcode'
+      'string.empty': i18n.validationErrors.address.postcodeRequired,
+      'string.pattern.base': i18n.validationErrors.postcode.invalid
     })
   });
   return validate(obj, schema);

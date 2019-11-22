@@ -94,11 +94,6 @@ describe('Personal Details Controller', function () {
   });
 
   describe('postManualEnterAddress', () => {
-    it('should redirect to enter postcode page if postcode not present', () => {
-      postManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.personalDetails.enterPostcode);
-    });
-
     it('should fail validation and render appeal-application/personal-details/enter-address.njk', () => {
       req.session.appeal.application.contactDetails = {
         address: {

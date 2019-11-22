@@ -55,7 +55,7 @@ function postCheckAndSend(req: Request, res: Response, next: NextFunction) {
       });
     }
     // TODO: send out application
-    return res.redirect(paths.devNextPage);
+    return res.redirect(paths.confirmation);
   } catch (error) {
     next(error);
   }

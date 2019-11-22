@@ -25,7 +25,6 @@ const paths = {
     deleteEvidence: '/home-office/delete-evidence'
   },
   typeOfAppeal: '/type-of-appeal',
-  devNextPage: '/dev-next-page',
   contactDetails: '/contact-details',
   checkAndSend: '/check-and-send'
 };

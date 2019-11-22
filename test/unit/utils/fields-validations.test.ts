@@ -11,6 +11,14 @@ import i18n from '../../../locale/en.json';
 import { expect } from '../../utils/testUtils';
 
 describe('fields-validations', () => {
+  function createError(fieldName, errorMessage) {
+    return {
+      href: `#${fieldName}`,
+      key: fieldName,
+      text: errorMessage
+    };
+  }
+
   describe('homeOfficeNumberValidation', () => {
     it('should validate', () => {
       const validations = homeOfficeNumberValidation('A1234567');
@@ -24,32 +32,78 @@ describe('fields-validations', () => {
   });
 
   describe('dateValidation', () => {
+    const errors = {
+      missingDay: 'missing day',
+      missingMonth: 'missing month',
+      missingYear: 'missing year',
+      incorrectFormat: 'incorrect format',
+      inPast: 'must be in past'
+    };
+
     it('should validate', () => {
-      const validDate = {
-        day: '1',
-        month: '1',
-        year: '2019'
-      };
-      const validations = dateValidation(validDate);
+      const validDate = { day: '1', month: '1', year: '2019' };
+      const validations = dateValidation(validDate, errors);
       expect(validations).to.deep.equal(null);
     });
 
-    it('should fail validation and return empty warning message', () => {
-      const notValidDate = {
-        day: '1',
-        month: '1',
-        year: '20290'
-      };
-      const validations = dateValidation(notValidDate);
+    it('fields cannot be empty', () => {
+      const notValidDate = { day: '', month: '', year: '' };
+      const validations = dateValidation(notValidDate, errors);
+
       expect(validations).to.deep.equal(
         {
-          year: {
-            href: '#year',
-            key: 'year',
-            text: 'Needs to be a valid date.'
-          }
-        }
-      );
+          day: createError('day', errors.missingDay),
+          month: createError('month', errors.missingMonth),
+          year: createError('year', errors.missingYear)
+        });
+    });
+
+    it('fields must be numbers', () => {
+      const notValidDate = { day: 'a', month: 'b', year: 'c' };
+      const validations = dateValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal(
+        {
+          day: createError('day', errors.incorrectFormat),
+          month: createError('month', errors.incorrectFormat),
+          year: createError('year', errors.incorrectFormat)
+        });
+    });
+
+    it('fields must be integers', () => {
+      const notValidDate = { day: '1.1', month: '2.2', year: '1000.1' };
+      const validations = dateValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal(
+        {
+          day: createError('day', errors.incorrectFormat),
+          month: createError('month', errors.incorrectFormat),
+          year: createError('year', errors.incorrectFormat)
+        });
+    });
+
+    it('fields must greater than 0', () => {
+      // not sure how we can do this for day and month
+      const notValidDate = { day: '0', month: '0', year: '0' };
+      const validations = dateValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal(
+        {
+          day: createError('day', errors.incorrectFormat),
+          month: createError('month', errors.incorrectFormat),
+          year: createError('year', errors.incorrectFormat)
+        });
+    });
+
+    it('fields must be in past', () => {
+      // not sure how we can do this for day and month
+      const notValidDate = { day: '1', month: '1', year: '5000' };
+      const validations = dateValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal(
+        {
+          year: createError('year', errors.inPast)
+        });
     });
   });
 

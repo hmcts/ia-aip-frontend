@@ -11,7 +11,9 @@ module.exports = {
   method: 'GET',
   template: {
     id: () => emailToUserId[cache.get('email')] || defaultUserId,
-    email: () => cache.get('email')
+    email: () => cache.get('email'),
+    forename: 'John',
+    surname: 'Smith'
   },
   cache: false
 };

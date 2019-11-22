@@ -4,7 +4,7 @@ import multer from 'multer';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
-import { dateValidation, homeOfficeNumberValidation, textAreaValidation } from '../utils/fields-validations';
+import { dateLetterSentValidation, homeOfficeNumberValidation, textAreaValidation } from '../utils/fields-validations';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
@@ -46,7 +46,7 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
 function postDateLetterSent(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = dateValidation(req.body);
+      const validation = dateLetterSentValidation(req.body);
       if (validation) {
         return res.render('appeal-application/home-office/letter-sent.njk', {
           error: validation,

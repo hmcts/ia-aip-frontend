@@ -10,7 +10,7 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Home Office Details Controller', function () {
+describe('Personal Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -93,33 +93,28 @@ describe('Home Office Details Controller', function () {
     });
 
     it('should fail validation and render appeal-application/personal-details/date-of-birth.njk with error', async () => {
+      function createError(fieldName, errorMessage) {
+        return {
+          href: `#${fieldName}`,
+          key: fieldName,
+          text: errorMessage
+        };
+      }
+
       req.body.day = 0;
       req.body.month = 0;
       req.body.year = 0;
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      const errorDay = {
-        href: '#day',
-        key: 'day',
-        text: 'Needs to be above 0.'
-      };
-
-      const errorMonth = {
-        href: '#month',
-        key: 'month',
-        text: 'Needs to be above 0.'
-      };
-
-      const errorYear = {
-        href: '#year',
-        key: 'year',
-        text: 'Needs to be above 0.'
-      };
+      const errorDay = createError('day', 'Enter the date in the correct format');
+      const errorMonth = createError('month', 'Enter the date in the correct format');
+      const errorYear = createError('year', 'Enter the date in the correct format');
 
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
+          dob: { day: 0, month: 0, year: 0 },
           errors: {
             day: errorDay,
             month: errorMonth,

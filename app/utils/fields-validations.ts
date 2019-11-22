@@ -75,22 +75,36 @@ function homeOfficeNumberValidation(reference: string) {
   return false;
 }
 
-function dateValidation(obj: object): boolean | ValidationErrors {
+function dateLetterSentValidation(obj: object): boolean | ValidationErrors {
+  return dateValidation(obj, i18n.validationErrors.dateLetterSent);
+}
+
+function dateOfBirthValidation(obj: object): boolean | ValidationErrors {
+  return dateValidation(obj, i18n.validationErrors.dateOfBirth);
+}
+
+function dateValidation(obj: object, errors): boolean | ValidationErrors {
   const schema = Joi.object({
-    day: Joi.number().min(1).max(31).required().messages({
-      'number.base': 'Please Enter a day',
-      'number.max': 'Needs to be a valid date.',
-      'number.min': 'Needs to be above 0.'
+    day: Joi.number().empty('').required().integer().min(1).max(moment().date()).required().messages({
+      'any.required': errors.missingDay,
+      'number.base': errors.incorrectFormat,
+      'number.integer': errors.incorrectFormat,
+      'number.min': errors.incorrectFormat,
+      'number.max': errors.inPast
     }),
-    month: Joi.number().min(1).max(12).required().messages({
-      'number.base': 'Please Enter a month',
-      'number.max': 'Needs to be a valid date.',
-      'number.min': 'Needs to be above 0.'
+    month: Joi.number().empty('').required().integer().min(1).max(moment().month() + 1).required().messages({
+      'any.required': errors.missingMonth,
+      'number.base': errors.incorrectFormat,
+      'number.integer': errors.incorrectFormat,
+      'number.min': errors.incorrectFormat,
+      'number.max': errors.inPast
     }),
-    year: Joi.number().min(1111).max(moment().year()).required().messages({
-      'number.base': 'Please Enter a year',
-      'number.min': 'Needs to be above 0.',
-      'number.max': 'Needs to be a valid date.'
+    year: Joi.number().empty('').required().integer().min(1).max(moment().year()).required().messages({
+      'any.required': errors.missingYear,
+      'number.base': errors.incorrectFormat,
+      'number.integer': errors.incorrectFormat,
+      'number.min': errors.incorrectFormat,
+      'number.max': errors.inPast
     })
   });
 
@@ -265,6 +279,8 @@ export {
   contactDetailsValidation,
   homeOfficeNumberValidation,
   dateValidation,
+  dateLetterSentValidation,
+  dateOfBirthValidation,
   dropdownValidation,
   appellantNamesValidation,
   postcodeValidation,

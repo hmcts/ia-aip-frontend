@@ -185,7 +185,7 @@ describe('Home Office Details Controller', function () {
       req.body['month'] = '1';
       req.body['year'] = '20190';
       const yearError = {
-        text: 'Needs to be a valid date.',
+        text: 'The date letter was sent must be in the past',
         href: '#year',
         key: 'year'
       };

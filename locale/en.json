@@ -169,7 +169,21 @@
       "selectOneOption": "Please let us know how you want us to communicate with you."
     },
     "givenNames": "Enter your given name or names",
-    "familyName": "Enter your family name or names"
+    "familyName": "Enter your family name or names",
+    "dateOfBirth": {
+      "missingDay": "Your date of birth must include a day",
+      "missingMonth": "Your date of birth must include a month",
+      "missingYear": "Your date of birth must include a year",
+      "incorrectFormat": "Enter the date in the correct format",
+      "inPast": "Your date of birth must be in the past"
+    },
+    "dateLetterSent": {
+      "missingDay": "Date letter sent must include a day",
+      "missingMonth": "Date letter sent must include a month",
+      "missingYear": "Date letter sent must include a year",
+      "incorrectFormat": "Enter the date in the correct format",
+      "inPast": "The date letter was sent must be in the past"
+    }
   },
   "fields": {
     "textMessage": "Text message",

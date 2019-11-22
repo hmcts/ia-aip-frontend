@@ -5,7 +5,7 @@ import UpdateAppealService from '../service/update-appeal-service';
 import {
   addressValidation,
   appellantNamesValidation,
-  dateValidation,
+  dateOfBirthValidation,
   dropdownValidation,
   nationalityValidation,
   postcodeValidation
@@ -25,11 +25,16 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
 function postDateOfBirth(updateAppealService: UpdateAppealService) {
   return async function(req: Request, res: Response, next: NextFunction) {
     try {
-      const validation = dateValidation(req.body);
+      const validation = dateOfBirthValidation(req.body);
       if (validation != null) {
         return res.render('appeal-application/personal-details/date-of-birth.njk', {
           errors: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          dob: {
+            day: req.body.day,
+            month: req.body.month,
+            year: req.body.year
+          }
         });
       }
 

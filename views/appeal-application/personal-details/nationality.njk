@@ -6,7 +6,13 @@
 
 {% set stateless = 'stateless' %}
 {% block content %}
-    {{ errorSummary(errors) }}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.error.summary.title,
+            errorList: errorList
+        })
+        }}
+    {% endif %}
     <form method="post" action="/personal-details/nationality">
         {% call govukFieldset({
             legend: {
@@ -18,16 +24,21 @@
             {{ govukSelect({
                 id: "nationality",
                 name: "nationality",
-                items: nationalitiesOptions
+                items: nationalitiesOptions,
+                errorMessage: {
+                    text: errors["nationality-statelessNationality"].text
+                } if errors["nationality-statelessNationality"]
             }) }}
 
+
             {{ govukCheckboxes({
-                id: "stateless",
-                name: "stateless",
+                id: "statelessNationality",
+                name: "statelessNationality",
                 items: [
                     {
                         value: stateless,
-                        text: i18n.pages.nationality.stateless
+                        text: i18n.pages.nationality.stateless,
+                        checked: statelessNationality
                     }
                 ]
             }) }}

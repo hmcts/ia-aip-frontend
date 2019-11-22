@@ -14,10 +14,11 @@ function validate(obj: object, schema: any): ValidationErrors | null {
   const result = schema.validate(obj, { abortEarly: false });
   if (result.error) {
     return result.error.details.reduce((acc, curr): ValidationError => {
-      acc[curr.context.key] = {
-        key: curr.context.key,
+      const key = curr.context.key || (curr.context.peers ? curr.context.peers.join('-') : curr.context.peers) ;
+      acc[key] = {
+        key: key,
         text: curr.message,
-        href: `#${curr.context.key}`
+        href: `#${key}`
       };
       return acc;
     }, {});
@@ -150,25 +151,14 @@ function contactDetailsValidation(obj: object) {
 
 function nationalityValidation(obj: object) {
   const schema = Joi.object({
-    stateless: Joi.string().optional(),
+    statelessNationality: Joi.string().optional(),
     nationality: Joi.string().optional().empty('')
-
-  }).xor('nationality', 'stateless').messages({
-    'object.xor': 'Please select one option.',
-    'object.missing': 'Please select a nationality.'
+  }).xor('nationality', 'statelessNationality').messages({
+    'object.xor': i18n.validationErrors.nationality.onlyOne,
+    'object.missing': i18n.validationErrors.nationality.atLeastOne
   });
-  const result = schema.validate(obj, { abortEarly: true });
-  if (result.error) {
-    const errors: Array<object> = [];
-    result.error.details.map(error => {
-      errors.push({
-        text: error.message,
-        href: '#'
-      });
-    });
-    return errors;
-  }
-  return false;
+
+  return validate(obj, schema);
 }
 
 function postcodeValidation(obj: object): ValidationErrors | null {

@@ -35,7 +35,7 @@ function getMockedSummaryRows() {
     actions: { items: [ { href: '/contact-details', text: 'Change' } ] },
     key: { text: 'Contact Details' },
     value: {
-      html: 'pedro.jimenez@example.net<br>07123456789<br>60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>United Kingdom'
+      html: 'pedro.jimenez@example.net<br>07123456789<br>60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London'
     }
   }, {
     actions: { items: [ { href: '/type-of-appeal', text: 'Change' } ] },

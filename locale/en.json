@@ -197,6 +197,7 @@
       "line1Required": "Enter your building and street details",
       "postcodeRequired": "Enter your postcode"
     }
+
   },
   "fields": {
     "textMessage": "Text message",

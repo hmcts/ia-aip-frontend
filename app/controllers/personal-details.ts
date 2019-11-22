@@ -117,7 +117,7 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     application.personalDetails = {
       ...application.personalDetails,
-      nationality: req.body.nationality
+      nationality: req.body.nationality ? req.body.nationality : req.body.stateless
     };
     return res.redirect(paths.personalDetails.enterPostcode);
   } catch (e) {

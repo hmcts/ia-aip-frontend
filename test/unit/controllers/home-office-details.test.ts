@@ -32,7 +32,6 @@ describe('Home Office Details Controller', function () {
     req = {
       body: {},
       session: {
-        appealApplication: {},
         appeal: {
           application: {
             lateAppeal: {}

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { applicationStatusUpdate } from '../middleware/session-middleware';
 import { paths } from '../paths';
 
 /**
@@ -6,23 +7,20 @@ import { paths } from '../paths';
  * @param sectionId the sectionId to construct a new Section Object
  * @param taskIds the taskId under the section used to check for saved status and completion status
  * @param req the request Object containing the session
- * @param ccdResponse the ccdResponse
  */
-function buildSectionObject(sectionId: string, taskIds: string[], req: Request, ccdResponse: any) {
+function buildSectionObject(sectionId: string, taskIds: string[], req: Request) {
   const tasks: Task[] = [];
 
-  // Checks inside the session to see if the data exists in the session
   function isSaved(taskId: string) {
-    return req.session.hasOwnProperty(taskId);
+    return req.session.appeal.application.tasks[taskId].saved;
   }
 
-  // Checks inside the ccdResponse to see if the data exists.
-  function isComplete(taskId: string) {
-    return ccdResponse.hasOwnProperty(taskId);
+  function isCompleted(taskId: string) {
+    return req.session.appeal.application.tasks[taskId].completed;
   }
 
   taskIds.forEach((taskId) => {
-    const complete: boolean = isComplete(taskId);
+    const complete: boolean = isCompleted(taskId);
     const saved: boolean = isSaved(taskId);
     const task: Task = { id: taskId, saved, complete };
     tasks.push(task);
@@ -32,10 +30,10 @@ function buildSectionObject(sectionId: string, taskIds: string[], req: Request, 
   return section;
 }
 
-function getAppealStageStatus(session: Request, ccdResponse: any) {
-  const yourDetails = buildSectionObject('yourDetails', [ 'homeOfficeDetails', 'personalDetails', 'contactDetails' ], session, ccdResponse);
-  const appealDetails = buildSectionObject('appealDetails', [ 'typeOfAppeal' ], session, ccdResponse);
-  const checkAndSend = buildSectionObject('checkAndSend', [ 'checkAndSend' ], session, ccdResponse);
+function getAppealStageStatus(session: Request) {
+  const yourDetails = buildSectionObject('yourDetails', [ 'homeOfficeDetails', 'personalDetails', 'contactDetails' ], session);
+  const appealDetails = buildSectionObject('appealDetails', [ 'typeOfAppeal' ], session);
+  const checkAndSend = buildSectionObject('checkAndSend', [ 'checkAndSend' ], session);
 
   return [
     yourDetails,
@@ -46,9 +44,7 @@ function getAppealStageStatus(session: Request, ccdResponse: any) {
 
 function getTaskList(req: Request, res: Response, next: NextFunction) {
   try {
-    // TODO: call CCD to get section statuses and remove mockSectionData
-    const ccdResponse = [];
-    const statusOverview = getAppealStageStatus(req, ccdResponse);
+    const statusOverview = getAppealStageStatus(req);
     return res.render('appeal-application/task-list.njk', { data: statusOverview });
   } catch (e) {
     next(e);
@@ -57,7 +53,7 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
 
 function setupTaskListController(): Router {
   const router = Router();
-  router.get(paths.taskList, getTaskList);
+  router.get(paths.taskList, applicationStatusUpdate, getTaskList);
   return router;
 }
 

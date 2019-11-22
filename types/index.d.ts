@@ -44,7 +44,7 @@ interface AppealDate {
 interface AppealApplication {
   homeOfficeRefNumber: string;
   dateLetterSent: AppealDate;
-  appealType: string | any[];
+  appealType: string | string[];
   isAppealLate: boolean;
   lateAppeal?: {
     reason?: string;
@@ -67,6 +67,12 @@ interface AppealApplication {
       country?: string;
     }
   };
+  tasks?: {
+    [key: string]: {
+      saved: boolean;
+      completed: boolean;
+    } 
+  }
 }
 
 interface CaseBuilding {

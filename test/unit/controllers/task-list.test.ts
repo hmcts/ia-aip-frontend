@@ -16,7 +16,36 @@ describe('Task List Controller', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
-      session: {} as any,
+      session: {
+        appeal: {
+          application: {
+            tasks: {
+              homeOfficeDetails: {
+                saved: false,
+                completed: false
+              },
+              personalDetails: {
+                saved: false,
+                completed: false
+              },
+              contactDetails: {
+                saved: false,
+                completed: false
+              },
+              typeOfAppeal: {
+                saved: false,
+                completed: false
+              },
+              checkAndSend: {
+                saved: false,
+                completed: false
+              }
+            }
+          } as Partial<AppealApplication>,
+          caseBuilding: {},
+          hearingRequirements: {}
+        } as Appeal
+      } as Partial<Express.Session>,
       sectionStatuses: {},
       cookies: {},
       idam: {
@@ -63,14 +92,13 @@ describe('Task List Controller', () => {
       },
       {
         'sectionId': 'appealDetails',
-        'tasks': [ { 'id': 'typeOfAppeal', 'saved': true, 'complete': false } ]
+        'tasks': [ { 'id': 'typeOfAppeal', 'saved': false, 'complete': false } ]
       },
       {
         'sectionId': 'checkAndSend',
         'tasks': [ { 'id': 'checkAndSend', 'saved': false, 'complete': false } ]
       } ];
 
-    req.session.typeOfAppeal = [ 'typeOfAppeal' ];
     getTaskList(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/task-list.njk', { data: mockData });
   });

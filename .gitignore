@@ -7,3 +7,4 @@ dump.rdb
 build
 test/coverage
 functional-output/**/*.png
+.env

@@ -6,6 +6,7 @@ import {
 } from '../../../app/controllers/type-of-appeal';
 import { appealTypes } from '../../../app/data/appeal-types';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -15,6 +16,7 @@ describe('Type of appeal Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -37,6 +39,8 @@ describe('Type of appeal Controller', () => {
       } as any
     } as Partial<Request>;
 
+    updateAppealService = { updateAppeal: sandbox.stub() };
+
     res = {
       render: sandbox.stub(),
       send: sandbox.stub(),
@@ -55,7 +59,7 @@ describe('Type of appeal Controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-      setupTypeOfAppealController();
+      setupTypeOfAppealController(updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.typeOfAppeal);
       expect(routerPOSTStub).to.have.been.calledWith(paths.typeOfAppeal);
     });
@@ -76,15 +80,15 @@ describe('Type of appeal Controller', () => {
   });
 
   describe('postTypeOfAppeal', () => {
-    it('should fail validation and render type-of-appeal.njk with a validation error', () => {
+    it('should fail validation and render type-of-appeal.njk with a validation error', async () => {
       req.body = { 'button': 'save-and-continue', 'appealType': '' };
       const expectedError: ValidationError = {
         href: '#undefined',
         key: undefined,
-        text: 'You must select at least one option'
+        text: 'Select at least one of the appeal types'
       };
 
-      postTypeOfAppeal(req as Request, res as Response, next);
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
         errors: { undefined: expectedError },
@@ -92,25 +96,25 @@ describe('Type of appeal Controller', () => {
       });
     });
 
-    it('should validate and redirect to the task-list page', () => {
+    it('should validate and redirect to the task-list page', async () => {
       req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
 
-      postTypeOfAppeal(req as Request, res as Response, next);
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
     });
 
-    it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', () => {
+    it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', async () => {
       req.body = { 'button': 'save-and-continue', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
 
-      postTypeOfAppeal(req as Request, res as Response, next);
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
     });
 
-    it('postTypeOfAppeal should catch exception and call next with the error', () => {
+    it('postTypeOfAppeal should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'button': 'save-for-later', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
       res.redirect = sandbox.stub().throws(error);
-      postTypeOfAppeal(req as Request, res as Response, next);
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

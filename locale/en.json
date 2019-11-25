@@ -158,7 +158,7 @@
     "empty": "The field is required",
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
-    "atLeastOneOption": "You must select at least one option",
+    "atLeastOneTypeOfAppeal": "Select at least one of the appeal types",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",

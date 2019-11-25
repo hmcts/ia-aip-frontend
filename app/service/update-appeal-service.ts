@@ -100,6 +100,9 @@ export default class UpdateAppealService {
     if (application.personalDetails.dob && application.personalDetails.dob.year) {
       caseData.appellantDateOfBirth = this.toIsoDate(application.personalDetails.dob);
     }
+    if (application.appealType) {
+      caseData.appealType = application.appealType;
+    }
 
     return caseData;
   }

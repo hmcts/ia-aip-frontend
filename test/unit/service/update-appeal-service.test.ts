@@ -40,6 +40,7 @@ describe('update-appeal-service', () => {
         .resolves({
           id: caseId,
           case_data: {
+            appealType: 'appealType',
             homeOfficeReferenceNumber: 'homeOfficeReferenceNumber',
             appellantGivenNames: 'appellantGivenNames',
             appellantFamilyName: 'appellantFamilyName',
@@ -210,6 +211,12 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-03' });
       });
     });
+    it('converts appealType', () => {
+      emptyApplication.appealType = 'appealType';
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData).eql({ journeyType: 'aip', appealType: 'appealType' });
+    });
   });
 
   describe('updateAppeal', () => {
@@ -224,6 +231,7 @@ describe('update-appeal-service', () => {
           appeal: {
             application: {
               homeOfficeRefNumber: 'newRef',
+              appealType: 'appealType',
               dateLetterSent: {
                 year: '2019',
                 month: '12',
@@ -249,6 +257,7 @@ describe('update-appeal-service', () => {
         {
           id: caseId,
           case_data: {
+            appealType: 'appealType',
             homeOfficeReferenceNumber: 'newRef',
             homeOfficeDecisionDate: '2019-12-11',
             appellantFamilyName: 'familyName',

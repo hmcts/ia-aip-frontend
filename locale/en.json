@@ -190,11 +190,12 @@
     },
     "postcode": {
       "empty": "Enter your postcode",
-      "invalid": "Enter a real postcode"
+      "invalid": "Enter a valid postcode"
     },
     "address": {
       "required": "Select your address",
-      "line1Required": "Enter your building and street details",
+      "line1Required": "Enter a building number and street name",
+      "townCityRequired": "Enter a Town or City",
       "postcodeRequired": "Enter your postcode"
     },
     "homeOfficeReference": {

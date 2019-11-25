@@ -32,5 +32,8 @@
   },
   "ccd": {
     "apiUrl": "CCD_API_URL"
+  },
+  "addressLookup": {
+    "token": "ADDRESS_LOOKUP_TOKEN"
   }
 }

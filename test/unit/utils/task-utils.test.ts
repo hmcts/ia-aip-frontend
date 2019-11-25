@@ -47,7 +47,8 @@ describe('getStatus', () => {
           completed: false,
           active: false
         }
-      }
+      },
+      addressLookup: {}
     },
     caseBuilding: {},
     hearingRequirements: {}
@@ -98,13 +99,14 @@ describe('getStatus', () => {
       month: 1,
       year: 1980
     };
-    appeal.application.personalDetails.nationality = 'Angola';
-    appeal.application.contactDetails = {
+    appeal.application.personalDetails = {
+      ...appeal.application.personalDetails,
+      nationality: 'Angola',
       address: {
         line1: '60 GPS London United Kingdom  W1W 7RT60 GPS London United Kingdom  W1W 7RT',
         postcode: 'W1W 7RT'
       }
-    };
+    } as any;
     status.personalDetails.completed = true;
     status.contactDetails.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);

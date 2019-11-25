@@ -57,10 +57,6 @@ interface AppealApplication {
     dob: AppealDate;
     nationality?: string;
     stateless?: boolean;
-  };
-  contactDetails: {
-    email?: string;
-    phone?: string;
     address?: {
       line1?: string;
       line2?: string;
@@ -69,8 +65,17 @@ interface AppealApplication {
       county?: string;
     }
   };
+  contactDetails: {
+    email?: string;
+    phone?: string;
+  };
   tasks?: {
     [key: string]: Task;
+  };
+  addressLookup: {
+    postcode?: string;
+    result?: any;
+    selected?: any;
   };
 }
 

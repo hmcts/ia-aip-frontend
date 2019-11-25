@@ -1,7 +1,10 @@
+import { Address, OSPlacesClient } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response, Router } from 'express';
+import * as _ from 'lodash';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
+import { getAddress } from '../utils/address-utils';
 import {
   addressValidation,
   appellantNamesValidation,
@@ -137,8 +140,8 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
 
 function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
-    const { contactDetails } = req.session.appeal.application;
-    const postcode = contactDetails && contactDetails.address && contactDetails.address.postcode || null;
+    const { personalDetails } = req.session.appeal.application;
+    const postcode = personalDetails && personalDetails.address && personalDetails.address.postcode || null;
     res.render('appeal-application/personal-details/enter-postcode.njk', { postcode });
   } catch (e) {
     next(e);
@@ -155,14 +158,8 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
         postcode: req.body.postcode
       });
     }
-    req.session.appeal.application.contactDetails = {
-      ...req.session.appeal.application.contactDetails,
-      address: {
-        ...(
-          req.session.appeal.application.contactDetails &&
-          req.session.appeal.application.contactDetails.address || {}),
-        postcode: req.body.postcode
-      }
+    req.session.appeal.application.addressLookup = {
+      postcode: req.body.postcode
     };
     return res.redirect(paths.personalDetails.postcodeLookup);
   } catch (e) {
@@ -170,106 +167,118 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-function getPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
-  try {
-    const addresses = [
-      {
-        value: '',
-        text: 'Select'
-      },
-      {
-        value: '60 GPS London United Kingdom  W1W 7RT',
-        text: '60 GPS London United Kingdom  W1W 7RT'
-      }
-    ];
-    const { application } = req.session.appeal;
-    const postcode = application.contactDetails && application.contactDetails.address.postcode || null;
-    if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
-    // TODO: Get addresses from postcode previously entered - shall we use CCD service?
-    res.render('appeal-application/personal-details/postcode-lookup.njk', { addresses, postcode });
-  } catch (e) {
-    next(e);
-  }
-}
+function getAddressList(addressLookupResult) {
+  const lookedUpAddresses = addressLookupResult.addresses.map(address => {
+    return {
+      value: address.uprn,
+      text: address.formattedAddress
+    };
+  });
 
-function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
+  const selectAddresses = lookedUpAddresses.length === 1 ?
+    '1 address found' :
+    `${lookedUpAddresses.length} addresses found`;
   const addresses = [
     {
       value: '',
-      text: 'Select'
-    },
-    {
-      value: '60 GPS London United Kingdom  W1W 7RT',
-      text: '60 GPS London United Kingdom  W1W 7RT'
-    } ];
+      text: selectAddresses
+    }].concat(lookedUpAddresses);
+  return addresses;
+}
+
+function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const postcode = _.get(req.session.appeal.application, 'addressLookup.postcode');
+    if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
+
+    const addressLookupResult = await osPlacesClient.lookupByPostcode(postcode);
+
+    req.session.appeal.application.addressLookup.result = addressLookupResult;
+
+    try {
+      const addresses = getAddressList(addressLookupResult);
+
+      res.render('appeal-application/personal-details/postcode-lookup.njk', { addresses, postcode });
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
   try {
     const validation = dropdownValidation(req.body.address, 'address');
     if (validation) {
+      const addresses = getAddressList(_.get(req.session.appeal.application,'addressLookup.result'));
+
       return res.render('appeal-application/personal-details/postcode-lookup.njk', {
         error: validation,
         errorList: Object.values(validation),
         addresses: addresses
       });
     }
-    req.session.appeal.application.contactDetails = {
-      ...req.session.appeal.application.contactDetails,
-      address: {
-        ...(
-          req.session.appeal.application.contactDetails &&
-          req.session.appeal.application.contactDetails.address || {}),
-        line1: req.body.address
-      }
-    };
 
-    return res.redirect(paths.taskList);
+    _.set(req.session.appeal.application, 'addressLookup.selected', req.body.address);
+
+    return res.redirect(paths.personalDetails.enterAddress);
   } catch (e) {
     next(e);
   }
 }
 
+function findAddress(uprn: string, addresses: Address[]): Address {
+  return (uprn && addresses) ? addresses.find(address => address.uprn === uprn) : null;
+}
+
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const { application } = req.session.appeal;
-    const address = application.contactDetails && application.contactDetails.address || null;
-    if (!address || !address.postcode) return res.redirect(paths.personalDetails.enterPostcode);
+    const osAddress = findAddress(
+      _.get(req.session.appeal.application, 'addressLookup.selected'),
+      _.get(req.session.appeal.application, 'addressLookup.result.addresses')
+    );
+
+    const address = getAddress(osAddress);
     res.render('appeal-application/personal-details/enter-address.njk', { address });
   } catch (e) {
     next(e);
   }
 }
 
-function postManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { application } = req.session.appeal;
-    const validation = addressValidation(req.body);
-    if (validation !== null) {
-      return res.render('appeal-application/personal-details/enter-address.njk', {
+function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = addressValidation(req.body);
+      if (validation !== null) {
+        return res.render('appeal-application/personal-details/enter-address.njk', {
+          address: {
+            line1: req.body['address-line-1'],
+            line2: req.body['address-line-2'],
+            city: req.body['address-town'],
+            county: req.body['address-county'],
+            postcode: req.body['address-postcode']
+          },
+          error: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      await updateAppealService.updateAppeal(req);
+
+      req.session.appeal.application.personalDetails = {
+        ...req.session.appeal.application.personalDetails,
         address: {
           line1: req.body['address-line-1'],
           line2: req.body['address-line-2'],
           city: req.body['address-town'],
           county: req.body['address-county'],
           postcode: req.body['address-postcode']
-        },
-        error: validation,
-        errorList: Object.values(validation)
-      });
+        }
+      };
+      return res.redirect(paths.taskList);
+    } catch (e) {
+      next(e);
     }
-
-    req.session.appeal.application.contactDetails = {
-      ...req.session.appeal.application.contactDetails,
-      address: {
-        line1: req.body['address-line-1'],
-        line2: req.body['address-line-2'],
-        city: req.body['address-town'],
-        county: req.body['address-county'],
-        postcode: req.body['address-postcode']
-      }
-    };
-    return res.redirect(paths.taskList);
-  } catch (e) {
-    next(e);
-  }
+  };
 }
 
 function setupPersonalDetailsController(deps?: any): Router {
@@ -283,8 +292,8 @@ function setupPersonalDetailsController(deps?: any): Router {
   router.get(paths.personalDetails.enterPostcode, getEnterPostcodePage);
   router.post(paths.personalDetails.enterPostcode, postEnterPostcodePage);
   router.get(paths.personalDetails.enterAddress, getManualEnterAddressPage);
-  router.post(paths.personalDetails.enterAddress, postManualEnterAddressPage);
-  router.get(paths.personalDetails.postcodeLookup, getPostcodeLookupPage);
+  router.post(paths.personalDetails.enterAddress, postManualEnterAddressPage(deps.updateAppealService));
+  router.get(paths.personalDetails.postcodeLookup, getPostcodeLookupPage(deps.osPlacesClient));
   router.post(paths.personalDetails.postcodeLookup, postPostcodeLookupPage);
   return router;
 }

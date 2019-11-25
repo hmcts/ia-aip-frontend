@@ -18,11 +18,7 @@ export function createDummyAppealApplication(): Appeal {
           year: 1980
         },
         nationality: 'Panamanian',
-        stateless: false
-      },
-      contactDetails: {
-        email: 'pedro.jimenez@example.net',
-        phone: '07123456789',
+        stateless: false,
         address: {
           line1: '60 Beautiful Street',
           line2: 'Flat 2',
@@ -30,7 +26,12 @@ export function createDummyAppealApplication(): Appeal {
           postcode: 'W1W 7RT',
           county: 'London'
         }
-      }
+      },
+      contactDetails: {
+        email: 'pedro.jimenez@example.net',
+        phone: '07123456789'
+      },
+      addressLookup: {}
     },
     caseBuilding: {
       data: {}

@@ -253,7 +253,7 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
       appealType: Joi.string().required()
     }).unknown()
   ).messages({
-    'alternatives.match': i18n.validationErrors.atLeastOneOption,
+    'alternatives.match': i18n.validationErrors.atLeastOneTypeOfAppeal,
     'any.required': i18n.validationErrors.required
   });
 

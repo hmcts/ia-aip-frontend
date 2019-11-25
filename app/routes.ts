@@ -27,7 +27,7 @@ const healthController = setupHealthController();
 const idamController = setupIdamController();
 const taskListController = setupTaskListController();
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(updateAppealService);
-const typeOfAppealController = setupTypeOfAppealController();
+const typeOfAppealController = setupTypeOfAppealController(updateAppealService);
 const personalDetailsController = setupPersonalDetailsController({ updateAppealService });
 const contactDetailsController = setupContactDetailsController();
 const confirmationController = setConfirmationController();
@@ -38,6 +38,7 @@ router.use(startController);
 
 // protected by idam
 router.use(idamController);
+// router.use(initSession);
 if (process.env.NODE_ENV === 'development') router.use(logSession);
 router.use(indexController);
 router.use(taskListController);

@@ -84,7 +84,7 @@ describe('Contact details Controller', () => {
         'email-value': ''
       };
       const error: ValidationError = {
-        href: '#email-value-text-message-value',
+        href: '#email-value',
         key: 'email-value-text-message-value',
         text: i18n.validationErrors.contactDetails.selectOneOption
       };

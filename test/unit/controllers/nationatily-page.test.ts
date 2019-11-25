@@ -103,7 +103,7 @@ describe('Nationality details Controller', function() {
       req.body.nationality = '';
       const nationalitiesOptions = getNationalitiesOptions(countryList, '');
       const error = {
-        href: '#nationality-statelessNationality',
+        href: '#nationality',
         key: 'nationality-statelessNationality',
         text: 'Select your Nationality'
       };
@@ -122,7 +122,7 @@ describe('Nationality details Controller', function() {
       postNationalityPage(req as Request, res as Response, next);
       const nationalitiesOptions = getNationalitiesOptions(countryList, req.body.nationality);
       const error = {
-        href: '#nationality-statelessNationality',
+        href: '#nationality',
         key: 'nationality-statelessNationality',
         text: 'Only select one option'
       };

@@ -14,11 +14,12 @@ function validate(obj: object, schema: any): ValidationErrors | null {
   const result = schema.validate(obj, { abortEarly: false });
   if (result.error) {
     return result.error.details.reduce((acc, curr): ValidationError => {
-      const key = curr.context.key || (curr.context.peers ? curr.context.peers.join('-') : curr.context.peers) ;
+      const key = curr.context.key || (curr.context.peers ? curr.context.peers.join('-') : curr.context.peers);
+      const href = curr.context.key || (curr.context.peers ? curr.context.peers[0] : curr.context.peers);
       acc[key] = {
         key: key,
         text: curr.message,
-        href: `#${key}`
+        href: `#${href}`
       };
       return acc;
     }, {});

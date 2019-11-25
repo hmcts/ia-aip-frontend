@@ -1,3 +1,5 @@
+import { Address, Point } from '@hmcts/os-places-client';
+
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import {
@@ -65,25 +67,36 @@ describe('Personal Details Controller', function () {
   });
 
   describe('getManualEnterAddressPage', () => {
-    it('should redirect to enter postcode page if postcode not present', () => {
-      getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.personalDetails.enterPostcode);
-    });
-
     it('should render appeal-application/personal-details/enter-address.njk', function () {
-      req.session.appeal.application.contactDetails = {
-        address: {
-          postcode: 'W1W 7RT'
+      // @ts-ignore
+      req.session.appeal.application.addressLookup = {
+        selected: '123',
+        result: {
+          addresses: [
+            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]))
+          ]
         }
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
+        address: {
+          line1: 'subBuildingName buildingName',
+          line2: '2 dependentThoroughfareName, thoroughfareName, doubleDependentLocality, dependentLocality',
+          city: 'postTown',
+          county: '',
+          postcode: 'postcode'
+        }
+      });
     });
 
     it('should catch an exception and call next()', () => {
-      req.session.appeal.application.contactDetails = {
-        address: {
-          postcode: 'W1W 7RT'
+      // @ts-ignore
+      req.session.appeal.application.addressLookup = {
+        selected: '123',
+        result: {
+          addresses: [
+            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]))
+          ]
         }
       };
       const error = new Error('the error');
@@ -94,47 +107,32 @@ describe('Personal Details Controller', function () {
   });
 
   describe('postManualEnterAddress', () => {
-    it('should fail validation and render appeal-application/personal-details/enter-address.njk', () => {
-      req.session.appeal.application.contactDetails = {
-        address: {
-          postcode: 'W1W 7RT'
-        }
-      };
+    it('should fail validation and render appeal-application/personal-details/enter-address.njk', async () => {
       req.body['address-line-1'] = '60 GPS';
       req.body['address-town'] = 'London';
       req.body['address-county'] = 'London';
       req.body['address-line-2'] = '';
       req.body['address-postcode'] = 'W';
 
-      postManualEnterAddressPage(req as Request, res as Response, next);
+      await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
     });
 
-    it('should validate and redirect to task list page', () => {
-      req.session.appeal.application.contactDetails = {
-        address: {
-          postcode: 'W1W 7RT'
-        }
-      };
+    it('should validate and redirect to task list page', async () => {
       req.body['address-line-1'] = '60 GPS';
       req.body['address-town'] = 'London';
       req.body['address-county'] = 'London';
       req.body['address-line-2'] = '';
       req.body['address-postcode'] = 'W1W 7RT';
 
-      postManualEnterAddressPage(req as Request, res as Response, next);
+      await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
-    it('should catch an exception and call next()', () => {
-      req.session.appeal.application.contactDetails = {
-        address: {
-          postcode: 'W1W 7RT'
-        }
-      };
+    it('should catch an exception and call next()', async () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
-      postManualEnterAddressPage(req as Request, res as Response, next);
+      await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

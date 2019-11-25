@@ -16,8 +16,8 @@ function appealApplicationStatus(appeal: Appeal) {
   const familyName: boolean = !!_.get(appeal.application, 'personalDetails.familyName');
   const dob: boolean = !!_.get(appeal.application, 'personalDetails.dob');
   const nationality: boolean = !!_.get(appeal.application, 'personalDetails.nationality');
-  const postcode: boolean = !!_.get(appeal.application, 'contactDetails.address.postcode');
-  const line1: boolean = !!_.get(appeal.application, 'contactDetails.address.line1');
+  const postcode: boolean = !!_.get(appeal.application, 'personalDetails.address.postcode');
+  const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
   const personalDetails: Task = {
     saved: givenNames || familyName || dob || nationality || postcode || line1,
     completed: givenNames && familyName && dob && nationality && postcode && line1,

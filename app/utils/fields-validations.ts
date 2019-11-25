@@ -233,7 +233,7 @@ function statementOfTruthValidation(obj: object): null | ValidationErrors {
 function addressValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.address.line1Required }),
-    ['address-town']: Joi.string().optional().empty(''),
+    ['address-town']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.address.townCityRequired }),
     ['address-county']: Joi.string().optional().empty(''),
     ['address-line-2']: Joi.string().optional().empty(''),
     ['address-postcode']: Joi.string().regex(postcodeRegex).messages({

@@ -89,7 +89,7 @@ describe('Personal Details Controller', function() {
       req.body.postcode = 'invalid';
       const error = {
         key: 'postcode',
-        text: 'Enter a real postcode',
+        text: 'Enter a valid postcode',
         href: '#postcode'
       };
       postEnterPostcodePage(req as Request, res as Response, next);

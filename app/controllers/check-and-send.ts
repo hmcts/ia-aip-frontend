@@ -23,7 +23,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
       [ appealApplication.personalDetails.nationality ],
       paths.personalDetails.nationality),
     addSummaryRow('contactDetails',
-      [ appealApplication.contactDetails.email, appealApplication.contactDetails.phone, ...Object.values(appealApplication.contactDetails.address) ],
+      [ appealApplication.contactDetails.email, appealApplication.contactDetails.phone, ...Object.values(appealApplication.personalDetails.address) ],
       paths.contactDetails),
     addSummaryRow('appealType',
       [ appealApplication.appealType ],

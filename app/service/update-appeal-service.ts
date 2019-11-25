@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import * as _ from 'lodash';
 import { CcdService } from './ccd-service';
 import { SecurityHeaders } from './getHeaders';
 import IdamService from './idam-service';
@@ -20,16 +21,25 @@ export default class UpdateAppealService {
     const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.id, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
 
-    const dateLetterSent = this.getDate(ccdCase.case_data.homeOfficeDecisionDate);
-    const dateOfBirth = this.getDate(ccdCase.case_data.appellantDateOfBirth);
+    const caseData = ccdCase.case_data;
+    const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
+    const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
-    const names = (ccdCase.case_data.appellantGivenNames || ccdCase.case_data.appellantFamilyName) ?
-      { givenNames: ccdCase.case_data.appellantGivenNames, familyName: ccdCase.case_data.appellantFamilyName } :
+    const names = (caseData.appellantGivenNames || caseData.appellantFamilyName) ?
+      { givenNames: caseData.appellantGivenNames, familyName: caseData.appellantFamilyName } :
       { givenNames: req.idam.userDetails.forename, familyName: req.idam.userDetails.surname };
+
+    const appellantAddress = caseData.appellantAddress ? {
+      line1: caseData.appellantAddress.AddressLine1,
+      line2: caseData.appellantAddress.AddressLine2,
+      city: caseData.appellantAddress.PostTown,
+      county: caseData.appellantAddress.County,
+      postcode: caseData.appellantAddress.PostCode
+    } : null;
 
     req.session.appeal = {
       application: {
-        homeOfficeRefNumber: ccdCase.case_data.homeOfficeReferenceNumber,
+        homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: null,
         contactDetails: {
           email: null,
@@ -41,8 +51,10 @@ export default class UpdateAppealService {
         personalDetails: {
           ...names,
           dob: dateOfBirth,
-          nationality: null
-        }
+          nationality: null,
+          address: appellantAddress
+        },
+        addressLookup: {}
       },
       caseBuilding: {},
       hearingRequirements: {}
@@ -99,6 +111,16 @@ export default class UpdateAppealService {
     }
     if (application.personalDetails.dob && application.personalDetails.dob.year) {
       caseData.appellantDateOfBirth = this.toIsoDate(application.personalDetails.dob);
+    }
+    if (_.has(application.personalDetails, 'address.line1')) {
+      caseData.appellantAddress = {
+        AddressLine1: application.personalDetails.address.line1,
+        AddressLine2: application.personalDetails.address.line2,
+        PostTown: application.personalDetails.address.city,
+        County: application.personalDetails.address.county,
+        PostCode: application.personalDetails.address.postcode,
+        Country: 'United Kingdom'
+      };
     }
     if (application.appealType) {
       caseData.appealType = application.appealType;

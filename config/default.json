@@ -48,5 +48,8 @@
     "apiUrl": "CCD_API_URL",
     "jurisdictionId": "IA",
     "caseType": "Asylum"
+  },
+  "addressLookup": {
+    "token": "address_lookup_token"
   }
 }

@@ -23,6 +23,10 @@ export default class UpdateAppealService {
     const dateLetterSent = this.getDate(ccdCase.case_data.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(ccdCase.case_data.appellantDateOfBirth);
 
+    const names = (ccdCase.case_data.appellantGivenNames || ccdCase.case_data.appellantFamilyName) ?
+      { givenNames: ccdCase.case_data.appellantGivenNames, familyName: ccdCase.case_data.appellantFamilyName } :
+      { givenNames: req.idam.userDetails.forename, familyName: req.idam.userDetails.surname };
+
     req.session.appeal = {
       application: {
         homeOfficeRefNumber: ccdCase.case_data.homeOfficeReferenceNumber,
@@ -35,8 +39,7 @@ export default class UpdateAppealService {
         isAppealLate: null,
         lateAppeal: null,
         personalDetails: {
-          givenNames: ccdCase.case_data.appellantGivenNames,
-          familyName: ccdCase.case_data.appellantFamilyName,
+          ...names,
           dob: dateOfBirth,
           nationality: null
         }

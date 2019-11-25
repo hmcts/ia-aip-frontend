@@ -58,9 +58,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
 
 function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
-    const personalDetails = req.session.appeal.application.personalDetails && (req.session.appeal.application.personalDetails.givenNames || req.session.appeal.application.personalDetails.familyName) ?
-      req.session.appeal.application.personalDetails : { givenNames: req.idam.userDetails.forename, familyName: req.idam.userDetails.surname };
-
+    const personalDetails = req.session.appeal.application.personalDetails;
     return res.render('appeal-application/personal-details/name.njk', { personalDetails });
   } catch (e) {
     next(e);

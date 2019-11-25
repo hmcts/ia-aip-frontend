@@ -77,13 +77,6 @@ describe('Personal Details Controller', function () {
         { personalDetails: { dob: null, familyName: 'familyName', givenNames: 'givenName' } }
       );
     });
-
-    it('gets name from idam', function () {
-      getNamePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk',
-        { personalDetails: { familyName: 'surname', givenNames: 'forename' } }
-      );
-    });
   });
 
   describe('postNamePage', () => {

@@ -28,7 +28,9 @@ describe('update-appeal-service', () => {
       req = {
         idam: {
           userDetails: {
-            id: userId
+            id: userId,
+            forename: 'idamForename',
+            surname: 'idamSurname'
           }
         },
         session: {}
@@ -64,6 +66,39 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.personalDetails.dob.year).eq('1900');
       expect(req.session.appeal.application.personalDetails.dob.month).eq('10');
       expect(req.session.appeal.application.personalDetails.dob.day).eq('11');
+    });
+  });
+
+  describe('loadNamesFromIdam', () => {
+    before(async () => {
+      req = {
+        idam: {
+          userDetails: {
+            id: userId,
+            forename: 'idamForename',
+            surname: 'idamSurname'
+          }
+        },
+        session: {}
+      };
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          case_data: {
+            homeOfficeReferenceNumber: 'homeOfficeReferenceNumber',
+            homeOfficeDecisionDate: '2019-01-02',
+            appellantDateOfBirth: '1900-10-11'
+          }
+        });
+
+      // @ts-ignore
+      await updateAppealService.loadAppeal(req);
+    });
+
+    it('set case details', () => {
+      expect(req.session.appeal.application.personalDetails.givenNames).eq('idamForename');
+      expect(req.session.appeal.application.personalDetails.familyName).eq('idamSurname');
     });
   });
 

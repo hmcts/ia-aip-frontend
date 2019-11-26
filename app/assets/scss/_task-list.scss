@@ -3,6 +3,7 @@
   justify-content: space-between;
 
   .govuk-tag {
-    padding: .5rem;
+    padding: .5rem 1rem;
+    background-color: $govuk-secondary-text-colour;
   }
 }

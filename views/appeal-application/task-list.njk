@@ -20,12 +20,7 @@
                     {% else %}
                         {{ i18n.pages.taskList[task.id].title }}
                     {% endif %}
-                    {% if task.saved and task.completed %}
-                        {{ govukTag({
-                            text: "Completed"
-                        }) }}
-                    {% endif %}
-                    {% if task.saved and task.completed == false %}
+                    {% if task.saved or task.completed %}
                         {{ govukTag({
                             text: "Saved"
                         }) }}

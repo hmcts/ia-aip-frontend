@@ -75,7 +75,10 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
 
       await updateAppealService.updateAppeal(req);
 
-      if (diffInDays <= 14) return res.redirect(paths.taskList);
+      if (diffInDays <= 14) {
+        req.session.appeal.application.isAppealLate = false;
+        return res.redirect(paths.taskList);
+      }
       req.session.appeal.application.isAppealLate = true;
       res.redirect(paths.homeOffice.appealLate);
     } catch (e) {

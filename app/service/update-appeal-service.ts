@@ -1,9 +1,19 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
-import { CcdService } from './ccd-service';
+import { CcdService, Events } from './ccd-service';
 import { SecurityHeaders } from './getHeaders';
 import IdamService from './idam-service';
 import S2SService from './s2s-service';
+
+enum Subscriber {
+  APPELLANT = 'appellant',
+  SUPPORTER = 'supporter'
+}
+
+enum YesOrNo {
+  YES = 'Yes',
+  NO = 'No'
+}
 
 export default class UpdateAppealService {
   private ccdService;
@@ -33,13 +43,26 @@ export default class UpdateAppealService {
       postcode: caseData.appellantAddress.PostCode
     } : null;
 
+    const appealType = ccdCase.case_data.appealType || null;
+    const subscriptions = ccdCase.case_data.subscriptions || [];
+    const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
+      const value = subscription.value;
+      if (Subscriber.APPELLANT === value.subscriber) {
+        return {
+          email: value.email || null,
+          wantsEmail: (YesOrNo.YES === value.wantsEmail),
+          phone: value.mobileNumber || null,
+          wantsSms: (YesOrNo.YES === value.wantsSms)
+        };
+      }
+    }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
+
     req.session.appeal = {
       application: {
-        homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
-        appealType: null,
+        homeOfficeRefNumber: ccdCase.case_data.homeOfficeReferenceNumber,
+        appealType: appealType,
         contactDetails: {
-          email: null,
-          phone: null
+          ...contactDetails
         },
         dateLetterSent,
         isAppealLate: null,
@@ -76,7 +99,7 @@ export default class UpdateAppealService {
     return null;
   }
 
-  async updateAppeal(req: Request) {
+  async submitEvent(event, req: Request) {
     const securityHeaders: SecurityHeaders = await this.getSecurityHeaders(req);
 
     const currentUserId = req.idam.userDetails.id;
@@ -86,7 +109,7 @@ export default class UpdateAppealService {
       case_data: caseData
     };
 
-    await this.ccdService.updateCase(currentUserId, updatedCcdCase, securityHeaders);
+    await this.ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
   }
 
   convertToCcdCaseData(application: AppealApplication) {
@@ -121,6 +144,25 @@ export default class UpdateAppealService {
     }
     if (application.appealType) {
       caseData.appealType = application.appealType;
+    }
+    if (application.contactDetails && (application.contactDetails.email || application.contactDetails.phone)) {
+      const subscription = {
+        subscriber: Subscriber.APPELLANT,
+        wantsEmail: YesOrNo.NO,
+        email: null,
+        wantsSms: YesOrNo.NO,
+        mobileNumber: null
+      } as any;
+
+      if (application.contactDetails.wantsEmail === true && application.contactDetails.email) {
+        subscription.wantsEmail = YesOrNo.YES;
+        subscription.email = application.contactDetails.email;
+      }
+      if (application.contactDetails.wantsSms === true && application.contactDetails.phone) {
+        subscription.wantsSms = YesOrNo.YES;
+        subscription.mobileNumber = application.contactDetails.phone;
+      }
+      caseData.subscriptions = [ { id: 1, value: subscription } ];
     }
 
     return caseData;

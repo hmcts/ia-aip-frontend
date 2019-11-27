@@ -5,8 +5,10 @@ import {
   setupCheckAndSendController
 } from '../../../app/controllers/check-and-send';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
 const express = require('express');
 
@@ -48,6 +50,7 @@ describe('Check and Send Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -66,6 +69,8 @@ describe('Check and Send Controller', () => {
       } as any
     } as Partial<Request>;
 
+    updateAppealService = { submitEvent: sandbox.stub() };
+
     res = {
       render: sandbox.stub(),
       send: sandbox.stub(),
@@ -83,20 +88,22 @@ describe('Check and Send Controller', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-    setupCheckAndSendController();
+    setupCheckAndSendController(updateAppealService as UpdateAppealService);
     expect(routerGetStub).to.have.been.calledWith(paths.checkAndSend);
     expect(routerPOSTStub).to.have.been.calledWith(paths.checkAndSend);
   });
 
   it('getCheckAndSend should render check-and-send.njk', () => {
+    req.session.appeal = createDummyAppealApplication();
     getCheckAndSend(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk');
   });
 
-  it('postCheckAndSend should fail validation when statement of truth not checked', () => {
+  it('postCheckAndSend should fail validation when statement of truth not checked', async () => {
+    req.session.appeal = createDummyAppealApplication();
     req.body = { 'button': 'save-and-continue', 'data': [] };
 
-    postCheckAndSend(req as Request, res as Response, next);
+    await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedError = {
       statement: {
@@ -114,26 +121,29 @@ describe('Check and Send Controller', () => {
     });
   });
 
-  it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', () => {
+  it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', async () => {
+    req.session.appeal = createDummyAppealApplication();
     req.body = { statement: 'acceptance' };
 
-    postCheckAndSend(req as Request, res as Response, next);
+    await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     expect(res.redirect).to.have.been.calledOnce.calledWith(paths.confirmation);
   });
 
   it('getCheckAndSend should catch exception and call next with the error', () => {
+    req.session.appeal = createDummyAppealApplication();
     const error = new Error('an error');
     res.render = sandbox.stub().throws(error);
     getCheckAndSend(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
   });
 
-  it('postCheckAndSend should catch exception and call next with the error', () => {
+  it('postCheckAndSend should catch exception and call next with the error', async () => {
+    req.session.appeal = createDummyAppealApplication();
     const error = new Error('an error');
     req.body = { statement: 'acceptance' };
     res.redirect = sandbox.stub().throws(error);
-    postCheckAndSend(req as Request, res as Response, next);
+    await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
   });
 });

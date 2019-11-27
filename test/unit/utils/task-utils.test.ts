@@ -115,7 +115,8 @@ describe('getStatus', () => {
   it('should update status contactDetails as completed and mark active next task', () => {
     appeal.application.contactDetails = {
       ...appeal.application.contactDetails,
-      phone: '07769118762'
+      phone: '07769118762',
+      wantsSms: true
     };
     status.contactDetails = {
       ...status.contactDetails,
@@ -130,18 +131,21 @@ describe('getStatus', () => {
     appeal.application.contactDetails = {
       ...appeal.application.contactDetails,
       phone: undefined,
-      email: 'email@test.com'
+      wantsSms: false,
+      email: 'email@test.com',
+      wantsEmail: true
     };
     status.contactDetails = {
       ...status.contactDetails,
       completed: true,
       saved: true
     };
+    status.typeOfAppeal.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
   it('should update status typeOfAppeal as completed', () => {
-    appeal.application.appealType = ['type'];
+    appeal.application.appealType = ['protection'];
     status.typeOfAppeal = {
       ...status.typeOfAppeal,
       completed: true,

@@ -20,15 +20,17 @@ function appealApplicationStatus(appeal: Appeal) {
   const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
   const personalDetails: Task = {
     saved: givenNames || familyName || dob || nationality || postcode || line1,
-    completed: givenNames && familyName && dob && nationality && postcode && line1,
+    completed: givenNames && familyName && dob && nationality,
     active: homeOfficeDetails.completed
   };
 
   const email: boolean = !!_.get(appeal.application, 'contactDetails.email');
+  const wantsEmail: boolean = !!_.get(appeal.application, 'contactDetails.wantsEmail');
   const phone: boolean = !!_.get(appeal.application, 'contactDetails.phone');
+  const wantsSms: boolean = !!_.get(appeal.application, 'contactDetails.wantsSms');
   const contactDetails: Task = {
-    saved: email || phone,
-    completed: email || phone,
+    saved: email && wantsEmail || phone && wantsSms,
+    completed: email && wantsEmail || phone && wantsSms,
     active: personalDetails.completed
   };
 

@@ -1,5 +1,5 @@
 import rp from 'request-promise';
-import { CcdService } from '../../../app/service/ccd-service';
+import { CcdService, Events } from '../../../app/service/ccd-service';
 import { SecurityHeaders } from '../../../app/service/getHeaders';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -93,26 +93,26 @@ describe('idam-service', () => {
     const expectedResult = { } as any;
 
     it('updates case', async () => {
-      const startUpdateCaseStub = sinon.stub(ccdService, 'startUpdateCase');
+      const startUpdateCaseStub = sinon.stub(ccdService, 'startUpdateAppeal');
       startUpdateCaseStub.resolves({
         event_id: 'eventId',
         token: 'token'
       });
 
-      const submitUpdateCaseStub = sinon.stub(ccdService, 'submitUpdateCase');
+      const submitUpdateCaseStub = sinon.stub(ccdService, 'submitUpdateAppeal');
       const caseData = { journeyType: 'AIP' };
       submitUpdateCaseStub.withArgs(userId, caseId, headers, {
         event: {
           id: 'eventId',
-          summary: 'Update case AIP',
-          description: 'Update case AIP'
+          summary: Events.EDIT_APPEAL.summary,
+          description: Events.EDIT_APPEAL.description
         },
         data: caseData,
         event_token: 'token',
         ignore_warning: true
       }).resolves(expectedResult);
 
-      const caseDetails = await ccdService.updateCase(userId, {
+      const caseDetails = await ccdService.updateAppeal(Events.EDIT_APPEAL, userId, {
         id: caseId,
         case_data: caseData
       }, headers);
@@ -155,14 +155,20 @@ describe('idam-service', () => {
       expect(createCase).eq(expectedResultGet);
     });
 
-    it('startUpdateCase', () => {
-      const updateCase = ccdService.startUpdateCase(userId, caseId, headers);
+    it('startUpdateCase with "editAppeal"', () => {
+      const updateCase = ccdService.startUpdateAppeal(userId, caseId, Events.EDIT_APPEAL.id, headers);
+
+      expect(updateCase).eq(expectedResultGet);
+    });
+
+    it('startUpdateCase with "submitAppeal', () => {
+      const updateCase = ccdService.startUpdateAppeal(userId, caseId, Events.SUBMIT_APPEAL.id, headers);
 
       expect(updateCase).eq(expectedResultGet);
     });
 
     it('submitUpdateCase', () => {
-      const submitCreateCase = ccdService.submitUpdateCase(userId, caseId,headers, {} as any);
+      const submitCreateCase = ccdService.submitUpdateAppeal(userId, caseId,headers, {} as any);
 
       expect(submitCreateCase).eq(expectedResultPost);
     });

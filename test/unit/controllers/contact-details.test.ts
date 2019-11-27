@@ -5,6 +5,7 @@ import {
   setupContactDetailsController
 } from '../../../app/controllers/contact-details';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -15,6 +16,7 @@ describe('Contact details Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -40,6 +42,8 @@ describe('Contact details Controller', () => {
       body: {}
     } as Partial<Request>;
 
+    updateAppealService = { submitEvent: sandbox.stub() };
+
     res = {
       render: sandbox.stub(),
       send: sandbox.stub(),
@@ -58,7 +62,7 @@ describe('Contact details Controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-      setupContactDetailsController();
+      setupContactDetailsController(updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.contactDetails);
       expect(routerPOSTStub).to.have.been.calledWith(paths.contactDetails);
     });
@@ -79,84 +83,224 @@ describe('Contact details Controller', () => {
   });
 
   describe('postContactDetails', () => {
-    it('should show validation error if no option is populated', () => {
-      req.body = {
-        'email-value': ''
-      };
-      const error: ValidationError = {
-        href: '#email-value',
-        key: 'email-value-text-message-value',
-        text: i18n.validationErrors.contactDetails.selectOneOption
-      };
-      const expectedData = {
-        email: undefined,
-        phone: undefined,
-        errors: { 'email-value-text-message-value': error },
-        errorList: [ error ]
-      };
 
-      postContactDetails(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+    describe('validates selections', () => {
+      it('should show validation error if no option is selected', async () => {
+        req.body = {};
+
+        const contactDetailsExpectation = {
+          email: null,
+          phone: null,
+          wantsEmail: false,
+          wantsSms: false
+        };
+
+        const error: ValidationError = {
+          href: '#selections',
+          key: 'selections',
+          text: i18n.validationErrors.contactDetails.selectOneOption
+        };
+        const expectedData = {
+          contactDetails: contactDetailsExpectation,
+          errors: { 'selections': error },
+          errorList: [ error ]
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+      });
+
+      it('should show 2 validation error both options are selected but left blank', async () => {
+        req.body = {
+          selections: [ 'email', 'text-message' ],
+          'email-value': '',
+          'text-message-value': ''
+        };
+
+        const contactDetailsExpectation = {
+          email: '',
+          phone: '',
+          wantsEmail: false,
+          wantsSms: false
+        };
+
+        const emailError: ValidationError = {
+          href: '#email-value',
+          key: 'email-value',
+          text: i18n.validationErrors.emailEmpty
+        };
+        const textMessageError: ValidationError = {
+          href: '#text-message-value',
+          key: 'text-message-value',
+          text: i18n.validationErrors.phoneEmpty
+        };
+
+        const expectedData = {
+          contactDetails: contactDetailsExpectation,
+          errors: { 'email-value': emailError, 'text-message-value': textMessageError },
+          errorList: [ emailError, textMessageError ]
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+      });
     });
 
-    it('should validate email and redirect to task-list.njk', () => {
-      const email: string = 'example@example.com';
-      req.body = {
-        'email-value': email
-      };
+    describe('email cases', () => {
+      it('should show email empty validation error if email is selected but left blank', async () => {
+        req.body = {
+          selections: [ 'email' ],
+          'email-value': ''
+        };
 
-      postContactDetails(req as Request, res as Response, next);
-      expect(req.session.appeal.application.contactDetails.email).to.be.equal(email);
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+        const contactDetailsExpectation = {
+          email: '',
+          phone: null,
+          wantsEmail: false, // wantsEmail expectation is false because flag doesn't update if email value isn't accepted
+          wantsSms: false
+        };
+
+        const error: ValidationError = {
+          href: '#email-value',
+          key: 'email-value',
+          text: i18n.validationErrors.emailEmpty
+        };
+
+        const expectedData = {
+          contactDetails: contactDetailsExpectation,
+          errors: { 'email-value': error },
+          errorList: [ error ]
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+      });
+
+      it('should show email format validation error if email is selected but not a valid email', async () => {
+        req.body = {
+          selections: [ 'email' ],
+          'email-value': 'notanemail@example'
+        };
+
+        const contactDetailsExpectation = {
+          email: 'notanemail@example',
+          phone: null,
+          wantsEmail: true,
+          wantsSms: false
+        };
+
+        const error: ValidationError = {
+          href: '#email-value',
+          key: 'email-value',
+          text: i18n.validationErrors.emailFormat
+        };
+
+        const expectedData = {
+          contactDetails: contactDetailsExpectation,
+          errors: { 'email-value': error },
+          errorList: [ error ]
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+      });
+
+      it('should validate email and redirect to task-list.njk', async () => {
+        req.body = {
+          selections: [ 'email' ],
+          'email-value': 'valid@example.net'
+        };
+
+        const contactDetailsExpectation = {
+          email: 'valid@example.net',
+          phone: null,
+          wantsEmail: true,
+          wantsSms: false
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
+        expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      });
     });
 
-    it('should fail email validation and show validation error', () => {
-      req.body = {
-        'email-value': 'anInvalidEmail.com'
-      };
-      const error: ValidationError = {
-        href: '#email-value',
-        key: 'email-value',
-        text: i18n.validationErrors.emailFormat
-      };
-      const expectedData = {
-        email: undefined,
-        phone: undefined,
-        errors: { 'email-value': error },
-        errorList: [ error ]
-      };
+    describe('text message cases', () => {
+      it('should show phone empty validation error if phone number is selected but left blank', async () => {
+        req.body = {
+          selections: [ 'text-message' ],
+          'text-message-value': ''
+        };
 
-      postContactDetails(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+        const contactDetailsExpectation = {
+          email: null,
+          phone: '',
+          wantsEmail: false,
+          wantsSms: false // wantsSms expectation is false because flag doesn't update if phone value isn't accepted
+        };
+
+        const error: ValidationError = {
+          href: '#text-message-value',
+          key: 'text-message-value',
+          text: i18n.validationErrors.phoneEmpty
+        };
+
+        const expectedData = {
+          contactDetails: contactDetailsExpectation,
+          errors: { 'text-message-value': error },
+          errorList: [ error ]
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+      });
+
+      it('should show phone format validation error if text-message is selected but not a valid phone number', async () => {
+        req.body = {
+          selections: [ 'text-message' ],
+          'text-message-value': '00'
+        };
+
+        const contactDetailsExpectation = {
+          email: null,
+          phone: '00',
+          wantsEmail: false,
+          wantsSms: true
+        };
+
+        const error: ValidationError = {
+          href: '#text-message-value',
+          key: 'text-message-value',
+          text: i18n.validationErrors.phoneFormat
+        };
+
+        const expectedData = {
+          contactDetails: contactDetailsExpectation,
+          errors: { 'text-message-value': error },
+          errorList: [ error ]
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
+      });
+
+      it('should validate phone number and redirect to task-list.njk', async () => {
+        req.body = {
+          selections: [ 'text-message' ],
+          'text-message-value': '07123456789'
+        };
+
+        const contactDetailsExpectation = {
+          email: null,
+          phone: '07123456789',
+          wantsEmail: false,
+          wantsSms: true
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
+        expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      });
     });
 
-    it('should validate phone number and redirect to task-list.njk', () => {
-      req.body = {
-        'text-message-value': '07123456789'
-      };
-
-      postContactDetails(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
-    });
-
-    it('show fail phone number validation and show validation error', () => {
-      req.body = {
-        'text-message-value': '1234'
-      };
-      const error: ValidationError = {
-        href: '#text-message-value',
-        key: 'text-message-value',
-        text: i18n.validationErrors.phoneFormat
-      };
-      const expectedData = {
-        email: undefined,
-        phone: undefined,
-        errors: { 'text-message-value': error },
-        errorList: [ error ]
-      };
-
-      postContactDetails(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
-    });
   });
 });

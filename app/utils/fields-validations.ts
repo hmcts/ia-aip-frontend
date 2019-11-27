@@ -64,8 +64,8 @@ function dropdownValidation(text: string, theKey: string): ValidationErrors | nu
 function homeOfficeNumberValidation(obj: object) {
   const schema = Joi.object({
     homeOfficeRefNumber: Joi.string().required().regex(/^[A-Za-z][0-9]{6}[0-9]?(|\/[0-9][0-9]?[0-9]?)$/).messages({
-        'string.empty': i18n.validationErrors.homeOfficeReference.required,
-        'string.pattern.base': i18n.validationErrors.homeOfficeReference.invalid
+      'string.empty': i18n.validationErrors.homeOfficeReference.required,
+      'string.pattern.base': i18n.validationErrors.homeOfficeReference.invalid
     })
   }).unknown();
   return validate(obj, schema);
@@ -119,27 +119,46 @@ function appellantNamesValidation(obj: object) {
 function contactDetailsValidation(obj: object) {
   const phonePattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
   const schema = Joi.object({
-    'email-value': Joi.string()
-      .optional()
-      .empty('')
-      .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net', 'co.uk' ] } })
+    'selections': Joi.alternatives()
+      .try(
+        Joi.array()
+          .items(
+            Joi.string().valid('email', 'text-message')
+          ),
+        Joi.string().valid('email', 'text-message'))
+      .required()
       .messages({
-        'string.empty': i18n.validationErrors.emailEmpty,
-        'string.email': i18n.validationErrors.emailFormat
+        'any.required': i18n.validationErrors.contactDetails.selectOneOption
       }),
-    'text-message-value': Joi.string()
-      .optional()
-      .empty('')
-      .regex(phonePattern)
-      .messages({
-        'string.empty': i18n.validationErrors.phoneEmpty,
-        'string.pattern.base': i18n.validationErrors.phoneFormat
-      })
-  }).or('email-value', 'text-message-value')
-  .messages({
-    'object.missing': i18n.validationErrors.contactDetails.selectOneOption
+    'email-value': Joi.when('selections', {
+      is: Joi.alternatives()
+        .try(Joi.array().items(Joi.string().valid('email'), Joi.string().valid('text-message')),
+          Joi.string().valid('email')).required(),
+      then: Joi.string()
+        .optional()
+        .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net', 'co.uk' ] } })
+        .messages({
+          'string.empty': i18n.validationErrors.emailEmpty,
+          'string.email': i18n.validationErrors.emailFormat
+        }),
+      otherwise: Joi.strip()
+    }),
+    'text-message-value': Joi.when('selections', {
+      is: Joi.alternatives()
+        .try(
+          Joi.array().items(Joi.string().valid('email'), Joi.string().valid('text-message')),
+          Joi.string().valid('text-message')).required(),
+      then: Joi.string()
+        .optional()
+        .regex(phonePattern)
+        .messages({
+          'string.empty': i18n.validationErrors.phoneEmpty,
+          'string.pattern.base': i18n.validationErrors.phoneFormat
+        }),
+      otherwise: Joi.strip()
+    })
   })
-  .unknown();
+    .unknown();
 
   return validate(obj, schema);
 }

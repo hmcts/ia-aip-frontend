@@ -25,6 +25,9 @@
                 id: "nationality",
                 name: "nationality",
                 items: nationalitiesOptions,
+                attributes: {
+                    'aria-label': i18n.pages.nationality.heading
+                },
                 errorMessage: {
                     text: errors["nationality-statelessNationality"].text
                 } if errors["nationality-statelessNationality"]

@@ -224,7 +224,7 @@ function emailValidation(obj: object): null | ValidationErrors {
  * 'string.pattern.base': if phone number does not match format
  * @return ValidationError object if there are issues, null if no issues found
  */
-function phoneValidation(obj: object): null | ValidationErrors {
+function mobilePhoneValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     'text-message-value': Joi.string()
       .required()
@@ -297,7 +297,7 @@ export {
   postcodeValidation,
   nationalityValidation,
   emailValidation,
-  phoneValidation,
+  mobilePhoneValidation,
   textAreaValidation,
   statementOfTruthValidation,
   addressValidation,

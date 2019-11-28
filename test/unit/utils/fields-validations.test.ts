@@ -3,7 +3,7 @@ import {
   dateValidation,
   emailValidation,
   homeOfficeNumberValidation,
-  phoneValidation,
+  mobilePhoneValidation,
   statementOfTruthValidation,
   textAreaValidation
 } from '../../../app/utils/fields-validations';
@@ -181,41 +181,61 @@ describe('fields-validations', () => {
     });
   });
 
-  describe('phoneValidation', () => {
-    it('should validate a landline phone number', () => {
+  describe('mobilePhoneValidation', () => {
+    it('should fail validation with landline phone number', () => {
       const object = { 'text-message-value': '01632960001' };
-      const validationResult = phoneValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should validate a mobile phone number', () => {
-      const object = { 'text-message-value': '07700900982' };
-      const validationResult = phoneValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should validate a phone number with prefix', () => {
-      const object = { 'text-message-value': '+448081570192' };
-      const validationResult = phoneValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should fail phone validation and return "string.empty" type', () => {
-      const object = { 'text-message-value': '' };
-      const validationResult = phoneValidation(object);
+      const validationResult = mobilePhoneValidation(object);
       const expectedResponse = {
         'text-message-value': {
-          'key': 'text-message-value',
-          'text': 'Enter a phone number',
-          'href': '#text-message-value'
+          href: '#text-message-value',
+          key: 'text-message-value',
+          text: 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
+  });
 
-    it('should fail phone validation and return "string.format" type', () => {
-      const object = { 'text-message-value': '1234567890' };
-      const validationResult = phoneValidation(object);
+  describe('mobile phone number cases', () => {
+    it('should validate a mobile phone number', () => {
+      const object = { 'text-message-value': '07700900982' };
+      const validationResult = mobilePhoneValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should validate a mobile phone number with spaces', () => {
+      const object = { 'text-message-value': '07700 900 982' };
+      const validationResult = mobilePhoneValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation if not a valid UK mobile phone number', () => {
+      const object = { 'text-message-value': '09700000000' };
+      const validationResult = mobilePhoneValidation(object);
+
+      const expectedResponse = {
+        'text-message-value': {
+          href: '#text-message-value',
+          key: 'text-message-value',
+          text: 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192'
+        }
+      };
+
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+  });
+
+  describe('mobile phone number with prefix cases', () => {
+
+    it('should validate a valid mobile phone number with prefix', () => {
+      const object = { 'text-message-value': '+447123456789' };
+      const validationResult = mobilePhoneValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation with a phone number with prefix', () => {
+      const object = { 'text-message-value': '+448081570192' };
+      const validationResult = mobilePhoneValidation(object);
       const expectedResponse = {
         'text-message-value': {
           'key': 'text-message-value',
@@ -227,51 +247,77 @@ describe('fields-validations', () => {
     });
   });
 
-  describe('textAreaValidation', () => {
-    it('should validate', () => {
-      const text: string = 'Some text here.';
-      const key: string = 'aKey';
-      const validations = textAreaValidation(text, key);
-
-      expect(validations).to.equal(null);
-    });
-
-    it('should fail validation', () => {
-      const text: string = '';
-      const key: string = 'aKey';
-      const validations = textAreaValidation(text, key);
-
-      expect(validations).to.deep.equal(
-        {
-          [key]: {
-            href: '#aKey',
-            key: 'aKey',
-            text: i18n.validationErrors.required
-          }
-        }
-      );
-    });
+  it('should fail phone validation and return "string.empty" type', () => {
+    const object = { 'text-message-value': '' };
+    const validationResult = mobilePhoneValidation(object);
+    const expectedResponse = {
+      'text-message-value': {
+        'key': 'text-message-value',
+        'text': 'Enter a phone number',
+        'href': '#text-message-value'
+      }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
   });
 
-  describe('statementOfTruthValidation', () => {
-    it('should validate if statement present', () => {
-      const object = { 'statement': 'acceptance' };
-      const validationResult = statementOfTruthValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should fail validation and return "any.required" type', () => {
-      const object = {};
-      const validationResult = statementOfTruthValidation(object);
-      const expectedResponse = {
-        statement: {
-          href: '#statement',
-          key: 'statement',
-          text: 'Select if you believe the information you have given is true.'
-        }
-      };
-      expect(validationResult).to.deep.equal(expectedResponse);
-    });
-
+  it('should fail phone validation and return "string.format" type', () => {
+    const object = { 'text-message-value': '1234567890' };
+    const validationResult = mobilePhoneValidation(object);
+    const expectedResponse = {
+      'text-message-value': {
+        'key': 'text-message-value',
+        'text': 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192',
+        'href': '#text-message-value'
+      }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
   });
+});
+
+describe('textAreaValidation', () => {
+  it('should validate', () => {
+    const text: string = 'Some text here.';
+    const key: string = 'aKey';
+    const validations = textAreaValidation(text, key);
+
+    expect(validations).to.equal(null);
+  });
+
+  it('should fail validation', () => {
+    const text: string = '';
+    const key: string = 'aKey';
+    const validations = textAreaValidation(text, key);
+
+    expect(validations).to.deep.equal(
+      {
+        [key]: {
+          href: '#aKey',
+          key: 'aKey',
+          text: i18n.validationErrors.required
+        }
+      }
+    );
+  });
+});
+
+describe('statementOfTruthValidation', () => {
+  it('should validate if statement present', () => {
+    const object = { 'statement': 'acceptance' };
+    const validationResult = statementOfTruthValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should fail validation and return "any.required" type', () => {
+    const object = {};
+    const validationResult = statementOfTruthValidation(object);
+    const expectedResponse = {
+      statement: {
+        href: '#statement',
+        key: 'statement',
+        text: 'Select if you believe the information you have given is true.'
+      }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
+
 });

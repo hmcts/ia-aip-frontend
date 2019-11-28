@@ -61,3 +61,8 @@ variable "idam_web_url" {
   description = "Url of the idam login pages"
   type = "string"
 }
+
+variable "ccd_api_url" {
+  description = "Url of the ccd api"
+  type = "string"
+}

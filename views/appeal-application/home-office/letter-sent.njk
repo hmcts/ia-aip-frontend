@@ -2,34 +2,73 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "components/date-component.njk" import dateInput %}
 
 {% block content %}
   {% if errorList %}
     {{ govukErrorSummary({
-      titleText: i18n.errorSummary.titleText,
-      descriptionText: i18n.errorSummary.descriptionText,
+      titleText: i18n.validationErrors.errorSummary,
       errorList: errorList
     })
     }}
   {% endif %}
-  <h1 class="govuk-heading-l">{{ i18n.appealApplication.homeOfficeLetterSent.title }}</h1>
+  <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeLetterSent.title }}</h1>
 
-  <p>{{ i18n.appealApplication.homeOfficeLetterSent.description }}</p>
+  <p>{{ i18n.pages.homeOfficeLetterSent.description }}</p>
 
-  <img src="/assets/images/home_office_letter_date.png" class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"/>
+  <img
+    src="/assets/images/home_office_letter_date.png"
+    class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
+    alt="{{ i18n.pages.homeOfficeLetterSent.letterSentImageAltText }}"
+  />
 
   <form action="/home-office/letter-sent" method="post">
+    {% set errorMessage =  error.day.text if error.day %}
+    {% set errorMessage =  error.month.text if error.month else errorMessage %}
+    {% set errorMessage =  error.year.text if error.year else errorMessage %}
+    {% set errorMessage =  error.date.text if error.date else errorMessage %}
 
-    {{
-      dateInput(
-        i18n.appealApplication.homeOfficeLetterSent.dateTitle,
-        i18n.appealApplication.homeOfficeLetterSent.dateHint,
-        error,
-        dateLetterSent.day if dateLetterSent.day,
-        dateLetterSent.month if dateLetterSent.month,
-        dateLetterSent.year if dateLetterSent.year
-      )
+    {{ govukDateInput({
+      fieldset: {
+        legend: {
+          isPageHeading: false,
+          text: i18n.pages.homeOfficeLetterSent.dateTitle,
+          classes: 'govuk-fieldset__legend--s'
+        }
+      },
+      hint: {
+        text: i18n.pages.homeOfficeLetterSent.dateHint
+      },
+      id: 'date',
+      name: 'date',
+      errorMessage: {
+        text: errorMessage
+      } if error,
+      items: [
+        {
+          id: 'day',
+          name: "day",
+          classes: "govuk-input--width-2 govuk-input--error" if error.day else "govuk-input--width-2",
+          value: dateLetterSent.day
+        },
+        {
+          id: 'month',
+          name: "month",
+          classes: "govuk-input--width-2 govuk-input--error" if error.month else "govuk-input--width-2",
+          value: dateLetterSent.month
+        },
+        {
+          id: 'year',
+          name: "year",
+          classes: "govuk-input--width-4 govuk-input--error" if error.year else "govuk-input--width-4",
+          value: dateLetterSent.year,
+          attributes: {
+            max: 9999
+          }
+        }
+      ]
+      })
     }}
 
     {{ govukButton({

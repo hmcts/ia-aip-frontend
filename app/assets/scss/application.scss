@@ -8,3 +8,7 @@
 body {
   @extend .govuk-body;
 }
+
+img {
+  max-width: 100%;
+}

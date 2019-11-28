@@ -15,9 +15,9 @@
     }) 
     }}
   {% endif %}
-  <h1 class="govuk-heading-l">{{ i18n.appealApplication.homeOfficeAppealLate.title }}</h1>
+  <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeAppealLate.title }}</h1>
 
-  <p>{{ i18n.appealApplication.homeOfficeAppealLate.description | safe }}</p>
+  <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>
 
   <form action="/home-office/appeal-late" method="post" enctype="multipart/form-data">
     {{ govukTextarea({
@@ -29,13 +29,13 @@
       } if error["appeal-late"]
     }) }}
 
-    <h2 class="govuk-heading-m">{{ i18n.appealApplication.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
+    <h2 class="govuk-heading-m">{{ i18n.pages.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
     <div class="govuk-inset-text">
       {{ govukFileUpload({
         id: "file-upload",
         name: "file-upload",
         label: {
-          text: i18n.appealApplication.homeOfficeAppealLate.fileUploadTitle
+          text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
         }
       }) }}
 

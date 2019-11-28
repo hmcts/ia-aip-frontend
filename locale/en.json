@@ -104,6 +104,24 @@
       "title": "Postcode",
       "select": "Select an address",
       "cantFind": "I cant find my address in the list"
+    },
+    "homeOfficePage": {
+      "title": "What is your Home Office reference number?",
+      "description": "You can find this on the top right-hand side of the decision letter.",
+      "refImageAltText": "Image of Home Office decision letter"
+    },
+    "homeOfficeLetterSent": {
+      "title": "What date was the letter sent?",
+      "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
+      "dateTitle": "Date letter sent",
+      "dateHint": "For example, 31 3 2019",
+      "letterSentImageAltText": "Image of Home Office decision letter"
+    },
+    "homeOfficeAppealLate": {
+      "title": "Your appeal is late",
+      "description": "Appeals should be made within 14 days from the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late below, and provide supporting evidence if you have it.",
+      "provideEvidenceTitle": "Provide supporting evidence",
+      "fileUploadTitle": "Upload a file"
     }
   },
   "error": {
@@ -125,32 +143,8 @@
       "savedAnswers": "We saved your answers. They will be available for 30 days."
     }
   },
-  "enterName": {
-    "title": "What is your name?",
-    "givenName": "Given names",
-    "familyName": "Family name"
-  },
   "cookieBanner": {
     "content": "GOV.UK uses cookies to make the site simpler. <a href='/cookie-policy class='govuk-link' title='Find out more about cookies'>Find out more about cookies</a>"
-  },
-  "appealApplication": {
-    "homeOfficePage": {
-      "title": "What is your Home Office reference number?",
-      "description": "You can find this on the top right-hand side of the decision letter.",
-      "refImageAltText": "Image of Home Office decision letter"
-    },
-    "homeOfficeLetterSent": {
-      "title": "What date was the letter sent?",
-      "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
-      "dateTitle": "Date letter sent",
-      "dateHint": "For example, 31 3 2019"
-    },
-    "homeOfficeAppealLate": {
-      "title": "Your appeal is late",
-      "description": "Appeals should be made within 14 days from the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late below, and provide supporting evidence if you have it.",
-      "provideEvidenceTitle": "Provide supporting evidence",
-      "fileUploadTitle": "Upload a file"
-    }
   },
   "validationErrors": {
     "errorSummary": "There is a problem",
@@ -163,7 +157,6 @@
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192",
-    "futureDate": "The date is in the future, please re-enter the date.",
     "acceptanceStatement": "Select if you believe the information you have given is true.",
     "contactDetails": {
       "selectOneOption": "Select at least one of the contact options"

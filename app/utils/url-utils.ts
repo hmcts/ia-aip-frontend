@@ -9,5 +9,5 @@ function getUrl(protocol: string, host: string, path: string): string {
 }
 
 export function getIdamRedirectUrl(req: Request): string {
-  return getUrl(req.protocol, req.hostname, '/redirectUrl');
+  return getUrl('https', req.hostname, '/redirectUrl');
 }

@@ -4,8 +4,16 @@ import { paths } from '../paths';
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const date = moment().add(14,'days').format('Do MMMM YYYY');
-    res.render('confirmation-page.njk', { date: date });
+
+    const daysToWaitUntilContact = (days: number) => {
+      const date = moment().add(days,'days').format('Do MMMM YYYY');
+      return date;
+    };
+    res.render('confirmation-page.njk', {
+      date: daysToWaitUntilContact,
+      days: 14,
+      late: false
+    });
   } catch (e) {
     next(e);
   }

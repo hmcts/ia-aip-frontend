@@ -1,24 +1,39 @@
 {% extends './layout.njk' %}
 
+
+
 {% block content %}
  {% from "govuk/components/panel/macro.njk" import govukPanel %}
+   {%  if  late %}
     {{ govukPanel({
-        titleText: "Your appeal application \n has been sent.",
+        titleText: 'Your have sent an out of time application',
         classes: mainClasses
     }) }}
+    {%  else %}
+        {{ govukPanel({
+            titleText: 'Your appeal application \t has been sent',
+            classes: mainClasses
+        }) }}
+    {%  endif %}
     <h2 class="govuk-heading-m">What happens next</h2>
     <ul class="govuk-list govuk-list--bullet">
-        <li>You will receive a notification to confirm that the Tribunal has received your appeal. </li>
-        <li>A tribunal case worker will contact you to by <strong>{{ date }}</strong> to tell you what to do next</li>
-        <li>If you havent heard from us by <strong>{{ date }}</strong> call us on <b>0300 123 1711</b> or email customer.service@justice.gov.uk</li>
+        {% if late %}
+        <li>You will receive a notification to confirm that the Tribunal has received your appeal application. </li>
+        <li>A case worker will contact you to by <strong>{{ date(days) }}</strong> to tell you if you can continue with your appeal and what to do next</li>
+        {%  else %}
+        <li>You will receive a notification to confirm that the Tribunal has received your appeal application. </li>
+        <li>A Tribunal case worker will contact you to by <strong>{{ date(days) }}</strong> to tell you what to do next</li>
+        {%  endif %}
+        <li>If you havent heard from us by <strong>{{ date(days) }}</strong> call us on <b>0300 123 1711</b> or email customer.service@justice.gov.uk</li>
     </ul>
     <div class="panel-background">
         <h2 class="govuk-heading-m">Things you can do now</h2>
         <ul class="govuk-list govuk-list--bullet">
-            <a class="govuk-link govuk-link--no-visited-state"		href="#"> <li >Read more about appealing an immigration or asylum decision </li></a>
-            <a class="govuk-link govuk-link--no-visited-state"	 href="#"><li >Find organisations that can you with your appeal</li></a>
+            <a class="govuk-link govuk-link--no-visited-state" href="#"> <li >Read more about appealing an immigration or asylum decision </li></a>
+            <a class="govuk-link govuk-link--no-visited-state" href="#"><li >Find organisations that can you with your appeal</li></a>
         </ul>
      </div>
+    </br>
     {{ govukButton({
         text: "See your appeal progress",
         href: "#"

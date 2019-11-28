@@ -14,7 +14,9 @@ def secrets = [
                 secret('sscs-s2s-secret', 'S2S_SECRET')
         ],
         'ia-${env}': [
-                secret('idam-secret', 'IDAM_CLIENT_SECRET')
+                secret('idam-secret', 'IDAM_CLIENT_SECRET'),
+                secret('saucelabs', 'SAUCELABS_SECRET')
+
         ]
 ]
 

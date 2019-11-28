@@ -25,10 +25,6 @@ export default class UpdateAppealService {
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
-    const names = (caseData.appellantGivenNames || caseData.appellantFamilyName) ?
-      { givenNames: caseData.appellantGivenNames, familyName: caseData.appellantFamilyName } :
-      { givenNames: req.idam.userDetails.forename, familyName: req.idam.userDetails.surname };
-
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
       line2: caseData.appellantAddress.AddressLine2,
@@ -49,7 +45,8 @@ export default class UpdateAppealService {
         isAppealLate: null,
         lateAppeal: null,
         personalDetails: {
-          ...names,
+          givenNames: caseData.appellantGivenNames,
+          familyName: caseData.appellantFamilyName,
           dob: dateOfBirth,
           nationality: null,
           address: appellantAddress

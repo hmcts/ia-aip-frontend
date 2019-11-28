@@ -70,39 +70,6 @@ describe('update-appeal-service', () => {
     });
   });
 
-  describe('loadNamesFromIdam', () => {
-    before(async () => {
-      req = {
-        idam: {
-          userDetails: {
-            id: userId,
-            forename: 'idamForename',
-            surname: 'idamSurname'
-          }
-        },
-        session: {}
-      };
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          case_data: {
-            homeOfficeReferenceNumber: 'homeOfficeReferenceNumber',
-            homeOfficeDecisionDate: '2019-01-02',
-            appellantDateOfBirth: '1900-10-11'
-          }
-        });
-
-      // @ts-ignore
-      await updateAppealService.loadAppeal(req);
-    });
-
-    it('set case details', () => {
-      expect(req.session.appeal.application.personalDetails.givenNames).eq('idamForename');
-      expect(req.session.appeal.application.personalDetails.familyName).eq('idamSurname');
-    });
-  });
-
   describe('convert to ccd case', () => {
     let emptyApplication;
     beforeEach(() => {

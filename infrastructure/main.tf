@@ -61,6 +61,8 @@ module "ia_aip_frontend" {
     IDAM_API_URL                 = "${var.idam_url}"
     IDAM_WEB_URL                 = "${var.idam_web_url}"
     IDAM_SECRET                  = "${data.azurerm_key_vault_secret.idam-secret.value}"
+
+    CCD_API_URL                  = "${var.ccd_api_url}"
     ADDRESS_LOOKUP_TOKEN         = "${data.azurerm_key_vault_secret.addressLookupToken.value}"
   }
 }

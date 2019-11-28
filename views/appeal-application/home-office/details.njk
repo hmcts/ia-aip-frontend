@@ -4,22 +4,21 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% block content %}
-  {% if errors %}
+  {% if errorList %}
     {{ govukErrorSummary({
-      titleText: i18n.error.summary.title,
-      descriptionText: i18n.error.summary.descriptionText,
+      titleText: i18n.validationErrors.errorSummary,
       errorList: errorList
     })
     }}
   {% endif %}
-  <h1 class="govuk-heading-l">{{ i18n.appealApplication.homeOfficePage.title }}</h1>
+  <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficePage.title }}</h1>
 
-  <p>{{ i18n.appealApplication.homeOfficePage.description }}</p>
+  <p>{{ i18n.pages.homeOfficePage.description }}</p>
 
   <img
           src="/assets/images/home_office_ref_number.png"
           class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
-          alt="{{  i18n.appealApplication.homeOfficePage.refImageAltText }}"
+          alt="{{  i18n.pages.homeOfficePage.refImageAltText }}"
   />
 
   <form action="/home-office/details" method="post">

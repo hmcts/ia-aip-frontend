@@ -52,21 +52,14 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
       if (validation) {
         return res.render('appeal-application/home-office/letter-sent.njk', {
           error: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          dateLetterSent: {
+            ...req.body
+          }
         });
       }
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
-      if (diffInDays < 0) {
-        const error: ValidationError = {
-          key: 'day',
-          text: i18n.validationErrors.futureDate,
-          href: '#day'
-        };
-        return res.render('appeal-application/home-office/letter-sent.njk', {
-          errorList: [error]
-        });
-      }
 
       req.session.appeal.application['dateLetterSent'] = {
         day,

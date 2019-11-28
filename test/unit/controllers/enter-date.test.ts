@@ -110,6 +110,7 @@ describe('Personal Details Controller', function () {
       const errorDay = createError('day', 'Enter the date in the correct format');
       const errorMonth = createError('month', 'Enter the date in the correct format');
       const errorYear = createError('year', 'Enter the date in the correct format');
+      const errorDate = createError('date', '');
 
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
@@ -118,9 +119,10 @@ describe('Personal Details Controller', function () {
           errors: {
             day: errorDay,
             month: errorMonth,
-            year: errorYear
+            year: errorYear,
+            date: errorDate
           },
-          errorList: [ errorDay, errorMonth, errorYear ]
+          errorList: [ errorDay, errorMonth, errorYear, errorDate ]
         });
     });
   });

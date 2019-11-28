@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   appellantNamesValidation,
   dateValidation,
@@ -53,6 +54,12 @@ describe('fields-validations', () => {
       expect(validations).to.deep.equal(null);
     });
 
+    it('shouldnt validate @only2', () => {
+      const inValidDate = { day: '1', month: '1', year: '20190' };
+      const validations = dateValidation(inValidDate, errors);
+      expect(validations).to.deep.equal(null);
+    });
+
     it('fields cannot be empty', () => {
       const notValidDate = { day: '', month: '', year: '' };
       const validations = dateValidation(notValidDate, errors);
@@ -61,7 +68,8 @@ describe('fields-validations', () => {
         {
           day: createError('day', errors.missingDay),
           month: createError('month', errors.missingMonth),
-          year: createError('year', errors.missingYear)
+          year: createError('year', errors.missingYear),
+          date: createError('date', '')
         });
     });
 
@@ -73,7 +81,8 @@ describe('fields-validations', () => {
         {
           day: createError('day', errors.incorrectFormat),
           month: createError('month', errors.incorrectFormat),
-          year: createError('year', errors.incorrectFormat)
+          year: createError('year', errors.incorrectFormat),
+          date: createError('date', '')
         });
     });
 
@@ -98,7 +107,8 @@ describe('fields-validations', () => {
         {
           day: createError('day', errors.incorrectFormat),
           month: createError('month', errors.incorrectFormat),
-          year: createError('year', errors.incorrectFormat)
+          year: createError('year', errors.incorrectFormat),
+          date: createError('date', '')
         });
     });
 
@@ -109,7 +119,7 @@ describe('fields-validations', () => {
 
       expect(validations).to.deep.equal(
         {
-          year: createError('year', errors.inPast)
+          date: createError('date', errors.inPast)
         });
     });
   });

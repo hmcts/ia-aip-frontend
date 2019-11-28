@@ -10,8 +10,8 @@ import { postcodeRegex } from './regular-expressions';
  * @param obj the object to be validated
  * @param schema the schema to validate the object
  */
-function validate(obj: object, schema: any): ValidationErrors | null {
-  const result = schema.validate(obj, { abortEarly: false });
+function validate(obj: object, schema: any, abortEarly: boolean = false): ValidationErrors | null {
+  const result = schema.validate(obj, { abortEarly });
   if (result.error) {
     return result.error.details.reduce((acc, curr): ValidationError => {
       const key = curr.context.key || (curr.context.peers ? curr.context.peers.join('-') : curr.context.peers);
@@ -79,28 +79,38 @@ function dateOfBirthValidation(obj: object): boolean | ValidationErrors {
   return dateValidation(obj, i18n.validationErrors.dateOfBirth);
 }
 
-function dateValidation(obj: object, errors): boolean | ValidationErrors {
+function dateValidation(obj: any, errors): boolean | ValidationErrors {
+  const { year, month, day } = obj;
+  const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
+    moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
+  obj = {
+    ...obj,
+    date
+  };
   const schema = Joi.object({
-    day: Joi.number().empty('').required().integer().min(1).max(moment().date()).required().messages({
+    day: Joi.number().empty('').required().integer().min(1).max(31).required().messages({
       'any.required': errors.missingDay,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
-      'number.max': errors.inPast
+      'number.max': errors.incorrectFormat
     }),
-    month: Joi.number().empty('').required().integer().min(1).max(moment().month() + 1).required().messages({
+    month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
       'any.required': errors.missingMonth,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
-      'number.max': errors.inPast
+      'number.max': errors.incorrectFormat
     }),
-    year: Joi.number().empty('').required().integer().min(1).max(moment().year()).required().messages({
+    year: Joi.number().empty('').required().integer().min(1900).required().messages({
       'any.required': errors.missingYear,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
-      'number.min': errors.incorrectFormat,
-      'number.max': errors.inPast
+      'number.min': errors.incorrectFormat
+    }),
+    date: Joi.date().less('now').messages({
+      'date.less': errors.inPast,
+      'date.base': ''
     })
   });
 

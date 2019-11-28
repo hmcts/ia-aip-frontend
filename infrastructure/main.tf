@@ -27,6 +27,12 @@ data "azurerm_key_vault_secret" "idam-secret" {
   vault_uri = "${data.azurerm_key_vault.ia_key_vault.vault_uri}"
 }
 
+data "azurerm_key_vault_secret" "addressLookupToken" {
+  name      = "addressLookupToken"
+  vault_uri = "${data.azurerm_key_vault.ia_key_vault.vault_uri}"
+}
+
+
 module "ia_aip_frontend" {
   source               = "git@github.com:hmcts/cnp-module-webapp?ref=master"
   product              = "${var.product}-${var.component}"
@@ -55,6 +61,7 @@ module "ia_aip_frontend" {
     IDAM_API_URL                 = "${var.idam_url}"
     IDAM_WEB_URL                 = "${var.idam_web_url}"
     IDAM_SECRET                  = "${data.azurerm_key_vault_secret.idam-secret.value}"
+    ADDRESS_LOOKUP_TOKEN         = "${data.azurerm_key_vault_secret.addressLookupToken.value}"
   }
 }
 

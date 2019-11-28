@@ -35,5 +35,8 @@
   },
   "addressLookup": {
     "token": "ADDRESS_LOOKUP_TOKEN"
+  },
+  "saucelabs": {
+    "secret": "SAUCELABS_SECRET"
   }
 }

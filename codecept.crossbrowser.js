@@ -1,3 +1,5 @@
+const config = require('config')
+
 exports.config = {
   name: 'Codecept-crossbrowser',
   tests: './*_test.js',
@@ -29,8 +31,8 @@ exports.config = {
         url: 'https://localhost:3000',
         enabled: true,
         services: ['sauce'],
-        user: '',
-        key: '',
+        user: 'lewis.williams',
+        key: config.get('saucelabs.secret'),
         region: 'eu',
         sauceConnect: true,
         sauceConnectOpts: {

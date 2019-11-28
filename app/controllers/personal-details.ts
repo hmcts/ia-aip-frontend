@@ -167,7 +167,7 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
 function getAddressList(addressLookupResult) {
   const lookedUpAddresses = addressLookupResult.addresses.map(address => {
     return {
-      value: address.uprn,
+      value: address.udprn,
       text: address.formattedAddress
     };
   });
@@ -223,8 +223,8 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
   }
 }
 
-function findAddress(uprn: string, addresses: Address[]): Address {
-  return (uprn && addresses) ? addresses.find(address => address.uprn === uprn) : null;
+function findAddress(udprn: string, addresses: Address[]): Address {
+  return (udprn && addresses) ? addresses.find(address => address.udprn === udprn) : null;
 }
 
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {

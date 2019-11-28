@@ -116,7 +116,7 @@ describe('Personal Details Controller', function () {
   describe('postPostcodeLookupPage', () => {
     it('should fail validation and render postcode-lookup.njk', function () {
       req.body.address = '';
-      const addresses = [ new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2])) ];
+      const addresses = [ new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn') ];
       req.session.appeal.application.addressLookup = {
         result: { addresses }
       } as any;
@@ -124,7 +124,7 @@ describe('Personal Details Controller', function () {
       const error = { href: '#address', key: 'address', text: 'Select your address' };
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/postcode-lookup.njk',
         {
-          addresses: [{ text: '1 address found', value: '' }, { text: 'formattedAddress', value: '123' }],
+          addresses: [{ text: '1 address found', value: '' }, { text: 'formattedAddress', value: 'udprn' }],
           error: { address: error },
           errorList: [ error ]
         }

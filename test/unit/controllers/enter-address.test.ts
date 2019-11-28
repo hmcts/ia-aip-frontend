@@ -70,10 +70,10 @@ describe('Personal Details Controller', function () {
     it('should render appeal-application/personal-details/enter-address.njk', function () {
       // @ts-ignore
       req.session.appeal.application.addressLookup = {
-        selected: '123',
+        selected: 'udprn',
         result: {
           addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]))
+            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn')
           ]
         }
       };
@@ -92,10 +92,10 @@ describe('Personal Details Controller', function () {
     it('should catch an exception and call next()', () => {
       // @ts-ignore
       req.session.appeal.application.addressLookup = {
-        selected: '123',
+        selected: 'udprn',
         result: {
           addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]))
+            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn')
           ]
         }
       };

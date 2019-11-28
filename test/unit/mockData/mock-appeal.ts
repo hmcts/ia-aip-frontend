@@ -29,7 +29,9 @@ export function createDummyAppealApplication(): Appeal {
       },
       contactDetails: {
         email: 'pedro.jimenez@example.net',
-        phone: '07123456789'
+        wantsEmail: true,
+        phone: '07123456789',
+        wantsSms: false
       },
       addressLookup: {}
     },

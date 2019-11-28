@@ -32,9 +32,9 @@ const taskListController = setupTaskListController();
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(updateAppealService);
 const personalDetailsController = setupPersonalDetailsController({ updateAppealService, osPlacesClient });
-const contactDetailsController = setupContactDetailsController();
+const contactDetailsController = setupContactDetailsController(updateAppealService);
+const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
-const checkAndSendController = setupCheckAndSendController();
 // not protected by idam
 router.use(healthController);
 router.use(startController);

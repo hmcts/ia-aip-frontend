@@ -1,6 +1,7 @@
 import { NextFunction,Request, Response, Router } from 'express';
 import { appealTypes } from '../data/appeal-types';
 import { paths } from '../paths';
+import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { typeOfAppealValidation } from '../utils/fields-validations';
 
@@ -30,7 +31,7 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation)
         });
       }
-      await updateAppealService.updateAppeal(req);
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       req.session.appeal.application.appealType = req.body['appealType'];
       return res.redirect(paths.taskList);
     } catch (error) {

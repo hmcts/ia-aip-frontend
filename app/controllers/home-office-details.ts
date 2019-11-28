@@ -3,6 +3,7 @@ import moment from 'moment';
 import multer from 'multer';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
+import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { dateLetterSentValidation, homeOfficeNumberValidation, textAreaValidation } from '../utils/fields-validations';
 
@@ -27,7 +28,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           }
         );
       }
-      await updateAppealService.updateAppeal(req);
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
       return res.redirect(paths.homeOffice.letterSent);
     } catch (e) {
@@ -73,7 +74,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         year
       };
 
-      await updateAppealService.updateAppeal(req);
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 
       if (diffInDays <= 14) {
         req.session.appeal.application.isAppealLate = false;

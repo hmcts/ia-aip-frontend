@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.appealType.header %}
+{% set pageTitleName = i18n.pages.contactDetails.header %}
 {% extends "layout.njk" %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -30,7 +30,7 @@
       id: "email-value",
       name: "email-value",
       type: "email",
-      value: email,
+      value: contactDetails.email,
       classes: "govuk-!-width-one-third",
       label: {
         text: i18n.fields.emailAddress
@@ -49,7 +49,7 @@
         id: "text-message-value",
         name: "text-message-value",
         type: "tel",
-        value: phone,
+        value: contactDetails.phone,
         classes: "govuk-!-width-one-third",
         label: {
           text: i18n.fields.mobilePhone
@@ -81,7 +81,7 @@
               conditional: {
                   html: emailHtml
               },
-              checked: true if email
+              checked: true if contactDetails.wantsEmail or errors['email-value']
             },
             {
               value: "text-message",
@@ -89,7 +89,7 @@
               conditional: {
                 html: textHtml
               },
-              checked: true if phone
+              checked: true if contactDetails.wantsSms or errors['text-message-value']
             }
           ],
           errorMessage: {

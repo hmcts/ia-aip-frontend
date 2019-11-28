@@ -34,11 +34,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/personal-details/date-of-birth.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          dob: {
-            day: req.body.day,
-            month: req.body.month,
-            year: req.body.year
-          }
+          dob: { ...req.body }
         });
       }
 

@@ -9,6 +9,7 @@
   {% if errorList %}
     {{ govukErrorSummary({
       titleText: i18n.validationErrors.errorSummary,
+      descriptionText: i18n.error.summary.descriptionText,
       errorList: errorList
     })
     }}
@@ -50,13 +51,19 @@
           id: 'day',
           name: "day",
           classes: "govuk-input--width-2 govuk-input--error" if error.day else "govuk-input--width-2",
-          value: dateLetterSent.day
+          value: dateLetterSent.day,
+          attributes: {
+            max: 31
+          }
         },
         {
           id: 'month',
           name: "month",
           classes: "govuk-input--width-2 govuk-input--error" if error.month else "govuk-input--width-2",
-          value: dateLetterSent.month
+          value: dateLetterSent.month,
+          attributes: {
+            max: 12
+          }
         },
         {
           id: 'year',

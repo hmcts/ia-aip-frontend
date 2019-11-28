@@ -1,4 +1,3 @@
-import moment from 'moment';
 import {
   appellantNamesValidation,
   dateValidation,
@@ -51,12 +50,6 @@ describe('fields-validations', () => {
     it('should validate', () => {
       const validDate = { day: '1', month: '1', year: '2019' };
       const validations = dateValidation(validDate, errors);
-      expect(validations).to.deep.equal(null);
-    });
-
-    it('shouldnt validate @only2', () => {
-      const inValidDate = { day: '1', month: '1', year: '20190' };
-      const validations = dateValidation(inValidDate, errors);
       expect(validations).to.deep.equal(null);
     });
 

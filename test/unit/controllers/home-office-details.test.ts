@@ -189,7 +189,7 @@ describe('Home Office Details Controller', function () {
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
-    it('should fail validation and render error @only', async () => {
+    it('should fail validation and render error', async () => {
       req.body['day'] = '1';
       req.body['month'] = '1';
       req.body['year'] = moment().year() + 1;

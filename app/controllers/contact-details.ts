@@ -17,8 +17,6 @@ function getContactDetails(req: Request, res: Response, next: NextFunction) {
 function postContactDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = contactDetailsValidation(req.body);
-
       const selections = req.body['selections'] || [];
 
       let email = null;
@@ -33,11 +31,14 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
         }
       }
       if (selections.includes('text-message')) {
+        req.body['text-message-value'] = req.body['text-message-value'].replace(/\s/g, '');
         phone = req.body['text-message-value'];
         if (phone) {
           wantsSms = true;
         }
       }
+
+      const validation = contactDetailsValidation(req.body);
 
       const contactDetails = { email, wantsEmail, phone, wantsSms };
 

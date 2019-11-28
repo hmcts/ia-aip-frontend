@@ -39,7 +39,7 @@ describe('Type of appeal Controller', () => {
       } as any
     } as Partial<Request>;
 
-    updateAppealService = { updateAppeal: sandbox.stub() };
+    updateAppealService = { submitEvent: sandbox.stub() };
 
     res = {
       render: sandbox.stub(),

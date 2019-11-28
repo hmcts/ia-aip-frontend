@@ -10,6 +10,11 @@ const caseType = config.get('ccd.caseType');
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
+export const Events = {
+  EDIT_APPEAL: { id: 'editAppeal', summary: 'Update appeal case AIP', description: 'Update appeal case AIP' },
+  SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit Appeal case AIP', description: 'Submit Appeal case AIP' }
+};
+
 interface CcdCaseDetails {
   id: string;
   case_data: CaseData;
@@ -74,15 +79,15 @@ class CcdService {
     return rp.post(options);
   }
 
-  startUpdateCase(userId: string, caseId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
+  startUpdateAppeal(userId: string, caseId: string, eventId: string, headers: SecurityHeaders): Promise<StartEventResponse> {
     return rp.get(this.createOptions(
       userId,
       headers,
-      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/editAppeal/token`
+      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${eventId}/token`
     ));
   }
 
-  submitUpdateCase(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData): Promise<CcdCaseDetails> {
+  submitUpdateAppeal(userId: string, caseId: string, headers: SecurityHeaders, event: SubmitEventData): Promise<CcdCaseDetails> {
     const options: any = this.createOptions(
       userId,
       headers,
@@ -118,21 +123,21 @@ class CcdService {
     return createdCase;
   }
 
-  async updateCase(userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
-    const updateEventResponse = await this.startUpdateCase(userId, updatedCase.id, headers);
+  async updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
+    logger.trace(`Received call to update appeal with event '${event.id}'`, logLabel);
+    const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers);
+    logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
 
-    const updatesCase = await this.submitUpdateCase(userId, updatedCase.id, headers, {
+    return this.submitUpdateAppeal(userId, updatedCase.id, headers, {
       event: {
         id: updateEventResponse.event_id,
-        summary: 'Update case AIP',
-        description: 'Update case AIP'
+        summary: event.summary,
+        description: event.summary
       },
       data: updatedCase.case_data,
       event_token: updateEventResponse.token,
       ignore_warning: true
     });
-
-    return updatesCase;
   }
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
@@ -146,6 +151,7 @@ class CcdService {
       return this.createCase(userId, headers);
     }
   }
+
 }
 
 export {

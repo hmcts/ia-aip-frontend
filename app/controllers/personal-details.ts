@@ -3,6 +3,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
+import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { getAddress } from '../utils/address-utils';
 import {
@@ -50,7 +51,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         }
       };
 
-      await updateAppealService.updateAppeal(req);
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 
       return res.redirect(paths.personalDetails.nationality);
     } catch (e) {
@@ -89,7 +90,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
         givenNames: req.body.givenNames
       };
 
-      await updateAppealService.updateAppeal(req);
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 
       return res.redirect(paths.personalDetails.dob);
     } catch (e) {
@@ -262,7 +263,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
         });
       }
 
-      await updateAppealService.updateAppeal(req);
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 
       req.session.appeal.application.personalDetails = {
         ...req.session.appeal.application.personalDetails,

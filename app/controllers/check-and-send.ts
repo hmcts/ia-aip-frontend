@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
-import { createDummyAppealApplication } from '../data/dummy';
 import { paths } from '../paths';
+import { Events } from '../service/ccd-service';
+import UpdateAppealService from '../service/update-appeal-service';
 import { statementOfTruthValidation } from '../utils/fields-validations';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
@@ -33,7 +34,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const { application } = req.session.appeal || createDummyAppealApplication();
+    const { application } = req.session.appeal;
     const summaryRows = createSummaryRowsFrom(application);
     return res.render('appeal-application/check-and-send.njk', { summaryRows });
   } catch (error) {
@@ -41,30 +42,33 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postCheckAndSend(req: Request, res: Response, next: NextFunction) {
-  const request = req.body;
-  try {
-    const { application } = req.session.appeal || createDummyAppealApplication();
-    const summaryRows = createSummaryRowsFrom(application);
-    const validationResult = statementOfTruthValidation(request);
-    if (validationResult) {
-      return res.render('appeal-application/check-and-send.njk', {
-        summaryRows: summaryRows,
-        error: validationResult,
-        errorList: Object.values(validationResult)
-      });
+function postCheckAndSend(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+
+    const request = req.body;
+    try {
+      const { application } = req.session.appeal;
+      const summaryRows = createSummaryRowsFrom(application);
+      const validationResult = statementOfTruthValidation(request);
+      if (validationResult) {
+        return res.render('appeal-application/check-and-send.njk', {
+          summaryRows: summaryRows,
+          error: validationResult,
+          errorList: Object.values(validationResult)
+        });
+      }
+      await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
+      return res.redirect(paths.confirmation);
+    } catch (error) {
+      next(error);
     }
-    // TODO: send out application
-    return res.redirect(paths.confirmation);
-  } catch (error) {
-    next(error);
-  }
+  };
 }
 
-function setupCheckAndSendController(): Router {
+function setupCheckAndSendController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.checkAndSend, getCheckAndSend);
-  router.post(paths.checkAndSend, postCheckAndSend);
+  router.post(paths.checkAndSend, postCheckAndSend(updateAppealService));
   return router;
 }
 

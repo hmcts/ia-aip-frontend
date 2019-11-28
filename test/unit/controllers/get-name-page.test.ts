@@ -44,7 +44,7 @@ describe('Personal Details Controller', function () {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
-    updateAppealService = { updateAppeal: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
 
     next = sandbox.stub() as NextFunction;
   });

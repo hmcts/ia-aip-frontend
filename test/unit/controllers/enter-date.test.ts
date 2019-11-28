@@ -46,7 +46,7 @@ describe('Personal Details Controller', function () {
 
     next = sandbox.stub() as NextFunction;
 
-    updateAppealService = { updateAppeal: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {

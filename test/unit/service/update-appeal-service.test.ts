@@ -1,30 +1,44 @@
-import { CcdService } from '../../../app/service/ccd-service';
+import { Request } from 'express';
+import { CcdService, Events } from '../../../app/service/ccd-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('update-appeal-service', () => {
-  const ccdService = new CcdService();
-  const ccdServiceMock = sinon.mock(ccdService);
-  const idamService = new IdamService();
-  const getUserTokenStub = sinon.stub(idamService, 'getUserToken');
-  const s2sService = new S2SService();
-  const getServiceTokenStub = sinon.stub(s2sService, 'getServiceToken');
-  const updateAppealService = new UpdateAppealService(ccdService, idamService, s2sService);
-  let req;
+  let sandbox: sinon.SinonSandbox;
+  let ccdServiceMock: sinon.SinonMock;
+  let req: Partial<Request>;
+  let ccdService: Partial<CcdService>;
+  let idamService: Partial<IdamService>;
+  let s2sService: Partial<S2SService>;
+  let updateAppealService;
+
   const userId = 'userId';
   const userToken = 'userToken';
   const serviceToken = 'serviceToken';
   const caseId = 'caseId';
 
-  before(async () => {
-    getUserTokenStub.returns(userToken);
-    getServiceTokenStub.resolves(serviceToken);
+  beforeEach(async () => {
+    sandbox = sinon.createSandbox();
+    idamService = new IdamService();
+    s2sService = new S2SService();
+    ccdService = new CcdService();
+
+    ccdServiceMock = sandbox.mock(ccdService);
+
+    sandbox.stub(idamService, 'getUserToken').returns(userToken);
+    sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
+
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, idamService as IdamService, s2sService as S2SService);
+  });
+
+  afterEach(() => {
+    sandbox.restore();
   });
 
   describe('loadAppeal', () => {
-    before(async () => {
+    it('set ccd case id', async () => {
       req = {
         idam: {
           userDetails: {
@@ -34,7 +48,7 @@ describe('update-appeal-service', () => {
           }
         },
         session: {}
-      };
+      } as any;
       ccdServiceMock.expects('loadOrCreateCase')
         .withArgs(userId, { userToken, serviceToken })
         .resolves({
@@ -51,9 +65,7 @@ describe('update-appeal-service', () => {
 
       // @ts-ignore
       await updateAppealService.loadAppeal(req);
-    });
 
-    it('set ccd case id', () => {
       expect(req.session.ccdCaseId).eq(caseId);
     });
 
@@ -184,10 +196,85 @@ describe('update-appeal-service', () => {
 
       expect(caseData).eql({ journeyType: 'aip', appealType: 'appealType' });
     });
+    describe('converts contact details', () => {
+      it('converts contactDetails for both email and phone', () => {
+        emptyApplication.contactDetails.wantsEmail = true;
+        emptyApplication.contactDetails.email = 'abc@example.net';
+        emptyApplication.contactDetails.wantsSms = true;
+        emptyApplication.contactDetails.phone = '07123456789';
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+        expect(caseData).eql(
+          {
+            journeyType: 'aip',
+            subscriptions: [
+              {
+                id: 1,
+                value: {
+                  subscriber: 'appellant',
+                  wantsEmail: 'Yes',
+                  email: 'abc@example.net',
+                  wantsSms: 'Yes',
+                  mobileNumber: '07123456789'
+                }
+              }
+            ]
+          }
+        );
+      });
+
+      it('converts contactDetails only email', () => {
+        emptyApplication.contactDetails.wantsEmail = true;
+        emptyApplication.contactDetails.email = 'abc@example.net';
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+        expect(caseData).eql(
+          {
+            journeyType: 'aip',
+            subscriptions: [
+              {
+                id: 1,
+                value: {
+                  subscriber: 'appellant',
+                  wantsEmail: 'Yes',
+                  email: 'abc@example.net',
+                  wantsSms: 'No',
+                  mobileNumber: null
+                }
+              }
+            ]
+          }
+        );
+      });
+
+      it('converts contactDetails only phone', () => {
+        emptyApplication.contactDetails.wantsSms = true;
+        emptyApplication.contactDetails.phone = '07123456789';
+        const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+        expect(caseData).eql(
+          {
+            journeyType: 'aip',
+            subscriptions: [
+              {
+                id: 1,
+                value: {
+                  subscriber: 'appellant',
+                  wantsEmail: 'No',
+                  email: null,
+                  wantsSms: 'Yes',
+                  mobileNumber: '07123456789'
+                }
+              }
+            ]
+          }
+        );
+      });
+    });
   });
 
   describe('updateAppeal', () => {
-    before(async () => {
+    it('updates case with ccd', async () => {
       req = {
         idam: {
           userDetails: {
@@ -200,26 +287,27 @@ describe('update-appeal-service', () => {
               homeOfficeRefNumber: 'newRef',
               appealType: 'appealType',
               dateLetterSent: {
-                year: '2019',
-                month: '12',
-                day: '11'
+                year: 2019,
+                month: 12,
+                day: 11
               },
               personalDetails: {
                 givenNames: 'givenNames',
                 familyName: 'familyName',
                 dob: {
-                  year: '1980',
-                  month: '01',
-                  day: '02'
+                  year: 1980,
+                  month: 1,
+                  day: 2
                 }
               }
             }
           },
           ccdCaseId: caseId
-        }
+        }as any
       };
 
-      ccdServiceMock.expects('updateCase').withArgs(
+      ccdServiceMock.expects('updateAppeal').withArgs(
+        Events.EDIT_APPEAL,
         userId,
         {
           id: caseId,
@@ -237,10 +325,105 @@ describe('update-appeal-service', () => {
       );
 
       // @ts-ignore
-      await updateAppealService.updateAppeal(req);
-    });
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 
-    it('updates case with ccd', () => {
+      ccdServiceMock.verify();
+    });
+  });
+
+  describe('submitAppeal', () => {
+    it('submits case with ccd', async () => {
+      req = {
+        idam: {
+          userDetails: {
+            id: userId
+          }
+        },
+        session: {
+          appeal: {
+            application: {
+              homeOfficeRefNumber: 'newRef',
+              appealType: 'appealType',
+              dateLetterSent: {
+                year: 2019,
+                month: 12,
+                day: 11
+              },
+              isAppealLate: false,
+              personalDetails: {
+                givenNames: 'givenNames',
+                familyName: 'familyName',
+                dob: {
+                  year: 1980,
+                  month: 1,
+                  day: 2
+                },
+                nationality: 'nationality',
+                stateless: false,
+                address: {
+                  line1: '60 Beautiful Street',
+                  line2: 'Flat 2',
+                  city: 'London',
+                  postcode: 'W1W 7RT',
+                  county: 'London'
+                }
+              },
+              contactDetails: {
+                email: 'email@example.net',
+                wantsEmail: true,
+                phone: '07123456789',
+                wantsSms: false
+              },
+              addressLookup: {}
+            }
+          },
+          ccdCaseId: caseId
+        }as any
+      };
+
+      const expectedCaseData = {
+        journeyType: 'aip',
+        homeOfficeReferenceNumber: 'newRef',
+        homeOfficeDecisionDate: '2019-12-11',
+        appellantGivenNames: 'givenNames',
+        appellantFamilyName: 'familyName',
+        appellantDateOfBirth: '1980-01-02',
+        appellantAddress: {
+          AddressLine1: '60 Beautiful Street',
+          AddressLine2: 'Flat 2',
+          PostTown: 'London',
+          County: 'London',
+          PostCode: 'W1W 7RT',
+          Country: 'United Kingdom'
+        },
+        appealType: 'appealType',
+        subscriptions: [
+          {
+            id: 1,
+            value: {
+              subscriber: 'appellant',
+              wantsEmail: 'Yes',
+              email: 'email@example.net',
+              wantsSms: 'No',
+              mobileNumber: null
+            }
+          }
+        ]
+      };
+
+      ccdServiceMock.expects('updateAppeal').withArgs(
+        Events.SUBMIT_APPEAL,
+        userId,
+        {
+          id: caseId,
+          case_data: expectedCaseData
+        },
+        { userToken, serviceToken }
+      );
+
+      // @ts-ignore
+      await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
+
       ccdServiceMock.verify();
     });
   });

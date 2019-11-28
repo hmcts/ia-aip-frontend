@@ -166,7 +166,7 @@
     "futureDate": "The date is in the future, please re-enter the date.",
     "acceptanceStatement": "Select if you believe the information you have given is true.",
     "contactDetails": {
-      "selectOneOption": "Please let us know how you want us to communicate with you."
+      "selectOneOption": "Select at least one of the contact options"
     },
     "givenNames": "Enter your given name or names",
     "familyName": "Enter your family name or names",

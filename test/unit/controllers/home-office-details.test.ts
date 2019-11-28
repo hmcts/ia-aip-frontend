@@ -59,7 +59,7 @@ describe('Home Office Details Controller', function () {
 
     next = sandbox.stub() as NextFunction;
 
-    updateAppealService = { updateAppeal: sandbox.stub() };
+    updateAppealService = { submitEvent: sandbox.stub() };
   });
 
   afterEach(() => {

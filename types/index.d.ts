@@ -67,7 +67,9 @@ interface AppealApplication {
   };
   contactDetails: {
     email?: string;
+    wantsEmail?: boolean;
     phone?: string;
+    wantsSms?: boolean;
   };
   tasks?: {
     [key: string]: Task;

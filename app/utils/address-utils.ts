@@ -25,14 +25,24 @@ function getLine2(osAddress: Address): string {
   return [ osAddress.doubleDependentLocality, osAddress.dependentLocality ].filter(Boolean).join(', ');
 }
 
-function getAddress(osAddress: Address) {
-  return {
-    line1: getLine1(osAddress),
-    line2: getLine2(osAddress),
-    city: osAddress.postTown,
-    postcode: osAddress.postcode,
-    county: ''
-  };
+function getAddress(osAddress: Address, selectedPostcode: string) {
+  if (osAddress) {
+    return {
+      line1: getLine1(osAddress),
+      line2: getLine2(osAddress),
+      city: osAddress.postTown,
+      postcode: osAddress.postcode,
+      county: ''
+    };
+  } else {
+    return {
+      line1: '',
+      line2: '',
+      city: '',
+      postcode: selectedPostcode ? selectedPostcode : '',
+      county: ''
+    };
+  }
 }
 
 export {

@@ -1,7 +1,7 @@
 import { Address, Point } from '@hmcts/os-places-client';
-
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
+import * as _ from 'lodash';
 import {
   getManualEnterAddressPage,
   postManualEnterAddressPage,
@@ -70,6 +70,7 @@ describe('Personal Details Controller', function () {
     it('should render appeal-application/personal-details/enter-address.njk', function () {
       // @ts-ignore
       req.session.appeal.application.addressLookup = {
+        postcode: 'selectedPostcode',
         selected: 'udprn',
         result: {
           addresses: [
@@ -85,7 +86,32 @@ describe('Personal Details Controller', function () {
           city: 'postTown',
           county: '',
           postcode: 'postcode'
-        }
+        },
+        selectedPostcode: 'selectedPostcode'
+      });
+    });
+
+    it('should render appeal-application/personal-details/enter-address.njk with address from CCD if page loaded without postcode lookup', function () {
+      // @ts-ignore
+      req.session.appeal.application.addressLookup = {
+      };
+      _.set(req.session.appeal.application, 'personalDetails.address', {
+        line1: 'subBuildingName buildingName',
+        line2: '2 dependentThoroughfareName, thoroughfareName, doubleDependentLocality, dependentLocality',
+        city: 'postTown',
+        county: '',
+        postcode: 'postcode'
+      });
+      getManualEnterAddressPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
+        address: {
+          line1: 'subBuildingName buildingName',
+          line2: '2 dependentThoroughfareName, thoroughfareName, doubleDependentLocality, dependentLocality',
+          city: 'postTown',
+          county: '',
+          postcode: 'postcode'
+        },
+        selectedPostcode: 'postcode'
       });
     });
 

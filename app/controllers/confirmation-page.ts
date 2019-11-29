@@ -6,7 +6,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
       // Check session data if isLate is true then return true else return late
     const { application } = req.session.appeal;
-    const isLate = () => application.isAppealLate === true;
+    const isLate = () => application.isAppealLate === true || null;
 
     // tslint:disable-next-line:no-console
     console.log(req);

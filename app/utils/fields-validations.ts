@@ -1,7 +1,7 @@
 import Joi from '@hapi/joi';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
-import { postcodeRegex } from './regular-expressions';
+import { mobilePhoneRegex, postcodeRegex } from './regular-expressions';
 
 /**
  * Uses Joi schema validation to validate and object and returns:
@@ -127,7 +127,6 @@ function appellantNamesValidation(obj: object) {
 }
 
 function contactDetailsValidation(obj: object) {
-  const phonePattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
   const schema = Joi.object({
     'selections': Joi.alternatives()
       .try(
@@ -160,15 +159,14 @@ function contactDetailsValidation(obj: object) {
           Joi.string().valid('text-message')).required(),
       then: Joi.string()
         .optional()
-        .regex(phonePattern)
+        .regex(mobilePhoneRegex)
         .messages({
           'string.empty': i18n.validationErrors.phoneEmpty,
           'string.pattern.base': i18n.validationErrors.phoneFormat
         }),
       otherwise: Joi.strip()
     })
-  })
-    .unknown();
+  }).unknown();
 
   return validate(obj, schema);
 }
@@ -226,12 +224,11 @@ function emailValidation(obj: object): null | ValidationErrors {
  * 'string.pattern.base': if phone number does not match format
  * @return ValidationError object if there are issues, null if no issues found
  */
-function phoneValidation(obj: object): null | ValidationErrors {
-  const phonePattern = new RegExp('^(?:0|\\+?44)(?:\\d\\s?){9,10}$');
+function mobilePhoneValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     'text-message-value': Joi.string()
       .required()
-      .regex(phonePattern)
+      .regex(mobilePhoneRegex)
       .messages({
         'string.empty': i18n.validationErrors.phoneEmpty,
         'string.pattern.base': i18n.validationErrors.phoneFormat
@@ -300,7 +297,7 @@ export {
   postcodeValidation,
   nationalityValidation,
   emailValidation,
-  phoneValidation,
+  mobilePhoneValidation,
   textAreaValidation,
   statementOfTruthValidation,
   addressValidation,

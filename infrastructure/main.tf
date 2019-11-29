@@ -32,6 +32,11 @@ data "azurerm_key_vault_secret" "addressLookupToken" {
   vault_uri = "${data.azurerm_key_vault.ia_key_vault.vault_uri}"
 }
 
+data "azurerm_key_vault_secret" "s2s_secret" {
+  name      = "sscs-s2s-secret"
+  vault_uri = "https://sscs-aat.vault.azure.net/"
+}
+
 
 module "ia_aip_frontend" {
   source               = "git@github.com:hmcts/cnp-module-webapp?ref=master"
@@ -64,6 +69,10 @@ module "ia_aip_frontend" {
 
     CCD_API_URL                  = "${var.ccd_api_url}"
     ADDRESS_LOOKUP_TOKEN         = "${data.azurerm_key_vault_secret.addressLookupToken.value}"
+
+    S2S_MICROSERVICE_NAME        = "${var.s2s_microservice_name}"
+    S2S_URL                      = "${var.s2s_url}"
+    S2S_SECRET                   = "${data.azurerm_key_vault_secret.s2s_secret.value}"
   }
 }
 

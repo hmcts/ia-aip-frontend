@@ -66,3 +66,13 @@ variable "ccd_api_url" {
   description = "Url of the ccd api"
   type = "string"
 }
+
+variable "s2s_microservice_name" {
+  description = "microservice name for s2s"
+  type = "string"
+}
+
+variable "s2s_url" {
+  description = "Url of the s2s api"
+  type = "string"
+}

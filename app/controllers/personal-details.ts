@@ -129,6 +129,9 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
       nationality: req.body.nationality,
       stateless: req.body.statelessNationality
     };
+    if (_.has(application, 'personalDetails.address.line1')) {
+      return res.redirect(paths.personalDetails.enterAddress);
+    }
     return res.redirect(paths.personalDetails.enterPostcode);
   } catch (e) {
     next(e);
@@ -137,6 +140,7 @@ function postNationalityPage(req: Request, res: Response, next: NextFunction) {
 
 function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
+    _.set(req.session.appeal.application, 'addressLookup', {});
     const { personalDetails } = req.session.appeal.application;
     const postcode = personalDetails && personalDetails.address && personalDetails.address.postcode || null;
     res.render('appeal-application/personal-details/enter-postcode.njk', { postcode });
@@ -229,13 +233,22 @@ function findAddress(udprn: string, addresses: Address[]): Address {
 
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const osAddress = findAddress(
-      _.get(req.session.appeal.application, 'addressLookup.selected'),
-      _.get(req.session.appeal.application, 'addressLookup.result.addresses')
-    );
+    let model;
+    if (_.has(req.session.appeal.application, 'addressLookup.selected')) {
+      const osAddress = findAddress(
+        _.get(req.session.appeal.application, 'addressLookup.selected'),
+        _.get(req.session.appeal.application, 'addressLookup.result.addresses')
+      );
+      const selectedPostcode = _.get(req.session.appeal.application, 'addressLookup.postcode');
+      const address = getAddress(osAddress, selectedPostcode);
+      model = { address, selectedPostcode };
+    } else {
+      const address = _.get(req.session.appeal.application, 'personalDetails.address');
+      const selectedPostcode = _.get(req.session.appeal.application, 'personalDetails.address.postcode');
+      model = { address, selectedPostcode };
+    }
 
-    const address = getAddress(osAddress);
-    res.render('appeal-application/personal-details/enter-address.njk', { address });
+    res.render('appeal-application/personal-details/enter-address.njk', model);
   } catch (e) {
     next(e);
   }

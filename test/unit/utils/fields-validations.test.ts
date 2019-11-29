@@ -62,7 +62,7 @@ describe('fields-validations', () => {
           day: createError('day', errors.missingDay),
           month: createError('month', errors.missingMonth),
           year: createError('year', errors.missingYear),
-          date: createError('date', '')
+          date: createError('date', errors.incorrectFormat)
         });
     });
 
@@ -75,7 +75,7 @@ describe('fields-validations', () => {
           day: createError('day', errors.incorrectFormat),
           month: createError('month', errors.incorrectFormat),
           year: createError('year', errors.incorrectFormat),
-          date: createError('date', '')
+          date: createError('date', errors.incorrectFormat)
         });
     });
 
@@ -101,7 +101,7 @@ describe('fields-validations', () => {
           day: createError('day', errors.incorrectFormat),
           month: createError('month', errors.incorrectFormat),
           year: createError('year', errors.incorrectFormat),
-          date: createError('date', '')
+          date: createError('date', errors.incorrectFormat)
         });
     });
 

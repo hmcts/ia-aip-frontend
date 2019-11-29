@@ -28,8 +28,8 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           }
         );
       }
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       return res.redirect(paths.homeOffice.letterSent);
     } catch (e) {
       next(e);

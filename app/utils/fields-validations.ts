@@ -110,7 +110,7 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
     }),
     date: Joi.date().less('now').messages({
       'date.less': errors.inPast,
-      'date.base': ''
+      'date.base': errors.incorrectFormat
     })
   });
 

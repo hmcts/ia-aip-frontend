@@ -15,7 +15,8 @@ def secrets = [
         ],
         'ia-${env}': [
                 secret('idam-secret', 'IDAM_CLIENT_SECRET'),
-                secret('saucelabs', 'SAUCELABS_SECRET')
+                secret('saucelabs', 'SAUCELABS_SECRET'),
+                secret('addressLookupToken', 'ADDRESS_LOOKUP_TOKEN'),
 
         ]
 ]

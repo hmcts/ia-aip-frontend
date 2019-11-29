@@ -18,8 +18,8 @@
     "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",
     "test:browser": "mocha test/functional/**/*.test.ts --exit",
-    "test:smoke": "yarn test:browser -g @smoke",
-    "test:functional": "yarn test:browser -g @smoke --invert",
+    "test:smoke": "NODE_ENV=test yarn test:browser -g @smoke",
+    "test:functional": "NODE_ENV=test yarn test:browser -g @smoke --invert",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional",
     "codecept:crossbrowser": "codeceptjs run -c codecept.crossbrowser.js",
     "codecept:local": "codeceptjs run -c codecept.local.js"

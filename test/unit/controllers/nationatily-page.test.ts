@@ -1,5 +1,6 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
+import * as _ from 'lodash';
 import { getNationalityPage, postNationalityPage, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
 import { countryList } from '../../../app/data/country-list';
 import { paths } from '../../../app/paths';
@@ -41,6 +42,7 @@ describe('Nationality details Controller', function() {
 
     res = {
       render: sandbox.stub(),
+      redirect: sandbox.spy(),
       send: sandbox.stub()
     } as Partial<Response>;
 
@@ -134,6 +136,23 @@ describe('Nationality details Controller', function() {
           nationalitiesOptions,
           statelessNationality: 'stateless'
         });
+    });
+  });
+
+  describe('should redirect to the correct page', () => {
+    it('redirects to enter postcode page if no address has been set', () => {
+      req.body.nationality = 'Taiwan';
+      postNationalityPage(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterPostcode);
+    });
+
+    it('redirects to enter address page if address has been set', () => {
+      req.body.nationality = 'Taiwan';
+      _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
+      postNationalityPage(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterAddress);
     });
   });
 });

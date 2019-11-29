@@ -74,13 +74,39 @@ describe('address-utils', () => {
   describe('getAddress', () => {
     it('gets full address', () => {
       const osAddress = new Address('1', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn');
-      const address = getAddress(osAddress);
+      const address = getAddress(osAddress, 'selectedPostcode');
 
       expect(address).to.deep.eq({
         line1: 'subBuildingName buildingName',
         line2: '2 dependentThoroughfareName, thoroughfareName, doubleDependentLocality, dependentLocality',
         city: 'postTown',
         postcode: 'postcode',
+        county: ''
+      });
+    });
+
+    it('gets empty address', () => {
+      const osAddress = null;
+      const address = getAddress(osAddress, 'selectedPostcode');
+
+      expect(address).to.deep.eq({
+        line1: '',
+        line2: '',
+        city: '',
+        postcode: 'selectedPostcode',
+        county: ''
+      });
+    });
+
+    it('gets empty address with empty postcode', () => {
+      const osAddress = null;
+      const address = getAddress(osAddress, undefined);
+
+      expect(address).to.deep.eq({
+        line1: '',
+        line2: '',
+        city: '',
+        postcode: '',
         county: ''
       });
     });

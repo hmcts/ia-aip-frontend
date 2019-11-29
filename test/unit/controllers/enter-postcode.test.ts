@@ -66,6 +66,14 @@ describe('Personal Details Controller', function() {
       getEnterPostcodePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-postcode.njk');
     });
+
+    it('should reset postcode lookup', function () {
+      req.session.appeal.application.addressLookup = {
+        postcode: 'somePostcode'
+      };
+      getEnterPostcodePage(req as Request, res as Response, next);
+      expect(req.session.appeal.application.addressLookup).to.eql({});
+    });
   });
 
   describe('postEnterPostcodePage', () => {

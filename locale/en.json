@@ -87,7 +87,8 @@
     "enterPostcode": {
       "heading": "What is your address?",
       "title": "Address",
-      "hint": "Enter a UK postcode"
+      "hint": "Enter a UK postcode",
+      "manualAddressLink": "I want to enter my address manually"
     },
     "enterAddress": {
       "heading": "What is your address?",

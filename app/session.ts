@@ -1,29 +1,20 @@
 import config from 'config';
-import redisConnect from 'connect-redis';
-import express from 'express';
-import expressSession from 'express-session';
-import * as redis from 'redis';
+const redis = require('redis');
+const session = require('express-session');
 
 const useRedis = config.get('session.useRedis') === 'true';
 const isSecure = config.get('session.cookie.secure') === 'true';
 
-function setupSession(): express.RequestHandler {
+function setupSession() {
   if (useRedis) {
-    const redisStore: redisConnect.RedisStore = redisConnect(expressSession);
-    const redisClient = redis.createClient();
-
-    redisClient.on('error', (err) => {
-      // tslint:disable-next-line no-console
-      console.log('Redis error: ', err);
-    });
-    // tslint:disable-next-line no-console
-    console.log(`Connecting to redis [${config.get('session.redis.url')}]`);
-    const store = new redisStore({
+    let RedisStore = require('connect-redis')(session);
+    const redisOpts = {
       url: config.get('session.redis.url'),
-      ttl: config.get('session.redis.ttlInSeconds'),
-      client: redisClient
-    });
-    return expressSession({
+      ttl: config.get('session.redis.ttlInSeconds')
+    };
+
+    let client = redis.createClient(redisOpts);
+    return session({
       cookie: {
         httpOnly: true,
         maxAge: config.get('session.cookie.maxAgeInMs'),
@@ -33,10 +24,10 @@ function setupSession(): express.RequestHandler {
       saveUninitialized: true,
       secret: config.get('session.redis.secret'),
       rolling: true,
-      store
+      store: new RedisStore({ client })
     });
   } else {
-    return expressSession({
+    return session({
       secret: config.get('session.redis.secret'),
       resave: false,
       saveUninitialized: true,

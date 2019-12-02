@@ -14,7 +14,7 @@ const express = require('express');
 
 function getMockedSummaryRows() {
   return [ {
-    actions: { items: [ { href: '/href', text: 'Change' } ] },
+    actions: { items: [ { href: '/home-office/details', text: 'Change' } ] },
     key: { text: 'Home Office reference number' },
     value: { html: 'A1234567' }
   }, {

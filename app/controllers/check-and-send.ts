@@ -8,7 +8,7 @@ import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
 function createSummaryRowsFrom(appealApplication: AppealApplication) {
   return [
-    addSummaryRow('homeOfficeRefNumber', [ appealApplication.homeOfficeRefNumber ], '/href'),
+    addSummaryRow('homeOfficeRefNumber', [ appealApplication.homeOfficeRefNumber ], paths.homeOffice.details),
     addSummaryRow('dateLetterSent',
       [ appealApplication.dateLetterSent.day, moment.months(appealApplication.dateLetterSent.month - 1), appealApplication.dateLetterSent.year ],
       paths.homeOffice.letterSent,

@@ -16,6 +16,8 @@ function setupSession(): express.RequestHandler {
       // tslint:disable-next-line no-console
       console.log('Redis error: ', err);
     });
+    // tslint:disable-next-line no-console
+    console.log(`Connecting to redis [${config.get('session.redis.url')}]`);
     const store = new redisStore({
       url: config.get('session.redis.url'),
       ttl: config.get('session.redis.ttlInSeconds'),

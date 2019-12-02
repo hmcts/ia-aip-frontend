@@ -18,7 +18,14 @@
   },
   "microservice": "MICROSERVICE",
   "session": {
-    "useRedis": "USE_REDIS"
+    "useRedis": "USE_REDIS",
+    "redis": {
+      "url": "REDIS_URL",
+      "secret": "SESSION_SECRET"
+    },
+    "cookie": {
+      "secure": "SECURE_SESSION"
+    }
   },
   "s2s": {
     "microserviceName": "S2S_MICROSERVICE_NAME",

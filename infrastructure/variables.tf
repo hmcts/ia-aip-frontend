@@ -47,11 +47,6 @@ variable "additional_hostname" {
   default = "ia-apfr.sandbox.platform.hmcts.net"
 }
 
-variable "secure_session" {
-  description = "Whether a secure session is required"
-  default     = "true"
-}
-
 variable "idam_url" {
   description = "Url of the idam api"
   type = "string"

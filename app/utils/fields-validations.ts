@@ -262,8 +262,7 @@ function addressValidation(obj: object): null | ValidationErrors {
     ['address-town']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.address.townCityRequired }),
     ['address-county']: Joi.string().optional().empty(''),
     ['address-line-2']: Joi.string().optional().empty(''),
-    ['address-postcode']: Joi.string().regex(postcodeRegex).messages({
-      'string.empty': i18n.validationErrors.address.postcodeRequired,
+    ['address-postcode']: Joi.string().optional().empty('').regex(postcodeRegex).messages({
       'string.pattern.base': i18n.validationErrors.postcode.invalid
     })
   });

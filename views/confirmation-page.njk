@@ -1,8 +1,5 @@
 {% extends './layout.njk' %}
 {% set pageTitleName = i18n.pages.successPage.title %}
-
-
-
 {% block content %}
  {% from "govuk/components/panel/macro.njk" import govukPanel %}
    {%  if  late %}
@@ -20,11 +17,11 @@
     <ul class="govuk-list govuk-list--bullet">
         <li>{{ i18n.pages.successPage.info }}</li>
         {% if late %}
-        <li>A case worker will contact you to by <strong>{{ date(days) }}</strong> to tell you if you can continue with your appeal and what to do next</li>
+        <li> {{ i18n.pages.successPage.caseWorker | eval | safe }} </li>
         {%  else %}
-        <li>A Tribunal case worker will contact you to by <strong>{{ date(days) }}</strong> to tell you what to do next</li>
+        <li> {{ i18n.pages.successPage.tribunalWorker | eval | safe }} </li>
         {%  endif %}
-        <li>If you havent heard from us by <strong>{{ date(days) }}</strong> call us on <b>0300 123 1711</b> or email customer.service@justice.gov.uk</li>
+        <li>{{ i18n.pages.successPage.noResponse | eval | safe }}</li>
     </ul>
     <div class="panel-background">
         <h2 class="govuk-heading-m">{{ i18n.pages.successPage.thingsYouCanDo }}</h2>

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
+
 import { paths } from '../paths';
 
 export const daysToWaitUntilContact = (days: number) => {
@@ -12,8 +13,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     const isLate = () => application.isAppealLate ;
 
     res.render('confirmation-page.njk', {
-      date: daysToWaitUntilContact,
-      days: 14,
+      date: daysToWaitUntilContact(14),
       late: isLate()
     });
   } catch (e) {

@@ -1,3 +1,9 @@
+tags:
+  - idam-pr
+idam-pr:
+  redirect_uris:
+    IAC:
+    - https://${SERVICE_FQDN}/redirectUrl
 nodejs:
   environment:
     NODE_ENV: preview

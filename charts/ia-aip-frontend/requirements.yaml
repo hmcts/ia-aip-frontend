@@ -5,3 +5,8 @@ dependencies:
   - name: redis
     version: "5.1.2"
     repository: "@stable"
+  - name: idam-pr
+    version: ~2.1.0
+    repository: '@hmctspublic'
+    tags:
+      - idam-pr

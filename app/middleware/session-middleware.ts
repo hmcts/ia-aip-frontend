@@ -9,20 +9,32 @@ import { appealApplicationStatus } from '../utils/tasks-utils';
 const updateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
-  await updateAppealService.loadAppeal(req);
-  req.session.appeal.application.tasks = appealApplicationStatus(req.session.appeal);
-  next();
+  try {
+    await updateAppealService.loadAppeal(req);
+    req.session.appeal.application.tasks = appealApplicationStatus(req.session.appeal);
+    next();
+  } catch (e) {
+    next(e);
+  }
 }
 
 function applicationStatusUpdate(req: Request, res: Response, next: NextFunction) {
-  req.session.appeal.application.tasks = appealApplicationStatus(req.session.appeal);
-  next();
+  try {
+    req.session.appeal.application.tasks = appealApplicationStatus(req.session.appeal);
+    next();
+  } catch (e) {
+    next(e);
+  }
 }
 
 function logSession(req: Request, res: Response, next: NextFunction) {
-  const logger: Logger = req.app.locals.logger;
-  logger.request(JSON.stringify(req.session, null, 2), 'logSession');
-  next();
+  try {
+    const logger: Logger = req.app.locals.logger;
+    logger.request(JSON.stringify(req.session, null, 2), 'logSession');
+    next();
+  } catch (e) {
+    next(e);
+  }
 }
 
 export {

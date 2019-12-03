@@ -123,6 +123,25 @@
       "description": "Appeals should be made within 14 days from the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late below, and provide supporting evidence if you have it.",
       "provideEvidenceTitle": "Provide supporting evidence",
       "fileUploadTitle": "Upload a file"
+    },
+    "successPage": {
+      "title": "Confirmation",
+      "seeProgress": "See your appeal progress",
+      "whatHappensNext": "What happens next",
+      "info": "You will receive a notification to confirm that the Tribunal has received your appeal application.",
+      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call us on <b>0300 123 1711</b> or email customer.service@justice.gov.uk",
+      "caseWorker": "A case worker will contact you to by <strong>{{ date }}</strong> to tell you if you can continue with your appeal and what to do next",
+      "tribunalWorker": "A Tribunal case worker will contact you to by <strong>{{ date }}</strong> to tell you what to do next",
+      "thingsYouCanDo": "Things you can do now",
+      "readMore": "Read more about appealing an immigration or asylum decision",
+      "findOutMore": "Find organisations that can you with your appeal",
+      "outOfTime": {
+        "panel": "Your have sent an out of time application"
+      },
+      "inTime": {
+        "panel": "Your appeal application \n has been sent"
+
+      }
     }
   },
   "error": {

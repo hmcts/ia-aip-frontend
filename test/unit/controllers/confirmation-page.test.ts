@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
+  daysToWaitUntilContact,
   getConfirmationPage,
   setConfirmationController
 } from '../../../app/controllers/confirmation-page';
@@ -19,7 +20,13 @@ describe('Confirmation Page Controller', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
-      session: {} as any,
+      session: {
+        appeal: {
+          application: {
+            contactDetails: {}
+          }
+        }
+      } as Partial<Appeal>,
       cookies: {},
       idam: {
         userDetails: {}
@@ -46,15 +53,53 @@ describe('Confirmation Page Controller', () => {
 
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-    const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
     setConfirmationController();
     expect(routerGetStub).to.have.been.calledWith(paths.confirmation);
   });
 
-  it('getConfirmationPage should render confirmationl.njk', () => {
+  it('getConfirmationPage should render confirmation.njk', () => {
+    // @ts-ignore
+    req.session.appeal.application = {
+      homeOfficeRefNumber: 'A1234567',
+      dateLetterSent: {
+        day: 1,
+        month: 7,
+        year: 2019
+      },
+      appealType: 'Protection',
+      isAppealLate: true,
+      personalDetails: {
+        givenNames: 'Pedro',
+        familyName: 'Jimenez',
+        dob: {
+          day: 10,
+          month: 10,
+          year: 1980
+        },
+        nationality: 'Panamanian',
+        stateless: false,
+        address: {
+          line1: '60 Beautiful Street',
+          line2: 'Flat 2',
+          city: 'London',
+          postcode: 'W1W 7RT',
+          county: 'London'
+        }
+      },
+      contactDetails: {
+        email: 'pedro.jimenez@example.net',
+        wantsEmail: true,
+        phone: '07123456789',
+        wantsSms: false
+      }
+    };
+
     getConfirmationPage(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk');
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: daysToWaitUntilContact(14),
+      late: true
+    });
   });
 
   it('getConfirmationPage should catch an exception and call next()', () => {

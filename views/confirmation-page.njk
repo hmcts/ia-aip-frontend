@@ -1,26 +1,37 @@
 {% extends './layout.njk' %}
-
+{% set pageTitleName = i18n.pages.successPage.title %}
 {% block content %}
  {% from "govuk/components/panel/macro.njk" import govukPanel %}
+   {%  if  late %}
     {{ govukPanel({
-        titleText: "Your appeal application \n has been sent.",
+        titleText: i18n.pages.successPage.outOfTime.panel,
         classes: mainClasses
     }) }}
-    <h2 class="govuk-heading-m">What happens next</h2>
+    {%  else %}
+        {{ govukPanel({
+            titleText: i18n.pages.successPage.inTime.panel ,
+            classes: mainClasses
+        }) }}
+    {%  endif %}
+    <h2 class="govuk-heading-m">{{i18n.pages.successPage.whatHappensNext}}</h2>
     <ul class="govuk-list govuk-list--bullet">
-        <li>You will receive a notification to confirm that the Tribunal has received your appeal. </li>
-        <li>A tribunal case worker will contact you to by <strong>{{ date }}</strong> to tell you what to do next</li>
-        <li>If you havent heard from us by <strong>{{ date }}</strong> call us on <b>0300 123 1711</b> or email customer.service@justice.gov.uk</li>
+        <li>{{ i18n.pages.successPage.info }}</li>
+        {% if late %}
+        <li> {{ i18n.pages.successPage.caseWorker | eval | safe }} </li>
+        {%  else %}
+        <li> {{ i18n.pages.successPage.tribunalWorker | eval | safe }} </li>
+        {%  endif %}
+        <li>{{ i18n.pages.successPage.noResponse | eval | safe }}</li>
     </ul>
     <div class="panel-background">
-        <h2 class="govuk-heading-m">Things you can do now</h2>
+        <h2 class="govuk-heading-m">{{ i18n.pages.successPage.thingsYouCanDo }}</h2>
         <ul class="govuk-list govuk-list--bullet">
-            <a class="govuk-link govuk-link--no-visited-state"		href="#"> <li >Read more about appealing an immigration or asylum decision </li></a>
-            <a class="govuk-link govuk-link--no-visited-state"	 href="#"><li >Find organisations that can you with your appeal</li></a>
+            <a class="govuk-link govuk-link--no-visited-state" href="#"> <li>{{ i18n.pages.successPage.readMore }}</li></a>
+            <a class="govuk-link govuk-link--no-visited-state" href="#"><li>{{ i18n.pages.successPage.findOutMore }}</li></a>
         </ul>
      </div>
     {{ govukButton({
-        text: "See your appeal progress",
+        text: i18n.pages.successPage.seeProgress,
         href: "#"
     }) }}
     {{ contactUs() }}

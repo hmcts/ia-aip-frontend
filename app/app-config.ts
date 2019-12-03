@@ -20,6 +20,9 @@ function configureNunjucks(app: express.Application) {
     express: app,
     noCache: true
   });
+  nunjucksEnv.addFilter('eval', function(text: string) {
+    return nunjucks.renderString(text, this.ctx);
+  });
 }
 
 function configureS2S(app: express.Application) {

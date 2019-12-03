@@ -256,8 +256,8 @@
       "title": "<b>European Economic Area (EEA)</b> (You are, or a family member is, an EEA/Swiss national)",
       "examples": "You might be, or have been, a family member or carer of an EEA/Swiss national, or have lived in another EEA country with a British family member, and want to either come to or stay in the UK."
     },
-    "revocation": {
-      "value": "revocation",
+    "revocationOfProtection": {
+      "value": "revocationOfProtection",
       "name": "Revocation of Protection Status",
       "title": "<b>Revocation of Protection Status</b> (Your protection status was taken away)",
       "examples": "Your protection status might have been taken away if it is believed you no longer need it, you didn’t tell the truth in your claim or you have committed a serious crime."

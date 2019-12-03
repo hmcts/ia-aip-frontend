@@ -7,7 +7,7 @@ export function createDummyAppealApplication(): Appeal {
         month: 7,
         year: 2019
       },
-      appealType: 'Protection',
+      appealType: 'protection',
       isAppealLate: false,
       personalDetails: {
         givenNames: 'Pedro',

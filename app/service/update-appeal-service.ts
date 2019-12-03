@@ -31,7 +31,7 @@ export default class UpdateAppealService {
     const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.id, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
 
-    const caseData = ccdCase.case_data;
+    const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
@@ -43,8 +43,8 @@ export default class UpdateAppealService {
       postcode: caseData.appellantAddress.PostCode
     } : null;
 
-    const appealType = ccdCase.case_data.appealType || null;
-    const subscriptions = ccdCase.case_data.subscriptions || [];
+    const appealType = caseData.appealType || null;
+    const subscriptions = caseData.subscriptions || [];
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
@@ -59,7 +59,7 @@ export default class UpdateAppealService {
 
     req.session.appeal = {
       application: {
-        homeOfficeRefNumber: ccdCase.case_data.homeOfficeReferenceNumber,
+        homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: appealType,
         contactDetails: {
           ...contactDetails
@@ -71,7 +71,7 @@ export default class UpdateAppealService {
           givenNames: caseData.appellantGivenNames,
           familyName: caseData.appellantFamilyName,
           dob: dateOfBirth,
-          nationality: null,
+          nationality: caseData.appellantNationalities ? caseData.appellantNationalities[0].value.code : null,
           address: appellantAddress
         },
         addressLookup: {}
@@ -115,7 +115,7 @@ export default class UpdateAppealService {
   convertToCcdCaseData(application: AppealApplication) {
     const caseData = {
       journeyType: 'aip'
-    } as any;
+    } as CaseData;
 
     if (application.homeOfficeRefNumber) {
       caseData.homeOfficeReferenceNumber = application.homeOfficeRefNumber;
@@ -132,6 +132,15 @@ export default class UpdateAppealService {
     if (application.personalDetails.dob && application.personalDetails.dob.year) {
       caseData.appellantDateOfBirth = this.toIsoDate(application.personalDetails.dob);
     }
+    if (application.personalDetails && application.personalDetails.nationality) {
+      caseData.appellantNationalities = [
+        {
+          value: {
+            code: application.personalDetails.nationality
+          }
+        }
+      ];
+    }
     if (_.has(application.personalDetails, 'address.line1')) {
       caseData.appellantAddress = {
         AddressLine1: application.personalDetails.address.line1,
@@ -146,13 +155,13 @@ export default class UpdateAppealService {
       caseData.appealType = application.appealType;
     }
     if (application.contactDetails && (application.contactDetails.email || application.contactDetails.phone)) {
-      const subscription = {
+      const subscription: Subscription = {
         subscriber: Subscriber.APPELLANT,
         wantsEmail: YesOrNo.NO,
         email: null,
         wantsSms: YesOrNo.NO,
         mobileNumber: null
-      } as any;
+      };
 
       if (application.contactDetails.wantsEmail === true && application.contactDetails.email) {
         subscription.wantsEmail = YesOrNo.YES;

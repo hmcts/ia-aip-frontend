@@ -31,6 +31,29 @@ describe('update-appeal-service', () => {
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
 
     updateAppealService = new UpdateAppealService(ccdService as CcdService, idamService as IdamService, s2sService as S2SService);
+    req = {
+      idam: {
+        userDetails: {
+          id: userId,
+          forename: 'idamForename',
+          surname: 'idamSurname'
+        }
+      },
+      session: {}
+    } as any;
+    ccdServiceMock.expects('loadOrCreateCase')
+      .withArgs(userId, { userToken, serviceToken })
+      .resolves({
+        id: caseId,
+        case_data: {
+          appealType: 'appealType',
+          homeOfficeReferenceNumber: 'homeOfficeReferenceNumber',
+          appellantGivenNames: 'appellantGivenNames',
+          appellantFamilyName: 'appellantFamilyName',
+          homeOfficeDecisionDate: '2019-01-02',
+          appellantDateOfBirth: '1900-10-11'
+        }
+      });
   });
 
   afterEach(() => {
@@ -38,38 +61,9 @@ describe('update-appeal-service', () => {
   });
 
   describe('loadAppeal', () => {
-    it('set ccd case id', async () => {
-      req = {
-        idam: {
-          userDetails: {
-            id: userId,
-            forename: 'idamForename',
-            surname: 'idamSurname'
-          }
-        },
-        session: {}
-      } as any;
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          case_data: {
-            appealType: 'appealType',
-            homeOfficeReferenceNumber: 'homeOfficeReferenceNumber',
-            appellantGivenNames: 'appellantGivenNames',
-            appellantFamilyName: 'appellantFamilyName',
-            homeOfficeDecisionDate: '2019-01-02',
-            appellantDateOfBirth: '1900-10-11'
-          }
-        });
-
-      // @ts-ignore
+    it('set case details', async () => {
       await updateAppealService.loadAppeal(req);
-
       expect(req.session.ccdCaseId).eq(caseId);
-    });
-
-    it('set case details', () => {
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('homeOfficeReferenceNumber');
       expect(req.session.appeal.application.personalDetails.givenNames).eq('appellantGivenNames');
       expect(req.session.appeal.application.personalDetails.familyName).eq('appellantFamilyName');
@@ -273,66 +267,18 @@ describe('update-appeal-service', () => {
     });
   });
 
-  describe('updateAppeal', () => {
-    it('updates case with ccd', async () => {
-      req = {
-        idam: {
-          userDetails: {
-            id: userId
-          }
-        },
-        session: {
-          appeal: {
-            application: {
-              homeOfficeRefNumber: 'newRef',
-              appealType: 'appealType',
-              dateLetterSent: {
-                year: 2019,
-                month: 12,
-                day: 11
-              },
-              personalDetails: {
-                givenNames: 'givenNames',
-                familyName: 'familyName',
-                dob: {
-                  year: 1980,
-                  month: 1,
-                  day: 2
-                }
-              }
-            }
-          },
-          ccdCaseId: caseId
-        }as any
-      };
+  describe('submitEvent', () => {
+    let expectedCaseData: CaseData;
+    let ccdService2: Partial<CcdService>;
+    let idamService2: IdamService;
+    let s2sService2: Partial<S2SService>;
+    let updateAppealServiceBis: UpdateAppealService;
+    const headers = {
+      userToken,
+      serviceToken
+    };
 
-      ccdServiceMock.expects('updateAppeal').withArgs(
-        Events.EDIT_APPEAL,
-        userId,
-        {
-          id: caseId,
-          case_data: {
-            appealType: 'appealType',
-            homeOfficeReferenceNumber: 'newRef',
-            homeOfficeDecisionDate: '2019-12-11',
-            appellantFamilyName: 'familyName',
-            appellantGivenNames: 'givenNames',
-            appellantDateOfBirth: '1980-01-02',
-            journeyType: 'aip'
-          }
-        },
-        { userToken, serviceToken }
-      );
-
-      // @ts-ignore
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-
-      ccdServiceMock.verify();
-    });
-  });
-
-  describe('submitAppeal', () => {
-    it('submits case with ccd', async () => {
+    beforeEach(() => {
       req = {
         idam: {
           userDetails: {
@@ -359,7 +305,6 @@ describe('update-appeal-service', () => {
                   day: 2
                 },
                 nationality: 'nationality',
-                stateless: false,
                 address: {
                   line1: '60 Beautiful Street',
                   line2: 'Flat 2',
@@ -376,12 +321,22 @@ describe('update-appeal-service', () => {
               },
               addressLookup: {}
             }
-          },
+          } as Appeal,
           ccdCaseId: caseId
-        }as any
-      };
+        } as Partial<Express.Session>
+      } as Partial<Request>;
 
-      const expectedCaseData = {
+      ccdService2 = {
+        updateAppeal: sandbox.stub()
+      };
+      idamService2 = {
+        getUserToken: sandbox.stub().returns(userToken)
+      };
+      s2sService2 = {
+        getServiceToken: sandbox.stub().resolves(serviceToken)
+      };
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, idamService2, s2sService2 as S2SService);
+      expectedCaseData = {
         journeyType: 'aip',
         homeOfficeReferenceNumber: 'newRef',
         homeOfficeDecisionDate: '2019-12-11',
@@ -396,6 +351,13 @@ describe('update-appeal-service', () => {
           PostCode: 'W1W 7RT',
           Country: 'United Kingdom'
         },
+        appellantNationalities: [
+          {
+            value: {
+              code: 'nationality'
+            }
+          }
+        ],
         appealType: 'appealType',
         subscriptions: [
           {
@@ -410,21 +372,30 @@ describe('update-appeal-service', () => {
           }
         ]
       };
+    });
 
-      ccdServiceMock.expects('updateAppeal').withArgs(
+    it('updates case with ccd', async () => {
+      await updateAppealServiceBis.submitEvent(Events.EDIT_APPEAL, req as Request);
+      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
+        Events.EDIT_APPEAL,
+        userId,
+        {
+          id: caseId,
+          case_data: expectedCaseData
+        },
+        headers);
+    });
+
+    it('submits case with ccd', async () => {
+      await updateAppealServiceBis.submitEvent(Events.SUBMIT_APPEAL, req as Request);
+      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.SUBMIT_APPEAL,
         userId,
         {
           id: caseId,
           case_data: expectedCaseData
         },
-        { userToken, serviceToken }
-      );
-
-      // @ts-ignore
-      await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
-
-      ccdServiceMock.verify();
+        headers);
     });
   });
 });

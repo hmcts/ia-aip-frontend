@@ -21,14 +21,16 @@
         </br>
     {% endif %}
     <form action="/personal-details/enter-address" method="post">
-    {% call govukFieldset({
-
-    }) %}
 
         {{ govukInput({
-            label: {
-                html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+            formGroup: {
+                classes: 'govuk-!-margin-bottom-3'
             },
+            label: {
+                html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>',
+                classes: 'govuk-!-margin-bottom-2'
+            },
+            classes: "govuk-!-width-two-thirds",
             id: "address-line-1",
             name: "address-line-1",
             value: address.line1,
@@ -41,6 +43,7 @@
             label: {
                 html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
             },
+            classes: "govuk-!-width-two-thirds",
             id: "address-line-2",
             name: "address-line-2",
             value: address.line2
@@ -48,7 +51,8 @@
 
         {{ govukInput({
             label: {
-                text: "Town or city"
+                text: "Town or city",
+                classes: 'govuk-!-margin-bottom-2'
             },
             classes: "govuk-!-width-two-thirds",
             id: "address-town",
@@ -61,7 +65,8 @@
 
         {{ govukInput({
             label: {
-                text: "County"
+                text: "County",
+                classes: 'govuk-!-margin-bottom-2'
             },
             classes: "govuk-!-width-two-thirds",
             id: "address-county",
@@ -74,9 +79,10 @@
 
         {{ govukInput({
             label: {
-                text: "Postcode"
+                text: "Postcode",
+                classes: 'govuk-!-margin-bottom-2'
             },
-            classes: "govuk-input--width-10",
+            classes: "govuk-!-width-two-thirds",
             id: "address-postcode",
             name: "address-postcode",
             value: address.postcode,
@@ -86,6 +92,5 @@
         }) }}
         {{ saveButtons('Save and continue', 'Save for later') }}
         </form>
-    {% endcall %}
     {{ contactUs() }}
 {% endblock %}

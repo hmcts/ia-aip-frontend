@@ -33,18 +33,6 @@
                 } if errors["nationality-statelessNationality"]
             }) }}
 
-
-            {{ govukCheckboxes({
-                id: "statelessNationality",
-                name: "statelessNationality",
-                items: [
-                    {
-                        value: stateless,
-                        text: i18n.pages.nationality.stateless,
-                        checked: statelessNationality
-                    }
-                ]
-            }) }}
         {% endcall %}
         {{ saveButtons() }}
     </form>

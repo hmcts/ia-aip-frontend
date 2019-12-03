@@ -31,7 +31,7 @@ function logSession(req: Request, res: Response, next: NextFunction) {
   try {
     const logger: Logger = req.app.locals.logger;
     logger.request(JSON.stringify(req.session, null, 2), 'logSession');
-    logger.request(JSON.stringify(req.idam, null, 2), 'logIDAM');
+    // logger.request(JSON.stringify(req.idam, null, 2), 'logIDAM');
     next();
   } catch (e) {
     next(e);

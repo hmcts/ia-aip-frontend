@@ -173,11 +173,9 @@ function contactDetailsValidation(obj: object) {
 
 function nationalityValidation(obj: object) {
   const schema = Joi.object({
-    statelessNationality: Joi.string().optional(),
-    nationality: Joi.string().optional().empty('')
-  }).xor('nationality', 'statelessNationality').messages({
-    'object.xor': i18n.validationErrors.nationality.onlyOne,
-    'object.missing': i18n.validationErrors.nationality.atLeastOne
+    nationality: Joi.string().required().empty('').messages({
+      'any.required': i18n.validationErrors.nationality.selectNationality
+    })
   });
 
   return validate(obj, schema);

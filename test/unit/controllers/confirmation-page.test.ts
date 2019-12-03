@@ -78,7 +78,6 @@ describe('Confirmation Page Controller', () => {
           year: 1980
         },
         nationality: 'Panamanian',
-        stateless: false,
         address: {
           line1: '60 Beautiful Street',
           line2: 'Flat 2',

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
+import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
@@ -14,7 +15,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   const appealTypeNames: string[] = appealTypes.map(appealType => {
     return i18n.appealTypes[appealType].name;
   });
-
+  const country = countryList.find(country => country.value === appealApplication.personalDetails.nationality);
   return [
     addSummaryRow('homeOfficeRefNumber', [ appealApplication.homeOfficeRefNumber ], paths.homeOffice.details),
     addSummaryRow('dateLetterSent',
@@ -29,7 +30,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
       [ appealApplication.personalDetails.dob.day, moment.months(appealApplication.personalDetails.dob.month - 1), appealApplication.personalDetails.dob.year ],
       paths.personalDetails.dob, Delimiter.SPACE),
     addSummaryRow('nationality',
-      [ appealApplication.personalDetails.nationality ],
+      [ country.name ],
       paths.personalDetails.nationality),
     addSummaryRow('contactDetails',
       [ appealApplication.contactDetails.email, appealApplication.contactDetails.phone, ...Object.values(appealApplication.personalDetails.address) ],

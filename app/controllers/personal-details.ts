@@ -101,41 +101,41 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
     const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
     return res.render('appeal-application/personal-details/nationality.njk', {
-      nationalitiesOptions,
-      statelessNationality: application.personalDetails.stateless
+      nationalitiesOptions
     });
   } catch (e) {
     next(e);
   }
 }
 
-function postNationalityPage(req: Request, res: Response, next: NextFunction) {
-  try {
-    const validation = nationalityValidation(req.body);
-    if (validation) {
-      const nationality = req.body.nationality;
-      const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
-      return res.render('appeal-application/personal-details/nationality.njk', {
-        nationalitiesOptions,
-        statelessNationality: req.body.statelessNationality,
-        errors: validation,
-        errorList: Object.values(validation)
-      });
-    }
+function postNationalityPage(updateAppealService: UpdateAppealService) {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = nationalityValidation(req.body);
+      if (validation) {
+        const nationality = req.body.nationality;
+        const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
+        return res.render('appeal-application/personal-details/nationality.njk', {
+          nationalitiesOptions,
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
 
-    const { application } = req.session.appeal;
-    application.personalDetails = {
-      ...application.personalDetails,
-      nationality: req.body.nationality,
-      stateless: req.body.statelessNationality
-    };
-    if (_.has(application, 'personalDetails.address.line1')) {
-      return res.redirect(paths.personalDetails.enterAddress);
+      const { application } = req.session.appeal;
+      application.personalDetails = {
+        ...application.personalDetails,
+        nationality: req.body.nationality
+      };
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+      if (_.has(application, 'personalDetails.address.line1')) {
+        return res.redirect(paths.personalDetails.enterAddress);
+      }
+      return res.redirect(paths.personalDetails.enterPostcode);
+    } catch (e) {
+      next(e);
     }
-    return res.redirect(paths.personalDetails.enterPostcode);
-  } catch (e) {
-    next(e);
-  }
+  };
 }
 
 function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
@@ -272,8 +272,6 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
         });
       }
 
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-
       req.session.appeal.application.personalDetails = {
         ...req.session.appeal.application.personalDetails,
         address: {
@@ -284,6 +282,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
           postcode: req.body['address-postcode']
         }
       };
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       return res.redirect(paths.taskList);
     } catch (e) {
       next(e);
@@ -298,7 +297,7 @@ function setupPersonalDetailsController(deps?: any): Router {
   router.get(paths.personalDetails.dob, getDateOfBirthPage);
   router.post(paths.personalDetails.dob, postDateOfBirth(deps.updateAppealService));
   router.get(paths.personalDetails.nationality, getNationalityPage);
-  router.post(paths.personalDetails.nationality, postNationalityPage);
+  router.post(paths.personalDetails.nationality, postNationalityPage(deps.updateAppealService));
   router.get(paths.personalDetails.enterPostcode, getEnterPostcodePage);
   router.post(paths.personalDetails.enterPostcode, postEnterPostcodePage);
   router.get(paths.personalDetails.enterAddress, getManualEnterAddressPage);

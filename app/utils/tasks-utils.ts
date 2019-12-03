@@ -20,7 +20,7 @@ function appealApplicationStatus(appeal: Appeal) {
   const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
   const personalDetails: Task = {
     saved: givenNames || familyName || dob || nationality || postcode || line1,
-    completed: givenNames && familyName && dob && nationality,
+    completed: givenNames && familyName && dob && nationality && line1,
     active: homeOfficeDetails.completed
   };
 

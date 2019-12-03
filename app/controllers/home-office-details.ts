@@ -96,27 +96,30 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postAppealLate(req: Request, res: Response, next: NextFunction) {
-  try {
-    const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-    const { application } = req.session.appeal;
-    if (validation) {
-      const evidences = application.lateAppeal && application.lateAppeal.evidences || {};
-      return res.render('appeal-application/home-office/appeal-late.njk', {
-        appealLate: req.body['appeal-late'],
-        evidences: Object.values(evidences),
-        error: validation,
-        errorList: Object.values(validation)
-      });
+function postAppealLate(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
+      const { application } = req.session.appeal;
+      if (validation) {
+        const evidences = application.lateAppeal && application.lateAppeal.evidences || {};
+        return res.render('appeal-application/home-office/appeal-late.njk', {
+          appealLate: req.body['appeal-late'],
+          evidences: Object.values(evidences),
+          error: validation,
+          errorList: Object.values(validation)
+        });
+      }
+      application.lateAppeal = {
+        ...application.lateAppeal,
+        reason: req.body['appeal-late']
+      };
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+      return res.redirect(paths.taskList);
+    } catch (e) {
+      next(e);
     }
-    application.lateAppeal = {
-      ...application.lateAppeal,
-      reason: req.body['appeal-late']
-    };
-    return res.redirect(paths.taskList);
-  } catch (e) {
-    next(e);
-  }
+  };
 }
 
 function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
@@ -174,7 +177,7 @@ function setupHomeOfficeDetailsController(updateAppealService: UpdateAppealServi
   router.get(paths.homeOffice.letterSent, getDateLetterSent);
   router.post(paths.homeOffice.letterSent, postDateLetterSent(updateAppealService));
   router.get(paths.homeOffice.appealLate, getAppealLate);
-  router.post(paths.homeOffice.appealLate, upload, postAppealLate);
+  router.post(paths.homeOffice.appealLate, upload, postAppealLate(updateAppealService));
   router.post(paths.homeOffice.uploadEvidence, upload, postUploadEvidence);
   router.post(paths.homeOffice.deleteEvidence, upload, postDeleteEvidence);
   return router;

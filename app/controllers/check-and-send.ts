@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
+import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
@@ -7,6 +8,13 @@ import { statementOfTruthValidation } from '../utils/fields-validations';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
 function createSummaryRowsFrom(appealApplication: AppealApplication) {
+  let appealTypes: string[] = !Array.isArray(appealApplication.appealType)
+    ? [ appealApplication.appealType ] : appealApplication.appealType;
+
+  const appealTypeNames: string[] = appealTypes.map(appealType => {
+    return i18n.appealTypes[appealType].name;
+  });
+
   return [
     addSummaryRow('homeOfficeRefNumber', [ appealApplication.homeOfficeRefNumber ], paths.homeOffice.details),
     addSummaryRow('dateLetterSent',
@@ -27,7 +35,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
       [ appealApplication.contactDetails.email, appealApplication.contactDetails.phone, ...Object.values(appealApplication.personalDetails.address) ],
       paths.contactDetails),
     addSummaryRow('appealType',
-      [ appealApplication.appealType ],
+      [ appealTypeNames ],
       paths.typeOfAppeal)
   ];
 }

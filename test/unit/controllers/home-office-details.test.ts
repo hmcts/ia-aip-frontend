@@ -237,23 +237,23 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postAppealLate', () => {
-    it('should fail validation and render appeal-application/home-office/appeal-late.njk with errors', () => {
+    it('should fail validation and render appeal-application/home-office/appeal-late.njk with errors', async () => {
       req.body['appeal-late'] = '';
-      postAppealLate(req as Request, res as Response, next);
+      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
     });
 
-    it('should validate and redirect to Task List', () => {
+    it('should validate and redirect to Task List', async () => {
       req.body['appeal-late'] = 'My exlplanation why am late';
-      postAppealLate(req as Request, res as Response, next);
+      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
-    it('should catch exception and call next with the error', () => {
+    it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      postAppealLate(req as Request, res as Response, next);
+      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

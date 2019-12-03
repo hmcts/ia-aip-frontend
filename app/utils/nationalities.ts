@@ -1,9 +1,9 @@
-function getNationalitiesOptions(countriesList: string[], nationality: string) {
+function getNationalitiesOptions(countriesList: any[], nationality: string) {
   const options = countriesList.map((country) => {
-    const selected = nationality === country;
+    const selected = nationality === country.value;
     return {
-      text: country,
-      value: country,
+      text: country.name,
+      value: country.value,
       selected
     };
   });

@@ -3,8 +3,8 @@ import { expect } from '../../utils/testUtils';
 
 describe('Nationalities', () => {
   const list = [
-    'Afghanistan',
-    'Argentina'
+    { value: 'AF', name: 'Afghanistan' },
+    { value: 'AX', name: 'Aland Islands' }
   ];
   it('should getNationalitiesOptions', () => {
     const options = [
@@ -14,11 +14,11 @@ describe('Nationalities', () => {
         selected: false
       }, {
         text: 'Afghanistan',
-        value: 'Afghanistan',
+        value: 'AF',
         selected: false
       }, {
-        text: 'Argentina',
-        value: 'Argentina',
+        text: 'Aland Islands',
+        value: 'AX',
         selected: false
       }
     ];
@@ -34,15 +34,15 @@ describe('Nationalities', () => {
         selected: false
       }, {
         text: 'Afghanistan',
-        value: 'Afghanistan',
+        value: 'AF',
         selected: false
       }, {
-        text: 'Argentina',
-        value: 'Argentina',
+        text: 'Aland Islands',
+        value: 'AX',
         selected: true
       }
     ];
-    const countriesList = getNationalitiesOptions(list, 'Argentina');
+    const countriesList = getNationalitiesOptions(list, 'AX');
     expect(countriesList).to.be.deep.eq(options);
   });
 });

@@ -198,7 +198,7 @@
       "inPast": "The date letter was sent must be in the past"
     },
     "nationality": {
-      "atLeastOne": "Select your Nationality",
+      "selectNationality": "Select your Nationality",
       "onlyOne": "Only select one option"
     },
     "postcode": {

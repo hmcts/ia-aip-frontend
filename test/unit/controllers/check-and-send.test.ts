@@ -32,7 +32,7 @@ function getMockedSummaryRows() {
   }, {
     actions: { items: [ { href: '/personal-details/nationality', text: 'Change' } ] },
     key: { text: 'Nationality' },
-    value: { html: 'Panamanian' }
+    value: { html: 'Austria' }
   }, {
     actions: { items: [ { href: '/contact-details', text: 'Change' } ] },
     key: { text: 'Contact Details' },

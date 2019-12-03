@@ -5,9 +5,9 @@ import { getNationalityPage, postNationalityPage, setupPersonalDetailsController
 import { countryList } from '../../../app/data/country-list';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
-
 import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Nationality details Controller', function() {
@@ -38,7 +38,7 @@ describe('Nationality details Controller', function() {
           }
         }
       }
-    } as unknown as Partial<Request>;
+    } as Partial<Request>;
 
     res = {
       render: sandbox.stub(),
@@ -48,7 +48,7 @@ describe('Nationality details Controller', function() {
 
     next = sandbox.stub() as NextFunction;
 
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEvent: sandbox.stub() };
   });
 
   afterEach(() => {
@@ -71,86 +71,59 @@ describe('Nationality details Controller', function() {
       getNationalityPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/nationality.njk');
     });
-  });
 
-  describe('postNationality', () => {
-    it('should validate and render personal-details/nationality.njk', () => {
-      postNationalityPage(req as Request, res as Response, next);
-      req.body.stateless = 'stateless';
-      req.body.nationality = '';
-
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk');
-    });
-
-    it('should validate and render personal-details/nationality.njk', () => {
-      postNationalityPage(req as Request, res as Response, next);
-      req.body.stateless = '';
-      req.body.nationality = 'British';
-
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk');
-    });
-  });
-
-  describe('Should catch an error.', function () {
-    it('getNationalityPage should catch an exception and call next()', () => {
+    it('should catch an exception and call next()', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
       getNationalityPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
-
-    it('should fail validation and render personal-details/nationality.njk with error when nothing selected', () => {
-      postNationalityPage(req as Request, res as Response, next);
-      req.body.stateless = '';
-      req.body.nationality = '';
-      const nationalitiesOptions = getNationalitiesOptions(countryList, '');
-      const error = {
-        href: '#nationality',
-        key: 'nationality-statelessNationality',
-        text: 'Select your Nationality'
-      };
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
-        {
-          errorList: [error],
-          errors: { 'nationality-statelessNationality': error },
-          nationalitiesOptions,
-          statelessNationality: undefined
-        });
-    });
-
-    it('should fail validation and render personal-details/nationality.njk with error when nationality and state selected', () => {
-      req.body.statelessNationality = 'stateless';
-      req.body.nationality = 'Taiwan';
-      postNationalityPage(req as Request, res as Response, next);
-      const nationalitiesOptions = getNationalitiesOptions(countryList, req.body.nationality);
-      const error = {
-        href: '#nationality',
-        key: 'nationality-statelessNationality',
-        text: 'Only select one option'
-      };
-
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
-        {
-          errorList: [error],
-          errors: { 'nationality-statelessNationality': error },
-          nationalitiesOptions,
-          statelessNationality: 'stateless'
-        });
-    });
   });
 
-  describe('should redirect to the correct page', () => {
-    it('redirects to enter postcode page if no address has been set', () => {
-      req.body.nationality = 'Taiwan';
-      postNationalityPage(req as Request, res as Response, next);
+  describe('postNationality', () => {
+    it('should validate and render personal-details/nationality.njk', async () => {
+      req.body.nationality = 'AQ';
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterPostcode);
     });
 
-    it('redirects to enter address page if address has been set', () => {
+    it('should fail validation and render personal-details/nationality.njk with error when nothing selected', async () => {
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const nationalitiesOptions = getNationalitiesOptions(countryList, '');
+      const error = {
+        href: '#nationality',
+        key: 'nationality',
+        text: i18n.validationErrors.nationality.selectNationality
+      };
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
+        {
+          errorList: [error],
+          errors: { 'nationality': error },
+          nationalitiesOptions
+        });
+    });
+
+    it('should catch an exception and call next() with error', async () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('should redirect to the correct page', () => {
+    it('redirects to enter postcode page if no address has been set', async () => {
+      req.body.nationality = 'Taiwan';
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterPostcode);
+    });
+
+    it('redirects to enter address page if address has been set', async () => {
       req.body.nationality = 'Taiwan';
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
-      postNationalityPage(req as Request, res as Response, next);
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterAddress);
     });

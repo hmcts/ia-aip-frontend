@@ -7,17 +7,10 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
-      show: true,
+      show: false,
       "chrome": {
         "ignoreHTTPSErrors": true
       }
-      //,
-      // "desiredCapabilities": {
-      //   "proxy": {
-      //     "proxyType": "manual",
-      //     "httpProxy": "http://proxyout.reform.hmcts.net:8080",
-      //     "sslProxy": "http://proxyout.reform.hmcts.net:8080"
-      //   }
     }
     // TestCafe: {
     //   url: 'https://localhost:3000',
@@ -34,10 +27,7 @@ exports.config = {
   },
   plugins: {
     "stepByStepReport": {
-      "enabled": true,
-      deleteSuccessful: false
+      "enabled": true
     }
   }
 };
-
-

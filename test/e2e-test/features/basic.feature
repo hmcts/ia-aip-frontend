@@ -32,7 +32,7 @@ Feature: Business rules
     Then I should be taken to the task-list
     Given I click the contact details link
     Then I should be taken to the contact-details page
-    When I check the Text message box and type "09123456789" and click save and continue
+    When I check the Text message box and type "07899999999" and click save and continue
     Then I should be taken to the task-list page
     When I click on the type-of-appeal link
     Then I should be taken to the appeal page

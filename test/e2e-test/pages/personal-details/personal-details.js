@@ -1,4 +1,5 @@
 const {fillInDate} = require ("../helper-functions");
+const { Selector } = require('testcafe');
 
 module.exports = {
     fillInPersonalDetails(I){
@@ -29,10 +30,8 @@ module.exports = {
             await I.seeInCurrentUrl('details/nationality')
         });
         When(/^I pick "([^"]*)" from the drop down and click continue$/, async (nation) => {
-            await I.click('#nationality')
-            await I.click(`option[value="${nation}"]`)
-            I.click('.govuk-button');
-            I.click(`a[href*="enter-postcode"]`)
+            await I.selectOption('#nationality', nation)
+            await I.click('.govuk-button');
         });
         Then(/^I should be taken to the enter your postcode page$/, async () => {
             I.seeInCurrentUrl('details/enter-postcode')
@@ -45,8 +44,7 @@ module.exports = {
             I.seeInCurrentUrl('postcode-lookup')
         });
         When(/^I choose the first item from the dropdown list and click continue$/, async () => {
-            I.click('#address');
-            await I.click(`option[value="52526732"]`)
+            await I.selectOption('#address', '52526732')
             I.click('.govuk-button');
         });
         Then(/^I should be taken to the confirm address page$/, async () => {

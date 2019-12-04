@@ -11,5 +11,12 @@ module.exports = {
         I.fillField('#day',  day)
         I.fillField('#month',  month)
         I.fillField('#year', year)
+    },
+
+    enterRefNumber(refNumber) {
+        I.fillField('#homeOfficeRefNumber', refNumber)
+        I.click('.govuk-button')
+
+
     }
 }

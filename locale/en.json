@@ -34,9 +34,9 @@
       "title": "Task List",
       "header": "Start your appeal",
       "sections": {
-        "yourDetails": "Your Details",
-        "appealDetails": "Appeal Details",
-        "checkAndSend": "Check and Send"
+        "yourDetails": "Your details",
+        "appealDetails": "Appeal details",
+        "checkAndSend": "Check and send"
       },
       "homeOfficeDetails": {
         "title": "Your Home Office details",

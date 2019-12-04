@@ -10,9 +10,7 @@ exports.config = {
     }
   },
     include: {
-      I: './steps_file.js',
-      signInPOM: './test/e2e-test/Page.js',
-
+      I: './steps_file.js'
     },
     gherkin: {
       features: './test/e2e-test/features/*.feature',

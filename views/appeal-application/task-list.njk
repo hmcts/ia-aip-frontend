@@ -11,6 +11,7 @@
         <h2 class="govuk-heading-l">
             <span class="app-task-list__section-number">  {{ loop.index }}. </span> {{ i18n.pages.taskList.sections[section.sectionId] }}
         </h2>
+        <div class="govuk-!-padding-left-7">
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
         {% for task in section.tasks %}
             <ul class="govuk-list">
@@ -29,6 +30,7 @@
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
             </ul>
         {% endfor %}
+        </div>
 
     {% endfor %}
 {% endblock %}

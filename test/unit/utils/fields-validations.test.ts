@@ -184,7 +184,7 @@ describe('fields-validations', () => {
         'text-message-value': {
           href: '#text-message-value',
           key: 'text-message-value',
-          text: 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192'
+          text: 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);
@@ -212,7 +212,7 @@ describe('fields-validations', () => {
         'text-message-value': {
           href: '#text-message-value',
           key: 'text-message-value',
-          text: 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192'
+          text: 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999'
         }
       };
 
@@ -234,7 +234,7 @@ describe('fields-validations', () => {
       const expectedResponse = {
         'text-message-value': {
           'key': 'text-message-value',
-          'text': 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192',
+          'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
           'href': '#text-message-value'
         }
       };
@@ -261,7 +261,7 @@ describe('fields-validations', () => {
     const expectedResponse = {
       'text-message-value': {
         'key': 'text-message-value',
-        'text': 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192',
+        'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
         'href': '#text-message-value'
       }
     };

@@ -1,7 +1,9 @@
-import Joi from '@hapi/joi';
+import Joi from '@hapi/Joi';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { mobilePhoneRegex, postcodeRegex } from './regular-expressions';
+
+const MobilePhoneNumberExtension = require('../../extensions/Joi/mobile-number');
 
 /**
  * Uses Joi schema validation to validate and object and returns:
@@ -157,12 +159,12 @@ function contactDetailsValidation(obj: object) {
         .try(
           Joi.array().items(Joi.string().valid('email'), Joi.string().valid('text-message')),
           Joi.string().valid('text-message')).required(),
-      then: Joi.string()
+      then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
         .optional()
-        .regex(mobilePhoneRegex)
         .messages({
           'string.empty': i18n.validationErrors.phoneEmpty,
-          'string.pattern.base': i18n.validationErrors.phoneFormat
+          'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
+          'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
         }),
       otherwise: Joi.strip()
     })
@@ -194,7 +196,7 @@ function postcodeValidation(obj: object): ValidationErrors | null {
 }
 
 /**
- * Validates an email address using joi validation
+ * Validates an email address using Joi validation
  * @param obj containing the property 'email-value' to validate the email
  *  Joi validation will return:
  * 'string.empty': if email string is empty
@@ -216,7 +218,7 @@ function emailValidation(obj: object): null | ValidationErrors {
 }
 
 /**
- * Validates a phone number using using joi validation with regex
+ * Validates a phone number using using Joi validation with regex
  * @param obj containing the property 'text-message-value' to validate the phone number
  * @return
  * Joi validation will return:

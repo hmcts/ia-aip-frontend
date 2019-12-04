@@ -6,5 +6,6 @@ public
 dump.rdb
 build
 test/coverage
-functional-output/**/*.png
+functional-output
 .env
+output

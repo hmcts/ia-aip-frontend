@@ -8,17 +8,12 @@ module.exports = {
             await I.seeInCurrentUrl('type-of-appeal')
         });
         When(/^I click on the first checkbox and click save and continue$/, async () => {
-            if(I.seeCheckboxIsChecked('#appealType')){
-                await  I.click('.govuk-button')
-            }else {
-                await  I.click('#appealType');
-                await  I.click('.govuk-button');
-            }
+            await I.checkOption('#appealType');
+            await I.click('.govuk-button');
         });
 
         Then(/^I should be taken to the task\-list page$/, async () => {
             await I.seeInCurrentUrl('task-list')
         })
     }
-
 }

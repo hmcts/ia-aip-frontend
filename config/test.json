@@ -1,4 +1,5 @@
 {
+  "testUrl": "http://localhost:3000",
   "session": {
     "useRedis": "false"
   }

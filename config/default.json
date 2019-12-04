@@ -1,5 +1,5 @@
 {
-  "testUrl": "http://localhost:3000",
+  "testUrl": "https://localhost:3000",
   "httpProxy": false,
   "proxy": {
     "host": "proxyout.reform.hmcts.net",

@@ -19,10 +19,12 @@
     "sonar-scan": "sonar-scanner",
     "test:browser": "mocha test/functional/**/*.test.ts --exit",
     "test:smoke": "NODE_ENV=test yarn test:browser -g @smoke",
-    "test:functional": "NODE_ENV=test yarn test:browser -g @smoke --invert",
-    "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional",
+    "test:functionalOld": "NODE_ENV=test yarn test:browser -g @smoke --invert",
+    "test:functional": "yarn codecept:functional",
+    "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functionalOld",
     "codecept:crossbrowser": "codeceptjs run -c codecept.crossbrowser.js",
-    "codecept:local": "codeceptjs run -c codecept.local.js"
+    "codecept:local": "codeceptjs run -c codecept.local.js",
+    "codecept:functional": "IDAM_API_URL=http://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.functional.js --verbose --debug && mkdir -p ./functional-output && mv output/* ./functional-output/."
   },
   "husky": {
     "hooks": {

@@ -1,9 +1,9 @@
-import Joi from '@hapi/Joi';
+import Joi from '@hapi/joi';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { mobilePhoneRegex, postcodeRegex } from './regular-expressions';
 
-const MobilePhoneNumberExtension = require('../../extensions/Joi/mobile-number');
+const MobilePhoneNumberExtension = require('../../extensions/joi/mobile-number');
 
 /**
  * Uses Joi schema validation to validate and object and returns:
@@ -147,7 +147,7 @@ function contactDetailsValidation(obj: object) {
           Joi.string().valid('email')).required(),
       then: Joi.string()
         .optional()
-        .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net', 'co.uk' ] } })
+        .email({ minDomainSegments: 2 })
         .messages({
           'string.empty': i18n.validationErrors.emailEmpty,
           'string.email': i18n.validationErrors.emailFormat
@@ -205,7 +205,7 @@ function emailValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     'email-value': Joi.string()
       .required()
-      .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net', 'co.uk' ] } })
+      .email({ minDomainSegments: 2 })
       .messages({
         'string.empty': i18n.validationErrors.emailEmpty,
         'string.email': i18n.validationErrors.emailFormat

@@ -30,7 +30,7 @@ async function createUser() {
         console.log(`Created idam user for ${email} with password ${password}`);
         return { email: email, password };
     } catch (error) {
-        logger.error('Error createUser', error.message);
+        console.log(`Error createUser ${error.message}`);
     }
 }
 

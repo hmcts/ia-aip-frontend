@@ -23,10 +23,13 @@ async function createUser() {
             ]
         },
         insecure: true,
-        timeout: 10000
+        timeout: 10000,
+        resolveWithFullResponse: true
     };
     try {
-        await rp.post(options);
+        const createUserResult = await rp.post(options);
+        console.log(`Call returned ${JSON.stringify(createUserResult, null, 2)}`);
+
         console.log(`Created idam user for ${email} with password ${password}`);
         return { email: email, password };
     } catch (error) {

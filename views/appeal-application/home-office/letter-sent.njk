@@ -26,9 +26,9 @@
 
   <form action="/home-office/letter-sent" method="post">
     {% set errorMessage =  error.day.text if error.day %}
-    {% set errorMessage =  error.month.text if error.month else errorMessage %}
-    {% set errorMessage =  error.year.text if error.year else errorMessage %}
-    {% set errorMessage =  error.date.text if error.date else errorMessage %}
+    {% set errorMessage =  errorMessage + "<br/>" + error.month.text if error.month else errorMessage %}
+    {% set errorMessage =  errorMessage + "<br/>" + error.year.text if error.year else errorMessage %}
+    {% set errorMessage =  errorMessage + "<br/>" + error.date.text if error.date else errorMessage %}
 
     {{ govukDateInput({
       fieldset: {
@@ -44,7 +44,7 @@
       id: 'date',
       name: 'date',
       errorMessage: {
-        text: errorMessage
+        html: errorMessage
       } if error,
       items: [
         {
@@ -78,9 +78,7 @@
       })
     }}
 
-    {{ govukButton({
-      text: "Save and continue"
-    }) }}
+    {{ saveButtons() }}
   </form>
-
+  {{ contactUs() }}
 {% endblock %}

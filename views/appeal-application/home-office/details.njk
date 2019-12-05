@@ -16,9 +16,9 @@
   <p>{{ i18n.pages.homeOfficePage.description }}</p>
 
   <img
-          src="/assets/images/home_office_ref_number.png"
-          class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
-          alt="{{  i18n.pages.homeOfficePage.refImageAltText }}"
+    src="/assets/images/home_office_ref_number.png"
+    class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
+    alt="{{  i18n.pages.homeOfficePage.refImageAltText }}"
   />
 
   <form action="/home-office/details" method="post">
@@ -35,9 +35,7 @@
       } if errors['homeOfficeRefNumber']
     }) }}
 
-    {{ govukButton({
-      text: "Save and continue"
-    }) }}
+    {{ saveButtons() }}
   </form>
-
+  {{ contactUs() }}
 {% endblock %}

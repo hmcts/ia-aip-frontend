@@ -12,9 +12,9 @@
     {% endif %}
     <form method="post" action="/personal-details/date-of-birth" type="submit">
         {% set errorMessage =  errors.day.text if errors.day %}
-        {% set errorMessage =  errors.month.text if errors.month else errorMessage %}
-        {% set errorMessage =  errors.year.text if errors.year else errorMessage %}
-        {% set errorMessage =  errors.date.text if errors.date else errorMessage %}
+        {% set errorMessage =  errorMessage + "<br/>" + errors.month.text if errors.month else errorMessage %}
+        {% set errorMessage =  errorMessage + "<br/>" + errors.year.text if errors.year else errorMessage %}
+        {% set errorMessage =  errorMessage + "<br/>" + errors.date.text if errors.date else errorMessage %}
 
         {{ govukDateInput({
             fieldset: {
@@ -30,7 +30,7 @@
             id: 'date',
             name: 'date',
             errorMessage: {
-                text: errorMessage
+                html: errorMessage
             } if errors,
             items: [
                 {

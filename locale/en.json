@@ -219,9 +219,9 @@
   },
   "fields": {
     "textMessage": "Text message",
-    "mobilePhone": "Mobile phone number",
+    "mobilePhone": "Enter mobile phone number",
     "email": "Email",
-    "emailAddress": "Email address",
+    "emailAddress": "Enter email address",
     "homeOfficeRefNumber": "Home Office reference number",
     "dateLetterSent": "Date Letter Sent",
     "name": "Name",

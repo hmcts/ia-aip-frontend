@@ -9,3 +9,4 @@ test/coverage
 functional-output
 .env
 output
+_output

@@ -1,7 +1,7 @@
 import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
 import { NextFunction, Request, Response, Router } from 'express';
 import { idamConfig } from '../config/idam-config';
-import { initSession, logSession } from '../middleware/session-middleware';
+import { checkSession, initSession, logSession } from '../middleware/session-middleware';
 import { paths } from '../paths';
 import { getIdamRedirectUrl } from '../utils/url-utils';
 
@@ -39,7 +39,7 @@ function setupIdamController(): Router {
   router.use(idamExpressMiddleware.userDetails(idamConfig));
   router.get(paths.login, authenticateMiddleware, getLogin);
   router.get(paths.redirectUrl, idamExpressMiddleware.landingPage(idamConfig), initSession, logSession, getRedirectUrl);
-  router.use(idamExpressMiddleware.protect(idamConfig));
+  router.use(idamExpressMiddleware.protect(idamConfig), checkSession(idamConfig));
   router.get(paths.logout, idamExpressMiddleware.logout(idamConfig), getLogout);
 
   return router;

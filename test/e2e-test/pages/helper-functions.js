@@ -23,7 +23,7 @@ async function createUser() {
             ]
         },
         insecure: true,
-        timeout: 10000,
+        timeout: 1000000,
         resolveWithFullResponse: true
     };
     try {

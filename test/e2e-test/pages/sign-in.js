@@ -21,6 +21,7 @@ signIn(I) {
     });
 
     Then('I should see the task-list page', async () => {
+        await I.waitInUrl('task-list')
         await I.seeInCurrentUrl('task-list')
     });
 

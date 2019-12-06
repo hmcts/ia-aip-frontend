@@ -7,6 +7,8 @@ exports.config = {
     WebDriver: {
       url: 'https://localhost:3000',
       browser: "internet explorer",
+        waitForTimeout: 1500000,
+        smartWait: 150000,
       desiredCapabilities: {
         ieOptions: {
           "ie.browserCommandLineSwitches": "-private",

@@ -5,15 +5,18 @@ module.exports = {
 
         });
         Then(/^I should be taken to the check\-and\-send page$/, async () => {
-            await I.seeInCurrentUrl('check-and-send')
+            await I.waitInUrl('check-and-send')
+             I.seeInCurrentUrl('check-and-send')
         });
         When(/^I check the checkbox and click send$/, async () => {
             await I.click('#statement');
+            await I.wait(2)
             await  I.click('.govuk-button');
 
         });
         Then(/^I should be taken to the confirmation page$/, async () => {
-            await I.seeInCurrentUrl('confirmation')
+            await I.waitInUrl('confirmation')
+             I.seeInCurrentUrl('confirmation')
         });
     }
 }

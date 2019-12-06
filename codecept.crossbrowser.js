@@ -6,16 +6,21 @@ exports.config = {
   helpers: {
     WebDriver: {
       url: 'https://localhost:3000',
-      browser: "internet explorer",
+      browser: "chrome",
         waitForTimeout: 1500000,
         smartWait: 150000,
       desiredCapabilities: {
-        ieOptions: {
-          "ie.browserCommandLineSwitches": "-private",
-          "ie.usePerProcessProxy": true,
-          "ie.ensureCleanSession": true,
-          "acceptInsecureCerts": true
+        chromeOptions: {
+          args: [ "--ignore-certificate-errors"],
+
         }
+      // desiredCapabilities: {
+      //   ieOptions: {
+      //     "ie.browserCommandLineSwitches": "-private",
+      //     "ie.usePerProcessProxy": true,
+      //     "ie.ensureCleanSession": true,
+      //     "acceptInsecureCerts": true
+      //   }
       },
     }
   },

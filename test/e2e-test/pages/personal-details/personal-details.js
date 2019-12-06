@@ -29,7 +29,7 @@ module.exports = {
         });
         Then(/^I should be taken to nationality page$/, async () => {
             await I.waitInUrl('details/nationality')
-            await I.seeInCurrentUrl('details/nationality')
+             I.seeInCurrentUrl('details/nationality')
         });
         When(/^I pick "([^"]*)" from the drop down and click continue$/, async (nation) => {
             await I.selectOption('#nationality', nation)
@@ -37,7 +37,7 @@ module.exports = {
         });
         Then(/^I should be taken to the enter your postcode page$/, async () => {
             await I.waitInUrl('details/enter-postcode')
-           await I.seeInCurrentUrl('details/enter-postcode')
+            I.seeInCurrentUrl('details/enter-postcode')
         });
         When(/^I type "([^"]*)" and click continue$/, async (postcode) => {
             I.fillField("#postcode",postcode)
@@ -45,7 +45,7 @@ module.exports = {
         });
         Then(/^I should be taken to the what is your address page$/, async () => {
             await I.waitInUrl('postcode-lookup')
-            await I.seeInCurrentUrl('postcode-lookup')
+             I.seeInCurrentUrl('postcode-lookup')
         });
         When(/^I choose the first item from the dropdown list and click continue$/, async () => {
             await I.selectOption('#address', '52526732')
@@ -53,14 +53,14 @@ module.exports = {
         });
         Then(/^I should be taken to the confirm address page$/, async () => {
             await I.waitInUrl('details/enter-address')
-            await I.seeInCurrentUrl('details/enter-address')
+             I.seeInCurrentUrl('details/enter-address')
         });
         When(/^I click continue$/, async () => {
             await I.click('.govuk-button');
         });
         Then(/^I should be taken to the task\-list$/, async () => {
             await I.waitInUrl('task-list')
-            await I.seeInCurrentUrl('task-list')
+             I.seeInCurrentUrl('task-list')
         });
 
 

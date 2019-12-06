@@ -29,6 +29,7 @@ describe('Index Controller', function() {
 
     res = {
       render: sandbox.stub(),
+      redirect: sandbox.spy(),
       send: sandbox.stub(),
       next: sandbox.stub()
     } as Partial<Response>;
@@ -41,14 +42,14 @@ describe('Index Controller', function() {
   });
 
   describe('getIndex', () => {
-    it('get Index should render index.njk', function() {
+    it('get Index should redirect to start page', function() {
       getIndex(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('index.njk');
+      expect(res.redirect).to.have.been.calledWith(paths.start);
     });
 
     it('should catch exception and call next with the error', function () {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
+      res.redirect = sandbox.stub().throws(error);
       getIndex(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

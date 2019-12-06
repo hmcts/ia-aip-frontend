@@ -147,7 +147,7 @@ function contactDetailsValidation(obj: object) {
           Joi.string().valid('email')).required(),
       then: Joi.string()
         .optional()
-        .email({ minDomainSegments: 2 })
+        .email({ minDomainSegments: 2, allowUnicode: false })
         .messages({
           'string.empty': i18n.validationErrors.emailEmpty,
           'string.email': i18n.validationErrors.emailFormat
@@ -205,7 +205,7 @@ function emailValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     'email-value': Joi.string()
       .required()
-      .email({ minDomainSegments: 2 })
+      .email({ minDomainSegments: 2, allowUnicode: false })
       .messages({
         'string.empty': i18n.validationErrors.emailEmpty,
         'string.email': i18n.validationErrors.emailFormat

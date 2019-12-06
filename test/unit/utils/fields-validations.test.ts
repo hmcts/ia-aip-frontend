@@ -174,6 +174,20 @@ describe('fields-validations', () => {
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
+
+    it('should fail email validation and return "string.format" type on unicode emails', () => {
+      const object = { 'email-value': 'あいうえお@domain.com' };
+      const validationResult = emailValidation(object);
+
+      const expectedResponse = {
+        'email-value': {
+          'key': 'email-value',
+          'text': 'Enter an email address in the correct format, like name@example.com',
+          'href': '#email-value'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
   });
 
   describe('mobilePhoneValidation', () => {

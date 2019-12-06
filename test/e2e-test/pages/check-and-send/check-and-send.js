@@ -8,10 +8,12 @@ module.exports = {
             await I.seeInCurrentUrl('check-and-send')
         });
         When(/^I check the checkbox and click send$/, async () => {
+            await I.click('#statement');
+            await  I.click('.govuk-button');
 
         });
         Then(/^I should be taken to the confirmation page$/, async () => {
-
+            await I.seeInCurrentUrl('confirmation')
         });
     }
 }

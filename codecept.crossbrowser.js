@@ -6,13 +6,15 @@ exports.config = {
   helpers: {
     WebDriver: {
       url: 'https://localhost:3000',
-      browser: "chrome",
+      browser: "firefox",
         waitForTimeout: 1500000,
         smartWait: 150000,
       desiredCapabilities: {
-        chromeOptions: {
-          args: [ "--ignore-certificate-errors"],
-
+        'moz:firefoxOptions': {
+          accept_insecure_certs: true,
+          httpProxyAll: true,
+          proxyDNSOptional: true,
+          proxyTypeOptional: 'autoConfig'
         }
       // desiredCapabilities: {
       //   ieOptions: {
@@ -39,7 +41,7 @@ exports.config = {
         enabled: true,
         services: ['sauce'],
         user: 'lewis.williams',
-        key: config.get('saucelabs.secret'),
+        key: 'b4622cca-704b-4ae6-a6c2-b12e93d522d7',
         region: 'eu',
         sauceConnect: true,
         sauceConnectOpts: {

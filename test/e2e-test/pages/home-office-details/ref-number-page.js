@@ -18,6 +18,7 @@ fillInHomeOfficeDetails(I){
     });
 
     Then(/^I should see letter sent page$/,  async  () => {
+        await I.waitInUrl('/letter-sent')
         await I.seeInCurrentUrl('/letter-sent')
     });
 
@@ -28,6 +29,7 @@ fillInHomeOfficeDetails(I){
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
+        await I.waitInUrl('/task-list')
         await  I.seeInCurrentUrl("/task-list")
     });
 }

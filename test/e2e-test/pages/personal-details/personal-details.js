@@ -19,14 +19,16 @@ module.exports = {
             I.click('.govuk-button');
         });
         Then(/^I should be taken to the DOB page$/, async () => {
+            await I.waitInUrl('details/date-of-birth')
             await I.seeInCurrentUrl('details/date-of-birth')
         });
         When(/^I enter "([^"]*)" "([^"]*)" "([^"]*)" into each input and click continue$/, async (day,month,year) => {
             await fillInDate(day,month,year)
-            I.click('.govuk-button');
+           await I.click('.govuk-button');
 
         });
         Then(/^I should be taken to nationality page$/, async () => {
+            await I.waitInUrl('details/nationality')
             await I.seeInCurrentUrl('details/nationality')
         });
         When(/^I pick "([^"]*)" from the drop down and click continue$/, async (nation) => {
@@ -34,26 +36,30 @@ module.exports = {
             await I.click('.govuk-button');
         });
         Then(/^I should be taken to the enter your postcode page$/, async () => {
-            I.seeInCurrentUrl('details/enter-postcode')
+            await I.waitInUrl('details/enter-postcode')
+           await I.seeInCurrentUrl('details/enter-postcode')
         });
         When(/^I type "([^"]*)" and click continue$/, async (postcode) => {
             I.fillField("#postcode",postcode)
             I.click('.govuk-button');
         });
         Then(/^I should be taken to the what is your address page$/, async () => {
-            I.seeInCurrentUrl('postcode-lookup')
+            await I.waitInUrl('postcode-lookup')
+            await I.seeInCurrentUrl('postcode-lookup')
         });
         When(/^I choose the first item from the dropdown list and click continue$/, async () => {
             await I.selectOption('#address', '52526732')
             I.click('.govuk-button');
         });
         Then(/^I should be taken to the confirm address page$/, async () => {
-            I.seeInCurrentUrl('details/enter-address')
+            await I.waitInUrl('details/enter-address')
+            await I.seeInCurrentUrl('details/enter-address')
         });
         When(/^I click continue$/, async () => {
-            I.click('.govuk-button');
+            await I.click('.govuk-button');
         });
         Then(/^I should be taken to the task\-list$/, async () => {
+            await I.waitInUrl('task-list')
             await I.seeInCurrentUrl('task-list')
         });
 

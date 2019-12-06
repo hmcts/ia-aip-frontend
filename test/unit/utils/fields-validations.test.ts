@@ -38,14 +38,8 @@ describe('fields-validations', () => {
     });
   });
 
-  describe('dateValidation', () => {
-    const errors = {
-      missingDay: 'missing day',
-      missingMonth: 'missing month',
-      missingYear: 'missing year',
-      incorrectFormat: 'incorrect format',
-      inPast: 'must be in past'
-    };
+  describe('dateValidation @only', () => {
+    const errors = { ...i18n.validationErrors.dateLetterSent };
 
     it('should validate', () => {
       const validDate = { day: '1', month: '1', year: '2019' };
@@ -54,16 +48,26 @@ describe('fields-validations', () => {
     });
 
     it('fields cannot be empty', () => {
-      const notValidDate = { day: '', month: '', year: '' };
-      const validations = dateValidation(notValidDate, errors);
+      let notValidDate = { day: '', month: '', year: '' };
+      let validations = dateValidation(notValidDate, errors);
 
-      expect(validations).to.deep.equal(
-        {
-          day: createError('day', errors.missingDay),
-          month: createError('month', errors.missingMonth),
-          year: createError('year', errors.missingYear),
-          date: createError('date', errors.incorrectFormat)
-        });
+      expect(validations).to.deep.equal({
+        day: createError('day', errors.missing)
+      });
+
+      notValidDate = { day: '1', month: '', year: '' };
+      validations = dateValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal({
+        month: createError('month', errors.missing)
+      });
+
+      notValidDate = { day: '1', month: '1', year: '' };
+      validations = dateValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal({
+        year: createError('year', errors.missing)
+      });
     });
 
     it('fields must be numbers', () => {
@@ -72,10 +76,7 @@ describe('fields-validations', () => {
 
       expect(validations).to.deep.equal(
         {
-          day: createError('day', errors.incorrectFormat),
-          month: createError('month', errors.incorrectFormat),
-          year: createError('year', errors.incorrectFormat),
-          date: createError('date', errors.incorrectFormat)
+          day: createError('day', errors.incorrectFormat)
         });
     });
 
@@ -85,9 +86,7 @@ describe('fields-validations', () => {
 
       expect(validations).to.deep.equal(
         {
-          day: createError('day', errors.incorrectFormat),
-          month: createError('month', errors.incorrectFormat),
-          year: createError('year', errors.incorrectFormat)
+          day: createError('day', errors.incorrectFormat)
         });
     });
 
@@ -98,15 +97,11 @@ describe('fields-validations', () => {
 
       expect(validations).to.deep.equal(
         {
-          day: createError('day', errors.incorrectFormat),
-          month: createError('month', errors.incorrectFormat),
-          year: createError('year', errors.incorrectFormat),
-          date: createError('date', errors.incorrectFormat)
+          day: createError('day', errors.incorrectFormat)
         });
     });
 
     it('fields must be in past', () => {
-      // not sure how we can do this for day and month
       const notValidDate = { day: '1', month: '1', year: '5000' };
       const validations = dateValidation(notValidDate, errors);
 

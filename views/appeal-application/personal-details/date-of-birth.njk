@@ -3,68 +3,68 @@
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 
 {% block content %}
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.error.summary.title,
-            descriptionText: i18n.error.summary.descriptionText,
-            errorList: errorList
-        }) }}
-    {% endif %}
-    <form method="post" action="/personal-details/date-of-birth" type="submit">
-        {% set errorMessage =  errors.day.text if errors.day %}
-        {% set errorMessage =  errorMessage + "<br/>" + errors.month.text if errors.month else errorMessage %}
-        {% set errorMessage =  errorMessage + "<br/>" + errors.year.text if errors.year else errorMessage %}
-        {% set errorMessage =  errorMessage + "<br/>" + errors.date.text if errors.date else errorMessage %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form method="post" action="/personal-details/date-of-birth" type="submit">
+    {% set errorMessage =  errors.day.text if errors.day %}
+    {% set errorMessage =  errors.month.text if errors.month else errorMessage %}
+    {% set errorMessage =  errors.year.text if errors.year else errorMessage %}
+    {% set errorMessage =  errors.date.text if errors.date else errorMessage %}
 
-        {{ govukDateInput({
-            fieldset: {
-                legend: {
-                isPageHeading: true,
-                text: i18n.pages.DOB.heading,
-                classes: 'govuk-fieldset__legend--xl'
-                }
-            },
-            hint: {
-                text: i18n.pages.DOB.hint
-            },
-            id: 'date',
-            name: 'date',
-            errorMessage: {
-                html: errorMessage
-            } if errors,
-            items: [
-                {
-                id: 'day',
-                name: "day",
-                classes: "govuk-input--width-2 govuk-input--error" if errors.day else "govuk-input--width-2",
-                value: dob.day,
-                attributes: {
-                    max: 31
-                }
-                },
-                {
-                id: 'month',
-                name: "month",
-                classes: "govuk-input--width-2 govuk-input--error" if errors.month else "govuk-input--width-2",
-                value: dob.month,
-                attributes: {
-                    max: 12
-                }
-                },
-                {
-                id: 'year',
-                name: "year",
-                classes: "govuk-input--width-4 govuk-input--error" if errors.year else "govuk-input--width-4",
-                value: dob.year,
-                attributes: {
-                    max: 9999
-                }
-                }
-            ]
-            })
-        }}
+      {{ govukDateInput({
+        fieldset: {
+          legend: {
+          isPageHeading: true,
+          text: i18n.pages.DOB.heading,
+          classes: 'govuk-fieldset__legend--xl'
+          }
+        },
+        hint: {
+          text: i18n.pages.DOB.hint
+        },
+        id: 'date',
+        name: 'date',
+        errorMessage: {
+          html: errorMessage
+        } if errors,
+        items: [
+          {
+            id: 'day',
+            name: "day",
+            classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
+            value: dob.day,
+            attributes: {
+                max: 31
+            }
+          },
+          {
+            id: 'month',
+            name: "month",
+            classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
+            value: dob.month,
+            attributes: {
+                max: 12
+            }
+          },
+          {
+            id: 'year',
+            name: "year",
+            classes: "govuk-input--width-4 govuk-input--error" if errorMessage else "govuk-input--width-4",
+            value: dob.year,
+            attributes: {
+                max: 9999
+            }
+          }
+        ]
+      })
+    }}
 
-        {{ saveButtons() }}
-    </form>
-    {{ contactUs() }}
+    {{ saveButtons() }}
+  </form>
+  {{ contactUs() }}
 {% endblock %}

@@ -83,27 +83,27 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
   const { year, month, day } = obj;
   const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
     moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
-  obj = {
+  const toValidate = {
     ...obj,
     date
   };
   const schema = Joi.object({
-    day: Joi.number().empty('').required().integer().min(1).max(31).required().messages({
-      'any.required': errors.missingDay,
+    day: Joi.number().empty('').required().integer().min(1).max(31).messages({
+      'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
     }),
     month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
-      'any.required': errors.missingMonth,
+      'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat,
       'number.max': errors.incorrectFormat
     }),
     year: Joi.number().empty('').required().integer().min(1900).required().messages({
-      'any.required': errors.missingYear,
+      'any.required': errors.missing,
       'number.base': errors.incorrectFormat,
       'number.integer': errors.incorrectFormat,
       'number.min': errors.incorrectFormat
@@ -114,7 +114,7 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
     })
   });
 
-  return validate(obj, schema);
+  return validate(toValidate, schema, true);
 }
 
 function appellantNamesValidation(obj: object) {

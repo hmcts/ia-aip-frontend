@@ -26,9 +26,9 @@
 
   <form action="/home-office/letter-sent" method="post">
     {% set errorMessage =  error.day.text if error.day %}
-    {% set errorMessage =  errorMessage + "<br/>" + error.month.text if error.month else errorMessage %}
-    {% set errorMessage =  errorMessage + "<br/>" + error.year.text if error.year else errorMessage %}
-    {% set errorMessage =  errorMessage + "<br/>" + error.date.text if error.date else errorMessage %}
+    {% set errorMessage =  error.month.text if error.month else errorMessage %}
+    {% set errorMessage =  error.year.text if error.year else errorMessage %}
+    {% set errorMessage =  error.date.text if error.date else errorMessage %}
 
     {{ govukDateInput({
       fieldset: {
@@ -50,7 +50,7 @@
         {
           id: 'day',
           name: "day",
-          classes: "govuk-input--width-2 govuk-input--error" if error.day else "govuk-input--width-2",
+          classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
           value: dateLetterSent.day,
           attributes: {
             max: 31
@@ -59,7 +59,7 @@
         {
           id: 'month',
           name: "month",
-          classes: "govuk-input--width-2 govuk-input--error" if error.month else "govuk-input--width-2",
+          classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
           value: dateLetterSent.month,
           attributes: {
             max: 12
@@ -68,7 +68,7 @@
         {
           id: 'year',
           name: "year",
-          classes: "govuk-input--width-4 govuk-input--error" if error.year else "govuk-input--width-4",
+          classes: "govuk-input--width-4 govuk-input--error" if errorMessage else "govuk-input--width-4",
           value: dateLetterSent.year,
           attributes: {
             max: 9999

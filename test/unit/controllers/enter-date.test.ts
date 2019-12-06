@@ -8,6 +8,7 @@ import {
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Personal Details Controller', function () {
@@ -92,7 +93,7 @@ describe('Personal Details Controller', function () {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render appeal-application/personal-details/date-of-birth.njk with error', async () => {
+    it('should early fail validation and render appeal-application/personal-details/date-of-birth.njk with error', async () => {
       function createError(fieldName, errorMessage) {
         return {
           href: `#${fieldName}`,
@@ -100,30 +101,65 @@ describe('Personal Details Controller', function () {
           text: errorMessage
         };
       }
+      const errorDay = createError('day', i18n.validationErrors.dateOfBirth.incorrectFormat);
+      const errorMonth = createError('month', i18n.validationErrors.dateOfBirth.incorrectFormat);
+      const errorYear = createError('year', i18n.validationErrors.dateOfBirth.incorrectFormat);
+      const errorDate = createError('date', i18n.validationErrors.dateOfBirth.inPast);
 
       req.body.day = 0;
-      req.body.month = 0;
-      req.body.year = 0;
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      const errorDay = createError('day', 'Enter the date in the correct format');
-      const errorMonth = createError('month', 'Enter the date in the correct format');
-      const errorYear = createError('year', 'Enter the date in the correct format');
-      const errorDate = createError('date', 'Enter the date in the correct format');
-
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
-          dob: { day: 0, month: 0, year: 0 },
+          dob: { day: 0 },
           errors: {
-            day: errorDay,
-            month: errorMonth,
-            year: errorYear,
+            day: errorDay
+          },
+          errorList: [ errorDay ]
+        }
+      );
+
+      req.body.day = 1;
+      req.body.month = 0;
+      await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith(
+        'appeal-application/personal-details/date-of-birth.njk',
+        {
+          dob: { ...req.body },
+          errors: {
+            month: errorMonth
+          },
+          errorList: [ errorMonth ]
+        }
+      );
+
+      req.body.month = 1;
+      req.body.year = 0;
+      await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith(
+        'appeal-application/personal-details/date-of-birth.njk',
+        {
+          dob: { ...req.body },
+          errors: {
+            year: errorYear
+          },
+          errorList: [ errorYear ]
+        }
+      );
+
+      req.body.year = 9999;
+      await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith(
+        'appeal-application/personal-details/date-of-birth.njk',
+        {
+          dob: { ...req.body },
+          errors: {
             date: errorDate
           },
-          errorList: [ errorDay, errorMonth, errorYear, errorDate ]
-        });
+          errorList: [ errorDate ]
+        }
+      );
     });
   });
 });

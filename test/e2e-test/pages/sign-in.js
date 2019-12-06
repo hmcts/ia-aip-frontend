@@ -13,6 +13,7 @@ signIn(I) {
     });
 
     Then('I should see the sign in page', async () => {
+        await I.wait(3);
         await I.seeInTitle('Sign in - HMCTS Access')
     });
 

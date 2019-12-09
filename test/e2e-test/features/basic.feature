@@ -40,6 +40,6 @@ Feature: Business rules
     Then I should be taken to the task-list
     When I click on the check and send link
     Then I should be taken to the check-and-send page
-    When I check the checkbox and click send
-    Then I should be taken to the confirmation page
+    # When I check the checkbox and click send
+    # Then I should be taken to the confirmation page
 

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { applicationStatusUpdate, initSession, logSession } from '../../../app/middleware/session-middleware';
+import { applicationStatusUpdate, checkSession, initSession, logSession } from '../../../app/middleware/session-middleware';
+import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import * as taskUtils from '../../../app/utils/tasks-utils';
@@ -33,6 +34,8 @@ describe('session-middleware', () => {
 
     res = {
       render: sandbox.stub(),
+      redirect: sandbox.spy(),
+      clearCookie: sandbox.stub(),
       send: sandbox.stub(),
       next: sandbox.stub()
     } as Partial<Response>;
@@ -66,6 +69,29 @@ describe('session-middleware', () => {
     applicationStatusUpdate(req as Request, res as Response, next);
 
     expect(appealApplicationStatusStub).to.have.been.calledOnce;
+    expect(next).to.have.been.calledOnce;
+  });
+
+  it('checkSession has auth token and application', () => {
+    req.cookies['__auth-token'] = 'authTokenValue';
+    checkSession({})(req as Request, res as Response, next);
+
+    expect(next).to.have.been.calledOnce;
+  });
+
+  it('checkSession has auth token and no application', () => {
+    req.cookies['__auth-token'] = 'authTokenValue';
+    req.session.appeal = {} as any;
+    checkSession({})(req as Request, res as Response, next);
+
+    expect(res.redirect).to.have.been.calledWith(paths.start);
+    expect(res.clearCookie).to.have.been.called;
+  });
+
+  it('checkSession has no auth token', () => {
+    req.session.appeal = {} as any;
+    checkSession({})(req as Request, res as Response, next);
+
     expect(next).to.have.been.calledOnce;
   });
 });

@@ -7,16 +7,18 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
-      show: false,
+      show: config.get('showTests'),
       "chrome": {
         "ignoreHTTPSErrors": true
       }
+      //,
+      // "desiredCapabilities": {
+      //   "proxy": {
+      //     "proxyType": "manual",
+      //     "httpProxy": "http://proxyout.reform.hmcts.net:8080",
+      //     "sslProxy": "http://proxyout.reform.hmcts.net:8080"
+      //   }
     }
-    // TestCafe: {
-    //   url: 'https://localhost:3000',
-    //   browser: "chrome",
-    //   show: false
-    // }
   },
   include: {
     I: './steps_file.js'

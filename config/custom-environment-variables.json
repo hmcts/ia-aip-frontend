@@ -45,5 +45,6 @@
   },
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"
-  }
+  },
+  "showTests": "SHOW_TESTS"
 }

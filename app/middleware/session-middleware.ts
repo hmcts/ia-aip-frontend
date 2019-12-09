@@ -1,4 +1,7 @@
+import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
 import { NextFunction, Request, Response } from 'express';
+import * as _ from 'lodash';
+import { paths } from '../paths';
 import { CcdService } from '../service/ccd-service';
 import IdamService from '../service/idam-service';
 import S2SService from '../service/s2s-service';
@@ -16,6 +19,18 @@ async function initSession(req: Request, res: Response, next: NextFunction) {
   } catch (e) {
     next(e);
   }
+}
+
+function checkSession(args: any = {}) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const tokenCookieName = args.tokenCookieName || '__auth-token';
+    if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
+      res.clearCookie(tokenCookieName, '/');
+      res.redirect(paths.start);
+    } else {
+      next();
+    }
+  };
 }
 
 function applicationStatusUpdate(req: Request, res: Response, next: NextFunction) {
@@ -40,6 +55,7 @@ function logSession(req: Request, res: Response, next: NextFunction) {
 
 export {
   applicationStatusUpdate,
+  checkSession,
   initSession,
   logSession
 };

@@ -3,7 +3,7 @@ const config = require('config')
 exports.config = {
   name: 'codecept',
   tests: './*_test.js',
-  output: './output',
+  output: './functional-output',
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
@@ -20,16 +20,14 @@ exports.config = {
       //   }
     }
   },
-  include: {
-    I: './steps_file.js'
-  },
   gherkin: {
     features: './test/e2e-test/features/*.feature',
-    steps: ['./test/e2e-test/step_definitions/steps.js']
+    steps: ['./test/e2e-test/step_definitions/steps.ts']
   },
   plugins: {
     "stepByStepReport": {
       "enabled": true
     }
-  }
+  },
+  require: ['ts-node/register/transpile-only']
 };

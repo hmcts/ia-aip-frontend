@@ -8,8 +8,7 @@
     "target": "esnext",
     "typeRoots": [
       "./types",
-      "./node_modules/@types",
-      "./node_modules/cypress/types/index.d.ts"
+      "./node_modules/@types"
     ]
   }
 }

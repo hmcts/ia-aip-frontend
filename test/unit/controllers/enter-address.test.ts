@@ -116,7 +116,7 @@ describe('Personal Details Controller', function () {
         },
         selectedPostcode: 'selectedPostcode'
       });
-      expect(req.session.isEdit).to.have.eq(true);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
     });
 
@@ -191,7 +191,7 @@ describe('Personal Details Controller', function () {
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset the isEdit flag', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       req.body['address-line-1'] = '60 GPS';
       req.body['address-town'] = 'London';
@@ -201,7 +201,7 @@ describe('Personal Details Controller', function () {
 
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 

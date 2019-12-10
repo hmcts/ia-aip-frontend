@@ -10,7 +10,7 @@ import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { homeOfficeRefNumber } = req.session.appeal.application || null;
     res.render('appeal-application/home-office/details.njk', { homeOfficeRefNumber });
@@ -43,7 +43,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
 
 function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { dateLetterSent } = req.session.appeal.application;
     res.render('appeal-application/home-office/letter-sent.njk', { dateLetterSent });

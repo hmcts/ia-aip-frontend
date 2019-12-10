@@ -80,7 +80,7 @@ describe('Nationality details Controller', function () {
       req.query = { 'edit': '' };
       getNationalityPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/nationality.njk');
-      expect(req.session.isEdit).to.have.eq(true);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
     });
 
     it('should catch an exception and call next()', () => {
@@ -100,13 +100,13 @@ describe('Nationality details Controller', function () {
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       req.body.nationality = 'AQ';
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 

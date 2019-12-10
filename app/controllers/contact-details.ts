@@ -8,7 +8,7 @@ import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getContactDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const { application } = req.session.appeal;
     const contactDetails = application && application.contactDetails || null;
     return res.render('appeal-application/contact-details.njk', { contactDetails });

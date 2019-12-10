@@ -20,8 +20,8 @@ export function getIdamRedirectUrl(req: Request): string {
  * @param redirectUrl the page to be redirected if action is not an edit
  */
 export function getConditionalRedirectUrl(req: Request, res: Response, redirectUrl: string) {
-  if (req.session.isEdit === true) {
-    req.session.isEdit = false;
+  if (req.session.appeal.application.isEdit === true) {
+    req.session.appeal.application.isEdit = false;
     return res.redirect(paths.checkAndSend);
   }
   return res.redirect(redirectUrl);

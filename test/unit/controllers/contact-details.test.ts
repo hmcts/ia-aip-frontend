@@ -77,7 +77,7 @@ describe('Contact details Controller', () => {
     it('when called with edit param getContactDetail should render type-of-appeal.njk and update session', () => {
       req.query = { 'edit': '' };
       getContactDetails(req as Request, res as Response, next);
-      expect(req.session.isEdit).to.have.eq(true);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/contact-details.njk');
     });
 
@@ -230,7 +230,7 @@ describe('Contact details Controller', () => {
         expect(res.redirect).to.have.been.calledWith(paths.taskList);
       });
       it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
-        req.session.isEdit = true;
+        req.session.appeal.application.isEdit = true;
 
         req.body = {
           selections: [ 'email' ],
@@ -247,7 +247,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
         expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
         expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-        expect(req.session.isEdit).to.have.eq(false);
+        expect(req.session.appeal.application.isEdit).to.have.eq(false);
       });
     });
 
@@ -330,7 +330,7 @@ describe('Contact details Controller', () => {
     });
 
     it('when in edit mode should validate phone number and redirect to check-and-send.njk and reset isEdit', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       req.body = {
         selections: [ 'text-message' ],
@@ -347,7 +347,7 @@ describe('Contact details Controller', () => {
       await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
     });
   });
 });

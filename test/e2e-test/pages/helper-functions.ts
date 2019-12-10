@@ -38,9 +38,11 @@ async function createUser() {
 }
 
 async function signInHelper() {
-  const userDetails = await createUser();
-  I.fillField('#username', userDetails.email);
-  I.fillField('#password',userDetails.password);
+  if (process.env.NODE_ENV !== 'development') {
+    const userDetails = await createUser();
+    I.fillField('#username', userDetails.email);
+    I.fillField('#password',userDetails.password);
+  }
   I.click('.button');
 }
 

@@ -23,7 +23,7 @@
     "test:functional": "yarn codecept:functional",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functionalOld",
     "codecept:crossbrowser": "codeceptjs run -c codecept.crossbrowser.js",
-    "codecept:local": "IDAM_API_URL=http://localhost:4501 SHOW_TESTS=true codeceptjs run -c codecept.functional.js --verbose --debug",
+    "codecept:local": "IDAM_API_URL=http://localhost:20001 cross-env NODE_ENV=development SHOW_TESTS=true codeceptjs run -c codecept.functional.js --verbose --debug",
     "codecept:functional": "IDAM_API_URL=http://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.functional.js --verbose --debug"
   },
   "husky": {

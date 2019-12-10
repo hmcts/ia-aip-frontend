@@ -13,8 +13,8 @@
         </h2>
         <div class="govuk-!-padding-left-7">
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        <ul class="govuk-list">
         {% for task in section.tasks %}
-            <ul class="govuk-list">
                 <li class="govuk-body-l task-list__item">
                     {% if task.active %}
                         {{ i18n.pages.taskList[task.id].htmlLink | safe }}
@@ -28,8 +28,8 @@
                     {% endif %}
                 </li>
                 <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-            </ul>
         {% endfor %}
+        </ul>
         </div>
 
     {% endfor %}

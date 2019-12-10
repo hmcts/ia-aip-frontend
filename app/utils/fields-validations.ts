@@ -285,6 +285,14 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function homeOfficeDecisionValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+  // @ts-ignore
+    ['moreDetail']: Joi.string().required().messages({ 'string.empty':  i18n.validationErrors.homeOfficeDecision.required })
+  });
+  return validate(obj, schema);
+}
+
 export {
   contactDetailsValidation,
   homeOfficeNumberValidation,
@@ -300,5 +308,6 @@ export {
   textAreaValidation,
   statementOfTruthValidation,
   addressValidation,
-  typeOfAppealValidation
+  typeOfAppealValidation,
+  homeOfficeDecisionValidation
 };

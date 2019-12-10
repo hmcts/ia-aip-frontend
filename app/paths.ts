@@ -24,6 +24,9 @@ const paths = {
     uploadEvidence: '/home-office/upload-evidence',
     deleteEvidence: '/home-office/delete-evidence'
   },
+  reasonsForAppeal: {
+    decision: '/reasons/wrong-decision'
+  },
   typeOfAppeal: '/type-of-appeal',
   contactDetails: '/contact-details',
   checkAndSend: '/check-and-send'

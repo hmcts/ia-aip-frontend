@@ -9,45 +9,45 @@
 
 {% block content %}
 
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.validationErrors.errorSummary,
-            errorList: errorList
-        }) }}
-    {% endif %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
 
-    <h1 class="govuk-heading-xl">{{ i18n.pages.checkYourAnswers.header }}</h1>
+  <h1 class="govuk-heading-xl">{{ i18n.pages.checkYourAnswers.header }}</h1>
 
-    {{ govukSummaryList({
-        rows: summaryRows
+  {{ govukSummaryList({
+    rows: summaryRows
+  }) }}
+
+  <form action="/check-and-send" method="post">
+    {{ govukCheckboxes({
+      idPrefix: "statement",
+      name: "statement",
+      fieldset: {
+        legend: {
+          text: i18n.pages.checkYourAnswers.statement ,
+          isPageHeading: false,
+          classes: "govuk-fieldset__legend--l"
+        }
+      },
+      items: [
+        {
+          value: "acceptance",
+          text: i18n.pages.checkYourAnswers.agreement
+        }
+      ],
+      errorMessage: {
+        text: i18n.validationErrors.acceptanceStatement
+      } if error['statement']
     }) }}
 
-    <form action="/check-and-send" method="post">
-        {{ govukCheckboxes({
-            idPrefix: "statement",
-            name: "statement",
-            fieldset: {
-                legend: {
-                    text: i18n.pages.checkYourAnswers.statement ,
-                    isPageHeading: false,
-                    classes: "govuk-fieldset__legend--l"
-                }
-            },
-            items: [
-                {
-                    value: "acceptance",
-                    text: i18n.pages.checkYourAnswers.agreement
-                }
-            ],
-            errorMessage: {
-                text: i18n.validationErrors.acceptanceStatement
-            } if error['statement']
-        }) }}
-
-        {{ govukButton({
-            text: i18n.common.buttons.send,
-            preventDoubleClick: true
-        }) }}
-    </form>
+    {{ govukButton({
+      text: i18n.common.buttons.send,
+      preventDoubleClick: true
+    }) }}
+  </form>
 
 {% endblock %}

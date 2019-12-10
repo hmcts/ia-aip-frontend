@@ -4,15 +4,15 @@
 {% import "components/text-components.njk" as text %}
 
 {% block content %}
-    <h1 class="govuk-heading-xl">{{ i18n.pages.start.header }}</h1>
-    <p class="govuk-body"> {{ i18n.pages.start.description }}</p>
-    <p class="govuk-body"><b> {{ i18n.common.requirements.heading }} </b></p>
-    {{ text.listItems( i18n.pages.start.requirements ) }}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.start.header }}</h1>
+  <p class="govuk-body"> {{ i18n.pages.start.description }}</p>
+  <p class="govuk-body"><b> {{ i18n.common.requirements.heading }} </b></p>
+  {{ text.listItems( i18n.pages.start.requirements ) }}
 
-    {{ govukButton({
-        text: "Start now",
-        href: "/login",
-        isStartButton: true
-    }) }}
+  {{ govukButton({
+    text: "Start now",
+    href: "/login",
+    isStartButton: true
+  }) }}
 
 {% endblock %}

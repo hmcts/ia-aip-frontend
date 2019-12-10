@@ -11,53 +11,57 @@
 {% set serviceUrl = i18n.serviceUrl %}
 
 {% macro errorSummary(errors) %}
-    {%  if errors %}
-        {{ govukErrorSummary({
-            titleText: "There is a problem",
-            errorList: errors.errorList
-        }) }}
-    {% endif %}
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.errorList
+    }) }}
+  {% endif %}
 {% endmacro %}
 
 {% macro saveButtons() %}
+
+  <div class="buttons__container">
     {{ govukButton({
-        text: "Save and continue"
-    }) }} 
+      text: i18n.common.buttons.saveAndContinue,
+      classes: "govuk-!-margin-right-1"
+    }) }}
 
     {{ govukButton({
-        text: "Save for later",
-        name: "saveForLater",
-        value: "saveForLater",
-        classes: "govuk-button--secondary"
+      text: i18n.common.buttons.saveForLater,
+      name: "saveForLater",
+      value: "saveForLater",
+      classes: "govuk-button--secondary"
     }) }}
+  </div>
 {% endmacro %}
 
 {% macro input(label, id, value='') %}
-    {{ govukInput({
-        label: {
-            text: label
-        },
-        id: id,
-        name: id,
-        classes: "govuk-input--width-20",
-        value: value,
-        errorMessage: errors.fieldErrors[id]
-    }) }}
+  {{ govukInput({
+    label: {
+      text: label
+    },
+    id: id,
+    name: id,
+    classes: "govuk-input--width-20",
+    value: value,
+    errorMessage: errors.fieldErrors[id]
+  }) }}
 {% endmacro %}
 
-{%  macro contactUs() %}
-    {{ govukDetails({
-        summaryText: "Contact us for help",
-        html: "<div><h2>Telephone</h2><p>0330 123 1234</p><h2>Email</h2><p>support@hmcts.net</p></div>"
-    }) }}
+{% macro contactUs() %}
+  {{ govukDetails({
+    summaryText: "Contact us for help",
+    html: "<div><h2>Telephone</h2><p>0330 123 1234</p><h2>Email</h2><p>support@hmcts.net</p></div>"
+  }) }}
 {% endmacro %}
 
 {% macro contactUsErrorLink() %}
-    <a class="govuk-link" href="#">Contact the {{i18n.serviceName}} Helpline</a> if you need to make changes to your application or speak to someone about your tax credits.
+  <a class="govuk-link" href="#">Contact the {{ i18n.serviceName }} Helpline</a> if you need to make changes to your application or speak to someone about your tax credits.
 {% endmacro %}
 
 {% block head %}
-  <link href="/main.css" rel="stylesheet" />
+  <link href="/main.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block pageTitle %}
@@ -65,43 +69,43 @@
 {% endblock %}
 
 {% block header %}
-    <div id="cookie-banner" >
-        <p class="govuk-width-container">{{ i18n.cookieBanner.content | safe }}</p>
-    </div>
-    {% if not hideSignOut %}
-        {{ govukHeader({
-            homepageUrl: "#",
-            serviceName:  serviceName,
-            serviceUrl: serviceUrl,
-            containerClasses: "govuk-width-container",
-            navigationClasses: "sign-out",
-            navigation: [
-                {
-                    href: "/logout",
-                    text: "Sign out",
-                    active: true
-                }
-            ]
-        }) }}
-    {% else %}
-        {{ govukHeader({
-            homepageUrl: "#",
-            containerClasses: "govuk-width-container",
-            serviceName: serviceName,
-            serviceUrl: serviceUrl
-        }) }}
-    {% endif %}
+  <div id="cookie-banner">
+    <p class="govuk-width-container">{{ i18n.cookieBanner.content | safe }}</p>
+  </div>
+  {% if not hideSignOut %}
+    {{ govukHeader({
+      homepageUrl: "#",
+      serviceName:  serviceName,
+      serviceUrl: serviceUrl,
+      containerClasses: "govuk-width-container",
+      navigationClasses: "sign-out",
+      navigation: [
+        {
+          href: "/logout",
+          text: "Sign out",
+          active: true
+        }
+      ]
+    }) }}
+  {% else %}
+    {{ govukHeader({
+      homepageUrl: "#",
+      containerClasses: "govuk-width-container",
+      serviceName: serviceName,
+      serviceUrl: serviceUrl
+    }) }}
+  {% endif %}
 
 {% endblock %}
 
 {% block beforeContent %}
-    {% if not hideBackLink %}
-        {{ govukBackLink({
-            text: "Back",
-            href: previousPage,
-            attributes : { onclick: "history.go(-1); return false;" }
-        }) }}
-    {% endif %}
+  {% if not hideBackLink %}
+    {{ govukBackLink({
+      text: "Back",
+      href: previousPage,
+      attributes : { onclick: "history.go(-1); return false;" }
+    }) }}
+  {% endif %}
 {% endblock %}
 
 {% block bodyEnd %}

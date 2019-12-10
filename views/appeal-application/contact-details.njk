@@ -44,63 +44,61 @@
     }) }}
   {% endset %}
 
-    {% set textHtml %}
-      {{ govukInput({
-        id: "text-message-value",
-        name: "text-message-value",
-        type: "tel",
-        value: contactDetails.phone,
-        classes: "govuk-!-width-one-third",
-        label: {
-          text: i18n.fields.mobilePhone
+  {% set textHtml %}
+    {{ govukInput({
+      id: "text-message-value",
+      name: "text-message-value",
+      type: "tel",
+      value: contactDetails.phone,
+      classes: "govuk-!-width-one-third",
+      label: {
+        text: i18n.fields.mobilePhone
+      },
+      errorMessage: {
+        text: errors['text-message-value'].text
+      }if errors['text-message-value']
+    }) }}
+  {% endset %}
+
+  <form action="/contact-details" method="post" novalidate>
+    {{ govukCheckboxes({
+      idPrefix: "contactDetails",
+      name: "selections",
+      fieldset: {
+        legend: {
+          text: i18n.pages.contactDetails.header,
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--xl"
+        }
+      },
+      hint: {
+        text: i18n.pages.contactDetails.hint
+      },
+      items: [
+        {
+          value: "email",
+          text: i18n.fields.email,
+          conditional: {
+          html: emailHtml
         },
-        errorMessage: {
-          text: errors['text-message-value'].text
-        }if errors['text-message-value']
-      }) }}
-    {% endset %}
+          checked: true if contactDetails.wantsEmail or errors['email-value']
+        },
+        {
+          value: "text-message",
+          text: i18n.fields.textMessage,
+          conditional: {
+          html: textHtml
+        },
+          checked: true if contactDetails.wantsSms or errors['text-message-value']
+        }
+      ],
+      errorMessage: {
+        text: i18n.validationErrors.atLeastOneOption
+      } if errors['selections'] == 0
+    }) }}
+    {{ saveButtons() }}
+  </form>
 
-    <form action="/contact-details" method="post" novalidate>
-      {{ govukCheckboxes({
-          idPrefix: "contactDetails",
-          name: "selections",
-          fieldset: {
-            legend: {
-              text: i18n.pages.contactDetails.header,
-              isPageHeading: true,
-              classes: "govuk-fieldset__legend--xl"
-            }
-          },
-          hint: {
-            text: i18n.pages.contactDetails.hint
-          },
-          items: [
-            {
-              value: "email",
-              text: i18n.fields.email,
-              conditional: {
-                  html: emailHtml
-              },
-              checked: true if contactDetails.wantsEmail or errors['email-value']
-            },
-            {
-              value: "text-message",
-              text: i18n.fields.textMessage,
-              conditional: {
-                html: textHtml
-              },
-              checked: true if contactDetails.wantsSms or errors['text-message-value']
-            }
-          ],
-          errorMessage: {
-            text: i18n.validationErrors.atLeastOneOption
-          } if errors['selections'] == 0
-      }) }}
-        <div class="buttons__container">
-            {{ button.saveButtons(i18n.common.buttons.saveAndContinue, i18n.common.buttons.saveForLater) }}
-        </div>
-    </form>
-
-    {{ contactUs() }}
+  {{ contactUs() }}
 
 {% endblock %}

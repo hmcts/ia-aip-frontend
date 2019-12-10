@@ -8,17 +8,16 @@
     {{ govukErrorSummary({
       titleText: i18n.validationErrors.errorSummary,
       errorList: errorList
-    })
-    }}
+    }) }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficePage.title }}</h1>
 
   <p>{{ i18n.pages.homeOfficePage.description }}</p>
 
   <img
-    src="/assets/images/home_office_ref_number.png"
-    class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
-    alt="{{  i18n.pages.homeOfficePage.refImageAltText }}"
+      src="/assets/images/home_office_ref_number.png"
+      class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
+      alt="{{ i18n.pages.homeOfficePage.refImageAltText }}"
   />
 
   <form action="/home-office/details" method="post">

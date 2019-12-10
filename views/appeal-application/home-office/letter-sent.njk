@@ -11,17 +11,16 @@
       titleText: i18n.validationErrors.errorSummary,
       descriptionText: i18n.error.summary.descriptionText,
       errorList: errorList
-    })
-    }}
+    }) }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeLetterSent.title }}</h1>
 
   <p>{{ i18n.pages.homeOfficeLetterSent.description }}</p>
 
   <img
-    src="/assets/images/home_office_letter_date.png"
-    class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
-    alt="{{ i18n.pages.homeOfficeLetterSent.letterSentImageAltText }}"
+      src="/assets/images/home_office_letter_date.png"
+      class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
+      alt="{{ i18n.pages.homeOfficeLetterSent.letterSentImageAltText }}"
   />
 
   <form action="/home-office/letter-sent" method="post">
@@ -53,8 +52,8 @@
           classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
           value: dateLetterSent.day,
           attributes: {
-            max: 31
-          }
+          max: 31
+        }
         },
         {
           id: 'month',
@@ -62,8 +61,8 @@
           classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
           value: dateLetterSent.month,
           attributes: {
-            max: 12
-          }
+          max: 12
+        }
         },
         {
           id: 'year',
@@ -71,12 +70,11 @@
           classes: "govuk-input--width-4 govuk-input--error" if errorMessage else "govuk-input--width-4",
           value: dateLetterSent.year,
           attributes: {
-            max: 9999
-          }
+          max: 9999
+        }
         }
       ]
-      })
-    }}
+    }) }}
 
     {{ saveButtons() }}
   </form>

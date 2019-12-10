@@ -1,12 +1,16 @@
-import { NextFunction,Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
 import { appealTypes } from '../data/appeal-types';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { typeOfAppealValidation } from '../utils/fields-validations';
+import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.isEdit = _.has(req.query, 'edit');
+
     const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
     const types = appealTypes.map(type => {
       if (appealType.includes(type.value)) type.checked = true;
@@ -31,9 +35,11 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation)
         });
       }
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+
       req.session.appeal.application.appealType = req.body['appealType'];
-      return res.redirect(paths.taskList);
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+
+      return getConditionalRedirectUrl(req, res, paths.taskList);
     } catch (error) {
       next(error);
     }

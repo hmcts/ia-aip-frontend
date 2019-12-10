@@ -1,11 +1,11 @@
-import UpdateAppealService from '../../../app/service/update-appeal-service';
-
-const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import { getNamePage, postNamePage, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+
+const express = require('express');
 
 describe('Personal Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -70,6 +70,13 @@ describe('Personal Details Controller', function () {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk');
     });
 
+    it('when called with edit should render personal-details/name.njk and update session', function () {
+      req.query = { 'edit': '' };
+      getNamePage(req as Request, res as Response, next);
+      expect(req.session.isEdit).to.have.eq(true);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk');
+    });
+
     it('gets name from session', function () {
       req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName', dob: null };
       getNamePage(req as Request, res as Response, next);
@@ -88,6 +95,20 @@ describe('Personal Details Controller', function () {
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.dob);
+    });
+
+    it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
+      req.session.isEdit = true;
+
+      req.body.givenNames = 'Lewis';
+      req.body.familyName = 'Williams';
+      req.session.personalDetails = {};
+
+      await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(req.session.isEdit).to.have.eq(false);
+
     });
   });
 

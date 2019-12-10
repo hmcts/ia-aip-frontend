@@ -1,7 +1,11 @@
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import * as _ from 'lodash';
-import { getNationalityPage, postNationalityPage, setupPersonalDetailsController } from '../../../app/controllers/personal-details';
+import {
+  getNationalityPage,
+  postNationalityPage,
+  setupPersonalDetailsController
+} from '../../../app/controllers/personal-details';
 import { countryList } from '../../../app/data/country-list';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -10,7 +14,7 @@ import { getNationalitiesOptions } from '../../../app/utils/nationalities';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Nationality details Controller', function() {
+describe('Nationality details Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -72,6 +76,13 @@ describe('Nationality details Controller', function() {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/nationality.njk');
     });
 
+    it('when called with edit param  should render personal-details/nationality.njk and update session', function () {
+      req.query = { 'edit': '' };
+      getNationalityPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/nationality.njk');
+      expect(req.session.isEdit).to.have.eq(true);
+    });
+
     it('should catch an exception and call next()', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
@@ -81,11 +92,22 @@ describe('Nationality details Controller', function() {
   });
 
   describe('postNationality', () => {
-    it('should validate and render personal-details/nationality.njk', async () => {
+    it('should validate and redirect personal-details/nationality.njk', async () => {
       req.body.nationality = 'AQ';
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterPostcode);
+    });
+
+    it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
+      req.session.isEdit = true;
+
+      req.body.nationality = 'AQ';
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(req.session.isEdit).to.have.eq(false);
+
     });
 
     it('should fail validation and render personal-details/nationality.njk with error when nothing selected', async () => {
@@ -98,7 +120,7 @@ describe('Nationality details Controller', function() {
       };
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
-          errorList: [error],
+          errorList: [ error ],
           errors: { 'nationality': error },
           nationalitiesOptions
         });

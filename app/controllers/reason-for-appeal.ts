@@ -7,7 +7,7 @@ import { homeOfficeDecisionValidation } from '../utils/fields-validations';
 
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('case-building/reasons/wrong-decision.njk');
+    return res.render('case-building/reasons/decision-appeal.njk');
   } catch (e) {
     next(e);
   }
@@ -18,7 +18,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
     try {
       const validation = homeOfficeDecisionValidation(req.body);
       if (validation != null) {
-        return res.render('case-building/reasons/wrong-decision.njk', {
+        return res.render('case-building/reasons/decision-appeal.njk', {
           errorList: Object.values(validation),
           error: validation
 
@@ -28,14 +28,14 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         decision: req.body.moreDetail
       };
       // TODO Save to CCD.
-      return res.render('case-building/reasons/wrong-decision.njk');
+      return res.render('case-building/reasons/decision-appeal.njk');
     } catch (e) {
       next(e);
     }
   };
 }
 
-function setUpReasonsForAppealController(deps?: any): Router {
+function setupReasonsForAppealController(deps?: any): Router {
   const router = Router();
   router.get(paths.reasonsForAppeal.decision, getReasonForAppeal);
   router.post(paths.reasonsForAppeal.decision, postReasonForAppeal(deps.updateAppealService));
@@ -44,7 +44,7 @@ function setUpReasonsForAppealController(deps?: any): Router {
 }
 
 export {
-    setUpReasonsForAppealController,
+    setupReasonsForAppealController,
     getReasonForAppeal,
     postReasonForAppeal
 

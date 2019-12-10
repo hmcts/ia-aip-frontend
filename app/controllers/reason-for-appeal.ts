@@ -1,7 +1,7 @@
 
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-// import {Events} from '../service/ccd-service';
+import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { homeOfficeDecisionValidation } from '../utils/fields-validations';
 
@@ -28,7 +28,8 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         decision: req.body.moreDetail
       };
       // TODO Save to CCD.
-      return res.render('case-building/reasons/decision-appeal.njk');
+      await updateAppealService.submitEvent(Events.UPLOAD_RESPONDENT_EVIDENCE, req);
+      return res.redirect('case-building/reasons/check-and-send.njk');
     } catch (e) {
       next(e);
     }

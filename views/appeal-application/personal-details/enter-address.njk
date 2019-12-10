@@ -5,92 +5,94 @@
 
 
 {% block content %}
-    {% if error %}
-        {{ govukErrorSummary({
-            titleText: i18n.error.summary.title,
-            descriptionText: i18n.error.summary.descriptionText,
-            errorList: errorList
-        })
-        }}
-    {% endif %}
-    <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.enterAddress.heading}}</h1>
-    {% if selectedPostcode %}
-        <h3>{{ i18n.pages.enterAddress.inputs.postcode }}</h3>
-        <span><b>{{ selectedPostcode }}</b> &emsp;  <a  class="govuk-link app-contact-panel__link"  href="/personal-details/enter-postcode">Change</a></span>
-        </br>
-        </br>
-    {% endif %}
-    <form action="/personal-details/enter-address" method="post">
+  {% if error %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.enterAddress.heading }}</h1>
+  {% if selectedPostcode %}
+    <h3>{{ i18n.pages.enterAddress.inputs.postcode }}</h3>
+    <span><b>{{ selectedPostcode }}</b> &emsp;
+      <a class="govuk-link app-contact-panel__link"
+         href="/personal-details/enter-postcode">Change</a>
+    </span>
+    </br>
+    </br>
+  {% endif %}
+  <form action="/personal-details/enter-address" method="post">
 
-        {{ govukInput({
-            formGroup: {
-                classes: 'govuk-!-margin-bottom-3'
-            },
-            label: {
-                html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>',
-                classes: 'govuk-!-margin-bottom-2'
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "address-line-1",
-            name: "address-line-1",
-            value: address.line1,
-            errorMessage: {
-                text:  error['address-line-1'].text
-            } if error['address-line-1']
-        }) }}
+    {{ govukInput({
+      formGroup: {
+        classes: 'govuk-!-margin-bottom-3'
+      },
+      label: {
+        html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>',
+        classes: 'govuk-!-margin-bottom-2'
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "address-line-1",
+      name: "address-line-1",
+      value: address.line1,
+      errorMessage: {
+        text:  error['address-line-1'].text
+      } if error['address-line-1']
+    }) }}
 
-        {{ govukInput({
-            label: {
-                html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "address-line-2",
-            name: "address-line-2",
-            value: address.line2
-        }) }}
+    {{ govukInput({
+      label: {
+        html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "address-line-2",
+      name: "address-line-2",
+      value: address.line2
+    }) }}
 
-        {{ govukInput({
-            label: {
-                text: "Town or city",
-                classes: 'govuk-!-margin-bottom-2'
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "address-town",
-            name: "address-town",
-            value: address.city,
-            errorMessage: {
-                text:  error['address-town'].text
-            } if error['address-town']
-        }) }}
+    {{ govukInput({
+      label: {
+        text: "Town or city",
+        classes: 'govuk-!-margin-bottom-2'
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "address-town",
+      name: "address-town",
+      value: address.city,
+      errorMessage: {
+        text:  error['address-town'].text
+      } if error['address-town']
+    }) }}
 
-        {{ govukInput({
-            label: {
-                text: "County",
-                classes: 'govuk-!-margin-bottom-2'
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "address-county",
-            name: "address-county",
-            value: address.county,
-            errorMessage: {
-                text:  error['address-county'].text
-            } if error['address-county']
-        }) }}
+    {{ govukInput({
+      label: {
+        text: "County",
+        classes: 'govuk-!-margin-bottom-2'
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "address-county",
+      name: "address-county",
+      value: address.county,
+      errorMessage: {
+        text:  error['address-county'].text
+      } if error['address-county']
+    }) }}
 
-        {{ govukInput({
-            label: {
-                text: "Postcode",
-                classes: 'govuk-!-margin-bottom-2'
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "address-postcode",
-            name: "address-postcode",
-            value: address.postcode,
-            errorMessage: {
-                text:  error['address-postcode'].text
-            } if error['address-postcode']
-        }) }}
-        {{ saveButtons('Save and continue', 'Save for later') }}
-        </form>
-    {{ contactUs() }}
+    {{ govukInput({
+      label: {
+        text: "Postcode",
+        classes: 'govuk-!-margin-bottom-2'
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "address-postcode",
+      name: "address-postcode",
+      value: address.postcode,
+      errorMessage: {
+        text:  error['address-postcode'].text
+      } if error['address-postcode']
+    }) }}
+    {{ saveButtons('Save and continue', 'Save for later') }}
+  </form>
+  {{ contactUs() }}
 {% endblock %}

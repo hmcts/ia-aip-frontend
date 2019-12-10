@@ -1,13 +1,13 @@
 {% macro bold(text) %}
-    <b> {{ text }} </b>
+  <b> {{ text }} </b>
 {% endmacro %}
 
 {% macro parentheses(text) %}
-    ( {{ text }} )
+  ( {{ text }} )
 {% endmacro %}
 
 {% macro addMultipleHintsText(hints) %}
-    {% for hint in hints %}
-        <span id="waste-hint" class="govuk-hint">{{ hint }}</span>
-    {% endfor %}
+  {% for hint in hints %}
+    <span id="waste-hint" class="govuk-hint">{{ hint }}</span>
+  {% endfor %}
 {% endmacro %}

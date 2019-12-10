@@ -6,35 +6,34 @@
 
 {% set stateless = 'stateless' %}
 {% block content %}
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.error.summary.title,
-            errorList: errorList
-        })
-        }}
-    {% endif %}
-    <form method="post" action="/personal-details/nationality">
-        {% call govukFieldset({
-            legend: {
-                text: i18n.pages.nationality.heading,
-                classes: "govuk-fieldset__legend--xl",
-                isPageHeading: true
-            }
-        }) %}
-            {{ govukSelect({
-                id: "nationality",
-                name: "nationality",
-                items: nationalitiesOptions,
-                attributes: {
-                    'aria-label': i18n.pages.nationality.heading
-                },
-                errorMessage: {
-                    text: errors["nationality-statelessNationality"].text
-                } if errors["nationality-statelessNationality"]
-            }) }}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form method="post" action="/personal-details/nationality">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.nationality.heading,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      {{ govukSelect({
+        id: "nationality",
+        name: "nationality",
+        items: nationalitiesOptions,
+        attributes: {
+          'aria-label': i18n.pages.nationality.heading
+        },
+        errorMessage: {
+          text: errors["nationality-statelessNationality"].text
+        } if errors["nationality-statelessNationality"]
+      }) }}
 
-        {% endcall %}
-        {{ saveButtons() }}
-    </form>
-    {{ contactUs() }}
+    {% endcall %}
+    {{ saveButtons() }}
+  </form>
+  {{ contactUs() }}
 {% endblock %}

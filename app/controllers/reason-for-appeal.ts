@@ -7,7 +7,7 @@ import { homeOfficeDecisionValidation } from '../utils/fields-validations';
 
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('case-building/reasons/decision-appeal.njk');
+    return res.render('case-building/reasons/wrong-decision.njk');
   } catch (e) {
     next(e);
   }
@@ -18,7 +18,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
     try {
       const validation = homeOfficeDecisionValidation(req.body);
       if (validation != null) {
-        return res.render('case-building/reasons/decision-appeal.njk', {
+        return res.render('case-building/reasons/wrong-decision.njk', {
           errorList: Object.values(validation),
           error: validation
 

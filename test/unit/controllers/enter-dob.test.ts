@@ -75,7 +75,7 @@ describe('Personal Details Controller', function () {
 
       getDateOfBirthPage(req as Request, res as Response, next);
 
-      expect(req.session.isEdit).to.have.eq(true);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/date-of-birth.njk');
     });
   });
@@ -94,7 +94,7 @@ describe('Personal Details Controller', function () {
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       req.body.day = 1;
       req.body.month = 11;
@@ -105,7 +105,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
   });

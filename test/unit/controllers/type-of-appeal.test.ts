@@ -76,7 +76,7 @@ describe('Type of appeal Controller', () => {
 
       getTypeOfAppeal(req as Request, res as Response, next);
 
-      expect(req.session.isEdit).to.have.eq(true);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { types: appealTypes });
     });
 
@@ -113,13 +113,13 @@ describe('Type of appeal Controller', () => {
     });
 
     it('when in edit mode should validate and redirect to the CYA page and reset isEdit flag', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
 
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 
@@ -131,13 +131,13 @@ describe('Type of appeal Controller', () => {
     });
 
     it('postTypeOfAppeal when in edit mode when clicked on save-and-continue with multiple selections should redirect to CYA page and reset isEdit flag', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       req.body = { 'button': 'save-and-continue', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
 
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 

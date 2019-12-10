@@ -90,7 +90,7 @@ describe('Home Office Details Controller', function () {
     it('when called with edit param should render home-office/details.njk and update session', function () {
       req.query = { 'edit': '' };
       getHomeOfficeDetails(req as Request, res as Response, next);
-      expect(req.session.isEdit).to.have.eq(true);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/details.njk');
     });
 
@@ -112,14 +112,14 @@ describe('Home Office Details Controller', function () {
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       req.body['homeOfficeRefNumber'] = 'A1234567';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 
@@ -162,7 +162,7 @@ describe('Home Office Details Controller', function () {
       req.query = { 'edit': '' };
 
       getDateLetterSent(req as Request, res as Response, next);
-      expect(req.session.isEdit).to.have.eq(true);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
@@ -192,7 +192,7 @@ describe('Home Office Details Controller', function () {
     });
 
     it('when in edit mode should validate and redirect to CYA page if letter is not older than 14 days and reset isEdit flag', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       const date = moment().subtract(14, 'd');
       req.body['day'] = date.format('DD');
@@ -206,7 +206,7 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 
@@ -226,7 +226,7 @@ describe('Home Office Details Controller', function () {
     });
 
     it('when in edit mode should validate and redirect to Appeal Late page if appeal is later than 14 days and isEdit flag is not updated', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
 
       const date = moment().subtract(15, 'd');
       req.body['day'] = date.format('DD');
@@ -240,7 +240,7 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
-      expect(req.session.isEdit).to.have.eq(true);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
     });
 
@@ -316,12 +316,12 @@ describe('Home Office Details Controller', function () {
     });
 
     it('when in edit mode should validate and redirect to CYA and reset isEdit flag', async () => {
-      req.session.isEdit = true;
+      req.session.appeal.application.isEdit = true;
       req.body['appeal-late'] = 'My explanation why am late';
       await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 

@@ -9,7 +9,7 @@ import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
     const types = appealTypes.map(type => {

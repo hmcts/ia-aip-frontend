@@ -19,7 +19,7 @@ import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { application } = req.session.appeal;
     const dob = application.personalDetails && application.personalDetails.dob || null;
@@ -60,7 +60,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
 
 function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const personalDetails = req.session.appeal.application.personalDetails;
     return res.render('appeal-application/personal-details/name.njk', { personalDetails });
   } catch (e) {
@@ -99,7 +99,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
 
 function getNationalityPage(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { application } = req.session.appeal;
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
@@ -239,7 +239,7 @@ function findAddress(udprn: string, addresses: Address[]): Address {
 
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.isEdit = _.has(req.query, 'edit');
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     let model;
     if (_.has(req.session.appeal.application, 'addressLookup.selected')) {

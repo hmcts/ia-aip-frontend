@@ -1,20 +1,24 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
 import moment from 'moment';
 import multer from 'multer';
-import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { dateLetterSentValidation, homeOfficeNumberValidation, textAreaValidation } from '../utils/fields-validations';
+import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.isEdit = _.has(req.query, 'edit');
+
     const { homeOfficeRefNumber } = req.session.appeal.application || null;
     res.render('appeal-application/home-office/details.njk', { homeOfficeRefNumber });
   } catch (e) {
     next(e);
   }
 }
+
 function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -30,7 +34,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       }
       req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return res.redirect(paths.homeOffice.letterSent);
+      return getConditionalRedirectUrl(req, res, paths.homeOffice.letterSent);
     } catch (e) {
       next(e);
     }
@@ -39,6 +43,8 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
 
 function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.isEdit = _.has(req.query, 'edit');
+
     const { dateLetterSent } = req.session.appeal.application;
     res.render('appeal-application/home-office/letter-sent.njk', { dateLetterSent });
   } catch (e) {
@@ -71,7 +77,8 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
 
       if (diffInDays <= 14) {
         req.session.appeal.application.isAppealLate = false;
-        return res.redirect(paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.taskList);
+
       }
       req.session.appeal.application.isAppealLate = true;
       res.redirect(paths.homeOffice.appealLate);
@@ -115,7 +122,7 @@ function postAppealLate(updateAppealService: UpdateAppealService) {
         reason: req.body['appeal-late']
       };
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return res.redirect(paths.taskList);
+      return getConditionalRedirectUrl(req, res, paths.taskList);
     } catch (e) {
       next(e);
     }

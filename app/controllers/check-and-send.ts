@@ -16,28 +16,33 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     return i18n.appealTypes[appealType].name;
   });
   const country = countryList.find(country => country.value === appealApplication.personalDetails.nationality);
+  const editParameter = '?edit';
   return [
-    addSummaryRow('homeOfficeRefNumber', [ appealApplication.homeOfficeRefNumber ], paths.homeOffice.details),
+    addSummaryRow('homeOfficeRefNumber',
+      [ appealApplication.homeOfficeRefNumber ],
+      paths.homeOffice.details + editParameter),
     addSummaryRow('dateLetterSent',
       [ appealApplication.dateLetterSent.day, moment.months(appealApplication.dateLetterSent.month - 1), appealApplication.dateLetterSent.year ],
-      paths.homeOffice.letterSent,
-      Delimiter.SPACE
+      paths.homeOffice.letterSent + editParameter, Delimiter.SPACE
     ),
     addSummaryRow('name',
       [ appealApplication.personalDetails.givenNames, appealApplication.personalDetails.familyName ],
-      paths.personalDetails.name, Delimiter.SPACE),
+      paths.personalDetails.name + editParameter, Delimiter.SPACE),
     addSummaryRow('dob',
       [ appealApplication.personalDetails.dob.day, moment.months(appealApplication.personalDetails.dob.month - 1), appealApplication.personalDetails.dob.year ],
-      paths.personalDetails.dob, Delimiter.SPACE),
+      paths.personalDetails.dob + editParameter, Delimiter.SPACE),
     addSummaryRow('nationality',
       [ country.name ],
-      paths.personalDetails.nationality),
+      paths.personalDetails.nationality + editParameter),
+    addSummaryRow('addressDetails',
+      [ ...Object.values(appealApplication.personalDetails.address) ],
+      paths.personalDetails.enterAddress + editParameter),
     addSummaryRow('contactDetails',
-      [ appealApplication.contactDetails.email, appealApplication.contactDetails.phone, ...Object.values(appealApplication.personalDetails.address) ],
-      paths.contactDetails),
+      [ appealApplication.contactDetails.email, appealApplication.contactDetails.phone ],
+      paths.contactDetails + editParameter),
     addSummaryRow('appealType',
       [ appealTypeNames ],
-      paths.typeOfAppeal)
+      paths.typeOfAppeal + editParameter)
   ];
 }
 

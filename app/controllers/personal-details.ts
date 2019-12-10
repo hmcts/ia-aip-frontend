@@ -15,9 +15,12 @@ import {
   postcodeValidation
 } from '../utils/fields-validations';
 import { getNationalitiesOptions } from '../utils/nationalities';
+import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.isEdit = _.has(req.query, 'edit');
+
     const { application } = req.session.appeal;
     const dob = application.personalDetails && application.personalDetails.dob || null;
     return res.render('appeal-application/personal-details/date-of-birth.njk', { dob });
@@ -27,7 +30,7 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postDateOfBirth(updateAppealService: UpdateAppealService) {
-  return async function(req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const validation = dateOfBirthValidation(req.body);
       if (validation != null) {
@@ -48,8 +51,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       };
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-
-      return res.redirect(paths.personalDetails.nationality);
+      return getConditionalRedirectUrl(req, res, paths.personalDetails.nationality);
     } catch (e) {
       next(e);
     }
@@ -58,6 +60,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
 
 function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.isEdit = _.has(req.query, 'edit');
     const personalDetails = req.session.appeal.application.personalDetails;
     return res.render('appeal-application/personal-details/name.njk', { personalDetails });
   } catch (e) {
@@ -87,8 +90,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       };
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-
-      return res.redirect(paths.personalDetails.dob);
+      return getConditionalRedirectUrl(req, res, paths.personalDetails.dob);
     } catch (e) {
       next(e);
     }
@@ -97,6 +99,8 @@ function postNamePage(updateAppealService: UpdateAppealService) {
 
 function getNationalityPage(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.isEdit = _.has(req.query, 'edit');
+
     const { application } = req.session.appeal;
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
     const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
@@ -129,9 +133,11 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       };
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       if (_.has(application, 'personalDetails.address.line1')) {
-        return res.redirect(paths.personalDetails.enterAddress);
+        return getConditionalRedirectUrl(req, res, paths.personalDetails.enterAddress);
+
       }
-      return res.redirect(paths.personalDetails.enterPostcode);
+      return getConditionalRedirectUrl(req, res, paths.personalDetails.enterPostcode);
+
     } catch (e) {
       next(e);
     }
@@ -183,7 +189,7 @@ function getAddressList(addressLookupResult) {
     {
       value: '',
       text: selectAddresses
-    }].concat(lookedUpAddresses);
+    } ].concat(lookedUpAddresses);
   return addresses;
 }
 
@@ -210,7 +216,7 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
   try {
     const validation = dropdownValidation(req.body.address, 'address');
     if (validation) {
-      const addresses = getAddressList(_.get(req.session.appeal.application,'addressLookup.result'));
+      const addresses = getAddressList(_.get(req.session.appeal.application, 'addressLookup.result'));
 
       return res.render('appeal-application/personal-details/postcode-lookup.njk', {
         error: validation,
@@ -233,6 +239,8 @@ function findAddress(udprn: string, addresses: Address[]): Address {
 
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.isEdit = _.has(req.query, 'edit');
+
     let model;
     if (_.has(req.session.appeal.application, 'addressLookup.selected')) {
       const osAddress = findAddress(
@@ -283,7 +291,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
         }
       };
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return res.redirect(paths.taskList);
+      return getConditionalRedirectUrl(req, res, paths.taskList);
     } catch (e) {
       next(e);
     }

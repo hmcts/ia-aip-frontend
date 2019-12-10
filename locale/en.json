@@ -219,11 +219,12 @@
     "email": "Email",
     "emailAddress": "Enter email address",
     "homeOfficeRefNumber": "Home Office reference number",
-    "dateLetterSent": "Date letter Sent",
+    "dateLetterSent": "Date letter sent",
     "name": "Name",
     "dob": "Date of birth",
     "nationality": "Nationality",
     "contactDetails": "Contact details",
+    "addressDetails": "Address",
     "appealType": "Appeal type"
   },
   "components": {

@@ -20,7 +20,7 @@ import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 
-export let updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
+export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'));
 
 const router = express.Router();

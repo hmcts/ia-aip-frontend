@@ -1,5 +1,5 @@
-import { PhoneNumberFormat, PhoneNumberType } from 'google-libphonenumber';
-
+const phoneNumberFormat = require('google-libphonenumber').PhoneNumberFormat;
+const phoneNumberType = require('google-libphonenumber').PhoneNumberType;
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
 /**
@@ -39,10 +39,10 @@ module.exports = joi => {
        * Supported formatting types
        */
       const supportedTypes = {
-        e164: PhoneNumberFormat.E164,
-        international: PhoneNumberFormat.INTERNATIONAL,
-        national: PhoneNumberFormat.NATIONAL,
-        rfc3966: PhoneNumberFormat.RFC3966
+        e164: phoneNumberFormat.E164,
+        international: phoneNumberFormat.INTERNATIONAL,
+        national: phoneNumberFormat.NATIONAL,
+        rfc3966: phoneNumberFormat.RFC3966
       };
 
       /**
@@ -67,7 +67,7 @@ module.exports = joi => {
           throw new Error('The string supplied did not seem to be a phone number');
         }
 
-        if (phoneUtil.getNumberType(mobilePhoneNumber) !== PhoneNumberType.MOBILE) {
+        if (phoneUtil.getNumberType(mobilePhoneNumber) !== phoneNumberType.MOBILE) {
           throw new Error('The phone supplied did not seem to be a valid mobile phone number');
         }
 

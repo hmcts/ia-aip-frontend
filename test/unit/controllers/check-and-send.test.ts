@@ -19,7 +19,7 @@ function getMockedSummaryRows() {
     value: { html: 'A1234567' }
   }, {
     actions: { items: [ { href: '/home-office/letter-sent', text: 'Change' } ] },
-    key: { text: 'Date Letter Sent' },
+    key: { text: 'Date letter Sent' },
     value: { html: '1 July 2019' }
   }, {
     actions: { items: [ { href: '/personal-details/name', text: 'Change' } ] },
@@ -35,7 +35,7 @@ function getMockedSummaryRows() {
     value: { html: 'Austria' }
   }, {
     actions: { items: [ { href: '/contact-details', text: 'Change' } ] },
-    key: { text: 'Contact Details' },
+    key: { text: 'Contact details' },
     value: {
       html: 'pedro.jimenez@example.net<br>07123456789<br>60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London'
     }

@@ -174,6 +174,20 @@ describe('fields-validations', () => {
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
+
+    it('should fail email validation and return "string.format" type on unicode emails', () => {
+      const object = { 'email-value': 'あいうえお@domain.com' };
+      const validationResult = emailValidation(object);
+
+      const expectedResponse = {
+        'email-value': {
+          'key': 'email-value',
+          'text': 'Enter an email address in the correct format, like name@example.com',
+          'href': '#email-value'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
   });
 
   describe('mobilePhoneValidation', () => {
@@ -184,7 +198,7 @@ describe('fields-validations', () => {
         'text-message-value': {
           href: '#text-message-value',
           key: 'text-message-value',
-          text: 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192'
+          text: 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);
@@ -212,7 +226,7 @@ describe('fields-validations', () => {
         'text-message-value': {
           href: '#text-message-value',
           key: 'text-message-value',
-          text: 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192'
+          text: 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999'
         }
       };
 
@@ -234,7 +248,7 @@ describe('fields-validations', () => {
       const expectedResponse = {
         'text-message-value': {
           'key': 'text-message-value',
-          'text': 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192',
+          'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
           'href': '#text-message-value'
         }
       };
@@ -261,7 +275,7 @@ describe('fields-validations', () => {
     const expectedResponse = {
       'text-message-value': {
         'key': 'text-message-value',
-        'text': 'Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192',
+        'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
         'href': '#text-message-value'
       }
     };

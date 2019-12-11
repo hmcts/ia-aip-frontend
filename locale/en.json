@@ -176,7 +176,7 @@
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
-    "phoneFormat": "Enter a telephone number, like 01632 960 002, 07700 900 982 or +44 808 157 0192",
+    "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
     "acceptanceStatement": "Select if you believe the information you have given is true.",
     "contactDetails": {
       "selectOneOption": "Select at least one of the contact options"
@@ -215,9 +215,9 @@
   },
   "fields": {
     "textMessage": "Text message",
-    "mobilePhone": "Mobile phone number",
+    "mobilePhone": "Enter mobile phone number",
     "email": "Email",
-    "emailAddress": "Email address",
+    "emailAddress": "Enter email address",
     "homeOfficeRefNumber": "Home Office reference number",
     "dateLetterSent": "Date letter Sent",
     "name": "Name",

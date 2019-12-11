@@ -101,8 +101,8 @@ describe('Reasons for Appeal Controller', function() {
     it('should pass validation and render case-building/reasons/decision-appeal.njk without error', async () => {
       req.body.moreDetail = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
-          'case-building/reasons/decision-appeal.njk');
+      expect(res.redirect).to.have.been.calledWith(
+          'case-building/reasons/check-and-send.njk');
     });
   });
 });

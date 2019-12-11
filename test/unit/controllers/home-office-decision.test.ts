@@ -62,9 +62,9 @@ describe('Reasons for Appeal Controller', function() {
   });
 
   describe('getReasonForAppeal', () => {
-    it('should render case-building/reasons/decision-appeal.njk', function () {
+    it('should render case-building/reasons-for-appeal/decision-appeal.njk', function () {
       getReasonForAppeal(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons/decision-appeal.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/decision-appeal.njk');
     });
   });
 
@@ -76,11 +76,11 @@ describe('Reasons for Appeal Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render case-building/reasons/decision-appeal.njk with error', async () => {
+    it('should fail validation and render case-building/reasons-for-appeal/decision-appeal.njk with error', async () => {
       req.body.moreDetail = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
-                'case-building/reasons/decision-appeal.njk',
+                'case-building/reasons-for-appeal/decision-appeal.njk',
         {
           error: {
             moreDetail: {
@@ -98,11 +98,11 @@ describe('Reasons for Appeal Controller', function() {
       );
     });
 
-    it('should pass validation and render case-building/reasons/decision-appeal.njk without error', async () => {
+    it('should pass validation and render case-building/reasons-for-appeal/decision-appeal.njk without error', async () => {
       req.body.moreDetail = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(
-          'case-building/reasons/check-and-send.njk');
+          'case-building/reasons-for-appeal/check-and-send.njk');
     });
   });
 });

@@ -18,7 +18,10 @@ function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
       return type;
     });
 
-    return res.render('appeal-application/type-of-appeal.njk', { types });
+    return res.render('appeal-application/type-of-appeal.njk', {
+      types,
+      previousPage: paths.taskList
+    });
   } catch (error) {
     next(error);
   }
@@ -32,7 +35,8 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/type-of-appeal.njk', {
           types: appealTypes,
           errors: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          previousPage: paths.taskList
         });
       }
 

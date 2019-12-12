@@ -50,7 +50,10 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const summaryRows = createSummaryRowsFrom(application);
-    return res.render('appeal-application/check-and-send.njk', { summaryRows });
+    return res.render('appeal-application/check-and-send.njk', {
+      summaryRows,
+      previousPage: paths.taskList
+    });
   } catch (error) {
     next(error);
   }
@@ -68,7 +71,8 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/check-and-send.njk', {
           summaryRows: summaryRows,
           error: validationResult,
-          errorList: Object.values(validationResult)
+          errorList: Object.values(validationResult),
+          previousPage: paths.taskList
         });
       }
       await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);

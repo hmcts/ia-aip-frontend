@@ -99,11 +99,10 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% if not hideBackLink %}
+  {% if previousPage %}
     {{ govukBackLink({
       text: "Back",
-      href: previousPage,
-      attributes : { onclick: "history.go(-1); return false;" }
+      href: previousPage
     }) }}
   {% endif %}
 {% endblock %}

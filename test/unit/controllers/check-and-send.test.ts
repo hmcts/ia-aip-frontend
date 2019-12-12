@@ -123,7 +123,8 @@ describe('Check and Send Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
       error: expectedError,
       errorList: Object.values(expectedError),
-      summaryRows: summaryRows
+      summaryRows: summaryRows,
+      previousPage: paths.taskList
     });
   });
 

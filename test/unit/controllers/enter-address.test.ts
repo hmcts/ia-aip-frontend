@@ -69,7 +69,6 @@ describe('Personal Details Controller', function () {
 
   describe('getManualEnterAddressPage', () => {
     it('should render appeal-application/personal-details/enter-address.njk', function () {
-      // @ts-ignore
       req.session.appeal.application.addressLookup = {
         postcode: 'selectedPostcode',
         selected: 'udprn',
@@ -88,14 +87,14 @@ describe('Personal Details Controller', function () {
           county: '',
           postcode: 'postcode'
         },
-        selectedPostcode: 'selectedPostcode'
+        selectedPostcode: 'selectedPostcode',
+        previousPage: paths.personalDetails.postcodeLookup
       });
     });
 
     it('when called with edit param should render appeal-application/personal-details/enter-address.njk and update session', function () {
       req.query = { 'edit': '' };
 
-      // @ts-ignore
       req.session.appeal.application.addressLookup = {
         postcode: 'selectedPostcode',
         selected: 'udprn',
@@ -114,14 +113,14 @@ describe('Personal Details Controller', function () {
           county: '',
           postcode: 'postcode'
         },
-        selectedPostcode: 'selectedPostcode'
+        selectedPostcode: 'selectedPostcode',
+        previousPage: paths.personalDetails.postcodeLookup
       });
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
     });
 
     it('should render appeal-application/personal-details/enter-address.njk with address from CCD if page loaded without postcode lookup', function () {
-      // @ts-ignore
       req.session.appeal.application.addressLookup = {};
       _.set(req.session.appeal.application, 'personalDetails.address', {
         line1: 'subBuildingName buildingName',
@@ -139,12 +138,12 @@ describe('Personal Details Controller', function () {
           county: '',
           postcode: 'postcode'
         },
-        selectedPostcode: 'postcode'
+        selectedPostcode: 'postcode',
+        previousPage: paths.personalDetails.postcodeLookup
       });
     });
 
     it('should catch an exception and call next()', () => {
-      // @ts-ignore
       req.session.appeal.application.addressLookup = {
         selected: 'udprn',
         result: {

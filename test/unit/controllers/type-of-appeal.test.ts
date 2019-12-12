@@ -68,7 +68,10 @@ describe('Type of appeal Controller', () => {
   describe('getTypeOfAppeal', () => {
     it('should render type-of-appeal.njk', () => {
       getTypeOfAppeal(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { types: appealTypes });
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
+        types: appealTypes,
+        previousPage: paths.taskList
+      });
     });
 
     it('when called with edit param should render type-of-appeal.njk and update session ', () => {
@@ -77,7 +80,10 @@ describe('Type of appeal Controller', () => {
       getTypeOfAppeal(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { types: appealTypes });
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
+        types: appealTypes,
+        previousPage: paths.taskList
+      });
     });
 
     it('getTypeOfAppeal should catch exception and call next with the error', () => {
@@ -101,7 +107,8 @@ describe('Type of appeal Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
         errors: { undefined: expectedError },
-        errorList: [ expectedError ]
+        errorList: [ expectedError ],
+        previousPage: paths.taskList
       });
     });
 

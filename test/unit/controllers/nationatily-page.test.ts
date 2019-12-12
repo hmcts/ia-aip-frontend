@@ -122,7 +122,8 @@ describe('Nationality details Controller', function () {
         {
           errorList: [ error ],
           errors: { 'nationality': error },
-          nationalitiesOptions
+          nationalitiesOptions,
+          previousPage: paths.personalDetails.dob
         });
     });
 

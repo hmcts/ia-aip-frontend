@@ -13,7 +13,10 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { homeOfficeRefNumber } = req.session.appeal.application || null;
-    res.render('appeal-application/home-office/details.njk', { homeOfficeRefNumber });
+    res.render('appeal-application/home-office/details.njk', {
+      homeOfficeRefNumber,
+      previousPage: paths.taskList
+    });
   } catch (e) {
     next(e);
   }
@@ -28,7 +31,8 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           {
             errors: validation,
             errorList: Object.values(validation),
-            homeOfficeRefNumber: req.body.homeOfficeRefNumber
+            homeOfficeRefNumber: req.body.homeOfficeRefNumber,
+            previousPage: paths.taskList
           }
         );
       }
@@ -46,11 +50,15 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { dateLetterSent } = req.session.appeal.application;
-    res.render('appeal-application/home-office/letter-sent.njk', { dateLetterSent });
+    res.render('appeal-application/home-office/letter-sent.njk', {
+      dateLetterSent,
+      previousPage: paths.homeOffice.details
+    });
   } catch (e) {
     next(e);
   }
 }
+
 function postDateLetterSent(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -61,7 +69,8 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation),
           dateLetterSent: {
             ...req.body
-          }
+          },
+          previousPage: paths.homeOffice.details
         });
       }
       const { day, month, year } = req.body;
@@ -96,7 +105,8 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
     res.render('appeal-application/home-office/appeal-late.njk',{
       appealLateReason,
       evidences: Object.values(evidences),
-      evidenceCTA: paths.homeOffice.deleteEvidence
+      evidenceCTA: paths.homeOffice.deleteEvidence,
+      previousPage: paths.homeOffice.letterSent
     });
   } catch (e) {
     next(e);
@@ -114,7 +124,8 @@ function postAppealLate(updateAppealService: UpdateAppealService) {
           appealLate: req.body['appeal-late'],
           evidences: Object.values(evidences),
           error: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          previousPage: paths.homeOffice.letterSent
         });
       }
       application.lateAppeal = {
@@ -141,7 +152,8 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
           appealLate: application.lateAppeal && application.lateAppeal.reason || null,
           evidences: Object.values(evidences),
           error: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          previousPage: paths.homeOffice.letterSent
         });
       }
       application.lateAppeal = {

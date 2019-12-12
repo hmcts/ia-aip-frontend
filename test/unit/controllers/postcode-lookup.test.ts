@@ -126,7 +126,8 @@ describe('Personal Details Controller', function () {
         {
           addresses: [{ text: '1 address found', value: '' }, { text: 'formattedAddress', value: 'udprn' }],
           error: { address: error },
-          errorList: [ error ]
+          errorList: [ error ],
+          previousPage: paths.personalDetails.enterPostcode
         }
       );
     });

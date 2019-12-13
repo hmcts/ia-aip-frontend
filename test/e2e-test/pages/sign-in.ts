@@ -3,7 +3,7 @@ const testUrl = require('config').get('testUrl');
 
 module.exports = {
   signIn(I) {
-    Given('I have a defined step', () => {
+    Given('I am on home page', () => {
       I.amOnPage(testUrl);
     });
 
@@ -21,6 +21,14 @@ module.exports = {
 
     Then('I should see the task-list page', async () => {
       await I.seeInCurrentUrl('task-list');
+    });
+
+    Given('I am authenticated as a valid appellant', async () => {
+      I.amOnPage(testUrl);
+      await I.click('.govuk-button');
+      await I.seeInTitle('Sign in - HMCTS Access');
+      await signInHelper();
+      await I.seeInTitle('Task List - Immigration & Asylum - GOV.UK');
     });
   }
 };

@@ -20,11 +20,11 @@
     "test:browser": "mocha test/functional/**/*.test.ts --exit",
     "test:smoke": "NODE_ENV=test yarn test:browser -g @smoke",
     "test:functionalOld": "NODE_ENV=test yarn test:browser -g @smoke --invert",
-    "test:functional": "yarn codecept:functional",
+    "test:functional": "yarn codecept:e2e",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functionalOld",
     "codecept:crossbrowser": "codeceptjs run -c codecept.crossbrowser.js",
-    "codecept:local": "IDAM_API_URL=http://localhost:20001 cross-env NODE_ENV=development SHOW_TESTS=true codeceptjs run -c codecept.functional.js --verbose --debug",
-    "codecept:functional": "IDAM_API_URL=http://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.functional.js --verbose --debug"
+    "codecept:functional": "IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 cross-env NODE_ENV=development SHOW_TESTS=true codeceptjs run -c codecept.functional.js --verbose",
+    "codecept:e2e": "IDAM_API_URL=http://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.e2e.js --verbose --debug"
   },
   "husky": {
     "hooks": {
@@ -54,6 +54,7 @@
     "jsdom": "^15.2.0",
     "jsdom-global": "^3.0.2",
     "jsonwebtoken": "^8.5.1",
+    "kill-port": "^1.6.0",
     "lodash": "^4.17.15",
     "mini-css-extract-plugin": "^0.8.0",
     "moment": "^2.24.0",

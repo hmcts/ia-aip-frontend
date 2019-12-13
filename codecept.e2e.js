@@ -3,8 +3,6 @@ const config = require('config')
 exports.config = {
   name: 'codecept',
   output: './functional-output',
-  bootstrap: './test/functional/bootstrap.ts',
-  teardown: './test/functional/bootstrap.ts',
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
@@ -15,7 +13,7 @@ exports.config = {
     }
   },
   gherkin: {
-    features: './test/functional/features/*.feature',
+    features: './test/e2e-test/features/*.feature',
     steps: ['./test/e2e-test/step_definitions/steps.ts']
   },
   plugins: {

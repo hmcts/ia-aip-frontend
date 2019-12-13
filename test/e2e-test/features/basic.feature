@@ -4,7 +4,7 @@ Feature: Business rules
   I want be able to sign in
 
   Scenario: Sign into form
-    Given I have a defined step
+    Given I am on home page
     When I click start now
     Then I should see the sign in page
     When I enter creds and click sign in

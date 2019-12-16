@@ -6,55 +6,53 @@
 
 {% block content %}
 
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.errorSummary.titleText,
-            errorList: errorList
-        }) }}
-    {% endif %}
-    {% set options = [] %}
-    {% for item in types %}
-        {% set examples =
-            govukDetails({
-            summaryText: i18n.pages.appealType.exampleSummaryText + item.name,
-            html: item.examples
-        }) %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.errorSummary.titleText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  {% set options = [] %}
+  {% for item in types %}
+    {% set examples =
+      govukDetails({
+      summaryText: i18n.pages.appealType.exampleSummaryText + item.name,
+      html: item.examples
+    }) %}
 
-        {% set options = (options.push(
-            {
-                value: item.value,
-                html: item.title,
-                checked: item.checked,
-                hint: { html: examples }
-            }), options) %}
-    {% endfor %}
+    {% set options = (options.push(
+      {
+        value: item.value,
+        html: item.title,
+        checked: item.checked,
+        hint: { html: examples }
+      }), options) %}
+  {% endfor %}
 
-    <form action="/type-of-appeal" method="post">
-        {{ govukCheckboxes({
-            idPrefix: "appealType",
-            id: "appealType",
-            name: "appealType",
-            fieldset: {
-                legend: {
-                    text:  i18n.pages.appealType.header,
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--xl"
-                }
-            },
-            hint: {
-                html:  i18n.pages.appealType.pageHint
-            },
-            errorMessage: {
-                text: i18n.validationErrors.atLeastOneOption
-            } if error,
-            items: options
-        }) }}
+  <form action="/type-of-appeal" method="post">
+    {{ govukCheckboxes({
+      idPrefix: "appealType",
+      id: "appealType",
+      name: "appealType",
+      fieldset: {
+        legend: {
+          text:  i18n.pages.appealType.header,
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--xl"
+        }
+      },
+      hint: {
+        html:  i18n.pages.appealType.pageHint
+      },
+      errorMessage: {
+        text: i18n.validationErrors.atLeastOneOption
+      } if error,
+      items: options
+    }) }}
 
-        <div class="buttons__container">
-            {{ button.saveButtons(i18n.common.buttons.saveAndContinue, i18n.common.buttons.saveForLater) }}
-        </div>
-    </form>
+    {{ saveButtons() }}
+  </form>
 
-    {{ contactUs() }}
+  {{ contactUs() }}
 
 {% endblock %}

@@ -1,17 +1,17 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% macro saveButtons(saveAndContinueText, saveForLaterText) %}
-    {{ govukButton({
-        text: saveAndContinueText,
-        name: "button",
-        value: "save-and-continue",
-        classes: "govuk-!-margin-right-1"
-    }) }}
+  {{ govukButton({
+    text: saveAndContinueText,
+    name: "button",
+    value: "save-and-continue",
+    classes: "govuk-!-margin-right-1"
+  }) }}
 
-    {{ govukButton({
-        text: saveForLaterText,
-        name: "button",
-        value: "save-for-later",
-        classes: "govuk-button--secondary"
-    }) }}
+  {{ govukButton({
+    text: saveForLaterText,
+    name: "button",
+    value: "save-for-later",
+    classes: "govuk-button--secondary"
+  }) }}
 {% endmacro %}

@@ -71,6 +71,15 @@ describe('Type of appeal Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { types: appealTypes });
     });
 
+    it('when called with edit param should render type-of-appeal.njk and update session ', () => {
+      req.query = { 'edit': '' };
+
+      getTypeOfAppeal(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', { types: appealTypes });
+    });
+
     it('getTypeOfAppeal should catch exception and call next with the error', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
@@ -100,14 +109,36 @@ describe('Type of appeal Controller', () => {
       req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
 
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.taskList);
+    });
+
+    it('when in edit mode should validate and redirect to the CYA page and reset isEdit flag', async () => {
+      req.session.appeal.application.isEdit = true;
+
+      req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
+
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.checkAndSend);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+
     });
 
     it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', async () => {
       req.body = { 'button': 'save-and-continue', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
 
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith('/task-list');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.taskList);
+    });
+
+    it('postTypeOfAppeal when in edit mode when clicked on save-and-continue with multiple selections should redirect to CYA page and reset isEdit flag', async () => {
+      req.session.appeal.application.isEdit = true;
+
+      req.body = { 'button': 'save-and-continue', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
+
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.checkAndSend);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+
     });
 
     it('postTypeOfAppeal should catch exception and call next with the error', async () => {

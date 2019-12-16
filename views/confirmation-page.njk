@@ -11,7 +11,7 @@
     }) }}
     {%  else %}
         {{ govukPanel({
-            titleText: i18n.pages.successPage.inTime.panel ,
+            titleText: i18n.pages.successPage.inTime.panel,
             classes: mainClasses
         }) }}
     {%  endif %}
@@ -26,10 +26,10 @@
         <li>{{ i18n.pages.successPage.noResponse | eval | safe }}</li>
     </ul>
     <div class="panel-background">
-        <h2 class="govuk-heading-m">{{ i18n.pages.successPage.thingsYouCanDo }}</h2>
+            <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo }}</h2>
         <ul class="govuk-list govuk-list--bullet">
-            <a class="govuk-link govuk-link--no-visited-state" href="#"> <li>{{ i18n.pages.successPage.readMore }}</li></a>
-            <a class="govuk-link govuk-link--no-visited-state" href="#"><li>{{ i18n.pages.successPage.findOutMore }}</li></a>
+            <li><a class="govuk-link govuk-link--no-visited-state" href="#"> {{ i18n.pages.successPage.readMore }}</a></li>
+            <li><a class="govuk-link govuk-link--no-visited-state" href="#">{{ i18n.pages.successPage.findOutMore }}</a></li>
         </ul>
      </div>
     {{ govukButton({

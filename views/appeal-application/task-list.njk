@@ -6,31 +6,31 @@
 
 
 {% block content %}
-    <h1 class="govuk-heading-xl">{{ i18n.pages.taskList.header }}</h1>
-    {% for section in data %}
-        <h2 class="govuk-heading-l">
-            <span class="app-task-list__section-number">  {{ loop.index }}. </span> {{ i18n.pages.taskList.sections[section.sectionId] }}
-        </h2>
-        <div class="govuk-!-padding-left-7">
-        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+  <h1 class="govuk-heading-xl">{{ i18n.pages.taskList.header }}</h1>
+  {% for section in data %}
+    <h2 class="govuk-heading-l">
+      <span class="app-task-list__section-number">  {{ loop.index }}. </span> {{ i18n.pages.taskList.sections[section.sectionId] }}
+    </h2>
+    <div class="govuk-!-padding-left-7">
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+      {% for task in section.tasks %}
         <ul class="govuk-list">
-        {% for task in section.tasks %}
-                <li class="govuk-body-l task-list__item">
-                    {% if task.active %}
-                        {{ i18n.pages.taskList[task.id].htmlLink | safe }}
-                    {% else %}
-                        {{ i18n.pages.taskList[task.id].title }}
-                    {% endif %}
-                    {% if task.saved or task.completed %}
-                        {{ govukTag({
-                            text: "Saved"
-                        }) }}
-                    {% endif %}
-                </li>
-                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-        {% endfor %}
+          <li class="govuk-body-l task-list__item">
+            {% if task.active %}
+              {{ i18n.pages.taskList[task.id].htmlLink | safe }}
+            {% else %}
+              {{ i18n.pages.taskList[task.id].title }}
+            {% endif %}
+            {% if task.saved or task.completed %}
+              {{ govukTag({
+                text: "Saved"
+              }) }}
+            {% endif %}
+          </li>
+          <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
         </ul>
-        </div>
+      {% endfor %}
+    </div>
 
-    {% endfor %}
+  {% endfor %}
 {% endblock %}

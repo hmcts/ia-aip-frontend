@@ -4,38 +4,37 @@
 
 
 {% block content %}
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.error.summary.title,
-            descriptionText: i18n.error.summary.descriptionText,
-            errorList: errorList
-        })
-        }}
-    {% endif %}
-    <h1 class="govuk-heading-xl">{{ i18n.pages.enterPostcode.heading }}</h1>
-    <form action="/personal-details/enter-postcode" method="post">
-        {{ govukInput({
-            label: {
-                text: i18n.pages.enterPostcode.hint
-            },
-            classes: "govuk-!-width-one-half",
-            id: "postcode",
-            name: "postcode",
-            value: postcode,
-            errorMessage: {
-                text:  error['postcode'].text
-            } if error['postcode']
-        }) }}
-        {{ govukButton({
-            text: 'Find address',
-            name: "buttton",
-            value: "submit"
-        }) }}
-    </form>
-    <p>
-        <a href="/personal-details/enter-address">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
-    </p>
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.enterPostcode.heading }}</h1>
+  <form action="/personal-details/enter-postcode" method="post">
+    {{ govukInput({
+      label: {
+        text: i18n.pages.enterPostcode.hint
+      },
+      classes: "govuk-!-width-one-half",
+      id: "postcode",
+      name: "postcode",
+      value: postcode,
+      errorMessage: {
+        text:  error['postcode'].text
+      } if error['postcode']
+    }) }}
+    {{ govukButton({
+      text: 'Find address',
+      name: "buttton",
+      value: "submit"
+    }) }}
+  </form>
+  <p>
+    <a href="/personal-details/enter-address">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
+  </p>
 
-    {{ contactUs() }}
-{% endblock  %}
+  {{ contactUs() }}
+{% endblock %}
 

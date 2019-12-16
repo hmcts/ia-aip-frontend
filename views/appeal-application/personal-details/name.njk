@@ -1,43 +1,42 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.error.summary.title,
-            errorList: errorList
-        })
-        }}
-    {% endif %}
-    <h1 class="govuk-heading-l">What is your name?</h1>
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <h1 class="govuk-heading-l">What is your name?</h1>
 
-    <form method="post" action="/personal-details/name" type="submit">
-        {{ govukInput({
-            label: {
-                text: "Given names"
-            },
-            classes: "govuk-input--width-20",
-            id: "givenNames",
-            name: "givenNames",
-            value: personalDetails.givenNames,
-            errorMessage: {
-                text: error["givenNames"].text
-            } if error["givenNames"]
-        }) }}
+  <form method="post" action="/personal-details/name" type="submit">
+    {{ govukInput({
+      label: {
+        text: "Given names"
+      },
+      classes: "govuk-input--width-20",
+      id: "givenNames",
+      name: "givenNames",
+      value: personalDetails.givenNames,
+      errorMessage: {
+        text: error["givenNames"].text
+      } if error["givenNames"]
+    }) }}
 
-        {{ govukInput({
-            label: {
-                text: "Family name"
-            },
-            classes: "govuk-input--width-20",
-            id: "familyName",
-            name: "familyName",
-            value: personalDetails.familyName,
-            errorMessage: {
-                text: error["familyName"].text
-            } if error["familyName"]
-        }) }}
+    {{ govukInput({
+      label: {
+        text: "Family name"
+      },
+      classes: "govuk-input--width-20",
+      id: "familyName",
+      name: "familyName",
+      value: personalDetails.familyName,
+      errorMessage: {
+        text: error["familyName"].text
+      } if error["familyName"]
+    }) }}
 
-        {{ saveButtons() }}
-    </form>
-    {{ contactUs() }}
+    {{ saveButtons() }}
+  </form>
+  {{ contactUs() }}
 {% endblock %}

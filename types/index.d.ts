@@ -78,6 +78,7 @@ interface AppealApplication {
     result?: any;
     selected?: any;
   };
+  isEdit?: boolean;
 }
 
 interface CaseBuilding {

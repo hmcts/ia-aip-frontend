@@ -74,6 +74,13 @@ describe('Contact details Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/contact-details.njk');
     });
 
+    it('when called with edit param getContactDetail should render type-of-appeal.njk and update session', () => {
+      req.query = { 'edit': '' };
+      getContactDetails(req as Request, res as Response, next);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/contact-details.njk');
+    });
+
     it('getContactDetails should catch an exception and call next()', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
@@ -222,6 +229,26 @@ describe('Contact details Controller', () => {
         expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
         expect(res.redirect).to.have.been.calledWith(paths.taskList);
       });
+      it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
+        req.session.appeal.application.isEdit = true;
+
+        req.body = {
+          selections: [ 'email' ],
+          'email-value': 'valid@example.net'
+        };
+
+        const contactDetailsExpectation = {
+          email: 'valid@example.net',
+          phone: null,
+          wantsEmail: true,
+          wantsSms: false
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
+        expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+        expect(req.session.appeal.application.isEdit).to.have.eq(false);
+      });
     });
 
     describe('text message cases', () => {
@@ -302,5 +329,25 @@ describe('Contact details Controller', () => {
       });
     });
 
+    it('when in edit mode should validate phone number and redirect to check-and-send.njk and reset isEdit', async () => {
+      req.session.appeal.application.isEdit = true;
+
+      req.body = {
+        selections: [ 'text-message' ],
+        'text-message-value': '07123456789'
+      };
+
+      const contactDetailsExpectation = {
+        email: null,
+        phone: '07123456789',
+        wantsEmail: false,
+        wantsSms: true
+      };
+
+      await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+    });
   });
 });

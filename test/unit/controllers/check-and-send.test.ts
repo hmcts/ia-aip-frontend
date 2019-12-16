@@ -14,33 +14,39 @@ const express = require('express');
 
 function getMockedSummaryRows() {
   return [ {
-    actions: { items: [ { href: '/home-office/details', text: 'Change' } ] },
+    actions: { items: [ { href: '/home-office/details?edit', text: 'Change' } ] },
     key: { text: 'Home Office reference number' },
     value: { html: 'A1234567' }
   }, {
-    actions: { items: [ { href: '/home-office/letter-sent', text: 'Change' } ] },
-    key: { text: 'Date letter Sent' },
+    actions: { items: [ { href: '/home-office/letter-sent?edit', text: 'Change' } ] },
+    key: { text: 'Date letter sent' },
     value: { html: '1 July 2019' }
   }, {
-    actions: { items: [ { href: '/personal-details/name', text: 'Change' } ] },
+    actions: { items: [ { href: '/personal-details/name?edit', text: 'Change' } ] },
     key: { text: 'Name' },
     value: { html: 'Pedro Jimenez' }
   }, {
-    actions: { items: [ { href: '/personal-details/date-of-birth', text: 'Change' } ] },
+    actions: { items: [ { href: '/personal-details/date-of-birth?edit', text: 'Change' } ] },
     key: { text: 'Date of birth' },
     value: { html: '10 October 1980' }
   }, {
-    actions: { items: [ { href: '/personal-details/nationality', text: 'Change' } ] },
+    actions: { items: [ { href: '/personal-details/nationality?edit', text: 'Change' } ] },
     key: { text: 'Nationality' },
     value: { html: 'Austria' }
   }, {
-    actions: { items: [ { href: '/contact-details', text: 'Change' } ] },
-    key: { text: 'Contact details' },
+    actions: { items: [ { href: '/personal-details/enter-address?edit', text: 'Change' } ] },
+    key: { text: 'Address' },
     value: {
-      html: 'pedro.jimenez@example.net<br>07123456789<br>60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London'
+      html: '60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London'
     }
   }, {
-    actions: { items: [ { href: '/type-of-appeal', text: 'Change' } ] },
+    actions: { items: [ { href: '/contact-details?edit', text: 'Change' } ] },
+    key: { text: 'Contact details' },
+    value: {
+      html: 'pedro.jimenez@example.net<br>07123456789'
+    }
+  }, {
+    actions: { items: [ { href: '/type-of-appeal?edit', text: 'Change' } ] },
     key: { text: 'Appeal type' },
     value: { html: 'Protection' }
   } ];

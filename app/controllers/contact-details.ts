@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { contactDetailsValidation } from '../utils/fields-validations';
+import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getContactDetails(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const { application } = req.session.appeal;
     const contactDetails = application && application.contactDetails || null;
     return res.render('appeal-application/contact-details.njk', { contactDetails });
@@ -52,8 +55,8 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
 
       req.session.appeal.application.contactDetails = contactDetails;
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+      return getConditionalRedirectUrl(req, res, paths.taskList);
 
-      return res.redirect(paths.taskList);
     } catch
       (error) {
       next(error);

@@ -69,6 +69,15 @@ describe('Personal Details Controller', function () {
       getDateOfBirthPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/date-of-birth.njk');
     });
+
+    it('when called with edit param should render appeal-application/personal-details/date-of-birth.njk and update session', () => {
+      req.query = { 'edit': '' };
+
+      getDateOfBirthPage(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/date-of-birth.njk');
+    });
   });
 
   describe('postDateOfBirth', () => {
@@ -82,6 +91,22 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.nationality);
+    });
+
+    it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
+      req.session.appeal.application.isEdit = true;
+
+      req.body.day = 1;
+      req.body.month = 11;
+      req.body.year = 1993;
+
+      req.session.personalDetails = {};
+
+      await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+
     });
   });
 
@@ -101,6 +126,7 @@ describe('Personal Details Controller', function () {
           text: errorMessage
         };
       }
+
       const errorDay = createError('day', i18n.validationErrors.dateOfBirth.incorrectFormat);
       const errorMonth = createError('month', i18n.validationErrors.dateOfBirth.incorrectFormat);
       const errorYear = createError('year', i18n.validationErrors.dateOfBirth.incorrectFormat);
@@ -162,4 +188,5 @@ describe('Personal Details Controller', function () {
       );
     });
   });
-});
+})
+;

@@ -4,7 +4,12 @@
 {% set pageTitleName = i18n.pages.successPage.title %}
 {% block content %}
  {% from "govuk/components/panel/macro.njk" import govukPanel %}
-   {%  if  late %}
+    {% if reasoning and late == undefined %}
+        {{ govukPanel({
+            titleText: i18n.pages.caseBuildingSuccess.titleText,
+            classes: mainClasses
+        }) }}
+    {% elseif late %}
     {{ govukPanel({
         titleText: i18n.pages.successPage.outOfTime.panel,
         classes: mainClasses
@@ -17,24 +22,38 @@
     {%  endif %}
     <h2 class="govuk-heading-m">{{i18n.pages.successPage.whatHappensNext}}</h2>
     <ul class="govuk-list govuk-list--bullet">
-        <li>{{ i18n.pages.successPage.info }}</li>
-        {% if late %}
-        <li> {{ i18n.pages.successPage.caseWorker | eval | safe }} </li>
+        {% if reasoning and late == undefined %}
+            <div>
+                <ul class="govuk-list govuk-list--bullet govuk-!-padding-left-1">
+                    <li>{{ i18n.pages.caseBuildingSuccess.answer | safe }}</li>
+                    <li>{{ i18n.pages.caseBuildingSuccess.date | eval | safe }}</li>
+                </ul>
+            </div>
+        {% elseif late %}
+            <li>{{ i18n.pages.successPage.info }}</li>
+            <li> {{ i18n.pages.successPage.caseWorker | eval | safe }} </li>
+            <li>{{ i18n.pages.successPage.noResponse | eval | safe }}</li>
         {%  else %}
-        <li> {{ i18n.pages.successPage.tribunalWorker | eval | safe }} </li>
+                <li>{{ i18n.pages.successPage.info }}</li>
+                <li> {{ i18n.pages.successPage.tribunalWorker | eval | safe }} </li>
+                <li>{{ i18n.pages.successPage.noResponse | eval | safe }}</li>
         {%  endif %}
-        <li>{{ i18n.pages.successPage.noResponse | eval | safe }}</li>
     </ul>
-    <div class="panel-background">
-            <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo }}</h2>
-        <ul class="govuk-list govuk-list--bullet">
-            <li><a class="govuk-link govuk-link--no-visited-state" href="#"> {{ i18n.pages.successPage.readMore }}</a></li>
-            <li><a class="govuk-link govuk-link--no-visited-state" href="#">{{ i18n.pages.successPage.findOutMore }}</a></li>
-        </ul>
-     </div>
+    {% if reasoning == false %}
+        <div class="panel-background">
+            <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>
+            <ul class="govuk-list govuk-list--bullet">
+                <li><a class="govuk-link govuk-link--no-visited-state" href="#"> {{ i18n.pages.successPage.readMore | safe }}</a></li>
+                <li><a class="govuk-link govuk-link--no-visited-state" href="#">{{ i18n.pages.successPage.findOutMore | safe }}</a></li>
+            </ul>
+         </div>
+    {%  elseif late == undefined %}
+        <p>{{ i18n.pages.caseBuildingSuccess.questions | safe }}</p>
+    {% endif %}
     {{ govukButton({
         text: i18n.pages.successPage.seeProgress,
         href: "#"
     }) }}
     {{ contactUs() }}
 {% endblock %}
+

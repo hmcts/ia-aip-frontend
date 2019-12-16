@@ -129,7 +129,7 @@
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal application",
-      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call us on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>",
+      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call us on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>",
       "caseWorker": "A case worker will contact you to by <strong>{{ date }}</strong> to tell you if you can continue with your appeal and what to do next",
       "tribunalWorker": "A Tribunal case worker will contact you to by <strong>{{ date }}</strong> to tell you what to do next",
       "thingsYouCanDo": "Things you can do now",

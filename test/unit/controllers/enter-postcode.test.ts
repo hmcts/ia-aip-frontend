@@ -106,7 +106,8 @@ describe('Personal Details Controller', function() {
         {
           error: { postcode: error },
           errorList: [ error ],
-          postcode: 'invalid'
+          postcode: 'invalid',
+          previousPage: paths.personalDetails.nationality
         });
     });
 
@@ -127,7 +128,8 @@ describe('Personal Details Controller', function() {
         {
           error: { postcode },
           errorList: emptyPostcodeText,
-          postcode: ''
+          postcode: '',
+          previousPage: paths.personalDetails.nationality
         });
     });
   });

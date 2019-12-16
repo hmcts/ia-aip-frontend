@@ -23,7 +23,10 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
 
     const { application } = req.session.appeal;
     const dob = application.personalDetails && application.personalDetails.dob || null;
-    return res.render('appeal-application/personal-details/date-of-birth.njk', { dob });
+    return res.render('appeal-application/personal-details/date-of-birth.njk', {
+      dob,
+      previousPage: paths.personalDetails.name
+    });
   } catch (e) {
     next(e);
   }
@@ -37,7 +40,8 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/personal-details/date-of-birth.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          dob: { ...req.body }
+          dob: { ...req.body },
+          previousPage: paths.personalDetails.name
         });
       }
 
@@ -62,7 +66,10 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const personalDetails = req.session.appeal.application.personalDetails;
-    return res.render('appeal-application/personal-details/name.njk', { personalDetails });
+    return res.render('appeal-application/personal-details/name.njk', {
+      personalDetails,
+      previousPage: paths.taskList
+    });
   } catch (e) {
     next(e);
   }
@@ -79,7 +86,8 @@ function postNamePage(updateAppealService: UpdateAppealService) {
             givenNames: req.body.givenNames
           },
           error: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          previousPage: paths.taskList
         });
       }
       const { application } = req.session.appeal;
@@ -105,7 +113,8 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
     const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
     return res.render('appeal-application/personal-details/nationality.njk', {
-      nationalitiesOptions
+      nationalitiesOptions,
+      previousPage: paths.personalDetails.dob
     });
   } catch (e) {
     next(e);
@@ -122,7 +131,8 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/personal-details/nationality.njk', {
           nationalitiesOptions,
           errors: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          previousPage: paths.personalDetails.dob
         });
       }
 
@@ -149,7 +159,10 @@ function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
     _.set(req.session.appeal.application, 'addressLookup', {});
     const { personalDetails } = req.session.appeal.application;
     const postcode = personalDetails && personalDetails.address && personalDetails.address.postcode || null;
-    res.render('appeal-application/personal-details/enter-postcode.njk', { postcode });
+    res.render('appeal-application/personal-details/enter-postcode.njk', {
+      postcode,
+      previousPage: paths.personalDetails.nationality
+    });
   } catch (e) {
     next(e);
   }
@@ -162,7 +175,8 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
       return res.render('appeal-application/personal-details/enter-postcode.njk', {
         error: validation,
         errorList: Object.values(validation),
-        postcode: req.body.postcode
+        postcode: req.body.postcode,
+        previousPage: paths.personalDetails.nationality
       });
     }
     req.session.appeal.application.addressLookup = {
@@ -205,7 +219,11 @@ function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
     try {
       const addresses = getAddressList(addressLookupResult);
 
-      res.render('appeal-application/personal-details/postcode-lookup.njk', { addresses, postcode });
+      res.render('appeal-application/personal-details/postcode-lookup.njk', {
+        addresses,
+        postcode,
+        previousPage: paths.personalDetails.enterPostcode
+      });
     } catch (e) {
       next(e);
     }
@@ -221,7 +239,8 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
       return res.render('appeal-application/personal-details/postcode-lookup.njk', {
         error: validation,
         errorList: Object.values(validation),
-        addresses: addresses
+        addresses: addresses,
+        previousPage: paths.personalDetails.enterPostcode
       });
     }
 
@@ -240,23 +259,25 @@ function findAddress(udprn: string, addresses: Address[]): Address {
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-
-    let model;
+    let address;
+    let selectedPostcode: string;
     if (_.has(req.session.appeal.application, 'addressLookup.selected')) {
       const osAddress = findAddress(
         _.get(req.session.appeal.application, 'addressLookup.selected'),
         _.get(req.session.appeal.application, 'addressLookup.result.addresses')
       );
-      const selectedPostcode = _.get(req.session.appeal.application, 'addressLookup.postcode');
-      const address = getAddress(osAddress, selectedPostcode);
-      model = { address, selectedPostcode };
+      selectedPostcode = _.get(req.session.appeal.application, 'addressLookup.postcode');
+      address = getAddress(osAddress, selectedPostcode);
     } else {
-      const address = _.get(req.session.appeal.application, 'personalDetails.address');
-      const selectedPostcode = _.get(req.session.appeal.application, 'personalDetails.address.postcode');
-      model = { address, selectedPostcode };
+      address = _.get(req.session.appeal.application, 'personalDetails.address');
+      selectedPostcode = _.get(req.session.appeal.application, 'personalDetails.address.postcode');
     }
 
-    res.render('appeal-application/personal-details/enter-address.njk', model);
+    res.render('appeal-application/personal-details/enter-address.njk', {
+      address,
+      selectedPostcode,
+      previousPage: paths.personalDetails.postcodeLookup
+    });
   } catch (e) {
     next(e);
   }
@@ -276,7 +297,8 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
             postcode: req.body['address-postcode']
           },
           error: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          previousPage: paths.personalDetails.postcodeLookup
         });
       }
 

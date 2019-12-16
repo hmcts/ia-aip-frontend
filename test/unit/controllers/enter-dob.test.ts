@@ -142,7 +142,8 @@ describe('Personal Details Controller', function () {
           errors: {
             day: errorDay
           },
-          errorList: [ errorDay ]
+          errorList: [ errorDay ],
+          previousPage: paths.personalDetails.name
         }
       );
 
@@ -156,7 +157,8 @@ describe('Personal Details Controller', function () {
           errors: {
             month: errorMonth
           },
-          errorList: [ errorMonth ]
+          errorList: [ errorMonth ],
+          previousPage: paths.personalDetails.name
         }
       );
 
@@ -170,7 +172,8 @@ describe('Personal Details Controller', function () {
           errors: {
             year: errorYear
           },
-          errorList: [ errorYear ]
+          errorList: [ errorYear ],
+          previousPage: paths.personalDetails.name
         }
       );
 
@@ -183,7 +186,8 @@ describe('Personal Details Controller', function () {
           errors: {
             date: errorDate
           },
-          errorList: [ errorDate ]
+          errorList: [ errorDate ],
+          previousPage: paths.personalDetails.name
         }
       );
     });

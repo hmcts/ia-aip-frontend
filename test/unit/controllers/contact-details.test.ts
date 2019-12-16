@@ -110,7 +110,8 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'selections': error },
-          errorList: [ error ]
+          errorList: [ error ],
+          previousPage: paths.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -145,7 +146,8 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': emailError, 'text-message-value': textMessageError },
-          errorList: [ emailError, textMessageError ]
+          errorList: [ emailError, textMessageError ],
+          previousPage: paths.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -176,7 +178,8 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': error },
-          errorList: [ error ]
+          errorList: [ error ],
+          previousPage: paths.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -205,7 +208,8 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': error },
-          errorList: [ error ]
+          errorList: [ error ],
+          previousPage: paths.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -274,7 +278,8 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'text-message-value': error },
-          errorList: [ error ]
+          errorList: [ error ],
+          previousPage: paths.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -303,7 +308,8 @@ describe('Contact details Controller', () => {
         const expectedData = {
           contactDetails: contactDetailsExpectation,
           errors: { 'text-message-value': error },
-          errorList: [ error ]
+          errorList: [ error ],
+          previousPage: paths.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

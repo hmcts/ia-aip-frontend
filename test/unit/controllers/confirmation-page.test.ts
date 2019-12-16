@@ -97,7 +97,8 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: daysToWaitUntilContact(14),
-      late: true
+      late: true,
+      reasoning: false
     });
   });
 

@@ -30,7 +30,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
       };
       // TODO Save to CCD.
       await updateAppealService.submitEvent(Events.UPLOAD_RESPONDENT_EVIDENCE, req);
-      return res.redirect('case-building/reasons/check-and-send.njk');
+      return res.redirect('case-building/reasons-for-appeal/check-and-send.njk');
     } catch (e) {
       next(e);
     }

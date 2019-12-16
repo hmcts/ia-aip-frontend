@@ -139,7 +139,8 @@ describe('Home Office Details Controller', function () {
             homeOfficeRefNumber: error
           },
           errorList: [ error ],
-          homeOfficeRefNumber: 'notValid'
+          homeOfficeRefNumber: 'notValid',
+          previousPage: paths.taskList
         });
     });
 
@@ -273,7 +274,8 @@ describe('Home Office Details Controller', function () {
         {
           error,
           errorList,
-          dateLetterSent: { ...req.body }
+          dateLetterSent: { ...req.body },
+          previousPage: paths.homeOffice.details
         }
       );
     });
@@ -373,7 +375,8 @@ describe('Home Office Details Controller', function () {
         appealLate: null,
         evidences: [],
         error: { 'file-description': error },
-        errorList: [ error ]
+        errorList: [ error ],
+        previousPage: paths.homeOffice.letterSent
       });
     });
 

@@ -81,7 +81,14 @@ describe('Personal Details Controller', function () {
       req.session.appeal.application.personalDetails = { givenNames: 'givenName', familyName: 'familyName', dob: null };
       getNamePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/name.njk',
-        { personalDetails: { dob: null, familyName: 'familyName', givenNames: 'givenName' } }
+        {
+          personalDetails: {
+            dob: null,
+            familyName: 'familyName',
+            givenNames: 'givenName'
+          },
+          previousPage: paths.taskList
+        }
       );
     });
   });
@@ -142,7 +149,8 @@ describe('Personal Details Controller', function () {
             familyName: familyNameError
           },
           errorList: [ givenNameErrors, familyNameError ],
-          personalDetails: { familyName: '', givenNames: '' }
+          personalDetails: { familyName: '', givenNames: '' },
+          previousPage: paths.taskList
         });
     });
   });

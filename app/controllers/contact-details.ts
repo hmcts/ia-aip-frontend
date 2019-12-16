@@ -11,7 +11,10 @@ function getContactDetails(req: Request, res: Response, next: NextFunction) {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const { application } = req.session.appeal;
     const contactDetails = application && application.contactDetails || null;
-    return res.render('appeal-application/contact-details.njk', { contactDetails });
+    return res.render('appeal-application/contact-details.njk', {
+      contactDetails,
+      previousPage: paths.taskList
+    });
   } catch (error) {
     next(error);
   }
@@ -49,7 +52,8 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/contact-details.njk', {
           contactDetails,
           errors: validation,
-          errorList: Object.values(validation)
+          errorList: Object.values(validation),
+          previousPage: paths.taskList
         });
       }
 

@@ -14,9 +14,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 
     res.render('confirmation-page.njk', {
       date: daysToWaitUntilContact(14),
-      late: isLate(),
-      reasoning: false
-
+      late: isLate()
     });
   } catch (e) {
     next(e);

@@ -26,16 +26,19 @@
         } if error['moreDetail']
     }) }}
     <div class="panel-background">
+        <h4 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.howToAnswer }}</h4>
         <ul>
-            <li class="list-item-no-bullet"><h4 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.howToAnswer }}</h4></li>
+            <li class="list-item-no-bullet"></li>
             <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletOne | safe}}</li>
             <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletTwo | safe}}</li>
             <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletThree | safe }}</li>
             <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletFour | safe }}</li>
             <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletFive | safe}}</li>
             <br/>
-            <li class="list-item-no-bullet"><h4 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.needHelp }}</h4></li>
-            <li><a href="#">{{ i18n.pages.wrongHomeOfficeDecision.bulletLink }}</a></li>
+        </ul>
+           <h4 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.needHelp }}</h4>
+        <ul>
+            <li><a class="evidence-list__link" href="#">{{ i18n.pages.wrongHomeOfficeDecision.bulletLink }}</a></li>
         </ul>
     </div>
     <br/>

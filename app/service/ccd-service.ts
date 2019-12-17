@@ -12,8 +12,7 @@ const logLabel: string = getLogLabel(__filename);
 
 export const Events = {
   EDIT_APPEAL: { id: 'editAppeal', summary: 'Update appeal case AIP', description: 'Update appeal case AIP' },
-  SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit Appeal case AIP', description: 'Submit Appeal case AIP' },
-  UPLOAD_RESPONDENT_EVIDENCE: { id: 'uploadRespondentAppEvidence', summary: 'Upload Reason for Appeal case-building AIP', description: 'Upload Reason for Appeal case-building AIP' }
+  SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit Appeal case AIP', description: 'Submit Appeal case AIP' }
 };
 
 interface CcdCaseDetails {

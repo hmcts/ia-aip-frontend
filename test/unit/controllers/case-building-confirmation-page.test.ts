@@ -63,7 +63,6 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('getConfirmationPage should render confirmation.njk', () => {
-        // @ts-ignore
     req.session.appeal.application = {
       homeOfficeRefNumber: 'A1234567',
       dateLetterSent: {
@@ -99,10 +98,8 @@ describe('Confirmation Page Controller', () => {
     };
 
     getConfirmationPage(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
-      date: daysToWaitUntilContact(14),
-      late: undefined,
-      reasoning: true
+    expect(res.render).to.have.been.calledOnce.calledWith('case-building/confirmation-page.njk', {
+      date: daysToWaitUntilContact(14)
     });
   });
 

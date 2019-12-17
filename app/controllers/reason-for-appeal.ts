@@ -8,7 +8,7 @@ import { daysToWaitUntilContact } from './confirmation-page';
 
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('case-building/reasons-for-appeal/decision-appeal.njk');
+    return res.render('case-building/reasons-for-appeal/reason-for-appeal.njk');
   } catch (e) {
     next(e);
   }
@@ -19,7 +19,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
     try {
       const validation = homeOfficeDecisionValidation(req.body);
       if (validation != null) {
-        return res.render('case-building/reasons-for-appeal/decision-appeal.njk', {
+        return res.render('case-building/reasons-for-appeal/reason-for-appeal.njk', {
           errorList: Object.values(validation),
           error: validation
 
@@ -29,7 +29,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         decision: req.body.moreDetail
       };
       // TODO Save to CCD.
-      await updateAppealService.submitEvent(Events.UPLOAD_RESPONDENT_EVIDENCE, req);
+      // await updateAppealService.submitEvent(Events.UPLOAD_RESPONDENT_EVIDENCE, req);
       return res.redirect('case-building/reasons-for-appeal/check-and-send.njk');
     } catch (e) {
       next(e);
@@ -39,9 +39,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('confirmation-page.njk',{
-      reasoning: true,
-      late: undefined,
+    return res.render('case-building/confirmation-page.njk',{
       date: daysToWaitUntilContact(14)
     });
   } catch (e) {

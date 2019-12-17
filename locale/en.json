@@ -159,8 +159,8 @@
     },
     "caseBuildingSuccess": {
       "titleText": "Your answer has been sent",
-      "answer": "A case worker will look at your answer",
-      "date": "The case worker will contact you by <b>{{ date }}</b> to tell you what to do next",
+      "answer": "A Tribunal Caseworker will look at your answer",
+      "date": "The Tribunal Caseworker will contact you by <b>{{ date }}</b> to tell you what to do next",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\">customer.services@justice.gov.uk</a>"
     }
   },

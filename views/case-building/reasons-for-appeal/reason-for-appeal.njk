@@ -1,11 +1,9 @@
 {% set pageTitleName = i18n.pages.wrongHomeOfficeDecision.title %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% extends "layout.njk" %}
 
-
 {% block content %}
-    <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.wrongHomeOfficeDecision.heading | safe }}</h1>
-    <p class="govuk-body">{{ i18n.pages.wrongHomeOfficeDecision.usefulInfo |  safe  }}</p>
     {% if errorList %}
         {{ govukErrorSummary({
             titleText: i18n.error.summary.title,
@@ -14,8 +12,16 @@
         })
         }}
     {% endif %}
-    <form type="submit" action="/reasons/decision-appeal" method="post">
-    {{ govukTextarea({
+    <form type="submit" action="/reasons/reason-for-appeal" method="post">
+        {% call govukFieldset({
+            legend: {
+                text: i18n.pages.wrongHomeOfficeDecision.heading,
+                classes: "govuk-fieldset__legend--xl",
+                isPageHeading: true
+            }
+        }) %}
+            <p class="govuk-body">{{ i18n.pages.wrongHomeOfficeDecision.usefulInfo |  safe  }}</p>
+            {{ govukTextarea({
         name: "moreDetail",
         id: "moreDetail",
         label: {
@@ -26,7 +32,7 @@
         } if error['moreDetail']
     }) }}
     <div class="panel-background">
-        <h4 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.howToAnswer }}</h4>
+        <h2 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.howToAnswer }}</h2>
         <ul>
             <li class="list-item-no-bullet"></li>
             <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletOne | safe}}</li>
@@ -36,12 +42,13 @@
             <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletFive | safe}}</li>
             <br/>
         </ul>
-           <h4 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.needHelp }}</h4>
+           <h2 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.needHelp }}</h2>
         <ul>
             <li><a class="evidence-list__link" href="#">{{ i18n.pages.wrongHomeOfficeDecision.bulletLink }}</a></li>
         </ul>
     </div>
     <br/>
      {{ saveButtons() }}
+        {% endcall %}
     </form>
 {% endblock  %}

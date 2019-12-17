@@ -25,7 +25,7 @@ const paths = {
     deleteEvidence: '/home-office/delete-evidence'
   },
   reasonsForAppeal: {
-    decision: '/reasons/reasons-for-appeal',
+    decision: '/reasons/reason-for-appeal',
     confirmation: '/reasons/confirmation'
   },
   typeOfAppeal: '/type-of-appeal',

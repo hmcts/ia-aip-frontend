@@ -15,7 +15,9 @@ import {
   postcodeValidation
 } from '../utils/fields-validations';
 import { getNationalitiesOptions } from '../utils/nationalities';
-import { getConditionalRedirectUrl } from '../utils/url-utils';
+import {
+  buildAddressList,
+  getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {
@@ -179,7 +181,7 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
         previousPage: paths.personalDetails.nationality
       });
     }
-    req.session.appeal.application.addressLookup = {
+    req.session.appeal.application.personalDetails.address = {
       postcode: req.body.postcode
     };
     return res.redirect(paths.personalDetails.postcodeLookup);
@@ -188,36 +190,14 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-function getAddressList(addressLookupResult) {
-  const lookedUpAddresses = addressLookupResult.addresses.map(address => {
-    return {
-      value: address.udprn,
-      text: address.formattedAddress
-    };
-  });
-
-  const selectAddresses = lookedUpAddresses.length === 1 ?
-    '1 address found' :
-    `${lookedUpAddresses.length} addresses found`;
-  const addresses = [
-    {
-      value: '',
-      text: selectAddresses
-    } ].concat(lookedUpAddresses);
-  return addresses;
-}
-
 function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const postcode = _.get(req.session.appeal.application, 'addressLookup.postcode');
-    if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
-
-    const addressLookupResult = await osPlacesClient.lookupByPostcode(postcode);
-
-    req.session.appeal.application.addressLookup.result = addressLookupResult;
-
     try {
-      const addresses = getAddressList(addressLookupResult);
+      const postcode = _.get(req.session.appeal.application, 'personalDetails.address.postcode');
+      if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
+      const addressLookupResult = await osPlacesClient.lookupByPostcode(postcode);
+      req.session.appeal.application.addressLookup.result = addressLookupResult;
+      const addresses = buildAddressList(addressLookupResult);
 
       res.render('appeal-application/personal-details/postcode-lookup.njk', {
         addresses,
@@ -234,7 +214,7 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
   try {
     const validation = dropdownValidation(req.body.address, 'address');
     if (validation) {
-      const addresses = getAddressList(_.get(req.session.appeal.application, 'addressLookup.result'));
+      const addresses = buildAddressList(_.get(req.session.appeal.application, 'addressLookup.result'));
 
       return res.render('appeal-application/personal-details/postcode-lookup.njk', {
         error: validation,
@@ -243,8 +223,11 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
         previousPage: paths.personalDetails.enterPostcode
       });
     }
-
-    _.set(req.session.appeal.application, 'addressLookup.selected', req.body.address);
+    const osAddress = findAddress(req.body.address, _.get(req.session.appeal.application, 'addressLookup.result.addresses'));
+    const address = getAddress(osAddress, _.get(req.session.appeal.application, 'personalDetails.address.postcode'));
+    req.session.appeal.application.personalDetails.address = {
+      ...address
+    };
 
     return res.redirect(paths.personalDetails.enterAddress);
   } catch (e) {
@@ -259,25 +242,9 @@ function findAddress(udprn: string, addresses: Address[]): Address {
 function getManualEnterAddressPage(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    let address;
-    let selectedPostcode: string;
-    if (_.has(req.session.appeal.application, 'addressLookup.selected')) {
-      const osAddress = findAddress(
-        _.get(req.session.appeal.application, 'addressLookup.selected'),
-        _.get(req.session.appeal.application, 'addressLookup.result.addresses')
-      );
-      selectedPostcode = _.get(req.session.appeal.application, 'addressLookup.postcode');
-      address = getAddress(osAddress, selectedPostcode);
-    } else {
-      address = _.get(req.session.appeal.application, 'personalDetails.address');
-      selectedPostcode = _.get(req.session.appeal.application, 'personalDetails.address.postcode');
-    }
+    const address = _.get(req.session.appeal.application, 'personalDetails.address');
 
-    res.render('appeal-application/personal-details/enter-address.njk', {
-      address,
-      selectedPostcode,
-      previousPage: paths.personalDetails.postcodeLookup
-    });
+    res.render('appeal-application/personal-details/enter-address.njk', { address });
   } catch (e) {
     next(e);
   }

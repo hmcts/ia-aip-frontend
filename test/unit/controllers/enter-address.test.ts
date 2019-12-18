@@ -22,6 +22,14 @@ describe('Personal Details Controller', function () {
   let next: NextFunction;
   const logger: Logger = new Logger();
 
+  const address = {
+    line1: '',
+    line2: '',
+    city: '',
+    county: '',
+    postcode: 'postcode'
+  };
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -32,7 +40,9 @@ describe('Personal Details Controller', function () {
       },
       session: {
         appeal: {
-          application: {}
+          application: {
+            personalDetails: {}
+          }
         } as Appeal
       } as Partial<Express.Session>,
       app: {
@@ -69,52 +79,23 @@ describe('Personal Details Controller', function () {
 
   describe('getManualEnterAddressPage', () => {
     it('should render appeal-application/personal-details/enter-address.njk', function () {
-      req.session.appeal.application.addressLookup = {
-        postcode: 'selectedPostcode',
-        selected: 'udprn',
-        result: {
-          addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [ 1, 2 ]), 'udprn')
-          ]
-        }
+      req.session.appeal.application.personalDetails.address = {
+        ...address
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
-        address: {
-          line1: 'subBuildingName buildingName',
-          line2: '2 dependentThoroughfareName, thoroughfareName, doubleDependentLocality, dependentLocality',
-          city: 'postTown',
-          county: '',
-          postcode: 'postcode'
-        },
-        selectedPostcode: 'selectedPostcode',
-        previousPage: paths.personalDetails.postcodeLookup
+        address
       });
     });
 
     it('when called with edit param should render appeal-application/personal-details/enter-address.njk and update session', function () {
       req.query = { 'edit': '' };
-
-      req.session.appeal.application.addressLookup = {
-        postcode: 'selectedPostcode',
-        selected: 'udprn',
-        result: {
-          addresses: [
-            new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [ 1, 2 ]), 'udprn')
-          ]
-        }
+      req.session.appeal.application.personalDetails.address = {
+        ...address
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
-        address: {
-          line1: 'subBuildingName buildingName',
-          line2: '2 dependentThoroughfareName, thoroughfareName, doubleDependentLocality, dependentLocality',
-          city: 'postTown',
-          county: '',
-          postcode: 'postcode'
-        },
-        selectedPostcode: 'selectedPostcode',
-        previousPage: paths.personalDetails.postcodeLookup
+        address
       });
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
@@ -122,30 +103,13 @@ describe('Personal Details Controller', function () {
 
     it('should render appeal-application/personal-details/enter-address.njk with address from CCD if page loaded without postcode lookup', function () {
       req.session.appeal.application.addressLookup = {};
-      _.set(req.session.appeal.application, 'personalDetails.address', {
-        line1: 'subBuildingName buildingName',
-        line2: '2 dependentThoroughfareName, thoroughfareName, doubleDependentLocality, dependentLocality',
-        city: 'postTown',
-        county: '',
-        postcode: 'postcode'
-      });
+      _.set(req.session.appeal.application, 'personalDetails.address', { ...address });
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
-        address: {
-          line1: 'subBuildingName buildingName',
-          line2: '2 dependentThoroughfareName, thoroughfareName, doubleDependentLocality, dependentLocality',
-          city: 'postTown',
-          county: '',
-          postcode: 'postcode'
-        },
-        selectedPostcode: 'postcode',
-        previousPage: paths.personalDetails.postcodeLookup
-      });
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', { address });
     });
 
     it('should catch an exception and call next()', () => {
       req.session.appeal.application.addressLookup = {
-        selected: 'udprn',
         result: {
           addresses: [
             new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [ 1, 2 ]), 'udprn')

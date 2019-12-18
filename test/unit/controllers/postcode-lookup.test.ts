@@ -30,7 +30,11 @@ describe('Personal Details Controller', function () {
       session: {
         appeal: {
           application: {
-            contactDetails: null
+            contactDetails: null,
+            personalDetails: {},
+            addressLookup: {
+              result: null
+            }
           }
         } as Partial<Appeal>
       } as Partial<Express.Session>,
@@ -79,8 +83,10 @@ describe('Personal Details Controller', function () {
     });
 
     it('should render appeal-application/personal-details/postcode-lookup.njk', async () => {
-      req.session.appeal.application.addressLookup = {
-        postcode: 'W1W 7RT'
+      req.session.appeal.application.personalDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
       } as any;
 
       lookupByPostcodeStub.withArgs('W1W 7RT').resolves({
@@ -95,8 +101,10 @@ describe('Personal Details Controller', function () {
     });
 
     it('should catch an exception and call next()', async () => {
-      req.session.appeal.application.addressLookup = {
-        postcode: 'W1W 7RT'
+      req.session.appeal.application.personalDetails = {
+        address: {
+          postcode: 'W1W 7RT'
+        }
       } as any;
       lookupByPostcodeStub.withArgs('W1W 7RT').resolves({
         addresses: [
@@ -114,11 +122,18 @@ describe('Personal Details Controller', function () {
   });
 
   describe('postPostcodeLookupPage', () => {
+    const addresses = [ new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn') ];
+
     it('should fail validation and render postcode-lookup.njk', function () {
-      req.body.address = '';
-      const addresses = [ new Address('123', 'organisationName', 'departmentName', 'poBoxNumber', 'buildingName', 'subBuildingName', 2, 'thoroughfareName', 'dependentThoroughfareName', 'dependentLocality', 'doubleDependentLocality', 'postTown', 'postcode', 'postcodeType', 'formattedAddress', new Point('type', [1, 2]), 'udprn') ];
-      req.session.appeal.application.addressLookup = {
-        result: { addresses }
+      req.session.appeal.application = {
+        personalDetails: {
+          address: {
+            postcode: 'W1W 7RT'
+          }
+        },
+        addressLookup: {
+          result: { addresses }
+        }
       } as any;
       postPostcodeLookupPage(req as Request, res as Response, next);
       const error = { href: '#address', key: 'address', text: 'Select your address' };
@@ -133,12 +148,32 @@ describe('Personal Details Controller', function () {
     });
 
     it('should validate and redirect to task list page', function () {
+      req.session.appeal.application = {
+        personalDetails: {
+          address: {
+            postcode: 'W1W 7RT'
+          }
+        },
+        addressLookup: {
+          result: { addresses }
+        }
+      } as any;
       req.body.address = 'an address';
       postPostcodeLookupPage(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.personalDetails.enterAddress);
     });
 
     it('should catch an exception and call next()', () => {
+      req.session.appeal.application = {
+        personalDetails: {
+          address: {
+            postcode: 'W1W 7RT'
+          }
+        },
+        addressLookup: {
+          result: { addresses }
+        }
+      } as any;
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);
       req.body.address = '123';

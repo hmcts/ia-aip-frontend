@@ -74,9 +74,7 @@ interface AppealApplication {
     [key: string]: Task;
   };
   addressLookup: {
-    postcode?: string;
     result?: any;
-    selected?: any;
   };
   isEdit?: boolean;
 }

@@ -114,7 +114,7 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
       'date.less': errors.inPast,
       'date.base': errors.incorrectFormat
     })
-  });
+  }).unknown(true);
 
   return validate(toValidate, schema, true);
 }

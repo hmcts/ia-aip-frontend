@@ -1,7 +1,7 @@
 {% extends '../../layout.njk' %}
 {% set pageTitleName = i18n.pages.enterPostcode.title %}
 
-
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% block content %}
   {% if errorList %}
@@ -11,29 +11,37 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <h1 class="govuk-heading-xl">{{ i18n.pages.enterPostcode.heading }}</h1>
+
   <form action="/personal-details/enter-postcode" method="post">
-    {{ govukInput({
-      label: {
-        text: i18n.pages.enterPostcode.hint
-      },
-      classes: "govuk-!-width-one-half",
-      id: "postcode",
-      name: "postcode",
-      value: postcode,
-      errorMessage: {
-        text:  error['postcode'].text
-      } if error['postcode']
-    }) }}
-    {{ govukButton({
-      text: 'Find address',
-      name: "buttton",
-      value: "submit"
-    }) }}
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.enterPostcode.heading,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      {{ govukInput({
+        label: {
+          text: i18n.pages.enterPostcode.hint
+        },
+        classes: "govuk-!-width-one-half",
+        id: "postcode",
+        name: "postcode",
+        value: postcode,
+        errorMessage: {
+          text:  error['postcode'].text
+        } if error['postcode']
+      }) }}
+      <div class="govuk-form-group">
+        <a href="/personal-details/enter-address">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
+      </div>
+      {{ govukButton({
+        text: 'Find address',
+        name: "buttton",
+        value: "submit"
+      }) }}
+    {% endcall %}
   </form>
-  <p>
-    <a href="/personal-details/enter-address">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
-  </p>
 
   {{ contactUs() }}
 {% endblock %}

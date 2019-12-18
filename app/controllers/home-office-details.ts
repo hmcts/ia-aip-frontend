@@ -6,6 +6,7 @@ import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { dateLetterSentValidation, homeOfficeNumberValidation, textAreaValidation } from '../utils/fields-validations';
+import { getNextPage, shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
@@ -20,14 +21,6 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   } catch (e) {
     next(e);
   }
-}
-
-function shouldValidateWhenSaveForLater(body, ...fieldNames) {
-  return !body.saveForLater || body.saveForLater && fieldNames.some(fieldName => body[fieldName] && body[fieldName] !== '');
-}
-
-function getNextPage(body, nextPage) {
-  return body.saveForLater ? paths.taskList : nextPage;
 }
 
 function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {

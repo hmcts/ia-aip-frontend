@@ -15,6 +15,7 @@ import {
   postcodeValidation
 } from '../utils/fields-validations';
 import { getNationalitiesOptions } from '../utils/nationalities';
+import { getNextPage, shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
 import {
   buildAddressList,
   getConditionalRedirectUrl } from '../utils/url-utils';
@@ -80,17 +81,19 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
 function postNamePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      const validation = appellantNamesValidation(req.body);
-      if (validation) {
-        return res.render('appeal-application/personal-details/name.njk', {
-          personalDetails: {
-            familyName: req.body.familyName,
-            givenNames: req.body.givenNames
-          },
-          error: validation,
-          errorList: Object.values(validation),
-          previousPage: paths.taskList
-        });
+      if (shouldValidateWhenSaveForLater(req.body, 'familyName', 'givenNames')) {
+        const validation = appellantNamesValidation(req.body);
+        if (validation) {
+          return res.render('appeal-application/personal-details/name.njk', {
+            personalDetails: {
+              familyName: req.body.familyName,
+              givenNames: req.body.givenNames
+            },
+            error: validation,
+            errorList: Object.values(validation),
+            previousPage: paths.taskList
+          });
+        }
       }
       const { application } = req.session.appeal;
       application.personalDetails = {
@@ -100,7 +103,8 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       };
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, paths.personalDetails.dob);
+
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.dob));
     } catch (e) {
       next(e);
     }

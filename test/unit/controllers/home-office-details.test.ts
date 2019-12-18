@@ -287,6 +287,38 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
 
+    it('when save for later should validate and redirect to task list page', async () => {
+      const date = moment().subtract(15, 'd');
+      req.body['day'] = date.format('DD');
+      req.body['month'] = date.format('MM');
+      req.body['year'] = date.format('YYYY');
+      req.body.saveForLater = 'saveForLater';
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const { dateLetterSent } = req.session.appeal.application;
+      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
+      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
+      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('when save for later should not validate when blank and redirect to task list page', async () => {
+      const date = moment().subtract(15, 'd');
+      req.body['day'] = '';
+      req.body['month'] = '';
+      req.body['year'] = '';
+      req.body.saveForLater = 'saveForLater';
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const { dateLetterSent } = req.session.appeal.application;
+      expect(dateLetterSent.day).to.be.eql('');
+      expect(dateLetterSent.month).to.be.eql('');
+      expect(dateLetterSent.year).to.be.eql('');
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
     it('when in edit mode should validate and redirect to Appeal Late page if appeal is later than 14 days and isEdit flag is not updated', async () => {
       req.session.appeal.application.isEdit = true;
 

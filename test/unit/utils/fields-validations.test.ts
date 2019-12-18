@@ -110,6 +110,12 @@ describe('fields-validations', () => {
           date: createError('date', errors.inPast)
         });
     });
+
+    it('can have fields that are not part of date', () => {
+      const validDate = { day: '1', month: '1', year: '2019', saveAndContiune: 'saveAndContiune' };
+      const validations = dateValidation(validDate, errors);
+      expect(validations).to.deep.equal(null);
+    });
   });
 
   describe('appellantNameValidation', () => {

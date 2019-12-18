@@ -20,7 +20,8 @@ describe('Personal Details Controller', function() {
       session: {
         appeal: {
           application: {
-            contactDetails: null
+            contactDetails: null,
+            personalDetails: {}
           }
         } as Partial<Appeal>
       } as Partial<Express.Session>,
@@ -68,9 +69,6 @@ describe('Personal Details Controller', function() {
     });
 
     it('should reset postcode lookup', function () {
-      req.session.appeal.application.addressLookup = {
-        postcode: 'somePostcode'
-      };
       getEnterPostcodePage(req as Request, res as Response, next);
       expect(req.session.appeal.application.addressLookup).to.eql({});
     });

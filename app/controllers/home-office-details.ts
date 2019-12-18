@@ -25,20 +25,23 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
 function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = homeOfficeNumberValidation(req.body);
-      if (validation) {
-        return res.render('appeal-application/home-office/details.njk',
-          {
-            errors: validation,
-            errorList: Object.values(validation),
-            homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-            previousPage: paths.taskList
-          }
-        );
+      if (!req.body.saveForLater || req.body.saveForLater && req.body.homeOfficeRefNumber && req.body.homeOfficeRefNumber !== '') {
+        const validation = homeOfficeNumberValidation(req.body);
+        if (validation) {
+          return res.render('appeal-application/home-office/details.njk',
+            {
+              errors: validation,
+              errorList: Object.values(validation),
+              homeOfficeRefNumber: req.body.homeOfficeRefNumber,
+              previousPage: paths.taskList
+            }
+          );
+        }
       }
       req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, paths.homeOffice.letterSent);
+      const nextPage = req.body.saveForLater ? paths.taskList : paths.homeOffice.letterSent;
+      return getConditionalRedirectUrl(req, res, nextPage);
     } catch (e) {
       next(e);
     }

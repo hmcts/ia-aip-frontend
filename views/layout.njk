@@ -65,7 +65,7 @@
 {% endblock %}
 
 {% block pageTitle %}
-  {{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
+  {% if error or errors %}Error: {% endif %}{{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
 {% endblock %}
 
 {% block header %}

@@ -11,7 +11,7 @@
     "mock-ccd": "dyson test/mock/ccd/services/ 20000",
     "mock-idam": "dyson test/mock/idam/services/ 20001",
     "lint": "tslint --project .",
-    "test": "yarn test:unit",
+    "test": "yarn test:unit && cross-env USE_REDIS=false yarn codecept:functional",
     "test:accessibility": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test USE_REDDIS=false mocha test/accessibility/*.ts --exit",
     "test:unit": "rm -rf test/coverage && nyc mocha test/unit/**/*.test.ts",
     "test:coverage": "nyc report",
@@ -23,7 +23,7 @@
     "test:functional": "yarn codecept:e2e",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functionalOld",
     "codecept:crossbrowser": "codeceptjs run -c codecept.crossbrowser.js",
-    "codecept:functional": "IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 cross-env NODE_ENV=development SHOW_TESTS=true codeceptjs run -c codecept.functional.js --verbose",
+    "codecept:functional": "IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 cross-env NODE_ENV=development codeceptjs run -c codecept.functional.js --verbose",
     "codecept:e2e": "IDAM_API_URL=http://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.e2e.js --verbose --debug"
   },
   "husky": {
@@ -54,7 +54,6 @@
     "jsdom": "^15.2.0",
     "jsdom-global": "^3.0.2",
     "jsonwebtoken": "^8.5.1",
-    "kill-port": "^1.6.0",
     "lodash": "^4.17.15",
     "mini-css-extract-plugin": "^0.8.0",
     "moment": "^2.24.0",

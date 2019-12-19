@@ -8,12 +8,12 @@ import { setupHealthController } from './controllers/health';
 import { setupHomeOfficeDetailsController } from './controllers/home-office-details';
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
+import { setupOutOfTimeController } from './controllers/out-of-time';
 import { setupPersonalDetailsController } from './controllers/personal-details';
 import { setupReasonsForAppealController } from './controllers/reason-for-appeal';
 import { setupStartController } from './controllers/startController';
 import { setupTaskListController } from './controllers/task-list';
 import { setupTypeOfAppealController } from './controllers/type-of-appeal';
-
 import { logSession } from './middleware/session-middleware';
 import { CcdService } from './service/ccd-service';
 import IdamService from './service/idam-service';
@@ -37,6 +37,7 @@ const contactDetailsController = setupContactDetailsController(updateAppealServi
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService });
+const outOfTimeController = setupOutOfTimeController(updateAppealService);
 // not protected by idam
 router.use(healthController);
 router.use(startController);
@@ -54,5 +55,6 @@ router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);
 router.use(reasonsForAppealController);
+router.use(outOfTimeController);
 
 export { router };

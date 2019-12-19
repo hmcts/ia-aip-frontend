@@ -1,4 +1,5 @@
 import { addSummaryRow, Delimiter } from '../../../app/utils/summary-list';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('JWT Utils', () => {
@@ -14,7 +15,7 @@ describe('JWT Utils', () => {
 
   it('should return the expected object', () => {
 
-    const result = addSummaryRow('name', [ 'value1', 'value2' ], '/href');
+    const result = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [ 'value1', 'value2' ], '/href', Delimiter.BREAK_LINE);
 
     const expectedResponse = {
       'key': { 'text': 'Name' },
@@ -27,7 +28,7 @@ describe('JWT Utils', () => {
 
   it('should return the expected object using the SPACE specified Delimiter', () => {
 
-    const result = addSummaryRow('name', [ 'value1', 'value2' ], '/href', Delimiter.SPACE);
+    const result = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [ 'value1', 'value2' ], '/href', Delimiter.SPACE);
 
     const expectedResponse = {
       'key': { 'text': 'Name' },
@@ -40,7 +41,7 @@ describe('JWT Utils', () => {
 
   it('should return the expected object using the BREAK_LINE specified Delimiter', () => {
 
-    const result = addSummaryRow('name', [ 'value1', 'value2' ], '/href', Delimiter.BREAK_LINE);
+    const result = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [ 'value1', 'value2' ], '/href', Delimiter.BREAK_LINE);
 
     const expectedResponse = {
       'key': { 'text': 'Name' },

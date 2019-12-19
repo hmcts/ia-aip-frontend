@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   getAppealLate,
+  getDeleteEvidence,
   postAppealLate,
-  postDeleteEvidence,
   postUploadEvidence,
-  setupHomeOfficeDetailsController
+  setupOutOfTimeController
 } from '../../../app/controllers/out-of-time';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
-import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 const express = require('express');
 
@@ -60,11 +59,11 @@ describe('Out of time controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
 
-      setupHomeOfficeDetailsController(updateAppealService as UpdateAppealService);
+      setupOutOfTimeController(updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.appealLate);
       expect(routerPostStub).to.have.been.calledWith(paths.homeOffice.appealLate);
       expect(routerPostStub).to.have.been.calledWith(paths.homeOffice.uploadEvidence);
-      expect(routerPostStub).to.have.been.calledWith(paths.homeOffice.deleteEvidence);
+      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.deleteEvidence);
     });
   });
 
@@ -83,16 +82,31 @@ describe('Out of time controller', () => {
   });
 
   describe('postAppealLate', () => {
-    it('should fail validation and render appeal-application/home-office/appeal-late.njk with errors', async () => {
-      req.body['appeal-late'] = '';
-      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
-    });
+    const file = {
+      originalname: 'file.png',
+      mimetype: 'type'
+    };
+    const fileObject = {
+      name: file.originalname,
+      url: file.originalname
+    };
 
     it('should validate and redirect to Task List', async () => {
       req.body['appeal-late'] = 'My explanation why am late';
       await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('should validate and upload a file and redirect to Task list', async () => {
+      const whyAmLate = 'My explanation why am late';
+      req.body['appeal-late'] = whyAmLate;
+      req.file = file as Express.Multer.File;
+
+      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(fileObject);
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
@@ -116,47 +130,18 @@ describe('Out of time controller', () => {
 
   describe('postUploadEvidence', () => {
     it('should upload file and render home-office-appeal-late.njk', () => {
-      const description: string = 'an evidence description';
       const file = {
         originalname: 'file.png',
         mimetype: 'type'
       };
-      const fileList = {
-        [file.originalname]: {
-          name: file.originalname,
-          url: file.originalname,
-          description
-        }
+      const fileObject = {
+        name: file.originalname,
+        url: file.originalname
       };
       req.file = file as Express.Multer.File;
-      req.body['file-description'] = description;
       postUploadEvidence(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateAppeal.evidences).to.be.deep.equal(fileList);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(fileObject);
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
-    });
-
-    it('should fail validation and render appeal-application/home-office/appeal-late.njk with errors', () => {
-      const file = {
-        originalname: 'file.png',
-        mimetype: 'type'
-      };
-
-      const error: ValidationError = {
-        key: 'file-description',
-        href: '#file-description',
-        text: i18n.validationErrors.required
-      };
-
-      req.file = file as Express.Multer.File;
-
-      postUploadEvidence(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk', {
-        appealLate: null,
-        evidences: [],
-        error: { 'file-description': error },
-        errorList: [ error ],
-        previousPage: paths.homeOffice.letterSent
-      });
     });
 
     it('should catch exception and call next with the error', () => {
@@ -167,33 +152,29 @@ describe('Out of time controller', () => {
     });
   });
 
-  describe('postDeleteEvidence', () => {
+  describe('getDeleteEvidence', () => {
     it('should delete file', () => {
       const file = {
         originalname: 'file.png',
         mimetype: 'type'
       };
-      const fileList = {
-        [file.originalname]: {
-          url: file.originalname,
-          name: file.originalname,
-          description: 'desc'
-        }
+      const fileObject = {
+        url: file.originalname,
+        name: file.originalname
       };
 
       req.session.appeal.application.lateAppeal = {
-        evidences: fileList
+        evidence: fileObject
       };
 
-      req.body.delete = { 'file.png': 'delete' };
-      postDeleteEvidence(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateAppeal.evidences).to.be.deep.equal({});
+      getDeleteEvidence(req as Request, res as Response, next);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.equal(null);
     });
 
     it('should catch exception and call next with the error', () => {
       const error = new Error('an error');
       res.redirect = sandbox.stub().throws(error);
-      postDeleteEvidence(req as Request, res as Response, next);
+      getDeleteEvidence(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

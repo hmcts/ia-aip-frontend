@@ -277,7 +277,7 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
     it('when save for later should validate and redirect to task list page', async () => {
@@ -326,8 +326,8 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
-      expect(req.session.appeal.application.isEdit).to.have.eq(true);
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 

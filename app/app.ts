@@ -1,6 +1,7 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import helmet from 'helmet';
 import webpack from 'webpack';
 import webpackDevMiddleware, { Options } from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
@@ -13,6 +14,9 @@ import { setupSession } from './session';
 
 function createApp() {
   const app: express.Application = express();
+
+  configureHelmet(app);
+
   app.use(setupSession());
   configureLogger(app);
   configureNunjucks(app);
@@ -38,6 +42,54 @@ function createApp() {
   app.use(serverErrorHandler);
 
   return app;
+}
+
+function configureHelmet(app) {
+  // by setting HTTP headers appropriately.
+  app.use(helmet());
+
+  // Helmet referrer policy
+  app.use(helmet.referrerPolicy({ policy: 'origin' }));
+
+  // Helmet content security policy (CSP) to allow only assets from same domain.
+  app.use(helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ['\'self\''],
+      fontSrc: ['\'self\' data:'],
+      scriptSrc: [
+        '\'self\'',
+        '\'unsafe-inline\'',
+        'www.google-analytics.com',
+        'www.googletagmanager.com',
+        'tagmanager.google.com',
+        'vcc-eu4.8x8.com'
+      ],
+      styleSrc: [
+        '\'self\'',
+        'tagmanager.google.com',
+        'fonts.googleapis.com/'
+      ],
+      connectSrc: ['\'self\'', 'www.gov.uk', '//localhost:9856/'],
+      mediaSrc: ['\'self\''],
+      frameSrc: [
+        '\'self\'',
+        'www.googletagmanager.com',
+        'vcc-eu4.8x8.com'
+      ],
+      frameAncestors: [
+        '\'self\'',
+        'www.googletagmanager.com'
+      ],
+      imgSrc: [
+        '\'self\'',
+        '\'self\' data:',
+        'www.google-analytics.com',
+        'www.googletagmanager.com',
+        'tagmanager.google.com',
+        'vcc-eu4.8x8.com'
+      ]
+    }
+  }));
 }
 
 export {

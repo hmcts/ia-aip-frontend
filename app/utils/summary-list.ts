@@ -6,13 +6,13 @@ export enum Delimiter {
 }
 
 export function addSummaryRow(key: string, values: (number | string | string[])[], href: string, delimiter?: Delimiter) {
-  delimiter = delimiter ? delimiter : Delimiter.BREAK_LINE;
+  const separator = delimiter || '';
   const row = {
     key: {
-      text: i18n.fields[key]
+      text: key
     },
     value: {
-      html: values.filter(v => v !== '' || undefined).join(delimiter)
+      html: values.filter(v => v !== '' || undefined).join(separator)
     },
     actions: {
       items: [

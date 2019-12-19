@@ -91,11 +91,11 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
 
       if (diffInDays <= 14) {
         req.session.appeal.application.isAppealLate = false;
-        return getConditionalRedirectUrl(req, res, paths.taskList);
-
+      } else {
+        req.session.appeal.application.isAppealLate = true;
       }
       req.session.appeal.application.isAppealLate = true;
-      res.redirect(getNextPage(req.body, paths.homeOffice.appealLate));
+      return getConditionalRedirectUrl(req, res, paths.taskList);
     } catch (e) {
       next(e);
     }

@@ -14,7 +14,8 @@
       "heading": "You will need to:"
     },
     "links": {
-      "change": "Change"
+      "change": "Change",
+      "delete": "Delete"
     }
   },
   "pages": {
@@ -82,7 +83,24 @@
       "title": "Check your answers",
       "header": "Check your answers",
       "statement": "Statement of truth",
-      "agreement": "I believe the information I have given is true"
+      "agreement": "I believe the information I have given is true",
+      "rowTitles": {
+        "textMessage": "Text message",
+        "mobilePhone": "Enter mobile phone number",
+        "email": "Email",
+        "emailAddress": "Enter email address",
+        "homeOfficeRefNumber": "Home Office reference number",
+        "dateLetterSent": "Date letter sent",
+        "name": "Name",
+        "dob": "Date of birth",
+        "nationality": "Nationality",
+        "contactDetails": "Contact details",
+        "addressDetails": "Address",
+        "appealType": "Appeal type",
+        "appealLate": "Reason for late appeal",
+        "supportingEvidence": "<p><b>Supporting evidence</b></p>"
+      },
+      "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>"
     },
     "enterPostcode": {
       "heading": "What is your address?",
@@ -123,7 +141,9 @@
       "whyLateLabel": "Why is your appeal late?",
       "description": "Appeals should be made within 14 days from the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late below, and provide supporting evidence if you have it.",
       "provideEvidenceTitle": "Provide supporting evidence",
-      "fileUploadTitle": "Upload a file"
+      "provideEvidenceDescription": "You can upload evidence to support your answers such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
+      "fileUploadTitle": "Upload a file",
+      "uploadedFileTitle": "Uploaded file"
     },
     "successPage": {
       "title": "Confirmation",
@@ -237,23 +257,10 @@
     }
 
   },
-  "fields": {
-    "textMessage": "Text message",
-    "mobilePhone": "Enter mobile phone number",
-    "email": "Email",
-    "emailAddress": "Enter email address",
-    "homeOfficeRefNumber": "Home Office reference number",
-    "dateLetterSent": "Date letter sent",
-    "name": "Name",
-    "dob": "Date of birth",
-    "nationality": "Nationality",
-    "contactDetails": "Contact details",
-    "addressDetails": "Address",
-    "appealType": "Appeal type"
-  },
   "components": {
     "evidenceList": {
       "title": "Uploaded files",
+      "singleFileTitle": "Uploaded file",
       "emptyList": "No files uploaded",
       "delete": "Delete"
     }

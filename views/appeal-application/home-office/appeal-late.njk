@@ -32,42 +32,45 @@
       } if error["appeal-late"]
     }) }}
 
-    <h2 class="govuk-heading-m">{{ i18n.pages.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
-    <div class="govuk-inset-text">
-      {{ govukFileUpload({
-        id: "file-upload",
-        name: "file-upload",
-        label: {
-          text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
-        }
-      }) }}
+    {% if evidences | length < 1 %}
+      <h2 class="govuk-heading-m">{{ i18n.pages.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
+      <p>{{ i18n.pages.homeOfficeAppealLate.provideEvidenceDescription }}</p>
+      <div class="govuk-inset-text">
+        {{ govukFileUpload({
+          id: "file-upload",
+          name: "file-upload",
+          label: {
+            text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
+          }
+        }) }}
 
-      {{ govukInput({
-        label: {
-          text: "What is the file"
-        },
-        id: "file-description",
-        name: "file-description",
-        classes: "govuk-!-width-two-thirds",
-        attributes: {
-          placeholder: 'e.g. a country report or copy of birth certificate'
-        },
-        errorMessage: {
-          text: error["file-description"].text
-        } if error["file-description"]
-      }) }}
+        {{ govukButton({
+          text: i18n.common.buttons.uploadFile,
+          name: 'uploadFile',
+          classes: "govuk-button--secondary",
+          attributes: {
+            formaction: '/home-office/upload-evidence'
+          }
+        }) }}
+      </div>
+    {% endif %}
 
-      {{ govukButton({
-        text: i18n.common.buttons.uploadFile,
-        name: 'uploadFile',
-        classes: "govuk-button--secondary",
-        attributes: {
-          formaction: '/home-office/upload-evidence'
-        }
-      }) }}
-    </div>
+    {% if evidences | length > 0 %}
+      {{ evidenceList(evidences, evidenceCTA) }}
+    {% endif %}
 
-    {{ evidenceList(evidences, evidenceCTA) }}
+    {% if evidence %}
+      <div class="evidence">
+        <h4 class="govuk-heading-s">{{ i18n.pages.homeOfficeAppealLate.uploadedFileTitle }}</h4>
+        <hr class="govuk-section-break govuk-section-break--visible">
+        <ul class="govuk-list">
+          <li class="list__item">
+            <span>{{ evidence.name }}</span>
+            <a href="/home-office/delete-evidence">{{ i18n.common.links.delete }}</a>
+          </li>
+        </ul>
+      </div>
+    {% endif %}
 
     {{ govukButton({
       text: i18n.common.buttons.saveAndContinue,

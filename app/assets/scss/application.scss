@@ -9,6 +9,17 @@ body {
   @extend .govuk-body;
 }
 
+%task-list__item{
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid $govuk-border-colour;
+}
+
+.list__item {
+  @extend %task-list__item;
+}
+
 img {
   max-width: 100%;
 }

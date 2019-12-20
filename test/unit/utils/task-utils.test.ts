@@ -50,7 +50,9 @@ describe('getStatus', () => {
       },
       addressLookup: {}
     },
-    caseBuilding: {},
+    caseBuilding: {
+      decision: null
+    },
     hearingRequirements: {}
   };
 

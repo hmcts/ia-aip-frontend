@@ -76,7 +76,9 @@ export default class UpdateAppealService {
         },
         addressLookup: {}
       },
-      caseBuilding: {},
+      caseBuilding: {
+        decision: null
+      },
       hearingRequirements: {}
     };
   }

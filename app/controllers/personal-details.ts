@@ -38,14 +38,16 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
 function postDateOfBirth(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      const validation = dateOfBirthValidation(req.body);
-      if (validation != null) {
-        return res.render('appeal-application/personal-details/date-of-birth.njk', {
-          errors: validation,
-          errorList: Object.values(validation),
-          dob: { ...req.body },
-          previousPage: paths.personalDetails.name
-        });
+      if (shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
+        const validation = dateOfBirthValidation(req.body);
+        if (validation != null) {
+          return res.render('appeal-application/personal-details/date-of-birth.njk', {
+            errors: validation,
+            errorList: Object.values(validation),
+            dob: { ...req.body },
+            previousPage: paths.personalDetails.name
+          });
+        }
       }
 
       req.session.appeal.application.personalDetails = {
@@ -58,7 +60,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       };
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, paths.personalDetails.nationality);
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.nationality));
     } catch (e) {
       next(e);
     }
@@ -130,18 +132,19 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
 function postNationalityPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      const validation = nationalityValidation(req.body);
-      if (validation) {
-        const nationality = req.body.nationality;
-        const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
-        return res.render('appeal-application/personal-details/nationality.njk', {
-          nationalitiesOptions,
-          errors: validation,
-          errorList: Object.values(validation),
-          previousPage: paths.personalDetails.dob
-        });
+      if (shouldValidateWhenSaveForLater(req.body, 'nationality')) {
+        const validation = nationalityValidation(req.body);
+        if (validation) {
+          const nationality = req.body.nationality;
+          const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
+          return res.render('appeal-application/personal-details/nationality.njk', {
+            nationalitiesOptions,
+            errors: validation,
+            errorList: Object.values(validation),
+            previousPage: paths.personalDetails.dob
+          });
+        }
       }
-
       const { application } = req.session.appeal;
       application.personalDetails = {
         ...application.personalDetails,
@@ -152,7 +155,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
         return getConditionalRedirectUrl(req, res, paths.personalDetails.enterAddress);
 
       }
-      return getConditionalRedirectUrl(req, res, paths.personalDetails.enterPostcode);
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.enterPostcode));
 
     } catch (e) {
       next(e);
@@ -257,20 +260,22 @@ function getManualEnterAddressPage(req: Request, res: Response, next: NextFuncti
 function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = addressValidation(req.body);
-      if (validation !== null) {
-        return res.render('appeal-application/personal-details/enter-address.njk', {
-          address: {
-            line1: req.body['address-line-1'],
-            line2: req.body['address-line-2'],
-            city: req.body['address-town'],
-            county: req.body['address-county'],
-            postcode: req.body['address-postcode']
-          },
-          error: validation,
-          errorList: Object.values(validation),
-          previousPage: paths.personalDetails.postcodeLookup
-        });
+      if (shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
+        const validation = addressValidation(req.body);
+        if (validation !== null) {
+          return res.render('appeal-application/personal-details/enter-address.njk', {
+            address: {
+              line1: req.body['address-line-1'],
+              line2: req.body['address-line-2'],
+              city: req.body['address-town'],
+              county: req.body['address-county'],
+              postcode: req.body['address-postcode']
+            },
+            error: validation,
+            errorList: Object.values(validation),
+            previousPage: paths.personalDetails.postcodeLookup
+          });
+        }
       }
 
       req.session.appeal.application.personalDetails = {

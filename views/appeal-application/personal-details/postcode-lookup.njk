@@ -1,8 +1,6 @@
 {% extends '../../layout.njk' %}
 {% set pageTitleName = i18n.pages.postcodeLookup.title %}
-{% from "govuk/components/select/macro.njk" import govukSelect %}
-
-
+{% from "govuk/components/select/macro.njk" import govukSelect %}]
 
 {% block content %}
   {% if error %}
@@ -15,7 +13,7 @@
   <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.postcodeLookup.heading }}</h1>
   <form method="post" action="/personal-details/postcode-lookup">
     <p class="govuk-body-l">{{ i18n.pages.postcodeLookup.title }}</p>
-    <span><b>{{ postcode }}</b> &emsp;  
+    <span><b>{{ postcode }}</b> &emsp;
       <a class="govuk-link app-contact-panel__link"
          href="/personal-details/enter-postcode">Change</a></span>
     </br>
@@ -35,7 +33,20 @@
        href="/personal-details/enter-address">{{ i18n.pages.postcodeLookup.cantFind }}</a>
     </br>
     </br>
-    {{ saveButtons('Save and continue', 'Save for later') }}
+    <div class="buttons__container">
+      {{ govukButton({
+        text: i18n.common.buttons.saveAndContinue,
+        name: "buttton",
+        value: "submit",
+        classes: "govuk-!-margin-right-1"
+      }) }}
+
+      {{ govukButton({
+        text: i18n.common.buttons.saveForLater,
+        href: '/task-list',
+        classes: "govuk-button--secondary"
+      }) }}
+    </div>
     {{ contactUs() }}
   </form>
 {% endblock %}

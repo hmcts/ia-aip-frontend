@@ -81,6 +81,7 @@ interface AppealApplication {
 
 interface CaseBuilding {
   [key: string]: any;
+  decision: string;
 }
 
 interface HearingRequirements {

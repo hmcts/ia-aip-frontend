@@ -9,6 +9,7 @@ import { setupHomeOfficeDetailsController } from './controllers/home-office-deta
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
 import { setupPersonalDetailsController } from './controllers/personal-details';
+import { setupReasonsForAppealController } from './controllers/reason-for-appeal';
 import { setupStartController } from './controllers/startController';
 import { setupTaskListController } from './controllers/task-list';
 import { setupTypeOfAppealController } from './controllers/type-of-appeal';
@@ -35,6 +36,7 @@ const personalDetailsController = setupPersonalDetailsController({ updateAppealS
 const contactDetailsController = setupContactDetailsController(updateAppealService);
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
+const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService });
 // not protected by idam
 router.use(healthController);
 router.use(startController);
@@ -51,5 +53,6 @@ router.use(typeOfAppealController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);
+router.use(reasonsForAppealController);
 
 export { router };

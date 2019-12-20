@@ -20,7 +20,8 @@ exports.config = {
   },
   plugins: {
     stepByStepReport: {
-      enabled: true
+      enabled: true,
+      fullPageScreenshots: true
     }
   },
   require: ['ts-node/register/transpile-only']

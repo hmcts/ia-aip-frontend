@@ -11,34 +11,34 @@ Feature: Business rules
     Then I should see the task-list page
     When I click on Home office details
     Then I should be taken to the home office ref number page
-    When I enter "A1234567" and click Save and Continue
+    When I enter "A1234567" as the Office ref number and click Save and continue
     Then I should see letter sent page
-    When I enter a date before expiry
+    When I enter an on time letter sent date and click Save and continue
     Then I expect to be redirect back to the task-list
     When I click Your personal details
     Then I should be taken to the enter your name page
-    When Enter "Random" "User" into the fields
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
     Then click save and continue
     Then I should be taken to the DOB page
-    When I enter "11" "11" "1999" into each input and click continue
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the drop down and click continue
+    When I pick "Angola" from the Nationalities drop down and click continue
     Then I should be taken to the enter your postcode page
-    When I type "W1W 7RT" and click continue
+    When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page
-    When I choose the first item from the dropdown list and click continue
+    When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    When I click continue
+    When I confirm my address and click Save and continue
     Then I should be taken to the task-list
     Given I click the contact details link
     Then I should be taken to the contact-details page
-    When I check the Text message box and type "07899999999" and click save and continue
+    When I check the Text message option and type "07899999999" as my phone number and click Save and continue
     Then I should be taken to the task-list page
     When I click on the type-of-appeal link
     Then I should be taken to the appeal page
-    When I click on the first checkbox and click save and continue
+    When I click on Protection as my type of appeal and click Save and continue
     Then I should be taken to the task-list
-    When I click on the check and send link
+    When I click on the check and send your appeal link
     Then I should be taken to the check-and-send page
     # When I check the checkbox and click send
     # Then I should be taken to the confirmation page

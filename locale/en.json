@@ -62,7 +62,11 @@
     },
     "contactDetails": {
       "header": "How do you want us to contact you?",
-      "hint": "Select at least one of the option below"
+      "hint": "Select at least one of the option below",
+      "email": "Email",
+      "enterEmail": "Enter email address",
+      "mobile": "Enter mobile phone number",
+      "textMessage": "Text message"
     },
     "appealType": {
       "header": "What is your appeal type?",

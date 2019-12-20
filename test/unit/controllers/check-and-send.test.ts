@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import {
+  createSummaryRowsFrom,
   getCheckAndSend,
   postCheckAndSend,
   setupCheckAndSendController
@@ -7,6 +8,7 @@ import {
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import { addSummaryRow } from '../../../app/utils/summary-list';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
@@ -51,6 +53,29 @@ function getMockedSummaryRows() {
     value: { html: 'Protection' }
   } ];
 }
+
+describe('createSummaryRowsFrom', () => {
+
+  it('should create rows', () => {
+    const appeal: Appeal = createDummyAppealApplication();
+    const rows: any[] = createSummaryRowsFrom(appeal.application);
+    expect(rows).to.be.deep.equal(getMockedSummaryRows());
+  });
+
+  it('should create rows when appeal is late', () => {
+    const appeal: Appeal = createDummyAppealApplication();
+    appeal.application.isAppealLate = true;
+    appeal.application.lateAppeal = {
+      reason: 'The reason why I am late'
+    };
+
+    const rows: any[] = createSummaryRowsFrom(appeal.application);
+    const appealLateRow = addSummaryRow('appealLate', [ appeal.application.lateAppeal.reason ], paths.homeOffice.appealLate);
+    const mockedRows = getMockedSummaryRows();
+    mockedRows.push(appealLateRow);
+    expect(rows).to.be.deep.equal(mockedRows);
+  });
+});
 
 describe('Check and Send Controller', () => {
   let sandbox: sinon.SinonSandbox;

@@ -5,6 +5,7 @@ import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { typeOfAppealValidation } from '../utils/fields-validations';
+import { shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
@@ -30,14 +31,16 @@ function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
 function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validation = typeOfAppealValidation(req.body);
-      if (validation) {
-        return res.render('appeal-application/type-of-appeal.njk', {
-          types: appealTypes,
-          errors: validation,
-          errorList: Object.values(validation),
-          previousPage: paths.taskList
-        });
+      if (shouldValidateWhenSaveForLater(req.body, 'appealType')) {
+        const validation = typeOfAppealValidation(req.body);
+        if (validation) {
+          return res.render('appeal-application/type-of-appeal.njk', {
+            types: appealTypes,
+            errors: validation,
+            errorList: Object.values(validation),
+            previousPage: paths.taskList
+          });
+        }
       }
 
       req.session.appeal.application.appealType = req.body['appealType'];

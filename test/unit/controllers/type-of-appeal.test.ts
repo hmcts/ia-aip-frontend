@@ -112,6 +112,13 @@ describe('Type of appeal Controller', () => {
       });
     });
 
+    it('should not validate when nothing selected and save for later clicked', async () => {
+      req.body = { 'saveForLater': 'saveForLater' };
+
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.taskList);
+    });
+
     it('should validate and redirect to the task-list page', async () => {
       req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
 

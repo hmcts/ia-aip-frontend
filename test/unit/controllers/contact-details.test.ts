@@ -153,6 +153,18 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
+
+      it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
+        req.body = {
+          'email-value': '',
+          'text-message-value': '',
+          'saveForLater': 'saveForLater'
+        };
+
+        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      });
+
     });
 
     describe('email cases', () => {

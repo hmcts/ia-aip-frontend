@@ -178,7 +178,7 @@ function nationalityValidation(obj: object) {
     nationality: Joi.string().required().empty('').messages({
       'any.required': i18n.validationErrors.nationality.selectNationality
     })
-  });
+  }).unknown(true);
 
   return validate(obj, schema);
 }
@@ -265,7 +265,7 @@ function addressValidation(obj: object): null | ValidationErrors {
     ['address-postcode']: Joi.string().optional().empty('').regex(postcodeRegex).messages({
       'string.pattern.base': i18n.validationErrors.postcode.invalid
     })
-  });
+  }).unknown();
   return validate(obj, schema);
 }
 

@@ -4,7 +4,7 @@ import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { contactDetailsValidation } from '../utils/fields-validations';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
+import { shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getContactDetails(req: Request, res: Response, next: NextFunction) {

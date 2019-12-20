@@ -35,11 +35,20 @@
       <div class="govuk-form-group">
         <a href="/personal-details/enter-address">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
       </div>
-      {{ govukButton({
-        text: 'Find address',
-        name: "buttton",
-        value: "submit"
-      }) }}
+      <div class="buttons__container">
+          {{ govukButton({
+              text: 'Find address',
+              name: "buttton",
+              value: "submit",
+              classes: "govuk-!-margin-right-1"
+          }) }}
+
+          {{ govukButton({
+              text: i18n.common.buttons.saveForLater,
+              href: '/task-list',
+              classes: "govuk-button--secondary"
+          }) }}
+      </div>
     {% endcall %}
   </form>
 

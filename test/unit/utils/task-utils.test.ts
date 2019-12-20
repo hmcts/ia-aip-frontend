@@ -59,13 +59,13 @@ describe('getStatus', () => {
   const status = {
     homeOfficeDetails: {
       saved: true,
-      completed: false,
+      completed: true,
       active: true
     },
     personalDetails: {
       saved: true,
       completed: false,
-      active: false
+      active: true
     },
     contactDetails: {
       saved: false,

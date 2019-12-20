@@ -127,6 +127,7 @@ function setupCheckAndSendController(updateAppealService: UpdateAppealService): 
 }
 
 export {
+  createSummaryRowsFrom,
   setupCheckAndSendController,
   getCheckAndSend,
   postCheckAndSend

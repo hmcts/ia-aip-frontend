@@ -38,7 +38,7 @@ describe('fields-validations', () => {
     });
   });
 
-  describe('dateValidation @only', () => {
+  describe('dateValidation', () => {
     const errors = { ...i18n.validationErrors.dateLetterSent };
 
     it('should validate', () => {

@@ -12,7 +12,7 @@ module.exports = {
       await I.seeInCurrentUrl('/home-office/details');
     });
 
-    When(/^I enter "([^"]*)" and click Save and Continue/, async (refNumber) => {
+    When(/^I enter "([^"]*)" as the Office ref number and click Save and continue/, async (refNumber) => {
       enterRefNumber(refNumber);
     });
 
@@ -20,10 +20,16 @@ module.exports = {
       await I.seeInCurrentUrl('/letter-sent');
     });
 
-    When(/^I enter a date before expiry$/, async () => {
+    When(/^I enter an on time letter sent date and click Save and continue$/, async () => {
       const date = new Date();
       await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());
-      I.click('.govuk-button');
+      I.click('Save and continue');
+    });
+
+    When(/^I enter an out of time letter sent date and click Save and continue$/, async () => {
+      const date = new Date();
+      await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear() - 1);
+      I.click('Save and continue');
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {

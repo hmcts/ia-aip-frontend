@@ -32,7 +32,7 @@
       value: contactDetails.email,
       classes: "govuk-!-width-one-third",
       label: {
-        text: i18n.fields.emailAddress
+        text: i18n.pages.contactDetails.enterEmail
       },
       attributes: {
         spellcheck: "false"
@@ -51,7 +51,7 @@
       value: contactDetails.phone,
       classes: "govuk-!-width-one-third",
       label: {
-        text: i18n.fields.mobilePhone
+        text: i18n.pages.contactDetails.mobile
       },
       errorMessage: {
         text: errors['text-message-value'].text
@@ -76,18 +76,18 @@
       items: [
         {
           value: "email",
-          text: i18n.fields.email,
+          text: i18n.pages.contactDetails.email,
           conditional: {
-          html: emailHtml
-        },
+            html: emailHtml
+          },
           checked: true if contactDetails.wantsEmail or errors['email-value']
         },
         {
           value: "text-message",
-          text: i18n.fields.textMessage,
+          text: i18n.pages.contactDetails.textMessage,
           conditional: {
-          html: textHtml
-        },
+            html: textHtml
+          },
           checked: true if contactDetails.wantsSms or errors['text-message-value']
         }
       ],

@@ -1,13 +1,13 @@
 module.exports = {
   typeOfAppeal(I) {
     When(/^I click on the type\-of\-appeal link$/, async () => {
-      await I.click('a[href*="/type-of-appeal"');
+      await I.click('Type of appeal');
     });
     Then(/^I should be taken to the appeal page$/, async () => {
       await I.seeInCurrentUrl('type-of-appeal');
     });
-    When(/^I click on the first checkbox and click save and continue$/, async () => {
-      await I.checkOption('#appealType');
+    When(/^I click on Protection as my type of appeal and click Save and continue$/, async () => {
+      await I.checkOption('Protection');
       await I.click('.govuk-button');
     });
 

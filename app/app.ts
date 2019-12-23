@@ -11,6 +11,8 @@ import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
 import { router } from './routes';
 import { setupSession } from './session';
 
+const cache = require('memory-cache');
+
 function createApp() {
   const app: express.Application = express();
   app.use(setupSession());

@@ -6,7 +6,8 @@ module.exports = {
     });
 
     Then(/^I should see error summary$/, async () => {
-      I.seeElementInDOM('.govuk-error-summary');
+      await I.seeElementInDOM('.govuk-error-summary');
+      // await I.seeInTitle('Error: ');
     });
 
     Then(/^I shouldnt see error summary$/, async () => {

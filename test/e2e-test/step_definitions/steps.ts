@@ -8,6 +8,8 @@ const { common } = require('../pages/common');
 const { homeOfficeReferenceNumber } = require('../pages/home-office-details/home-office-reference-number');
 const { homeOfficeLetterSent } = require('../pages/home-office-details/home-office-letter-sent');
 const { taskList } = require('../pages/task-list');
+const { namePage } = require('../pages/personal-details/personal-details-name');
+const { dateOfBirth } = require('../pages/personal-details/personal-details-date-of-birth');
 
 const { I } = inject();
 
@@ -21,3 +23,5 @@ common(I);
 homeOfficeReferenceNumber(I);
 homeOfficeLetterSent(I);
 taskList(I);
+namePage(I);
+dateOfBirth(I);

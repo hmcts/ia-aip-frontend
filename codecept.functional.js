@@ -15,7 +15,7 @@ exports.config = {
     }
   },
   gherkin: {
-    features: './test/functional/features/*.feature',
+    features: './test/functional/features/person-details-nationality-page.feature',
     steps: ['./test/e2e-test/step_definitions/steps.ts']
   },
   plugins: {

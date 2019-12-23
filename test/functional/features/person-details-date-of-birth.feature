@@ -1,7 +1,7 @@
-Feature: Personal details name page
+Feature: Personal details date of birth page
   In order complete my appeal
   As a citizen
-  I want to be able to enter my name
+  I want to be able to enter date of birth
 
   Scenario: Home office reference page
     Given I have an appeal with home office details and name

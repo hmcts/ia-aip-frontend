@@ -12,6 +12,10 @@ Feature: Personal details nationality page
     And I shouldnt be able to click "Your contact details"
 
     Given I am on the personal details nationality page
+    When I click save and continue
+    Then I should see error summary
+
+    Given I am on the personal details nationality page
     When I enter a nationality "Armenia"
     And I click save for later
     Then I should see the task-list page

@@ -38,13 +38,14 @@
       <div class="buttons__container">
           {{ govukButton({
               text: 'Find address',
-              name: "buttton",
+              name: "findAddress",
               value: "submit",
               classes: "govuk-!-margin-right-1"
           }) }}
 
           {{ govukButton({
               text: i18n.common.buttons.saveForLater,
+              id: "saveForLater",
               href: '/task-list',
               classes: "govuk-button--secondary"
           }) }}

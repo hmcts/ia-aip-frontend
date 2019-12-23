@@ -11,10 +11,6 @@ module.exports = {
       I.amOnPage(testUrl + paths.homeOffice.letterSent);
     });
 
-    When(/^I enter a day "([^"]*)" month "([^"]*)" year "([^"]*)"$/, async (day, month, year) => {
-      await fillInDate(day, month, year);
-    });
-
     When(/^I enter a a home letter date in the last 2 weeks$/, async () => {
       const date = new Date();
       await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());

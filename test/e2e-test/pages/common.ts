@@ -1,74 +1,64 @@
 import dateFormat from 'dateformat';
+import * as _ from 'lodash';
 import rp from 'request-promise';
+const { fillInDate } = require('./helper-functions');
+
+const caseData = {
+  'id': 1573640323267110,
+  'jurisdiction': 'IA',
+  'state': 'appealStarted',
+  'version': 8,
+  'case_type_id': 'Asylum',
+  'created_date': '2019-11-13T10:18:43.271',
+  'last_modified': '2019-11-13T15:35:31.356',
+  'security_classification': 'PUBLIC',
+  'case_data': {
+    'journeyType': 'aip'
+  },
+  'data_classification': {
+    'journeyType': 'PUBLIC',
+    'homeOfficeReferenceNumber': 'PUBLIC'
+  },
+  'after_submit_callback_response': null,
+  'callback_response_status_code': null,
+  'callback_response_status': null,
+  'delete_draft_response_status_code': null,
+  'delete_draft_response_status': null,
+  'security_classifications': {
+    'journeyType': 'PUBLIC',
+    'homeOfficeReferenceNumber': 'PUBLIC'
+  }
+};
+
+async function setupData(newCaseData) {
+  const caseDataClone = _.cloneDeep(caseData);
+  _.merge(caseDataClone.case_data, newCaseData);
+  await rp.post({
+    uri: 'http://localhost:20000/setupCase',
+    body: [caseDataClone],
+    json: true
+  });
+}
 
 module.exports = {
   common(I) {
     Given('I have an appeal with home office reference', async () => {
-      rp.post({
-        uri: 'http://localhost:20000/setupCase',
-        body: [{
-          'id': 1573640323267110,
-          'jurisdiction': 'IA',
-          'state': 'appealStarted',
-          'version': 8,
-          'case_type_id': 'Asylum',
-          'created_date': '2019-11-13T10:18:43.271',
-          'last_modified': '2019-11-13T15:35:31.356',
-          'security_classification': 'PUBLIC',
-          'case_data': {
-            'journeyType': 'aip',
-            'homeOfficeReferenceNumber': 'A111111'
-          },
-          'data_classification': {
-            'journeyType': 'PUBLIC',
-            'homeOfficeReferenceNumber': 'PUBLIC'
-          },
-          'after_submit_callback_response': null,
-          'callback_response_status_code': null,
-          'callback_response_status': null,
-          'delete_draft_response_status_code': null,
-          'delete_draft_response_status': null,
-          'security_classifications': {
-            'journeyType': 'PUBLIC',
-            'homeOfficeReferenceNumber': 'PUBLIC'
-          }
-        }],
-        json: true
-      });
+      await setupData({ homeOfficeReferenceNumber: 'A1111111' });
     });
 
     Given('I have an appeal with home office details', async () => {
-      rp.post({
-        uri: 'http://localhost:20000/setupCase',
-        body: [{
-          'id': 1573640323267110,
-          'jurisdiction': 'IA',
-          'state': 'appealStarted',
-          'version': 8,
-          'case_type_id': 'Asylum',
-          'created_date': '2019-11-13T10:18:43.271',
-          'last_modified': '2019-11-13T15:35:31.356',
-          'security_classification': 'PUBLIC',
-          'case_data': {
-            'journeyType': 'aip',
-            'homeOfficeReferenceNumber': 'A111111',
-            'homeOfficeDecisionDate': dateFormat(new Date(), 'yyyy-mm-dd')
-          },
-          'data_classification': {
-            'journeyType': 'PUBLIC',
-            'homeOfficeReferenceNumber': 'PUBLIC'
-          },
-          'after_submit_callback_response': null,
-          'callback_response_status_code': null,
-          'callback_response_status': null,
-          'delete_draft_response_status_code': null,
-          'delete_draft_response_status': null,
-          'security_classifications': {
-            'journeyType': 'PUBLIC',
-            'homeOfficeReferenceNumber': 'PUBLIC'
-          }
-        }],
-        json: true
+      await setupData({
+        homeOfficeReferenceNumber: 'A1111111',
+        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd')
+      });
+    });
+
+    Given('I have an appeal with home office details and name', async () => {
+      await setupData({
+        homeOfficeReferenceNumber: 'A1111111',
+        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd'),
+        appellantGivenNames: 'givenName',
+        appellantFamilyName: 'familyName'
       });
     });
 
@@ -82,6 +72,10 @@ module.exports = {
 
     When('I click save and continue',async () => {
       I.click({ name: 'saveAndContinue' });
+    });
+
+    When(/^I enter a day "([^"]*)" month "([^"]*)" year "([^"]*)"$/, async (day, month, year) => {
+      await fillInDate(day, month, year);
     });
 
     Then(/^I should see error summary$/, async () => {

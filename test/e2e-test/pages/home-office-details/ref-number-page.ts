@@ -16,10 +16,6 @@ module.exports = {
       enterRefNumber(refNumber);
     });
 
-    When(/^I enter a home office reference "([^"]*)"/, async (refNumber) => {
-      await I.fillField('#homeOfficeRefNumber', refNumber);
-    });
-
     Then(/^I should see letter sent page$/, async () => {
       await I.seeInCurrentUrl('/letter-sent');
     });
@@ -28,15 +24,6 @@ module.exports = {
       const date = new Date();
       await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());
       I.click('.govuk-button');
-    });
-
-    When(/^I enter a day "([^"]*)" month "([^"]*)" year "([^"]*)"$/, async (day, month, year) => {
-      await fillInDate(day, month, year);
-    });
-
-    When(/^I enter a a home letter date in the last 2 weeks$/, async () => {
-      const date = new Date();
-      await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {

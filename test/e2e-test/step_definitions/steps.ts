@@ -5,6 +5,9 @@ const { fillInPersonalDetails } = require('../pages/personal-details/personal-de
 const { fillInHomeOfficeDetails } = require('../pages/home-office-details/ref-number-page');
 const { signIn } = require('../pages/sign-in');
 const { common } = require('../pages/common');
+const { homeOfficeReferenceNumber } = require('../pages/home-office-details/home-office-reference-number');
+const { homeOfficeLetterSent } = require('../pages/home-office-details/home-office-letter-sent');
+const { taskList } = require('../pages/task-list');
 
 const { I } = inject();
 
@@ -15,3 +18,6 @@ fillInContactDetails(I);
 typeOfAppeal(I);
 checkAndSend(I);
 common(I);
+homeOfficeReferenceNumber(I);
+homeOfficeLetterSent(I);
+taskList(I);

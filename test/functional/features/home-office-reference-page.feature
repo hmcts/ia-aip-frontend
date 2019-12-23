@@ -4,7 +4,8 @@ Feature: Home office reference page
   I want to be able to enter a home office reference number
 
   Scenario: Home office reference page
-    Given I am authenticated as a valid appellant and on the home office reference page
+    Given I am authenticated as a valid appellant
+    And I am on the home office reference page
     When I click save for later
     Then I should see the task-list page
     And I shouldnt be able to click Personal details

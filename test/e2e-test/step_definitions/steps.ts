@@ -15,6 +15,7 @@ const { enterPostcode } = require('../pages/personal-details/personal-details-en
 const { selectAddress } = require('../pages/personal-details/personal-details-select-address');
 const { enterAddress } = require('../pages/personal-details/personal-details-enter-address');
 const { contactDetails } = require('../pages/contact-details/contact-details-page');
+const { typeOfAppealPage } = require('../pages/type-of-appeal/type-of-appeal-page');
 
 const { I } = inject();
 
@@ -35,3 +36,4 @@ enterPostcode(I);
 selectAddress(I);
 enterAddress(I);
 contactDetails(I);
+typeOfAppealPage(I);

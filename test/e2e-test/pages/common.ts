@@ -90,6 +90,29 @@ module.exports = {
       });
     });
 
+    Given('I have an appeal with home office details, name, date of birth, nationality and address', async () => {
+      await setupData({
+        homeOfficeReferenceNumber: 'A1111111',
+        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd'),
+        appellantGivenNames: 'givenName',
+        appellantFamilyName: 'familyName',
+        appellantDateOfBirth: '1981-01-01',
+        appellantNationalities: [
+          {
+            id: '1',
+            value: {
+              code: 'FI'
+            }
+          }
+        ],
+        appellantAddress: {
+          AddressLine1: 'Address line 1',
+          PostTown: 'Town',
+          PostCode: 'CM15 9BN'
+        }
+      });
+    });
+
     When(/^I click on back button$/, async () => {
       await I.click('.govuk-back-link');
     });

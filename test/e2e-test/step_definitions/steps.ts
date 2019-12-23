@@ -14,6 +14,7 @@ const { nationality } = require('../pages/personal-details/personal-details-nati
 const { enterPostcode } = require('../pages/personal-details/personal-details-enter-postcode');
 const { selectAddress } = require('../pages/personal-details/personal-details-select-address');
 const { enterAddress } = require('../pages/personal-details/personal-details-enter-address');
+const { contactDetails } = require('../pages/contact-details/contact-details-page');
 const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appeal');
 
 const { I } = inject();
@@ -34,4 +35,5 @@ nationality(I);
 enterPostcode(I);
 selectAddress(I);
 enterAddress(I);
+contactDetails(I);
 reasonsForAppeal(I);

@@ -9,6 +9,10 @@ module.exports = {
       I.amOnPage(testUrl + paths.personalDetails.nationality);
     });
 
+    When(/^I enter a nationality "([^"]*)"$/, async (nationality) => {
+      await I.selectOption('#nationality', nationality);
+    });
+
     Then('I should see the nationality page', async () => {
       I.seeInCurrentUrl(paths.personalDetails.nationality);
     });

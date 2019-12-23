@@ -62,6 +62,16 @@ module.exports = {
       });
     });
 
+    Given('I have an appeal with home office details, name and date of birth', async () => {
+      await setupData({
+        homeOfficeReferenceNumber: 'A1111111',
+        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd'),
+        appellantGivenNames: 'givenName',
+        appellantFamilyName: 'familyName',
+        appellantDateOfBirth: '1981-01-01'
+      });
+    });
+
     When(/^I click on back button$/, async () => {
       await I.click('.govuk-back-link');
     });

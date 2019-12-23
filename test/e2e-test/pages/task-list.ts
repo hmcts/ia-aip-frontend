@@ -1,3 +1,8 @@
+const textToId = {
+  'Your personal details': '#personalDetailsLink',
+  'Your contact details': '#contactDetailsLink'
+};
+
 module.exports = {
   taskList(I) {
     Then('I should see the task-list page', async () => {
@@ -11,6 +16,15 @@ module.exports = {
 
     Then('I should be able to click Personal details', async () => {
       await I.seeElement('#personalDetailsLink');
+    });
+
+    Then(/^I shouldnt be able to click "([^"]*)"$/, async (category) => {
+      await I.seeInSource(category);
+      await I.dontSeeElement(textToId[category]);
+    });
+
+    Then(/^I should be able to click "([^"]*)"$/, async (category) => {
+      await I.seeElement(textToId[category]);
     });
   }
 };

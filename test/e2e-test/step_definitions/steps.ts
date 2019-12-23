@@ -10,6 +10,8 @@ const { homeOfficeLetterSent } = require('../pages/home-office-details/home-offi
 const { taskList } = require('../pages/task-list');
 const { namePage } = require('../pages/personal-details/personal-details-name');
 const { dateOfBirth } = require('../pages/personal-details/personal-details-date-of-birth');
+const { nationality } = require('../pages/personal-details/personal-details-nationality');
+const { enterPostcode } = require('../pages/personal-details/personal-details-enter-postcode');
 const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appeal');
 
 const { I } = inject();
@@ -26,4 +28,6 @@ homeOfficeLetterSent(I);
 taskList(I);
 namePage(I);
 dateOfBirth(I);
+nationality(I);
+enterPostcode(I);
 reasonsForAppeal(I);

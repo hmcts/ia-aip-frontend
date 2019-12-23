@@ -1,4 +1,4 @@
-const config = require('config')
+const config = require('config');
 
 exports.config = {
   name: 'codecept',
@@ -15,7 +15,7 @@ exports.config = {
     }
   },
   gherkin: {
-    features: './test/functional/features/person-details-name-page.feature',
+    features: './test/functional/features/*.feature',
     steps: ['./test/e2e-test/step_definitions/steps.ts']
   },
   plugins: {

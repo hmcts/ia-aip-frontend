@@ -3,7 +3,8 @@ const cache = require('memory-cache');
 const defaultUserId = '1';
 const emailToUserId = {
   'no-cases@example.com' : '1',
-  'has-case@example.com': '2'
+  'has-case@example.com': '2',
+  'setupcase@example.com': '999'
 };
 
 module.exports = {

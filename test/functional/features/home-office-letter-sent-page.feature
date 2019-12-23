@@ -4,7 +4,8 @@ Feature: Home office letter sent page
   I want to be able to enter a home office letter sent date
 
   Scenario: Home office reference page
-    Given I am authenticated as a valid appellant
+    Given I have an appeal with home office reference
+    And I have logged in
     And I am on the home office letter sent page
     When I click save for later
     Then I should see the task-list page

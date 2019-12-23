@@ -1,5 +1,4 @@
-const { signInHelper } = require('./helper-functions');
-import { paths } from '../../../app/paths';
+const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 
 module.exports = {
@@ -25,6 +24,14 @@ module.exports = {
       await I.click('.govuk-button');
       await I.seeInTitle('Sign in - HMCTS Access');
       await signInHelper();
+      await I.seeInTitle('Task List - Immigration & Asylum - GOV.UK');
+    });
+
+    Given('I have logged in', async () => {
+      I.amOnPage(testUrl);
+      await I.click('.govuk-button');
+      await I.seeInTitle('Sign in - HMCTS Access');
+      signInForUser('setupcase@example.com');
       await I.seeInTitle('Task List - Immigration & Asylum - GOV.UK');
     });
   }

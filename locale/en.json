@@ -40,23 +40,23 @@
       },
       "homeOfficeDetails": {
         "title": "Your Home Office details",
-        "htmlLink": "<a href='/home-office/details' title='Your Home office details'>Your Home Office details</a>"
+        "htmlLink": "<a id='homeOfficeDetailsLink' href='/home-office/details' title='Your Home office details'>Your Home Office details</a>"
       },
       "personalDetails": {
         "title": "Your personal details",
-        "htmlLink": "<a href='/personal-details/name' title='Your personal details'>Your personal details</a>"
+        "htmlLink": "<a id='personalDetailsLink' href='/personal-details/name' title='Your personal details'>Your personal details</a>"
       },
       "contactDetails": {
         "title": "Your contact details",
-        "htmlLink": "<a href='/contact-details' title='Your contact details'>Your contact details</a>"
+        "htmlLink": "<a id='contactDetailsLink' href='/contact-details' title='Your contact details'>Your contact details</a>"
       },
       "typeOfAppeal": {
         "title": "Type of appeal",
-        "htmlLink": "<a href='/type-of-appeal' title='Type of appeal'>Type of appeal</a>"
+        "htmlLink": "<a id='typeOfAppealLink' href='/type-of-appeal' title='Type of appeal'>Type of appeal</a>"
       },
       "checkAndSend": {
         "title": "Check and send your appeal",
-        "htmlLink": "<a href='/check-and-send' title='Check and send your appeal'>Check and send your appeal</a>"
+        "htmlLink": "<a id='checkAndSendLink' href='/check-and-send' title='Check and send your appeal'>Check and send your appeal</a>"
       }
     },
     "contactDetails": {

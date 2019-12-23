@@ -1,17 +1,14 @@
 import { paths } from '../../../../app/paths';
 const config = require('config');
 const { fillInDate } = require('../helper-functions');
+const cache = require('memory-cache');
 
 const testUrl = config.get('testUrl');
 
 module.exports = {
   homeOfficeLetterSent(I) {
     Given('I am on the home office letter sent page', async () => {
-      // I.amOnPage(testUrl + paths.homeOffice.letterSent);
-
-      await I.amOnPage(testUrl + paths.homeOffice.details);
-      await I.fillField('#homeOfficeRefNumber', 'A123456');
-      await I.click('Save and continue');
+      I.amOnPage(testUrl + paths.homeOffice.letterSent);
     });
 
     When(/^I enter a day "([^"]*)" month "([^"]*)" year "([^"]*)"$/, async (day, month, year) => {

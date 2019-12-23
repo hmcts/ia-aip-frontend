@@ -1,3 +1,5 @@
+const cache = require('memory-cache');
+
 const usersToCaseData = {
   '1': [],
   '2': [{
@@ -33,6 +35,14 @@ module.exports = {
   path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases',
   method: 'GET',
   template: params => {
-    return usersToCaseData[params.userId];
+    if (params.userId === '999') {
+      const caseData = cache.get('caseData');
+      if (caseData) {
+        return caseData;
+      }
+      return [];
+    } else {
+      return usersToCaseData[params.userId];
+    }
   }
 };

@@ -13,6 +13,7 @@ const { dateOfBirth } = require('../pages/personal-details/personal-details-date
 const { nationality } = require('../pages/personal-details/personal-details-nationality');
 const { enterPostcode } = require('../pages/personal-details/personal-details-enter-postcode');
 const { selectAddress } = require('../pages/personal-details/personal-details-select-address');
+const { enterAddress } = require('../pages/personal-details/personal-details-enter-address');
 
 const { I } = inject();
 
@@ -31,3 +32,4 @@ dateOfBirth(I);
 nationality(I);
 enterPostcode(I);
 selectAddress(I);
+enterAddress(I);

@@ -9,7 +9,7 @@ Feature: Home office letter sent page
     And I am on the home office letter sent page
     When I click save for later
     Then I should see the task-list page
-    And I shouldnt be able to click Personal details
+    And I shouldnt be able to click "Your personal details"
 
     Given I am on the home office letter sent page
     When I enter a day "1" month "1" year "1"
@@ -25,5 +25,5 @@ Feature: Home office letter sent page
     When I enter a a home letter date in the last 2 weeks
     And I click save for later
     Then I should see the task-list page
-    And I should be able to click Personal details
+    And I should be able to click "Your personal details"
 

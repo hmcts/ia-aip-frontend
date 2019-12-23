@@ -8,7 +8,7 @@ Feature: Home office reference page
     And I am on the home office reference page
     When I click save for later
     Then I should see the task-list page
-    And I shouldnt be able to click Personal details
+    And I shouldnt be able to click "Your personal details"
 
     Given I am on the home office reference page
     When I enter a home office reference "A12345"
@@ -24,5 +24,5 @@ Feature: Home office reference page
     When I enter a home office reference "A1234567"
     And I click save for later
     Then I should see the task-list page
-    And I shouldnt be able to click Personal details
+    And I shouldnt be able to click "Your personal details"
 

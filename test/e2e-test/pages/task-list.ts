@@ -1,7 +1,8 @@
 const textToId = {
   'Your personal details': '#personalDetailsLink',
   'Your contact details': '#contactDetailsLink',
-  'Type of appeal': '#typeOfAppealLink'
+  'Type of appeal': '#typeOfAppealLink',
+  'Check and send your appeal': '#checkAndSendLink'
 };
 
 module.exports = {

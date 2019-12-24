@@ -12,7 +12,7 @@
     "mock-idam": "dyson test/mock/idam/services/ 20001",
     "lint": "tslint --project .",
     "test": "yarn test:unit && cross-env USE_REDIS=false yarn codecept:functional",
-    "test:accessibility": "NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=test USE_REDDIS=false mocha test/accessibility/*.ts --exit",
+    "test:accessibility": "IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=development USE_REDDIS=false mocha test/accessibility/*.ts --exit",
     "test:unit": "rm -rf test/coverage && nyc mocha test/unit/**/*.test.ts",
     "test:coverage": "nyc report",
     "test:a11y": "yarn test:accessibility",

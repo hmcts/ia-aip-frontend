@@ -3,7 +3,7 @@ import { HealthPage } from '../page-objects/HealthPage';
 import { getNewPage, tearDown } from '../utils/common';
 import { expect } from '../utils/testUtils';
 
-describe('Check health check @smoke', () => {
+describe('Check health check', () => {
   let healthPage: HealthPage;
 
   before('setup browser', async () => {

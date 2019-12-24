@@ -120,6 +120,7 @@
     },
     "homeOfficeAppealLate": {
       "title": "Your appeal is late",
+      "whyLateLabel": "Why is your appeal late?",
       "description": "Appeals should be made within 14 days from the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late below, and provide supporting evidence if you have it.",
       "provideEvidenceTitle": "Provide supporting evidence",
       "fileUploadTitle": "Upload a file"

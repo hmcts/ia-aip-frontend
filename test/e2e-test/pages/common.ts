@@ -1,5 +1,5 @@
-import dateFormat from 'dateformat';
 import * as _ from 'lodash';
+import moment from 'moment';
 import rp from 'request-promise';
 const { fillInDate } = require('./helper-functions');
 
@@ -49,14 +49,14 @@ module.exports = {
     Given('I have an appeal with home office details', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd')
+        homeOfficeDecisionDate: moment().format('yyyy-mm-dd')
       });
     });
 
     Given('I have an appeal with home office details and name', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName'
       });
@@ -65,7 +65,7 @@ module.exports = {
     Given('I have an appeal with home office details, name and date of birth', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01'
@@ -75,7 +75,7 @@ module.exports = {
     Given('I have an appeal with home office details, name, date of birth and nationality', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01',
@@ -93,7 +93,7 @@ module.exports = {
     Given('I have an appeal with home office details, name, date of birth, nationality and address', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01',
@@ -116,7 +116,7 @@ module.exports = {
     Given('I have an appeal with home office details, personal details and contact details', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: dateFormat(new Date(), 'yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01',

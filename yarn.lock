@@ -4117,6 +4117,11 @@ expect-ct@0.2.0:
   resolved "https://registry.yarnpkg.com/expect-ct/-/expect-ct-0.2.0.tgz#3a54741b6ed34cc7a93305c605f63cd268a54a62"
   integrity sha512-6SK3MG/Bbhm8MsgyJAylg+ucIOU71/FzyFalcfu5nY19dH8y/z0tBJU0wrNBXD4B27EoQtqPF/9wqH0iYAd04g==
 
+expect-ct@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/expect-ct/-/expect-ct-0.3.0.tgz#c41ceabe62f914a1df893e968e49c2a6beefb024"
+  integrity sha512-7RWfSVDd3q6gkLCrItM0GiIB391WeD6lRldx9lFmIcq7nrYDtDj30S5mm4xHTOndQ99ZRqXGbh3WnxRLF2rMOg==
+
 express-session@^1.16.2:
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.17.0.tgz#9b50dbb5e8a03c3537368138f072736150b7f9b3"

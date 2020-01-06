@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import expectCt from 'expect-ct';
 import express from 'express';
 import helmet from 'helmet';
 import webpack from 'webpack';
@@ -88,6 +89,25 @@ function configureHelmet(app) {
         'tagmanager.google.com',
         'vcc-eu4.8x8.com'
       ]
+    }
+  }));
+
+  app.use(helmet.permittedCrossDomainPolicies());
+  app.use(expectCt({ enforce: true, maxAge: 60 }));
+  app.use(helmet.featurePolicy({
+    features: {
+      accelerometer: ['\'none\''],
+      ambientLightSensor: ['\'none\''],
+      autoplay: ['\'none\''],
+      camera: ['\'none\''],
+      geolocation: ['\'none\''],
+      gyroscope: ['\'none\''],
+      magnetometer: ['\'none\''],
+      microphone: ['\'none\''],
+      payment: ['\'none\''],
+      speaker: ['\'none\''],
+      usb: ['\'none\''],
+      vibrate: ['\'none\'']
     }
   }));
 }

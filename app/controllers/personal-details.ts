@@ -115,6 +115,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
 
 function getNationalityPage(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.previousPage = paths.personalDetails.nationality;
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { application } = req.session.appeal;
@@ -153,7 +154,6 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       if (_.has(application, 'personalDetails.address.line1')) {
         return getConditionalRedirectUrl(req, res, paths.personalDetails.enterAddress);
-
       }
       return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.enterPostcode));
 
@@ -165,6 +165,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
 
 function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.previousPage = paths.personalDetails.enterPostcode;
     _.set(req.session.appeal.application, 'addressLookup', {});
     const { personalDetails } = req.session.appeal.application;
     const postcode = personalDetails && personalDetails.address && personalDetails.address.postcode || null;
@@ -199,6 +200,7 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
 
 function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    req.session.previousPage = paths.personalDetails.postcodeLookup;
     try {
       const postcode = _.get(req.session.appeal.application, 'personalDetails.address.postcode');
       if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
@@ -251,7 +253,9 @@ function getManualEnterAddressPage(req: Request, res: Response, next: NextFuncti
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const address = _.get(req.session.appeal.application, 'personalDetails.address');
 
-    res.render('appeal-application/personal-details/enter-address.njk', { address });
+    const previousPage = req.session.previousPage ? req.session.previousPage : paths.personalDetails.nationality;
+
+    res.render('appeal-application/personal-details/enter-address.njk', { address, previousPage });
   } catch (e) {
     next(e);
   }
@@ -263,6 +267,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
       if (shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
         const validation = addressValidation(req.body);
         if (validation !== null) {
+          const previousPage = req.session.previousPage ? req.session.previousPage : paths.personalDetails.nationality;
           return res.render('appeal-application/personal-details/enter-address.njk', {
             address: {
               line1: req.body['address-line-1'],
@@ -273,7 +278,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
             },
             error: validation,
             errorList: Object.values(validation),
-            previousPage: paths.personalDetails.postcodeLookup
+            previousPage: previousPage
           });
         }
       }

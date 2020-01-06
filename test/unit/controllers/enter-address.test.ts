@@ -84,7 +84,20 @@ describe('Personal Details Controller', function () {
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
-        address
+        address,
+        previousPage: '/personal-details/nationality'
+      });
+    });
+
+    it('should redirect to previous page', function () {
+      req.session.appeal.application.personalDetails.address = {
+        ...address
+      };
+      req.session.previousPage = '/lastpage';
+      getManualEnterAddressPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
+        address,
+        previousPage: '/lastpage'
       });
     });
 
@@ -95,7 +108,8 @@ describe('Personal Details Controller', function () {
       };
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
-        address
+        address,
+        previousPage: '/personal-details/nationality'
       });
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
@@ -105,7 +119,10 @@ describe('Personal Details Controller', function () {
       req.session.appeal.application.addressLookup = {};
       _.set(req.session.appeal.application, 'personalDetails.address', { ...address });
       getManualEnterAddressPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', { address });
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
+        address,
+        previousPage: '/personal-details/nationality'
+      });
     });
 
     it('should catch an exception and call next()', () => {

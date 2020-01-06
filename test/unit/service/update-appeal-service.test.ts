@@ -351,6 +351,7 @@ describe('update-appeal-service', () => {
           PostCode: 'W1W 7RT',
           Country: 'United Kingdom'
         },
+        appellantHasFixedAddress: 'Yes',
         appellantNationalities: [
           {
             value: {

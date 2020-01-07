@@ -52,7 +52,6 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 function getReasonsUploadPage(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('case-building/reasons-for-appeal/reasons-for-appeal-upload.njk',{
-
     });
   } catch (e) {
     next(e);

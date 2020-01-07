@@ -276,6 +276,13 @@ function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
   return validate(obj, schema);
 }
 
+function supportingEvidenceValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    ['value']: Joi.string().required().messages({ 'string.empty':  i18n.validationErrors.homeOfficeDecision.required })
+  });
+  return validate(obj, schema);
+}
+
 export {
   contactDetailsValidation,
   homeOfficeNumberValidation,
@@ -293,5 +300,7 @@ export {
   addressValidation,
   typeOfAppealValidation,
   homeOfficeDecisionValidation,
+  supportingEvidenceValidation,
   yesOrNoRequiredValidation
+
 };

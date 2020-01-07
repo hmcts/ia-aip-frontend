@@ -49,11 +49,22 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getReasonsUploadPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('case-building/reasons-for-appeal/reasons-for-appeal-upload.njk',{
+      evidences: [{}]
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
 function setupReasonsForAppealController(deps?: any): Router {
   const router = Router();
   router.get(paths.reasonsForAppeal.decision, getReasonForAppeal);
   router.post(paths.reasonsForAppeal.decision, postReasonForAppeal(deps.updateAppealService));
   router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);
+  router.get(paths.reasonsForAppeal.uplaod, getReasonsUploadPage);
 
   return router;
 }
@@ -62,6 +73,7 @@ export {
     setupReasonsForAppealController,
     getReasonForAppeal,
     postReasonForAppeal,
-    getConfirmationPage
+    getConfirmationPage,
+    getReasonsUploadPage
 
 };

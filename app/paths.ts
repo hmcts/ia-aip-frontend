@@ -26,6 +26,7 @@ const paths = {
   },
   reasonsForAppeal: {
     decision: '/reasons/reason-for-appeal',
+    uplaod: '/reasons/reason-for-appeal-upload',
     confirmation: '/reasons/confirmation'
   },
   typeOfAppeal: '/type-of-appeal',

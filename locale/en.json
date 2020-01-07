@@ -203,6 +203,17 @@
       "answer": "A Tribunal Caseworker will look at your answer",
       "date": "The Tribunal Caseworker will contact you by <b>{{ date }}</b> to tell you what to do next",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\">customer.services@justice.gov.uk</a>"
+    },
+    "reasonsForAppealUpload": {
+      "title": "Reasons Upload",
+      "heading": "Providing supporting evidence",
+      "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
+      "uploadFile": "Upload a file",
+      "findOutMore": "Find out more about the evidence to support your appeal",
+      "uploadFiles": "Uploaded files",
+      "noFiles": "No files uploaded",
+      "needMoreTime": "Need more time?",
+      "evidence": "If you want to provide evidence but don't have it right now, you can <a class=\"govuk-link\"href=\"#\"> ask for more time</a>"
     }
   },
   "error": {

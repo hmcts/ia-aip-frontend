@@ -5,6 +5,7 @@ const { fillInPersonalDetails } = require('../pages/personal-details/personal-de
 const { fillInHomeOfficeDetails } = require('../pages/home-office-details/ref-number-page');
 const { signIn } = require('../pages/sign-in');
 const { common } = require('../pages/common');
+const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appeal');
 
 const { I } = inject();
 
@@ -15,3 +16,4 @@ fillInContactDetails(I);
 typeOfAppeal(I);
 checkAndSend(I);
 common(I);
+reasonsForAppeal(I);

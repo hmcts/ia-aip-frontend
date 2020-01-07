@@ -43,7 +43,6 @@ async function signInHelper() {
     I.fillField('#username', userDetails.email);
     I.fillField('#password',userDetails.password);
   }
-  I.wait(2);
   I.click('.button');
 }
 

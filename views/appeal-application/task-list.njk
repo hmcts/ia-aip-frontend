@@ -9,10 +9,9 @@
   {% for section in data %}
     <li>
       <h2 class="govuk-heading-m">{{ i18n.pages.taskList.sections[section.sectionId] }}</a></h2>
-      <hr class="govuk-section-break govuk-section-break--visible">
       <ul class="govuk-list">
         {% for task in section.tasks %}
-          <li class="govuk-body-l task-list__item">
+          <li class="govuk-!-font-size-24 task-list__item">
             {% if task.active %}
               {{ i18n.pages.taskList[task.id].htmlLink | safe }}
             {% else %}

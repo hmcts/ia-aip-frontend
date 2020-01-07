@@ -5,18 +5,23 @@ ol.task-list {
   > li {
     counter-increment: my-awesome-counter;
     margin-bottom: 3.75rem;
-  
+    
     > h2 {
       display: inline-block;
     }
 
     > ul {
+      > li.task-list__item:first-child {
+        border-top: 1px solid $govuk-border-colour;
+      }
       > li.task-list__item {
+        box-sizing: border-box;
+        height: 4rem;
         display: flex;
         justify-content: space-between;
         padding: 1rem 0;
+        margin: 0;
         border-bottom: 1px solid $govuk-border-colour;
-      
         .govuk-tag {
           padding: .5rem 1rem;
           background-color: $govuk-secondary-text-colour;

@@ -16,7 +16,7 @@
     <h3>{{ i18n.pages.enterAddress.inputs.postcode }}</h3>
     <span><b>{{ selectedPostcode }}</b> &emsp;
       <a class="govuk-link app-contact-panel__link"
-         href="/personal-details/enter-postcode">Change</a>
+         href="/personal-details/enter-postcode">{{ i18n.pages.enterAddress.change }}</a>
     </span>
     </br>
     </br>
@@ -28,7 +28,7 @@
         classes: 'govuk-!-margin-bottom-3'
       },
       label: {
-        html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>',
+        html: i18n.pages.enterAddress.inputs.buildingAndStreet,
         classes: 'govuk-!-margin-bottom-2'
       },
       classes: "govuk-!-width-two-thirds",
@@ -42,7 +42,7 @@
 
     {{ govukInput({
       label: {
-        html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+        html: i18n.pages.enterAddress.inputs.buildingAndStreet2
       },
       classes: "govuk-!-width-two-thirds",
       id: "address-line-2",
@@ -52,7 +52,7 @@
 
     {{ govukInput({
       label: {
-        text: "Town or city",
+        text: i18n.pages.enterAddress.inputs.town,
         classes: 'govuk-!-margin-bottom-2'
       },
       classes: "govuk-!-width-two-thirds",
@@ -66,7 +66,7 @@
 
     {{ govukInput({
       label: {
-        text: "County",
+        text: i18n.pages.enterAddress.inputs.county,
         classes: 'govuk-!-margin-bottom-2'
       },
       classes: "govuk-!-width-two-thirds",
@@ -80,7 +80,7 @@
 
     {{ govukInput({
       label: {
-        text: "Postcode",
+        text: i18n.pages.enterAddress.inputs.postcode,
         classes: 'govuk-!-margin-bottom-2'
       },
       classes: "govuk-!-width-two-thirds",

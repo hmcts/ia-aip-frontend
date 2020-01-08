@@ -25,9 +25,13 @@ const paths = {
     deleteEvidence: '/home-office/delete-evidence'
   },
   reasonsForAppeal: {
-    decision: '/reasons/reason-for-appeal',
-    uplaod: '/reasons/reason-for-appeal-upload',
-    confirmation: '/reasons/confirmation'
+    decision: '/case-building/reason-for-appeal',
+    supportingEvidence: '/case-building/reason-for-appeal/supporting-evidence',
+    supportingEvidenceUpload: '/case-building/reason-for-appeal/supporting-evidence/upload',
+    supportingEvidenceUploadFile: '/case-building/reason-for-appeal/supporting-evidence/upload/file',
+    supportingEvidenceDeleteFile: '/case-building/reason-for-appeal/supporting-evidence/delete/file',
+    checkAndSend: '/case-building/reason-for-appeal/check-and-send',
+    confirmation: '/case-building/reason-for-appeal/confirmation'
   },
   typeOfAppeal: '/type-of-appeal',
   contactDetails: '/contact-details',

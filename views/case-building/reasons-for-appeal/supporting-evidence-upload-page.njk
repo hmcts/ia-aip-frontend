@@ -17,7 +17,7 @@
         }}
     {% endif %}
 
-    <form action="/reasons/reasons-for-appeal-upload" method="post" enctype="multipart/form-data">
+    <form action="/case-building/reason-for-appeal/supporting-evidence/upload" method="post" enctype="multipart/form-data">
         {% call govukFieldset({
             legend: {
                 text: i18n.pages.reasonsForAppealUpload.heading,
@@ -42,7 +42,7 @@
                 name: 'uploadFile',
                 classes: "govuk-button--secondary",
                 attributes: {
-                    formaction: '/reason-for-appeal-upload',
+                    formaction: '/case-building/reason-for-appeal/supporting-evidence/upload/file',
                     formEnctype: 'multipart/form-data'
                 }
             }) }}
@@ -57,6 +57,6 @@
             </div>
             {{ saveButtons() }}
             {{ contactUs() }}
-            </form>
     {% endcall %}
+            </form>
 {% endblock  %}

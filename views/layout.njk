@@ -6,6 +6,8 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
 
 {% set serviceName = i18n.serviceName %}
 {% set serviceUrl = i18n.serviceUrl %}
@@ -113,3 +115,40 @@
   <script src="/all.js"></script>
 
 {% endblock %}
+
+
+{% macro radioButtons(legendText, hintText) %}
+  {{ govukRadios({
+    classes: "govuk-radios--inline",
+    idPrefix: "changed-name",
+    name: "value",
+    fieldset: {
+      legend: {
+        text: legendText,
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--xl"
+      }
+    },
+    hint: {
+      text: hintText
+    },
+    items: [
+      {
+        value: "yes",
+        text: "Yes"
+      },
+      {
+        value: "no",
+        text: "No"
+      }
+    ]
+  }) }}
+{%  endmacro %}
+
+{% macro continueButton() %}
+  {{ govukButton({
+    text: "Continue",
+    classes: "govuk-!-margin-right-1"
+
+  }) }}
+{% endmacro %}

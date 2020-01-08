@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
-import { paths } from '../paths';
-import { Events } from '../service/ccd-service';
-import UpdateAppealService from '../service/update-appeal-service';
-import { dateLetterSentValidation, homeOfficeNumberValidation } from '../utils/fields-validations';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../utils/url-utils';
+import { paths } from '../../paths';
+import { Events } from '../../service/ccd-service';
+import UpdateAppealService from '../../service/update-appeal-service';
+import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { dateLetterSentValidation, homeOfficeNumberValidation } from '../../utils/validations/fields-validations';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {

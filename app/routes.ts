@@ -5,18 +5,23 @@ import { setupCheckAndSendController } from './controllers/check-and-send';
 import { setConfirmationController } from './controllers/confirmation-page';
 import { setupContactDetailsController } from './controllers/contact-details';
 import { setupEligibilityController } from './controllers/eligibility';
+import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
+import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
+import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
+import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
+import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
+import { setupTaskListController } from './controllers/appeal-application/task-list';
+import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
+import { setupReasonsForAppealController } from './controllers/case-building/reason-for-appeal';
 import { setupHealthController } from './controllers/health';
-import { setupHomeOfficeDetailsController } from './controllers/home-office-details';
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
 import { setupOutOfTimeController } from './controllers/out-of-time';
-import { setupPersonalDetailsController } from './controllers/personal-details';
-import { setupReasonsForAppealController } from './controllers/reason-for-appeal';
 import { setupStartController } from './controllers/startController';
-import { setupTaskListController } from './controllers/task-list';
-import { setupTypeOfAppealController } from './controllers/type-of-appeal';
 import { logSession } from './middleware/session-middleware';
+import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
+import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
@@ -24,7 +29,9 @@ import { setupSecrets } from './setupSecrets';
 
 const config = setupSecrets();
 
-export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
+export const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
+export const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
 const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 
 const router = express.Router();
@@ -40,7 +47,7 @@ const personalDetailsController = setupPersonalDetailsController({ updateAppealS
 const contactDetailsController = setupContactDetailsController(updateAppealService);
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
-const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService });
+const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
 const outOfTimeController = setupOutOfTimeController(updateAppealService);
 const eligibilityController = setupEligibilityController();
 
@@ -52,7 +59,9 @@ router.use(eligibilityController);
 // protected by idam
 router.use(idamController);
 // router.use(initSession);
-if (process.env.NODE_ENV === 'development') router.use(logSession);
+if (process.env.NODE_ENV === 'development') {
+  router.use(logSession);
+}
 router.use(indexController);
 router.use(taskListController);
 router.use(homeOfficeDetailsController);

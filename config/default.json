@@ -49,6 +49,9 @@
     "jurisdictionId": "IA",
     "caseType": "Asylum"
   },
+  "documentManagement": {
+    "apiUrl": "DOC_MANAGEMENT_URL"
+  },
   "addressLookup": {
     "token": "address_lookup_token",
     "url": "https://api.ordnancesurvey.co.uk"
@@ -57,5 +60,8 @@
     "secret": "SAUCELABS_SECRET"
   },
   "showTests": false,
-  "maxCharacters": 50000
+  "maxCharacters": 50000,
+  "evidenceUpload": {
+    "maxFileSizeInMb": 100
+  }
 }

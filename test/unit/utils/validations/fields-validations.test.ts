@@ -5,12 +5,15 @@ import {
   emailValidation,
   homeOfficeNumberValidation,
   mobilePhoneValidation,
+  reasonForAppealDecisionValidation,
   statementOfTruthValidation,
+  supportingEvidenceRequiredValidation,
   textAreaValidation,
   yesOrNoRequiredValidation
-} from '../../../app/utils/fields-validations';
-import i18n from '../../../locale/en.json';
-import { expect } from '../../utils/testUtils';
+} from '../../../../app/utils/validations/fields-validations';
+
+import i18n from '../../../../locale/en.json';
+import { expect } from '../../../utils/testUtils';
 
 describe('fields-validations', () => {
   function createError(fieldName, errorMessage) {
@@ -374,19 +377,31 @@ describe('contactDetailsValidation', () => {
   });
 
   it('should fail validation if no mobile phone number entered entered', () => {
-    testContactDetailsValidation({ selections: 'text-message', 'text-message-value': '' }, 'text-message-value', 'Enter a phone number');
+    testContactDetailsValidation({
+      selections: 'text-message',
+      'text-message-value': ''
+    }, 'text-message-value', 'Enter a phone number');
   });
 
   it('should fail validation if mobile phone number not incorrect format', () => {
-    testContactDetailsValidation({ selections: 'text-message', 'text-message-value': 'qwerty' }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    testContactDetailsValidation({
+      selections: 'text-message',
+      'text-message-value': 'qwerty'
+    }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
   });
 
   it('should fail validation if mobile phone number not a mobile phone number', () => {
-    testContactDetailsValidation({ selections: 'text-message', 'text-message-value': '01277222222' }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    testContactDetailsValidation({
+      selections: 'text-message',
+      'text-message-value': '01277222222'
+    }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
   });
 
   it('should pass validation when a mobile phone number is entered', () => {
-    const validationResult = contactDetailsValidation({ selections: 'text-message', 'text-message-value': '07899999999' });
+    const validationResult = contactDetailsValidation({
+      selections: 'text-message',
+      'text-message-value': '07899999999'
+    });
     expect(validationResult).to.equal(null);
   });
 
@@ -455,4 +470,51 @@ describe('contactDetailsValidation', () => {
       expect(validationResult).to.deep.equal(expectedResponse);
     });
   });
+});
+
+describe('reasonForAppealDecisionValidation', () => {
+  it('should validate if statement present', () => {
+    const object = { 'moreDetail': 'some reason text here' };
+    const validationResult = reasonForAppealDecisionValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should fail validation and return "string.empty" type', () => {
+    const object = { 'moreDetail': '' };
+    const validationResult = reasonForAppealDecisionValidation(object);
+    const expectedResponse = {
+
+      moreDetail: {
+        href: '#moreDetail',
+        key: 'moreDetail',
+        text: 'Enter the reasons you think the Home Office decision is wrong'
+      }
+
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
+});
+
+describe('supportingEvidenceRequiredValidation', () => {
+  it('should validate if selection is present', () => {
+    const object = { 'value': 'yes' };
+    const validationResult = supportingEvidenceRequiredValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should fail validation and return "any.required" type', () => {
+    const object = {};
+    const validationResult = supportingEvidenceRequiredValidation(object);
+    const expectedResponse = {
+
+      value: {
+        href: '#value',
+        key: 'value',
+        text: 'Select Yes if you want to provide supporting evidence'
+      }
+
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
+
 });

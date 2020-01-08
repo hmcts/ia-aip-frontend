@@ -1,7 +1,9 @@
 import * as _ from 'lodash';
 import moment from 'moment';
 import rp from 'request-promise';
-const { fillInDate } = require('./helper-functions');
+import { paths } from '../../../../app/paths';
+
+const { fillInDate } = require('../helper-functions');
 
 const caseData = {
   'id': 1573640323267110,
@@ -35,10 +37,17 @@ async function setupData(newCaseData) {
   _.merge(caseDataClone.case_data, newCaseData);
   await rp.post({
     uri: 'http://localhost:20000/setupCase',
-    body: [caseDataClone],
+    body: [ caseDataClone ],
     json: true
   });
 }
+
+const PATHS = {
+  REASONS_FOR_APPEAL: paths.reasonsForAppeal.decision,
+  ADDITIONAL_SUPPORTING_EVIDENCE: paths.reasonsForAppeal.supportingEvidence,
+  SUPPORTING_EVIDENCE_UPLOAD: paths.reasonsForAppeal.supportingEvidenceUpload,
+  REASONS_FOR_APPEAL_CHECK_YOUR_ANSWERS: paths.reasonsForAppeal.checkAndSend
+};
 
 module.exports = {
   common(I) {
@@ -146,16 +155,8 @@ module.exports = {
       });
     });
 
-    When('I click Back button', async () => {
-      await I.click('Back');
-    });
-
-    When('I click Save for later',async () => {
-      await I.click('Save for later');
-    });
-
-    When('I click Save and continue',async () => {
-      await I.click('Save and continue');
+    When(/^I click "([^"]*)" button$/, async (selector: string) => {
+      await I.click(selector);
     });
 
     When(/^I enter a day "([^"]*)" month "([^"]*)" year "([^"]*)"$/, async (day, month, year) => {
@@ -174,8 +175,14 @@ module.exports = {
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
       await I.seeInCurrentUrl('/task-list');
     });
-    When(/^I click "([^"]*)" button$/, async (button) => {
-      await I.click(button);
+
+    Then(/^I should see the "([^"]*)" page$/, async (key: string) => {
+      await I.seeInCurrentUrl(`${PATHS[key]}`);
+    });
+
+    When(/^I visit the "([^"]*)" page$/, async (key: string) => {
+      await I.seeInCurrentUrl(`${PATHS[key]}`);
+      await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
     });
   }
 };

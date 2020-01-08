@@ -1,9 +1,22 @@
 import Joi from '@hapi/joi';
 import moment from 'moment';
-import i18n from '../../locale/en.json';
-import { mobilePhoneRegex, postcodeRegex } from './regular-expressions';
+import i18n from '../../../locale/en.json';
+import { mobilePhoneRegex, postcodeRegex } from '../regular-expressions';
 
-const MobilePhoneNumberExtension = require('../../extensions/joi/mobile-number');
+const MobilePhoneNumberExtension = require('../../../extensions/joi/mobile-number');
+
+/**
+ * Creates a structured error  that follows the standard pattern to be rendered in views
+ * @param id the key of the error this is used to build the href and to identify the error.
+ * @param errorMsg the error message to display
+ */
+function createStructuredError(id: string, errorMsg: string) {
+  return {
+    key: id,
+    text: errorMsg,
+    href: `#${id}`
+  };
+}
 
 /**
  * Uses Joi schema validation to validate and object and returns:
@@ -262,10 +275,11 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function homeOfficeDecisionValidation(obj: object): null | ValidationErrors {
+function reasonForAppealDecisionValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    ['moreDetail']: Joi.string().required().messages({ 'string.empty':  i18n.validationErrors.homeOfficeDecision.required })
-  });
+    moreDetail: Joi.string().required()
+      .messages({ 'string.empty': i18n.validationErrors.reasonForAppeal.required })
+  }).unknown();
   return validate(obj, schema);
 }
 
@@ -276,14 +290,16 @@ function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
   return validate(obj, schema);
 }
 
-function supportingEvidenceValidation(obj: object): null | ValidationErrors {
+function supportingEvidenceRequiredValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    ['value']: Joi.string().required().messages({ 'string.empty':  i18n.validationErrors.homeOfficeDecision.required })
-  });
+    value: Joi.string().required()
+      .messages({ 'any.required': i18n.validationErrors.reasonForAppeal.supportingEvidenceRequired })
+  }).unknown();
   return validate(obj, schema);
 }
 
 export {
+  createStructuredError,
   contactDetailsValidation,
   homeOfficeNumberValidation,
   dateValidation,
@@ -299,8 +315,7 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
-  homeOfficeDecisionValidation,
-  supportingEvidenceValidation,
-  yesOrNoRequiredValidation
-
+  yesOrNoRequiredValidation,
+  reasonForAppealDecisionValidation,
+  supportingEvidenceRequiredValidation
 };

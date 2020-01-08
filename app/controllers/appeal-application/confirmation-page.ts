@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 
-import { paths } from '../paths';
+import { paths } from '../../paths';
 
 export const daysToWaitUntilContact = (days: number) => {
   const date = moment().add(days,'days').format('DD MMMM YYYY');

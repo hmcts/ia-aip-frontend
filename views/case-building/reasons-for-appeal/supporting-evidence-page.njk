@@ -11,21 +11,20 @@
       titleText: i18n.error.summary.title,
       descriptionText: i18n.error.summary.descriptionText,
       errorList: errorList
-    })
-    }}
+    }) }}
   {% endif %}
-    <form action="/case-building/reason-for-appeal/supporting-evidence" method="post" >
-  {% call govukFieldset({
-    legend: {
-      text: 'Do you want to add supporting evidence?',
-      classes: "govuk-fieldset__legend--xl",
-      isPageHeading: true
-    }
-  }) %}
-      {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading) }}
+  <form action="/case-building/reason-for-appeal/supporting-evidence" method="post">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.reasonsForAppealUpload.provideSupportingEvidenceQuestion,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      {{ radioButtons(id='supportingEvidence' ,legendText = '',hintText = i18n.pages.evidence.heading) }}
       {{ continueButton() }}
-  {% endcall %}
-    </form>
+    {% endcall %}
+  </form>
 
   {{ contactUs() }}
-{% endblock  %}
+{% endblock %}

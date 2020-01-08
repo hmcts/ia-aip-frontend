@@ -207,6 +207,7 @@
     "reasonsForAppealUpload": {
       "title": "Reasons Upload",
       "heading": "Providing supporting evidence",
+      "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?",
       "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<b>Upload a file</b>",
       "findOutMore": "Find out more about the evidence to support your appeal",
@@ -315,7 +316,17 @@
     "eligibility": {
       "selectYesOrNo": "Select either yes or no"
     },
-    "emptyReasonAppealIsLate": "Enter the reason your appeal is late"
+    "emptyReasonAppealIsLate": "Enter the reason your appeal is late",
+    "reasonForAppeal": {
+      "required": "Enter the reasons you think the Home Office decision is wrong",
+      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
+    },
+    "fileUpload": {
+      "noFileSelected": "Select a file",
+      "fileTooLarge": "The selected file must be smaller than",
+      "incorrectFormat": "The selected file must be a",
+      "fileCannotBeUploaded": "The file cannot be uploaded"
+    }
   },
   "components": {
     "evidenceList": {

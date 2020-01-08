@@ -1,12 +1,16 @@
 import { Address, OSPlacesClient } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
-import i18n from '../../locale/en.json';
-import { countryList } from '../data/country-list';
-import { paths } from '../paths';
-import { Events } from '../service/ccd-service';
-import UpdateAppealService from '../service/update-appeal-service';
-import { getAddress } from '../utils/address-utils';
+import i18n from '../../../locale/en.json';
+import { countryList } from '../../data/country-list';
+import { paths } from '../../paths';
+import { Events } from '../../service/ccd-service';
+import UpdateAppealService from '../../service/update-appeal-service';
+
+import { getAddress } from '../../utils/address-utils';
+import { getNationalitiesOptions } from '../../utils/nationalities';
+import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
   addressValidation,
   appellantNamesValidation,
@@ -14,10 +18,7 @@ import {
   dropdownValidation,
   nationalityValidation,
   postcodeValidation
-} from '../utils/fields-validations';
-import { getNationalitiesOptions } from '../utils/nationalities';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../utils/url-utils';
+} from '../../utils/validations/fields-validations';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {

@@ -34,7 +34,10 @@
           name: "file-upload",
           label: {
             html: i18n.pages.reasonsForAppealUpload.uploadFile | safe
-          }
+          },
+            errorMessage: {
+                text: errorList[0].text
+            } if (errorList)
         }) }}
 
         {{ govukButton({
@@ -57,14 +60,11 @@
       </div>
     {% endcall %}
   </form>
-
+    <form action="/supporting-evidence/reasons-for-appeal/uploadFile" method="post">
   <div class="buttons__container">
     {{ govukButton({
-      text: i18n.common.buttons.saveAndContinue,
-      href: "/case-building/reason-for-appeal/check-and-send",
-      classes: "govuk-!-margin-right-1"
+      text: i18n.common.buttons.saveAndContinue
     }) }}
-
     {{ govukButton({
       text: i18n.common.buttons.saveForLater,
       name: "saveForLater",
@@ -73,6 +73,8 @@
       classes: "govuk-button--secondary"
     }) }}
   </div>
-  {{ contactUs() }}
+    </form>
+
+    {{ contactUs() }}
 
 {% endblock %}

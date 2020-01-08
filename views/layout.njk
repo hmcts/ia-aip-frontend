@@ -116,7 +116,7 @@
 {% endblock %}
 
 
-{% macro radioButtons(id, legendText, hintText) %}
+{% macro radioButtons(id, legendText, hintText, errorMessage) %}
   {{ govukRadios({
     classes: "govuk-radios--inline",
     idPrefix: id,
@@ -131,6 +131,9 @@
     hint: {
       text: hintText
     },
+    errorMessage: {
+      text: errorMessage
+    }if (errorMessage),
     items: [
       {
         value: "yes",

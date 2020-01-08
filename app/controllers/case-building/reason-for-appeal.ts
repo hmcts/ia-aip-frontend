@@ -26,6 +26,26 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function postSupportingEvidenceContinue(req: Request, res: Response, next: NextFunction) {
+  const validation = [{
+    href: 'uploadFile',
+    text: i18n.validationErrors.fileUpload.noFileSelected,
+    value: '#uploadFile'
+  }];
+  try {
+    if (req.session.appeal.caseBuilding.evidences === undefined) {
+      return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+        errorList: Object.values(validation),
+        error: validation
+      });
+
+    }
+    return res.redirect(paths.reasonsForAppeal.checkAndSend);
+  } catch (e) {
+    next(e);
+  }
+}
+
 function postReasonForAppeal(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
@@ -197,6 +217,7 @@ function setupReasonsForAppealController(deps?: any): Router {
   router.get(paths.reasonsForAppeal.checkAndSend, getCheckAndSendPage);
   router.post(paths.reasonsForAppeal.checkAndSend, postCheckAndSendPage);
   router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);
+  router.post(paths.reasonsForAppeal.supportEvidenceContinue, postSupportingEvidenceContinue);
 
   return router;
 }

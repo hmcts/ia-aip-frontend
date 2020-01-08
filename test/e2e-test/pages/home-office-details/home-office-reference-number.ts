@@ -12,5 +12,18 @@ module.exports = {
     When(/^I enter a home office reference "([^"]*)"/, async (refNumber) => {
       I.fillField('#homeOfficeRefNumber', refNumber);
     });
+
+    When(/^I click on Home office details$/, async () => {
+      await I.click('a[href*="/home-office"]');
+    });
+
+    Then(/^I should be taken to the home office ref number page$/, async () => {
+      await I.seeInCurrentUrl('/home-office/details');
+    });
+
+    When(/^I enter "([^"]*)" as the Office ref number and click Save and continue/, async (refNumber) => {
+      I.fillField('#homeOfficeRefNumber', refNumber);
+      I.click('Save and continue');
+    });
   }
 };

@@ -49,14 +49,14 @@ module.exports = {
     Given('I have an appeal with home office details', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('yyyy-mm-dd')
+        homeOfficeDecisionDate: moment().format('YYYY-MM-DD')
       });
     });
 
     Given('I have an appeal with home office details and name', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName'
       });
@@ -65,7 +65,7 @@ module.exports = {
     Given('I have an appeal with home office details, name and date of birth', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01'
@@ -75,7 +75,7 @@ module.exports = {
     Given('I have an appeal with home office details, name, date of birth and nationality', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01',
@@ -93,7 +93,7 @@ module.exports = {
     Given('I have an appeal with home office details, name, date of birth, nationality and address', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01',
@@ -116,7 +116,7 @@ module.exports = {
     Given('I have an appeal with home office details, personal details and contact details', async () => {
       await setupData({
         homeOfficeReferenceNumber: 'A1111111',
-        homeOfficeDecisionDate: moment().format('yyyy-mm-dd'),
+        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01',
@@ -146,16 +146,16 @@ module.exports = {
       });
     });
 
-    When(/^I click on back button$/, async () => {
-      await I.click('.govuk-back-link');
+    When('I click Back button', async () => {
+      await I.click('Back');
     });
 
-    When('I click save for later',async () => {
-      I.click('Save for later');
+    When('I click Save for later',async () => {
+      await I.click('Save for later');
     });
 
-    When('I click save and continue',async () => {
-      I.click({ name: 'saveAndContinue' });
+    When('I click Save and continue',async () => {
+      await I.click('Save and continue');
     });
 
     When(/^I enter a day "([^"]*)" month "([^"]*)" year "([^"]*)"$/, async (day, month, year) => {
@@ -169,6 +169,10 @@ module.exports = {
 
     Then(/^I shouldnt see error summary$/, async () => {
       I.dontSeeElementInDOM('.govuk-error-summary');
+    });
+
+    Then(/^I expect to be redirect back to the task\-list$/, async () => {
+      await I.seeInCurrentUrl('/task-list');
     });
   }
 };

@@ -23,8 +23,8 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
       if (validation != null) {
         return res.render('case-building/reasons-for-appeal/reason-for-appeal.njk', {
           errorList: Object.values(validation),
-          error: validation
-
+          error: validation,
+          previousPage:  '/appellant-timeline'
         });
       }
       req.session.appeal.caseBuilding = {

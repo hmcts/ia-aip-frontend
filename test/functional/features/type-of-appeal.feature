@@ -7,22 +7,22 @@ Feature: Type iof appeal
     Given I have an appeal with home office details, personal details and contact details
     And I have logged in
     And I am on the type of appeal page
-    When I click save for later
+    When I click Save for later
     Then I should see the task-list page
     And I shouldnt be able to click "Check and send your appeal"
 
     Given I am on the type of appeal page
-    And I click save and continue
+    And I click Save and continue
     Then I should see error summary
 
     Given I am on the type of appeal page
     When I select appeal type Protection
-    And I click save for later
+    And I click Save for later
     Then I should see the task-list page
     And I should be able to click "Check and send your appeal"
 
     Given I am on the type of appeal page
     When I select appeal type Protection
-    And I click save and continue
+    And I click Save and continue
     Then I should see the task-list page
     And I should be able to click "Check and send your appeal"

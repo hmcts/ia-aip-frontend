@@ -9,6 +9,10 @@ module.exports = {
       I.amOnPage(testUrl + paths.personalDetails.enterAddress);
     });
 
+    Then(/^I should be taken to the confirm address page$/, async () => {
+      I.seeInCurrentUrl(paths.personalDetails.enterAddress);
+    });
+
     When(/^I enter building and street "([^"]*)", Town or city "([^"]*)", Postcode "([^"]*)"$/, async (building, town, postcode) => {
       I.fillField('#address-line-1', building);
       I.fillField('#address-town', town);

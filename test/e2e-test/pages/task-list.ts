@@ -28,5 +28,13 @@ module.exports = {
     Then(/^I should be able to click "([^"]*)"$/, async (category) => {
       await I.seeElement(textToId[category]);
     });
+
+    Then('I should be taken to the task-list page', async () => {
+      await I.seeInCurrentUrl('task-list');
+    });
+
+    When('I click Your personal details', async () => {
+      await I.click('Your personal details');
+    });
   }
 };

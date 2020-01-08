@@ -9,6 +9,15 @@ module.exports = {
       I.amOnPage(testUrl + paths.personalDetails.nationality);
     });
 
+    Then(/^I should be taken to nationality page$/, async () => {
+      await I.seeInCurrentUrl('details/nationality');
+    });
+
+    When(/^I pick "([^"]*)" from the Nationalities drop down and click continue$/, async (nation) => {
+      await I.selectOption('#nationality', nation);
+      await I.click('Save and continue');
+    });
+
     When(/^I enter a nationality "([^"]*)"$/, async (nationality) => {
       await I.selectOption('#nationality', nationality);
     });

@@ -15,7 +15,7 @@ module.exports = {
       Password: <input type="text" id="password" name="password"/><br />
       <input type="text" name="redirect_uri" value="${redirectUri}"/>
       <input type="text" name="state" value="${stateParam}"/>
-      <input id="login" class="button" type="submit" name="save" value="login"/>
+      <input id="login" class="button" type="submit" name="save" value="Login"/>
       </form>
       </body></html>`);
   }

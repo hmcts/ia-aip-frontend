@@ -189,12 +189,11 @@ describe('Home Office Details Controller', function () {
         });
     });
 
-    it('when save for later should pass validation and redirect task-list.njk when home office reference is blank', async () => {
+    it('should redirect to path list when save for later and home office ref numnber is blank', async () => {
       req.body['homeOfficeRefNumber'] = '';
       req.body['saveForLater'] = 'saveForLater';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('');
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
@@ -296,18 +295,13 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
-    it('when save for later should not validate when blank and redirect to task list page', async () => {
+    it('should redirect to task list when save for later and blank date', async () => {
       const date = moment().subtract(15, 'd');
       req.body['day'] = '';
       req.body['month'] = '';
       req.body['year'] = '';
       req.body.saveForLater = 'saveForLater';
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(dateLetterSent.day).to.be.eql('');
-      expect(dateLetterSent.month).to.be.eql('');
-      expect(dateLetterSent.year).to.be.eql('');
 
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });

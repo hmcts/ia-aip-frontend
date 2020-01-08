@@ -3,26 +3,26 @@ Feature: Home office reference page
   As a citizen
   I want to be able to enter a home office reference number
 
-  Scenario: Home office reference page
+  Scenario: Entering a Home Office reference number
     Given I have logged in
     And I am on the home office reference page
-    When I click save for later
+    When I click Save for later
     Then I should see the task-list page
     And I shouldnt be able to click "Your personal details"
 
     Given I am on the home office reference page
     When I enter a home office reference "A12345"
-    And I click save for later
+    And I click Save for later
     Then I should see error summary
 
     Given I am on the home office reference page
     When I enter a home office reference "A12345"
-    And I click save and continue
+    And I click Save and continue
     Then I should see error summary
 
     Given I am on the home office reference page
     When I enter a home office reference "A1234567"
-    And I click save for later
+    And I click Save for later
     Then I should see the task-list page
     And I shouldnt be able to click "Your personal details"
 

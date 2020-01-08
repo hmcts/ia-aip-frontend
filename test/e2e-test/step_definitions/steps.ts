@@ -1,8 +1,5 @@
 const { checkAndSend } = require('../pages/check-and-send/check-and-send');
 const { typeOfAppeal } = require('../pages/type-of-appeal/type-of-appeal');
-const { fillInContactDetails } = require('../pages/contact-details/contact-details');
-const { fillInPersonalDetails } = require('../pages/personal-details/personal-details');
-const { fillInHomeOfficeDetails } = require('../pages/home-office-details/ref-number-page');
 const { outOfTimeAppeal } = require('../pages/out-of-time-appeal/out-of-time');
 const { signIn } = require('../pages/sign-in');
 const { common } = require('../pages/common');
@@ -16,22 +13,16 @@ const { enterPostcode } = require('../pages/personal-details/personal-details-en
 const { selectAddress } = require('../pages/personal-details/personal-details-select-address');
 const { enterAddress } = require('../pages/personal-details/personal-details-enter-address');
 const { contactDetails } = require('../pages/contact-details/contact-details-page');
-const { typeOfAppealPage } = require('../pages/type-of-appeal/type-of-appeal-page');
 const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appeal');
 
 const { I } = inject();
 
-signIn(I);
-fillInHomeOfficeDetails(I);
-fillInPersonalDetails(I);
-fillInContactDetails(I);
-typeOfAppeal(I);
-checkAndSend(I);
-outOfTimeAppeal(I);
 common(I);
+signIn(I);
+
+taskList(I);
 homeOfficeReferenceNumber(I);
 homeOfficeLetterSent(I);
-taskList(I);
 namePage(I);
 dateOfBirth(I);
 nationality(I);
@@ -39,5 +30,7 @@ enterPostcode(I);
 selectAddress(I);
 enterAddress(I);
 contactDetails(I);
-typeOfAppealPage(I);
+typeOfAppeal(I);
+outOfTimeAppeal(I);
+checkAndSend(I);
 reasonsForAppeal(I);

@@ -25,18 +25,19 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
 function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (shouldValidateWhenSaveForLater(req.body, 'homeOfficeRefNumber')) {
-        const validation = homeOfficeNumberValidation(req.body);
-        if (validation) {
-          return res.render('appeal-application/home-office/details.njk',
-            {
-              errors: validation,
-              errorList: Object.values(validation),
-              homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-              previousPage: paths.taskList
-            }
-          );
-        }
+      if (!shouldValidateWhenSaveForLater(req.body, 'homeOfficeRefNumber')) {
+        return getConditionalRedirectUrl(req, res, paths.taskList);
+      }
+      const validation = homeOfficeNumberValidation(req.body);
+      if (validation) {
+        return res.render('appeal-application/home-office/details.njk',
+          {
+            errors: validation,
+            errorList: Object.values(validation),
+            homeOfficeRefNumber: req.body.homeOfficeRefNumber,
+            previousPage: paths.taskList
+          }
+        );
       }
       req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
@@ -65,18 +66,19 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
 function postDateLetterSent(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        const validation = dateLetterSentValidation(req.body);
-        if (validation) {
-          return res.render('appeal-application/home-office/letter-sent.njk', {
-            error: validation,
-            errorList: Object.values(validation),
-            dateLetterSent: {
-              ...req.body
-            },
-            previousPage: paths.homeOffice.details
-          });
-        }
+      if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
+        return getConditionalRedirectUrl(req, res, paths.taskList);
+      }
+      const validation = dateLetterSentValidation(req.body);
+      if (validation) {
+        return res.render('appeal-application/home-office/letter-sent.njk', {
+          error: validation,
+          errorList: Object.values(validation),
+          dateLetterSent: {
+            ...req.body
+          },
+          previousPage: paths.homeOffice.details
+        });
       }
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
@@ -94,7 +96,6 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
       } else {
         req.session.appeal.application.isAppealLate = true;
       }
-      req.session.appeal.application.isAppealLate = true;
       return getConditionalRedirectUrl(req, res, paths.taskList);
     } catch (e) {
       next(e);

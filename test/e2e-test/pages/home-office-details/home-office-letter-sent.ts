@@ -15,5 +15,21 @@ module.exports = {
       const date = new Date();
       await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());
     });
+
+    Then(/^I should see letter sent page$/, async () => {
+      await I.seeInCurrentUrl('/letter-sent');
+    });
+
+    When(/^I enter an on time letter sent date and click Save and continue$/, async () => {
+      const date = new Date();
+      await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());
+      I.click('Save and continue');
+    });
+
+    When(/^I enter an out of time letter sent date and click Save and continue$/, async () => {
+      const date = new Date();
+      await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear() - 1);
+      I.click('Save and continue');
+    });
   }
 };

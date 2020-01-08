@@ -20,10 +20,20 @@ interface ValidationErrors {
   [key: string]: ValidationError;
 }
 
+interface Evidences {
+  [key: string]: Evidence;
+}
+
 interface Evidence {
+  id?: string;
   url: string;
   name: string;
-  description?: string;
+}
+
+interface DocumentUploadResponse {
+  id: string;
+  url: string;
+  name: string;
 }
 
 interface Appeal {
@@ -78,7 +88,7 @@ interface AppealApplication {
 interface CaseBuilding {
   [key: string]: any;
   decision: string;
-  evidences?: Evidence;
+  evidences?: Evidences;
 }
 
 interface HearingRequirements {

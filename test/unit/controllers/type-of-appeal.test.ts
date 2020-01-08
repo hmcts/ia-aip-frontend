@@ -3,7 +3,7 @@ import {
   getTypeOfAppeal,
   postTypeOfAppeal,
   setupTypeOfAppealController
-} from '../../../app/controllers/type-of-appeal';
+} from '../../../app/controllers/appeal-application/type-of-appeal';
 import { appealTypes } from '../../../app/data/appeal-types';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';

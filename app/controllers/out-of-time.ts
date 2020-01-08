@@ -3,15 +3,15 @@ import multer from 'multer';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { textAreaValidation } from '../utils/fields-validations';
 import { getConditionalRedirectUrl } from '../utils/url-utils';
+import { textAreaValidation } from '../utils/validations/fields-validations';
 
 function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
     const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
-    res.render('appeal-application/home-office/appeal-late.njk',{
+    res.render('appeal-application/home-office/appeal-late.njk', {
       appealLateReason,
       evidence,
       evidenceCTA: paths.homeOffice.deleteEvidence,
@@ -64,7 +64,7 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
       application.lateAppeal = {
         ...application.lateAppeal,
         evidence: {
-          url: req.file.originalname,
+          url: '#',
           name: req.file.originalname
         }
       };

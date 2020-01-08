@@ -8,55 +8,71 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.error.summary.title,
-            descriptionText: i18n.error.summary.descriptionText,
-            errorList: errorList
-        })
-        }}
-    {% endif %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
 
-    <form action="/case-building/reason-for-appeal/supporting-evidence/upload" method="post" enctype="multipart/form-data">
-        {% call govukFieldset({
-            legend: {
-                text: i18n.pages.reasonsForAppealUpload.heading,
-                classes: "govuk-fieldset__legend--xl",
-                isPageHeading: true
-            }
-        }) %}
-            <p class="govuk-body">{{ i18n.pages.reasonsForAppealUpload.uploadInfo }}</p>
-            <a class="govuk-link" href="#">{{ i18n.pages.reasonsForAppealUpload.findOutMore }}</a>
+  <form action="/case-building/reason-for-appeal/supporting-evidence/upload" method="post"
+        enctype="multipart/form-data">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.reasonsForAppealUpload.heading,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <p class="govuk-body">{{ i18n.pages.reasonsForAppealUpload.uploadInfo }}</p>
+      <a class="govuk-link" href="#">{{ i18n.pages.reasonsForAppealUpload.findOutMore }}</a>
 
-            <div class="govuk-inset-text">
-            {{ govukFileUpload({
-                id: "file-upload",
-                name: "file-upload",
-                label: {
-                    html: i18n.pages.reasonsForAppealUpload.uploadFile | safe
-                }
-            }) }}
+      <div class="govuk-inset-text">
+        {{ govukFileUpload({
+          id: "file-upload",
+          name: "file-upload",
+          label: {
+            html: i18n.pages.reasonsForAppealUpload.uploadFile | safe
+          }
+        }) }}
 
-            {{ govukButton({
-                text: i18n.common.buttons.uploadFile,
-                name: 'uploadFile',
-                classes: "govuk-button--secondary",
-                attributes: {
-                    formaction: '/case-building/reason-for-appeal/supporting-evidence/upload/file',
-                    formEnctype: 'multipart/form-data'
-                }
-            }) }}
-        </div>
-            {{ evidenceList(evidences, evidenceCTA) }}
+        {{ govukButton({
+          text: i18n.common.buttons.uploadFile,
+          name: 'uploadFile',
+          classes: "govuk-button--secondary",
+          attributes: {
+            formaction: '/case-building/reason-for-appeal/supporting-evidence/upload/file',
+            formEnctype: 'multipart/form-data'
+          }
+        }) }}
+      </div>
+      {{ evidenceList(evidences, evidenceCTA) }}
 
-            <div class="panel-background">
-                <h2 class="govuk-heading-s">{{ i18n.pages.reasonsForAppealUpload.needMoreTime }}</h2>
-                <ul>
-                    <li>{{ i18n.pages.reasonsForAppealUpload.evidence | safe }}</li>
-                </ul>
-            </div>
-            {{ saveButtons() }}
-            {{ contactUs() }}
+      <div class="panel-background">
+        <h2 class="govuk-heading-s">{{ i18n.pages.reasonsForAppealUpload.needMoreTime }}</h2>
+        <ul>
+          <li>{{ i18n.pages.reasonsForAppealUpload.evidence | safe }}</li>
+        </ul>
+      </div>
     {% endcall %}
-            </form>
-{% endblock  %}
+  </form>
+
+  <div class="buttons__container">
+    {{ govukButton({
+      text: i18n.common.buttons.saveAndContinue,
+      href: "/case-building/reason-for-appeal/check-and-send",
+      classes: "govuk-!-margin-right-1"
+    }) }}
+
+    {{ govukButton({
+      text: i18n.common.buttons.saveForLater,
+      name: "saveForLater",
+      value: "saveForLater",
+      href: "/case-building/task-list",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
+  {{ contactUs() }}
+
+{% endblock %}

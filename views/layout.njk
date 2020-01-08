@@ -22,7 +22,6 @@
 {% endmacro %}
 
 {% macro saveButtons() %}
-
   <div class="buttons__container">
     {{ govukButton({
       name: 'saveAndContinue',
@@ -117,10 +116,10 @@
 {% endblock %}
 
 
-{% macro radioButtons(legendText, hintText) %}
+{% macro radioButtons(id, legendText, hintText) %}
   {{ govukRadios({
     classes: "govuk-radios--inline",
-    idPrefix: "changed-name",
+    idPrefix: id,
     name: "value",
     fieldset: {
       legend: {

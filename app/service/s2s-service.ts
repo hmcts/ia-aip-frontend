@@ -12,6 +12,7 @@ const microServiceName = config.get('s2s.microserviceName');
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
+
 interface IS2SService {
   buildRequest: () => {};
   requestServiceToken: () => void;
@@ -66,7 +67,8 @@ export default class S2SService implements IS2SService {
     logger.trace('Attempting to request a S2S token', logLabel);
     const request = this.buildRequest();
     let proxyConfig;
-    if (process.env.NODE_ENV === 'development' && !s2sUrl.startsWith('http://localhost')) {
+    if ((process.env.NODE_ENV === 'development')
+      && !s2sUrl.startsWith('http://localhost')) {
       proxyConfig = { proxy: { host: proxyHost, port: proxyPort } };
     }
     let res;

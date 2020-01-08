@@ -13,7 +13,7 @@
 {% macro errorSummary(errors) %}
   {% if errors %}
     {{ govukErrorSummary({
-      titleText: "There is a problem",
+      titleText: i18n.error.summary.title,
       errorList: errors.errorList
     }) }}
   {% endif %}
@@ -52,13 +52,13 @@
 
 {% macro contactUs() %}
   {{ govukDetails({
-    summaryText: "Contact us for help",
-    html: "<div><h2>Telephone</h2><p>0330 123 1234</p><h2>Email</h2><p>support@hmcts.net</p></div>"
+    summaryText: i18n.components.contactUs.heading,
+    html: i18n.components.contactUs.content
   }) }}
 {% endmacro %}
 
 {% macro contactUsErrorLink() %}
-  <a class="govuk-link" href="#">Contact the {{ i18n.serviceName }} Helpline</a> if you need to make changes to your application or speak to someone about your tax credits.
+  {{ i18n.components.contactUsErrorLink.link | safe }}
 {% endmacro %}
 
 {% block head %}
@@ -66,7 +66,7 @@
 {% endblock %}
 
 {% block pageTitle %}
-  {% if error or errors %}Error: {% endif %}{{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
+  {% if error or errors %}{{ i18n.errorTitlePrefix }} {% endif %}{{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
 {% endblock %}
 
 {% block header %}
@@ -83,7 +83,7 @@
       navigation: [
         {
           href: "/logout",
-          text: "Sign out",
+          text: i18n.components.header.signOut,
           active: true
         }
       ]
@@ -102,7 +102,7 @@
 {% block beforeContent %}
   {% if previousPage %}
     {{ govukBackLink({
-      text: "Back",
+      text: i18n.components.back.back,
       href: previousPage
     }) }}
   {% endif %}

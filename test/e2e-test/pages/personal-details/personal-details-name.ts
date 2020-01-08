@@ -11,6 +11,16 @@ module.exports = {
       I.amOnPage(testUrl + paths.personalDetails.name);
     });
 
+    Then(/^I should be taken to the enter your name page$/, async () => {
+      await I.seeInCurrentUrl('details/name');
+    });
+
+    When(/^Enter "([^"]*)" "([^"]*)" as my Given and Family Name and click Save and continue$/, async (givenName, familyName) => {
+      I.fillField('#givenNames',givenName);
+      I.fillField('#familyName',familyName);
+      I.click('Save and continue');
+    });
+
     When(/^I enter given name "([^"]*)" family name "([^"]*)"$/, async (givenName, familyName) => {
       I.fillField('#givenNames',givenName);
       I.fillField('#familyName',familyName);

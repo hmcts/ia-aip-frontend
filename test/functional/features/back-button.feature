@@ -7,12 +7,12 @@ Feature: Back button
     Given I am authenticated as a valid appellant
     When I click on Home office details
     Then I should be taken to the home office ref number page
-    When I enter "A12345" and click Save and Continue
+    When I enter "A12345" as the Office ref number and click Save and continue
     Then I should see error summary
 
-    When I enter "A1234567" and click Save and Continue
+    When I enter "A1234567" as the Office ref number and click Save and continue
     Then I should see letter sent page
-    When I click on back button
+    When I click Back button
     Then I should be taken to the home office ref number page
     And I shouldnt see error summary
 

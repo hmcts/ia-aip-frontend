@@ -13,14 +13,11 @@ module.exports = {
     // tslint:disable-next-line:no-empty
     Then(/^I should see the additional evidence page$/, async () => {
     });
-    When(/^I click save for later$/,async () => {
-      await I.click('[name="saveForLater"]');
-    });
     // TODO send back button to timeline screen and also click continue to get back to reasons for appeal
     When(/^I click the back button on reasons for appeal$/,async () => {
       await I.click('.govuk-back-link');
     });
-    Then(/^I should be taken to the appllant timeline$/,async () => {
+    Then(/^I should be taken to the appellant timeline$/,async () => {
       await I.seeInCurrentUrl('appellant-timeline');
     });
   }

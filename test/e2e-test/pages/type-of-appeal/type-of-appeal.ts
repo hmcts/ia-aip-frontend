@@ -1,3 +1,8 @@
+import { paths } from '../../../../app/paths';
+const config = require('config');
+
+const testUrl = config.get('testUrl');
+
 module.exports = {
   typeOfAppeal(I) {
     When(/^I click on the type\-of\-appeal link$/, async () => {
@@ -11,8 +16,16 @@ module.exports = {
       await I.click('.govuk-button');
     });
 
-    Then(/^I should be taken to the task\-list page$/, async () => {
-      await I.seeInCurrentUrl('task-list');
+    Given('I am on the type of appeal page', async () => {
+      I.amOnPage(testUrl + paths.typeOfAppeal);
+    });
+
+    When('I select appeal type Protection', async () => {
+      I.checkOption('#appealType');
+    });
+
+    Then('I should see the type of appeal page', async () => {
+      I.seeInCurrentUrl(paths.typeOfAppeal);
     });
   }
 };

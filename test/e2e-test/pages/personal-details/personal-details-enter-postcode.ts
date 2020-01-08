@@ -9,6 +9,15 @@ module.exports = {
       I.amOnPage(testUrl + paths.personalDetails.enterPostcode);
     });
 
+    Then(/^I should be taken to the enter your postcode page$/, async () => {
+      I.seeInCurrentUrl(paths.personalDetails.enterPostcode);
+    });
+
+    When(/^I type "([^"]*)" as my postcode and click Find address$/, async (postcode) => {
+      I.fillField('#postcode',postcode);
+      I.click('Find address');
+    });
+
     When('I click find address', async () => {
       I.click({ name: 'findAddress' });
     });

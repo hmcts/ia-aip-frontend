@@ -3,11 +3,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import multer from 'multer';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
-import {
-  homeOfficeDecisionValidation,
-  supportingEvidenceValidation,
-  textAreaValidation
-} from '../utils/fields-validations';
+import { homeOfficeDecisionValidation, textAreaValidation } from '../utils/fields-validations';
 import { daysToWaitUntilContact } from './confirmation-page';
 
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
@@ -95,37 +91,6 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
-function getSupportingEvidence(req: Request, res: Response, next: NextFunction) {
-  try {
-    res.render('case-building/reasons-for-appeal/evidence.njk',{
-      previousPage: '/reason-for-appeal'
-    });
-  } catch (e) {
-    next(e);
-  }
-}
-
-function postSupportingEvidence(updateAppealService: UpdateAppealService) {
-  return async function(req: Request, res: Response, next: NextFunction) {
-    const { value } = req.body;
-    try {
-      const validations = supportingEvidenceValidation(req);
-      if (validations != null) {
-        res.render('case-building/reasons-for-appeal/evidence.njk', {
-          errorList: Object.values(validations)
-          // error: validation
-        });
-      }
-      if (value === 'yes') {
-        res.render('case-building/reasons-for-appeal/upload-evidence.njk');
-      } else {
-        res.render('case-building/reasons-for-appeal/check-and-send.njk');
-      }
-    } catch (e) {
-      next(e);
-    }
-  };
-}
 
 const upload = multer().single('file-upload');
 
@@ -137,8 +102,6 @@ function setupReasonsForAppealController(deps?: any): Router {
   router.post(paths.reasonsForAppeal.deleteReason, upload, postDeleteEvidence);
   router.post(paths.reasonsForAppeal.fileUpload, upload, postUploadEvidence);
   router.get(paths.reasonsForAppeal.uplaod, getReasonsUploadPage);
-  router.get(paths.reasonsForAppeal.isSupportingEvidence, getSupportingEvidence);
-  router.post(paths.reasonsForAppeal.isSupportingEvidence, postSupportingEvidence);
 
   return router;
 }
@@ -150,8 +113,6 @@ export {
     getConfirmationPage,
     getReasonsUploadPage,
     postDeleteEvidence,
-    postUploadEvidence,
-    getSupportingEvidence,
-    postSupportingEvidence
+    postUploadEvidence
 
 };

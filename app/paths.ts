@@ -29,9 +29,7 @@ const paths = {
     uplaod: '/reasons/reason-for-appeal-upload',
     deleteReason: '/reasons/delete-reason-for-appeal-upload',
     confirmation: '/reasons/confirmation',
-    fileUpload: '/reason-for-appeal-upload',
-    isSupportingEvidence: '/reasons/evidence'
-
+    fileUpload: '/reason-for-appeal-upload'
   },
   typeOfAppeal: '/type-of-appeal',
   contactDetails: '/contact-details',

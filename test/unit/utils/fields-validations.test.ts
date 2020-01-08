@@ -6,7 +6,7 @@ import {
   mobilePhoneValidation,
   statementOfTruthValidation,
   textAreaValidation
-} from '../../../app/utils/fields-validations';
+} from '../../../app/utils/validations/fields-validations';
 import i18n from '../../../locale/en.json';
 import { expect } from '../../utils/testUtils';
 

@@ -5,7 +5,7 @@ import {
   getManualEnterAddressPage,
   postManualEnterAddressPage,
   setupPersonalDetailsController
-} from '../../../app/controllers/personal-details';
+} from '../../../app/controllers/appeal-application/personal-details';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';

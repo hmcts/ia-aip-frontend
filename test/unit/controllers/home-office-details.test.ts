@@ -6,7 +6,7 @@ import {
   postDateLetterSent,
   postHomeOfficeDetails,
   setupHomeOfficeDetailsController
-} from '../../../app/controllers/home-office-details';
+} from '../../../app/controllers/appeal-application/home-office-details';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';

@@ -1,9 +1,9 @@
 import Joi from '@hapi/joi';
 import moment from 'moment';
-import i18n from '../../locale/en.json';
-import { mobilePhoneRegex, postcodeRegex } from './regular-expressions';
+import i18n from '../../../locale/en.json';
+import { mobilePhoneRegex, postcodeRegex } from '../regular-expressions';
 
-const MobilePhoneNumberExtension = require('../../extensions/joi/mobile-number');
+const MobilePhoneNumberExtension = require('../../../extensions/joi/mobile-number');
 
 /**
  * Uses Joi schema validation to validate and object and returns:

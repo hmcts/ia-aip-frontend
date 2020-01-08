@@ -1,6 +1,6 @@
 const express = require('express');
 import { NextFunction, Request, Response, text } from 'express';
-import { getReasonForAppeal, postReasonForAppeal, setupReasonsForAppealController } from '../../../app/controllers/reason-for-appeal';
+import { getReasonForAppeal, postReasonForAppeal, setupReasonsForAppealController } from '../../../app/controllers/case-building/reason-for-appeal';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
@@ -81,22 +81,21 @@ describe('Reasons for Appeal Controller', function() {
     it('should fail validation and render case-building/reasons-for-appeal/reason-for-appeal.njk with error', async () => {
       req.body.moreDetail = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      const moreDetailError = {
-        text: 'Enter the reasons you think the Home Office decision is wrong',
-        href: '#moreDetail',
-        key: 'moreDetail'
-      };
-      const error = {
-        moreDetail: moreDetailError
-      };
-      const errorList = [ moreDetailError ];
-
       expect(res.render).to.have.been.calledWith(
-        'case-building/reasons-for-appeal/reason-for-appeal.njk',
+                'case-building/reasons-for-appeal/reason-for-appeal.njk',
         {
-          error,
-          errorList,
-          previousPage: '/appellant-timeline'
+          error: {
+            moreDetail: {
+              href: '#moreDetail',
+              key: 'moreDetail',
+              text: 'Enter the reasons you think the Home Office decision is wrong'
+            }
+          },
+          errorList: [{
+            href: '#moreDetail',
+            key: 'moreDetail',
+            text: 'Enter the reasons you think the Home Office decision is wrong'
+          }]
         }
       );
     });

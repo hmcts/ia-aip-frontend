@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { applicationStatusUpdate, logSession } from '../middleware/session-middleware';
-import { paths } from '../paths';
+import { applicationStatusUpdate, logSession } from '../../middleware/session-middleware';
+import { paths } from '../../paths';
 
 /**
  * Creates a new Section object and determines the current status of the step using the taskIds provided.

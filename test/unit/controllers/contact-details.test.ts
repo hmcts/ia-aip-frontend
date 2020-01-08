@@ -3,7 +3,7 @@ import {
   getContactDetails,
   postContactDetails,
   setupContactDetailsController
-} from '../../../app/controllers/contact-details';
+} from '../../../app/controllers/appeal-application/contact-details';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';

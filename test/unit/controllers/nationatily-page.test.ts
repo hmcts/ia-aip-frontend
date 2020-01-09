@@ -112,7 +112,7 @@ describe('Nationality details Controller', function () {
 
     it('should fail validation and render personal-details/nationality.njk with error when nothing selected', async () => {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      const nationalitiesOptions = getNationalitiesOptions(countryList, '');
+      const nationalitiesOptions = getNationalitiesOptions(countryList, '', 'Please select a nationality');
       const error = {
         href: '#nationality',
         key: 'nationality',

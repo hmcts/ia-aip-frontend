@@ -1,6 +1,7 @@
 import { Address, OSPlacesClient } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
+import i18n from '../../locale/en.json';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
@@ -16,9 +17,7 @@ import {
 } from '../utils/fields-validations';
 import { getNationalitiesOptions } from '../utils/nationalities';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
-import {
-  buildAddressList,
-  getConditionalRedirectUrl } from '../utils/url-utils';
+import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
   try {
@@ -120,7 +119,7 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
 
     const { application } = req.session.appeal;
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
-    const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
+    const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
     return res.render('appeal-application/personal-details/nationality.njk', {
       nationalitiesOptions,
       previousPage: paths.personalDetails.dob
@@ -137,7 +136,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
         const validation = nationalityValidation(req.body);
         if (validation) {
           const nationality = req.body.nationality;
-          const nationalitiesOptions = getNationalitiesOptions(countryList, nationality);
+          const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
           return res.render('appeal-application/personal-details/nationality.njk', {
             nationalitiesOptions,
             errors: validation,
@@ -196,6 +195,25 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
   } catch (e) {
     next(e);
   }
+}
+
+function buildAddressList(addressLookupResult) {
+  const lookedUpAddresses = addressLookupResult.addresses.map(address => {
+    return {
+      value: address.udprn,
+      text: address.formattedAddress
+    };
+  });
+
+  const selectAddresses = lookedUpAddresses.length === 1 ?
+    i18n.pages.postcodeLookup.addressFound :
+    `${lookedUpAddresses.length} ${i18n.pages.postcodeLookup.addressesFound}`;
+  const addresses = [
+    {
+      value: '',
+      text: selectAddresses
+    } ].concat(lookedUpAddresses);
+  return addresses;
 }
 
 function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {

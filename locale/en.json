@@ -83,7 +83,8 @@
     "nationality": {
       "heading": "What is your nationality? ",
       "title": "Nationality",
-      "stateless": "I am stateless (A stateless person is not a citizen of any country)."
+      "stateless": "I am stateless (A stateless person is not a citizen of any country).",
+      "defaultNationality": "Please select a nationality"
     },
     "checkYourAnswers": {
       "title": "Check your answers",
@@ -138,7 +139,9 @@
       "heading": "What is your address?",
       "title": "Postcode",
       "select": "Select an address",
-      "cantFind": "I cant find my address in the list"
+      "cantFind": "I cant find my address in the list",
+      "addressFound": "1 address found",
+      "addressesFound": "addresses found"
     },
     "homeOfficePage": {
       "title": "What is your Home Office reference number?",

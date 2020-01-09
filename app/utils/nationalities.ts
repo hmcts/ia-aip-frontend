@@ -1,4 +1,4 @@
-function getNationalitiesOptions(countriesList: any[], nationality: string) {
+function getNationalitiesOptions(countriesList: any[], nationality: string, defaultText: string) {
   const options = countriesList.map((country) => {
     const selected = nationality === country.value;
     return {
@@ -8,7 +8,7 @@ function getNationalitiesOptions(countriesList: any[], nationality: string) {
     };
   });
   options.unshift({
-    text: 'Please select a nationality',
+    text: defaultText,
     value: '',
     selected: false
   });

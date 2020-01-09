@@ -1,9 +1,43 @@
-.task-list__item {
-  display: flex;
-  justify-content: space-between;
+ol.task-list {
+  list-style: none;
+  counter-reset: my-awesome-counter;
 
-  .govuk-tag {
-    padding: .5rem 1rem;
-    background-color: $govuk-secondary-text-colour;
+  > li {
+    counter-increment: my-awesome-counter;
+    margin-bottom: 3.75rem;
+    
+    > h2 {
+      display: inline-block;
+    }
+
+    > ul {
+      > li.task-list__item:first-child {
+        border-top: 1px solid $govuk-border-colour;
+      }
+      > li.task-list__item {
+        box-sizing: border-box;
+        height: 4rem;
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        margin: 0;
+        border-bottom: 1px solid $govuk-border-colour;
+        .govuk-tag {
+          padding: .5rem 1rem;
+          background-color: $govuk-secondary-text-colour;
+        }
+      }
+    }
   }
+
+  > li::before {
+    content: counter(my-awesome-counter) ". ";
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-left: -1.5em;
+    margin-right: 0.5em;
+    text-align: right;
+    direction: rtl;
+  }
+  
 }

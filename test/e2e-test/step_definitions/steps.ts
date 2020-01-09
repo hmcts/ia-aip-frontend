@@ -5,6 +5,18 @@ const { fillInPersonalDetails } = require('../pages/personal-details/personal-de
 const { fillInHomeOfficeDetails } = require('../pages/home-office-details/ref-number-page');
 const { signIn } = require('../pages/sign-in');
 const { common } = require('../pages/common');
+const { homeOfficeReferenceNumber } = require('../pages/home-office-details/home-office-reference-number');
+const { homeOfficeLetterSent } = require('../pages/home-office-details/home-office-letter-sent');
+const { taskList } = require('../pages/task-list');
+const { namePage } = require('../pages/personal-details/personal-details-name');
+const { dateOfBirth } = require('../pages/personal-details/personal-details-date-of-birth');
+const { nationality } = require('../pages/personal-details/personal-details-nationality');
+const { enterPostcode } = require('../pages/personal-details/personal-details-enter-postcode');
+const { selectAddress } = require('../pages/personal-details/personal-details-select-address');
+const { enterAddress } = require('../pages/personal-details/personal-details-enter-address');
+const { contactDetails } = require('../pages/contact-details/contact-details-page');
+const { typeOfAppealPage } = require('../pages/type-of-appeal/type-of-appeal-page');
+const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appeal');
 
 const { I } = inject();
 
@@ -15,3 +27,15 @@ fillInContactDetails(I);
 typeOfAppeal(I);
 checkAndSend(I);
 common(I);
+homeOfficeReferenceNumber(I);
+homeOfficeLetterSent(I);
+taskList(I);
+namePage(I);
+dateOfBirth(I);
+nationality(I);
+enterPostcode(I);
+selectAddress(I);
+enterAddress(I);
+contactDetails(I);
+typeOfAppealPage(I);
+reasonsForAppeal(I);

@@ -64,7 +64,9 @@ describe('Reasons for Appeal Controller', function() {
   describe('getReasonForAppeal', () => {
     it('should render case-building/reasons-for-appeal/reason-for-appeal.njk', function () {
       getReasonForAppeal(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/reason-for-appeal.njk');
+      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/reason-for-appeal.njk', {
+        previousPage:  '/appellant-timeline'
+      });
     });
   });
 

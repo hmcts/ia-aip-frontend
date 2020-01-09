@@ -111,6 +111,15 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
     });
 
+    it('when save for later should validate and redirect task-list.njk', async () => {
+      req.body['homeOfficeRefNumber'] = 'A1234567';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
 
@@ -142,6 +151,58 @@ describe('Home Office Details Controller', function () {
           homeOfficeRefNumber: 'notValid',
           previousPage: paths.taskList
         });
+    });
+
+    it('when save for later should fail validation and render home-office/details.njk with error', async () => {
+      req.body['homeOfficeRefNumber'] = 'notValid';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const error = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'Enter the Home Office reference number in the correct format'
+      };
+      expect(res.render).to.have.been.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: error
+          },
+          errorList: [ error ],
+          homeOfficeRefNumber: 'notValid',
+          previousPage: paths.taskList
+        });
+    });
+
+    it('when save and continue should fail validation due to blank home office reference and render home-office/details.njk with error', async () => {
+      req.body['homeOfficeRefNumber'] = '';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const error = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'Enter the Home Office reference number'
+      };
+      expect(res.render).to.have.been.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: error
+          },
+          errorList: [ error ],
+          homeOfficeRefNumber: '',
+          previousPage: paths.taskList
+        });
+    });
+
+    it('when save for later should pass validation and redirect task-list.njk when home office reference is blank', async () => {
+      req.body['homeOfficeRefNumber'] = '';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('');
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
     it('should catch exception and call next with the error', async () => {
@@ -224,6 +285,38 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
+    });
+
+    it('when save for later should validate and redirect to task list page', async () => {
+      const date = moment().subtract(15, 'd');
+      req.body['day'] = date.format('DD');
+      req.body['month'] = date.format('MM');
+      req.body['year'] = date.format('YYYY');
+      req.body.saveForLater = 'saveForLater';
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const { dateLetterSent } = req.session.appeal.application;
+      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
+      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
+      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('when save for later should not validate when blank and redirect to task list page', async () => {
+      const date = moment().subtract(15, 'd');
+      req.body['day'] = '';
+      req.body['month'] = '';
+      req.body['year'] = '';
+      req.body.saveForLater = 'saveForLater';
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const { dateLetterSent } = req.session.appeal.application;
+      expect(dateLetterSent.day).to.be.eql('');
+      expect(dateLetterSent.month).to.be.eql('');
+      expect(dateLetterSent.year).to.be.eql('');
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
     it('when in edit mode should validate and redirect to Appeal Late page if appeal is later than 14 days and isEdit flag is not updated', async () => {

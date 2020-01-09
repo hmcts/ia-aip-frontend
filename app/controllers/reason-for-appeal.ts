@@ -8,7 +8,9 @@ import { daysToWaitUntilContact } from './confirmation-page';
 
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('case-building/reasons-for-appeal/reason-for-appeal.njk');
+    return res.render('case-building/reasons-for-appeal/reason-for-appeal.njk', {
+      previousPage:  '/appellant-timeline'
+    });
   } catch (e) {
     next(e);
   }

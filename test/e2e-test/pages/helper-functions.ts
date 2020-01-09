@@ -43,8 +43,12 @@ async function signInHelper() {
     I.fillField('#username', userDetails.email);
     I.fillField('#password',userDetails.password);
   }
-  I.wait(2);
   I.click('.button');
+}
+
+function signInForUser(email: string) {
+  I.fillField('#username', email);
+  I.click('Login');
 }
 
 function fillInDate(day, month, year) {
@@ -60,6 +64,7 @@ function enterRefNumber(refNumber) {
 
 export {
   signInHelper,
+  signInForUser,
   fillInDate,
   enterRefNumber
 };

@@ -4,6 +4,7 @@ import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { contactDetailsValidation } from '../utils/fields-validations';
+import { shouldValidateWhenSaveForLater } from '../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../utils/url-utils';
 
 function getContactDetails(req: Request, res: Response, next: NextFunction) {
@@ -44,17 +45,19 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
         }
       }
 
-      const validation = contactDetailsValidation(req.body);
-
       const contactDetails = { email, wantsEmail, phone, wantsSms };
 
-      if (validation) {
-        return res.render('appeal-application/contact-details.njk', {
-          contactDetails,
-          errors: validation,
-          errorList: Object.values(validation),
-          previousPage: paths.taskList
-        });
+      if (shouldValidateWhenSaveForLater(req.body, 'selections')) {
+        const validation = contactDetailsValidation(req.body);
+
+        if (validation) {
+          return res.render('appeal-application/contact-details.njk', {
+            contactDetails,
+            errors: validation,
+            errorList: Object.values(validation),
+            previousPage: paths.taskList
+          });
+        }
       }
 
       req.session.appeal.application.contactDetails = contactDetails;

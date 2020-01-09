@@ -14,6 +14,8 @@ const logLabel: string = getLogLabel(__filename);
 let server: https.Server;
 let ccdServer: http.Server;
 let idamServer: http.Server;
+let postcodeLookupServer: http.Server;
+
 function bootstrap() {
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
@@ -29,6 +31,7 @@ function bootstrap() {
 
   const ccdApp = express();
   const idamApp = express();
+  const postcodeLookupApp = express();
 
   const ccdOptions = {
     configDir: path.resolve(__dirname, '../mock/ccd/services/')
@@ -38,6 +41,10 @@ function bootstrap() {
     configDir: path.resolve(__dirname, '../mock/idam/services/')
   };
 
+  const postcodeLookupOptions = {
+    configDir: path.resolve(__dirname, '../mock/postcode-lookup/services/')
+  };
+
   const ccdConfigs = dyson.getConfigurations(ccdOptions);
   dyson.registerServices(ccdApp, ccdOptions, ccdConfigs);
   ccdServer = ccdApp.listen(20000);
@@ -45,28 +52,10 @@ function bootstrap() {
   const idamConfigs = dyson.getConfigurations(idamOptions);
   dyson.registerServices(idamApp, idamOptions, idamConfigs);
   idamServer = idamApp.listen(20001);
-}
 
-function teardown() {
-  if (server && server.close) {
-    server.close(() => {
-      logger.trace(`Closed out remaining local server connections`, logLabel);
-      process.exit(0);
-    });
-  }
-  if (ccdServer && ccdServer.close) {
-    ccdServer.close(() => {
-      logger.trace(`Closed out remaining CCD connections`, logLabel);
-      process.exit(0);
-    });
-  }
-
-  if (idamServer && idamServer.close) {
-    idamServer.close(() => {
-      logger.trace(`Closed out remaining Idam connections`, logLabel);
-      process.exit(0);
-    });
-  }
+  const postcodeLookupConfigs = dyson.getConfigurations(postcodeLookupOptions);
+  dyson.registerServices(postcodeLookupApp, postcodeLookupOptions, postcodeLookupConfigs);
+  postcodeLookupServer = postcodeLookupApp.listen(20002);
 }
 
 module.exports = {
@@ -74,8 +63,8 @@ module.exports = {
     bootstrap();
     done();
   },
-  teardown: function(done) {
-    teardown();
+  teardown: function (done) {
     done();
+    process.exit();
   }
 };

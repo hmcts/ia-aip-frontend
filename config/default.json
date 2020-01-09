@@ -50,7 +50,8 @@
     "caseType": "Asylum"
   },
   "addressLookup": {
-    "token": "address_lookup_token"
+    "token": "address_lookup_token",
+    "url": "https://api.ordnancesurvey.co.uk"
   },
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"

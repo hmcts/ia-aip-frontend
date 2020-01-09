@@ -41,7 +41,8 @@
     "apiUrl": "CCD_API_URL"
   },
   "addressLookup": {
-    "token": "ADDRESS_LOOKUP_TOKEN"
+    "token": "ADDRESS_LOOKUP_TOKEN",
+    "url": "ADDRESS_LOOKUP_URL"
   },
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"

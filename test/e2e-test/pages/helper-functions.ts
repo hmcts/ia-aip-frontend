@@ -48,7 +48,7 @@ async function signInHelper() {
 
 function signInForUser(email: string) {
   I.fillField('#username', email);
-  I.click('Login');
+  I.click('.button');
 }
 
 function fillInDate(day, month, year) {

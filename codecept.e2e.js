@@ -18,7 +18,8 @@ exports.config = {
   },
   plugins: {
     stepByStepReport: {
-      enabled: true
+      enabled: true,
+      deleteSuccessful: false
     }
   },
   require: ['ts-node/register/transpile-only']

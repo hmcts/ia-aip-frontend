@@ -3,6 +3,7 @@ Feature: Reason for appeal
   As a citizen
   I want to be able to fill in the reason text field
 
+  @broken
   Scenario: Navigate through reasons for appeal
     Given I am authenticated as a valid appellant
     When I visit reasons for appeal

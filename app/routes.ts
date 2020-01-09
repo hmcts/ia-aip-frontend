@@ -1,6 +1,7 @@
 import { OSPlacesClient } from '@hmcts/os-places-client';
 import config from 'config';
 import * as express from 'express';
+import requestPromise from 'request-promise-native';
 import { setupCheckAndSendController } from './controllers/check-and-send';
 import { setConfirmationController } from './controllers/confirmation-page';
 import { setupContactDetailsController } from './controllers/contact-details';
@@ -21,7 +22,7 @@ import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 
 export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
-const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'));
+const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 
 const router = express.Router();
 

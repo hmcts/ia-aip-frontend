@@ -78,3 +78,21 @@ You can run the security check as follows:
 ```
 yarn test:nsp
 ```
+
+### Build pipeline
+
+The pipeline build has the following steps
+
+| Yarn command | Description |
+| ------------ | ----------- |
+| yarn cache clean | |
+| yarn check | |
+| yarn --mutex network install --frozen-lockfile| |
+| yarn lint | |
+| yarn build | |
+| yarn test| Runs `yarn test:unit && cross-env USE_REDIS=false yarn codecept:functional` functional tests start service against mocks and do not use Redis. |
+| yarn test:coverage | |
+| yarn test:a11y | Starts service and runs against mocks. Just hits each page and checks it is accessible. |
+| yarn sonar-scan | |
+| yarn test:smoke | Hits the health endpoint of the deployed service. |
+| yarn test:functional| End to end test that runs against a deployed service. |

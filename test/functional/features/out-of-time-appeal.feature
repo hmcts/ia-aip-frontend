@@ -8,7 +8,7 @@ Scenario: Explain the reason why my appeal is late
   When I click on Home office details
   And I enter "A1234567" as the Office ref number and click Save and continue
   And I enter an out of time letter sent date and click Save and continue
-  
+
   And I click Your personal details
   And Enter "Random" "User" as my Given and Family Name and click Save and continue
   And I enter "11" "11" "1999" as my DOB and click Save and continue

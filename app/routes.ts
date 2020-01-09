@@ -16,11 +16,13 @@ import { setupStartController } from './controllers/startController';
 
 import { logSession } from './middleware/session-middleware';
 import { CcdService } from './service/ccd-service';
+import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 
 export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
+export const documentManagementService: DocumentManagementService = new DocumentManagementService(new IdamService(), S2SService.getInstance());
 const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'));
 
 const router = express.Router();
@@ -36,7 +38,7 @@ const personalDetailsController = setupPersonalDetailsController({ updateAppealS
 const contactDetailsController = setupContactDetailsController(updateAppealService);
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
-const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService });
+const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
 // not protected by idam
 router.use(healthController);
 router.use(startController);

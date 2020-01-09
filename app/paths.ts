@@ -26,10 +26,8 @@ const paths = {
   },
   reasonsForAppeal: {
     decision: '/reasons/reason-for-appeal',
-    uplaod: '/reasons/reason-for-appeal-upload',
-    deleteReason: '/reasons/delete-reason-for-appeal-upload',
-    confirmation: '/reasons/confirmation',
-    fileUpload: '/reason-for-appeal-upload'
+    upload: '/reasons/reason-for-appeal-upload',
+    confirmation: '/reasons/confirmation'
   },
   typeOfAppeal: '/type-of-appeal',
   contactDetails: '/contact-details',

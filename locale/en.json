@@ -285,6 +285,10 @@
     },
     "homeOfficeDecision": {
       "required": "Enter the reasons you think the Home Office decision is wrong"
+    },
+    "fileUpload": {
+      "incorrectFormat": "The selected file must be a ",
+      "fileTooLarge": "The selected file must be smaller than "
     }
 
   },

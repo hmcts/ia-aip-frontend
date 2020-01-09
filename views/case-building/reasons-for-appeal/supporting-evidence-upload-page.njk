@@ -2,8 +2,6 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
-{% from "components/evidence-list.njk" import evidenceList with context %}
-
 
 {% extends "layout.njk" %}
 
@@ -47,7 +45,10 @@
                 }
             }) }}
         </div>
-            {{ evidenceList(evidences, evidenceCTA) }}
+            <b>{{ i18n.pages.reasonsForAppealUpload.uploadFiles }}</b>
+            <hr>
+            <p>{{ i18n.pages.reasonsForAppealUpload.noFiles }}</p>
+            <hr>
 
             <div class="panel-background">
                 <h2 class="govuk-heading-s">{{ i18n.pages.reasonsForAppealUpload.needMoreTime }}</h2>
@@ -57,6 +58,6 @@
             </div>
             {{ saveButtons() }}
             {{ contactUs() }}
-    {% endcall %}
             </form>
+    {% endcall %}
 {% endblock  %}

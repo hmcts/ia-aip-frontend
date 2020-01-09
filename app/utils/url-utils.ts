@@ -13,25 +13,6 @@ export function getIdamRedirectUrl(req: Request): string {
   return getUrl('https', req.hostname, '/redirectUrl');
 }
 
-export function buildAddressList(addressLookupResult) {
-  const lookedUpAddresses = addressLookupResult.addresses.map(address => {
-    return {
-      value: address.udprn,
-      text: address.formattedAddress
-    };
-  });
-
-  const selectAddresses = lookedUpAddresses.length === 1 ?
-    '1 address found' :
-    `${lookedUpAddresses.length} addresses found`;
-  const addresses = [
-    {
-      value: '',
-      text: selectAddresses
-    } ].concat(lookedUpAddresses);
-  return addresses;
-}
-
 /**
  * Helps to workout where to redirect the user if it is an edit also resets the isEdit flag each time.
  * @param req the request

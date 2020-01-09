@@ -22,7 +22,7 @@ describe('Nationalities', () => {
         selected: false
       }
     ];
-    const countriesList = getNationalitiesOptions(list, '');
+    const countriesList = getNationalitiesOptions(list, '', 'Please select a nationality');
     expect(countriesList).to.be.deep.eq(options);
   });
 
@@ -42,7 +42,7 @@ describe('Nationalities', () => {
         selected: true
       }
     ];
-    const countriesList = getNationalitiesOptions(list, 'AX');
+    const countriesList = getNationalitiesOptions(list, 'AX', 'Please select a nationality');
     expect(countriesList).to.be.deep.eq(options);
   });
 });

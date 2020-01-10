@@ -29,6 +29,7 @@ const paths = {
     supportingEvidence: '/case-building/reason-for-appeal/supporting-evidence',
     supportingEvidenceUpload: '/case-building/reason-for-appeal/supporting-evidence/upload',
     supportingEvidenceUploadFile: '/case-building/reason-for-appeal/supporting-evidence/upload/file',
+    supportingEvidenceDeleteFile: '/case-building/reason-for-appeal/supporting-evidence/delete/file',
     checkAndSend: '/case-building/reason-for-appeal/check-and-send',
     confirmation: '/case-building/reason-for-appeal/confirmation'
   },

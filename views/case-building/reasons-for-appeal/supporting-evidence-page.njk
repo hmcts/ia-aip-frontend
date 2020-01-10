@@ -1,19 +1,30 @@
-{% block beforeContent %}
-{% endblock %}
-{% set pageTitleName = i18n.pages.successPage.title %}
+{% set pageTitleName = i18n.pages.evidence.title %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
 
 {% extends "layout.njk" %}
 
 {% block content %}
-  {% from "govuk/components/panel/macro.njk" import govukPanel %}
-
-  <h2 class="govuk-heading-m">{{ i18n.pages.successPage.whatHappensNext }}</h2>
-  <div>
-    <ul class="govuk-list govuk-list--bullet govuk-!-padding-left-4">
-      <li>YES</li>
-      <li>NO</li>
-    </ul>
-  </div>
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action="/case-building/reason-for-appeal/supporting-evidence" method="post">
+    {% call govukFieldset({
+      legend: {
+        text: 'Do you want to add supporting evidence?',
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading) }}
+      {{ continueButton() }}
+    {% endcall %}
+  </form>
 
   {{ contactUs() }}
 {% endblock %}

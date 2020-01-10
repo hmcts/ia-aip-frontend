@@ -12,6 +12,34 @@ const documentManagementBaseUrl = config.get('documentManagement.apiUrl');
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
+interface Href {
+  href: string;
+}
+
+interface Links {
+  self: Href;
+  binary: Href;
+  thumbnail: Href;
+}
+
+interface Document {
+  size: number;
+  mimeType: string;
+  originalDocumentName: string;
+  modifiedOn: Date;
+  createdOn: Date;
+  classification: string;
+  _links: Links;
+}
+
+interface Embedded {
+  documents: Document[];
+}
+
+interface DocumentManagementStoreResponse {
+  _embedded: Embedded;
+}
+
 enum Classification {
   public = 'PUBLIC',
   private = 'PRIVATE',
@@ -63,7 +91,7 @@ class DocumentManagementService {
     };
   }
 
-  upload(userId: string, headers: SecurityHeaders, uploadData: UploadData): Promise<any> {
+  async upload(userId: string, headers: SecurityHeaders, uploadData: UploadData): Promise<any> {
     const options: any = this.createOptions(
       userId,
       headers,
@@ -78,7 +106,7 @@ class DocumentManagementService {
    * req.file: Express.Multer.File
    * req.idam.userDetails.id: string
    */
-  async uploadFile(req: Request): Promise<any> {
+  async uploadFile(req: Request): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.id;
 
@@ -87,12 +115,17 @@ class DocumentManagementService {
       role: 'citizen',
       classification: Classification.restricted
     };
-
     logger.trace(`Received call to upload file for user with id: '${userId}'`, logLabel);
     return this.upload(userId, headers, uploadData)
-      .then(async (response) => {
+      .then(response => {
         cleanTempFile(req.file.path);
-        return response;
+        const res: DocumentManagementStoreResponse = JSON.parse(response);
+        const docName = res._embedded.documents[0].originalDocumentName;
+        return {
+          id: docName,
+          url: res._embedded.documents[0]._links.self.href,
+          name: docName.substring(docName.indexOf('-') + 1)
+        };
       });
   }
 

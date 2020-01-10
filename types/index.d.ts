@@ -20,10 +20,20 @@ interface ValidationErrors {
   [key: string]: ValidationError;
 }
 
+interface Evidences {
+  [key: string]: Evidence;
+}
+
 interface Evidence {
   url: string;
   name: string;
   description?: string;
+}
+
+interface DocumentUploadResponse {
+  id: string;
+  url: string;
+  name: string;
 }
 
 interface Appeal {
@@ -45,7 +55,7 @@ interface AppealApplication {
   isAppealLate: boolean;
   lateAppeal?: {
     reason?: string;
-    evidence?: Evidence;
+    evidences?: Evidences;
   };
   personalDetails: {
     givenNames: string;

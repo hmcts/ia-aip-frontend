@@ -6,26 +6,25 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.error.summary.title,
-            descriptionText: i18n.error.summary.descriptionText,
-            errorList: errorList
-        })
-        }}
-    {% endif %}
-    {% call govukFieldset({
-        legend: {
-            text: i18n.pages.evidence.heading,
-            classes: "govuk-fieldset__legend--xl",
-            isPageHeading: true
-        }
-    }) %}
-        <form action="/reasons/evidence" method="post" type="submit">
-            {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading) }}
-            {{ continueButton() }}
-        </form>
-    {% endcall %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  {% call govukFieldset({
+    legend: {
+      text: i18n.pages.evidence.heading,
+      classes: "govuk-fieldset__legend--xl",
+      isPageHeading: true
+    }
+  }) %}
+    <form action="/reasons/evidence" method="post" type="submit">
+      {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading) }}
+      {{ continueButton() }}
+    </form>
+  {% endcall %}
 
-    {{ contactUs() }}
-{% endblock  %}
+  {{ contactUs() }}
+{% endblock %}

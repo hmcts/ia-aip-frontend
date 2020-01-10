@@ -5,51 +5,50 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-    {% if errorList %}
-        {{ govukErrorSummary({
-            titleText: i18n.error.summary.title,
-            descriptionText: i18n.error.summary.descriptionText,
-            errorList: errorList
-        })
-        }}
-    {% endif %}
-    <form type="submit" action="/case-building/reason-for-appeal" method="post">
-        {% call govukFieldset({
-            legend: {
-                text: i18n.pages.wrongHomeOfficeDecision.heading,
-                classes: "govuk-fieldset__legend--xl",
-                isPageHeading: true
-            }
-        }) %}
-            <p class="govuk-body">{{ i18n.pages.wrongHomeOfficeDecision.usefulInfo |  safe  }}</p>
-            {{ govukTextarea({
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form type="submit" action="/case-building/reason-for-appeal" method="post">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.wrongHomeOfficeDecision.heading,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <p class="govuk-body">{{ i18n.pages.wrongHomeOfficeDecision.usefulInfo |  safe }}</p>
+      {{ govukTextarea({
         name: "moreDetail",
         id: "moreDetail",
         label: {
-            text: i18n.pages.wrongHomeOfficeDecision.textTitle | safe
+          text: i18n.pages.wrongHomeOfficeDecision.textTitle | safe
         },
         errorMessage: {
-            text:  error['moreDetail'].text
+          text:  error['moreDetail'].text
         } if error['moreDetail']
-    }) }}
-    <div class="panel-background">
+      }) }}
+      <div class="panel-background">
         <h2 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.howToAnswer }}</h2>
         <ul>
-            <li class="list-item-no-bullet"></li>
-            <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletOne | safe}}</li>
-            <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletTwo | safe}}</li>
-            <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletThree | safe }}</li>
-            <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletFour | safe }}</li>
-            <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletFive | safe}}</li>
-            <br/>
+          <li class="list-item-no-bullet"></li>
+          <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletOne | safe }}</li>
+          <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletTwo | safe }}</li>
+          <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletThree | safe }}</li>
+          <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletFour | safe }}</li>
+          <li>{{ i18n.pages.wrongHomeOfficeDecision.bulletFive | safe }}</li>
+          <br/>
         </ul>
-           <h2 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.needHelp }}</h2>
+        <h2 class="govuk-heading-s">{{ i18n.pages.wrongHomeOfficeDecision.needHelp }}</h2>
         <ul>
-            <li><a class="evidence-list__link" href="#">{{ i18n.pages.wrongHomeOfficeDecision.bulletLink }}</a></li>
+          <li><a class="evidence-list__link" href="#">{{ i18n.pages.wrongHomeOfficeDecision.bulletLink }}</a></li>
         </ul>
-    </div>
-    <br/>
-     {{ saveButtons() }}
-        {% endcall %}
-    </form>
-{% endblock  %}
+      </div>
+      <br/>
+      {{ saveButtons() }}
+    {% endcall %}
+  </form>
+{% endblock %}

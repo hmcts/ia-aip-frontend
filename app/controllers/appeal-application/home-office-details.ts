@@ -6,7 +6,11 @@ import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { dateLetterSentValidation, homeOfficeNumberValidation, textAreaValidation } from '../../utils/validations/fields-validations';
+import {
+  dateLetterSentValidation,
+  homeOfficeNumberValidation,
+  textAreaValidation
+} from '../../utils/validations/fields-validations';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
@@ -102,7 +106,7 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
     const evidences: Evidences = application.lateAppeal && application.lateAppeal.evidences || {};
-    res.render('appeal-application/home-office/appeal-late.njk',{
+    res.render('appeal-application/home-office/appeal-late.njk', {
       appealLateReason,
       evidences: Object.values(evidences),
       evidenceCTA: paths.homeOffice.deleteEvidence,
@@ -161,9 +165,9 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
         evidences: {
           ...(application.lateAppeal && application.lateAppeal.evidences || {}),
           [req.file.originalname]: {
+            id: 'someId',
             url: req.file.originalname,
-            name: req.file.originalname,
-            description: fileDescription
+            name: req.file.originalname
           },
           ...(application.lateAppeal && application.lateAppeal.evidences || {})
         }

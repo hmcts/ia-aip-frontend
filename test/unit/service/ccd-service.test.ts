@@ -1,6 +1,6 @@
 import rp from 'request-promise';
+import { SecurityHeaders } from '../../../app/service/authentication-service';
 import { CcdService, Events } from '../../../app/service/ccd-service';
-import { SecurityHeaders } from '../../../app/service/getHeaders';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('idam-service', () => {

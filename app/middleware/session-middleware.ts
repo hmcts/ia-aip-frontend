@@ -1,7 +1,7 @@
-import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
 import { NextFunction, Request, Response } from 'express';
 import * as _ from 'lodash';
 import { paths } from '../paths';
+import { AuthenticationService } from '../service/authentication-service';
 import { CcdService } from '../service/ccd-service';
 import IdamService from '../service/idam-service';
 import S2SService from '../service/s2s-service';
@@ -9,7 +9,9 @@ import UpdateAppealService from '../service/update-appeal-service';
 import Logger from '../utils/logger';
 import { appealApplicationStatus } from '../utils/tasks-utils';
 
-const updateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
+const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {

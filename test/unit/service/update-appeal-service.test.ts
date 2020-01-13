@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService, Events } from '../../../app/service/ccd-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
@@ -12,6 +13,7 @@ describe('update-appeal-service', () => {
   let ccdService: Partial<CcdService>;
   let idamService: Partial<IdamService>;
   let s2sService: Partial<S2SService>;
+  let authenticationService: Partial<AuthenticationService>;
   let updateAppealService;
 
   const userId = 'userId';
@@ -23,6 +25,7 @@ describe('update-appeal-service', () => {
     sandbox = sinon.createSandbox();
     idamService = new IdamService();
     s2sService = new S2SService();
+    authenticationService = new AuthenticationService(idamService as IdamService, s2sService as S2SService);
     ccdService = new CcdService();
 
     ccdServiceMock = sandbox.mock(ccdService);
@@ -30,7 +33,7 @@ describe('update-appeal-service', () => {
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
 
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, idamService as IdamService, s2sService as S2SService);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService);
     req = {
       idam: {
         userDetails: {
@@ -335,7 +338,7 @@ describe('update-appeal-service', () => {
       s2sService2 = {
         getServiceToken: sandbox.stub().resolves(serviceToken)
       };
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, idamService2, s2sService2 as S2SService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService);
       expectedCaseData = {
         journeyType: 'aip',
         homeOfficeReferenceNumber: 'newRef',

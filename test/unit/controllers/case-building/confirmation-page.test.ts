@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import { daysToWaitUntilContact } from '../../../app/controllers/appeal-application/confirmation-page';
+import { daysToWaitUntilContact } from '../../../../app/controllers/appeal-application/confirmation-page';
 import {
     getConfirmationPage,
     setupReasonsForAppealController
-} from '../../../app/controllers/case-building/reason-for-appeal';
-import { paths } from '../../../app/paths';
-import UpdateAppealService from '../../../app/service/update-appeal-service';
-import Logger from '../../../app/utils/logger';
-import { expect, sinon } from '../../utils/testUtils';
+} from '../../../../app/controllers/case-building/reason-for-appeal';
+import { paths } from '../../../../app/paths';
+import UpdateAppealService from '../../../../app/service/update-appeal-service';
+import Logger from '../../../../app/utils/logger';
+import { expect, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
 

@@ -3,9 +3,7 @@ import { Request } from 'express';
 import * as fs from 'fs';
 import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
-import { SecurityHeaders } from './getHeaders';
-import IdamService from './idam-service';
-import S2SService from './s2s-service';
+import { AuthenticationService, SecurityHeaders } from './authentication-service';
 
 const documentManagementBaseUrl = config.get('documentManagement.apiUrl');
 
@@ -67,55 +65,66 @@ function cleanTempFile(path: string) {
 }
 
 class DocumentManagementService {
-  private idamService;
-  private s2sService;
+  private authenticationService: AuthenticationService;
 
-  constructor(idamService: IdamService, s2sService: S2SService) {
-    this.idamService = idamService;
-    this.s2sService = s2sService;
+  constructor(authenticationService: AuthenticationService) {
+    this.authenticationService = authenticationService;
   }
 
-  private createOptions(userId: string, headers: SecurityHeaders, uri, uploadData: UploadData) {
+  private createOptions(userId: string, headers: SecurityHeaders, uri: string) {
     return {
       uri: uri,
       headers: {
         Authorization: headers.userToken,
         ServiceAuthorization: headers.serviceToken,
-        userId
-      },
-      formData: {
-        files: fs.createReadStream(uploadData.file),
-        classification: uploadData.classification,
-        role: uploadData.role
+        'user-id': userId
       }
     };
   }
 
-  async upload(userId: string, headers: SecurityHeaders, uploadData: UploadData): Promise<any> {
+  private async upload(userId: string, headers: SecurityHeaders, uploadData: UploadData): Promise<any> {
     const options: any = this.createOptions(
       userId,
       headers,
-      `${documentManagementBaseUrl}/documents`,
-      uploadData);
+      `${documentManagementBaseUrl}/documents`
+    );
+
+    options.formData = {
+      files: fs.createReadStream(uploadData.file),
+      classification: uploadData.classification,
+      role: uploadData.role
+    };
+
     return rp.post(options);
   }
 
+  private async delete(userId: string, headers: SecurityHeaders, fileLocation: string): Promise<any> {
+    const options: any = this.createOptions(
+      userId,
+      headers,
+      fileLocation
+    );
+    return rp.delete(options);
+  }
+
   /**
-   * Entry point to upload a file
-   * @param req the request must contain all necessary information (user Id and file to be uploaded):
-   * req.file: Express.Multer.File
-   * req.idam.userDetails.id: string
+   * Entry point to upload endpoint used to upload files to the document management service,
+   * this endpoint takes one file at a time.
+   * @param req - the request that contains all necessary information
+   * @property {Express.Multer.File} req.file - the file to be uploaded
+   * @property {string} req.idam.userDetails.id - the user id
    */
   async uploadFile(req: Request): Promise<DocumentUploadResponse> {
-    const headers: SecurityHeaders = await this.getSecurityHeaders(req);
+    const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.id;
+
+    logger.trace(`Received call to upload file for user with id: '${userId}'`, logLabel);
 
     const uploadData = {
       file: req.file.path,
       role: 'citizen',
       classification: Classification.restricted
     };
-    logger.trace(`Received call to upload file for user with id: '${userId}'`, logLabel);
     return this.upload(userId, headers, uploadData)
       .then(response => {
         cleanTempFile(req.file.path);
@@ -129,12 +138,19 @@ class DocumentManagementService {
       });
   }
 
-  private async getSecurityHeaders(req: Request): Promise<SecurityHeaders> {
-    const userToken = this.idamService.getUserToken(req);
-    const serviceToken = await this.s2sService.getServiceToken();
-    return { userToken, serviceToken };
-  }
+  /**
+   * Entry point to delete endpoint used to delete files from the document management service
+   * @param req - the request that contains all necessary information
+   * @property {string} req.idam.userDetails.id - the user id
+   * @param fileId - the target file id to be deleted
+   */
+  async deleteFile(req: Request, fileLocation: string): Promise<DocumentUploadResponse> {
+    const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
+    const userId: string = req.idam.userDetails.id;
 
+    logger.trace(`Received call from user '${userId}' to delete file with id: '21'`, logLabel);
+    return this.delete(userId, headers, fileLocation);
+  }
 }
 
 export {

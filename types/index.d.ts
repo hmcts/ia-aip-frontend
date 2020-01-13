@@ -25,9 +25,9 @@ interface Evidences {
 }
 
 interface Evidence {
+  id: string;
   url: string;
   name: string;
-  description?: string;
 }
 
 interface DocumentUploadResponse {
@@ -88,7 +88,7 @@ interface AppealApplication {
 interface CaseBuilding {
   [key: string]: any;
   decision: string;
-  evidences?: Evidence;
+  evidences?: Evidences;
 }
 
 interface HearingRequirements {

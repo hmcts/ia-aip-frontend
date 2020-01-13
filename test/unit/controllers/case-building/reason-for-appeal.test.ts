@@ -1,10 +1,10 @@
 const express = require('express');
 import { NextFunction, Request, Response, text } from 'express';
-import { getReasonForAppeal, postReasonForAppeal, setupReasonsForAppealController } from '../../../app/controllers/case-building/reason-for-appeal';
-import { paths } from '../../../app/paths';
-import UpdateAppealService from '../../../app/service/update-appeal-service';
-import Logger from '../../../app/utils/logger';
-import { expect, sinon } from '../../utils/testUtils';
+import { getReasonForAppeal, postReasonForAppeal, setupReasonsForAppealController } from '../../../../app/controllers/case-building/reason-for-appeal';
+import { paths } from '../../../../app/paths';
+import UpdateAppealService from '../../../../app/service/update-appeal-service';
+import Logger from '../../../../app/utils/logger';
+import { expect, sinon } from '../../../utils/testUtils';
 
 describe('Reasons for Appeal Controller', function() {
   let sandbox: sinon.SinonSandbox;
@@ -104,7 +104,7 @@ describe('Reasons for Appeal Controller', function() {
       req.body.moreDetail = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(
-          'case-building/reasons-for-appeal/check-and-send.njk');
+          '/case-building/reason-for-appeal/supporting-evidence');
     });
   });
 });

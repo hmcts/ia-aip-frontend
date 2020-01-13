@@ -1,9 +1,7 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
-import { CcdService, Events } from './ccd-service';
-import { SecurityHeaders } from './getHeaders';
-import IdamService from './idam-service';
-import S2SService from './s2s-service';
+import { AuthenticationService, SecurityHeaders } from './authentication-service';
+import { CcdService } from './ccd-service';
 
 enum Subscriber {
   APPELLANT = 'appellant',
@@ -16,18 +14,16 @@ enum YesOrNo {
 }
 
 export default class UpdateAppealService {
-  private ccdService;
-  private idamService;
-  private s2sService;
+  private ccdService: CcdService;
+  private authenticationService: AuthenticationService;
 
-  constructor(ccdService: CcdService, idamService: IdamService, s2sService: S2SService) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService) {
     this.ccdService = ccdService;
-    this.idamService = idamService;
-    this.s2sService = s2sService;
+    this.authenticationService = authenticationService;
   }
 
   async loadAppeal(req: Request) {
-    const securityHeaders: SecurityHeaders = await this.getSecurityHeaders(req);
+    const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.id, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
 
@@ -102,7 +98,7 @@ export default class UpdateAppealService {
   }
 
   async submitEvent(event, req: Request) {
-    const securityHeaders: SecurityHeaders = await this.getSecurityHeaders(req);
+    const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
 
     const currentUserId = req.idam.userDetails.id;
     const caseData = this.convertToCcdCaseData(req.session.appeal.application);
@@ -183,12 +179,5 @@ export default class UpdateAppealService {
     const appealDateString = new Date(`${appealDate.year}-${appealDate.month}-${appealDate.day}`);
     const dateLetterSentIso = appealDateString.toISOString().split('T')[0];
     return dateLetterSentIso;
-  }
-
-  private async getSecurityHeaders(req: Request): Promise<SecurityHeaders> {
-    const userToken = this.idamService.getUserToken(req);
-    const serviceToken = await this.s2sService.getServiceToken();
-
-    return { userToken, serviceToken };
   }
 }

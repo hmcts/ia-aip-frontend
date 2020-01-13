@@ -15,14 +15,16 @@ import { setupIndexController } from './controllers/index';
 import { setupStartController } from './controllers/startController';
 
 import { logSession } from './middleware/session-middleware';
+import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
 import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 
-export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
-export const documentManagementService: DocumentManagementService = new DocumentManagementService(new IdamService(), S2SService.getInstance());
+export const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
+export const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
 const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'));
 
 const router = express.Router();

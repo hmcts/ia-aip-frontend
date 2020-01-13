@@ -55,8 +55,24 @@
           <li>{{ i18n.pages.reasonsForAppealUpload.evidence | safe }}</li>
         </ul>
       </div>
-      {{ saveButtons() }}
-      {{ contactUs() }}
     {% endcall %}
   </form>
+
+  <div class="buttons__container">
+    {{ govukButton({
+      text: i18n.common.buttons.saveAndContinue,
+      href: "/case-building/reason-for-appeal/check-and-send",
+      classes: "govuk-!-margin-right-1"
+    }) }}
+
+    {{ govukButton({
+      text: i18n.common.buttons.saveForLater,
+      name: "saveForLater",
+      value: "saveForLater",
+      href: "/case-building/task-list",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
+  {{ contactUs() }}
+
 {% endblock %}

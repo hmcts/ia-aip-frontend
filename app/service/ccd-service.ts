@@ -1,7 +1,7 @@
 import config from 'config';
 import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
-import { SecurityHeaders } from './getHeaders';
+import { SecurityHeaders } from './authentication-service';
 
 const ccdBaseUrl = config.get('ccd.apiUrl');
 const jurisdictionId = config.get('ccd.jurisdictionId');
@@ -20,16 +20,6 @@ interface CcdCaseDetails {
   case_data: CaseData;
 }
 
-interface CaseData {
-  appellantTitle?: string;
-  appellantGivenNames?: string;
-  appellantFamilyName?: string;
-  appellantDateOfBirth?: string;
-  homeOfficeReferenceNumber?: string;
-  homeOfficeDecisionDate?: string;
-  journeyType: string;
-}
-
 interface StartEventResponse {
   event_id: string;
   token: string;
@@ -43,7 +33,7 @@ interface Event {
 
 interface SubmitEventData {
   event: Event;
-  data: CaseData;
+  data: Partial<CaseData>;
   event_token: string;
   ignore_warning: boolean;
 }

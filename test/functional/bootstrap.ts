@@ -58,13 +58,44 @@ function bootstrap() {
   postcodeLookupServer = postcodeLookupApp.listen(20002);
 }
 
+function closeServerWithPromise(server) {
+  return new Promise(function(resolve, reject) {
+    server.close((err, result) => {
+      if (err) return reject(err);
+      logger.trace('closed server', logLabel);
+      resolve(result);
+    });
+  });
+}
+
+async function teardown(done) {
+  try {
+    if (server && server.close) {
+      await closeServerWithPromise(server);
+    }
+    if (ccdServer && ccdServer.close) {
+      await closeServerWithPromise(ccdServer);
+    }
+    if (idamServer && idamServer.close) {
+      await closeServerWithPromise(idamServer);
+    }
+    if (postcodeLookupServer && postcodeLookupServer.close) {
+      await closeServerWithPromise(postcodeLookupServer);
+    }
+  } catch (e) {
+    logger.exception(e, logLabel);
+  } finally {
+    done();
+    process.exit();
+  }
+}
+
 module.exports = {
   bootstrap: function(done) {
     bootstrap();
     done();
   },
-  teardown: function (done) {
-    done();
-    process.exit();
+  teardown: async function (done) {
+    await teardown(done);
   }
 };

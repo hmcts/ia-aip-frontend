@@ -233,7 +233,7 @@
     "empty": "The field is required",
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
-    "atLeastOneTypeOfAppeal": "Select at least one of the appeal types",
+    "selectAnAppealType": "Select an appeal type",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",

@@ -254,17 +254,11 @@ function addressValidation(obj: object): null | ValidationErrors {
 }
 
 function typeOfAppealValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.alternatives().try(
-    Joi.object({
-      appealType: Joi.array().items(Joi.string()).required()
-    }).unknown(),
-    Joi.object({
-      appealType: Joi.string().required()
-    }).unknown()
-  ).messages({
-    'alternatives.match': i18n.validationErrors.atLeastOneTypeOfAppeal,
-    'any.required': i18n.validationErrors.required
-  });
+  const schema = Joi.object({
+      appealType: Joi.string().required().messages({
+        'any.required': i18n.validationErrors.selectAnAppealType
+      })
+    }).unknown();
 
   return validate(obj, schema);
 }

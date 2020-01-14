@@ -120,7 +120,7 @@ describe('Contact details Controller', () => {
 
       it('should show 2 validation error both options are selected but left blank', async () => {
         req.body = {
-          selections: [ 'email', 'text-message' ],
+          selections: 'email,text-message',
           'email-value': '',
           'text-message-value': ''
         };
@@ -170,7 +170,7 @@ describe('Contact details Controller', () => {
     describe('email cases', () => {
       it('should show email empty validation error if email is selected but left blank', async () => {
         req.body = {
-          selections: [ 'email' ],
+          selections: 'email',
           'email-value': ''
         };
 
@@ -200,7 +200,7 @@ describe('Contact details Controller', () => {
 
       it('should show email format validation error if email is selected but not a valid email', async () => {
         req.body = {
-          selections: [ 'email' ],
+          selections: 'email',
           'email-value': 'notanemail@example'
         };
 
@@ -230,7 +230,7 @@ describe('Contact details Controller', () => {
 
       it('should validate email and redirect to task-list.njk', async () => {
         req.body = {
-          selections: [ 'email' ],
+          selections: 'email',
           'email-value': 'valid@example.net'
         };
 
@@ -249,7 +249,7 @@ describe('Contact details Controller', () => {
         req.session.appeal.application.isEdit = true;
 
         req.body = {
-          selections: [ 'email' ],
+          selections: 'email',
           'email-value': 'valid@example.net'
         };
 
@@ -270,7 +270,7 @@ describe('Contact details Controller', () => {
     describe('text message cases', () => {
       it('should show phone empty validation error if phone number is selected but left blank', async () => {
         req.body = {
-          selections: [ 'text-message' ],
+          selections: 'text-message',
           'text-message-value': ''
         };
 
@@ -300,7 +300,7 @@ describe('Contact details Controller', () => {
 
       it('should show phone format validation error if text-message is selected but not a valid phone number', async () => {
         req.body = {
-          selections: [ 'text-message' ],
+          selections: 'text-message',
           'text-message-value': '00'
         };
 
@@ -330,7 +330,7 @@ describe('Contact details Controller', () => {
 
       it('should validate phone number and redirect to task-list.njk', async () => {
         req.body = {
-          selections: [ 'text-message' ],
+          selections: 'text-message',
           'text-message-value': '07123456789'
         };
 
@@ -351,7 +351,7 @@ describe('Contact details Controller', () => {
       req.session.appeal.application.isEdit = true;
 
       req.body = {
-        selections: [ 'text-message' ],
+        selections: 'text-message',
         'text-message-value': '07123456789'
       };
 

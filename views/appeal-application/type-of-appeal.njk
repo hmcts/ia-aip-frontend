@@ -6,7 +6,7 @@
 
   {% if errorList %}
     {{ govukErrorSummary({
-      titleText: i18n.errorSummary.titleText,
+      titleText: i18n.validationErrors.errorSummary,
       errorList: errorList
     }) }}
   {% endif %}
@@ -43,8 +43,8 @@
         html:  i18n.pages.appealType.pageHint
       },
       errorMessage: {
-        text: i18n.validationErrors.atLeastOneOption
-      } if error,
+        text: errors['appealType'].text
+      } if errors['appealType'],
       items: options
     }) }}
 

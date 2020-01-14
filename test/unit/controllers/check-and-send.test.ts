@@ -70,7 +70,7 @@ describe('createSummaryRowsFrom', () => {
     };
 
     const rows: any[] = createSummaryRowsFrom(appeal.application);
-    const appealLateRow = addSummaryRow('appealLate', [ appeal.application.lateAppeal.reason ], paths.homeOffice.appealLate);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ appeal.application.lateAppeal.reason ], paths.homeOffice.appealLate);
     const mockedRows = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);

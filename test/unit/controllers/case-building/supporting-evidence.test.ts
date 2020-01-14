@@ -95,7 +95,7 @@ describe('Supporting Evidence Upload Controller', () => {
       const expectedError: ValidationError = {
         href: '#value',
         key: 'value',
-        text: '"value" is required'
+        text: 'Select Yes if you want to provide supporting evidence'
       };
 
       postSupportingEvidencePage(req as Request, res as Response, next);

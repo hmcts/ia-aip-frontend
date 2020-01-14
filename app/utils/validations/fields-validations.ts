@@ -285,17 +285,19 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function homeOfficeDecisionValidation(obj: object): null | ValidationErrors {
+function reasonForAppealDecisionValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    ['moreDetail']: Joi.string().required().messages({ 'string.empty':  i18n.validationErrors.homeOfficeDecision.required })
-  });
+    moreDetail: Joi.string().required()
+      .messages({ 'string.empty': i18n.validationErrors.reasonForAppeal.required })
+  }).unknown();
   return validate(obj, schema);
 }
 
-function supportingEvidenceValidation(obj: object): null | ValidationErrors {
+function supportingEvidenceRequiredValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    ['value']: Joi.string().required().messages({ 'string.empty':  i18n.validationErrors.homeOfficeDecision.required })
-  });
+    value: Joi.string().required()
+      .messages({ 'any.required': i18n.validationErrors.reasonForAppeal.supportingEvidenceRequired })
+  }).unknown();
   return validate(obj, schema);
 }
 
@@ -315,6 +317,6 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
-  homeOfficeDecisionValidation,
-  supportingEvidenceValidation
+  reasonForAppealDecisionValidation,
+  supportingEvidenceRequiredValidation
 };

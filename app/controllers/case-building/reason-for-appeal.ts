@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import multer from 'multer';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { homeOfficeDecisionValidation, supportingEvidenceValidation } from '../../utils/validations/fields-validations';
+import {
+  reasonForAppealDecisionValidation,
+  supportingEvidenceRequiredValidation
+} from '../../utils/validations/fields-validations';
 import { fileUploadValidation } from '../../utils/validations/file-upload-validations';
 import { daysToWaitUntilContact } from '../appeal-application/confirmation-page';
 
@@ -21,7 +23,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
 function postReasonForAppeal(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      const validation = homeOfficeDecisionValidation(req.body);
+      const validation = reasonForAppealDecisionValidation(req.body);
       if (validation != null) {
         return res.render('case-building/reasons-for-appeal/reason-for-appeal-page.njk', {
           errorList: Object.values(validation),
@@ -53,7 +55,7 @@ function getSupportingEvidencePage(req: Request, res: Response, next: NextFuncti
 function postSupportingEvidencePage(req: Request, res: Response, next: NextFunction) {
   try {
     const { value } = req.body;
-    const validations = supportingEvidenceValidation(req.body);
+    const validations = supportingEvidenceRequiredValidation(req.body);
     if (validations !== null) {
       return res.render('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
         errorList: Object.values(validations),
@@ -88,10 +90,9 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
-
         const validation = fileUploadValidation(req.file);
         if (validation) {
-          return res.render('case-building/reasons-for-appeal/reasons-for-appeal-upload.njk', {
+          return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
             error: validation,
             errorList: Object.values(validation),
             previousPage: paths.reasonsForAppeal.decision
@@ -109,7 +110,6 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
             name: evidenceStored.name
           }
         };
-
         return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
       }
     } catch (e) {

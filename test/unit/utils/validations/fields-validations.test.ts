@@ -4,11 +4,13 @@ import {
   emailValidation,
   homeOfficeNumberValidation,
   mobilePhoneValidation,
+  reasonForAppealDecisionValidation,
   statementOfTruthValidation,
+  supportingEvidenceRequiredValidation,
   textAreaValidation
-} from '../../../app/utils/validations/fields-validations';
-import i18n from '../../../locale/en.json';
-import { expect } from '../../utils/testUtils';
+} from '../../../../app/utils/validations/fields-validations';
+import i18n from '../../../../locale/en.json';
+import { expect } from '../../../utils/testUtils';
 
 describe('fields-validations', () => {
   function createError(fieldName, errorMessage) {
@@ -331,6 +333,53 @@ describe('statementOfTruthValidation', () => {
         key: 'statement',
         text: 'Select if you believe the information you have given is true.'
       }
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
+
+});
+
+describe('reasonForAppealDecisionValidation', () => {
+  it('should validate if statement present', () => {
+    const object = { 'moreDetail': 'some reason text here' };
+    const validationResult = reasonForAppealDecisionValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should fail validation and return "string.empty" type', () => {
+    const object = { 'moreDetail': '' };
+    const validationResult = reasonForAppealDecisionValidation(object);
+    const expectedResponse = {
+
+      moreDetail: {
+        href: '#moreDetail',
+        key: 'moreDetail',
+        text: 'Enter the reasons you think the Home Office decision is wrong'
+      }
+
+    };
+    expect(validationResult).to.deep.equal(expectedResponse);
+  });
+});
+
+describe('supportingEvidenceRequiredValidation', () => {
+  it('should validate if selection is present', () => {
+    const object = { 'value': 'yes' };
+    const validationResult = supportingEvidenceRequiredValidation(object);
+    expect(validationResult).to.equal(null);
+  });
+
+  it('should fail validation and return "any.required" type', () => {
+    const object = {};
+    const validationResult = supportingEvidenceRequiredValidation(object);
+    const expectedResponse = {
+
+      value: {
+        href: '#value',
+        key: 'value',
+        text: 'Select Yes if you want to provide supporting evidence'
+      }
+
     };
     expect(validationResult).to.deep.equal(expectedResponse);
   });

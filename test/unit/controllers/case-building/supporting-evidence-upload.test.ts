@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import {
   getSupportingEvidenceDeleteFile,
   getSupportingEvidenceUploadPage,
+  postSupportingEvidenceUploadFile,
   setupReasonsForAppealController
 } from '../../../../app/controllers/case-building/reason-for-appeal';
 import { paths } from '../../../../app/paths';
@@ -78,9 +79,10 @@ describe('Supporting Evidence Upload Controller', () => {
 
   describe('getSupportingEvidenceUploadPage', () => {
     it('should render case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', () => {
-      getSupportingEvidenceUploadPage(req as Request, res as Response, next);
       const evidences = {};
       req.session.appeal.caseBuilding.evidences = evidences;
+
+      getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
@@ -112,6 +114,96 @@ describe('Supporting Evidence Upload Controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postSupportingEvidenceUploadFile', () => {
+
+    it('Should fail validation and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk with format validation error errors ', async () => {
+      const expectedError: ValidationError = {
+        href: '#uploadFile',
+        key: 'uploadFile',
+        text: 'The selected file must be a .jpg, .jpeg, .bmp, .tif, .tiff, .png, .pdf, .txt, .doc, .dot, .docx, .dotx, .xls, .xlt, .xla, .xlsx, .xltx, .xlsb, .ppt, .pot, .pps, .ppa, .pptx, .potx, .ppsx, .rtf, .csv'
+      };
+
+      const fileSizeInMb = 1;
+      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
+      const mockFile = {
+        originalname: 'somefile.dat',
+        size: mockSizeInBytes
+      } as Partial<Express.Multer.File>;
+
+      req.file = mockFile as Express.Multer.File;
+
+      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+        error: { uploadFile: expectedError },
+        errorList: [ expectedError ],
+        previousPage: paths.reasonsForAppeal.decision
+      });
+    });
+
+    it('Should fail validation and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk with file size limit validation error errors ', async () => {
+      const expectedError: ValidationError = {
+        href: '#uploadFile',
+        key: 'uploadFile',
+        text: 'The selected file must be smaller than 100MB'
+      };
+
+      const fileSizeInMb = 101;
+      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
+      const mockFile = {
+        originalname: 'somefile.png',
+        size: mockSizeInBytes
+      } as Partial<Express.Multer.File>;
+
+      req.file = mockFile as Express.Multer.File;
+
+      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+        error: { uploadFile: expectedError },
+        errorList: [ expectedError ],
+        previousPage: paths.reasonsForAppeal.decision
+      });
+    });
+
+    it('Should succeed render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk with errors ', async () => {
+
+      const fileSizeInMb = 10;
+      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
+      const mockFile = {
+        originalname: 'somefile.png',
+        size: mockSizeInBytes
+      } as Partial<Express.Multer.File>;
+
+      req.file = mockFile as Express.Multer.File;
+
+      const documentUploadResponse: DocumentUploadResponse = {
+        id: 'someEvidenceId',
+        url: 'someUrlToTheFile',
+        name: 'name.png'
+      };
+
+      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
+
+      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
+    });
+
+    it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {
+      req.session.appeal.caseBuilding.evidences = {
+        someEvidenceId: {
+          id: 'someEvidenceId',
+          url: 'someUrlToTheFile',
+          name: 'name.png'
+        }
+      };
+      req.query['id'] = 'someEvidenceId';
+
+      const error = new Error('an error');
+      res.redirect = sandbox.stub().throws(error);
+      await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -148,4 +240,5 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
-});
+})
+;

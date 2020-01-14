@@ -64,7 +64,7 @@ describe('Confirmation Page Controller', () => {
 
   it('getConfirmationPage should render confirmation.njk', () => {
     getConfirmationPage(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('case-building/confirmation-page.njk', {
+    expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/confirmation-page.njk', {
       date: daysToWaitUntilContact(14)
     });
   });

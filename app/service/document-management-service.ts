@@ -142,13 +142,13 @@ class DocumentManagementService {
    * Entry point to delete endpoint used to delete files from the document management service
    * @param req - the request that contains all necessary information
    * @property {string} req.idam.userDetails.id - the user id
-   * @param fileId - the target file id to be deleted
+   * @param fileLocation - the target file url to be deleted
    */
   async deleteFile(req: Request, fileLocation: string): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.id;
 
-    logger.trace(`Received call from user '${userId}' to delete file with id: '21'`, logLabel);
+    logger.trace(`Received call from user '${userId}' to delete`, logLabel);
     return this.delete(userId, headers, fileLocation);
   }
 }

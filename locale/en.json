@@ -283,8 +283,9 @@
       "required": "Enter the Home Office reference number",
       "invalid": "Enter the Home Office reference number in the correct format"
     },
-    "homeOfficeDecision": {
-      "required": "Enter the reasons you think the Home Office decision is wrong"
+    "reasonForAppeal": {
+      "required": "Enter the reasons you think the Home Office decision is wrong",
+      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     },
     "fileUpload": {
       "incorrectFormat": "The selected file must be a ",

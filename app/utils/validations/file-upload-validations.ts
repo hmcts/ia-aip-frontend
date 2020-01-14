@@ -57,5 +57,7 @@ function isBelowSizeLimitValidation(file: number): boolean {
 }
 
 export {
-  fileUploadValidation
+  fileUploadValidation,
+  isValidFormatValidation,
+  isBelowSizeLimitValidation
 };

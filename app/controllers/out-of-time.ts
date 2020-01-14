@@ -3,14 +3,14 @@ import multer from 'multer';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { textAreaValidation } from '../utils/fields-validations';
 import { getConditionalRedirectUrl } from '../utils/url-utils';
+import { textAreaValidation } from '../utils/validations/fields-validations';
 
 function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
-    const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
+    const evidence: Evidences = application.lateAppeal && application.lateAppeal.evidences || null;
     res.render('appeal-application/home-office/appeal-late.njk',{
       appealLateReason,
       evidence,
@@ -28,7 +28,7 @@ function postAppealLate(updateAppealService: UpdateAppealService) {
       const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
       const { application } = req.session.appeal;
       if (validation) {
-        const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
+        const evidence: Evidences = application.lateAppeal && application.lateAppeal.evidences || null;
         return res.render('appeal-application/home-office/appeal-late.njk', {
           appealLate: req.body['appeal-late'],
           evidence,
@@ -44,9 +44,12 @@ function postAppealLate(updateAppealService: UpdateAppealService) {
       };
 
       if (req.file) {
-        application.lateAppeal.evidence = {
-          url: req.file.originalname,
-          name: req.file.originalname
+        application.lateAppeal.evidences = {
+          someId: {
+            id: 'someId',
+            url: req.file.originalname,
+            name: req.file.originalname
+          }
         };
       }
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
@@ -63,9 +66,12 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
       const { application } = req.session.appeal;
       application.lateAppeal = {
         ...application.lateAppeal,
-        evidence: {
-          url: req.file.originalname,
-          name: req.file.originalname
+        evidences: {
+          someId: {
+            id: 'someId',
+            url: req.file.originalname,
+            name: req.file.originalname
+          }
         }
       };
     }
@@ -77,7 +83,7 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
 
 function getDeleteEvidence(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.lateAppeal.evidence = null;
+    req.session.appeal.application.lateAppeal.evidences = null;
     return res.redirect(paths.homeOffice.appealLate);
   } catch (e) {
     next(e);

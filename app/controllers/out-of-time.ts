@@ -10,8 +10,8 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
-    const evidence: Evidences = application.lateAppeal && application.lateAppeal.evidences || null;
-    res.render('appeal-application/home-office/appeal-late.njk',{
+    const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
+    res.render('appeal-application/home-office/appeal-late.njk', {
       appealLateReason,
       evidence,
       evidenceCTA: paths.homeOffice.deleteEvidence,
@@ -28,7 +28,7 @@ function postAppealLate(updateAppealService: UpdateAppealService) {
       const validation = textAreaValidation(req.body['appeal-late'], 'appeal-late');
       const { application } = req.session.appeal;
       if (validation) {
-        const evidence: Evidences = application.lateAppeal && application.lateAppeal.evidences || null;
+        const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
         return res.render('appeal-application/home-office/appeal-late.njk', {
           appealLate: req.body['appeal-late'],
           evidence,
@@ -44,12 +44,9 @@ function postAppealLate(updateAppealService: UpdateAppealService) {
       };
 
       if (req.file) {
-        application.lateAppeal.evidences = {
-          someId: {
-            id: 'someId',
-            url: req.file.originalname,
-            name: req.file.originalname
-          }
+        application.lateAppeal.evidence = {
+          url: req.file.originalname,
+          name: req.file.originalname
         };
       }
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
@@ -66,12 +63,9 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
       const { application } = req.session.appeal;
       application.lateAppeal = {
         ...application.lateAppeal,
-        evidences: {
-          someId: {
-            id: 'someId',
-            url: req.file.originalname,
-            name: req.file.originalname
-          }
+        evidence: {
+          url: '#',
+          name: req.file.originalname
         }
       };
     }
@@ -83,7 +77,7 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
 
 function getDeleteEvidence(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.appeal.application.lateAppeal.evidences = null;
+    req.session.appeal.application.lateAppeal.evidence = null;
     return res.redirect(paths.homeOffice.appealLate);
   } catch (e) {
     next(e);

@@ -1,14 +1,19 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import multer from 'multer';
+import * as path from 'path';
+import { handleFileUploadErrors, SUPPORTED_FORMATS } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import {
+  createStructuredError,
   reasonForAppealDecisionValidation,
   supportingEvidenceRequiredValidation
 } from '../../utils/validations/fields-validations';
-import { fileUploadValidation } from '../../utils/validations/file-upload-validations';
 import { daysToWaitUntilContact } from '../appeal-application/confirmation-page';
+
+const config = require('config');
+const multer = require('multer');
+const maxFileSizeInMb: number = config.get('evidenceUpload.maxFileSizeInMb');
 
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
@@ -90,17 +95,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
-        const validation = fileUploadValidation(req.file);
-        if (validation) {
-          return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
-            error: validation,
-            errorList: Object.values(validation),
-            previousPage: paths.reasonsForAppeal.decision
-          });
-        }
-
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-
         const { caseBuilding } = req.session.appeal;
         caseBuilding.evidences = {
           ...caseBuilding.evidences,
@@ -111,6 +106,13 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
           }
         };
         return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
+      } else if (res.locals.multerError) {
+        const validationError = { uploadFile: createStructuredError('uploadFile', res.locals.multerError) };
+        return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+          error: validationError,
+          errorList: Object.values(validationError),
+          previousPage: paths.reasonsForAppeal.decision
+        });
       }
     } catch (e) {
       next(e);
@@ -166,16 +168,17 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-let storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './file-uploads');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+const upload = multer({
+  limits: { fileSize: (maxFileSizeInMb * 1024 * 1024) },
+  fileFilter: (req, file, cb) => {
+    const fileTypeError = 'LIMIT_FILE_TYPE';
+    if (SUPPORTED_FORMATS.includes(path.extname(file.originalname.toLowerCase()))) {
+      cb(null, true);
+    } else {
+      cb(new multer.MulterError(fileTypeError), false);
+    }
   }
-});
-
-const upload = multer({ storage: storage }).single('file-upload');
+}).single('file-upload');
 
 function setupReasonsForAppealController(deps?: any): Router {
   const router = Router();
@@ -184,7 +187,7 @@ function setupReasonsForAppealController(deps?: any): Router {
   router.get(paths.reasonsForAppeal.supportingEvidence, getSupportingEvidencePage);
   router.post(paths.reasonsForAppeal.supportingEvidence, postSupportingEvidencePage);
   router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
-  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, upload, postSupportingEvidenceUploadFile(deps.documentManagementService));
+  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, upload, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
   router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
   router.get(paths.reasonsForAppeal.checkAndSend, getCheckAndSendPage);
   router.post(paths.reasonsForAppeal.checkAndSend, postCheckAndSendPage);

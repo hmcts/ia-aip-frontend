@@ -288,8 +288,9 @@
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     },
     "fileUpload": {
-      "incorrectFormat": "The selected file must be a ",
-      "fileTooLarge": "The selected file must be smaller than "
+      "fileTooLarge": "The selected file must be smaller than",
+      "incorrectFormat": "The selected file must be a",
+      "fileCannotBeUploaded": "The file cannot be uploaded"
     }
 
   },

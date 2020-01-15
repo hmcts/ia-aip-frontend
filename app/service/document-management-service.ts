@@ -45,23 +45,9 @@ enum Classification {
 }
 
 class UploadData {
-  file: string;
+  file: Express.Multer.File;
   role: string;
   classification: Classification;
-}
-
-/**
- * Deletes the temporary upload file created by multer
- * @param path the path to the file
- */
-function cleanTempFile(path: string) {
-  logger.trace(`Attempting to deleted temporary upload file:`, logLabel);
-  fs.unlink(path, (err) => {
-    if (err) {
-      return logger.trace(`There was an error while deleting temporary upload file: '${err}'`, logLabel);
-    }
-    logger.trace(`Temporary upload file deleted successfully`, logLabel);
-  });
 }
 
 class DocumentManagementService {
@@ -90,7 +76,13 @@ class DocumentManagementService {
     );
 
     options.formData = {
-      files: fs.createReadStream(uploadData.file),
+      files: [{
+        value: uploadData.file.buffer,
+        options: {
+          filename: `${Date.now()}-${uploadData.file.originalname}`,
+          contentType: uploadData.file.mimetype
+        }
+      }],
       classification: uploadData.classification,
       role: uploadData.role
     };
@@ -121,13 +113,12 @@ class DocumentManagementService {
     logger.trace(`Received call to upload file for user with id: '${userId}'`, logLabel);
 
     const uploadData = {
-      file: req.file.path,
+      file: req.file,
       role: 'citizen',
       classification: Classification.restricted
     };
     return this.upload(userId, headers, uploadData)
       .then(response => {
-        cleanTempFile(req.file.path);
         const res: DocumentManagementStoreResponse = JSON.parse(response);
         const docName = res._embedded.documents[0].originalDocumentName;
         return {

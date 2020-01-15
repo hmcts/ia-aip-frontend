@@ -1,6 +1,7 @@
 import { OSPlacesClient } from '@hmcts/os-places-client';
 import config from 'config';
 import * as express from 'express';
+import requestPromise from 'request-promise-native';
 import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
 import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
 import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
@@ -12,8 +13,8 @@ import { setupReasonsForAppealController } from './controllers/case-building/rea
 import { setupHealthController } from './controllers/health';
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
+import { setupOutOfTimeController } from './controllers/out-of-time';
 import { setupStartController } from './controllers/startController';
-
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
@@ -25,7 +26,7 @@ import UpdateAppealService from './service/update-appeal-service';
 export const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
 export const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
-const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'));
+const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 
 const router = express.Router();
 
@@ -41,6 +42,8 @@ const contactDetailsController = setupContactDetailsController(updateAppealServi
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
+const outOfTimeController = setupOutOfTimeController(updateAppealService);
+
 // not protected by idam
 router.use(healthController);
 router.use(startController);
@@ -58,5 +61,6 @@ router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);
 router.use(reasonsForAppealController);
+router.use(outOfTimeController);
 
 export { router };

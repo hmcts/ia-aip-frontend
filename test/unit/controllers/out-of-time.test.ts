@@ -88,11 +88,8 @@ describe('Out of time controller', () => {
       mimetype: 'type'
     };
     const fileObject = {
-      'someId': {
-        id: 'someId',
-        name: file.originalname,
-        url: file.originalname
-      }
+      name: file.originalname,
+      url: file.originalname
     };
 
     it('should validate and redirect to Task List', async () => {
@@ -110,7 +107,7 @@ describe('Out of time controller', () => {
       await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
-      expect(req.session.appeal.application.lateAppeal.evidences).to.be.deep.equal(fileObject);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(fileObject);
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
@@ -139,15 +136,12 @@ describe('Out of time controller', () => {
         mimetype: 'type'
       };
       const fileObject = {
-        'someId': {
-          id: 'someId',
-          name: file.originalname,
-          url: file.originalname
-        }
+        name: file.originalname,
+        url: '#'
       };
       req.file = file as Express.Multer.File;
       postUploadEvidence(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateAppeal.evidences).to.be.deep.equal(fileObject);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(fileObject);
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
 
@@ -166,17 +160,16 @@ describe('Out of time controller', () => {
         mimetype: 'type'
       };
       const fileObject = {
-        id: 'someId',
-        url: file.originalname,
+        url: '#',
         name: file.originalname
       };
 
       req.session.appeal.application.lateAppeal = {
-        evidences: { 'someId': fileObject }
+        evidence: fileObject
       };
 
       getDeleteEvidence(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateAppeal.evidences).to.be.equal(null);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.equal(null);
     });
 
     it('should catch exception and call next with the error', () => {

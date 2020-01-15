@@ -68,9 +68,9 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   ];
   if (appealApplication.isAppealLate) {
     const lateAppealValue = [ appealApplication.lateAppeal.reason ];
-    if (appealApplication.lateAppeal.evidences) {
+    if (appealApplication.lateAppeal.evidence) {
       const evidence = {
-        evidence: appealApplication.lateAppeal.evidences.name,
+        evidence: appealApplication.lateAppeal.evidence.name,
         evidenceUrl: '#'
       };
       lateAppealValue.push(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence);

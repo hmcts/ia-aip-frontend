@@ -59,5 +59,8 @@
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"
   },
-  "showTests": false
+  "showTests": false,
+  "evidenceUpload": {
+    "maxFileSizeInMb": 100
+  }
 }

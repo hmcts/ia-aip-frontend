@@ -25,7 +25,7 @@ interface Evidences {
 }
 
 interface Evidence {
-  id: string;
+  id?: string;
   url: string;
   name: string;
 }
@@ -55,7 +55,7 @@ interface AppealApplication {
   isAppealLate: boolean;
   lateAppeal?: {
     reason?: string;
-    evidences?: Evidences;
+    evidence?: Evidence;
   };
   personalDetails: {
     givenNames: string;

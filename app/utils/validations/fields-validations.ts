@@ -6,6 +6,19 @@ import { mobilePhoneRegex, postcodeRegex } from '../regular-expressions';
 const MobilePhoneNumberExtension = require('../../../extensions/joi/mobile-number');
 
 /**
+ * Creates a structured error  that follows the standard pattern to be rendered in views
+ * @param id the key of the error this is used to build the href and to identify the error.
+ * @param errorMsg the error message to display
+ */
+function createStructuredError(id: string, errorMsg: string) {
+  return {
+    key: id,
+    text: errorMsg,
+    href: `#${id}`
+  };
+}
+
+/**
  * Uses Joi schema validation to validate and object and returns:
  * an object containing list of errors if errors were found
  * or null if no errors where found
@@ -302,6 +315,7 @@ function supportingEvidenceRequiredValidation(obj: object): null | ValidationErr
 }
 
 export {
+  createStructuredError,
   contactDetailsValidation,
   homeOfficeNumberValidation,
   dateValidation,

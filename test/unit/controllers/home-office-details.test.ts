@@ -1,20 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import {
-  getAppealLate,
   getDateLetterSent,
   getHomeOfficeDetails,
-  postAppealLate,
   postDateLetterSent,
-  postDeleteEvidence,
   postHomeOfficeDetails,
-  postUploadEvidence,
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/appeal-application/home-office-details';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
-import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
@@ -76,8 +71,6 @@ describe('Home Office Details Controller', function () {
       expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.details);
       expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.letterSent);
       expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.letterSent);
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.appealLate);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.appealLate);
     });
   });
 
@@ -111,6 +104,15 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
     });
 
+    it('when save for later should validate and redirect task-list.njk', async () => {
+      req.body['homeOfficeRefNumber'] = 'A1234567';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
 
@@ -142,6 +144,57 @@ describe('Home Office Details Controller', function () {
           homeOfficeRefNumber: 'notValid',
           previousPage: paths.taskList
         });
+    });
+
+    it('when save for later should fail validation and render home-office/details.njk with error', async () => {
+      req.body['homeOfficeRefNumber'] = 'notValid';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const error = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'Enter the Home Office reference number in the correct format'
+      };
+      expect(res.render).to.have.been.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: error
+          },
+          errorList: [ error ],
+          homeOfficeRefNumber: 'notValid',
+          previousPage: paths.taskList
+        });
+    });
+
+    it('when save and continue should fail validation due to blank home office reference and render home-office/details.njk with error', async () => {
+      req.body['homeOfficeRefNumber'] = '';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const error = {
+        href: '#homeOfficeRefNumber',
+        key: 'homeOfficeRefNumber',
+        text: 'Enter the Home Office reference number'
+      };
+      expect(res.render).to.have.been.calledWith(
+        'appeal-application/home-office/details.njk',
+        {
+          errors: {
+            homeOfficeRefNumber: error
+          },
+          errorList: [ error ],
+          homeOfficeRefNumber: '',
+          previousPage: paths.taskList
+        });
+    });
+
+    it('should redirect to path list when save for later and home office ref numnber is blank', async () => {
+      req.body['homeOfficeRefNumber'] = '';
+      req.body['saveForLater'] = 'saveForLater';
+      await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
     it('should catch exception and call next with the error', async () => {
@@ -223,7 +276,34 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('when save for later should validate and redirect to task list page', async () => {
+      const date = moment().subtract(15, 'd');
+      req.body['day'] = date.format('DD');
+      req.body['month'] = date.format('MM');
+      req.body['year'] = date.format('YYYY');
+      req.body.saveForLater = 'saveForLater';
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      const { dateLetterSent } = req.session.appeal.application;
+      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
+      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
+      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('should redirect to task list when save for later and blank date', async () => {
+      const date = moment().subtract(15, 'd');
+      req.body['day'] = '';
+      req.body['month'] = '';
+      req.body['year'] = '';
+      req.body.saveForLater = 'saveForLater';
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
     it('when in edit mode should validate and redirect to Appeal Late page if appeal is later than 14 days and isEdit flag is not updated', async () => {
@@ -240,8 +320,8 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
-      expect(req.session.appeal.application.isEdit).to.have.eq(true);
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
 
@@ -285,136 +365,6 @@ describe('Home Office Details Controller', function () {
       res.render = sandbox.stub().throws(error);
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
-  describe('getAppealLate', () => {
-    it('should render home-office-letter-sent.njk', () => {
-      getAppealLate(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
-    });
-
-    it('should catch exception and call next with the error', () => {
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      getAppealLate(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
-  describe('postAppealLate', () => {
-    it('should fail validation and render appeal-application/home-office/appeal-late.njk with errors', async () => {
-      req.body['appeal-late'] = '';
-      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
-    });
-
-    it('should validate and redirect to Task List', async () => {
-      req.body['appeal-late'] = 'My explanation why am late';
-      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
-    });
-
-    it('when in edit mode should validate and redirect to CYA and reset isEdit flag', async () => {
-      req.session.appeal.application.isEdit = true;
-      req.body['appeal-late'] = 'My explanation why am late';
-      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
-
-    });
-
-    it('should catch exception and call next with the error', async () => {
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      await postAppealLate(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
-  describe('postUploadEvidence', () => {
-    it('should upload file and render home-office-appeal-late.njk', () => {
-      const description: string = 'an evidence description';
-      const file = {
-        originalname: 'file.png',
-        mimetype: 'type'
-      };
-      const fileList = {
-        [file.originalname]: {
-          id: 'someId',
-          name: file.originalname,
-          url: file.originalname
-        }
-      };
-      req.file = file as Express.Multer.File;
-      req.body['file-description'] = description;
-      postUploadEvidence(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateAppeal.evidences).to.be.deep.equal(fileList);
-      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.appealLate);
-    });
-
-    it('should fail validation and render appeal-application/home-office/appeal-late.njk with errors', () => {
-      const file = {
-        originalname: 'file.png',
-        mimetype: 'type'
-      };
-
-      const error: ValidationError = {
-        key: 'file-description',
-        href: '#file-description',
-        text: i18n.validationErrors.required
-      };
-
-      req.file = file as Express.Multer.File;
-
-      postUploadEvidence(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk', {
-        appealLate: null,
-        evidences: [],
-        error: { 'file-description': error },
-        errorList: [ error ],
-        previousPage: paths.homeOffice.letterSent
-      });
-    });
-
-    it('should catch exception and call next with the error', () => {
-      const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
-      postUploadEvidence(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
-  describe('postDeleteEvidence', () => {
-    it('should delete file', () => {
-      const file = {
-        originalname: 'file.png',
-        mimetype: 'type'
-      };
-      const fileList = {
-        [file.originalname]: {
-          id: 'id',
-          url: file.originalname,
-          name: file.originalname
-        }
-      };
-
-      req.session.appeal.application.lateAppeal = {
-        evidences: fileList
-      };
-
-      req.body.delete = { 'file.png': 'delete' };
-      postDeleteEvidence(req as Request, res as Response, next);
-      expect(req.session.appeal.application.lateAppeal.evidences).to.be.deep.equal({});
-    });
-
-    it('should catch exception and call next with the error', () => {
-      const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
-      postDeleteEvidence(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

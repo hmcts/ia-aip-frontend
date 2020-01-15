@@ -49,6 +49,7 @@ describe('Supporting Evidence Upload Controller', () => {
     documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() };
 
     res = {
+      locals: sandbox.spy(),
       render: sandbox.stub(),
       send: sandbox.stub(),
       redirect: sinon.spy()
@@ -120,21 +121,14 @@ describe('Supporting Evidence Upload Controller', () => {
 
   describe('postSupportingEvidenceUploadFile', () => {
 
-    it('Should fail validation and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk with format validation error errors ', async () => {
+    it('Should display validation error LIMIT_FILE_TYPE and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
       const expectedError: ValidationError = {
         href: '#uploadFile',
         key: 'uploadFile',
         text: 'The selected file must be a .jpg, .jpeg, .bmp, .tif, .tiff, .png, .pdf, .txt, .doc, .dot, .docx, .dotx, .xls, .xlt, .xla, .xlsx, .xltx, .xlsb, .ppt, .pot, .pps, .ppa, .pptx, .potx, .ppsx, .rtf, .csv'
       };
 
-      const fileSizeInMb = 1;
-      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
-      const mockFile = {
-        originalname: 'somefile.dat',
-        size: mockSizeInBytes
-      } as Partial<Express.Multer.File>;
-
-      req.file = mockFile as Express.Multer.File;
+      res.locals.multerError = expectedError.text;
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
@@ -144,21 +138,14 @@ describe('Supporting Evidence Upload Controller', () => {
       });
     });
 
-    it('Should fail validation and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk with file size limit validation error errors ', async () => {
+    it('Should display validation error LIMIT_FILE_SIZE and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
       const expectedError: ValidationError = {
         href: '#uploadFile',
         key: 'uploadFile',
         text: 'The selected file must be smaller than 100MB'
       };
 
-      const fileSizeInMb = 101;
-      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
-      const mockFile = {
-        originalname: 'somefile.png',
-        size: mockSizeInBytes
-      } as Partial<Express.Multer.File>;
-
-      req.file = mockFile as Express.Multer.File;
+      res.locals.multerError = expectedError.text;
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {

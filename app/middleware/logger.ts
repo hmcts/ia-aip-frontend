@@ -12,7 +12,8 @@ function logRequestMiddleware(req: Request, res: Response, next: NextFunction) {
 
 function logErrorMiddleware(err: any, req: Request, res: Response, next: NextFunction) {
   const logger: Logger = req.app.locals.logger;
-  logger.exception(`[${req.method}] ${req.originalUrl}. Error ${err.message}`, errorMiddlewareLabel);
+  const stack = err.stack ? `\n${err.stack}` : '';
+  logger.exception(`[${req.method}] ${req.originalUrl}. Error ${err.message}${stack}`, errorMiddlewareLabel);
   next(err);
 }
 

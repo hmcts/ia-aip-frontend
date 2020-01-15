@@ -65,8 +65,10 @@ export default class UpdateAppealService {
           ...contactDetails
         },
         dateLetterSent,
-        isAppealLate: null,
-        lateAppeal: null,
+        isAppealLate: caseData.submissionOutOfTime ? this.yesNoToBool(caseData.submissionOutOfTime) : undefined,
+        lateAppeal: {
+          reason: caseData.applicationOutOfTimeExplanation
+        },
         personalDetails: {
           givenNames: caseData.appellantGivenNames,
           familyName: caseData.appellantFamilyName,
@@ -101,6 +103,11 @@ export default class UpdateAppealService {
     return null;
   }
 
+  yesNoToBool(YesOrNo: string): boolean {
+    if (YesOrNo === 'Yes') return true;
+    else if (YesOrNo === 'No') return false;
+  }
+
   async submitEvent(event, req: Request) {
     const securityHeaders: SecurityHeaders = await this.getSecurityHeaders(req);
 
@@ -124,7 +131,13 @@ export default class UpdateAppealService {
     }
     if (application.dateLetterSent && application.dateLetterSent.year) {
       caseData.homeOfficeDecisionDate = this.toIsoDate(application.dateLetterSent);
+      caseData.submissionOutOfTime = application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
     }
+
+    if (_.has(application.lateAppeal, 'reason')) {
+      caseData.applicationOutOfTimeExplanation = application.lateAppeal.reason;
+    }
+
     if (application.personalDetails && application.personalDetails.givenNames) {
       caseData.appellantGivenNames = application.personalDetails.givenNames;
     }

@@ -88,14 +88,14 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         month,
         year
       };
-
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-
       if (diffInDays <= 14) {
         req.session.appeal.application.isAppealLate = false;
       } else {
         req.session.appeal.application.isAppealLate = true;
       }
+
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+
       return getConditionalRedirectUrl(req, res, paths.taskList);
     } catch (e) {
       next(e);

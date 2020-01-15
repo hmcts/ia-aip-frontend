@@ -10,6 +10,8 @@ interface CaseData {
   appellantAddress: CCDAddress;
   appellantHasFixedAddress: 'Yes' | 'No';
   subscriptions: SubscriptionCollection[];
+  submissionOutOfTime: 'Yes' | 'No';
+  applicationOutOfTimeExplanation: string;
 }
 
 interface Nationality {

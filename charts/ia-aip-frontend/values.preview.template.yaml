@@ -5,6 +5,8 @@ idam-pr:
     IAC:
     - https://${SERVICE_FQDN}/redirectUrl
 nodejs:
+  image: ${IMAGE_NAME}
+  ingressHost: ${SERVICE_FQDN}
   environment:
     NODE_ENV: preview
     HTTP_PROTOCOL: http

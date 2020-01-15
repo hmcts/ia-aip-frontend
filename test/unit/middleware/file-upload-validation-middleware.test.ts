@@ -17,7 +17,7 @@ describe('#handleFileUploadErrors middleware', () => {
     next = sandbox.stub();
   });
 
-  it('should catch multer LIMIT_FILE_SIZE error', () => {
+  it('should catch multer LIMIT_FILE_SIZE error.', () => {
     handleFileUploadErrors(new multer.MulterError('LIMIT_FILE_SIZE'), req, res, next);
     expect(res.locals.multerError).to.equal(`The selected file must be smaller than 100MB`);
     expect(next).to.have.been.calledOnce.calledWith();

@@ -24,5 +24,17 @@ Scenario: Explain the reason why my appeal is late
   Then I should see late appeal page
 
   When I enter "A reason for being late" as the reason for being late and click Save and continue
-  And I click on the check and send your appeal link
-  Then I should be taken to the check-and-send page
+  And I click "Save and continue" button
+  Then I should see error summary
+
+  When I choose a file that is "INVALID_TOO_BIG"
+  And I click "Save and continue" button
+  Then I should see error summary
+
+  When I choose a file that is "INVALID_FORMAT"
+  And I click "Save and continue" button
+  Then I should see error summary
+
+  When I choose a file that is "VALID"
+  And I click "Save and continue" button
+  Then I should see the "CHECK_AND_SEND" page

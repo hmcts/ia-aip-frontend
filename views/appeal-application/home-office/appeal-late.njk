@@ -3,14 +3,12 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
-{% from "components/evidence-list.njk" import evidenceList with context %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% block content %}
   {% if errorList %}
     {{ govukErrorSummary({
-      titleText: i18n.errorSummary.titleText,
-      descriptionText: i18n.errorSummary.descriptionText,
+      titleText: i18n.validationErrors.errorSummary,
       errorList: errorList
     }) }}
   {% endif %}
@@ -32,45 +30,17 @@
       } if error["appeal-late"]
     }) }}
 
-    {% if evidences | length < 1 %}
-      <h2 class="govuk-heading-m">{{ i18n.pages.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
-      <p>{{ i18n.pages.homeOfficeAppealLate.provideEvidenceDescription }}</p>
-      <div class="govuk-inset-text">
-        {{ govukFileUpload({
-          id: "file-upload",
-          name: "file-upload",
-          label: {
-            text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
-          }
-        }) }}
-
-        {{ govukButton({
-          text: i18n.common.buttons.uploadFile,
-          name: 'uploadFile',
-          classes: "govuk-button--secondary",
-          attributes: {
-            formaction: '/home-office/upload-evidence'
-          }
-        }) }}
-      </div>
-    {% endif %}
-
-    {% if evidences | length > 0 %}
-      {{ evidenceList(evidences, evidenceCTA) }}
-    {% endif %}
-
-    {% if evidence %}
-      <div class="evidence">
-        <h4 class="govuk-heading-s">{{ i18n.pages.homeOfficeAppealLate.uploadedFileTitle }}</h4>
-        <hr class="govuk-section-break govuk-section-break--visible">
-        <ul class="govuk-list">
-          <li class="list__item">
-            <span>{{ evidence.name }}</span>
-            <a href="/home-office/delete-evidence">{{ i18n.common.links.delete }}</a>
-          </li>
-        </ul>
-      </div>
-    {% endif %}
+    <h2 class="govuk-heading-m">{{ i18n.pages.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
+    <p>{{ i18n.pages.homeOfficeAppealLate.provideEvidenceDescription }}</p>
+    <div class="govuk-inset-text">
+      {{ govukFileUpload({
+        id: "file-upload",
+        name: "file-upload",
+        label: {
+          text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
+        }
+      }) }}
+    </div>
 
     {{ govukButton({
       text: i18n.common.buttons.saveAndContinue,

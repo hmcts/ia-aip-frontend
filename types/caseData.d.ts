@@ -1,3 +1,9 @@
+interface SupportingDocument {
+  document_url: string;
+  document_filename: string;
+  document_binary_url: string;
+}
+
 interface CaseData {
   journeyType: string;
   appealType: string | string[];
@@ -12,6 +18,7 @@ interface CaseData {
   subscriptions: SubscriptionCollection[];
   submissionOutOfTime: 'Yes' | 'No';
   applicationOutOfTimeExplanation: string;
+  applicationOutOfTimeDocument: SupportingDocument;
 }
 
 interface Nationality {

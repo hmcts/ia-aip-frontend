@@ -1,9 +1,11 @@
-const multer = require('multer');
 import { NextFunction, Request, Response } from 'express';
+import * as path from 'path';
 import i18n from '../../locale/en.json';
 
+const multer = require('multer');
 const config = require('config');
 const maxFileSizeInMb: number = config.get('evidenceUpload.maxFileSizeInMb');
+
 const SUPPORTED_FORMATS = [
   '.jpg', '.jpeg', '.bmp', '.tif', '.tiff', '.png',
   '.pdf', '.txt', '.doc', '.dot', '.docx', '.dotx',
@@ -11,6 +13,21 @@ const SUPPORTED_FORMATS = [
   '.ppt', '.pot', '.pps', '.ppa', '.pptx', '.potx',
   '.ppsx', '.rtf', '.csv'
 ];
+
+/**
+ * Multer upload configuration that includes limits for file type formats and limits for the size
+ */
+const uploadConfiguration = multer({
+  limits: { fileSize: (maxFileSizeInMb * 1024 * 1024) },
+  fileFilter: (req, file, cb) => {
+    const fileTypeError = 'LIMIT_FILE_TYPE';
+    if (SUPPORTED_FORMATS.includes(path.extname(file.originalname.toLowerCase()))) {
+      cb(null, true);
+    } else {
+      cb(new multer.MulterError(fileTypeError), false);
+    }
+  }
+}).single('file-upload');
 
 function handleFileUploadErrors(err: any, req: Request, res: Response, next: NextFunction) {
   let error: string;
@@ -31,6 +48,6 @@ function handleFileUploadErrors(err: any, req: Request, res: Response, next: Nex
 }
 
 export {
-  handleFileUploadErrors,
-  SUPPORTED_FORMATS
+  uploadConfiguration,
+  handleFileUploadErrors
 };

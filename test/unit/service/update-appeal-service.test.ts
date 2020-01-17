@@ -44,7 +44,16 @@ describe('update-appeal-service', () => {
       },
       session: {}
     } as any;
-    ccdServiceMock.expects('loadOrCreateCase')
+
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
+  describe('loadAppeal @only', () => {
+    it('set case details', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
       .withArgs(userId, { userToken, serviceToken })
       .resolves({
         id: caseId,
@@ -57,14 +66,6 @@ describe('update-appeal-service', () => {
           appellantDateOfBirth: '1900-10-11'
         }
       });
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
-  describe('loadAppeal', () => {
-    it('set case details', async () => {
       await updateAppealService.loadAppeal(req);
       expect(req.session.ccdCaseId).eq(caseId);
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('homeOfficeReferenceNumber');
@@ -76,6 +77,53 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.personalDetails.dob.year).eq('1900');
       expect(req.session.appeal.application.personalDetails.dob.month).eq('10');
       expect(req.session.appeal.application.personalDetails.dob.day).eq('11');
+      expect(req.session.appeal.application.isAppealLate).eq(undefined);
+    });
+
+    it('set case details when appeal submission is NOT out of time', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
+      .withArgs(userId, { userToken, serviceToken })
+      .resolves({
+        id: caseId,
+        case_data: {
+          appealType: 'appealType',
+          homeOfficeReferenceNumber: 'homeOfficeReferenceNumber',
+          appellantGivenNames: 'appellantGivenNames',
+          appellantFamilyName: 'appellantFamilyName',
+          homeOfficeDecisionDate: '2019-01-02',
+          appellantDateOfBirth: '1900-10-11',
+          submissionOutOfTime: 'No'
+        }
+      });
+      await updateAppealService.loadAppeal(req);
+      expect(req.session.appeal.application.isAppealLate).eq(false);
+      expect(req.session.appeal.application.lateAppeal).to.be.undefined;
+    });
+
+    it('set case details when appeal submission is OUT of time', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
+      .withArgs(userId, { userToken, serviceToken })
+      .resolves({
+        id: caseId,
+        case_data: {
+          appealType: 'appealType',
+          homeOfficeReferenceNumber: 'homeOfficeReferenceNumber',
+          appellantGivenNames: 'appellantGivenNames',
+          appellantFamilyName: 'appellantFamilyName',
+          homeOfficeDecisionDate: '2019-01-02',
+          appellantDateOfBirth: '1900-10-11',
+          submissionOutOfTime: 'Yes',
+          applicationOutOfTimeExplanation: 'A reason',
+          applicationOutOfTimeDocument: {
+            document_filename: 'somefile.png',
+            document_url: '#',
+            document_binary_url: '#/binary'
+          }
+        }
+      });
+      await updateAppealService.loadAppeal(req);
+      expect(req.session.appeal.application.isAppealLate).eq(true);
+      expect(req.session.appeal.application.lateAppeal.reason).eq('A reason');
     });
   });
 
@@ -286,7 +334,7 @@ describe('update-appeal-service', () => {
   });
 
   describe('submitEvent', () => {
-    let expectedCaseData: CaseData;
+    let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;
     let idamService2: IdamService;
     let s2sService2: Partial<S2SService>;
@@ -315,7 +363,12 @@ describe('update-appeal-service', () => {
               },
               isAppealLate: true,
               lateAppeal: {
-                reason: 'a reason'
+                reason: 'a reason',
+                evidence: {
+                  id: '0000-somefile.png',
+                  name: 'somefile.png',
+                  url: '#'
+                }
               },
               personalDetails: {
                 givenNames: 'givenNames',
@@ -363,6 +416,11 @@ describe('update-appeal-service', () => {
         homeOfficeDecisionDate: '2019-12-11',
         submissionOutOfTime: 'Yes',
         applicationOutOfTimeExplanation: 'a reason',
+        applicationOutOfTimeDocument: {
+          document_filename: '0000-somefile.png',
+          document_url: '#',
+          document_binary_url: '#/binary'
+        },
         appellantGivenNames: 'givenNames',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1980-01-02',
@@ -374,7 +432,6 @@ describe('update-appeal-service', () => {
           PostCode: 'W1W 7RT',
           Country: 'United Kingdom'
         },
-        appellantHasFixedAddress: 'Yes',
         appellantNationalities: [
           {
             value: {

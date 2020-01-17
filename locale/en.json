@@ -7,6 +7,7 @@
   "common": {
     "buttons": {
       "saveAndContinue": "Save and continue",
+      "continue": "Continue",
       "saveForLater": "Save for later",
       "uploadFile": "Upload file",
       "send": "Send"
@@ -274,6 +275,9 @@
     },
     "homeOfficeDecision": {
       "required": "Enter the reasons you think the Home Office decision is wrong"
+    },
+    "eligibility": {
+      "selectYesOrNo": "Select either yes or no"
     }
 
   },
@@ -316,5 +320,37 @@
       "title": "Revocation of Protection Status (Your protection status was taken away)",
       "examples": "Your protection status might have been taken away if it is believed you no longer need it, you didn’t tell the truth in your claim or you have committed a serious crime."
     }
-  }
+  },
+  "eligibility": [
+    {
+      "question": "Are you at least 18 years old?",
+      "eligibleAnswer": "yes",
+      "errorMessage": "Select yes if you are at least 18 years old"
+    },
+    {
+      "question": "Are you currently in the UK?",
+      "eligibleAnswer": "yes",
+      "errorMessage": "Select yes if you are currently in the UK"
+    },
+    {
+      "question": "Are you currently in detention?",
+      "eligibleAnswer": "no",
+      "errorMessage": "Select yes if you are currently in detention"
+    },
+    {
+      "question": "Are you currently a citizen of a country?",
+      "eligibleAnswer": "yes",
+      "errorMessage": "Select yes if you are currently a citizen of a country"
+    },
+    {
+      "question": "Is anyone else in your family appealing their own Home Office decision?",
+      "eligibleAnswer": "no",
+      "errorMessage": "Select yes if anyone in your immediate family is appealing their own Home Office decision"
+    },
+    {
+      "question": "Are you appealing an EEA decision?",
+      "eligibleAnswer": "no",
+      "errorMessage": "Select yes if you are appealing a European Economic Area (EEA) decision"
+    }
+  ]
 }

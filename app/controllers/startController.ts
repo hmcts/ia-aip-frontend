@@ -3,6 +3,7 @@ import { paths } from '../paths';
 
 function getStart(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.eligibility = {};
     res.render('start.njk');
   } catch (e) {
     next(e);

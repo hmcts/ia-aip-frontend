@@ -270,6 +270,13 @@ function homeOfficeDecisionValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({ 'any.required': errorMessage })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 export {
   contactDetailsValidation,
   homeOfficeNumberValidation,
@@ -286,5 +293,6 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
-  homeOfficeDecisionValidation
+  homeOfficeDecisionValidation,
+  yesOrNoRequiredValidation
 };

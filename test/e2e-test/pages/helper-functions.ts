@@ -4,6 +4,7 @@ const idamApiUrl = require('config').get('idam.apiUrl');
 const { I } = inject();
 
 async function createUser() {
+
   const randomNumber = parseInt(Math.random() * 10000000 + '', 10);
   const email = `ia_citizen${randomNumber}@hmcts.net`;
   const password = 'Apassword123';
@@ -38,10 +39,11 @@ async function createUser() {
 }
 
 async function signInHelper() {
-  if (process.env.NODE_ENV !== 'development') {
+  const environment: string = process.env.NODE_ENV;
+  if (environment !== 'development') {
     const userDetails = await createUser();
     I.fillField('#username', userDetails.email);
-    I.fillField('#password',userDetails.password);
+    I.fillField('#password', userDetails.password);
   }
   I.click('.button');
 }

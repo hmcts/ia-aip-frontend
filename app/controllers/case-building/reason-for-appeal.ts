@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as path from 'path';
+import i18n from '../../../locale/en.json';
 import { handleFileUploadErrors, SUPPORTED_FORMATS } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
@@ -106,8 +107,12 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
           }
         };
         return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
-      } else if (res.locals.multerError) {
-        const validationError = { uploadFile: createStructuredError('uploadFile', res.locals.multerError) };
+      } else {
+        let validationError;
+        validationError = res.locals.multerError
+          ? { uploadFile: createStructuredError('uploadFile', res.locals.multerError) }
+          : { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload.noFileSelected) };
+
         return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
           error: validationError,
           errorList: Object.values(validationError),

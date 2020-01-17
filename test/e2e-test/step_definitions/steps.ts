@@ -2,7 +2,8 @@ const { checkAndSend } = require('../pages/check-and-send/check-and-send');
 const { typeOfAppeal } = require('../pages/type-of-appeal/type-of-appeal');
 const { outOfTimeAppeal } = require('../pages/out-of-time-appeal/out-of-time');
 const { signIn } = require('../pages/sign-in');
-const { common } = require('../pages/common');
+const { common } = require('../pages/common/common');
+const { fileUploadCommon } = require('../pages/common/file-upload-common');
 const { homeOfficeReferenceNumber } = require('../pages/home-office-details/home-office-reference-number');
 const { homeOfficeLetterSent } = require('../pages/home-office-details/home-office-letter-sent');
 const { taskList } = require('../pages/task-list');
@@ -18,6 +19,7 @@ const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appe
 const { I } = inject();
 
 common(I);
+fileUploadCommon(I);
 signIn(I);
 
 taskList(I);

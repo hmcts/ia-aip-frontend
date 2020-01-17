@@ -121,6 +121,21 @@ describe('Supporting Evidence Upload Controller', () => {
 
   describe('postSupportingEvidenceUploadFile', () => {
 
+    it('Should display validation error when no file has been selected and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
+      const expectedError: ValidationError = {
+        href: '#uploadFile',
+        key: 'uploadFile',
+        text: 'Select a file'
+      };
+
+      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+        error: { uploadFile: expectedError },
+        errorList: [ expectedError ],
+        previousPage: paths.reasonsForAppeal.decision
+      });
+    });
+
     it('Should display validation error LIMIT_FILE_TYPE and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
       const expectedError: ValidationError = {
         href: '#uploadFile',

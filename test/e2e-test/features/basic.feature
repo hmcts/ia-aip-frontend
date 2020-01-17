@@ -18,7 +18,7 @@ Feature: Business rules
     When I click Your personal details
     Then I should be taken to the enter your name page
     When Enter "Random" "User" as my Given and Family Name and click Save and continue
-    Then I click Save and continue
+    Then I click "Save and continue" button
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
@@ -28,7 +28,7 @@ Feature: Business rules
     Then I should be taken to the what is your address page
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
-    And I click Save and continue
+    And I click "Save and continue" button
     Then I should be taken to the task-list page
     Given I click the contact details link
     Then I should be taken to the contact-details page

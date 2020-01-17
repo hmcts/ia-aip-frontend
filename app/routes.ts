@@ -51,7 +51,9 @@ router.use(startController);
 // protected by idam
 router.use(idamController);
 // router.use(initSession);
-if (process.env.NODE_ENV === 'development') router.use(logSession);
+if (process.env.NODE_ENV === 'development') {
+  router.use(logSession);
+}
 router.use(indexController);
 router.use(taskListController);
 router.use(homeOfficeDetailsController);

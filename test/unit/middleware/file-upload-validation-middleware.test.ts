@@ -18,8 +18,11 @@ describe('#handleFileUploadErrors middleware', () => {
   });
 
   it('should catch multer LIMIT_FILE_SIZE error.', () => {
+    // Because the file size is being overriden on the development config for testing purposes
+    // error message will show max file size as 0.001MB
+
     handleFileUploadErrors(new multer.MulterError('LIMIT_FILE_SIZE'), req, res, next);
-    expect(res.locals.multerError).to.equal(`The selected file must be smaller than 100MB`);
+    expect(res.locals.multerError).to.equal(`The selected file must be smaller than 0.001MB`);
     expect(next).to.have.been.calledOnce.calledWith();
   });
 

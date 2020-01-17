@@ -154,10 +154,12 @@ describe('Supporting Evidence Upload Controller', () => {
     });
 
     it('Should display validation error LIMIT_FILE_SIZE and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
+      // Because the file size is being overriden on the development config for testing purposes
+      // error message will show max file size as 0.001MB
       const expectedError: ValidationError = {
         href: '#uploadFile',
         key: 'uploadFile',
-        text: 'The selected file must be smaller than 100MB'
+        text: 'The selected file must be smaller than 0.001MB'
       };
 
       res.locals.multerError = expectedError.text;
@@ -172,7 +174,7 @@ describe('Supporting Evidence Upload Controller', () => {
 
     it('Should succeed render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk with errors ', async () => {
 
-      const fileSizeInMb = 10;
+      const fileSizeInMb = 0.001;
       const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
       const mockFile = {
         originalname: 'somefile.png',

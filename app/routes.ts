@@ -5,6 +5,7 @@ import requestPromise from 'request-promise-native';
 import { setupCheckAndSendController } from './controllers/check-and-send';
 import { setConfirmationController } from './controllers/confirmation-page';
 import { setupContactDetailsController } from './controllers/contact-details';
+import { setupEligibilityController } from './controllers/eligibility';
 import { setupHealthController } from './controllers/health';
 import { setupHomeOfficeDetailsController } from './controllers/home-office-details';
 import { setupIdamController } from './controllers/idam';
@@ -39,9 +40,12 @@ const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService });
 const outOfTimeController = setupOutOfTimeController(updateAppealService);
+const eligibilityController = setupEligibilityController();
+
 // not protected by idam
 router.use(healthController);
 router.use(startController);
+router.use(eligibilityController);
 
 // protected by idam
 router.use(idamController);

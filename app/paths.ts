@@ -8,6 +8,8 @@ const paths = {
   logout: '/logout',
   redirectUrl: '/redirectUrl',
   start: '/start',
+  eligibility: '/eligibility',
+  ineligibile: '/ineligibile',
   confirmation: '/confirmation',
   personalDetails: {
     name: '/personal-details/name',

@@ -6,7 +6,8 @@ import {
   homeOfficeNumberValidation,
   mobilePhoneValidation,
   statementOfTruthValidation,
-  textAreaValidation
+  textAreaValidation,
+  yesOrNoRequiredValidation
 } from '../../../app/utils/fields-validations';
 import i18n from '../../../locale/en.json';
 import { expect } from '../../utils/testUtils';
@@ -433,6 +434,25 @@ describe('contactDetailsValidation', () => {
         'key': 'text-message-value',
         'text': 'Enter a phone number'
       }
+    });
+  });
+
+  describe('yesOrNoRequiredValidation', () => {
+    it('no error if yes selected', () => {
+      const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
+
+      expect(validationResult).to.deep.equal(null);
+    });
+
+    it('error if yes on no not selected', () => {
+      const validationResult = yesOrNoRequiredValidation({}, 'error message');
+      const expectedResponse = {};
+      expectedResponse['answer'] = {
+        'href': '#answer',
+        'key': 'answer',
+        'text': 'error message'
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
     });
   });
 });

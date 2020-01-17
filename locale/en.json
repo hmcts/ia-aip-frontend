@@ -204,6 +204,20 @@
       "answer": "A Tribunal Caseworker will look at your answer",
       "date": "The Tribunal Caseworker will contact you by <b>{{ date }}</b> to tell you what to do next",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\">customer.services@justice.gov.uk</a>"
+    },
+    "ineligiblePage": {
+      "title": "You cannot currently use the new appeal service",
+      "description": "Based on your answers you can't use the new service at the moment. However, you can still appeal the Home Office decision either online or using our paper form",
+      "optionsList": [
+        "<a href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Appeal online</a>",
+        "<a href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">Appeal by post or fax with form IAFT-5</a>"
+      ],
+      "moreInfo": {
+        "title": "More information",
+        "moreInfoList": [
+        "<a href=\"https://www.gov.uk/immigration-asylum-tribunal\">Find out more about appealing an immigration or asylum decision</a>"
+        ]
+      }
     }
   },
   "error": {

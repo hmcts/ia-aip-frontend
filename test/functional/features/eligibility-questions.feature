@@ -30,3 +30,23 @@ Feature: Eligibility
   Scenario: Citizen tries to enter eligibility questions part way through and is taken to the start
     When I go to the second eligibility question without answering the first
     Then I should see the "Are you at least 18 years old" eligibility page
+
+  Scenario: Citizen can click back to change answer to previous question
+    Given I am on home page
+    When I click start now
+    Then I should see the "Are you at least 18 years old" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you currently in the UK" eligibility page
+    When I click Back button
+    Then I should see the "Are you at least 18 years old" eligibility page
+
+  Scenario: Citizen can click back on in ineligible page to change answer to previous question
+    Given I am on home page
+    When I click start now
+    Then I should see the "Are you at least 18 years old" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you currently in the UK" eligibility page
+    When I select No and click continue
+    Then I should see the ineligible page
+    When I click Back button
+    Then I should see the "Are you currently in the UK" eligibility page

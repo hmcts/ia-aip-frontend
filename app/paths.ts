@@ -8,8 +8,6 @@ const paths = {
   logout: '/logout',
   redirectUrl: '/redirectUrl',
   start: '/start',
-  eligibility: '/eligibility',
-  ineligibile: '/ineligibile',
   confirmation: '/confirmation',
   personalDetails: {
     name: '/personal-details/name',
@@ -32,7 +30,12 @@ const paths = {
   },
   typeOfAppeal: '/type-of-appeal',
   contactDetails: '/contact-details',
-  checkAndSend: '/check-and-send'
+  checkAndSend: '/check-and-send',
+  eligibility: {
+    start: '/eligibility-start',
+    ineligible: '/ineligible',
+    questions: '/eligibility'
+  }
 };
 
 export {

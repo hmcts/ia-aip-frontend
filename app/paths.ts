@@ -30,7 +30,11 @@ const paths = {
   },
   typeOfAppeal: '/type-of-appeal',
   contactDetails: '/contact-details',
-  checkAndSend: '/check-and-send'
+  checkAndSend: '/check-and-send',
+  eligibility: {
+    start: '/eligibility-start',
+    ineligible: '/ineligible'
+  }
 };
 
 export {

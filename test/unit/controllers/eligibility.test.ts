@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { eligibilityQuestionGet, eligibilityQuestionPost } from '../../../app/controllers/eligibility';
+import { eligibilityQuestionGet, eligibilityQuestionPost, getIneligible } from '../../../app/controllers/eligibility';
 import { paths } from '../../../app/paths';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -9,6 +9,7 @@ describe('Eligibility Controller', () => {
 
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let next: NextFunction;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -19,6 +20,8 @@ describe('Eligibility Controller', () => {
       render: sandbox.stub(),
       redirect: sinon.spy()
     };
+
+    next = sandbox.stub() as NextFunction;
   });
 
   afterEach(() => {
@@ -28,7 +31,7 @@ describe('Eligibility Controller', () => {
   describe('load first question', () => {
     it('loads first question', () => {
       req.session.eligibility = {};
-      eligibilityQuestionGet(req as Request, res as Response);
+      eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
         question: i18n.eligibility[0].question,
@@ -44,12 +47,12 @@ describe('Eligibility Controller', () => {
       req.query = { id: '1' };
       req.session.eligibility = {};
 
-      eligibilityQuestionGet(req as Request, res as Response);
+      eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
         question: i18n.eligibility[1].question,
         questionId: '1',
-        previousPage: `${paths.eligibility}?id=0`,
+        previousPage: `${paths.eligibility.questions}?id=0`,
         answer: '',
         errors: undefined,
         errorList: undefined
@@ -64,12 +67,12 @@ describe('Eligibility Controller', () => {
         }
       };
 
-      eligibilityQuestionGet(req as Request, res as Response);
+      eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
         question: i18n.eligibility[1].question,
         questionId: '1',
-        previousPage: `${paths.eligibility}?id=0`,
+        previousPage: `${paths.eligibility.questions}?id=0`,
         answer: 'yes',
         errors: undefined,
         errorList: undefined
@@ -79,7 +82,7 @@ describe('Eligibility Controller', () => {
     it('cannot skip eligibility questions', () => {
       req.query = { id: '3' };
 
-      eligibilityQuestionGet(req as Request, res as Response);
+      eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
         question: i18n.eligibility[0].question,
@@ -100,9 +103,9 @@ describe('Eligibility Controller', () => {
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response);
+      eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility}?id=1`);
+      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.questions}?id=1`);
     });
 
     it('redirects to ineligible page if answer ineligible', () => {
@@ -112,9 +115,9 @@ describe('Eligibility Controller', () => {
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response);
+      eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.ineligibile);
+      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.ineligible}?id=0`);
     });
 
     it('redirects to eligible page if all answers eligible', () => {
@@ -125,7 +128,7 @@ describe('Eligibility Controller', () => {
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response);
+      eligibilityQuestionPost(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.login);
     });
@@ -137,7 +140,7 @@ describe('Eligibility Controller', () => {
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response);
+      eligibilityQuestionPost(req as Request, res as Response, next);
 
       expect(req.session.eligibility['0']).to.eql({ answer: 'yes' });
     });
@@ -148,7 +151,7 @@ describe('Eligibility Controller', () => {
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response);
+      eligibilityQuestionPost(req as Request, res as Response, next);
 
       const error = { href: '#answer', key: 'answer', text: i18n.eligibility[0].errorMessage };
       expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
@@ -159,6 +162,27 @@ describe('Eligibility Controller', () => {
         question: i18n.eligibility[0].question,
         questionId: '0'
       });
+    });
+  });
+
+  describe('getIneligible', () => {
+    it('should render the view', () => {
+      req.query = { id: '123' };
+      getIneligible(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('eligibility/ineligible-page.njk',
+        {
+          previousPage: `${paths.eligibility.questions}?id=123`
+        }
+      );
+    });
+
+    it('should catch exception and call next with the error', function () {
+      const error = new TypeError('Cannot read property \'id\' of undefined');
+
+      const expectedErr = sinon.match.instanceOf(TypeError)
+        .and(sinon.match.has('message', 'Cannot read property \'id\' of undefined'));
+      getIneligible(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });
   });
 });

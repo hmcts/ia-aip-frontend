@@ -1,0 +1,19 @@
+{% extends "layout.njk" %}
+{% set pageTitleName = i18n.pages.successPage.title %}
+
+{% block content %}
+<h1 class="govuk-heading-l">{{ i18n.pages.ineligiblePage.title }}</h1>
+<p>{{ i18n.pages.ineligiblePage.description }}</p>
+<ul class="govuk-list govuk-list--bullet">
+  {% for item in i18n.pages.ineligiblePage.optionsList %}
+    <li>{{ item | safe }} </li>
+  {% endfor %}
+</ul>
+<h2 class="govuk-heading-m">{{ i18n.pages.ineligiblePage.moreInfo.title }}</h2>
+<ul class="govuk-list govuk-list--bullet">
+  {% for item in i18n.pages.ineligiblePage.moreInfo.moreInfoList %}
+    <li>{{ item | safe }} </li>
+  {% endfor %}
+</ul>
+{% endblock %}
+

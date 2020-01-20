@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { eligibilityQuestionGet, eligibilityQuestionPost, getIneligible } from '../../../app/controllers/eligibility';
+import { eligibilityQuestionGet, eligibilityQuestionPost, getEligible, getIneligible } from '../../../app/controllers/eligibility';
 import { paths } from '../../../app/paths';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -130,7 +130,7 @@ describe('Eligibility Controller', () => {
 
       eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.login);
+      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.eligible}?id=${finalQuestionId}`);
     });
 
     it('stores answer in session', () => {
@@ -162,6 +162,35 @@ describe('Eligibility Controller', () => {
         question: i18n.eligibility[0].question,
         questionId: '0'
       });
+    });
+  });
+
+  describe('getEligible', () => {
+    it('should render the view', () => {
+      req.query = { id: '123' };
+      req.session.eligibility = {};
+
+      getEligible(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('eligibility/eligible-page.njk',
+        {
+          previousPage: `${paths.eligibility.questions}?id=123`
+        }
+      );
+    });
+
+    it('should catch exception and call next with the error', function () {
+      req.session.eligibility = {};
+      const error = new TypeError('Cannot read property \'id\' of undefined');
+
+      const expectedErr = sinon.match.instanceOf(TypeError)
+        .and(sinon.match.has('message', 'Cannot read property \'id\' of undefined'));
+      getEligible(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
+    });
+
+    it('should redirect to first question if the users has gone directly to the eligible page', () => {
+      getEligible(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.eligibility.questions);
     });
   });
 

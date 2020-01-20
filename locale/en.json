@@ -218,6 +218,12 @@
         "<a href=\"https://www.gov.uk/immigration-asylum-tribunal\">Find out more about appealing an immigration or asylum decision</a>"
         ]
       }
+    },
+    "eligiblePage": {
+      "title": "Service Page",
+      "heading": "You can use the new appeal service",
+      "basedOnAnswers": "Based on your answers. you can use the new service to appeal an immigration or asylum decision.",
+      "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one."
     }
   },
   "error": {

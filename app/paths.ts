@@ -34,7 +34,8 @@ const paths = {
   eligibility: {
     start: '/eligibility-start',
     ineligible: '/ineligible',
-    questions: '/eligibility'
+    questions: '/eligibility',
+    eligible: '/eligible'
   }
 };
 

@@ -15,6 +15,7 @@ const { enterAddress } = require('../pages/personal-details/personal-details-ent
 const { contactDetails } = require('../pages/contact-details/contact-details-page');
 const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appeal');
 const { eligibilityQuestions } = require('../pages/eligibility-questions/eligibility-question-page');
+const { eligible } = require('../pages/eligibility-questions/eligible-page');
 const { ineligibile } = require('../pages/eligibility-questions/ineligible-page');
 
 const { I } = inject();
@@ -37,4 +38,5 @@ outOfTimeAppeal(I);
 checkAndSend(I);
 reasonsForAppeal(I);
 eligibilityQuestions(I);
+eligible(I);
 ineligibile(I);

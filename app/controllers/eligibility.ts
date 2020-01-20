@@ -64,12 +64,27 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
     const isLastQuestion = _.toNumber(questionId) === i18n.eligibility.length - 1;
 
     const nextPage = (answer === i18n.eligibility[questionId].eligibleAnswer) ?
-      isLastQuestion ? paths.login : `${paths.eligibility.questions}?id=${_.toNumber(questionId) + 1}` :
+      isLastQuestion ? `${paths.eligibility.eligible}?id=${_.toNumber(questionId)}` : `${paths.eligibility.questions}?id=${_.toNumber(questionId) + 1}` :
       `${paths.eligibility.ineligible}?id=${_.toNumber(questionId)}`;
 
     return res.redirect(nextPage);
   } catch (error) {
     next(error);
+  }
+}
+
+function getEligible(req: Request, res: Response, next: NextFunction) {
+  try {
+    if (!req.session.eligibility) {
+      req.session.eligibility = {};
+      return res.redirect(paths.eligibility.questions);
+    }
+
+    res.render('eligibility/eligible-page.njk', {
+      previousPage: `${paths.eligibility.questions}?id=${req.query.id}`
+    });
+  } catch (e) {
+    next(e);
   }
 }
 
@@ -87,6 +102,7 @@ function setupEligibilityController(): Router {
   const router = Router();
   router.get(paths.eligibility.questions, eligibilityQuestionGet);
   router.post(paths.eligibility.questions, eligibilityQuestionPost);
+  router.get(paths.eligibility.eligible, getEligible);
   router.get(paths.eligibility.ineligible, getIneligible);
 
   return router;
@@ -96,5 +112,6 @@ export {
   eligibilityQuestionGet,
   eligibilityQuestionPost,
   setupEligibilityController,
+  getEligible,
   getIneligible
 };

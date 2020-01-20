@@ -19,6 +19,8 @@ Feature: Business rules
     When I select No and click continue
     Then I should see the "Are you appealing an EEA decision" eligibility page
     When I select No and click continue
+    Then I should see the eligible page
+    When I click continue
     Then I should see the sign in page
     When I enter creds and click sign in
     Then I should see the task-list page

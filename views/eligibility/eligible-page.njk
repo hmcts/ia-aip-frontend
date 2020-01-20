@@ -1,0 +1,25 @@
+{% set pageTitleName = i18n.pages.eligiblePage.title %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% extends "layout.njk" %}
+
+{% block content %}
+    <form type="submit" action="/eligible-service" method="post">
+        {% call govukFieldset({
+            legend: {
+                text: i18n.pages.eligiblePage.heading,
+                classes: "govuk-fieldset__legend--xl",
+                isPageHeading: true
+            }
+        }) %}
+            <p class="govuk-body">{{ i18n.pages.eligiblePage.basedOnAnswers  }}</p>
+            <p class="govuk-body">{{ i18n.pages.eligiblePage.askQuestions  }}</p>
+        {% endcall %}
+
+        {{ govukButton({
+            text: i18n.common.buttons.continue,
+            href: "/login",
+            isStartButton: false
+        }) }}
+    </form>
+{% endblock  %}

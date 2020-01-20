@@ -4,22 +4,13 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-    <form type="submit" action="/eligible-service" method="post">
-        {% call govukFieldset({
-            legend: {
-                text: i18n.pages.eligiblePage.heading,
-                classes: "govuk-fieldset__legend--xl",
-                isPageHeading: true
-            }
-        }) %}
-            <p class="govuk-body">{{ i18n.pages.eligiblePage.basedOnAnswers  }}</p>
-            <p class="govuk-body">{{ i18n.pages.eligiblePage.askQuestions  }}</p>
-        {% endcall %}
+    <h1 class="govuk-heading-xl">{{ i18n.pages.eligiblePage.heading }}</h1>
+    <p class="govuk-body">{{ i18n.pages.eligiblePage.basedOnAnswers  }}</p>
+    <p class="govuk-body">{{ i18n.pages.eligiblePage.askQuestions  }}</p>
 
-        {{ govukButton({
-            text: i18n.common.buttons.continue,
-            href: "/login",
-            isStartButton: false
-        }) }}
-    </form>
+    {{ govukButton({
+        text: i18n.common.buttons.continue,
+        href: "/login",
+        isStartButton: false
+    }) }}
 {% endblock  %}

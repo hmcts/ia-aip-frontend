@@ -1,5 +1,5 @@
 {% set pageTitleName = question %}
-{% extends "layout.njk" %}
+{% extends "../layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% import "components/text-components.njk" as text %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -48,6 +48,7 @@
                 text: i18n.common.buttons.continue
             }) }}
         </div>
-
     </form>
+
+    {{ contactUs() }}
 {% endblock %}

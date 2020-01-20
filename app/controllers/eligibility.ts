@@ -29,7 +29,7 @@ function eligibilityQuestionGet(req: Request, res: Response, next: NextFunction)
 
     const answer = _.get(req.session.eligibility, nextId + '.answer', '');
 
-    return res.render('eligibility-question.njk', getModel(nextId, answer));
+    return res.render('eligibility/eligibility-question.njk', getModel(nextId, answer));
   } catch (error) {
     next(error);
   }
@@ -46,7 +46,7 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
       const model = getModel(questionId, answer);
       model.errors = validation;
       model.errorList = Object.values(validation);
-      return res.render('eligibility-question.njk', {
+      return res.render('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[questionId].question,
         questionId: questionId,
         previousPage: getPreviousPageLink(questionId),

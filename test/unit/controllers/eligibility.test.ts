@@ -33,7 +33,7 @@ describe('Eligibility Controller', () => {
       req.session.eligibility = {};
       eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
+      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[0].question,
         questionId: '0',
         previousPage: paths.start,
@@ -49,7 +49,7 @@ describe('Eligibility Controller', () => {
 
       eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
+      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[1].question,
         questionId: '1',
         previousPage: `${paths.eligibility.questions}?id=0`,
@@ -69,7 +69,7 @@ describe('Eligibility Controller', () => {
 
       eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
+      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[1].question,
         questionId: '1',
         previousPage: `${paths.eligibility.questions}?id=0`,
@@ -84,7 +84,7 @@ describe('Eligibility Controller', () => {
 
       eligibilityQuestionGet(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
+      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[0].question,
         questionId: '0',
         previousPage: paths.start,
@@ -154,7 +154,7 @@ describe('Eligibility Controller', () => {
       eligibilityQuestionPost(req as Request, res as Response, next);
 
       const error = { href: '#answer', key: 'answer', text: i18n.eligibility[0].errorMessage };
-      expect(res.render).to.have.been.calledWith('eligibility-question.njk', {
+      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         answer: undefined,
         errorList: [ error ],
         errors: { answer: error },

@@ -14,7 +14,7 @@ const { selectAddress } = require('../pages/personal-details/personal-details-se
 const { enterAddress } = require('../pages/personal-details/personal-details-enter-address');
 const { contactDetails } = require('../pages/contact-details/contact-details-page');
 const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appeal');
-
+const { appealService } = require('../pages/appeal-service');
 const { I } = inject();
 
 common(I);
@@ -34,3 +34,4 @@ typeOfAppeal(I);
 outOfTimeAppeal(I);
 checkAndSend(I);
 reasonsForAppeal(I);
+appealService(I);

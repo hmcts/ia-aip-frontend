@@ -9,7 +9,8 @@
       "saveAndContinue": "Save and continue",
       "saveForLater": "Save for later",
       "uploadFile": "Upload file",
-      "send": "Send"
+      "send": "Send",
+      "continue": "Continue"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -203,6 +204,12 @@
       "answer": "A Tribunal Caseworker will look at your answer",
       "date": "The Tribunal Caseworker will contact you by <b>{{ date }}</b> to tell you what to do next",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\">customer.services@justice.gov.uk</a>"
+    },
+    "eligibilityServicePage": {
+      "title": "Service Page",
+      "heading": "You can use the new appeal service",
+      "basedOnAnswers": "Based on your answers. you can use the new service to appeal an immigration or asylum decision.",
+      "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one."
     }
   },
   "error": {

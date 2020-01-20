@@ -19,6 +19,17 @@
   {% endif %}
 {% endmacro %}
 
+{% macro continueButton() %}
+  <div class="buttons__container">
+    {{ govukButton({
+      name: 'saveAndContinue',
+      text: i18n.common.buttons.continue,
+      classes: "govuk-!-margin-right-1"
+    }) }}
+
+  </div>
+{% endmacro %}
+
 {% macro saveButtons() %}
 
   <div class="buttons__container">

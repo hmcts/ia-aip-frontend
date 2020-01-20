@@ -1,0 +1,21 @@
+{% set pageTitleName = i18n.pages.eligibilityServicePage.title %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% extends "layout.njk" %}
+
+{% block content %}
+  <form type="submit" action="/eligible-service" method="post">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.eligibilityServicePage.heading,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <p class="govuk-body">{{ i18n.pages.eligibilityServicePage.basedOnAnswers  }}</p>
+      <p class="govuk-body">{{ i18n.pages.eligibilityServicePage.askQuestions  }}</p>
+      {{ continueButton() }}
+    {% endcall %}
+  </form>
+{% endblock  %}
+

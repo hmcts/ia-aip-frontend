@@ -72,7 +72,7 @@
     },
     "appealType": {
       "header": "What is your appeal type?",
-      "pageHint": "You can select more than one option",
+      "pageHint": "Select one appeal type. If you think more than one applies to your appeal, you will have the chance to tell us about that later.",
       "exampleSummaryText": "Reasons to select "
     },
     "DOB": {
@@ -233,7 +233,7 @@
     "empty": "The field is required",
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
-    "atLeastOneTypeOfAppeal": "Select at least one of the appeal types",
+    "selectAnAppealType": "Select an appeal type",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
@@ -307,32 +307,14 @@
     "protection": {
       "value": "protection",
       "name": "Protection",
-      "title": "<b>Protection</b> (You will be persecuted or harmed in some way if you are returned to your home country)",
+      "title": "Protection (You will be persecuted or harmed in some way if you are returned to your home country)",
       "examples": "You might be afraid of the government, police or other groups in your home country because of your nationality, race, religion, political opinion or other reason."
-    },
-    "humanRights": {
-      "value": "human-rights",
-      "name": "Human Rights",
-      "title": "<b>Human Rights</b> (You have a family and/or private life in the UK, or a serious medical condition)",
-      "examples": "You might have a partner or children living in the UK, have lived and worked in the UK for a long time or be receiving long-term medical treatment in the UK."
-    },
-    "eea": {
-      "value": "eea",
-      "name": "European Economic Area",
-      "title": "<b>European Economic Area (EEA)</b> (You are, or a family member is, an EEA/Swiss national)",
-      "examples": "You might be, or have been, a family member or carer of an EEA/Swiss national, or have lived in another EEA country with a British family member, and want to either come to or stay in the UK."
     },
     "revocationOfProtection": {
       "value": "revocationOfProtection",
       "name": "Revocation of Protection Status",
-      "title": "<b>Revocation of Protection Status</b> (Your protection status was taken away)",
+      "title": "Revocation of Protection Status (Your protection status was taken away)",
       "examples": "Your protection status might have been taken away if it is believed you no longer need it, you didn’t tell the truth in your claim or you have committed a serious crime."
-    },
-    "deprivation": {
-      "value": "deprivation",
-      "name": "Deprivation of Citizenship",
-      "title": "<b>Deprivation of Citizenship</b> (Your British citizenship was taken way)",
-      "examples": "Your British citizenship might have been taken away if it is believed you were involved in behaviours including terrorism, espionage or serious organised crime."
     }
   }
 }

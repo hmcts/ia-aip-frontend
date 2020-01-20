@@ -1,12 +1,12 @@
 {% set pageTitleName = i18n.pages.appealType.header %}
 {% extends "layout.njk" %}
-{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% block content %}
 
   {% if errorList %}
     {{ govukErrorSummary({
-      titleText: i18n.errorSummary.titleText,
+      titleText: i18n.validationErrors.errorSummary,
       errorList: errorList
     }) }}
   {% endif %}
@@ -28,7 +28,7 @@
   {% endfor %}
 
   <form action="/type-of-appeal" method="post">
-    {{ govukCheckboxes({
+    {{ govukRadios({
       idPrefix: "appealType",
       id: "appealType",
       name: "appealType",
@@ -43,8 +43,8 @@
         html:  i18n.pages.appealType.pageHint
       },
       errorMessage: {
-        text: i18n.validationErrors.atLeastOneOption
-      } if error,
+        text: errors['appealType'].text
+      } if errors['appealType'],
       items: options
     }) }}
 

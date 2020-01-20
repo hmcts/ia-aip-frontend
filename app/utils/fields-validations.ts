@@ -130,44 +130,28 @@ function appellantNamesValidation(obj: object) {
 
 function contactDetailsValidation(obj: object) {
   const schema = Joi.object({
-    'selections': Joi.alternatives()
-      .try(
-        Joi.array()
-          .items(
-            Joi.string().valid('email', 'text-message')
-          ),
-        Joi.string().valid('email', 'text-message'))
-      .required()
-      .messages({
-        'any.required': i18n.validationErrors.contactDetails.selectOneOption
+    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
+    'email-value': Joi.alternatives().conditional(
+      'selections', {
+        is: Joi.string().regex(/email/),
+        then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
+          .email({ minDomainSegments: 2, allowUnicode: false }).messages({
+            'string.empty': i18n.validationErrors.emailEmpty,
+            'string.email': i18n.validationErrors.emailFormat
+          }),
+        otherwise: Joi.any()
       }),
-    'email-value': Joi.when('selections', {
-      is: Joi.alternatives()
-        .try(Joi.array().items(Joi.string().valid('email'), Joi.string().valid('text-message')),
-          Joi.string().valid('email')).required(),
-      then: Joi.string()
-        .optional()
-        .email({ minDomainSegments: 2, allowUnicode: false })
-        .messages({
-          'string.empty': i18n.validationErrors.emailEmpty,
-          'string.email': i18n.validationErrors.emailFormat
-        }),
-      otherwise: Joi.strip()
-    }),
-    'text-message-value': Joi.when('selections', {
-      is: Joi.alternatives()
-        .try(
-          Joi.array().items(Joi.string().valid('email'), Joi.string().valid('text-message')),
-          Joi.string().valid('text-message')).required(),
-      then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
-        .optional()
-        .messages({
-          'string.empty': i18n.validationErrors.phoneEmpty,
-          'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-          'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
-        }),
-      otherwise: Joi.strip()
-    })
+    'text-message-value': Joi.alternatives().conditional(
+      'selections', {
+        is: Joi.string().regex(/text-message/),
+        then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+          .messages({
+              'string.empty': i18n.validationErrors.phoneEmpty,
+              'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
+              'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+            }),
+        otherwise: Joi.any()
+      })
   }).unknown();
 
   return validate(obj, schema);
@@ -270,17 +254,11 @@ function addressValidation(obj: object): null | ValidationErrors {
 }
 
 function typeOfAppealValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.alternatives().try(
-    Joi.object({
-      appealType: Joi.array().items(Joi.string()).required()
-    }).unknown(),
-    Joi.object({
-      appealType: Joi.string().required()
-    }).unknown()
-  ).messages({
-    'alternatives.match': i18n.validationErrors.atLeastOneTypeOfAppeal,
-    'any.required': i18n.validationErrors.required
-  });
+  const schema = Joi.object({
+      appealType: Joi.string().required().messages({
+        'any.required': i18n.validationErrors.selectAnAppealType
+      })
+    }).unknown();
 
   return validate(obj, schema);
 }

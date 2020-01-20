@@ -24,20 +24,22 @@ function getContactDetails(req: Request, res: Response, next: NextFunction) {
 function postContactDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const selections = req.body['selections'] || [];
+      if (!req.body.selections) {
+        req.body.selections = '';
+      }
 
       let email = null;
       let wantsEmail = false;
       let phone = null;
       let wantsSms = false;
 
-      if (selections.includes('email')) {
+      if (req.body.selections.includes('email')) {
         email = req.body['email-value'];
-        if (email) {
+        if (email && email.length > 0) {
           wantsEmail = true;
         }
       }
-      if (selections.includes('text-message')) {
+      if (req.body.selections.includes('text-message')) {
         req.body['text-message-value'] = req.body['text-message-value'].replace(/\s/g, '');
         phone = req.body['text-message-value'];
         if (phone) {

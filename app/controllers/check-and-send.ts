@@ -76,7 +76,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
       lateAppealValue.push(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence);
       lateAppealValue.push(nunjucks.renderString(i18n.pages.checkYourAnswers.supportingEvidence, evidence));
     }
-    const lateAppealRow = addSummaryRow('appealLate', lateAppealValue, paths.homeOffice.appealLate);
+    const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.homeOffice.appealLate);
     rows.push(lateAppealRow);
   }
   return rows;

@@ -36,7 +36,7 @@
     },
     "taskList": {
       "title": "Task List",
-      "header": "Start your appeal",
+      "header": "Tell us about your appeal",
       "sections": {
         "yourDetails": "Your details",
         "appealDetails": "Appeal details",
@@ -59,7 +59,7 @@
         "htmlLink": "<a id='typeOfAppealLink' href='/type-of-appeal' title='Type of appeal'>Type of appeal</a>"
       },
       "checkAndSend": {
-        "title": "Check and send your appeal",
+        "title": "Check and send your appeal details",
         "htmlLink": "<a id='checkAndSendLink' href='/check-and-send' title='Check and send your appeal'>Check and send your appeal</a>"
       }
     },
@@ -170,18 +170,19 @@
       "title": "Confirmation",
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
-      "info": "You will receive a notification to confirm that the Tribunal has received your appeal application",
-      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call us on <b>0300 123 1711</b> or <a class=\"govuk-link\" href=\"#\">send us a message</a>",
-      "caseWorker": "A case worker will contact you to by <strong>{{ date }}</strong> to tell you if you can continue with your appeal and what to do next",
-      "tribunalWorker": "A Tribunal case worker will contact you to by <strong>{{ date }}</strong> to tell you what to do next",
+      "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
+      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call <b>0300 123 1711</b> or <a class=\"govuk-link\" href=\"#\">send us a message</a>",
+      "caseWorker": "A Tribunal Caseworker will contact you to by <strong>{{ date }}</strong> to tell you if you can continue with your appeal and what to do next",
+      "tribunalWorker": "A Tribunal Caseworker will contact you to by <strong>{{ date }}</strong> to tell you what to do next",
       "thingsYouCanDo": "Things you can do now",
       "readMore": "Read more about appealing an immigration or asylum decision",
       "findOutMore": "Find organisations that can you with your appeal",
       "outOfTime": {
-        "panel": "Your have sent an out of time application"
+        "panel": "Your late appeal details have been sent"
       },
       "inTime": {
-        "panel": "Your appeal application \n has been sent"
+        "panel": "Your appeal details has been sent"
+
       }
     },
     "wrongHomeOfficeDecision": {

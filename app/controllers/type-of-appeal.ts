@@ -31,16 +31,17 @@ function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
 function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (shouldValidateWhenSaveForLater(req.body, 'appealType')) {
-        const validation = typeOfAppealValidation(req.body);
-        if (validation) {
-          return res.render('appeal-application/type-of-appeal.njk', {
-            types: appealTypes,
-            errors: validation,
-            errorList: Object.values(validation),
-            previousPage: paths.taskList
-          });
-        }
+      if (!shouldValidateWhenSaveForLater(req.body, 'appealType')) {
+        return getConditionalRedirectUrl(req, res, paths.taskList);
+      }
+      const validation = typeOfAppealValidation(req.body);
+      if (validation) {
+        return res.render('appeal-application/type-of-appeal.njk', {
+          types: appealTypes,
+          errors: validation,
+          errorList: Object.values(validation),
+          previousPage: paths.taskList
+        });
       }
 
       req.session.appeal.application.appealType = req.body['appealType'];

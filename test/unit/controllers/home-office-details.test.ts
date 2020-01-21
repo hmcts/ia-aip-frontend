@@ -8,6 +8,7 @@ import {
   setupHomeOfficeDetailsController
 } from '../../../app/controllers/home-office-details';
 import { paths } from '../../../app/paths';
+import { Events } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -100,6 +101,7 @@ describe('Home Office Details Controller', function () {
       req.body['homeOfficeRefNumber'] = 'A1234567';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
     });
@@ -109,6 +111,7 @@ describe('Home Office Details Controller', function () {
       req.body['saveForLater'] = 'saveForLater';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
@@ -119,6 +122,7 @@ describe('Home Office Details Controller', function () {
       req.body['homeOfficeRefNumber'] = 'A1234567';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
@@ -134,6 +138,7 @@ describe('Home Office Details Controller', function () {
         key: 'homeOfficeRefNumber',
         text: 'Enter the Home Office reference number in the correct format'
       };
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
         {
@@ -156,6 +161,7 @@ describe('Home Office Details Controller', function () {
         key: 'homeOfficeRefNumber',
         text: 'Enter the Home Office reference number in the correct format'
       };
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
         {
@@ -177,6 +183,7 @@ describe('Home Office Details Controller', function () {
         key: 'homeOfficeRefNumber',
         text: 'Enter the Home Office reference number'
       };
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
         {
@@ -194,6 +201,7 @@ describe('Home Office Details Controller', function () {
       req.body['saveForLater'] = 'saveForLater';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
@@ -230,7 +238,7 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postDateLetterSent', () => {
-    it('should validate and redirect to Task list page if letter is not older than 14 days', async () => {
+    it('should validate and redirect to Task list page', async () => {
       const date = moment().subtract(14, 'd');
       req.body['day'] = date.format('DD');
       req.body['month'] = date.format('MM');
@@ -238,6 +246,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
@@ -245,7 +254,7 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
-    it('when in edit mode should validate and redirect to CYA page if letter is not older than 14 days and reset isEdit flag', async () => {
+    it('should validate and redirect to CYA page and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
 
       const date = moment().subtract(14, 'd');
@@ -255,6 +264,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
@@ -272,6 +282,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
@@ -288,6 +299,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
@@ -303,10 +315,11 @@ describe('Home Office Details Controller', function () {
       req.body.saveForLater = 'saveForLater';
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
-    it('when in edit mode should validate and redirect to Appeal Late page if appeal is later than 14 days and isEdit flag is not updated', async () => {
+    it('should validate and redirect to Appeal Late page and isEdit flag is not updated', async () => {
       req.session.appeal.application.isEdit = true;
 
       const date = moment().subtract(15, 'd');
@@ -316,6 +329,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const { dateLetterSent } = req.session.appeal.application;
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(dateLetterSent.day).to.be.eql(date.format('DD'));
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
@@ -332,6 +346,7 @@ describe('Home Office Details Controller', function () {
       req.body['year'] = date.format('YYYY');
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
@@ -350,6 +365,7 @@ describe('Home Office Details Controller', function () {
       const errorList = [ dateError ];
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
         {
           error,
@@ -365,6 +381,7 @@ describe('Home Office Details Controller', function () {
       res.render = sandbox.stub().throws(error);
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

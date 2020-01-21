@@ -3,7 +3,7 @@ Feature: Eligibility
   As a citizen
   I want to be able to answer the eligibility questions and see if I am eligible to use the service
 
-  Scenario: Citizen is eligible to use the service
+  Scenario: Citizen was once a british citizen and is eligible to use the service
     Given I am on home page
     When I click start now
     Then I should see the "Are you at least 18 years old" eligibility page
@@ -18,9 +18,34 @@ Feature: Eligibility
     When I select No and click continue
     Then I should see the "Are you appealing an EEA decision" eligibility page
     When I select No and click continue
+    Then I should see the "Have you ever been a British citizen" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you appealing the removal of your British citizenship" eligibility page
+    When I select No and click continue
     Then I should see the eligible page
     When I click Back button
+    Then I should see the "Are you appealing the removal of your British citizenship" eligibility page
+
+  Scenario: Citizen was never a british citizen and is eligible to use the service
+    Given I am on home page
+    When I click start now
+    Then I should see the "Are you at least 18 years old" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you currently in the UK" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you currently in detention" eligibility page
+    When I select No and click continue
+    Then I should see the "Are you currently a citizen of a country" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Is anyone else in your family appealing their own Home Office decision" eligibility page
+    When I select No and click continue
     Then I should see the "Are you appealing an EEA decision" eligibility page
+    When I select No and click continue
+    Then I should see the "Have you ever been a British citizen" eligibility page
+    When I select No and click continue
+    Then I should see the eligible page
+    When I click Back button
+    Then I should see the "Have you ever been a British citizen" eligibility page
 
   Scenario: Citizen is ineligible to use the service
     Given I am on home page

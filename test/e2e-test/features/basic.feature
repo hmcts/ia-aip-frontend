@@ -19,6 +19,10 @@ Feature: Business rules
     When I select No and click continue
     Then I should see the "Are you appealing an EEA decision" eligibility page
     When I select No and click continue
+    Then I should see the "Have you ever been a British citizen" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you appealing the removal of your British citizenship" eligibility page
+    When I select No and click continue
     Then I should see the eligible page
     When I click continue
     Then I should see the sign in page

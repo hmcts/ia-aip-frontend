@@ -371,6 +371,17 @@
       "question": "Are you appealing an EEA decision?",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if you are appealing a European Economic Area (EEA) decision"
+    },
+    {
+      "question": "Have you ever been a British citizen?",
+      "eligibleAnswer": ["yes", "no"],
+      "errorMessage": "Select yes if you have ever been a British citizen"
+    },
+    {
+      "skipIfPrevious": "no",
+      "question": "Are you appealing the removal of your British citizenship?",
+      "eligibleAnswer": "no",
+      "errorMessage": "Select yes if you are appealing the removal of your British citizenship"
     }
   ]
 }

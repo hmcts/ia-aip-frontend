@@ -39,7 +39,6 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
   try {
     const questionId = req.body.questionId;
     const answer = req.body.answer;
-
     const validation = yesOrNoRequiredValidation(req.body, i18n.eligibility[questionId].errorMessage);
 
     if (validation) {
@@ -61,18 +60,21 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
 
     req.session.eligibility[questionId] = { answer };
 
-    const isLastQuestion = _.toNumber(questionId) === i18n.eligibility.length - 1;
+    let nextQuestionId = _.toNumber(questionId) + 1;
+    if (i18n.eligibility[nextQuestionId] && i18n.eligibility[nextQuestionId].skipIfPrevious && i18n.eligibility[nextQuestionId].skipIfPrevious === answer) {
+      nextQuestionId++;
+    }
+    const isLastQuestion = nextQuestionId === i18n.eligibility.length;
 
-    const nextPage = (answer === i18n.eligibility[questionId].eligibleAnswer) ?
-      isLastQuestion ? `${paths.eligibility.eligible}?id=${_.toNumber(questionId)}` : `${paths.eligibility.questions}?id=${_.toNumber(questionId) + 1}` :
-      `${paths.eligibility.ineligible}?id=${_.toNumber(questionId)}`;
+    const nextPage = isEligibilityQuestion(questionId, answer) ?
+    isLastQuestion ? `${paths.eligibility.eligible}?id=${_.toNumber(questionId)}` : `${paths.eligibility.questions}?id=${nextQuestionId}` :
+    `${paths.eligibility.ineligible}?id=${_.toNumber(questionId)}`;
 
     return res.redirect(nextPage);
   } catch (error) {
     next(error);
   }
 }
-
 function getEligible(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.session.eligibility) {
@@ -106,6 +108,12 @@ function setupEligibilityController(): Router {
   router.get(paths.eligibility.ineligible, getIneligible);
 
   return router;
+}
+
+function isEligibilityQuestion(questionId: string, answer: string) {
+  return _.isString(i18n.eligibility[questionId].eligibleAnswer) ?
+      answer === i18n.eligibility[questionId].eligibleAnswer :
+      i18n.eligibility[questionId].eligibleAnswer.indexOf(answer) > -1;
 }
 
 export {

@@ -365,12 +365,12 @@
       "errorMessage": "Select yes if you are currently a citizen of a country"
     },
     {
-      "question": "Is anyone else in your family appealing their own Home Office decision?",
+      "question": "Is anyone else in your immediate family appealing their own Home Office decision?",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if anyone in your immediate family is appealing their own Home Office decision"
     },
     {
-      "question": "Are you appealing an European Economic Area (EEA) decision?",
+      "question": "Are you appealing a European Economic Area (EEA) decision?",
       "description": "You should answer yes if your Home Office decision letter says your claim was considered under the Immigration (European Economic Area) Regulations.",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if you are appealing a European Economic Area (EEA) decision"

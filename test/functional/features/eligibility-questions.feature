@@ -14,9 +14,9 @@ Feature: Eligibility
     When I select No and click continue
     Then I should see the "Are you currently a citizen of a country" eligibility page
     When I select Yes and click continue
-    Then I should see the "Is anyone else in your family appealing their own Home Office decision" eligibility page
+    Then I should see the "Is anyone else in your immediate family appealing their own Home Office decision" eligibility page
     When I select No and click continue
-    Then I should see the "Are you appealing an European Economic Area (EEA) decision?" eligibility page
+    Then I should see the "Are you appealing a European Economic Area (EEA) decision?" eligibility page
     When I select No and click continue
     Then I should see the "Have you ever been a British citizen" eligibility page
     When I select Yes and click continue
@@ -37,9 +37,9 @@ Feature: Eligibility
     When I select No and click continue
     Then I should see the "Are you currently a citizen of a country" eligibility page
     When I select Yes and click continue
-    Then I should see the "Is anyone else in your family appealing their own Home Office decision" eligibility page
+    Then I should see the "Is anyone else in your immediate family appealing their own Home Office decision" eligibility page
     When I select No and click continue
-    Then I should see the "Are you appealing an European Economic Area (EEA) decision" eligibility page
+    Then I should see the "Are you appealing a European Economic Area (EEA) decision" eligibility page
     When I select No and click continue
     Then I should see the "Have you ever been a British citizen" eligibility page
     When I select No and click continue

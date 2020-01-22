@@ -354,11 +354,13 @@
     },
     {
       "question": "Are you currently in detention?",
+      "description": "This could be a prison or an immigration removal centre.",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if you are currently in detention"
     },
     {
       "question": "Are you currently a citizen of a country?",
+      "description": "A person who is not a citizen of any country is considered stateless. You should answer no if you are currently stateless.",
       "eligibleAnswer": "yes",
       "errorMessage": "Select yes if you are currently a citizen of a country"
     },
@@ -368,7 +370,8 @@
       "errorMessage": "Select yes if anyone in your immediate family is appealing their own Home Office decision"
     },
     {
-      "question": "Are you appealing an EEA decision?",
+      "question": "Are you appealing an European Economic Area (EEA) decision?",
+      "description": "You should answer yes if your Home Office decision letter says your claim was considered under the Immigration (European Economic Area) Regulations.",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if you are appealing a European Economic Area (EEA) decision"
     },
@@ -380,6 +383,7 @@
     {
       "skipIfPrevious": "no",
       "question": "Are you appealing the removal of your British citizenship?",
+      "description": "This is also known as deprivation of British citizenship.",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if you are appealing the removal of your British citizenship"
     }

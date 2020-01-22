@@ -35,6 +35,7 @@ describe('Eligibility Controller', () => {
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[0].question,
+        description: i18n.eligibility[0].description,
         questionId: '0',
         previousPage: paths.start,
         answer: '',
@@ -44,15 +45,16 @@ describe('Eligibility Controller', () => {
     });
 
     it('loads another question', () => {
-      req.query = { id: '1' };
+      req.query = { id: '2' };
       req.session.eligibility = {};
 
       eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
-        question: i18n.eligibility[1].question,
-        questionId: '1',
-        previousPage: `${paths.eligibility.questions}?id=0`,
+        question: i18n.eligibility[2].question,
+        description: i18n.eligibility[2].description,
+        questionId: '2',
+        previousPage: `${paths.eligibility.questions}?id=1`,
         answer: '',
         errors: undefined,
         errorList: undefined
@@ -71,6 +73,7 @@ describe('Eligibility Controller', () => {
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[1].question,
+        description: i18n.eligibility[1].description,
         questionId: '1',
         previousPage: `${paths.eligibility.questions}?id=0`,
         answer: 'yes',
@@ -86,6 +89,7 @@ describe('Eligibility Controller', () => {
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[0].question,
+        description: i18n.eligibility[0].description,
         questionId: '0',
         previousPage: paths.start,
         answer: '',

@@ -36,6 +36,7 @@ withPipeline("nodejs", product, component) {
     loadVaultSecrets(secrets)
     enableDockerBuild()
     installCharts()
+    enableAksStagingDeployment()
 
     before("functionalTest") {
         env.IDAM_API_URL = 'http://idam-api.aat.platform.hmcts.net'

@@ -1,4 +1,6 @@
-provider "azurerm" {}
+provider "azurerm" {
+  version = "1.41.0"
+}
 
 locals {
 
@@ -45,7 +47,7 @@ module "ia_aip_frontend" {
   env                  = "${var.env}"
   ilbIp                = "${var.ilbIp}"
   resource_group_name  = "${azurerm_resource_group.rg.name}"
-  is_frontend          = "${var.env != "preview" ? 1: 0}"
+  is_frontend          = true
   subscription         = "${var.subscription}"
   additional_host_name = "${var.env != "preview" ? var.additional_hostname : "null"}"
   https_only           = "${var.env != "preview" ? "true" : "true"}"

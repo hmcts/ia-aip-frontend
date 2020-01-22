@@ -6,16 +6,19 @@ interface CaseData {
   appellantGivenNames: string;
   appellantFamilyName: string;
   appellantDateOfBirth: string;
-  appellantNationalities: Nationality[]
-  appellantAddress: CCDAddress
-  subscriptions: SubscriptionCollection[]
+  appellantNationalities: Nationality[];
+  appellantAddress: CCDAddress;
+  appellantHasFixedAddress: 'Yes' | 'No';
+  subscriptions: SubscriptionCollection[];
+  submissionOutOfTime: 'Yes' | 'No';
+  applicationOutOfTimeExplanation: string;
 }
 
 interface Nationality {
   id?: string;
   value: {
     code: string;
-  }
+  };
 }
 
 interface CCDAddress {

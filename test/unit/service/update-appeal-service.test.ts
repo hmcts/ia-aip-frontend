@@ -122,23 +122,38 @@ describe('update-appeal-service', () => {
     describe('converts home office letter date', () => {
       it('full date', () => {
         emptyApplication.dateLetterSent = { year: '2019', month: '12', day: '11' };
+        emptyApplication.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', homeOfficeDecisionDate: '2019-12-11' });
+        expect(caseData).eql({
+          journeyType: 'aip',
+          homeOfficeDecisionDate: '2019-12-11',
+          submissionOutOfTime: 'Yes'
+        });
       });
 
       it('day and month leading 0', () => {
         emptyApplication.dateLetterSent = { year: '2019', month: '02', day: '01' };
+        emptyApplication.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', homeOfficeDecisionDate: '2019-02-01' });
+        expect(caseData).eql({
+          journeyType: 'aip',
+          homeOfficeDecisionDate: '2019-02-01',
+          submissionOutOfTime: 'Yes'
+        });
       });
 
       it('day and month no leading 0', () => {
         emptyApplication.dateLetterSent = { year: '2019', month: '2', day: '3' };
+        emptyApplication.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', homeOfficeDecisionDate: '2019-02-03' });
+        expect(caseData).eql({
+          journeyType: 'aip',
+          homeOfficeDecisionDate: '2019-02-03',
+          submissionOutOfTime: 'Yes'
+        });
       });
     });
 
@@ -295,7 +310,10 @@ describe('update-appeal-service', () => {
                 month: 12,
                 day: 11
               },
-              isAppealLate: false,
+              isAppealLate: true,
+              lateAppeal: {
+                reason: 'a reason'
+              },
               personalDetails: {
                 givenNames: 'givenNames',
                 familyName: 'familyName',
@@ -340,6 +358,8 @@ describe('update-appeal-service', () => {
         journeyType: 'aip',
         homeOfficeReferenceNumber: 'newRef',
         homeOfficeDecisionDate: '2019-12-11',
+        submissionOutOfTime: 'Yes',
+        applicationOutOfTimeExplanation: 'a reason',
         appellantGivenNames: 'givenNames',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1980-01-02',
@@ -351,6 +371,7 @@ describe('update-appeal-service', () => {
           PostCode: 'W1W 7RT',
           Country: 'United Kingdom'
         },
+        appellantHasFixedAddress: 'Yes',
         appellantNationalities: [
           {
             value: {

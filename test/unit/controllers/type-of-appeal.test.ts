@@ -96,17 +96,17 @@ describe('Type of appeal Controller', () => {
 
   describe('postTypeOfAppeal', () => {
     it('should fail validation and render type-of-appeal.njk with a validation error', async () => {
-      req.body = { 'button': 'save-and-continue', 'appealType': '' };
+      req.body = { 'button': 'save-and-continue' };
       const expectedError: ValidationError = {
-        href: '#undefined',
-        key: undefined,
-        text: 'Select at least one of the appeal types'
+        href: '#appealType',
+        key: 'appealType',
+        text: 'Select an appeal type'
       };
 
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
-        errors: { undefined: expectedError },
+        errors: { appealType: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.taskList
       });
@@ -138,7 +138,7 @@ describe('Type of appeal Controller', () => {
     });
 
     it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', async () => {
-      req.body = { 'button': 'save-and-continue', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
+      req.body = { 'button': 'save-and-continue', 'appealType': 'protection' };
 
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.taskList);
@@ -147,7 +147,7 @@ describe('Type of appeal Controller', () => {
     it('postTypeOfAppeal when in edit mode when clicked on save-and-continue with multiple selections should redirect to CYA page and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
 
-      req.body = { 'button': 'save-and-continue', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
+      req.body = { 'button': 'save-and-continue', 'appealType': 'protection' };
 
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.checkAndSend);
@@ -157,7 +157,7 @@ describe('Type of appeal Controller', () => {
 
     it('postTypeOfAppeal should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      req.body = { 'button': 'save-for-later', 'appealType': [ 'human-rights', 'eea', 'protection' ] };
+      req.body = { 'button': 'save-for-later', 'appealType': 'protection' };
       res.redirect = sandbox.stub().throws(error);
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);

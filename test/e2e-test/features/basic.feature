@@ -17,7 +17,7 @@ Feature: Business rules
     When I select Yes and click continue
     Then I should see the "Is anyone else in your family appealing their own Home Office decision" eligibility page
     When I select No and click continue
-    Then I should see the "Are you appealing an EEA decision" eligibility page
+    Then I should see the "Are you appealing an European Economic Area (EEA) decision" eligibility page
     When I select No and click continue
     Then I should see the "Have you ever been a British citizen" eligibility page
     When I select Yes and click continue

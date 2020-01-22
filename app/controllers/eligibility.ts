@@ -11,6 +11,7 @@ function getPreviousPageLink(questionId) {
 function getModel(nextId, answer) {
   return {
     question: i18n.eligibility[nextId].question,
+    description: i18n.eligibility[nextId].description,
     questionId: nextId,
     previousPage: getPreviousPageLink(nextId),
     answer,

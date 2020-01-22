@@ -1,5 +1,4 @@
 import { OSPlacesClient } from '@hmcts/os-places-client';
-import config from 'config';
 import * as express from 'express';
 import requestPromise from 'request-promise-native';
 import { setupCheckAndSendController } from './controllers/check-and-send';
@@ -21,6 +20,9 @@ import { CcdService } from './service/ccd-service';
 import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
+import { setupSecrets } from './setupSecrets';
+
+const config = setupSecrets();
 
 export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));

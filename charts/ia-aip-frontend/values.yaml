@@ -8,6 +8,14 @@ nodejs:
   cpuLimits: 1
   environment:
     HTTP_PROTOCOL: http
+  keyVaults:
+    ia:
+      secrets:
+        - idam-secret
+        - addressLookupToken
+    sscs:
+      secrets:
+        - sscs-s2s-secret
 redis:
   cluster:
     enabled: false

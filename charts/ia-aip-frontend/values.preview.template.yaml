@@ -12,11 +12,16 @@ nodejs:
     HTTP_PROTOCOL: http
     IDAM_WEB_URL: https://idam-web-public.aat.platform.hmcts.net
     IDAM_API_URL: http://idam-api.aat.platform.hmcts.net
-    IDAM_SECRET: ${IDAM_CLIENT_SECRET}
-    S2S_SECRET: ${S2S_SECRET}
     S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
     CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
     S2S_MICROSERVICE_NAME: sscs
     MICROSERVICE: iac
-    ADDRESS_LOOKUP_TOKEN: ${ADDRESS_LOOKUP_TOKEN}
     REDIS_URL: redis://${SERVICE_NAME}-redis-master
+  keyVaults:
+    ia:
+      secrets:
+        - idam-secret
+        - addressLookupToken
+    sscs:
+      secrets:
+        - sscs-s2s-secret

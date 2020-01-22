@@ -175,20 +175,21 @@ describe('Eligibility Controller', () => {
 
     it('reload page if no option selected', () => {
       req.body = {
-        questionId: '0'
+        questionId: '2'
       };
       req.session.eligibility = {};
 
       eligibilityQuestionPost(req as Request, res as Response, next);
 
-      const error = { href: '#answer', key: 'answer', text: i18n.eligibility[0].errorMessage };
+      const error = { href: '#answer', key: 'answer', text: i18n.eligibility[2].errorMessage };
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         answer: undefined,
         errorList: [ error ],
         errors: { answer: error },
-        previousPage: '/start',
-        question: i18n.eligibility[0].question,
-        questionId: '0'
+        previousPage: '/eligibility?id=1',
+        question: i18n.eligibility[2].question,
+        description: i18n.eligibility[2].description,
+        questionId: '2'
       });
     });
   });

@@ -48,6 +48,7 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
       model.errorList = Object.values(validation);
       return res.render('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[questionId].question,
+        description: i18n.eligibility[questionId].description,
         questionId: questionId,
         previousPage: getPreviousPageLink(questionId),
         answer,

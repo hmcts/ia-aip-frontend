@@ -14,7 +14,7 @@ const setSecret = (secretPath, configPath) => {
 const setupSecrets = () => {
   setSecret('secrets.ia.idam-secret', 'idam.secret');
   setSecret('secrets.ia.addressLookupToken', 'addressLookup.token');
-  setSecret('secrets.sscs.sscs-s2s-secret', 's2s.secret');
+  setSecret('secrets.ia.sscs-s2s-secret', 's2s.secret');
 
   return config;
 };

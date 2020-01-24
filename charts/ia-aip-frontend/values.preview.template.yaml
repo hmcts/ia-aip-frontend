@@ -22,6 +22,4 @@ nodejs:
       secrets:
         - idam-secret
         - addressLookupToken
-    sscs:
-      secrets:
         - sscs-s2s-secret

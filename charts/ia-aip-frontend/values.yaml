@@ -14,7 +14,7 @@ nodejs:
       secrets:
         - idam-secret
         - addressLookupToken
-        - sscs-s2s-secret
+        - s2s-secret
         - ia-redis-access-key
         - ia-redis-connection-string
 redis:

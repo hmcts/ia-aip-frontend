@@ -6,6 +6,13 @@
 {% extends "layout.njk" %}
 
 {% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
   <form action="/case-building/reason-for-appeal/supporting-evidence" method="post">
     {% call govukFieldset({
       legend: {
@@ -14,7 +21,7 @@
         isPageHeading: true
       }
     }) %}
-      {{ radioButtons(id='supportingEvidence' ,legendText = '',hintText = i18n.pages.evidence.heading, errorMessage = errorList[0].text) }}
+      {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading, errorMessage = errorList[0].text) }}
       {{ continueButton() }}
     {% endcall %}
   </form>

@@ -43,10 +43,10 @@ async function setupData(newCaseData) {
 }
 
 const PATHS = {
-  REASONS_FOR_APPEAL: paths.reasonsForAppeal.decision,
-  ADDITIONAL_SUPPORTING_EVIDENCE: paths.reasonsForAppeal.supportingEvidence,
-  SUPPORTING_EVIDENCE_UPLOAD: paths.reasonsForAppeal.supportingEvidenceUpload,
-  REASONS_FOR_APPEAL_CHECK_YOUR_ANSWERS: paths.reasonsForAppeal.checkAndSend
+  'reasons for appeal': paths.reasonsForAppeal.decision,
+  'supporting evidence question': paths.reasonsForAppeal.supportingEvidence,
+  'supporting evidence upload': paths.reasonsForAppeal.supportingEvidenceUpload,
+  'reasons for appeal check your answers': paths.reasonsForAppeal.checkAndSend
 };
 
 module.exports = {

@@ -283,14 +283,6 @@ function reasonForAppealDecisionValidation(obj: object): null | ValidationErrors
   return validate(obj, schema);
 }
 
-function supportingEvidenceRequiredValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.object({
-    value: Joi.string().required()
-      .messages({ 'any.required': i18n.validationErrors.reasonForAppeal.supportingEvidenceRequired })
-  }).unknown();
-  return validate(obj, schema);
-}
-
 function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
   const schema = Joi.object({
     answer: Joi.string().required().messages({ 'any.required': errorMessage })
@@ -315,6 +307,5 @@ export {
   addressValidation,
   typeOfAppealValidation,
   reasonForAppealDecisionValidation,
-  supportingEvidenceRequiredValidation,
   yesOrNoRequiredValidation
 };

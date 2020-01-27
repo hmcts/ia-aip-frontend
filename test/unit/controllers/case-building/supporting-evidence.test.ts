@@ -93,28 +93,28 @@ describe('Supporting Evidence Upload Controller', () => {
     it('should fail validation and render case-building/reasons-for-appeal/supporting-evidence-page.njk with a validation error', async () => {
       req.body = {};
       const expectedError: ValidationError = {
-        href: '#value',
-        key: 'value',
+        href: '#answer',
+        key: 'answer',
         text: 'Select Yes if you want to provide supporting evidence'
       };
 
       postSupportingEvidencePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
-        error: { value: expectedError },
+        error: { answer: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.reasonsForAppeal.decision
       });
     });
 
     it('when no is selected should validate and redirect to the check-and-send page', async () => {
-      req.body = { 'value': 'no' };
+      req.body = { 'answer': 'no' };
 
       postSupportingEvidencePage(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.checkAndSend);
     });
 
     it('when yes is selected should validate and redirect to the supporting-evidence-upload page', async () => {
-      req.body = { 'value': 'yes' };
+      req.body = { 'answer': 'yes' };
 
       postSupportingEvidencePage(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
@@ -122,7 +122,7 @@ describe('Supporting Evidence Upload Controller', () => {
 
     it('postTypeOfAppeal should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      req.body = { 'value': 'yes' };
+      req.body = { 'answer': 'yes' };
       res.redirect = sandbox.stub().throws(error);
       postSupportingEvidencePage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);

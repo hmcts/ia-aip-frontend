@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
-import { yesOrNoRequiredValidation } from '../utils/fields-validations';
+import { yesOrNoRequiredValidation } from '../utils/validations/fields-validations';
 
 function getPreviousPageLink(questionId) {
   return questionId === '0' ? paths.start : `${paths.eligibility.questions}?id=${_.toNumber(questionId) - 1}`;

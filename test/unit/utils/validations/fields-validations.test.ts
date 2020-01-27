@@ -7,7 +7,6 @@ import {
   mobilePhoneValidation,
   reasonForAppealDecisionValidation,
   statementOfTruthValidation,
-  supportingEvidenceRequiredValidation,
   textAreaValidation,
   yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
@@ -495,30 +494,6 @@ describe('reasonForAppealDecisionValidation', () => {
   });
 });
 
-describe('supportingEvidenceRequiredValidation', () => {
-  it('should validate if selection is present', () => {
-    const object = { 'value': 'yes' };
-    const validationResult = supportingEvidenceRequiredValidation(object);
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should fail validation and return "any.required" type', () => {
-    const object = {};
-    const validationResult = supportingEvidenceRequiredValidation(object);
-    const expectedResponse = {
-
-      value: {
-        href: '#value',
-        key: 'value',
-        text: 'Select Yes if you want to provide supporting evidence'
-      }
-
-    };
-    expect(validationResult).to.deep.equal(expectedResponse);
-  });
-
-});
-
 describe('reasonForAppealDecisionValidation', () => {
   it('should validate if statement present', () => {
     const object = { 'moreDetail': 'some reason text here' };
@@ -540,28 +515,4 @@ describe('reasonForAppealDecisionValidation', () => {
     };
     expect(validationResult).to.deep.equal(expectedResponse);
   });
-});
-
-describe('supportingEvidenceRequiredValidation', () => {
-  it('should validate if selection is present', () => {
-    const object = { 'value': 'yes' };
-    const validationResult = supportingEvidenceRequiredValidation(object);
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should fail validation and return "any.required" type', () => {
-    const object = {};
-    const validationResult = supportingEvidenceRequiredValidation(object);
-    const expectedResponse = {
-
-      value: {
-        href: '#value',
-        key: 'value',
-        text: 'Select Yes if you want to provide supporting evidence'
-      }
-
-    };
-    expect(validationResult).to.deep.equal(expectedResponse);
-  });
-
 });

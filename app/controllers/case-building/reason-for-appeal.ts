@@ -8,7 +8,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
-  supportingEvidenceRequiredValidation
+  yesOrNoRequiredValidation
 } from '../../utils/validations/fields-validations';
 import { daysToWaitUntilContact } from '../appeal-application/confirmation-page';
 
@@ -27,11 +27,11 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
 }
 
 function postSupportingEvidenceContinue(req: Request, res: Response, next: NextFunction) {
-  const validation = [{
+  const validation = [ {
     href: 'uploadFile',
     text: i18n.validationErrors.fileUpload.noFileSelected,
     value: '#uploadFile'
-  }];
+  } ];
   try {
     if (req.session.appeal.caseBuilding.evidences === undefined) {
       return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
@@ -80,8 +80,8 @@ function getSupportingEvidencePage(req: Request, res: Response, next: NextFuncti
 
 function postSupportingEvidencePage(req: Request, res: Response, next: NextFunction) {
   try {
-    const { value } = req.body;
-    const validations = supportingEvidenceRequiredValidation(req.body);
+    const { answer } = req.body;
+    const validations = yesOrNoRequiredValidation(req.body, i18n.validationErrors.reasonForAppeal.supportingEvidenceRequired);
     if (validations !== null) {
       return res.render('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
         errorList: Object.values(validations),
@@ -89,7 +89,7 @@ function postSupportingEvidencePage(req: Request, res: Response, next: NextFunct
         previousPage: paths.reasonsForAppeal.decision
       });
     }
-    if (value === 'yes') {
+    if (answer === 'yes') {
       return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
     } else {
       return res.redirect(paths.reasonsForAppeal.checkAndSend);

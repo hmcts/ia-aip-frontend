@@ -224,6 +224,12 @@
       "heading": "You can use the new appeal service",
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one."
+    },
+    "eligibleStartPage": {
+      "newService": "This is a new online service for people appealing an immigration or asylum decision. Becuase it is a new service, not everyone will be able to use it right now.",
+      "askQuestions": "We need to ask you a few questions to see if the service is suitable for you.",
+      "alreadyStarted": "Have you already started an appeal?",
+      "signIn": "Sign in to continue with your appeal"
     }
   },
   "error": {

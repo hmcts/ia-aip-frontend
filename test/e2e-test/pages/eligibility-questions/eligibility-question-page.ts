@@ -21,5 +21,22 @@ module.exports = {
     Then(/^I should see the "([^"]*)" eligibility page$/, async (eligibilityQuestion) => {
       I.seeInTitle(eligibilityQuestion);
     });
+
+    When('I click the start now button', async () => {
+      I.amOnPage(paths.start);
+      I.click('Start now');
+    });
+
+    When('I click the sign in and continue link', async () => {
+      I.amOnPage(paths.start);
+      I.click('a[id="continue"]');
+    });
+    Then(/^I should see "([^"]*)" questions page$/, async (startNow) => {
+      I.seeInTitle(startNow);
+    });
+
+    Then(/^I should see "([^"]*)" on login page$/, async (continueAppeal) => {
+      I.seeInTitle(continueAppeal);
+    });
   }
 };

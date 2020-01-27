@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { eligibilityQuestionGet, eligibilityQuestionPost, getEligible, getIneligible } from '../../../app/controllers/eligibility';
+import { eligibilityQuestionGet, eligibilityQuestionPost, getEligible, getEligibleStart, getIneligible, postEligibleStart } from '../../../app/controllers/eligibility';
 import { paths } from '../../../app/paths';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -192,6 +192,11 @@ describe('Eligibility Controller', () => {
         questionId: '2'
       });
     });
+
+    it('redirects to to start questions', () => {
+      postEligibleStart(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.start);
+    });
   });
 
   describe('getEligible', () => {
@@ -207,6 +212,10 @@ describe('Eligibility Controller', () => {
       );
     });
 
+    it('should render the view', () => {
+      getEligibleStart(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('eligibility/eligibility-start.njk');
+    });
     it('should catch exception and call next with the error', function () {
       req.session.eligibility = {};
       const error = new TypeError('Cannot read property \'id\' of undefined');

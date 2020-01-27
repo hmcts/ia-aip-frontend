@@ -35,7 +35,7 @@ data "azurerm_key_vault_secret" "addressLookupToken" {
 }
 
 data "azurerm_key_vault_secret" "s2s_secret" {
-  name      = "sscs-s2s-secret"
+  name      = "s2s-secret"
   vault_uri = "${data.azurerm_key_vault.ia_key_vault.vault_uri}"
 }
 

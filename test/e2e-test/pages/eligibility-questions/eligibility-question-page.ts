@@ -22,15 +22,16 @@ module.exports = {
       I.seeInTitle(eligibilityQuestion);
     });
 
+    When('I click the sign in and continue link', async () => {
+      I.amOnPage(paths.start);
+      I.click('a[id="continue"]');
+    });
+
     When('I click the start now button', async () => {
       I.amOnPage(paths.start);
       I.click('Start now');
     });
 
-    When('I click the sign in and continue link', async () => {
-      I.amOnPage(paths.start);
-      I.click('a[id="continue"]');
-    });
     Then(/^I should see "([^"]*)" questions page$/, async (startNow) => {
       I.seeInTitle(startNow);
     });

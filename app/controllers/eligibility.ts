@@ -125,8 +125,8 @@ function setupEligibilityController(): Router {
   router.post(paths.eligibility.questions, eligibilityQuestionPost);
   router.get(paths.eligibility.eligible, getEligible);
   router.get(paths.eligibility.ineligible, getIneligible);
-  router.get(paths.eligibility.eligibleStart, getEligibleStart);
   router.post(paths.eligibility.eligibleStart, postEligibleStart);
+  router.get(paths.eligibility.eligibleStart, getEligibleStart);
 
   return router;
 }

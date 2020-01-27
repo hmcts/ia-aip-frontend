@@ -86,6 +86,7 @@ Feature: Eligibility
     When I click the start now button
     Then I should see "Are you at least 18 years old?" questions page
 
+
   Scenario: I have come back to complete an appeal
     When I click the sign in and continue link
     Then I should see "Sign in" on login page

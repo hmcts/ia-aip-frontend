@@ -33,11 +33,10 @@ function textAreaValidation(text: string, theKey: string): ValidationErrors | nu
   const schema = Joi.object({
     [theKey]: Joi.string()
       .required()
-      .min(3)
+      .trim()
       .messages({
-        'any.required': i18n.validationErrors.required,
-        'string.empty': i18n.validationErrors.empty,
-        'string.min': i18n.validationErrors.stringMin
+        'any.required': i18n.validationErrors.emptyReasonAppealIsLate,
+        'string.empty': i18n.validationErrors.emptyReasonAppealIsLate
       })
   });
 

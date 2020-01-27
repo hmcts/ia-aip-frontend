@@ -298,8 +298,8 @@
     },
     "eligibility": {
       "selectYesOrNo": "Select either yes or no"
-    }
-
+    },
+    "emptyReasonAppealIsLate": "Enter the reason your appeal is late"
   },
   "components": {
     "evidenceList": {

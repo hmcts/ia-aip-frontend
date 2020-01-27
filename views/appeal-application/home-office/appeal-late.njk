@@ -9,7 +9,7 @@
 {% block content %}
   {% if errorList %}
     {{ govukErrorSummary({
-      titleText: i18n.errorSummary.titleText,
+      titleText: i18n.validationErrors.errorSummary,
       descriptionText: i18n.errorSummary.descriptionText,
       errorList: errorList
     }) }}
@@ -27,6 +27,9 @@
         text: i18n.pages.homeOfficeAppealLate.description | safe
       },
       value: appealLateReason,
+      attributes: {
+        maxlength: maxCharacters
+      },
       errorMessage: {
         text: error["appeal-late"].text
       } if error["appeal-late"]

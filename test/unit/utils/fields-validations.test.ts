@@ -310,7 +310,7 @@ describe('textAreaValidation', () => {
         [key]: {
           href: '#aKey',
           key: 'aKey',
-          text: i18n.validationErrors.required
+          text: i18n.validationErrors.emptyReasonAppealIsLate
         }
       }
     );

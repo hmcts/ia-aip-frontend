@@ -8,6 +8,9 @@ nodejs:
   cpuLimits: 1
   environment:
     HTTP_PROTOCOL: http
+    NODE_ENV: production
+    S2S_MICROSERVICE_NAME: iac
+    MICROSERVICE: iac
   aadIdentityName: ia
   keyVaults:
     ia:

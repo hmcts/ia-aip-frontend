@@ -4,8 +4,8 @@ import multer from 'multer';
 import { paths } from '../paths';
 import { Events } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { textAreaValidation } from '../utils/fields-validations';
 import { getConditionalRedirectUrl } from '../utils/url-utils';
+import { textAreaValidation } from '../utils/validations/fields-validations';
 
 const maxCharacters = config.get('maxCharacters');
 
@@ -69,7 +69,7 @@ function postUploadEvidence(req: Request, res: Response, next: NextFunction) {
       application.lateAppeal = {
         ...application.lateAppeal,
         evidence: {
-          url: req.file.originalname,
+          url: '#',
           name: req.file.originalname
         }
       };

@@ -11,6 +11,9 @@ locals {
   preview_vault_name              = "${var.raw_product}-aat"
   non_preview_vault_name          = "${var.raw_product}-${var.env}"
   key_vault_name                  = "${var.env == "preview" || var.env == "spreview" ? local.preview_vault_name : local.non_preview_vault_name}"
+
+  ia_aip_frontend_suffix  = "${var.env != "prod" ? "-ia-aip-frontend" : ""}"
+  ia_aip_frontend_internal_hostname  = "${var.product}-${var.component}-${var.env}.service.core-compute-${var.env}.internal"
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -39,6 +42,16 @@ data "azurerm_key_vault_secret" "s2s_secret" {
   vault_uri = "https://sscs-aat.vault.azure.net/"
 }
 
+data "azurerm_key_vault_secret" "ia_frontend_cert" {
+  name      = "${var.ia_aip_frontend_external_cert_name}"
+  vault_uri = "${var.external_cert_vault_uri}"
+}
+
+data "azurerm_subnet" "subnet_a" {
+  name                 = "core-infra-subnet-0-${var.env}"
+  virtual_network_name = "core-infra-vnet-${var.env}"
+  resource_group_name  = "core-infra-${var.env}"
+}
 
 module "ia_aip_frontend" {
   source               = "git@github.com:hmcts/cnp-module-webapp?ref=master"
@@ -84,4 +97,30 @@ module "redis-cache" {
   env         = "${var.env}"
   subnetid    = "${data.terraform_remote_state.core_apps_infrastructure.subnet_ids[1]}"
   common_tags = "${var.common_tags}"
+}
+
+module "app-gateway" {
+  source = "git@github.com:hmcts/cnp-module-waf?ref=master"
+  env = "${var.env}"
+  subscription = "${var.subscription}"
+  location = "${var.location}"
+  wafName = "${var.product}"
+  resourcegroupname = "${azurerm_resource_group.rg.name}"
+  common_tags = "${var.common_tags}"
+
+  # vNet connections
+  gatewayIpConfigurations = [
+    {
+      name = "internalNetwork"
+      subnetId = "${data.azurerm_subnet.subnet_a.id}"
+    }
+  ]
+
+  sslCertificates = [
+    {
+      name = "${var.ia_aip_frontend_external_cert_name}${local.ia_aip_frontend_suffix}"
+      data = "${data.azurerm_key_vault_secret.ia_frontend_cert.value}"
+      password = ""
+    }
+  ]
 }

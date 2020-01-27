@@ -71,3 +71,11 @@ variable "s2s_url" {
   description = "Url of the s2s api"
   type = "string"
 }
+
+variable "ia_aip_frontend_external_cert_name" {
+  description = "SSL Certificate name"
+}
+
+variable "external_cert_vault_uri" {
+  description = "url of the certificate vault"
+}

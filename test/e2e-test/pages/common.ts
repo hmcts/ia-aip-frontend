@@ -174,5 +174,8 @@ module.exports = {
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
       await I.seeInCurrentUrl('/task-list');
     });
+    When(/^I click "([^"]*)" button$/, async (button) => {
+      await I.click(button);
+    });
   }
 };

@@ -102,31 +102,12 @@ function getIneligible(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getEligibleStart(req: Request, res: Response, next: NextFunction) {
-  try {
-    res.render('eligibility/eligibility-start.njk', {
-    });
-  } catch (e) {
-    next(e);
-  }
-}
-
-function postEligibleStart(req: Request, res: Response, next: NextFunction) {
-  try {
-    res.redirect(paths.start);
-  } catch (e) {
-    next(e);
-  }
-}
-
 function setupEligibilityController(): Router {
   const router = Router();
   router.get(paths.eligibility.questions, eligibilityQuestionGet);
   router.post(paths.eligibility.questions, eligibilityQuestionPost);
   router.get(paths.eligibility.eligible, getEligible);
   router.get(paths.eligibility.ineligible, getIneligible);
-  router.post(paths.eligibility.eligibleStart, postEligibleStart);
-  router.get(paths.eligibility.eligibleStart, getEligibleStart);
 
   return router;
 }
@@ -142,7 +123,5 @@ export {
   eligibilityQuestionPost,
   setupEligibilityController,
   getEligible,
-  getIneligible,
-  getEligibleStart,
-  postEligibleStart
+  getIneligible
 };

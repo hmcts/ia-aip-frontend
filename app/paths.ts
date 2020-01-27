@@ -33,7 +33,6 @@ const paths = {
   checkAndSend: '/check-and-send',
   eligibility: {
     ineligible: '/ineligible',
-    eligibleStart: '/eligibility-start',
     questions: '/eligibility',
     eligible: '/eligible'
   }

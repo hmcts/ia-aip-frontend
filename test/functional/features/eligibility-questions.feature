@@ -82,11 +82,8 @@ Feature: Eligibility
     When I click Back button
     Then I should see the "Are you currently in the UK" eligibility page
 
-  Scenario: I have come back to complete an appeal
-    When I click the start now button
-    Then I should see "Are you at least 18 years old?" questions page
 
-
-  Scenario: I have come back to complete an appeal
-    When I click the sign in and continue link
-    Then I should see "Sign in" on login page
+  Scenario: Citizen can continue already started appeal
+    Given I am on home page
+    When I click "Sign in to continue with your appeal" button
+    Then I should see the sign in page

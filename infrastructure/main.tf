@@ -35,8 +35,8 @@ data "azurerm_key_vault_secret" "addressLookupToken" {
 }
 
 data "azurerm_key_vault_secret" "s2s_secret" {
-  name      = "sscs-s2s-secret"
-  vault_uri = "https://sscs-aat.vault.azure.net/"
+  name      = "s2s-secret"
+  vault_uri = "${data.azurerm_key_vault.ia_key_vault.vault_uri}"
 }
 
 
@@ -84,4 +84,16 @@ module "redis-cache" {
   env         = "${var.env}"
   subnetid    = "${data.terraform_remote_state.core_apps_infrastructure.subnet_ids[1]}"
   common_tags = "${var.common_tags}"
+}
+
+resource "azurerm_key_vault_secret" "redis_access_key" {
+  name         = "${var.product}-redis-access-key"
+  value        = "${module.redis-cache.access_key}"
+  key_vault_id = "${data.azurerm_key_vault.ia_key_vault.id}"
+}
+
+resource "azurerm_key_vault_secret" "redis_connection_string" {
+  name         = "${var.product}-redis-connection-string"
+  value        = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
+  key_vault_id = "${data.azurerm_key_vault.ia_key_vault.id}"
 }

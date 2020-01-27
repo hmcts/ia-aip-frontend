@@ -2,13 +2,8 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-    NODE_ENV: preview
-    HTTP_PROTOCOL: http
-    S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
-    IDAM_URL: http://idam-api.aat.platform.hmcts.net
     IDAM_WEB_URL: https://idam-web-public.aat.platform.hmcts.net
-    IDAM_SYSTEMUPDATE_USER: ia.legalrep.a.ccd@gmail.com
-    CCD_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
-    IDAM_REDIRECT_URL: https://ia-case-api-aat.service.core-compute-aat.internal/oauth2/callback
+    IDAM_API_URL: http://idam-api.aat.platform.hmcts.net
+    S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+    CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
     REDIS_URL: redis://${SERVICE_NAME}-redis-master
-    SESSION_SECRET:

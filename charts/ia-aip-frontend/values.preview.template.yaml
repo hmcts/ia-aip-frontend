@@ -8,20 +8,8 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-    NODE_ENV: preview
-    HTTP_PROTOCOL: http
     IDAM_WEB_URL: https://idam-web-public.aat.platform.hmcts.net
     IDAM_API_URL: http://idam-api.aat.platform.hmcts.net
     S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
     CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
-    S2S_MICROSERVICE_NAME: sscs
-    MICROSERVICE: iac
     REDIS_URL: redis://${SERVICE_NAME}-redis-master
-  keyVaults:
-    ia:
-      secrets:
-        - idam-secret
-        - addressLookupToken
-    sscs:
-      secrets:
-        - sscs-s2s-secret

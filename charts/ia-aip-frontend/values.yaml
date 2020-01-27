@@ -8,14 +8,18 @@ nodejs:
   cpuLimits: 1
   environment:
     HTTP_PROTOCOL: http
+    NODE_ENV: production
+    S2S_MICROSERVICE_NAME: iac
+    MICROSERVICE: iac
+  aadIdentityName: ia
   keyVaults:
     ia:
       secrets:
         - idam-secret
         - addressLookupToken
-    sscs:
-      secrets:
-        - sscs-s2s-secret
+        - s2s-secret
+        - ia-redis-access-key
+        - ia-redis-connection-string
 redis:
   cluster:
     enabled: false

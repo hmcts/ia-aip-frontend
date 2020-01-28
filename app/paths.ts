@@ -32,7 +32,6 @@ const paths = {
   contactDetails: '/contact-details',
   checkAndSend: '/check-and-send',
   eligibility: {
-    start: '/eligibility-start',
     ineligible: '/ineligible',
     questions: '/eligibility',
     eligible: '/eligible'

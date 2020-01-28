@@ -206,7 +206,6 @@ describe('Eligibility Controller', () => {
         }
       );
     });
-
     it('should catch exception and call next with the error', function () {
       req.session.eligibility = {};
       const error = new TypeError('Cannot read property \'id\' of undefined');

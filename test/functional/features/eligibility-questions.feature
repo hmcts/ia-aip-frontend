@@ -81,3 +81,9 @@ Feature: Eligibility
     Then I should see the ineligible page
     When I click Back button
     Then I should see the "Are you currently in the UK" eligibility page
+
+
+  Scenario: Citizen can continue already started appeal
+    Given I am on home page
+    When I click "Sign in to continue with your appeal" button
+    Then I should see the sign in page

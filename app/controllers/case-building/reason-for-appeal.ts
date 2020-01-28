@@ -26,7 +26,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postSupportingEvidenceContinue(req: Request, res: Response, next: NextFunction) {
+function postSupportingEvidenceSubmit(req: Request, res: Response, next: NextFunction) {
   const validation = [ {
     href: 'uploadFile',
     text: i18n.validationErrors.fileUpload.noFileSelected,
@@ -214,10 +214,10 @@ function setupReasonsForAppealController(deps?: any): Router {
   router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
   router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, upload, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
   router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
+  router.post(paths.reasonsForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit);
   router.get(paths.reasonsForAppeal.checkAndSend, getCheckAndSendPage);
   router.post(paths.reasonsForAppeal.checkAndSend, postCheckAndSendPage);
   router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);
-  router.post(paths.reasonsForAppeal.supportEvidenceContinue, postSupportingEvidenceContinue);
 
   return router;
 }
@@ -231,6 +231,7 @@ export {
   getSupportingEvidenceUploadPage,
   postSupportingEvidenceUploadFile,
   getSupportingEvidenceDeleteFile,
+  postSupportingEvidenceSubmit,
   getCheckAndSendPage,
   postCheckAndSendPage,
   getConfirmationPage

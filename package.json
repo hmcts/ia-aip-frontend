@@ -13,9 +13,9 @@
     "mock-postcode": "dyson test/mock/postcode-lookup/services/ 20002",
     "mock-dm-store": "dyson test/mock/document-management-store/services/ 20003",
     "lint": "tslint --project .",
-    "test": "yarn test:unit && TEST_URL=https://localhost:3000 cross-env USE_REDIS=false yarn codecept:functional",
+    "test": "yarn test:unit && yarn codecept:functional",
     "test:accessibility": "IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=development USE_REDDIS=false mocha test/accessibility/*.ts --exit",
-    "test:unit": "rm -rf test/coverage && nyc mocha --recursive \"test/unit/**/*.test.ts\"",
+    "test:unit": "rm -rf test/coverage && cross-env NODE_ENV=test nyc mocha --recursive \"test/unit/**/*.test.ts\"",
     "test:coverage": "nyc report",
     "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",
@@ -23,7 +23,7 @@
     "test:functional": "yarn codecept:e2e",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional",
     "codecept:crossbrowser": "codeceptjs run -c codecept.crossbrowser.js",
-    "codecept:functional": "IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 ADDRESS_LOOKUP_URL=http://localhost:20002 DOC_MANAGEMENT_URL=http://localhost:20003 cross-env NODE_ENV=development codeceptjs run -c codecept.functional.js --verbose -g \"@broken\" --invert",
+    "codecept:functional": " TEST_URL=https://localhost:3000 USE_REDIS=false IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 ADDRESS_LOOKUP_URL=http://localhost:20002 DOC_MANAGEMENT_URL=http://localhost:20003 cross-env NODE_ENV=test codeceptjs run -c codecept.functional.js --verbose -g \"@broken\" --invert",
     "codecept:e2e": "IDAM_API_URL=http://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.e2e.js --verbose --debug"
   },
   "husky": {

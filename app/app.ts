@@ -32,7 +32,7 @@ function createApp() {
   app.use(cookieParser());
   app.post('*', filterRequest);
 
-  if (environment === 'development' || environment === 'test') {
+  if (environment === 'development') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
     const options = { stats: 'errors-only' } as Options;

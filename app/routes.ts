@@ -25,6 +25,7 @@ import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
 
 const config = setupSecrets();
+const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 export const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
@@ -56,7 +57,7 @@ router.use(eligibilityController);
 // protected by idam
 router.use(idamController);
 // router.use(initSession);
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);
 }
 router.use(indexController);

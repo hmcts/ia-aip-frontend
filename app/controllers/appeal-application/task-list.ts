@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { applicationStatusUpdate, logSession } from '../../middleware/session-middleware';
+import { applicationStatusUpdate } from '../../middleware/session-middleware';
 import { paths } from '../../paths';
 
 /**
@@ -58,7 +58,7 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
 
 function setupTaskListController(): Router {
   const router = Router();
-  router.get(paths.taskList, logSession, applicationStatusUpdate, getTaskList);
+  router.get(paths.taskList, applicationStatusUpdate, getTaskList);
   return router;
 }
 

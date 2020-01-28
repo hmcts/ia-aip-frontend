@@ -9,6 +9,7 @@ import {
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../utils/testUtils';
+
 const express = require('express');
 
 describe('Out of time controller', () => {
@@ -136,7 +137,7 @@ describe('Out of time controller', () => {
       };
       const fileObject = {
         name: file.originalname,
-        url: file.originalname
+        url: '#'
       };
       req.file = file as Express.Multer.File;
       postUploadEvidence(req as Request, res as Response, next);
@@ -159,7 +160,7 @@ describe('Out of time controller', () => {
         mimetype: 'type'
       };
       const fileObject = {
-        url: file.originalname,
+        url: '#',
         name: file.originalname
       };
 

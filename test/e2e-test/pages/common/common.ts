@@ -1,7 +1,9 @@
 import * as _ from 'lodash';
 import moment from 'moment';
 import rp from 'request-promise';
-const { fillInDate } = require('./helper-functions');
+import { paths } from '../../../../app/paths';
+
+const { fillInDate } = require('../helper-functions');
 
 const caseData = {
   'id': 1573640323267110,
@@ -35,10 +37,17 @@ async function setupData(newCaseData) {
   _.merge(caseDataClone.case_data, newCaseData);
   await rp.post({
     uri: 'http://localhost:20000/setupCase',
-    body: [caseDataClone],
+    body: [ caseDataClone ],
     json: true
   });
 }
+
+const PATHS = {
+  'reasons for appeal': paths.reasonsForAppeal.decision,
+  'supporting evidence question': paths.reasonsForAppeal.supportingEvidence,
+  'supporting evidence upload': paths.reasonsForAppeal.supportingEvidenceUpload,
+  'reasons for appeal check your answers': paths.reasonsForAppeal.checkAndSend
+};
 
 module.exports = {
   common(I) {
@@ -146,16 +155,8 @@ module.exports = {
       });
     });
 
-    When('I click Back button', async () => {
-      await I.click('Back');
-    });
-
-    When('I click Save for later',async () => {
-      await I.click('Save for later');
-    });
-
-    When('I click Save and continue',async () => {
-      await I.click('Save and continue');
+    When(/^I click "([^"]*)" button$/, async (selector: string) => {
+      await I.click(selector);
     });
 
     When(/^I enter a day "([^"]*)" month "([^"]*)" year "([^"]*)"$/, async (day, month, year) => {
@@ -174,8 +175,14 @@ module.exports = {
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
       await I.seeInCurrentUrl('/task-list');
     });
-    When(/^I click "([^"]*)" button$/, async (button) => {
-      await I.click(button);
+
+    Then(/^I should see the "([^"]*)" page$/, async (key: string) => {
+      await I.seeInCurrentUrl(`${PATHS[key]}`);
+    });
+
+    When(/^I visit the "([^"]*)" page$/, async (key: string) => {
+      await I.seeInCurrentUrl(`${PATHS[key]}`);
+      await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
     });
   }
 };

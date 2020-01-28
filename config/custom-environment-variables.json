@@ -40,6 +40,9 @@
   "ccd": {
     "apiUrl": "CCD_API_URL"
   },
+  "documentManagement": {
+    "apiUrl": "DOC_MANAGEMENT_URL"
+  },
   "addressLookup": {
     "token": "ADDRESS_LOOKUP_TOKEN",
     "url": "ADDRESS_LOOKUP_URL"

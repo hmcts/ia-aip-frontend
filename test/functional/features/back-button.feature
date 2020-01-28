@@ -12,7 +12,7 @@ Feature: Back button
 
     When I enter "A1234567" as the Office ref number and click Save and continue
     Then I should see letter sent page
-    When I click Back button
+    When I click "Back" button
     Then I should be taken to the home office ref number page
     And I shouldnt see error summary
 

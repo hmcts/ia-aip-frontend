@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 import * as nunjucks from 'nunjucks';
-import i18n from '../../locale/en.json';
-import { countryList } from '../data/country-list';
-import { appealOutOfTimeMiddleware } from '../middleware/outOfTime-middleware';
-import { paths } from '../paths';
-import { Events } from '../service/ccd-service';
-import UpdateAppealService from '../service/update-appeal-service';
-import { statementOfTruthValidation } from '../utils/fields-validations';
-import { addSummaryRow, Delimiter } from '../utils/summary-list';
+import i18n from '../../../locale/en.json';
+import { countryList } from '../../data/country-list';
+import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';
+import { paths } from '../../paths';
+import { Events } from '../../service/ccd-service';
+import UpdateAppealService from '../../service/update-appeal-service';
+import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
 function createSummaryRowsFrom(appealApplication: AppealApplication) {
   let appealTypes: string[] = !Array.isArray(appealApplication.appealType)

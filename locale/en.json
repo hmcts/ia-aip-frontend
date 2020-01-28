@@ -182,7 +182,6 @@
       },
       "inTime": {
         "panel": "Your appeal application \n has been sent"
-
       }
     },
     "wrongHomeOfficeDecision": {
@@ -205,6 +204,18 @@
       "date": "The Tribunal Caseworker will contact you by <b>{{ date }}</b> to tell you what to do next",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"#\">customer.services@justice.gov.uk</a>"
     },
+    "reasonsForAppealUpload": {
+      "title": "Reasons Upload",
+      "heading": "Providing supporting evidence",
+      "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?",
+      "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
+      "uploadFile": "<b>Upload a file</b>",
+      "findOutMore": "Find out more about the evidence to support your appeal",
+      "uploadFiles": "Uploaded files",
+      "noFiles": "No files uploaded",
+      "needMoreTime": "Need more time?",
+      "evidence": "If you want to provide evidence but don't have it right now, you can <a class=\"govuk-link\"href=\"#\"> ask for more time</a>"
+    },
     "ineligiblePage": {
       "title": "You cannot currently use the new appeal service",
       "description": "Based on your answers you can't use the new service at the moment. However, you can still appeal the Home Office decision either online or using our paper form",
@@ -215,7 +226,7 @@
       "moreInfo": {
         "title": "More information",
         "moreInfoList": [
-        "<a href=\"https://www.gov.uk/immigration-asylum-tribunal\">Find out more about appealing an immigration or asylum decision</a>"
+          "<a href=\"https://www.gov.uk/immigration-asylum-tribunal\">Find out more about appealing an immigration or asylum decision</a>"
         ]
       }
     },
@@ -306,7 +317,17 @@
     "eligibility": {
       "selectYesOrNo": "Select either yes or no"
     },
-    "emptyReasonAppealIsLate": "Enter the reason your appeal is late"
+    "emptyReasonAppealIsLate": "Enter the reason your appeal is late",
+    "reasonForAppeal": {
+      "required": "Enter the reasons you think the Home Office decision is wrong",
+      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
+    },
+    "fileUpload": {
+      "noFileSelected": "Select a file",
+      "fileTooLarge": "The selected file must be smaller than",
+      "incorrectFormat": "The selected file must be a",
+      "fileCannotBeUploaded": "The file cannot be uploaded"
+    }
   },
   "components": {
     "evidenceList": {
@@ -384,7 +405,10 @@
     },
     {
       "question": "Have you ever been a British citizen?",
-      "eligibleAnswer": ["yes", "no"],
+      "eligibleAnswer": [
+        "yes",
+        "no"
+      ],
       "errorMessage": "Select yes if you have ever been a British citizen"
     },
     {

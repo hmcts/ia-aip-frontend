@@ -44,7 +44,8 @@ async function signInHelper() {
     I.fillField('#username', userDetails.email);
     I.fillField('#password', userDetails.password);
   }
-  I.click('.button');
+  I.click('Sign in');
+  I.wait(5);
 }
 
 function signInForUser(email: string) {

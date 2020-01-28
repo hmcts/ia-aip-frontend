@@ -20,10 +20,9 @@ module.exports = {
       await I.seeInCurrentUrl('/letter-sent');
     });
 
-    When(/^I enter an on time letter sent date and click Save and continue$/, async () => {
+    When(/^I enter an on time letter sent date$/, async () => {
       const date = new Date();
       await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());
-      I.click('Save and continue');
     });
 
     When(/^I enter an out of time letter sent date and click Save and continue$/, async () => {

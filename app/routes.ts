@@ -1,5 +1,4 @@
 import { OSPlacesClient } from '@hmcts/os-places-client';
-import config from 'config';
 import * as express from 'express';
 import requestPromise from 'request-promise-native';
 import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
@@ -26,6 +25,7 @@ import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
 
 const config = setupSecrets();
+const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
@@ -52,11 +52,12 @@ const eligibilityController = setupEligibilityController();
 // not protected by idam
 router.use(healthController);
 router.use(startController);
+router.use(eligibilityController);
 
 // protected by idam
 router.use(idamController);
 // router.use(initSession);
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);
 }
 router.use(indexController);

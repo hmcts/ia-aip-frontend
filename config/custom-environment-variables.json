@@ -19,6 +19,7 @@
   "microservice": "MICROSERVICE",
   "session": {
     "useRedis": "USE_REDIS",
+    "useLogger": "USE_SESSION_LOGGER",
     "redis": {
       "url": "REDIS_URL",
       "secret": "SESSION_SECRET"

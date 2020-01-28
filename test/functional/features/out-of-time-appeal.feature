@@ -37,4 +37,4 @@ Scenario: Explain the reason why my appeal is late
 
   When I choose a file that is "VALID"
   And I click "Save and continue" button
-  Then I should see the "CHECK_AND_SEND" page
+  Then I should be taken to the check-and-send page

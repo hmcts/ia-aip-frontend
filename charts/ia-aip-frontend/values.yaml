@@ -1,3 +1,33 @@
 nodejs:
+  image: 'https://hmctspublic.azurecr.io/ia/aip-frontend:latest'
+  ingressHost: "ia-aip-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal" # override in public facing environments
+  applicationPort: 3000
+  memoryRequests: 256Mi
+  cpuRequests: 0.2
+  memoryLimits: 512Mi
+  cpuLimits: 1
   environment:
     HTTP_PROTOCOL: http
+    NODE_ENV: production
+    S2S_MICROSERVICE_NAME: iac
+    MICROSERVICE: iac
+  aadIdentityName: ia
+  keyVaults:
+    ia:
+      secrets:
+        - idam-secret
+        - addressLookupToken
+        - s2s-secret
+        - ia-redis-access-key
+        - ia-redis-connection-string
+redis:
+  cluster:
+    enabled: false
+    slaveCount: 0
+  usePassword: false
+  master:
+    persistence:
+      enabled: false
+tags:
+  idam-pr: false
+  pr: false

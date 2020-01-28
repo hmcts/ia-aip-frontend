@@ -56,5 +56,6 @@
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"
   },
-  "showTests": false
+  "showTests": false,
+  "maxCharacters": 50000
 }

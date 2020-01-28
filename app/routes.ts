@@ -1,10 +1,10 @@
 import { OSPlacesClient } from '@hmcts/os-places-client';
-import config from 'config';
 import * as express from 'express';
 import requestPromise from 'request-promise-native';
 import { setupCheckAndSendController } from './controllers/check-and-send';
 import { setConfirmationController } from './controllers/confirmation-page';
 import { setupContactDetailsController } from './controllers/contact-details';
+import { setupEligibilityController } from './controllers/eligibility';
 import { setupHealthController } from './controllers/health';
 import { setupHomeOfficeDetailsController } from './controllers/home-office-details';
 import { setupIdamController } from './controllers/idam';
@@ -20,6 +20,9 @@ import { CcdService } from './service/ccd-service';
 import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
+import { setupSecrets } from './setupSecrets';
+
+const config = setupSecrets();
 
 export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
 const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
@@ -39,9 +42,12 @@ const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService });
 const outOfTimeController = setupOutOfTimeController(updateAppealService);
+const eligibilityController = setupEligibilityController();
+
 // not protected by idam
 router.use(healthController);
 router.use(startController);
+router.use(eligibilityController);
 
 // protected by idam
 router.use(idamController);

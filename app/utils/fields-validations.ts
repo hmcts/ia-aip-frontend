@@ -33,11 +33,10 @@ function textAreaValidation(text: string, theKey: string): ValidationErrors | nu
   const schema = Joi.object({
     [theKey]: Joi.string()
       .required()
-      .min(3)
+      .trim()
       .messages({
-        'any.required': i18n.validationErrors.required,
-        'string.empty': i18n.validationErrors.empty,
-        'string.min': i18n.validationErrors.stringMin
+        'any.required': i18n.validationErrors.emptyReasonAppealIsLate,
+        'string.empty': i18n.validationErrors.emptyReasonAppealIsLate
       })
   });
 
@@ -270,6 +269,13 @@ function homeOfficeDecisionValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({ 'any.required': errorMessage })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 export {
   contactDetailsValidation,
   homeOfficeNumberValidation,
@@ -286,5 +292,6 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
-  homeOfficeDecisionValidation
+  homeOfficeDecisionValidation,
+  yesOrNoRequiredValidation
 };

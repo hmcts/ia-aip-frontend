@@ -1,4 +1,6 @@
-import config from 'config';
+import { setupSecrets } from '../setupSecrets';
+
+const config = setupSecrets();
 
 export const idamConfig = {
   redirectUri: 'https://localhost:3000/redirectUrl',

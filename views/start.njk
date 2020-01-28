@@ -5,14 +5,14 @@
 
 {% block content %}
   <h1 class="govuk-heading-xl">{{ i18n.pages.start.header }}</h1>
-  <p class="govuk-body"> {{ i18n.pages.start.description }}</p>
-  <p class="govuk-body"><b> {{ i18n.common.requirements.heading }} </b></p>
-  {{ text.listItems( i18n.pages.start.requirements ) }}
-
+  <p class="govuk-body"> {{ i18n.pages.eligibleStartPage.newService }}</p>
+  <p class="govuk-body"> {{ i18n.pages.eligibleStartPage.askQuestions }}</p>
   {{ govukButton({
     text: i18n.pages.start.startText,
-    href: "/login",
+    href: "/eligibility",
     isStartButton: true
   }) }}
+  <p class="govuk-body"><b> {{ i18n.pages.eligibleStartPage.alreadyStarted }} </b></p>
+  <a id="continue" href='/login' class="govuk-link"> {{ i18n.pages.eligibleStartPage.signIn }} </a>
 
 {% endblock %}

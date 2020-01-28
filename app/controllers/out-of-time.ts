@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import multer from 'multer';
 import { paths } from '../paths';
@@ -6,12 +7,15 @@ import UpdateAppealService from '../service/update-appeal-service';
 import { textAreaValidation } from '../utils/fields-validations';
 import { getConditionalRedirectUrl } from '../utils/url-utils';
 
+const maxCharacters = config.get('maxCharacters');
+
 function getAppealLate(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
     const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
     res.render('appeal-application/home-office/appeal-late.njk',{
+      maxCharacters,
       appealLateReason,
       evidence,
       evidenceCTA: paths.homeOffice.deleteEvidence,
@@ -30,6 +34,7 @@ function postAppealLate(updateAppealService: UpdateAppealService) {
       if (validation) {
         const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
         return res.render('appeal-application/home-office/appeal-late.njk', {
+          maxCharacters,
           appealLate: req.body['appeal-late'],
           evidence,
           evidenceCTA: paths.homeOffice.deleteEvidence,

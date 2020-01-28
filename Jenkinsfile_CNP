@@ -10,10 +10,8 @@ def product = "ia"
 def component = "aip-frontend"
 
 def secrets = [
-        'sscs-${env}': [
-                secret('sscs-s2s-secret', 'S2S_SECRET')
-        ],
         'ia-${env}': [
+                secret('s2s-secret', 'S2S_SECRET'),
                 secret('idam-secret', 'IDAM_CLIENT_SECRET'),
                 secret('saucelabs', 'SAUCELABS_SECRET'),
                 secret('addressLookupToken', 'ADDRESS_LOOKUP_TOKEN'),
@@ -36,6 +34,7 @@ withPipeline("nodejs", product, component) {
     loadVaultSecrets(secrets)
     enableDockerBuild()
     installCharts()
+    enableAksStagingDeployment()
 
     before("functionalTest") {
         env.IDAM_API_URL = 'http://idam-api.aat.platform.hmcts.net'

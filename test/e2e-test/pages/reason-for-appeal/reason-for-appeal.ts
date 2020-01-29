@@ -17,12 +17,15 @@ module.exports = {
     Then(/^I should be taken to the appellant timeline$/, async () => {
       await I.seeInCurrentUrl('appellant-timeline');
     });
-    When(/^I select "([^"]*)"$/, async (selection) => {
-      if (selection.toUpperCase() === 'YES') {
-        await I.checkOption('Yes');
-      } else {
-        await I.checkOption('No');
-      }
+
+    When(/^I select Yes and click continue$/, async (selection: string) => {
+      await I.checkOption('#answer');
+      await I.click('Continue');
+    });
+
+    When(/^I select No and click continue$/, async (selection: string) => {
+      await I.checkOption('#answer-2');
+      await I.click('Continue');
     });
   }
 };

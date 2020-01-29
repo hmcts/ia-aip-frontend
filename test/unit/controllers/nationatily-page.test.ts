@@ -8,6 +8,7 @@ import {
 } from '../../../app/controllers/appeal-application/personal-details';
 import { countryList } from '../../../app/data/country-list';
 import { paths } from '../../../app/paths';
+import { Events } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
@@ -96,6 +97,7 @@ describe('Nationality details Controller', function () {
       req.body.nationality = 'AQ';
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterPostcode);
     });
 
@@ -105,6 +107,7 @@ describe('Nationality details Controller', function () {
       req.body.nationality = 'AQ';
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
@@ -118,6 +121,8 @@ describe('Nationality details Controller', function () {
         key: 'nationality',
         text: i18n.validationErrors.nationality.selectNationality
       };
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errorList: [ error ],
@@ -125,6 +130,27 @@ describe('Nationality details Controller', function () {
           nationalitiesOptions,
           previousPage: paths.personalDetails.dob
         });
+    });
+
+    it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
+      req.body = {
+        'saveForLater': 'saveForLater'
+      };
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
+      req.session.appeal.application.isEdit = true;
+      req.body = {
+        'saveForLater': 'saveForLater'
+      };
+      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
     });
 
     it('should catch an exception and call next() with error', async () => {

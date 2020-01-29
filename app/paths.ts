@@ -33,12 +33,19 @@ const paths = {
     supportingEvidenceUpload: '/case-building/reason-for-appeal/supporting-evidence/upload',
     supportingEvidenceUploadFile: '/case-building/reason-for-appeal/supporting-evidence/upload/file',
     supportingEvidenceDeleteFile: '/case-building/reason-for-appeal/supporting-evidence/delete/file',
+    supportingEvidenceSubmit: '/case-building/reason-for-appeal/supporting-evidence/submit',
     checkAndSend: '/case-building/reason-for-appeal/check-and-send',
     confirmation: '/case-building/reason-for-appeal/confirmation'
   },
   typeOfAppeal: '/type-of-appeal',
   contactDetails: '/contact-details',
-  checkAndSend: '/check-and-send'
+  checkAndSend: '/check-and-send',
+  eligibility: {
+    start: '/eligibility-start',
+    ineligible: '/ineligible',
+    questions: '/eligibility',
+    eligible: '/eligible'
+  }
 };
 
 export {

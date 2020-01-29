@@ -21,7 +21,7 @@
         isPageHeading: true
       }
     }) %}
-      {{ radioButtons(id='supportingEvidence' ,legendText = '',hintText = i18n.pages.evidence.heading) }}
+      {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading, errorMessage = errorList[0].text) }}
       {{ continueButton() }}
     {% endcall %}
   </form>

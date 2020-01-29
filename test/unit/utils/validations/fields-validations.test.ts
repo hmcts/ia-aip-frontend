@@ -7,8 +7,8 @@ import {
   mobilePhoneValidation,
   reasonForAppealDecisionValidation,
   statementOfTruthValidation,
-  supportingEvidenceRequiredValidation,
-  textAreaValidation
+  textAreaValidation,
+  yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
 
 import i18n from '../../../../locale/en.json';
@@ -312,7 +312,7 @@ describe('textAreaValidation', () => {
         [key]: {
           href: '#aKey',
           key: 'aKey',
-          text: i18n.validationErrors.required
+          text: i18n.validationErrors.emptyReasonAppealIsLate
         }
       }
     );
@@ -450,6 +450,25 @@ describe('contactDetailsValidation', () => {
       }
     });
   });
+
+  describe('yesOrNoRequiredValidation', () => {
+    it('no error if yes selected', () => {
+      const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
+
+      expect(validationResult).to.deep.equal(null);
+    });
+
+    it('error if yes on no not selected', () => {
+      const validationResult = yesOrNoRequiredValidation({}, 'error message');
+      const expectedResponse = {};
+      expectedResponse['answer'] = {
+        'href': '#answer',
+        'key': 'answer',
+        'text': 'error message'
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+  });
 });
 
 describe('reasonForAppealDecisionValidation', () => {
@@ -475,26 +494,25 @@ describe('reasonForAppealDecisionValidation', () => {
   });
 });
 
-describe('supportingEvidenceRequiredValidation', () => {
-  it('should validate if selection is present', () => {
-    const object = { 'value': 'yes' };
-    const validationResult = supportingEvidenceRequiredValidation(object);
+describe('reasonForAppealDecisionValidation', () => {
+  it('should validate if statement present', () => {
+    const object = { 'moreDetail': 'some reason text here' };
+    const validationResult = reasonForAppealDecisionValidation(object);
     expect(validationResult).to.equal(null);
   });
 
-  it('should fail validation and return "any.required" type', () => {
-    const object = {};
-    const validationResult = supportingEvidenceRequiredValidation(object);
+  it('should fail validation and return "string.empty" type', () => {
+    const object = { 'moreDetail': '' };
+    const validationResult = reasonForAppealDecisionValidation(object);
     const expectedResponse = {
 
-      value: {
-        href: '#value',
-        key: 'value',
-        text: 'Select Yes if you want to provide supporting evidence'
+      moreDetail: {
+        href: '#moreDetail',
+        key: 'moreDetail',
+        text: 'Enter the reasons you think the Home Office decision is wrong'
       }
 
     };
     expect(validationResult).to.deep.equal(expectedResponse);
   });
-
 });

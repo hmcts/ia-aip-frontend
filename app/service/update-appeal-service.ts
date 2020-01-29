@@ -191,6 +191,7 @@ export default class UpdateAppealService {
         PostCode: application.personalDetails.address.postcode,
         Country: 'United Kingdom'
       };
+      caseData.appellantHasFixedAddress = 'Yes';
     }
     if (application.appealType) {
       caseData.appealType = application.appealType;

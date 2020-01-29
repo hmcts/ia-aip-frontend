@@ -60,6 +60,7 @@
     "secret": "SAUCELABS_SECRET"
   },
   "showTests": false,
+  "maxCharacters": 50000,
   "evidenceUpload": {
     "maxFileSizeInMb": 100
   }

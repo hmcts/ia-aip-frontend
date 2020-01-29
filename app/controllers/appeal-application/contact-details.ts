@@ -24,6 +24,9 @@ function getContactDetails(req: Request, res: Response, next: NextFunction) {
 function postContactDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
+        return getConditionalRedirectUrl(req, res, paths.taskList);
+      }
       if (!req.body.selections) {
         req.body.selections = '';
       }
@@ -49,17 +52,15 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
 
       const contactDetails = { email, wantsEmail, phone, wantsSms };
 
-      if (shouldValidateWhenSaveForLater(req.body, 'selections')) {
-        const validation = contactDetailsValidation(req.body);
+      const validation = contactDetailsValidation(req.body);
 
-        if (validation) {
-          return res.render('appeal-application/contact-details.njk', {
-            contactDetails,
-            errors: validation,
-            errorList: Object.values(validation),
-            previousPage: paths.taskList
-          });
-        }
+      if (validation) {
+        return res.render('appeal-application/contact-details.njk', {
+          contactDetails,
+          errors: validation,
+          errorList: Object.values(validation),
+          previousPage: paths.taskList
+        });
       }
 
       req.session.appeal.application.contactDetails = contactDetails;

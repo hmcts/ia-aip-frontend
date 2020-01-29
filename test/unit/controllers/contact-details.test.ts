@@ -5,6 +5,7 @@ import {
   setupContactDetailsController
 } from '../../../app/controllers/appeal-application/contact-details';
 import { paths } from '../../../app/paths';
+import { Events } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
@@ -115,6 +116,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
 
@@ -151,6 +154,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
 
@@ -162,6 +167,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
         expect(res.redirect).to.have.been.calledWith(paths.taskList);
       });
 
@@ -195,6 +202,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
 
@@ -225,6 +234,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
 
@@ -242,6 +253,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
         expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
         expect(res.redirect).to.have.been.calledWith(paths.taskList);
       });
@@ -261,6 +274,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
         expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
         expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
         expect(req.session.appeal.application.isEdit).to.have.eq(false);
@@ -295,6 +310,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
 
@@ -325,6 +342,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.not.have.been.called;
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
 
@@ -342,6 +361,8 @@ describe('Contact details Controller', () => {
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
         expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
         expect(res.redirect).to.have.been.calledWith(paths.taskList);
       });
@@ -363,6 +384,8 @@ describe('Contact details Controller', () => {
       };
 
       await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);

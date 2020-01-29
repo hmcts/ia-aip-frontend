@@ -1,8 +1,10 @@
 import axios from 'axios';
+import { setupSecrets } from '../setupSecrets';
 import { isJWTExpired } from '../utils/jwt-utils';
 import Logger, { getLogLabel } from '../utils/logger';
 
-const config = require('config');
+const config = setupSecrets();
+
 const otp = require('otp');
 const s2sSecret = config.get('s2s.secret');
 const s2sUrl = config.get('s2s.url');

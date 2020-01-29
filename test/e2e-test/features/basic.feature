@@ -6,6 +6,25 @@ Feature: Business rules
   Scenario: Sign into form
     Given I am on home page
     When I click start now
+    When I click start now
+    Then I should see the "Are you at least 18 years old" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you currently in the UK" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you currently in detention" eligibility page
+    When I select No and click continue
+    Then I should see the "Are you currently a citizen of a country" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Is anyone else in your immediate family appealing their own Home Office decision" eligibility page
+    When I select No and click continue
+    Then I should see the "Are you appealing a European Economic Area (EEA) decision" eligibility page
+    When I select No and click continue
+    Then I should see the "Have you ever been a British citizen" eligibility page
+    When I select Yes and click continue
+    Then I should see the "Are you appealing the removal of your British citizenship" eligibility page
+    When I select No and click continue
+    Then I should see the eligible page
+    When I click continue
     Then I should see the sign in page
     When I enter creds and click sign in
     Then I should see the task-list page

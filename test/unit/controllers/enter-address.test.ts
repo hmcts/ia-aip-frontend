@@ -7,6 +7,7 @@ import {
   setupPersonalDetailsController
 } from '../../../app/controllers/appeal-application/personal-details';
 import { paths } from '../../../app/paths';
+import { Events } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -149,6 +150,8 @@ describe('Personal Details Controller', function () {
       req.body['address-postcode'] = 'W';
 
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).not.to.have.been.called;
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
     });
 
@@ -160,6 +163,8 @@ describe('Personal Details Controller', function () {
       req.body['address-postcode'] = 'W1W 7RT';
 
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.taskList);
     });
 
@@ -180,9 +185,31 @@ describe('Personal Details Controller', function () {
       req.body['address-postcode'] = 'W1W 7RT';
 
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+    });
+
+    it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
+      req.body = {
+        'saveForLater': 'saveForLater'
+      };
+      await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
+      req.session.appeal.application.isEdit = true;
+      req.body = {
+        'saveForLater': 'saveForLater'
+      };
+      await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
     });
 
     it('should catch an exception and call next()', async () => {

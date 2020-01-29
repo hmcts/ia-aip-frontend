@@ -116,11 +116,10 @@
 {% endblock %}
 
 
-{% macro radioButtons(id, legendText, hintText) %}
+{% macro radioButtons(legendText, hintText, errorMessage) %}
   {{ govukRadios({
     classes: "govuk-radios--inline",
-    idPrefix: id,
-    name: "value",
+    name: "answer",
     fieldset: {
       legend: {
         text: legendText,
@@ -131,6 +130,9 @@
     hint: {
       text: hintText
     },
+    errorMessage: {
+      text: errorMessage
+    } if (errorMessage),
     items: [
       {
         value: "yes",
@@ -142,7 +144,7 @@
       }
     ]
   }) }}
-{%  endmacro %}
+{% endmacro %}
 
 {% macro continueButton() %}
   {{ govukButton({

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { getNamePage, postNamePage, setupPersonalDetailsController } from '../../../app/controllers/appeal-application/personal-details';
 import { paths } from '../../../app/paths';
+import { Events } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -100,20 +101,41 @@ describe('Personal Details Controller', function () {
 
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.personalDetails.dob);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
-
       req.body.givenNames = 'Lewis';
       req.body.familyName = 'Williams';
 
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
+    });
 
+    it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
+      req.body = {
+        'saveForLater': 'saveForLater'
+      };
+      await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+    });
+
+    it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
+      req.session.appeal.application.isEdit = true;
+      req.body = {
+        'saveForLater': 'saveForLater'
+      };
+      await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
     });
   });
 
@@ -141,6 +163,7 @@ describe('Personal Details Controller', function () {
         text: 'Enter your given name or names'
       };
 
+      expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/name.njk',
         {

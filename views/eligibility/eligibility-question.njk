@@ -1,0 +1,57 @@
+{% set pageTitleName = question %}
+{% extends "../layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% import "components/text-components.njk" as text %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block content %}
+
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+
+    <form action="/eligibility" method="post">
+        <input type="hidden" name="questionId" value="{{ questionId }}">
+        {{ govukRadios({
+            classes: "govuk-radios--inline",
+            name: "answer",
+            fieldset: {
+                legend: {
+                    text: question,
+                    isPageHeading: true,
+                    classes: "govuk-fieldset__legend--xl"
+                }
+            },
+            hint: {
+                text: description
+            },
+            items: [
+                {
+                    value: "yes",
+                    text: "Yes",
+                    checked: answer == "yes"
+                },
+                {
+                    value: "no",
+                    text: "No",
+                    checked: answer == "no"
+                }
+            ],
+            errorMessage: {
+                text:  errors['answer'].text
+            } if errors['answer']
+        }) }}
+
+        <div class="buttons__container">
+            {{ govukButton({
+                name: 'continue',
+                text: i18n.common.buttons.continue
+            }) }}
+        </div>
+    </form>
+
+    {{ contactUs() }}
+{% endblock %}

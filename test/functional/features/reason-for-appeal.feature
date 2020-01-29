@@ -12,19 +12,15 @@ Feature: Reason for appeal
     When I click "Save for later" button
     Then I should see error summary
 
-#    When I click the back button on reasons for appeal
-#    Then I should be taken to the appellant timeline
-
-    When I visit the "REASONS_FOR_APPEAL" page
+    When I visit the "reasons for appeal" page
     Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
-    Then I should see the "ADDITIONAL_SUPPORTING_EVIDENCE" page
+    Then I should see the "supporting evidence question" page
 
     When I click "Continue" button
     Then I should see error summary
 
-    When I select "Yes"
-    And I click "Continue" button
-    Then I should see the "SUPPORTING_EVIDENCE_UPLOAD" page
+    When I select Yes and click continue
+    Then I should see the "supporting evidence upload" page
 
     Then I click "Upload file" button
     Then I should see error summary
@@ -40,5 +36,5 @@ Feature: Reason for appeal
     When I choose a file that is "VALID"
     Then I click "Upload file" button
     And I click "Save and continue" button
-    Then I should see the "REASONS_FOR_APPEAL_CHECK_YOUR_ANSWERS" page
+    Then I should see the "reasons for appeal check your answers" page
 

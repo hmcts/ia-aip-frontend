@@ -14,7 +14,7 @@
     }) }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeAppealLate.title }}</h1>
-
+  
   <form action="/home-office/appeal-late" method="post" enctype="multipart/form-data">
     {{ govukTextarea({
       name: "appeal-late",
@@ -44,8 +44,8 @@
           text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
         },
         errorMessage: {
-          text: error["file-upload"].text
-        }
+          text: error["uploadFile"].text
+        } if error["uploadFile"]
       }) }}
     </div>
 

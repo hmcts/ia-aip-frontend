@@ -44,17 +44,46 @@ describe('update-appeal-service', () => {
       },
       session: {}
     } as any;
+
     ccdServiceMock.expects('loadOrCreateCase')
       .withArgs(userId, { userToken, serviceToken })
       .resolves({
         id: caseId,
         case_data: {
-          appealType: 'appealType',
-          homeOfficeReferenceNumber: 'homeOfficeReferenceNumber',
-          appellantGivenNames: 'appellantGivenNames',
-          appellantFamilyName: 'appellantFamilyName',
-          homeOfficeDecisionDate: '2019-01-02',
-          appellantDateOfBirth: '1900-10-11'
+          'appealType': 'protection',
+          'journeyType': 'aip',
+          'homeOfficeReferenceNumber': 'A1234567',
+          'homeOfficeDecisionDate': '2019-01-02',
+          'appellantFamilyName': 'Pedro',
+          'appellantGivenNames': 'Jimenez',
+          'appellantDateOfBirth': '1990-03-21',
+          'appellantNationalities': [ { 'id': '0f583a62-e98a-4a76-abe2-130ad5547726', 'value': { 'code': 'AF' } } ],
+          'appellantHasFixedAddress': 'Yes',
+          'appellantAddress': {
+            'County': '',
+            'Country': 'United Kingdom',
+            'PostCode': 'W1W 7RT',
+            'PostTown': 'LONDON',
+            'AddressLine1': '123 An Address',
+            'AddressLine2': ''
+          },
+          'submissionOutOfTime': 'Yes',
+          'applicationOutOfTimeExplanation': 'An Explanation on why this appeal was late',
+          'applicationOutOfTimeDocument': {
+            'document_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891',
+            'document_filename': '1580296112615-evidence-file.jpeg',
+            'document_binary_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891/binary'
+          },
+          'subscriptions': [ {
+            'id': '7166f13d-1f99-4323-9459-b22a8325db9d',
+            'value': {
+              'subscriber': 'appellant',
+              'email': 'email@example.net',
+              'wantsSms': 'Yes',
+              'mobileNumber': '07123456789',
+              'wantsEmail': 'Yes'
+            }
+          } ]
         }
       });
   });
@@ -67,15 +96,28 @@ describe('update-appeal-service', () => {
     it('set case details', async () => {
       await updateAppealService.loadAppeal(req);
       expect(req.session.ccdCaseId).eq(caseId);
-      expect(req.session.appeal.application.homeOfficeRefNumber).eq('homeOfficeReferenceNumber');
-      expect(req.session.appeal.application.personalDetails.givenNames).eq('appellantGivenNames');
-      expect(req.session.appeal.application.personalDetails.familyName).eq('appellantFamilyName');
+      expect(req.session.appeal.application.appealType).eq('protection');
+      expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
+      expect(req.session.appeal.application.personalDetails.familyName).eq('Pedro');
+      expect(req.session.appeal.application.personalDetails.givenNames).eq('Jimenez');
       expect(req.session.appeal.application.dateLetterSent.year).eq('2019');
       expect(req.session.appeal.application.dateLetterSent.month).eq('1');
       expect(req.session.appeal.application.dateLetterSent.day).eq('2');
-      expect(req.session.appeal.application.personalDetails.dob.year).eq('1900');
-      expect(req.session.appeal.application.personalDetails.dob.month).eq('10');
-      expect(req.session.appeal.application.personalDetails.dob.day).eq('11');
+      expect(req.session.appeal.application.personalDetails.dob.year).eq('1990');
+      expect(req.session.appeal.application.personalDetails.dob.month).eq('3');
+      expect(req.session.appeal.application.personalDetails.dob.day).eq('21');
+      expect(req.session.appeal.application.personalDetails.nationality).eq('AF');
+      expect(req.session.appeal.application.personalDetails.address.line1).eq('123 An Address');
+      expect(req.session.appeal.application.personalDetails.address.city).eq('LONDON');
+      expect(req.session.appeal.application.personalDetails.address.postcode).eq('W1W 7RT');
+      expect(req.session.appeal.application.isAppealLate).eq(true);
+      expect(req.session.appeal.application.lateAppeal.evidence.id).eq('1580296112615-evidence-file.jpeg');
+      expect(req.session.appeal.application.lateAppeal.evidence.url).eq('http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891');
+      expect(req.session.appeal.application.lateAppeal.evidence.name).eq('evidence-file.jpeg');
+      expect(req.session.appeal.application.contactDetails.email).eq('email@example.net');
+      expect(req.session.appeal.application.contactDetails.phone).eq('07123456789');
+      expect(req.session.appeal.application.contactDetails.wantsEmail).eq(true);
+      expect(req.session.appeal.application.contactDetails.wantsSms).eq(true);
     });
   });
 

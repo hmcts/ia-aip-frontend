@@ -1,0 +1,33 @@
+{% extends 'layout.njk' %}
+
+
+{% block content %}
+<h1>{{ name }}</h1>
+
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half govuk-grid-column-two-thirds-from-desktop">
+            <hr>
+            <h1>Timeline</h1>
+        </div>
+        <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-desktop">
+        <hr>
+            <p>Contact us for help</p><p>Ask a question or get help in your language</p>
+            <p>Telephone: 0300 123 1171<br><a href="#">Send us a message</a></p><p>Monday to Friday, 8:30am to 5pm</p>
+            <p>Find out about call charges</p><p>(opens in a new window)</p>
+            <hr>
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <b>Do this next</b>
+            <div style="background-color: #28a197">
+                <p class="govuk-body">
+                    You need to answer a few questions about yourself and your appeal to get started.
+                </p>
+                <p class="govuk-body">
+                    You will need to have your Home Office decision letter with you to answer some questions.
+                </p>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

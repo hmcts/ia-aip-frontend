@@ -9,6 +9,7 @@ import { setupOutOfTimeController } from './controllers/appeal-application/out-o
 import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
+import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupReasonsForAppealController } from './controllers/case-building/reason-for-appeal';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupHealthController } from './controllers/health';
@@ -48,6 +49,7 @@ const confirmationController = setConfirmationController();
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
 const outOfTimeController = setupOutOfTimeController({ updateAppealService, documentManagementService });
 const eligibilityController = setupEligibilityController();
+const applicationOverview = setupApplicationOverviewController();
 
 // not protected by idam
 router.use(healthController);
@@ -70,5 +72,6 @@ router.use(confirmationController);
 router.use(checkAndSendController);
 router.use(reasonsForAppealController);
 router.use(outOfTimeController);
+router.use(applicationOverview);
 
 export { router };

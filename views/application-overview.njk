@@ -2,41 +2,41 @@
 {% set pageTitleName = i18n.pages.overviewPage.title %}
 
 {% block content %}
-    <div class="govuk-width-container">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds ">
-                <h1 class="govuk-heading-l govuk-!-margin-0 govuk-!-padding-bottom-6 banner-line">{{name}}</h1>
-             </div>
-        </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l">-------------------Put timeline here!!----------------</h1>
-                <h2>{{ i18n.pages.overviewPage.doThisNext }}</h2>
-                {% if saved %}
-                    <div class="saved-banner">
-                        <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>
-                    </div>
-                {% endif %}
-                <div class="overview-banner govuk-!-margin-top-0">
-                    <p class="govuk-body">{{ i18n.pages.overviewPage.fewQuestions }}</p>
-                    <p class="govuk-body">{{ i18n.pages.overviewPage.needHomeOfficeDecision }}</p>
-                    {{ govukButton({
-                        text: i18n.common.buttons.continue,
-                        href: "/task-list"
-                    }) }}
-                </div>
-            </div>
-            <div class="govuk-grid-column-one-third">
-                <div class="contact-us-component">
-                    <b class="govuk-!-padding-top-2">Contact us for help</b>
-                    <p>{{ i18n.pages.overviewPage.askAQuestion}}</p>
-                    <p class='govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.telephone }}</p>
-                    <a href='#' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>{{ i18n.pages.overviewPage.sendMessage }}</a>
-                    <p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.time }}</p>
-                    <a href='https://www.gov.uk/call-charges' target='_blank' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>{{i18n.pages.overviewPage.charges }}</a>
-                    <p class="govuk-!-margin-top-0">{{ i18n.pages.overviewPage.newWindow }}</p>
-                </div>
-            </div>
-        </div>
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds ">
+        <h1 class="govuk-heading-l govuk-!-margin-0 govuk-!-padding-bottom-6 banner-line">{{name}}</h1>
+      </div>
     </div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">-------------------Put timeline here!!----------------</h1>
+        <h2>{{ i18n.pages.overviewPage.doThisNext }}</h2>
+        {% if saved %}
+          <div class="saved-banner">
+            <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>
+          </div>
+        {% endif %}
+        <div class="overview-banner govuk-!-margin-top-0">
+          <p class="govuk-body">{{ i18n.pages.overviewPage.fewQuestions }}</p>
+          <p class="govuk-body">{{ i18n.pages.overviewPage.needHomeOfficeDecision }}</p>
+          {{ govukButton({
+            text: i18n.common.buttons.continue,
+            href: "/task-list"
+          }) }}
+        </div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <div class="contact-us-component">
+          <b class="govuk-!-padding-top-2">Contact us for help</b>
+          <p>{{ i18n.pages.overviewPage.askAQuestion}}</p>
+          <p class='govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.telephone }}</p>
+          <a href='#' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>{{ i18n.pages.overviewPage.sendMessage }}</a>
+          <p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.time }}</p>
+          <a href='https://www.gov.uk/call-charges' target='_blank' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>{{i18n.pages.overviewPage.charges }}</a>
+          <p class="govuk-!-margin-top-0">{{ i18n.pages.overviewPage.newWindow }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

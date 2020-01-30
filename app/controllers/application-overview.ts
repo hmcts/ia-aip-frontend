@@ -29,6 +29,6 @@ function setupApplicationOverviewController(): Router {
 }
 
 export {
-    setupApplicationOverviewController,
-    getApplicationOverview
+  setupApplicationOverviewController,
+  getApplicationOverview
 };

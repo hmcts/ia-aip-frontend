@@ -151,6 +151,8 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
+        evidence: null,
+        evidenceCTA: paths.homeOffice.deleteEvidence,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.taskList
@@ -169,6 +171,8 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
+        evidence: null,
+        evidenceCTA: paths.homeOffice.deleteEvidence,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.taskList

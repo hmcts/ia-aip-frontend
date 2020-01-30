@@ -14,14 +14,11 @@
     }) }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeAppealLate.title }}</h1>
-  
+
   <form action="/home-office/appeal-late" method="post" enctype="multipart/form-data">
     {{ govukTextarea({
       name: "appeal-late",
       id: "appeal-late",
-      label: {
-        text: i18n.pages.homeOfficeAppealLate.whyLateLabel
-      },
       hint: {
         text: i18n.pages.homeOfficeAppealLate.description | safe
       },
@@ -49,10 +46,21 @@
       }) }}
     </div>
 
-    {{ govukButton({
-      text: i18n.common.buttons.saveAndContinue,
-      name: 'saveAndContinue'
-    }) }}
+    {% if evidence %}
+      <div class="evidence">
+        <h4 class="govuk-heading-s">{{ i18n.pages.homeOfficeAppealLate.uploadedFileTitle }}</h4>
+        <hr class="govuk-section-break govuk-section-break--visible">
+        <ul class="govuk-list">
+          <li class="list__item">
+            <span>{{ evidence.name }}</span>
+            <a href="{{ evidenceCTA }}">{{ i18n.common.links.delete }}</a>
+          </li>
+        </ul>
+      </div>
+    {% endif %}
+
+    {{ saveButtons() }}
   </form>
+  {{ contactUs() }}
 
 {% endblock %}

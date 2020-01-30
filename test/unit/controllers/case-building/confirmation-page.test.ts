@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { daysToWaitUntilContact } from '../../../../app/controllers/appeal-application/confirmation-page';
 import {
-    getConfirmationPage,
-    setupReasonsForAppealController
+  getConfirmationPage,
+  setupReasonsForAppealController
 } from '../../../../app/controllers/case-building/reason-for-appeal';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -59,7 +59,7 @@ describe('Confirmation Page Controller', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
     setupReasonsForAppealController({ updateAppealService });
-    expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
+    expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.confirmation);
   });
 
   it('getConfirmationPage should render confirmation.njk', () => {

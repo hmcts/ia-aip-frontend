@@ -1,10 +1,21 @@
+import { paths } from '../../../../../app/paths';
+
+const config = require('config');
+
+const testUrl = config.get('testUrl');
+
 module.exports = {
-  reasonsForAppeal(I) {
+  reasonForAppeal(I) {
     When(/^I visit reasons for appeal$/, async () => {
-      await I.amOnPage('https://localhost:3000/case-building/reason-for-appeal');
+      await I.amOnPage(testUrl + paths.reasonForAppeal.reason);
     });
+
+    Then(/^I enter "([^"]*)" into the reason for appeal text area$/, async (text: string) => {
+      await I.fillField('#applicationReason', text);
+    });
+
     Then(/^I enter "([^"]*)" into the reason for appeal text box and click Save and Continue$/, async (text: string) => {
-      await I.fillField('#moreDetail', text);
+      await I.fillField('#applicationReason', text);
       await I.click('Save and continue');
     });
     Then(/^I should see the additional supporting evidence page$/, async () => {

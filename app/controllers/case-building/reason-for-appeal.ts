@@ -35,7 +35,7 @@ function postSupportingEvidenceSubmit(req: Request, res: Response, next: NextFun
       });
 
     }
-    return res.redirect(paths.reasonsForAppeal.checkAndSend);
+    return res.redirect(paths.reasonForAppeal.checkAndSend);
   } catch (e) {
     next(e);
   }
@@ -52,11 +52,11 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         });
       }
       req.session.appeal.caseBuilding = {
-        decision: req.body.moreDetail
+        applicationReason: req.body.applicationReason
       };
       // TODO Save to CCD.
       // await updateAppealService.submitEvent(Events.UPLOAD_RESPONDENT_EVIDENCE, req);
-      return res.redirect(paths.reasonsForAppeal.supportingEvidence);
+      return res.redirect(paths.reasonForAppeal.supportingEvidence);
     } catch (e) {
       next(e);
     }
@@ -66,7 +66,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
 function getSupportingEvidencePage(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
-      previousPage: paths.reasonsForAppeal.decision
+      previousPage: paths.reasonForAppeal.reason
     });
   } catch (e) {
     next(e);
@@ -81,13 +81,13 @@ function postSupportingEvidencePage(req: Request, res: Response, next: NextFunct
       return res.render('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
         errorList: Object.values(validations),
         error: validations,
-        previousPage: paths.reasonsForAppeal.decision
+        previousPage: paths.reasonForAppeal.reason
       });
     }
     if (answer === 'yes') {
-      return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
+      return res.redirect(paths.reasonForAppeal.supportingEvidenceUpload);
     } else {
-      return res.redirect(paths.reasonsForAppeal.checkAndSend);
+      return res.redirect(paths.reasonForAppeal.checkAndSend);
     }
   } catch (e) {
     next(e);
@@ -99,8 +99,8 @@ function getSupportingEvidenceUploadPage(req: Request, res: Response, next: Next
     const evidences = req.session.appeal.caseBuilding.evidences || {};
     return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
       evidences: Object.values(evidences),
-      evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-      previousPage: paths.reasonsForAppeal.decision
+      evidenceCTA: paths.reasonForAppeal.supportingEvidenceDeleteFile,
+      previousPage: paths.reasonForAppeal.reason
     });
   } catch (e) {
     next(e);
@@ -121,7 +121,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
             name: evidenceStored.name
           }
         };
-        return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
+        return res.redirect(paths.reasonForAppeal.supportingEvidenceUpload);
       } else {
         let validationError;
         validationError = res.locals.multerError
@@ -131,7 +131,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.reasonsForAppeal.decision
+          previousPage: paths.reasonForAppeal.reason
         });
       }
     } catch (e) {
@@ -150,28 +150,7 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
         await documentManagementService.deleteFile(req, target.url);
         delete req.session.appeal.caseBuilding.evidences[fileId];
       }
-      return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
-    } catch (e) {
-      next(e);
-    }
-  };
-}
-
-function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
-  try {
-    return res.render('case-building/reasons-for-appeal/check-and-send-page.njk', {
-      previousPage: '/appellant-timeline'
-    });
-  } catch (e) {
-    next(e);
-  }
-}
-
-function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
-  return async function (req: Request, res: Response, next: NextFunction) {
-    try {
-      // Should submit and update case event
-      return res.redirect(paths.reasonsForAppeal.confirmation);
+      return res.redirect(paths.reasonForAppeal.supportingEvidenceUpload);
     } catch (e) {
       next(e);
     }
@@ -190,17 +169,15 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 
 function setupReasonsForAppealController(deps?: any): Router {
   const router = Router();
-  router.get(paths.reasonsForAppeal.decision, getReasonForAppeal);
-  router.post(paths.reasonsForAppeal.decision, postReasonForAppeal(deps.updateAppealService));
-  router.get(paths.reasonsForAppeal.supportingEvidence, getSupportingEvidencePage);
-  router.post(paths.reasonsForAppeal.supportingEvidence, postSupportingEvidencePage);
-  router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
-  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
-  router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
-  router.post(paths.reasonsForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit);
-  router.get(paths.reasonsForAppeal.checkAndSend, getCheckAndSendPage);
-  router.post(paths.reasonsForAppeal.checkAndSend, postCheckAndSendPage);
-  router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);
+  router.get(paths.reasonForAppeal.reason, getReasonForAppeal);
+  router.post(paths.reasonForAppeal.reason, postReasonForAppeal(deps.updateAppealService));
+  router.get(paths.reasonForAppeal.supportingEvidence, getSupportingEvidencePage);
+  router.post(paths.reasonForAppeal.supportingEvidence, postSupportingEvidencePage);
+  router.get(paths.reasonForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
+  router.post(paths.reasonForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
+  router.get(paths.reasonForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
+  router.post(paths.reasonForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit);
+  router.get(paths.reasonForAppeal.confirmation, getConfirmationPage);
 
   return router;
 }
@@ -215,7 +192,5 @@ export {
   postSupportingEvidenceUploadFile,
   getSupportingEvidenceDeleteFile,
   postSupportingEvidenceSubmit,
-  getCheckAndSendPage,
-  postCheckAndSendPage,
   getConfirmationPage
 };

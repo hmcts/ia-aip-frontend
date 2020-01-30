@@ -128,7 +128,7 @@ describe('Check and Send Controller', () => {
     expect(routerPOSTStub).to.have.been.calledWith(paths.checkAndSend);
   });
 
-  it('getCheckAndSend should render check-and-send.njk', () => {
+  it('getCheckAndSend should render check-and-send-page.njk', () => {
     req.session.appeal = createDummyAppealApplication();
     getCheckAndSend(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk');

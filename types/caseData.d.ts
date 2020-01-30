@@ -14,7 +14,7 @@ interface CcdCaseDetails {
 
 interface CaseData {
   journeyType: string;
-  appealType: string | string[];
+  appealType: string;
   homeOfficeReferenceNumber: string;
   homeOfficeDecisionDate: string;
   appellantGivenNames: string;

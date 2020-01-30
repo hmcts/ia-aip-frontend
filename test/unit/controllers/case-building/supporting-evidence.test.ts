@@ -68,8 +68,8 @@ describe('Supporting Evidence Upload Controller', () => {
         documentManagementService: documentManagementService as DocumentManagementService
       };
       setupReasonsForAppealController(deps);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidence);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidence);
     });
   });
 
@@ -77,7 +77,7 @@ describe('Supporting Evidence Upload Controller', () => {
     it('should render case-building/reasons-for-appeal/supporting-evidence-page.njk', () => {
       getSupportingEvidencePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
-        previousPage: paths.reasonsForAppeal.decision
+        previousPage: paths.reasonForAppeal.reason
       });
     });
 
@@ -102,7 +102,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
         error: { answer: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonsForAppeal.decision
+        previousPage: paths.reasonForAppeal.reason
       });
     });
 
@@ -110,14 +110,14 @@ describe('Supporting Evidence Upload Controller', () => {
       req.body = { 'answer': 'no' };
 
       postSupportingEvidencePage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.checkAndSend);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonForAppeal.checkAndSend);
     });
 
     it('when yes is selected should validate and redirect to the supporting-evidence-upload page', async () => {
       req.body = { 'answer': 'yes' };
 
       postSupportingEvidencePage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonForAppeal.supportingEvidenceUpload);
     });
 
     it('postTypeOfAppeal should catch exception and call next with the error', async () => {

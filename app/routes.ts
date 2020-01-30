@@ -10,6 +10,7 @@ import { setupPersonalDetailsController } from './controllers/appeal-application
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupCheckAndSendController as setupCaseBuildingCheckAndSendController } from './controllers/case-building/check-and-send';
 import { setupReasonsForAppealController } from './controllers/case-building/reason-for-appeal';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupHealthController } from './controllers/health';
@@ -46,10 +47,13 @@ const personalDetailsController = setupPersonalDetailsController({ updateAppealS
 const contactDetailsController = setupContactDetailsController(updateAppealService);
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
-const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
 const outOfTimeController = setupOutOfTimeController({ updateAppealService, documentManagementService });
 const eligibilityController = setupEligibilityController();
 const applicationOverview = setupApplicationOverviewController();
+
+// CASE BUILDING Controllers
+const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
+const caseBuildingCYAController = setupCaseBuildingCheckAndSendController(updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -70,8 +74,10 @@ router.use(typeOfAppealController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);
-router.use(reasonsForAppealController);
 router.use(outOfTimeController);
 router.use(applicationOverview);
+
+router.use(reasonsForAppealController);
+router.use(caseBuildingCYAController);
 
 export { router };

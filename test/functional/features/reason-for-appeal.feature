@@ -33,5 +33,7 @@ Feature: Reason for appeal
 
     When I choose a file that is "VALID" and click the "Upload file" button
     And I click "Save and continue" button
-    Then I should see the "reasons for appeal check your answers" page
+    Then I should see the reasons for appeal CYA page
+
+#    Then I should see the reasons for appeal confirmation page
 

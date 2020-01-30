@@ -54,7 +54,7 @@ interface AppealDate {
 interface AppealApplication {
   homeOfficeRefNumber: string;
   dateLetterSent: AppealDate;
-  appealType: string | string[];
+  appealType: string;
   isAppealLate: boolean;
   lateAppeal?: {
     reason?: string;
@@ -89,8 +89,7 @@ interface AppealApplication {
 }
 
 interface CaseBuilding {
-  [key: string]: any;
-  decision: string;
+  applicationReason: string;
   evidences?: Evidences;
 }
 

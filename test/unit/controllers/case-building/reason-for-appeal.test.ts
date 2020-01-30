@@ -1,6 +1,9 @@
 const express = require('express');
 import { NextFunction, Request, Response, text } from 'express';
-import { getReasonForAppeal, postReasonForAppeal, setupReasonsForAppealController } from '../../../../app/controllers/case-building/reason-for-appeal';
+import {
+  getReasonForAppeal, postReasonForAppeal,
+  setupReasonsForAppealController
+} from '../../../../app/controllers/case-building/reason-for-appeal';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
@@ -56,8 +59,9 @@ describe('Reasons for Appeal Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       setupReasonsForAppealController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.decision);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.decision);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.reason);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonForAppeal.reason);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.confirmation);
     });
   });
 
@@ -79,21 +83,31 @@ describe('Reasons for Appeal Controller', function() {
     });
 
     it('should fail validation and render case-building/reasons-for-appeal/reason-for-appeal.njk with error', async () => {
-      req.body.moreDetail = '';
+      req.body.applicationReason = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const applicationReasonError = {
+        text: 'Enter the reasons you think the Home Office decision is wrong',
+        href: '#applicationReason',
+        key: 'applicationReason'
+      };
+      const error = {
+        applicationReason: applicationReasonError
+      };
+      const errorList = [ applicationReasonError ];
+
       expect(res.render).to.have.been.calledWith(
                 'case-building/reasons-for-appeal/reason-for-appeal-page.njk',
         {
           error: {
-            moreDetail: {
-              href: '#moreDetail',
-              key: 'moreDetail',
+            applicationReason: {
+              href: '#applicationReason',
+              key: 'applicationReason',
               text: 'Enter the reasons you think the Home Office decision is wrong'
             }
           },
           errorList: [{
-            href: '#moreDetail',
-            key: 'moreDetail',
+            href: '#applicationReason',
+            key: 'applicationReason',
             text: 'Enter the reasons you think the Home Office decision is wrong'
           }]
         }
@@ -101,10 +115,9 @@ describe('Reasons for Appeal Controller', function() {
     });
 
     it('should pass validation and render case-building/reasons-for-appeal/reason-for-appeal.njk without error', async () => {
-      req.body.moreDetail = 'Text Word';
+      req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(
-          '/case-building/reason-for-appeal/supporting-evidence');
+      expect(res.redirect).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidence);
     });
   });
 });

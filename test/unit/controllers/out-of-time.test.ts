@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   getAppealLate,
+  getAppealLateDeleteFile,
   postAppealLate,
   setupOutOfTimeController
 } from '../../../app/controllers/appeal-application/out-of-time';
@@ -183,6 +184,34 @@ describe('Out of time controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getAppealLateDeleteFile', () => {
+
+    it('Should delete successfully when click on delete link and redirect to the appeal late page', async () => {
+      req.session.appeal.application.lateAppeal.evidence = {
+        id: 'someEvidenceId',
+        url: 'someUrlToTheFile',
+        name: 'name.png'
+      };
+
+      await getAppealLateDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.homeOffice.appealLate);
+    });
+
+    it('getAppealLateDeleteFile should catch exception and call next with the error', async () => {
+      req.session.appeal.application.lateAppeal.evidence = {
+        id: 'someEvidenceId',
+        url: 'someUrlToTheFile',
+        name: 'name.png'
+      };
+
+      const error = new Error('an error');
+      res.redirect = sandbox.stub().throws(error);
+      await getAppealLateDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

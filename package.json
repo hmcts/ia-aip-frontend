@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.1.7",
-    "@hmcts/div-idam-express-middleware": "^6.6.0",
+    "@hmcts/div-idam-express-middleware": "https://github.com/chrisgrimble/div-idam-express-middleware",
     "@hmcts/os-places-client": "1.0.6",
     "@hmcts/properties-volume": "^0.0.9",
     "applicationinsights": "^1.4.2",

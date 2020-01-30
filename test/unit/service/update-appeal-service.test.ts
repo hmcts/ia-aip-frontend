@@ -37,7 +37,7 @@ describe('update-appeal-service', () => {
     req = {
       idam: {
         userDetails: {
-          id: userId,
+          uid: userId,
           forename: 'idamForename',
           surname: 'idamSurname'
         }
@@ -342,7 +342,7 @@ describe('update-appeal-service', () => {
       req = {
         idam: {
           userDetails: {
-            id: userId
+            uid: userId
           }
         },
         session: {

@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import { daysToWaitUntilContact } from '../../../app/controllers/confirmation-page';
+import { daysToWaitUntilContact } from '../../../../app/controllers/appeal-application/confirmation-page';
 import {
     getConfirmationPage,
     setupReasonsForAppealController
-} from '../../../app/controllers/reason-for-appeal';
-import { paths } from '../../../app/paths';
-import UpdateAppealService from '../../../app/service/update-appeal-service';
-import Logger from '../../../app/utils/logger';
-import { expect, sinon } from '../../utils/testUtils';
+} from '../../../../app/controllers/case-building/reason-for-appeal';
+import { paths } from '../../../../app/paths';
+import UpdateAppealService from '../../../../app/service/update-appeal-service';
+import Logger from '../../../../app/utils/logger';
+import { expect, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
 
@@ -64,7 +64,7 @@ describe('Confirmation Page Controller', () => {
 
   it('getConfirmationPage should render confirmation.njk', () => {
     getConfirmationPage(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('case-building/confirmation-page.njk', {
+    expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/confirmation-page.njk', {
       date: daysToWaitUntilContact(14)
     });
   });

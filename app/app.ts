@@ -16,6 +16,7 @@ import { setupSession } from './session';
 
 function createApp() {
   const app: express.Application = express();
+  const environment: string = process.env.NODE_ENV;
 
   configureHelmet(app);
 
@@ -25,13 +26,13 @@ function createApp() {
   configureS2S(app);
 
   app.locals.i18n = internationalization;
-  app.use(logRequestMiddleware);
+  if (environment !== 'test') app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.post('*', filterRequest);
 
-  if (process.env.NODE_ENV === 'development') {
+  if (environment === 'development') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
     const options = { stats: 'errors-only' } as Options;
@@ -57,8 +58,8 @@ function configureHelmet(app) {
   // Helmet content security policy (CSP) to allow only assets from same domain.
   app.use(helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ['\'self\''],
-      fontSrc: ['\'self\' data:'],
+      defaultSrc: [ '\'self\'' ],
+      fontSrc: [ '\'self\' data:' ],
       scriptSrc: [
         '\'self\'',
         '\'unsafe-inline\'',
@@ -72,8 +73,8 @@ function configureHelmet(app) {
         'tagmanager.google.com',
         'fonts.googleapis.com/'
       ],
-      connectSrc: ['\'self\'', 'www.gov.uk'],
-      mediaSrc: ['\'self\''],
+      connectSrc: [ '\'self\'', 'www.gov.uk' ],
+      mediaSrc: [ '\'self\'' ],
       frameSrc: [
         '\'self\'',
         'www.googletagmanager.com',
@@ -98,18 +99,18 @@ function configureHelmet(app) {
   app.use(expectCt({ enforce: true, maxAge: 60 }));
   app.use(helmet.featurePolicy({
     features: {
-      accelerometer: ['\'none\''],
-      ambientLightSensor: ['\'none\''],
-      autoplay: ['\'none\''],
-      camera: ['\'none\''],
-      geolocation: ['\'none\''],
-      gyroscope: ['\'none\''],
-      magnetometer: ['\'none\''],
-      microphone: ['\'none\''],
-      payment: ['\'none\''],
-      speaker: ['\'none\''],
-      usb: ['\'none\''],
-      vibrate: ['\'none\'']
+      accelerometer: [ '\'none\'' ],
+      ambientLightSensor: [ '\'none\'' ],
+      autoplay: [ '\'none\'' ],
+      camera: [ '\'none\'' ],
+      geolocation: [ '\'none\'' ],
+      gyroscope: [ '\'none\'' ],
+      magnetometer: [ '\'none\'' ],
+      microphone: [ '\'none\'' ],
+      payment: [ '\'none\'' ],
+      speaker: [ '\'none\'' ],
+      usb: [ '\'none\'' ],
+      vibrate: [ '\'none\'' ]
     }
   }));
 }

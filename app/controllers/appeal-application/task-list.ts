@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { applicationStatusUpdate, logSession } from '../middleware/session-middleware';
-import { paths } from '../paths';
+import { applicationStatusUpdate } from '../../middleware/session-middleware';
+import { paths } from '../../paths';
 
 /**
  * Creates a new Section object and determines the current status of the step using the taskIds provided.
@@ -58,7 +58,7 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
 
 function setupTaskListController(): Router {
   const router = Router();
-  router.get(paths.taskList, logSession, applicationStatusUpdate, getTaskList);
+  router.get(paths.taskList, applicationStatusUpdate, getTaskList);
   return router;
 }
 

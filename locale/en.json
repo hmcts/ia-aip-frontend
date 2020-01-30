@@ -171,7 +171,7 @@
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal application",
-      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call us on <b>0300 123 1711</b> or email <a class=\"govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>",
+      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call us on <b>0300 123 1711</b> or <a class=\"govuk-link\" href=\"#\">send us a message</a>",
       "caseWorker": "A case worker will contact you to by <strong>{{ date }}</strong> to tell you if you can continue with your appeal and what to do next",
       "tribunalWorker": "A Tribunal case worker will contact you to by <strong>{{ date }}</strong> to tell you what to do next",
       "thingsYouCanDo": "Things you can do now",
@@ -182,7 +182,6 @@
       },
       "inTime": {
         "panel": "Your appeal application \n has been sent"
-
       }
     },
     "wrongHomeOfficeDecision": {
@@ -203,7 +202,19 @@
       "titleText": "Your answer has been sent",
       "answer": "A Tribunal Caseworker will look at your answer",
       "date": "The Tribunal Caseworker will contact you by <b>{{ date }}</b> to tell you what to do next",
-      "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\">customer.services@justice.gov.uk</a>"
+      "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"#\">customer.services@justice.gov.uk</a>"
+    },
+    "reasonsForAppealUpload": {
+      "title": "Reasons Upload",
+      "heading": "Providing supporting evidence",
+      "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?",
+      "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
+      "uploadFile": "<b>Upload a file</b>",
+      "findOutMore": "Find out more about the evidence to support your appeal",
+      "uploadFiles": "Uploaded files",
+      "noFiles": "No files uploaded",
+      "needMoreTime": "Need more time?",
+      "evidence": "If you want to provide evidence but don't have it right now, you can <a class=\"govuk-link\"href=\"#\"> ask for more time</a>"
     },
     "ineligiblePage": {
       "title": "You cannot currently use the new appeal service",
@@ -215,7 +226,7 @@
       "moreInfo": {
         "title": "More information",
         "moreInfoList": [
-        "<a href=\"https://www.gov.uk/immigration-asylum-tribunal\">Find out more about appealing an immigration or asylum decision</a>"
+          "<a href=\"https://www.gov.uk/immigration-asylum-tribunal\">Find out more about appealing an immigration or asylum decision</a>"
         ]
       }
     },
@@ -223,7 +234,14 @@
       "title": "Service Page",
       "heading": "You can use the new appeal service",
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
-      "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one."
+      "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
+      "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or <a class=\"govuk-link govuk-link--no-visited-state\" href='#'>send us a message</a>"
+    },
+    "eligibleStartPage": {
+      "newService": "This is a new online service for people appealing an immigration or asylum decision. Because it is a new service, not everyone will be able to use it right now.",
+      "askQuestions": "We need to ask you a few questions to see if the service is suitable for you.",
+      "alreadyStarted": "Have you already started an appeal?",
+      "signIn": "Sign in to continue with your appeal"
     }
   },
   "error": {
@@ -299,7 +317,17 @@
     "eligibility": {
       "selectYesOrNo": "Select either yes or no"
     },
-    "emptyReasonAppealIsLate": "Enter the reason your appeal is late"
+    "emptyReasonAppealIsLate": "Enter the reason your appeal is late",
+    "reasonForAppeal": {
+      "required": "Enter the reasons you think the Home Office decision is wrong",
+      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
+    },
+    "fileUpload": {
+      "noFileSelected": "Select a file",
+      "fileTooLarge": "The selected file must be smaller than",
+      "incorrectFormat": "The selected file must be a",
+      "fileCannotBeUploaded": "The file cannot be uploaded"
+    }
   },
   "components": {
     "evidenceList": {
@@ -315,7 +343,7 @@
     },
     "contactUs": {
       "heading": "Contact us for help",
-      "content": "<div><h2>Telephone</h2><p>0330 123 1234</p><h2>Email</h2><p>support@hmcts.net</p></div>"
+      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p><a href='#' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>Send us a message</a></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges</a><p>(opens in a new window)</p></div>"
     },
     "contactUsErrorLink": {
       "link": "<a class=\"govuk-link\" href=\"#\">Contact the Immigration & Asylum Helpline</a> if you need to make changes to your application or speak to someone about your tax credits."
@@ -377,7 +405,10 @@
     },
     {
       "question": "Have you ever been a British citizen?",
-      "eligibleAnswer": ["yes", "no"],
+      "eligibleAnswer": [
+        "yes",
+        "no"
+      ],
       "errorMessage": "Select yes if you have ever been a British citizen"
     },
     {

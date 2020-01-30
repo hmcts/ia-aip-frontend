@@ -4,7 +4,7 @@ import {
   getCheckAndSend,
   postCheckAndSend,
   setupCheckAndSendController
-} from '../../../app/controllers/check-and-send';
+} from '../../../app/controllers/appeal-application/check-and-send';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';

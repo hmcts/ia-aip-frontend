@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getTaskList, setupTaskListController } from '../../../app/controllers/task-list';
+import { getTaskList, setupTaskListController } from '../../../app/controllers/appeal-application/task-list';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';

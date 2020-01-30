@@ -3,7 +3,7 @@ tags:
 idam-pr:
   redirect_uris:
     IAC:
-    - https://${SERVICE_FQDN}/redirectUrl
+      - https://${SERVICE_FQDN}/redirectUrl
 nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

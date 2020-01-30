@@ -19,6 +19,7 @@
   "microservice": "MICROSERVICE",
   "session": {
     "useRedis": "USE_REDIS",
+    "useLogger": "USE_SESSION_LOGGER",
     "redis": {
       "url": "REDIS_URL",
       "secret": "SESSION_SECRET"
@@ -39,6 +40,9 @@
   },
   "ccd": {
     "apiUrl": "CCD_API_URL"
+  },
+  "documentManagement": {
+    "apiUrl": "DOC_MANAGEMENT_URL"
   },
   "addressLookup": {
     "token": "ADDRESS_LOOKUP_TOKEN",

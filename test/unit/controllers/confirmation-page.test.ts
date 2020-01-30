@@ -3,7 +3,7 @@ import {
   daysToWaitUntilContact,
   getConfirmationPage,
   setConfirmationController
-} from '../../../app/controllers/confirmation-page';
+} from '../../../app/controllers/appeal-application/confirmation-page';
 import { paths } from '../../../app/paths';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';

@@ -1,9 +1,10 @@
 import config from 'config';
+
 const redis = require('redis');
 const session = require('express-session');
 
-const useRedis = config.get('session.useRedis') === 'true';
-const isSecure = config.get('session.cookie.secure') === 'true';
+const useRedis: boolean = config.get('session.useRedis') === true;
+const isSecure: boolean = config.get('session.cookie.secure') === true;
 
 function setupSession() {
   if (useRedis) {

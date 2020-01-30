@@ -38,7 +38,7 @@ function setupIdamController(): Router {
   const router = Router();
   router.use(idamExpressMiddleware.userDetails(idamConfig));
   router.get(paths.login, authenticateMiddleware, getLogin);
-  router.get(paths.redirectUrl, idamExpressMiddleware.landingPage(idamConfig), initSession, logSession, getRedirectUrl);
+  router.get(paths.redirectUrl, idamExpressMiddleware.landingPage(idamConfig), initSession, getRedirectUrl);
   router.use(idamExpressMiddleware.protect(idamConfig), checkSession(idamConfig));
   router.get(paths.logout, idamExpressMiddleware.logout(idamConfig), getLogout);
 

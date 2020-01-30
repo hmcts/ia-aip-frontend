@@ -15,7 +15,7 @@ Scenario: Explain the reason why my appeal is late
   And I pick "Angola" from the Nationalities drop down and click continue
   And I type "W1W 7RT" as my postcode and click Find address
   And I choose the first address from the dropdown list and click continue
-  And I click Save and continue
+  And I click "Save and continue" button
   And I click the contact details link
   And I check the Text message option and type "07899999999" as my phone number and click Save and continue
   And I click on the type-of-appeal link

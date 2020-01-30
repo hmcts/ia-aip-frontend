@@ -23,7 +23,7 @@ Feature: Eligibility
     Then I should see the "Are you appealing the removal of your British citizenship" eligibility page
     When I select No and click continue
     Then I should see the eligible page
-    When I click Back button
+    When I click "Back" button
     Then I should see the "Are you appealing the removal of your British citizenship" eligibility page
 
   Scenario: Citizen was never a british citizen and is eligible to use the service
@@ -44,7 +44,7 @@ Feature: Eligibility
     Then I should see the "Have you ever been a British citizen" eligibility page
     When I select No and click continue
     Then I should see the eligible page
-    When I click Back button
+    When I click "Back" button
     Then I should see the "Have you ever been a British citizen" eligibility page
 
   Scenario: Citizen is ineligible to use the service
@@ -68,7 +68,7 @@ Feature: Eligibility
     Then I should see the "Are you at least 18 years old" eligibility page
     When I select Yes and click continue
     Then I should see the "Are you currently in the UK" eligibility page
-    When I click Back button
+    When I click "Back" button
     Then I should see the "Are you at least 18 years old" eligibility page
 
   Scenario: Citizen can click back on in ineligible page to change answer to previous question
@@ -79,5 +79,11 @@ Feature: Eligibility
     Then I should see the "Are you currently in the UK" eligibility page
     When I select No and click continue
     Then I should see the ineligible page
-    When I click Back button
+    When I click "Back" button
     Then I should see the "Are you currently in the UK" eligibility page
+
+
+  Scenario: Citizen can continue already started appeal
+    Given I am on home page
+    When I click "Sign in to continue with your appeal" button
+    Then I should see the sign in page

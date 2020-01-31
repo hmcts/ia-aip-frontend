@@ -23,3 +23,27 @@ body {
 img {
   max-width: 100%;
 }
+
+.overview-banner {
+  background-color: #E1F0E9;
+  padding: 20px;
+}
+
+.saved-banner {
+  background-color: #f3f2f1;
+  padding: 0.01rem;
+  border-left: 0.4rem solid #006600;
+  margin-top: 1rem;
+  padding-bottom: 0.4rem;
+}
+
+.banner-line {
+  border-bottom: 0.1rem solid #1d70b8;
+
+}
+
+.contact-us-component{
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  padding-top: 1rem;
+}

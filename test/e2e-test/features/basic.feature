@@ -27,6 +27,7 @@ Feature: Business rules
     When I click continue
     Then I should see the sign in page
     When I enter creds and click sign in
+    Then I click continue
     Then I should see the task-list page
     When I click on Home office details
     Then I should be taken to the home office ref number page
@@ -61,4 +62,3 @@ Feature: Business rules
     Then I should be taken to the check-and-send page
     # When I check the checkbox and click send
     # Then I should be taken to the confirmation page
-

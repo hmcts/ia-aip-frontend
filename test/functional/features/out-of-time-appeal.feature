@@ -5,6 +5,7 @@ Feature: Back button
 
 Scenario: Explain the reason why my appeal is late
   Given I am authenticated as a valid appellant
+  Then I click continue
   When I click on Home office details
   And I enter "A1234567" as the Office ref number and click Save and continue
   And I enter an out of time letter sent date and click Save and continue

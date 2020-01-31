@@ -237,6 +237,21 @@
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or <a class=\"govuk-link govuk-link--no-visited-state\" href='#'>send us a message</a>"
     },
+    "overviewPage": {
+      "title": "Overview",
+      "contactUs": "Contact us for help",
+      "askAQuestion":"Ask a question or get help in your language",
+      "telephone": "Telephone: 0300 123 1171",
+      "sendMessage": "Send us a message",
+      "time":"Monday to Friday, 8:30am to 5pm",
+      "charges": "Find out about call charges",
+      "newWindow": "(opens in a new window)",
+      "doThisNext": "Do this next",
+      "answersBeenSaved": "Your answers have been saved",
+      "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
+      "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some of the questions.",
+      "contactUsBanner": "Contact us for help"
+    },
     "eligibleStartPage": {
       "newService": "This is a new online service for people appealing an immigration or asylum decision. Because it is a new service, not everyone will be able to use it right now.",
       "askQuestions": "We need to ask you a few questions to see if the service is suitable for you.",

@@ -1,32 +1,41 @@
 {% extends 'layout.njk' %}
-
+{% set pageTitleName = i18n.pages.overviewPage.title %}
 
 {% block content %}
-<h1>{{ name }}</h1>
-
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half govuk-grid-column-two-thirds-from-desktop">
-            <hr>
-            <h1>Timeline</h1>
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds ">
+                <h1 class="govuk-heading-l govuk-!-margin-0 govuk-!-padding-bottom-6 banner-line">{{name}}</h1>
+             </div>
         </div>
-        <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-desktop">
-        <hr>
-            <p>Contact us for help</p><p>Ask a question or get help in your language</p>
-            <p>Telephone: 0300 123 1171<br><a href="#">Send us a message</a></p><p>Monday to Friday, 8:30am to 5pm</p>
-            <p>Find out about call charges</p><p>(opens in a new window)</p>
-            <hr>
-        </div>
-        <div class="govuk-grid-column-one-half">
-            <b>Do this next</b>
-            <div style="background-color: #28a197">
-                <p class="govuk-body">
-                    You need to answer a few questions about yourself and your appeal to get started.
-                </p>
-                <p class="govuk-body">
-                    You will need to have your Home Office decision letter with you to answer some questions.
-                </p>
-
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-l">-------------------Put timeline here!!----------------</h1>
+                <h2>{{ i18n.pages.overviewPage.doThisNext }}</h2>
+                {% if saved %}
+                    <div class="saved-banner">
+                        <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>
+                    </div>
+                {% endif %}
+                <div class="overview-banner govuk-!-margin-top-0">
+                    <p class="govuk-body">{{ i18n.pages.overviewPage.fewQuestions }}</p>
+                    <p class="govuk-body">{{ i18n.pages.overviewPage.needHomeOfficeDecision }}</p>
+                    {{ govukButton({
+                        text: i18n.common.buttons.continue,
+                        href: "/task-list"
+                    }) }}
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-third">
+                <div class="contact-us-component">
+                    <b class="govuk-!-padding-top-2">Contact us for help</b>
+                    <p>{{ i18n.pages.overviewPage.askAQuestion}}</p>
+                    <p class='govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.telephone }}</p>
+                    <a href='#' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>{{ i18n.pages.overviewPage.sendMessage }}</a>
+                    <p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.time }}</p>
+                    <a href='https://www.gov.uk/call-charges' target='_blank' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>{{i18n.pages.overviewPage.charges }}</a>
+                    <p class="govuk-!-margin-top-0">{{ i18n.pages.overviewPage.newWindow }}</p>
+                </div>
             </div>
         </div>
     </div>

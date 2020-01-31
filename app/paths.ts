@@ -48,7 +48,6 @@ const paths = {
     eligible: '/eligible'
   }
 };
-
 export {
   paths
 };

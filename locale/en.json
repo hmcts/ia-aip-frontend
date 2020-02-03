@@ -159,10 +159,9 @@
     },
     "homeOfficeAppealLate": {
       "title": "Your appeal is late",
-      "whyLateLabel": "Why is your appeal late?",
-      "description": "Appeals should be made within 14 days from the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
+      "description": "Appeals should be made within 14 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
       "provideEvidenceTitle": "Provide supporting evidence",
-      "provideEvidenceDescription": "You can upload evidence to support your answers such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
+      "provideEvidenceDescription": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "fileUploadTitle": "Upload a file",
       "uploadedFileTitle": "Uploaded file"
     },
@@ -182,6 +181,7 @@
       },
       "inTime": {
         "panel": "Your appeal application \n has been sent"
+
       }
     },
     "wrongHomeOfficeDecision": {

@@ -27,7 +27,7 @@ export default class UpdateAppealService {
     const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.id, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
 
-    const caseData: CaseData = ccdCase.case_data;
+    const caseData: Partial<CaseData> = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
@@ -41,6 +41,7 @@ export default class UpdateAppealService {
 
     const appealType = caseData.appealType || null;
     const subscriptions = caseData.subscriptions || [];
+    let outOfTimeAppeal = null;
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
@@ -53,6 +54,24 @@ export default class UpdateAppealService {
       }
     }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
 
+    if (this.yesNoToBool(caseData.submissionOutOfTime)) {
+
+      if (caseData.applicationOutOfTimeExplanation) {
+        outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
+      }
+
+      if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
+        outOfTimeAppeal = {
+          ...outOfTimeAppeal,
+          evidence: {
+            id: caseData.applicationOutOfTimeDocument.document_filename,
+            url: caseData.applicationOutOfTimeDocument.document_url,
+            name: this.fileIdToName(caseData.applicationOutOfTimeDocument.document_filename)
+          }
+        };
+      }
+    }
+
     req.session.appeal = {
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
@@ -62,9 +81,7 @@ export default class UpdateAppealService {
         },
         dateLetterSent,
         isAppealLate: caseData.submissionOutOfTime ? this.yesNoToBool(caseData.submissionOutOfTime) : undefined,
-        lateAppeal: {
-          reason: caseData.applicationOutOfTimeExplanation
-        },
+        lateAppeal: outOfTimeAppeal || undefined,
         personalDetails: {
           givenNames: caseData.appellantGivenNames,
           familyName: caseData.appellantFamilyName,
@@ -99,9 +116,14 @@ export default class UpdateAppealService {
     return null;
   }
 
-  yesNoToBool(YesOrNo: string): boolean {
-    if (YesOrNo === 'Yes') return true;
-    else if (YesOrNo === 'No') return false;
+  yesNoToBool(answer: string): boolean {
+    if (answer === 'Yes') {
+      return true;
+    } else if (answer === 'No') return false;
+  }
+
+  fileIdToName(fileID: string): string {
+    return fileID.substring(fileID.indexOf('-') + 1);
   }
 
   async submitEvent(event, req: Request) {
@@ -132,6 +154,14 @@ export default class UpdateAppealService {
 
     if (_.has(application.lateAppeal, 'reason')) {
       caseData.applicationOutOfTimeExplanation = application.lateAppeal.reason;
+    }
+
+    if (_.has(application.lateAppeal, 'evidence')) {
+      caseData.applicationOutOfTimeDocument = {
+        document_filename: application.lateAppeal.evidence.id,
+        document_url: application.lateAppeal.evidence.url,
+        document_binary_url: `${application.lateAppeal.evidence.url}/binary`
+      };
     }
 
     if (application.personalDetails && application.personalDetails.givenNames) {

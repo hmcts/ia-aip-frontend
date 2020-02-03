@@ -5,6 +5,7 @@ import { setupCheckAndSendController } from './controllers/appeal-application/ch
 import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
 import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
 import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
+import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
 import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
@@ -13,7 +14,6 @@ import { setupEligibilityController } from './controllers/eligibility';
 import { setupHealthController } from './controllers/health';
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
-import { setupOutOfTimeController } from './controllers/out-of-time';
 import { setupStartController } from './controllers/startController';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -27,10 +27,10 @@ import { setupSecrets } from './setupSecrets';
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
-export const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
-export const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
-const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
+const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
+const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
+const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 
 const router = express.Router();
 
@@ -46,7 +46,7 @@ const contactDetailsController = setupContactDetailsController(updateAppealServi
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
-const outOfTimeController = setupOutOfTimeController(updateAppealService);
+const outOfTimeController = setupOutOfTimeController({ updateAppealService, documentManagementService });
 const eligibilityController = setupEligibilityController();
 
 // not protected by idam

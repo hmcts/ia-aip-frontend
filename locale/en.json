@@ -265,7 +265,7 @@
     }
   },
   "cookieBanner": {
-    "content": "GOV.UK uses cookies to make the site simpler. <a href='/cookie-policy class='govuk-link' title='Find out more about cookies'>Find out more about cookies</a>"
+    "content": "GOV.UK uses cookies to make the site simpler. <a href='/cookie-policy' class='govuk-link' title='Find out more about cookies'>Find out more about cookies</a>"
   },
   "validationErrors": {
     "errorSummary": "There is a problem",

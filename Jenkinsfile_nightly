@@ -1,6 +1,9 @@
 #!groovy
 properties([
     pipelineTriggers([cron('*/30 0 * * *')])
+    parameters([
+        string(name: 'URL_TO_TEST', defaultValue: 'https://ia-aip-frontend-aat.service.core-compute-aat.internal', description: 'The URL you want to run these tests against'),
+    ])
 ])
 
 @Library("Infrastructure")
@@ -28,6 +31,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 withNightlyPipeline("nodejs", product, component) {
     loadVaultSecrets(secrets)
+    env.TEST_URL = params.URL_TO_TEST
     enableCrossBrowserTest()
     enableSlackNotifications('#aip-tech')
 }

@@ -1,6 +1,6 @@
 #!groovy
 properties([
-    pipelineTriggers([cron('*/10 * * * *')])
+    pipelineTriggers([cron('*/30 0 * * *')])
 ])
 
 @Library("Infrastructure")

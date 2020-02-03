@@ -1,4 +1,4 @@
-import config from 'config';
+const config = require('config');
 const sauceConnectLauncher = require('sauce-connect-launcher');
 let sauceConnectProcess;
 

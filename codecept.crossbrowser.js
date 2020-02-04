@@ -5,7 +5,7 @@ exports.config = {
   output: './functional-output',
   helpers: {
     WebDriver: {
-      url: config.get('testUrl'),
+      url: process.env.TEST_URL || config.get('testUrl'),
       browser: "internet explorer",
       timeouts: {
         "script": 60000,

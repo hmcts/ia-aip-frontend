@@ -5,9 +5,8 @@ module.exports = {
       await I.see('Your appeal is late', 'h1');
     });
 
-    When(/^I enter "([^"]*)" as the reason for being late and click Save and continue/, async (reason) => {
+    When(/^I enter "([^"]*)" as the reason for being late$/, async (reason) => {
       I.fillField('#appeal-late', reason);
-      I.click('Save and continue');
     });
   }
 };

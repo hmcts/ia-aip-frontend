@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import * as path from 'path';
 import i18n from '../../../locale/en.json';
-import { handleFileUploadErrors, SUPPORTED_FORMATS } from '../../middleware/file-upload-validation-middleware';
+import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
@@ -11,10 +10,6 @@ import {
   yesOrNoRequiredValidation
 } from '../../utils/validations/fields-validations';
 import { daysToWaitUntilContact } from '../appeal-application/confirmation-page';
-
-const config = require('config');
-const multer = require('multer');
-const maxFileSizeInMb: number = config.get('evidenceUpload.maxFileSizeInMb');
 
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
@@ -193,18 +188,6 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-const upload = multer({
-  limits: { fileSize: (maxFileSizeInMb * 1024 * 1024) },
-  fileFilter: (req, file, cb) => {
-    const fileTypeError = 'LIMIT_FILE_TYPE';
-    if (SUPPORTED_FORMATS.includes(path.extname(file.originalname.toLowerCase()))) {
-      cb(null, true);
-    } else {
-      cb(new multer.MulterError(fileTypeError), false);
-    }
-  }
-}).single('file-upload');
-
 function setupReasonsForAppealController(deps?: any): Router {
   const router = Router();
   router.get(paths.reasonsForAppeal.decision, getReasonForAppeal);
@@ -212,7 +195,7 @@ function setupReasonsForAppealController(deps?: any): Router {
   router.get(paths.reasonsForAppeal.supportingEvidence, getSupportingEvidencePage);
   router.post(paths.reasonsForAppeal.supportingEvidence, postSupportingEvidencePage);
   router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
-  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, upload, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
+  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
   router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
   router.post(paths.reasonsForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit);
   router.get(paths.reasonsForAppeal.checkAndSend, getCheckAndSendPage);

@@ -25,16 +25,13 @@ Feature: Reason for appeal
     Then I click "Upload file" button
     Then I should see error summary
 
-    When I choose a file that is "INVALID_TOO_BIG"
-    Then I click "Upload file" button
+    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
     Then I should see error summary
 
-    When I choose a file that is "INVALID_FORMAT"
-    Then I click "Upload file" button
+    When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
     Then I should see error summary
 
-    When I choose a file that is "VALID"
-    Then I click "Upload file" button
+    When I choose a file that is "VALID" and click the "Upload file" button
     And I click "Save and continue" button
     Then I should see the "reasons for appeal check your answers" page
 

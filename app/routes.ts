@@ -10,12 +10,12 @@ import { setupPersonalDetailsController } from './controllers/appeal-application
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
-import { setupCheckAndSendController as setupCaseBuildingCheckAndSendController } from './controllers/case-building/check-and-send';
-import { setupReasonsForAppealController } from './controllers/case-building/reason-for-appeal';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupHealthController } from './controllers/health';
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
+import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
+import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupStartController } from './controllers/startController';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -51,9 +51,9 @@ const outOfTimeController = setupOutOfTimeController({ updateAppealService, docu
 const eligibilityController = setupEligibilityController();
 const applicationOverview = setupApplicationOverviewController();
 
-// CASE BUILDING Controllers
+// Reason for Appeal Controllers
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
-const caseBuildingCYAController = setupCaseBuildingCheckAndSendController(updateAppealService);
+const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -78,6 +78,6 @@ router.use(outOfTimeController);
 router.use(applicationOverview);
 
 router.use(reasonsForAppealController);
-router.use(caseBuildingCYAController);
+router.use(reasonsForAppealCYAController);
 
 export { router };

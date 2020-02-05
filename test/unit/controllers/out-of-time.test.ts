@@ -29,7 +29,7 @@ describe('Out of time controller', () => {
           application: {
             lateAppeal: {}
           },
-          caseBuilding: {},
+          reasonsForAppeal: {},
           hearingRequirements: {}
         } as Appeal
       } as Partial<Express.Session>,

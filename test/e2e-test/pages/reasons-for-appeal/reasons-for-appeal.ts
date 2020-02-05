@@ -1,13 +1,13 @@
-import { paths } from '../../../../../app/paths';
+import { paths } from '../../../../app/paths';
 
 const config = require('config');
 
 const testUrl = config.get('testUrl');
 
 module.exports = {
-  reasonForAppeal(I) {
+  reasonsForAppeal(I) {
     When(/^I visit reasons for appeal$/, async () => {
-      await I.amOnPage(testUrl + paths.reasonForAppeal.reason);
+      await I.amOnPage(testUrl + paths.reasonsForAppeal.reason);
     });
 
     Then(/^I enter "([^"]*)" into the reason for appeal text area$/, async (text: string) => {

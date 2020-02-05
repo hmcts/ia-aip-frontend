@@ -51,7 +51,7 @@ describe('getStatus', () => {
       },
       addressLookup: {}
     },
-    caseBuilding: {
+    reasonsForAppeal: {
       applicationReason: null
     },
     hearingRequirements: {}

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response, text } from 'express';
 import {
   getReasonForAppeal, postReasonForAppeal,
   setupReasonsForAppealController
-} from '../../../../app/controllers/case-building/reason-for-appeal';
+} from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
@@ -59,16 +59,16 @@ describe('Reasons for Appeal Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       setupReasonsForAppealController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.reason);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonForAppeal.reason);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.confirmation);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.reason);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.reason);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
     });
   });
 
   describe('getReasonForAppeal', () => {
-    it('should render case-building/reasons-for-appeal/reason-for-appeal.njk', function () {
+    it('should render reasons-for-appeal/reason-for-appeal.njk', function () {
       getReasonForAppeal(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/reason-for-appeal-page.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
         previousPage:  '/appellant-timeline'
       });
     });
@@ -82,7 +82,7 @@ describe('Reasons for Appeal Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render case-building/reasons-for-appeal/reason-for-appeal.njk with error', async () => {
+    it('should fail validation and render reasons-for-appeal/reason-for-appeal.njk with error', async () => {
       req.body.applicationReason = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const applicationReasonError = {
@@ -96,7 +96,7 @@ describe('Reasons for Appeal Controller', function() {
       const errorList = [ applicationReasonError ];
 
       expect(res.render).to.have.been.calledWith(
-                'case-building/reasons-for-appeal/reason-for-appeal-page.njk',
+                'reasons-for-appeal/reason-for-appeal-page.njk',
         {
           error: {
             applicationReason: {
@@ -114,10 +114,10 @@ describe('Reasons for Appeal Controller', function() {
       );
     });
 
-    it('should pass validation and render case-building/reasons-for-appeal/reason-for-appeal.njk without error', async () => {
+    it('should pass validation and render reasons-for-appeal/reason-for-appeal.njk without error', async () => {
       req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidence);
+      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
     });
   });
 });

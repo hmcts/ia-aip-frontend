@@ -3,7 +3,7 @@ import {
   getSupportingEvidencePage,
   postSupportingEvidencePage,
   setupReasonsForAppealController
-} from '../../../../app/controllers/case-building/reason-for-appeal';
+} from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -68,16 +68,16 @@ describe('Supporting Evidence Upload Controller', () => {
         documentManagementService: documentManagementService as DocumentManagementService
       };
       setupReasonsForAppealController(deps);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidence);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidence);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
     });
   });
 
   describe('getSupportingEvidencePage', () => {
-    it('should render case-building/reasons-for-appeal/supporting-evidence-page.njk', () => {
+    it('should render reasons-for-appeal/supporting-evidence-page.njk', () => {
       getSupportingEvidencePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
-        previousPage: paths.reasonForAppeal.reason
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
@@ -90,7 +90,7 @@ describe('Supporting Evidence Upload Controller', () => {
   });
 
   describe('postSupportingEvidencePage', () => {
-    it('should fail validation and render case-building/reasons-for-appeal/supporting-evidence-page.njk with a validation error', async () => {
+    it('should fail validation and render reasons-for-appeal/supporting-evidence-page.njk with a validation error', async () => {
       req.body = {};
       const expectedError: ValidationError = {
         href: '#answer',
@@ -99,10 +99,10 @@ describe('Supporting Evidence Upload Controller', () => {
       };
 
       postSupportingEvidencePage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
         error: { answer: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonForAppeal.reason
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
@@ -110,14 +110,14 @@ describe('Supporting Evidence Upload Controller', () => {
       req.body = { 'answer': 'no' };
 
       postSupportingEvidencePage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonForAppeal.checkAndSend);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.checkAndSend);
     });
 
     it('when yes is selected should validate and redirect to the supporting-evidence-upload page', async () => {
       req.body = { 'answer': 'yes' };
 
       postSupportingEvidencePage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonForAppeal.supportingEvidenceUpload);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
     });
 
     it('postTypeOfAppeal should catch exception and call next with the error', async () => {

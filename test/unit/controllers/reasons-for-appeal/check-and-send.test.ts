@@ -3,7 +3,7 @@ import {
   getCheckAndSend,
   postCheckAndSend,
   setupCheckAndSendController
-} from '../../../../app/controllers/case-building/check-and-send';
+} from '../../../../app/controllers/reasons-for-appeal/check-and-send';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../../../app/utils/summary-list';
@@ -25,7 +25,7 @@ describe('Case Building - Check and send Controller', () => {
       session: {
         appeal: {
           application: {},
-          caseBuilding: {
+          reasonsForAppeal: {
             applicationReason: 'a reason'
           }
         } as Partial<Appeal>
@@ -51,19 +51,19 @@ describe('Case Building - Check and send Controller', () => {
   describe('setupCheckAndSendController', () => {
     it('should setup the routes', () => {
       setupCheckAndSendController(updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.checkAndSend);
-      expect(routerPostStub).to.have.been.calledWith(paths.reasonForAppeal.checkAndSend);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+      expect(routerPostStub).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
     });
   });
 
   describe('getCheckAndSend', () => {
-    it('should render case-building/reasons-for-appeal/check-and-send-page.njk with supporting evidences', () => {
+    it('should render reasons-for-appeal/check-and-send-page.njk with supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.caseBuilding.applicationReason ], paths.reasonForAppeal.reason),
-        addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [ 'File1.png', 'File2.png' ], paths.reasonForAppeal.supportingEvidenceUpload, Delimiter.BREAK_LINE)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.reason),
+        addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [ 'File1.png', 'File2.png' ], paths.reasonsForAppeal.supportingEvidenceUpload, Delimiter.BREAK_LINE)
       ];
-      req.session.appeal.caseBuilding.evidences = {
+      req.session.appeal.reasonsForAppeal.evidences = {
         '1-File1.png': {
           'id': '1-File1.png',
           'url': '#',
@@ -77,22 +77,22 @@ describe('Case Building - Check and send Controller', () => {
       };
 
       getCheckAndSend(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('case-building/reasons-for-appeal/check-and-send-page.njk', {
+      expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
-        previousPage: paths.reasonForAppeal.reason
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
-    it('should render case-building/reasons-for-appeal/check-and-send-page.njk without supporting evidences', () => {
+    it('should render reasons-for-appeal/check-and-send-page.njk without supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.caseBuilding.applicationReason ], paths.reasonForAppeal.reason)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.reason)
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('case-building/reasons-for-appeal/check-and-send-page.njk', {
+      expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
-        previousPage: paths.reasonForAppeal.reason
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
@@ -109,7 +109,7 @@ describe('Case Building - Check and send Controller', () => {
       req.body = {};
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.reasonForAppeal.confirmation);
+      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
     });
 
     it('should redirect to timeline page when click save for later', async () => {

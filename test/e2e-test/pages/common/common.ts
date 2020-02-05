@@ -43,10 +43,10 @@ async function setupData(newCaseData) {
 }
 
 const PATHS = {
-  'reasons for appeal': paths.reasonForAppeal.reason,
-  'supporting evidence question': paths.reasonForAppeal.supportingEvidence,
-  'supporting evidence upload': paths.reasonForAppeal.supportingEvidenceUpload,
-  'reasons for appeal check your answers': paths.reasonForAppeal.checkAndSend
+  'reasons for appeal': paths.reasonsForAppeal.reason,
+  'supporting evidence question': paths.reasonsForAppeal.supportingEvidence,
+  'supporting evidence upload': paths.reasonsForAppeal.supportingEvidenceUpload,
+  'reasons for appeal check your answers': paths.reasonsForAppeal.checkAndSend
 };
 
 module.exports = {

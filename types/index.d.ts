@@ -41,7 +41,7 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   application: AppealApplication;
-  caseBuilding: CaseBuilding;
+  reasonsForAppeal: ReasonsForAppeal;
   hearingRequirements: HearingRequirements;
 }
 
@@ -88,9 +88,10 @@ interface AppealApplication {
   isEdit?: boolean;
 }
 
-interface CaseBuilding {
+interface ReasonsForAppeal {
   applicationReason: string;
   evidences?: Evidences;
+  isEdit?: boolean;
 }
 
 interface HearingRequirements {

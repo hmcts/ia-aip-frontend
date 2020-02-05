@@ -4,7 +4,7 @@ import {
   getSupportingEvidenceUploadPage,
   postSupportingEvidenceUploadFile,
   setupReasonsForAppealController
-} from '../../../../app/controllers/case-building/reason-for-appeal';
+} from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -31,7 +31,7 @@ describe('Supporting Evidence Upload Controller', () => {
           application: {
             contactDetails: {}
           },
-          caseBuilding: {}
+          reasonsForAppeal: {}
         }
       } as Partial<Appeal>,
       cookies: {},
@@ -72,27 +72,27 @@ describe('Supporting Evidence Upload Controller', () => {
         documentManagementService: documentManagementService as DocumentManagementService
       };
       setupReasonsForAppealController(deps);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidenceUpload);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidenceUploadFile);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonForAppeal.supportingEvidenceDeleteFile);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidenceUploadFile);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidenceDeleteFile);
     });
   });
 
   describe('getSupportingEvidenceUploadPage', () => {
-    it('should render case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', () => {
+    it('should render reasons-for-appeal/supporting-evidence-upload-page.njk', () => {
       const evidences = {};
-      req.session.appeal.caseBuilding.evidences = evidences;
+      req.session.appeal.reasonsForAppeal.evidences = evidences;
 
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
-        evidenceCTA: paths.reasonForAppeal.supportingEvidenceDeleteFile,
-        previousPage: paths.reasonForAppeal.reason
+        evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
-    it('should render case-building/reasons-for-appeal/supporting-evidence-upload-page.njk with saved evidences', () => {
+    it('should render reasons-for-appeal/supporting-evidence-upload-page.njk with saved evidences', () => {
       const evidences = {
         someEvidenceId: {
           id: 'someEvidenceId',
@@ -101,13 +101,13 @@ describe('Supporting Evidence Upload Controller', () => {
         }
       };
 
-      req.session.appeal.caseBuilding.evidences = evidences;
+      req.session.appeal.reasonsForAppeal.evidences = evidences;
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
-        evidenceCTA: paths.reasonForAppeal.supportingEvidenceDeleteFile,
-        previousPage: paths.reasonForAppeal.reason
+        evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
@@ -121,7 +121,7 @@ describe('Supporting Evidence Upload Controller', () => {
 
   describe('postSupportingEvidenceUploadFile', () => {
 
-    it('Should display validation error when no file has been selected and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
+    it('Should display validation error when no file has been selected and render reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
       const expectedError: ValidationError = {
         href: '#uploadFile',
         key: 'uploadFile',
@@ -129,14 +129,14 @@ describe('Supporting Evidence Upload Controller', () => {
       };
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonForAppeal.reason
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
-    it('Should display validation error LIMIT_FILE_TYPE and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
+    it('Should display validation error LIMIT_FILE_TYPE and render reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
       const expectedError: ValidationError = {
         href: '#uploadFile',
         key: 'uploadFile',
@@ -146,14 +146,14 @@ describe('Supporting Evidence Upload Controller', () => {
       res.locals.multerError = expectedError.text;
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonForAppeal.reason
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
-    it('Should display validation error LIMIT_FILE_SIZE and render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
+    it('Should display validation error LIMIT_FILE_SIZE and render reasons-for-appeal/reasons-for-appeal-upload.njk ', async () => {
       // Because the file size is being overriden on the development config for testing purposes
       // error message will show max file size as 0.001MB
       const expectedError: ValidationError = {
@@ -165,14 +165,14 @@ describe('Supporting Evidence Upload Controller', () => {
       res.locals.multerError = expectedError.text;
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonForAppeal.reason
+        previousPage: paths.reasonsForAppeal.reason
       });
     });
 
-    it('Should succeed render case-building/reasons-for-appeal/reasons-for-appeal-upload.njk with errors ', async () => {
+    it('Should succeed render reasons-for-appeal/reasons-for-appeal-upload.njk with errors ', async () => {
 
       const fileSizeInMb = 0.001;
       const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
@@ -192,11 +192,11 @@ describe('Supporting Evidence Upload Controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonForAppeal.supportingEvidenceUpload);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
     });
 
     it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {
-      req.session.appeal.caseBuilding.evidences = {
+      req.session.appeal.reasonsForAppeal.evidences = {
         someEvidenceId: {
           id: 'someEvidenceId',
           url: 'someUrlToTheFile',
@@ -215,7 +215,7 @@ describe('Supporting Evidence Upload Controller', () => {
   describe('getSupportingEvidenceDeleteFile', () => {
 
     it('Should delete successfully when click on delete link and redirect to the upload-page page', async () => {
-      req.session.appeal.caseBuilding.evidences = {
+      req.session.appeal.reasonsForAppeal.evidences = {
         someEvidenceId: {
           id: 'someEvidenceId',
           url: 'someUrlToTheFile',
@@ -224,12 +224,12 @@ describe('Supporting Evidence Upload Controller', () => {
       };
       req.query['id'] = 'someEvidenceId';
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(req.session.appeal.caseBuilding.evidences).to.not.haveOwnProperty('someEvidenceId');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonForAppeal.supportingEvidenceUpload);
+      expect(req.session.appeal.reasonsForAppeal.evidences).to.not.haveOwnProperty('someEvidenceId');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
     });
 
     it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {
-      req.session.appeal.caseBuilding.evidences = {
+      req.session.appeal.reasonsForAppeal.evidences = {
         someEvidenceId: {
           id: 'someEvidenceId',
           url: 'someUrlToTheFile',

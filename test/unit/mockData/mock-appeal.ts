@@ -35,7 +35,7 @@ export function createDummyAppealApplication(): Appeal {
       },
       addressLookup: {}
     },
-    caseBuilding: {
+    reasonsForAppeal: {
       applicationReason: null
     },
     hearingRequirements: {

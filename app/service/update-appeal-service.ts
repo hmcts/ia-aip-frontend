@@ -95,7 +95,7 @@ export default class UpdateAppealService {
         },
         addressLookup: {}
       },
-      caseBuilding: {
+      reasonsForAppeal: {
         applicationReason: null
       },
       hearingRequirements: {}

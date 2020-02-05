@@ -13,7 +13,7 @@ import { daysToWaitUntilContact } from '../appeal-application/confirmation-page'
 
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('case-building/reasons-for-appeal/reason-for-appeal-page.njk', {
+    return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
       previousPage: '/appellant-timeline'
     });
   } catch (e) {
@@ -28,14 +28,14 @@ function postSupportingEvidenceSubmit(req: Request, res: Response, next: NextFun
     value: '#uploadFile'
   } ];
   try {
-    if (req.session.appeal.caseBuilding.evidences === undefined) {
-      return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+    if (req.session.appeal.reasonsForAppeal.evidences === undefined) {
+      return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         errorList: Object.values(validation),
         error: validation
       });
 
     }
-    return res.redirect(paths.reasonForAppeal.checkAndSend);
+    return res.redirect(paths.reasonsForAppeal.checkAndSend);
   } catch (e) {
     next(e);
   }
@@ -46,17 +46,17 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
     try {
       const validation = reasonForAppealDecisionValidation(req.body);
       if (validation != null) {
-        return res.render('case-building/reasons-for-appeal/reason-for-appeal-page.njk', {
+        return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
           errorList: Object.values(validation),
           error: validation
         });
       }
-      req.session.appeal.caseBuilding = {
+      req.session.appeal.reasonsForAppeal = {
         applicationReason: req.body.applicationReason
       };
       // TODO Save to CCD.
       // await updateAppealService.submitEvent(Events.UPLOAD_RESPONDENT_EVIDENCE, req);
-      return res.redirect(paths.reasonForAppeal.supportingEvidence);
+      return res.redirect(paths.reasonsForAppeal.supportingEvidence);
     } catch (e) {
       next(e);
     }
@@ -65,8 +65,8 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
 
 function getSupportingEvidencePage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
-      previousPage: paths.reasonForAppeal.reason
+    return res.render('reasons-for-appeal/supporting-evidence-page.njk', {
+      previousPage: paths.reasonsForAppeal.reason
     });
   } catch (e) {
     next(e);
@@ -78,16 +78,16 @@ function postSupportingEvidencePage(req: Request, res: Response, next: NextFunct
     const { answer } = req.body;
     const validations = yesOrNoRequiredValidation(req.body, i18n.validationErrors.reasonForAppeal.supportingEvidenceRequired);
     if (validations !== null) {
-      return res.render('case-building/reasons-for-appeal/supporting-evidence-page.njk', {
+      return res.render('reasons-for-appeal/supporting-evidence-page.njk', {
         errorList: Object.values(validations),
         error: validations,
-        previousPage: paths.reasonForAppeal.reason
+        previousPage: paths.reasonsForAppeal.reason
       });
     }
     if (answer === 'yes') {
-      return res.redirect(paths.reasonForAppeal.supportingEvidenceUpload);
+      return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
     } else {
-      return res.redirect(paths.reasonForAppeal.checkAndSend);
+      return res.redirect(paths.reasonsForAppeal.checkAndSend);
     }
   } catch (e) {
     next(e);
@@ -96,11 +96,11 @@ function postSupportingEvidencePage(req: Request, res: Response, next: NextFunct
 
 function getSupportingEvidenceUploadPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const evidences = req.session.appeal.caseBuilding.evidences || {};
-    return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+    const evidences = req.session.appeal.reasonsForAppeal.evidences || {};
+    return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
       evidences: Object.values(evidences),
-      evidenceCTA: paths.reasonForAppeal.supportingEvidenceDeleteFile,
-      previousPage: paths.reasonForAppeal.reason
+      evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
+      previousPage: paths.reasonsForAppeal.reason
     });
   } catch (e) {
     next(e);
@@ -112,26 +112,26 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
     try {
       if (req.file) {
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-        const { caseBuilding } = req.session.appeal;
-        caseBuilding.evidences = {
-          ...caseBuilding.evidences,
+        const { reasonsForAppeal } = req.session.appeal;
+        reasonsForAppeal.evidences = {
+          ...reasonsForAppeal.evidences,
           [evidenceStored.id]: {
             id: evidenceStored.id,
             url: evidenceStored.url,
             name: evidenceStored.name
           }
         };
-        return res.redirect(paths.reasonForAppeal.supportingEvidenceUpload);
+        return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
       } else {
         let validationError;
         validationError = res.locals.multerError
           ? { uploadFile: createStructuredError('uploadFile', res.locals.multerError) }
           : { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload.noFileSelected) };
 
-        return res.render('case-building/reasons-for-appeal/supporting-evidence-upload-page.njk', {
+        return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.reasonForAppeal.reason
+          previousPage: paths.reasonsForAppeal.reason
         });
       }
     } catch (e) {
@@ -145,12 +145,12 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
     try {
       if (req.query['id']) {
         const fileId = req.query['id'];
-        const evidences: Evidences = req.session.appeal.caseBuilding.evidences;
+        const evidences: Evidences = req.session.appeal.reasonsForAppeal.evidences;
         const target: Evidence = evidences[fileId];
         await documentManagementService.deleteFile(req, target.url);
-        delete req.session.appeal.caseBuilding.evidences[fileId];
+        delete req.session.appeal.reasonsForAppeal.evidences[fileId];
       }
-      return res.redirect(paths.reasonForAppeal.supportingEvidenceUpload);
+      return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
     } catch (e) {
       next(e);
     }
@@ -159,7 +159,7 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('case-building/reasons-for-appeal/confirmation-page.njk', {
+    return res.render('reasons-for-appeal/confirmation-page.njk', {
       date: daysToWaitUntilContact(14)
     });
   } catch (e) {
@@ -169,15 +169,15 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 
 function setupReasonsForAppealController(deps?: any): Router {
   const router = Router();
-  router.get(paths.reasonForAppeal.reason, getReasonForAppeal);
-  router.post(paths.reasonForAppeal.reason, postReasonForAppeal(deps.updateAppealService));
-  router.get(paths.reasonForAppeal.supportingEvidence, getSupportingEvidencePage);
-  router.post(paths.reasonForAppeal.supportingEvidence, postSupportingEvidencePage);
-  router.get(paths.reasonForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
-  router.post(paths.reasonForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
-  router.get(paths.reasonForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
-  router.post(paths.reasonForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit);
-  router.get(paths.reasonForAppeal.confirmation, getConfirmationPage);
+  router.get(paths.reasonsForAppeal.reason, getReasonForAppeal);
+  router.post(paths.reasonsForAppeal.reason, postReasonForAppeal(deps.updateAppealService));
+  router.get(paths.reasonsForAppeal.supportingEvidence, getSupportingEvidencePage);
+  router.post(paths.reasonsForAppeal.supportingEvidence, postSupportingEvidencePage);
+  router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
+  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
+  router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
+  router.post(paths.reasonsForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit);
+  router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);
 
   return router;
 }

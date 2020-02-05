@@ -90,13 +90,14 @@ function dateLetterSentValidation(obj: object): boolean | ValidationErrors {
 }
 
 function dateOfBirthValidation(obj: object): boolean | ValidationErrors {
-  return dateValidation(obj, i18n.validationErrors.dateOfBirth);
+  return DOBValidation(obj, i18n.validationErrors.dateOfBirth) || dateValidation(obj, i18n.validationErrors.dateOfBirth);
 }
 
 function dateValidation(obj: any, errors): boolean | ValidationErrors {
   const { year, month, day } = obj;
   const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
     moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
+
   const toValidate = {
     ...obj,
     date
@@ -131,6 +132,29 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
   return validate(toValidate, schema, true);
 }
 
+function DOBValidation(obj: any, errors): boolean | ValidationErrors {
+  const { year, month, day } = obj;
+  const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
+      moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
+
+  const startDate = new Date();
+  const numOfYears = 18;
+  const cutOfDate = new Date(startDate);
+  cutOfDate.setFullYear(cutOfDate.getFullYear() - numOfYears);
+  const toValidate = {
+    ...obj,
+    date
+  };
+  const schema = Joi.object({
+    date: Joi.date().less('now').max(cutOfDate).messages({
+      'date.less': errors.inPast,
+      'date.max': errors.underAge,
+      'date.base': errors.incorrectFormat
+    })
+  }).unknown(true);
+
+  return validate(toValidate, schema, true);
+}
 function appellantNamesValidation(obj: object) {
   const schema = Joi.object({
     givenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.givenNames }),
@@ -308,5 +332,6 @@ export {
   addressValidation,
   typeOfAppealValidation,
   reasonForAppealDecisionValidation,
-  yesOrNoRequiredValidation
+  yesOrNoRequiredValidation,
+  DOBValidation
 };

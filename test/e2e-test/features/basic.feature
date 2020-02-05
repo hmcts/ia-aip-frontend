@@ -9,19 +9,13 @@ Feature: Business rules
     When I click start now
     Then I should see the "Are you at least 18 years old" eligibility page
     When I select Yes and click continue
-    Then I should see the "Are you currently in the UK" eligibility page
+    Then I should see the "Are you currently living in England or Wales" eligibility page
     When I select Yes and click continue
     Then I should see the "Are you currently in detention" eligibility page
     When I select No and click continue
-    Then I should see the "Are you currently a citizen of a country" eligibility page
+    Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
     When I select Yes and click continue
     Then I should see the "Is anyone else in your immediate family appealing their own Home Office decision" eligibility page
-    When I select No and click continue
-    Then I should see the "Are you appealing a European Economic Area (EEA) decision" eligibility page
-    When I select No and click continue
-    Then I should see the "Have you ever been a British citizen" eligibility page
-    When I select Yes and click continue
-    Then I should see the "Are you appealing the removal of your British citizenship" eligibility page
     When I select No and click continue
     Then I should see the eligible page
     When I click continue

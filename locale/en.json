@@ -391,9 +391,9 @@
       "errorMessage": "Select yes if you are at least 18 years old"
     },
     {
-      "question": "Are you currently in the UK?",
+      "question": "Are you currently living in England or Wales?",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are currently in the UK"
+      "errorMessage": "Select yes if you are currently living in England or Wales"
     },
     {
       "question": "Are you currently in detention?",
@@ -402,36 +402,15 @@
       "errorMessage": "Select yes if you are currently in detention"
     },
     {
-      "question": "Are you currently a citizen of a country?",
-      "description": "A person who is not a citizen of any country is considered stateless. You should answer no if you are currently stateless.",
+      "question": "Are you appealing an Asylum and/or Humanitarian Protection decision?",
+      "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country.",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are currently a citizen of a country"
+      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision"
     },
     {
       "question": "Is anyone else in your immediate family appealing their own Home Office decision?",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if anyone in your immediate family is appealing their own Home Office decision"
-    },
-    {
-      "question": "Are you appealing a European Economic Area (EEA) decision?",
-      "description": "You should answer yes if your Home Office decision letter says your claim was considered under the Immigration (European Economic Area) Regulations.",
-      "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you are appealing a European Economic Area (EEA) decision"
-    },
-    {
-      "question": "Have you ever been a British citizen?",
-      "eligibleAnswer": [
-        "yes",
-        "no"
-      ],
-      "errorMessage": "Select yes if you have ever been a British citizen"
-    },
-    {
-      "skipIfPrevious": "no",
-      "question": "Are you appealing the removal of your British citizenship?",
-      "description": "This is also known as deprivation of British citizenship.",
-      "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you are appealing the removal of your British citizenship"
     }
   ]
 }

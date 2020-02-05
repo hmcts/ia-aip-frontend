@@ -111,7 +111,8 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           previousPage: paths.taskList
         });
       }
-      await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
+      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
+      req.session.appeal.state = updatedAppeal.state;
       return res.redirect(paths.confirmation);
     } catch (error) {
       next(error);

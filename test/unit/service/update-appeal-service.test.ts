@@ -347,6 +347,7 @@ describe('update-appeal-service', () => {
         },
         session: {
           appeal: {
+            state: 'appealStarted',
             application: {
               homeOfficeRefNumber: 'newRef',
               appealType: 'appealType',
@@ -457,6 +458,7 @@ describe('update-appeal-service', () => {
         userId,
         {
           id: caseId,
+          state: 'appealStarted',
           case_data: expectedCaseData
         },
         headers);
@@ -469,6 +471,7 @@ describe('update-appeal-service', () => {
         userId,
         {
           id: caseId,
+          state: 'appealStarted',
           case_data: expectedCaseData
         },
         headers);

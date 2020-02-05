@@ -15,11 +15,6 @@ export const Events = {
   SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit Appeal case AIP', description: 'Submit Appeal case AIP' }
 };
 
-interface CcdCaseDetails {
-  id: string;
-  case_data: CaseData;
-}
-
 interface StartEventResponse {
   event_id: string;
   token: string;
@@ -145,6 +140,5 @@ class CcdService {
 }
 
 export {
-  CcdService,
-  CcdCaseDetails
+  CcdService
 };

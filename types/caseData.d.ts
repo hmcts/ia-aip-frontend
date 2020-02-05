@@ -4,6 +4,12 @@ interface SupportingDocument {
   document_binary_url: string;
 }
 
+interface CcdCaseDetails {
+  id: string;
+  state: string;
+  case_data: CaseData;
+}
+
 interface CaseData {
   journeyType: string;
   appealType: string | string[];

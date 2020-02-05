@@ -24,8 +24,7 @@ describe('Confirmation Page Controller', () => {
     req = {
       session: {
         appeal: {
-          application: {
-            contactDetails: {}
+          reasonsForAppeal: {
           }
         }
       } as Partial<Appeal>,

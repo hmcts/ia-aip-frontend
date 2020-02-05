@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  getSupportingEvidencePage,
-  postSupportingEvidencePage,
+  getAdditionalSupportingEvidenceQuestionPage,
+  postAdditionalSupportingEvidenceQuestionPage,
   setupReasonsForAppealController
 } from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
 import { paths } from '../../../../app/paths';
@@ -26,8 +26,7 @@ describe('Supporting Evidence Upload Controller', () => {
     req = {
       session: {
         appeal: {
-          application: {
-            contactDetails: {}
+          reasonsForAppeal: {
           }
         }
       } as Partial<Appeal>,
@@ -73,23 +72,23 @@ describe('Supporting Evidence Upload Controller', () => {
     });
   });
 
-  describe('getSupportingEvidencePage', () => {
+  describe('getAdditionalSupportingEvidenceQuestionPage', () => {
     it('should render reasons-for-appeal/supporting-evidence-page.njk', () => {
-      getSupportingEvidencePage(req as Request, res as Response, next);
+      getAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 
-    it('getTypeOfAppeal should catch exception and call next with the error', () => {
+    it('getAdditionalSupportingEvidenceQuestionPage should catch exception and call next with the error', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      getSupportingEvidencePage(req as Request, res as Response, next);
+      getAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postSupportingEvidencePage', () => {
+  describe('postAdditionalSupportingEvidenceQuestionPage', () => {
     it('should fail validation and render reasons-for-appeal/supporting-evidence-page.njk with a validation error', async () => {
       req.body = {};
       const expectedError: ValidationError = {
@@ -98,33 +97,33 @@ describe('Supporting Evidence Upload Controller', () => {
         text: 'Select Yes if you want to provide supporting evidence'
       };
 
-      postSupportingEvidencePage(req as Request, res as Response, next);
+      postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
         error: { answer: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 
     it('when no is selected should validate and redirect to the check-and-send page', async () => {
       req.body = { 'answer': 'no' };
 
-      postSupportingEvidencePage(req as Request, res as Response, next);
+      postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.checkAndSend);
     });
 
     it('when yes is selected should validate and redirect to the supporting-evidence-upload page', async () => {
       req.body = { 'answer': 'yes' };
 
-      postSupportingEvidencePage(req as Request, res as Response, next);
+      postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
     });
 
-    it('postTypeOfAppeal should catch exception and call next with the error', async () => {
+    it('postAdditionalSupportingEvidenceQuestionPage should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'answer': 'yes' };
       res.redirect = sandbox.stub().throws(error);
-      postSupportingEvidencePage(req as Request, res as Response, next);
+      postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

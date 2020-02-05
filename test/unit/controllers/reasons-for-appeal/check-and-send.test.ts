@@ -5,12 +5,13 @@ import {
   setupCheckAndSendController
 } from '../../../../app/controllers/reasons-for-appeal/check-and-send';
 import { paths } from '../../../../app/paths';
+import { Events } from '../../../../app/service/ccd-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../../../app/utils/summary-list';
 import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';
 
-describe('Case Building - Check and send Controller', () => {
+describe('Reasons For Appeal - Check and send Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -18,6 +19,8 @@ describe('Case Building - Check and send Controller', () => {
   let next: NextFunction;
   let routerGetStub: sinon.SinonStub;
   let routerPostStub: sinon.SinonStub;
+
+  const editParameter = '?edit';
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -60,8 +63,8 @@ describe('Case Building - Check and send Controller', () => {
     it('should render reasons-for-appeal/check-and-send-page.njk with supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.reason),
-        addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [ 'File1.png', 'File2.png' ], paths.reasonsForAppeal.supportingEvidenceUpload, Delimiter.BREAK_LINE)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.decision + editParameter),
+        addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [ 'File1.png', 'File2.png' ], paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE)
       ];
       req.session.appeal.reasonsForAppeal.evidences = {
         '1-File1.png': {
@@ -79,20 +82,20 @@ describe('Case Building - Check and send Controller', () => {
       getCheckAndSend(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 
     it('should render reasons-for-appeal/check-and-send-page.njk without supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.reason)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.decision + editParameter)
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 
@@ -108,7 +111,7 @@ describe('Case Building - Check and send Controller', () => {
     it('should redirect to confirmation page when click save and continue', async () => {
       req.body = {};
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.called;
+      expect(updateAppealService.submitEvent).to.have.been.calledOnceWith(Events.SUBMIT_REASONS_FOR_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
     });
 
@@ -119,7 +122,7 @@ describe('Case Building - Check and send Controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.caseBuilding.timeline);
     });
 
-    it('should call next with error render if someting happens', async () => {
+    it('should call next with error render if something happens', async () => {
       req.body = {};
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);

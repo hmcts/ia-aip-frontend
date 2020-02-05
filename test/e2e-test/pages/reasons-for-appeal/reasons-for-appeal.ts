@@ -7,7 +7,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   reasonsForAppeal(I) {
     When(/^I visit reasons for appeal$/, async () => {
-      await I.amOnPage(testUrl + paths.reasonsForAppeal.reason);
+      await I.amOnPage(testUrl + paths.reasonsForAppeal.decision);
     });
 
     Then(/^I enter "([^"]*)" into the reason for appeal text area$/, async (text: string) => {

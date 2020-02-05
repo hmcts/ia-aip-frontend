@@ -9,21 +9,23 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
   try {
+    const editParameter = '?edit';
+
     const summaryRows = [
       addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-      addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.reason)
+      addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.decision + editParameter)
     ];
 
     if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {
 
       const evidences: Evidences = req.session.appeal.reasonsForAppeal.evidences;
       const evidenceNames: string[] = Object.values(evidences).map((evidence) => evidence.name);
-      summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload, Delimiter.BREAK_LINE));
+      summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
     }
 
     return res.render('reasons-for-appeal/check-and-send-page.njk', {
       summaryRows,
-      previousPage: paths.reasonsForAppeal.reason
+      previousPage: paths.reasonsForAppeal.decision
     });
   } catch (error) {
     next(error);
@@ -33,11 +35,10 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // TODO: confirm we need a statement of truth
       if (!shouldValidateWhenSaveForLater(req.body)) {
         return res.redirect(paths.caseBuilding.timeline);
       }
-      await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
+      await updateAppealService.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req);
       return res.redirect(paths.reasonsForAppeal.confirmation);
     } catch (error) {
       next(error);

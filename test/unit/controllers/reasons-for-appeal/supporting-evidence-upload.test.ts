@@ -88,7 +88,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
         evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 
@@ -107,7 +107,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
         evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 
@@ -132,7 +132,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 
@@ -149,7 +149,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 
@@ -168,7 +168,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonsForAppeal.reason
+        previousPage: paths.reasonsForAppeal.decision
       });
     });
 

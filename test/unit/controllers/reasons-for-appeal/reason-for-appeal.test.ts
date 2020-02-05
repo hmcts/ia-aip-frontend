@@ -1,7 +1,8 @@
 const express = require('express');
-import { NextFunction, Request, Response, text } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import {
-  getReasonForAppeal, postReasonForAppeal,
+  getReasonForAppeal,
+  postReasonForAppeal,
   setupReasonsForAppealController
 } from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
 import { paths } from '../../../../app/paths';
@@ -9,7 +10,7 @@ import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
 import { expect, sinon } from '../../../utils/testUtils';
 
-describe('Reasons for Appeal Controller', function() {
+describe('Reasons for Appeal Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -22,9 +23,7 @@ describe('Reasons for Appeal Controller', function() {
     req = {
       session: {
         appeal: {
-          application: {
-            contactDetails: null
-          }
+          reasonsForAppeal: {}
         } as Partial<Appeal>
       } as Partial<Express.Session>,
       body: {},
@@ -59,8 +58,8 @@ describe('Reasons for Appeal Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       setupReasonsForAppealController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.reason);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.reason);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.decision);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.decision);
       expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
     });
   });
@@ -69,7 +68,8 @@ describe('Reasons for Appeal Controller', function() {
     it('should render reasons-for-appeal/reason-for-appeal.njk', function () {
       getReasonForAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
-        previousPage:  '/appellant-timeline'
+        previousPage: '/appellant-timeline',
+        applicationReason: undefined
       });
     });
   });
@@ -96,7 +96,7 @@ describe('Reasons for Appeal Controller', function() {
       const errorList = [ applicationReasonError ];
 
       expect(res.render).to.have.been.calledWith(
-                'reasons-for-appeal/reason-for-appeal-page.njk',
+        'reasons-for-appeal/reason-for-appeal-page.njk',
         {
           error: {
             applicationReason: {
@@ -105,11 +105,11 @@ describe('Reasons for Appeal Controller', function() {
               text: 'Enter the reasons you think the Home Office decision is wrong'
             }
           },
-          errorList: [{
+          errorList: [ {
             href: '#applicationReason',
             key: 'applicationReason',
             text: 'Enter the reasons you think the Home Office decision is wrong'
-          }]
+          } ]
         }
       );
     });
@@ -118,6 +118,13 @@ describe('Reasons for Appeal Controller', function() {
       req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
+    });
+
+    it('when in Edit mode should pass validation and redirect to check-and-send without error', async () => {
+      req.session.appeal.reasonsForAppeal.isEdit = true;
+      req.body.applicationReason = 'Text Word';
+      await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
     });
   });
 });

@@ -83,7 +83,17 @@ describe('update-appeal-service', () => {
               'mobileNumber': '07123456789',
               'wantsEmail': 'Yes'
             }
-          } ]
+          } ],
+          'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
+          'reasonsForAppealDocuments': [ {
+            'id': 'f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
+            'value': {
+              'document_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
+              'document_filename': '1580296112615-supporting-evidence-file.jpeg',
+              'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
+            }
+          }
+          ]
         }
       });
   });
@@ -125,29 +135,31 @@ describe('update-appeal-service', () => {
     let emptyApplication;
     beforeEach(() => {
       emptyApplication = {
-        homeOfficeRefNumber: null,
-        appealType: null,
-        contactDetails: {
-          email: null,
-          phone: null
-        },
-        dateLetterSent: {
-          year: null,
-          month: null,
-          day: null
-        },
-        isAppealLate: false,
-        lateAppeal: null,
-        personalDetails: {
-          givenNames: null,
-          familyName: null,
-          dob: {
+        application: {
+          homeOfficeRefNumber: null,
+          appealType: null,
+          contactDetails: {
+            email: null,
+            phone: null
+          },
+          dateLetterSent: {
             year: null,
             month: null,
             day: null
           },
-          nationality: null
-        }
+          isAppealLate: false,
+          lateAppeal: null,
+          personalDetails: {
+            givenNames: null,
+            familyName: null,
+            dob: {
+              year: null,
+              month: null,
+              day: null
+            },
+            nationality: null
+          }
+        } as Partial<AppealApplication>
       };
     });
 
@@ -158,7 +170,7 @@ describe('update-appeal-service', () => {
     });
 
     it('converts home office reference number', () => {
-      emptyApplication.homeOfficeRefNumber = 'ref';
+      emptyApplication.application.homeOfficeRefNumber = 'ref';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).eql({ journeyType: 'aip', homeOfficeReferenceNumber: 'ref' });
@@ -166,8 +178,8 @@ describe('update-appeal-service', () => {
 
     describe('converts home office letter date', () => {
       it('full date', () => {
-        emptyApplication.dateLetterSent = { year: '2019', month: '12', day: '11' };
-        emptyApplication.isAppealLate = true;
+        emptyApplication.application.dateLetterSent = { year: '2019', month: '12', day: '11' };
+        emptyApplication.application.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql({
@@ -178,8 +190,8 @@ describe('update-appeal-service', () => {
       });
 
       it('day and month leading 0', () => {
-        emptyApplication.dateLetterSent = { year: '2019', month: '02', day: '01' };
-        emptyApplication.isAppealLate = true;
+        emptyApplication.application.dateLetterSent = { year: '2019', month: '02', day: '01' };
+        emptyApplication.application.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql({
@@ -190,8 +202,8 @@ describe('update-appeal-service', () => {
       });
 
       it('day and month no leading 0', () => {
-        emptyApplication.dateLetterSent = { year: '2019', month: '2', day: '3' };
-        emptyApplication.isAppealLate = true;
+        emptyApplication.application.dateLetterSent = { year: '2019', month: '2', day: '3' };
+        emptyApplication.application.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql({
@@ -203,14 +215,14 @@ describe('update-appeal-service', () => {
     });
 
     it('converts given names', () => {
-      emptyApplication.personalDetails.givenNames = 'givenNames';
+      emptyApplication.application.personalDetails.givenNames = 'givenNames';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).eql({ journeyType: 'aip', appellantGivenNames: 'givenNames' });
     });
 
     it('converts family name', () => {
-      emptyApplication.personalDetails.familyName = 'familyName';
+      emptyApplication.application.personalDetails.familyName = 'familyName';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).eql({ journeyType: 'aip', appellantFamilyName: 'familyName' });
@@ -218,7 +230,7 @@ describe('update-appeal-service', () => {
 
     describe('converts date of birth', () => {
       it('full date', () => {
-        emptyApplication.personalDetails = {
+        emptyApplication.application.personalDetails = {
           dob: { year: '2019', month: '12', day: '11' }
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
@@ -227,7 +239,7 @@ describe('update-appeal-service', () => {
       });
 
       it('day and month leading 0', () => {
-        emptyApplication.personalDetails = {
+        emptyApplication.application.personalDetails = {
           dob: { year: '2019', month: '02', day: '01' }
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
@@ -236,7 +248,7 @@ describe('update-appeal-service', () => {
       });
 
       it('day and month no leading 0', () => {
-        emptyApplication.personalDetails = {
+        emptyApplication.application.personalDetails = {
           dob: { year: '2019', month: '2', day: '3' }
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
@@ -245,17 +257,17 @@ describe('update-appeal-service', () => {
       });
     });
     it('converts appealType', () => {
-      emptyApplication.appealType = 'appealType';
+      emptyApplication.application.appealType = 'appealType';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).eql({ journeyType: 'aip', appealType: 'appealType' });
     });
     describe('converts contact details', () => {
       it('converts contactDetails for both email and phone', () => {
-        emptyApplication.contactDetails.wantsEmail = true;
-        emptyApplication.contactDetails.email = 'abc@example.net';
-        emptyApplication.contactDetails.wantsSms = true;
-        emptyApplication.contactDetails.phone = '07123456789';
+        emptyApplication.application.contactDetails.wantsEmail = true;
+        emptyApplication.application.contactDetails.email = 'abc@example.net';
+        emptyApplication.application.contactDetails.wantsSms = true;
+        emptyApplication.application.contactDetails.phone = '07123456789';
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql(
@@ -263,7 +275,6 @@ describe('update-appeal-service', () => {
             journeyType: 'aip',
             subscriptions: [
               {
-                id: 1,
                 value: {
                   subscriber: 'appellant',
                   wantsEmail: 'Yes',
@@ -278,8 +289,8 @@ describe('update-appeal-service', () => {
       });
 
       it('converts contactDetails only email', () => {
-        emptyApplication.contactDetails.wantsEmail = true;
-        emptyApplication.contactDetails.email = 'abc@example.net';
+        emptyApplication.application.contactDetails.wantsEmail = true;
+        emptyApplication.application.contactDetails.email = 'abc@example.net';
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql(
@@ -287,7 +298,6 @@ describe('update-appeal-service', () => {
             journeyType: 'aip',
             subscriptions: [
               {
-                id: 1,
                 value: {
                   subscriber: 'appellant',
                   wantsEmail: 'Yes',
@@ -302,8 +312,8 @@ describe('update-appeal-service', () => {
       });
 
       it('converts contactDetails only phone', () => {
-        emptyApplication.contactDetails.wantsSms = true;
-        emptyApplication.contactDetails.phone = '07123456789';
+        emptyApplication.application.contactDetails.wantsSms = true;
+        emptyApplication.application.contactDetails.phone = '07123456789';
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
         expect(caseData).eql(
@@ -311,7 +321,6 @@ describe('update-appeal-service', () => {
             journeyType: 'aip',
             subscriptions: [
               {
-                id: 1,
                 value: {
                   subscriber: 'appellant',
                   wantsEmail: 'No',
@@ -389,6 +398,21 @@ describe('update-appeal-service', () => {
                 wantsSms: false
               },
               addressLookup: {}
+            } as AppealApplication,
+            reasonsForAppeal: {
+              applicationReason: 'I\'ve decided to appeal because ...',
+              evidences: {
+                '1-File1.png': {
+                  'id': '1-File1.png',
+                  'url': '#',
+                  'name': 'File1.png'
+                },
+                '2-File2.png': {
+                  'id': '2-File2.png',
+                  'url': '#',
+                  'name': 'File2.png'
+                }
+              } as Evidences
             }
           } as Appeal,
           ccdCaseId: caseId
@@ -438,7 +462,6 @@ describe('update-appeal-service', () => {
         appealType: 'appealType',
         subscriptions: [
           {
-            id: 1,
             value: {
               subscriber: 'appellant',
               wantsEmail: 'Yes',
@@ -447,7 +470,25 @@ describe('update-appeal-service', () => {
               mobileNumber: null
             }
           }
+        ],
+        reasonsForAppealDecision: 'I\'ve decided to appeal because ...',
+        reasonsForAppealDocuments: [
+          {
+            value: {
+              document_url: '#',
+              document_filename: '1-File1.png',
+              document_binary_url: '#/binary'
+            }
+          },
+          {
+            value: {
+              document_url: '#',
+              document_filename: '2-File2.png',
+              document_binary_url: '#/binary'
+            }
+          }
         ]
+
       };
     });
 
@@ -472,6 +513,18 @@ describe('update-appeal-service', () => {
         {
           id: caseId,
           state: 'appealStarted',
+          case_data: expectedCaseData
+        },
+        headers);
+    });
+
+    it('submits ReasonsForAppeal with ccd', async () => {
+      await updateAppealServiceBis.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req as Request);
+      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
+        Events.SUBMIT_REASONS_FOR_APPEAL,
+        userId,
+        {
+          id: caseId,
           case_data: expectedCaseData
         },
         headers);

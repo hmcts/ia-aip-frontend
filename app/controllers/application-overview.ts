@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 import { decodeJWTToken, isJWTExpired } from '../utils/jwt-utils';
+import { buildProgressBarStages } from '../utils/progress-bar-utils';
 
 export function getNameFromIDAM(req: Request) {
   let name: string = '';
@@ -13,8 +14,10 @@ export function getNameFromIDAM(req: Request) {
 
 function getApplicationOverview(req: Request, res: Response, next: NextFunction) {
   try {
+    const stages = buildProgressBarStages(req.session.appeal.state);
     return res.render('application-overview.njk', {
-      name: getNameFromIDAM(req)
+      name: getNameFromIDAM(req),
+      stages
     });
   } catch (e) {
     next(e);

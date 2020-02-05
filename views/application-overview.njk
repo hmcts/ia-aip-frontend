@@ -1,4 +1,5 @@
 {% extends 'layout.njk' %}
+{% from "components/progress-bar.njk" import progressBar with context %}
 {% set pageTitleName = i18n.pages.overviewPage.title %}
 
 {% block content %}
@@ -10,7 +11,7 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l">-------------------Put timeline here!!----------------</h1>
+                {{ progressBar(stages) }}
                 <h2>{{ i18n.pages.overviewPage.doThisNext }}</h2>
                 {% if saved %}
                     <div class="saved-banner">

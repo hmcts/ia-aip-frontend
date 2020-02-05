@@ -1,7 +1,7 @@
 import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
 import { NextFunction, Request, Response, Router } from 'express';
 import { idamConfig } from '../config/idam-config';
-import { checkSession, initSession, logSession } from '../middleware/session-middleware';
+import { checkSession, initSession } from '../middleware/session-middleware';
 import { paths } from '../paths';
 import { getIdamRedirectUrl } from '../utils/url-utils';
 

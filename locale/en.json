@@ -21,6 +21,9 @@
     }
   },
   "pages": {
+    "overviewPage": {
+      "title": "Overview"
+    },
     "index": {
       "title": "Home"
     },
@@ -368,6 +371,24 @@
     },
     "back": {
       "back": "Back"
+    },
+    "progressBar": {
+      "yourAppealDetails": {
+        "title": "Your appeal<br/> details",
+        "ariaLabel": "Your appeal details stage"
+      },
+      "yourAppealArgument": {
+        "title": "Your appeal<br/> argument",
+        "ariaLabel": "Your appeal argument stage"
+      },
+      "yourHearingDetails": {
+        "title": "Your hearing<br/> details",
+        "ariaLabel": "Your hearing details stage"
+      },
+      "yourAppealDecision": {
+        "title": "Your appeal<br/> decision",
+        "ariaLabel": "Your appeal decision stage"
+      }
     }
   },
   "appealTypes": {

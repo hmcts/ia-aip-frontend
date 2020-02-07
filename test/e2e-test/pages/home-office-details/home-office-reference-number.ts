@@ -22,8 +22,8 @@ module.exports = {
     });
 
     When(/^I enter "([^"]*)" as the Office ref number and click Save and continue/, async (refNumber) => {
-      I.fillField('#homeOfficeRefNumber', refNumber);
-      I.click('Save and continue');
+      await I.fillField('#homeOfficeRefNumber', refNumber);
+      await I.click('Save and continue');
     });
   }
 };

@@ -289,6 +289,7 @@ function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
   }).unknown();
   return validate(obj, schema);
 }
+
 export {
   createStructuredError,
   contactDetailsValidation,

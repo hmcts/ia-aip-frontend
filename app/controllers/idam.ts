@@ -7,7 +7,7 @@ import { getIdamRedirectUrl } from '../utils/url-utils';
 
 function getLogin(req: Request, res: Response, next: NextFunction) {
   try {
-    res.redirect(paths.taskList);
+    res.redirect(paths.overview);
   } catch (e) {
     next(e);
   }
@@ -23,7 +23,7 @@ function getLogout(req: Request, res: Response, next: NextFunction) {
 
 function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
-    res.redirect(paths.taskList);
+    res.redirect(paths.overview);
   } catch (e) {
     next(e);
   }

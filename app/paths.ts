@@ -1,6 +1,7 @@
 const paths = {
   index: '/',
   health: '/health',
+  overview: '/overview',
   liveness: '/liveness',
   healthLiveness: '/health/liveness',
   taskList: '/task-list',
@@ -47,7 +48,6 @@ const paths = {
     eligible: '/eligible'
   }
 };
-
 export {
   paths
 };

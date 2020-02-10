@@ -40,7 +40,7 @@ describe('application-state-utils', () => {
 
   describe('getAppealApplicationNextStep', () => {
     it('when application status is appealStarted should get correct \'Do This next section\'', () => {
-      req.session.appealStatus = 'appealStarted';
+      req.session.appeal.appealStatus = 'appealStarted';
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.equal({
@@ -58,7 +58,7 @@ describe('application-state-utils', () => {
     });
 
     it('when application status is appealSubmitted should get correct \'Do This next section\'', () => {
-      req.session.appealStatus = 'appealSubmitted';
+      req.session.appeal.appealStatus = 'appealSubmitted';
       req.session.lastModified = '2020-02-07T16:00:00.000';
       const result = getAppealApplicationNextStep(req as Request);
 

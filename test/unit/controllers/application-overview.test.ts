@@ -64,7 +64,7 @@ describe('Confirmation Page Controller', () => {
         surname: 'Developer'
       }
     };
-    req.session.appealStatus = 'appealStarted';
+    req.session.appeal.appealStatus = 'appealStarted';
 
     getApplicationOverview(req as Request, res as Response, next);
 
@@ -91,7 +91,7 @@ describe('Confirmation Page Controller', () => {
     const error = new Error('the error');
     res.render = sandbox.stub().throws(error);
 
-    req.session.appealStatus = 'appealStarted';
+    req.session.appeal.appealStatus = 'appealStarted';
 
     getApplicationOverview(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);

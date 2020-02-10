@@ -33,18 +33,18 @@ const APPEAL_STATE = {
  * @param req the request containing the session and appeal status
  */
 function getAppealApplicationNextStep(req: Request) {
-  const currentAppealStatus = req.session.appealStatus;
+  const currentAppealStatus = req.session.appeal.appealStatus;
   const doThisNextSection = APPEAL_STATE[currentAppealStatus];
 
   // TODO: Remove this, should get history from the session and loaded at login from events endpoint in ccd
   const history = {
     appealStarted: {
       event: 'appealStarted',
-      date: req.session.appealCreatedDate
+      date: req.session.appeal.appealCreatedDate
     },
     appealSubmitted: {
       event: 'appealSubmitted',
-      date: req.session.appealLastModified
+      date: req.session.appeal.appealLastModified
     }
   };
   doThisNextSection.deadline = getDeadline(currentAppealStatus, history);

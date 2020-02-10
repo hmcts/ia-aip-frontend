@@ -27,10 +27,6 @@ export default class UpdateAppealService {
     const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.id, securityHeaders);
 
     req.session.ccdCaseId = ccdCase.id;
-    req.session.appealStatus = ccdCase.state;
-    // TODO: Remove created and last modified date, used as a work around while the citizen cannot query the /events endpoint
-    req.session.appealCreatedDate = ccdCase.created_date;
-    req.session.appealLastModified = ccdCase.last_modified;
 
     const caseData: Partial<CaseData> = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
@@ -77,7 +73,11 @@ export default class UpdateAppealService {
       }
     }
 
+    // TODO: Remove created and last modified date, used as a work around while the citizen cannot query the /events endpoint
     req.session.appeal = {
+      appealStatus: ccdCase.state,
+      appealCreatedDate: ccdCase.created_date,
+      appealLastModified: ccdCase.last_modified,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: appealType,

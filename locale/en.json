@@ -239,17 +239,29 @@
     "overviewPage": {
       "title": "Overview",
       "contactUs": "Contact us for help",
-      "askAQuestion":"Ask a question or get help in your language",
+      "askAQuestion": "Ask a question or get help in your language",
       "telephone": "Telephone: 0300 123 1171",
       "sendMessage": "Send us a message",
-      "time":"Monday to Friday, 8:30am to 5pm",
+      "time": "Monday to Friday, 8:30am to 5pm",
       "charges": "Find out about call charges",
       "newWindow": "(opens in a new window)",
-      "doThisNext": "Do this next",
-      "answersBeenSaved": "Your answers have been saved",
-      "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
-      "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some of the questions.",
-      "contactUsBanner": "Contact us for help"
+      "doThisNext": {
+        "toDo": "Do this next",
+        "nothingToDo": "Nothing to do next",
+        "appealStarted": {
+          "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
+          "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
+        },
+        "appealSubmitted": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact you by <b>{{ applicationNextStep.deadline }}</b> to tell you what to do next.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href=\"#\">What is a Tribunal Caseworker?</a>"
+          }
+        }
+      },
+      "answersBeenSaved": "Your answers have been saved"
     },
     "eligibleStartPage": {
       "newService": "This is a new online service for people appealing an immigration or asylum decision. Because it is a new service, not everyone will be able to use it right now.",

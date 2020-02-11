@@ -112,7 +112,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
         });
       }
       const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
-      req.session.appeal.state = updatedAppeal.state;
+      req.session.appeal.appealStatus = updatedAppeal.state;
       return res.redirect(paths.confirmation);
     } catch (error) {
       next(error);

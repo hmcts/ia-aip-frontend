@@ -1,6 +1,6 @@
 export function createDummyAppealApplication(): Appeal {
   return {
-    state: 'appealStarted',
+    appealStatus: 'appealStarted',
     application: {
       homeOfficeRefNumber: 'A1234567',
       dateLetterSent: {

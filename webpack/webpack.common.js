@@ -47,8 +47,17 @@ const clientConfig = {
     rules: [
       {
         test: /\.ts$/,
+        exclude: /node_modules/,
         use: [
-          'ts-loader',
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env']
+            }
+          },
+          {
+            loader: 'ts-loader'
+          }
         ]
       },
       {

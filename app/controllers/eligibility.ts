@@ -63,9 +63,6 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
     req.session.eligibility[questionId] = { answer };
 
     let nextQuestionId = _.toNumber(questionId) + 1;
-    if (i18n.eligibility[nextQuestionId] && i18n.eligibility[nextQuestionId].skipIfPrevious && i18n.eligibility[nextQuestionId].skipIfPrevious === answer) {
-      nextQuestionId++;
-    }
     const isLastQuestion = nextQuestionId === i18n.eligibility.length;
 
     const nextPage = isEligibilityQuestion(questionId, answer) ?

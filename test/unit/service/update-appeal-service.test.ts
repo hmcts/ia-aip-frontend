@@ -347,7 +347,7 @@ describe('update-appeal-service', () => {
         },
         session: {
           appeal: {
-            state: 'appealStarted',
+            appealStatus: 'appealStarted',
             application: {
               homeOfficeRefNumber: 'newRef',
               appealType: 'appealType',

@@ -14,13 +14,14 @@
     }) }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeAppealLate.title }}</h1>
+  <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>
 
   <form action="/home-office/appeal-late" method="post" enctype="multipart/form-data">
     {{ govukTextarea({
       name: "appeal-late",
       id: "appeal-late",
-      hint: {
-        text: i18n.pages.homeOfficeAppealLate.description | safe
+      label: {
+        text: i18n.pages.homeOfficeAppealLate.appealLateLabel
       },
       value: appealLateReason,
       attributes: {

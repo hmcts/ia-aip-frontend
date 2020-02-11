@@ -11,9 +11,19 @@ function getApplicationOverview(req: Request, res: Response, next: NextFunction)
       name: loggedInUserFullName,
       applicationNextStep: getAppealApplicationNextStep(req),
       history: getAppealApplicationHistory(),
-      stages
-
+      stages,
+      saved: req.session.appeal.application.isPartiallySaved
     });
+  } catch (e) {
+    next(e);
+  }
+}
+
+// TODO ADD A POST TO RESET THE PARTIALLY SAVED TO FALSE.
+function postApplicationOverview(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isPartiallySaved = false;
+    return res.redirect(paths.taskList);
   } catch (e) {
     next(e);
   }

@@ -39,6 +39,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           }
         );
       }
+      req.session.appeal.application.isPartiallySaved = true;
       req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       const nextPage = getNextPage(req.body, paths.homeOffice.letterSent);

@@ -4,7 +4,7 @@ import { expect, sinon } from '../../utils/testUtils';
 describe('getStatus', () => {
 
   const appeal: Appeal = {
-    state: 'appealStarted',
+    appealStatus: 'appealStarted',
     application: {
       homeOfficeRefNumber: 'reference no',
       appealType: null,

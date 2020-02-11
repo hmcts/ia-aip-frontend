@@ -37,7 +37,9 @@ interface DocumentUploadResponse {
 }
 
 interface Appeal {
-  state: string;
+  appealStatus?: string;
+  appealCreatedDate?: string;
+  appealLastModified?: string;
   application: AppealApplication;
   caseBuilding: CaseBuilding;
   hearingRequirements: HearingRequirements;

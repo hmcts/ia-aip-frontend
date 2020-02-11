@@ -114,6 +114,7 @@ describe('idam-service', () => {
 
       const caseDetails = await ccdService.updateAppeal(Events.EDIT_APPEAL, userId, {
         id: caseId,
+        state: 'appealStarted',
         case_data: caseData as CaseData
       }, headers);
 

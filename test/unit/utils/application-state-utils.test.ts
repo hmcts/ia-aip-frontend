@@ -64,7 +64,7 @@ describe('application-state-utils', () => {
 
       expect(result).to.eql({
         cta: null,
-        deadline: '24 February 2020',
+        deadline: '25 February 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
           'A Tribunal Caseworker will contact you by <b>{{ applicationNextStep.deadline }}</b> to tell you what to do next.'

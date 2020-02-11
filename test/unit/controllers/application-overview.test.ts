@@ -80,10 +80,34 @@ describe('Confirmation Page Controller', () => {
         url: null
       }
     };
+
+    const expectedStages = [ {
+      active: true,
+      ariaLabel: 'Your appeal details stage',
+      completed: false,
+      title: 'Your appeal<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal argument stage',
+      completed: false,
+      title: 'Your appeal<br/> argument'
+    }, {
+      active: false,
+      ariaLabel: 'Your hearing details stage',
+      completed: false,
+      title: 'Your hearing<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal decision stage',
+      completed: false,
+      title: 'Your appeal<br/> decision'
+    } ];
+
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       applicationNextStep: expectedNextStep,
-      history: null
+      history: null,
+      stages: expectedStages
     });
   });
 

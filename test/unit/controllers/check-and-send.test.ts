@@ -88,7 +88,11 @@ describe('Check and Send Controller', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
-      session: {} as any,
+      session: {
+        appeal: {
+          status: 'appealStarted'
+        }
+      } as any,
       cookies: {},
       idam: {
         userDetails: {}
@@ -100,7 +104,7 @@ describe('Check and Send Controller', () => {
       } as any
     } as Partial<Request>;
 
-    updateAppealService = { submitEvent: sandbox.stub() };
+    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'appealSubmitted' }) };
 
     res = {
       render: sandbox.stub(),
@@ -159,6 +163,7 @@ describe('Check and Send Controller', () => {
 
     await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+    expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
     expect(res.redirect).to.have.been.calledOnce.calledWith(paths.confirmation);
   });
 

@@ -1,20 +1,18 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
-import { decodeJWTToken, isJWTExpired } from '../utils/jwt-utils';
-
-export function getNameFromIDAM(req: Request) {
-  let name: string = '';
-  if (!isJWTExpired(req.cookies['__auth-token'])) {
-    const data = decodeJWTToken(req.cookies['__auth-token']);
-    name = `${data.forename} ${data.surname}`;
-    return name;
-  }
-}
+import { getAppealApplicationHistory, getAppealApplicationNextStep } from '../utils/application-state-utils';
+import { buildProgressBarStages } from '../utils/progress-bar-utils';
 
 function getApplicationOverview(req: Request, res: Response, next: NextFunction) {
   try {
+    const loggedInUserFullName = `${req.idam.userDetails.forename} ${req.idam.userDetails.surname}`;
+    const stages = buildProgressBarStages(req.session.appeal.appealStatus);
     return res.render('application-overview.njk', {
-      name: getNameFromIDAM(req)
+      name: loggedInUserFullName,
+      applicationNextStep: getAppealApplicationNextStep(req),
+      history: getAppealApplicationHistory(),
+      stages
+
     });
   } catch (e) {
     next(e);
@@ -29,6 +27,6 @@ function setupApplicationOverviewController(): Router {
 }
 
 export {
-    setupApplicationOverviewController,
-    getApplicationOverview
+  setupApplicationOverviewController,
+  getApplicationOverview
 };

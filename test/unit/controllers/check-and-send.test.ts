@@ -163,7 +163,7 @@ describe('Check and Send Controller', () => {
 
     await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    expect(req.session.appeal.state).to.be.equal('appealSubmitted');
+    expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
     expect(res.redirect).to.have.been.calledOnce.calledWith(paths.confirmation);
   });
 

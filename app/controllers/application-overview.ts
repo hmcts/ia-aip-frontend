@@ -8,9 +8,11 @@ function getApplicationOverview(req: Request, res: Response, next: NextFunction)
   try {
     const isPartiallySaved = _.has(req.query, 'saved');
     const loggedInUserFullName = `${req.idam.userDetails.forename} ${req.idam.userDetails.surname}`;
+    const appealRefNumber = req.session.appeal.application.homeOfficeRefNumber;
     const stages = buildProgressBarStages(req.session.appeal.appealStatus);
     return res.render('application-overview.njk', {
       name: loggedInUserFullName,
+      appealRefNumber: appealRefNumber,
       applicationNextStep: getAppealApplicationNextStep(req),
       history: getAppealApplicationHistory(),
       stages,

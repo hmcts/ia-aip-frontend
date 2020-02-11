@@ -10,11 +10,11 @@ const APPEAL_STATE = {
       i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions,
       i18n.pages.overviewPage.doThisNext.appealStarted.needHomeOfficeDecision
     ],
-    info: {
-      title: null,
-      url: null
-    },
-    cta: paths.taskList
+    info: null,
+    cta: {
+      url: paths.taskList,
+      respondByText: null
+    }
   },
   'appealStartedPartial': {
     descriptionParagraphs: [
@@ -37,6 +37,23 @@ const APPEAL_STATE = {
       url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
     },
     cta: null
+  },
+  'awaitingReasonsForAppeal': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.tellUsWhy
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.info.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.info.url
+    },
+    usefulDocuments: {
+      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.usefulDocuments.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.usefulDocuments.url
+    },
+    cta: {
+      url: paths.reasonsForAppeal.decision,
+      respondByText: i18n.pages.overviewPage.doThisNext.respondByText
+    }
   }
 };
 
@@ -85,7 +102,6 @@ function getAppealApplicationNextStep(req: Request) {
       date: req.session.appeal.appealLastModified
     }
   };
-
   doThisNextSection.deadline = getDeadline(currentAppealStatus, history);
 
   return doThisNextSection;

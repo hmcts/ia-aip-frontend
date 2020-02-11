@@ -26,9 +26,6 @@
     }
   },
   "pages": {
-    "overviewPage": {
-      "title": "Overview"
-    },
     "index": {
       "title": "Home"
     },
@@ -261,9 +258,12 @@
       "time": "Monday to Friday, 8:30am to 5pm",
       "charges": "Find out about call charges",
       "newWindow": "(opens in a new window)",
+      "appealRef": "Appeal reference:",
+      "answersBeenSaved": "Your answers have been saved",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
+        "respondByText": "You need to respond by {{ applicationNextStep.deadline }}.",
         "appealStarted": {
           "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
           "finishQuestions": "You need to finish telling us about your appeal.",
@@ -276,9 +276,19 @@
             "title": "Helpful Information",
             "url": "<a href=\"#\">What is a Tribunal Caseworker?</a>"
           }
+        },
+        "awaitingReasonsForAppeal": {
+          "tellUsWhy": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+          },
+          "usefulDocuments": {
+            "title": "Useful documents",
+            "url": "<a href=\"#\">Home Office documents about your case</a>"
+          }
         }
-      },
-      "answersBeenSaved": "Your answers have been saved"
+      }
     },
     "eligibleStartPage": {
       "newService": "This is a new online service for people appealing an immigration or asylum decision. Because it is a new service, not everyone will be able to use it right now.",

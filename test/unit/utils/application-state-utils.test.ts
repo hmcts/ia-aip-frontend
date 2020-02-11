@@ -38,22 +38,37 @@ describe('application-state-utils', () => {
   });
 
   describe('getAppealApplicationNextStep', () => {
+    it('when application status is unknown should return default \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'unknown';
+      req.session.lastModified = '2020-02-07T16:00:00.000';
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql(
+        {
+          deadline: 'TBC',
+          descriptionParagraphs: [
+            'Description for event <b>unknown</b> not found'
+          ]
+        }
+      );
+    });
+
     it('when application status is appealStarted should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'appealStarted';
 
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.equal({
-        cta: '/task-list',
+        cta: {
+          respondByText: null,
+          url: '/task-list'
+        },
         deadline: null,
         descriptionParagraphs: [
           'You need to answer a few questions about yourself and your appeal to get started.',
           'You will need to have your Home Office decision letter with you to answer some questions.'
         ],
-        info: {
-          title: null,
-          url: null
-        }
+        info: null
       });
     });
 
@@ -79,5 +94,31 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is awaitingReasonsForAppeal should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+      req.session.lastModified = '2020-02-07T16:00:00.000';
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql(
+        {
+          cta: {
+            respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
+            url: '/case-building/reason-for-appeal'
+          },
+          deadline: 'TBC',
+          descriptionParagraphs: [
+            'Tell us why you think the Home Office decision to refuse your claim is wrong.'
+          ],
+          info: {
+            title: 'Helpful Information',
+            url: '<a href="#">Understanding your Home Office documents</a>'
+          },
+          usefulDocuments: {
+            title: 'Useful documents',
+            url: '<a href="#">Home Office documents about your case</a>'
+          }
+        }
+      );
+    });
   });
 });

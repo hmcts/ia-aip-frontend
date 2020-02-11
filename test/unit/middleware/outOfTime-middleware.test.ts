@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { appealOutOfTimeMiddleware } from '../../../app/middleware/outOfTime-middleware';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('appealOutOfTime Middleware @only', () => {
+describe('appealOutOfTime Middleware', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

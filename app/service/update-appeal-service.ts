@@ -73,6 +73,7 @@ export default class UpdateAppealService {
     }
 
     req.session.appeal = {
+      state: ccdCase.state,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: appealType,
@@ -126,17 +127,19 @@ export default class UpdateAppealService {
     return fileID.substring(fileID.indexOf('-') + 1);
   }
 
-  async submitEvent(event, req: Request) {
+  async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
 
     const currentUserId = req.idam.userDetails.id;
     const caseData = this.convertToCcdCaseData(req.session.appeal.application);
     const updatedCcdCase = {
       id: req.session.ccdCaseId,
+      state: req.session.appeal.state,
       case_data: caseData
     };
 
-    await this.ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
+    const updatedAppeal = await this.ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
+    return updatedAppeal;
   }
 
   convertToCcdCaseData(application: AppealApplication) {

@@ -52,6 +52,7 @@ const eligibilityController = setupEligibilityController();
 const applicationOverview = setupApplicationOverviewController();
 
 // not protected by idam
+router.use(indexController);
 router.use(healthController);
 router.use(startController);
 router.use(eligibilityController);
@@ -62,7 +63,6 @@ router.use(idamController);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);
 }
-router.use(indexController);
 router.use(taskListController);
 router.use(homeOfficeDetailsController);
 router.use(personalDetailsController);

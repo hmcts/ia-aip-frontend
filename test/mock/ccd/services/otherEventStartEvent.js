@@ -1,13 +1,24 @@
+function getCurrentState(params) {
+  switch (params.eventType) {
+    case 'editAppeal':
+      return 'appealStarted';
+    case 'submitAppeal':
+      return 'appealStarted';
+    default:
+      throw `Event type ${params.eventType} no current state set`
+  }
+}
+
 module.exports = {
-  path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases/:caseId/event-triggers/editAppeal/token',
+  path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases/:caseId/event-triggers/:eventType/token',
   method: 'GET',
   template: params => {
     return {
-      "token": "updateEventToken",
+      "token": `${params.eventType}Token`,
       "case_details": {
         "id": parseInt(params.caseId),
         "jurisdiction": "IA",
-        "state": "appealStarted",
+        "state": getCurrentState(params),
         "version": 9,
         "case_type_id": "Asylum",
         "created_date": "2019-11-13T10:18:43.271",
@@ -31,7 +42,7 @@ module.exports = {
           "homeOfficeReferenceNumber": "PUBLIC"
         }
       },
-      "event_id": "editAppeal"
+      "event_id": params.eventType
     }
   }
 };

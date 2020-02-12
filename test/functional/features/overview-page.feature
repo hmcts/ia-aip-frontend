@@ -6,19 +6,20 @@ Feature: Overview page
   Scenario: Appeal Started
 #    New Appeal Started
     Given I have logged in as an appellant in state "New appealStarted"
-    Then I should see the 'do this next section' for "New - Appeal started"
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'New - Appeal started'
     Then I click continue
     Then I should see the task-list page
 
 #  Scenario: Saved Appeal Started
 #    Given I have logged in as an appellant in state "Saved AppealStarted"
-#    Then I should see the 'do this next section' for "Saved - Appeal started"
+#    Then I should see the 'do this next section' for 'Saved - Appeal started'
 #    Then I click continue
 #    Then I should see the task-list page
 
   Scenario: Appeal Submitted
     Given I have logged in as an appellant in state "appealSubmitted"
-    And I visit the overview page
-    Then I should see the 'do this next section' for "Appeal submitted"
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'Appeal submitted'
 
 

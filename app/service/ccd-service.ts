@@ -15,11 +15,6 @@ export const Events = {
   SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit Appeal case AIP', description: 'Submit Appeal case AIP' }
 };
 
-interface CcdCaseDetails {
-  id: string;
-  case_data: CaseData;
-}
-
 interface StartEventResponse {
   event_id: string;
   token: string;
@@ -95,6 +90,14 @@ class CcdService {
     );
   }
 
+  retrieveCaseHistory(userId: string, headers: SecurityHeaders, caseId: string): Promise<CcdCaseDetails[]> {
+    return rp.get(this.createOptions(
+      userId,
+      headers,
+      `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`)
+    );
+  }
+
   async createCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     const startEventResponse = await this.startCreateCase(userId, headers);
 
@@ -135,6 +138,9 @@ class CcdService {
     const cases = await this.loadCasesForUser(userId, headers);
     if (cases.length > 0) {
       logger.trace(`found [${cases.length}] cases`, logLabel);
+
+      // TODO: Retrieve history once endpoint is enabled and add to session.
+      // const history = await this.retrieveCaseHistory(userId, headers, cases[0].id);
       return cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);
@@ -145,6 +151,5 @@ class CcdService {
 }
 
 export {
-  CcdService,
-  CcdCaseDetails
+  CcdService
 };

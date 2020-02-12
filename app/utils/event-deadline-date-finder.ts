@@ -7,7 +7,7 @@ function getDeadline(currentAppealStatus: string, history) {
     }
     case 'appealSubmitted': {
       const daysToDeadline = 14;
-      const triggeringDate = history['appealStarted'].date;
+      const triggeringDate = history['appealSubmitted'].date;
       const formattedDeadline = moment(triggeringDate).add(daysToDeadline, 'days').format('DD MMMM YYYY');
       return formattedDeadline || null;
     }

@@ -34,7 +34,16 @@ const APPEAL_STATE = {
  */
 function getAppealApplicationNextStep(req: Request) {
   const currentAppealStatus = req.session.appeal.appealStatus;
-  const doThisNextSection = APPEAL_STATE[currentAppealStatus];
+  let doThisNextSection = APPEAL_STATE[currentAppealStatus];
+
+  // Added the following to avoid app crashing on events that are to be implemented.
+  if (doThisNextSection === undefined) {
+    doThisNextSection = {
+      descriptionParagraphs: [
+        `Description for event <b>${currentAppealStatus}</b> not found`
+      ]
+    };
+  }
 
   // TODO: Remove this, should get history from the session and loaded at login from events endpoint in ccd
   const history = {
@@ -47,6 +56,7 @@ function getAppealApplicationNextStep(req: Request) {
       date: req.session.appeal.appealLastModified
     }
   };
+
   doThisNextSection.deadline = getDeadline(currentAppealStatus, history);
 
   return doThisNextSection;

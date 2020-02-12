@@ -56,6 +56,7 @@ function getAppealApplicationNextStep(req: Request) {
       date: req.session.appeal.appealLastModified
     }
   };
+
   doThisNextSection.deadline = getDeadline(currentAppealStatus, history);
 
   return doThisNextSection;

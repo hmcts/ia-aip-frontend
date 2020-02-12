@@ -41,6 +41,7 @@ describe('application-state-utils', () => {
   describe('getAppealApplicationNextStep', () => {
     it('when application status is appealStarted should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'appealStarted';
+
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.equal({
@@ -59,12 +60,14 @@ describe('application-state-utils', () => {
 
     it('when application status is appealSubmitted should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'appealSubmitted';
-      req.session.lastModified = '2020-02-07T16:00:00.000';
+      req.session.appeal.appealCreatedDate = '2020-02-06T16:00:00.000';
+      req.session.appeal.appealLastModified = '2020-02-07T16:00:00.000';
+
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
-        deadline: '25 February 2020',
+        deadline: '21 February 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
           'A Tribunal Caseworker will contact you by <b>{{ applicationNextStep.deadline }}</b> to tell you what to do next.'

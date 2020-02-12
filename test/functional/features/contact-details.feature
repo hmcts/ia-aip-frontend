@@ -6,6 +6,7 @@ Feature: Contact details
   Scenario: Entering my contact details should open next task
     Given I have an appeal with home office details, name, date of birth, nationality and address
     And I have logged in
+    Then I click continue
     And I am on the contact details page
     When I click "Save for later" button
     Then I should see the task-list page

@@ -21,6 +21,9 @@
     }
   },
   "pages": {
+    "overviewPage": {
+      "title": "Overview"
+    },
     "index": {
       "title": "Home"
     },
@@ -159,6 +162,7 @@
     },
     "homeOfficeAppealLate": {
       "title": "Your appeal is late",
+      "appealLateLabel": "Why is your appeal late?",
       "description": "Appeals should be made within 14 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
       "provideEvidenceTitle": "Provide supporting evidence",
       "provideEvidenceDescription": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
@@ -235,6 +239,33 @@
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <b>0300 123 1711</b> or <a class=\"govuk-link govuk-link--no-visited-state\" href='#'>send us a message</a>"
+    },
+    "overviewPage": {
+      "title": "Overview",
+      "contactUs": "Contact us for help",
+      "askAQuestion": "Ask a question or get help in your language",
+      "telephone": "Telephone: 0300 123 1171",
+      "sendMessage": "Send us a message",
+      "time": "Monday to Friday, 8:30am to 5pm",
+      "charges": "Find out about call charges",
+      "newWindow": "(opens in a new window)",
+      "doThisNext": {
+        "toDo": "Do this next",
+        "nothingToDo": "Nothing to do next",
+        "appealStarted": {
+          "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
+          "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
+        },
+        "appealSubmitted": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact you by <b>{{ applicationNextStep.deadline }}</b> to tell you what to do next.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href=\"#\">What is a Tribunal Caseworker?</a>"
+          }
+        }
+      },
+      "answersBeenSaved": "Your answers have been saved"
     },
     "eligibleStartPage": {
       "newService": "This is a new online service for people appealing an immigration or asylum decision. Because it is a new service, not everyone will be able to use it right now.",
@@ -352,6 +383,24 @@
     },
     "back": {
       "back": "Back"
+    },
+    "progressBar": {
+      "yourAppealDetails": {
+        "title": "Your appeal<br/> details",
+        "ariaLabel": "Your appeal details stage"
+      },
+      "yourAppealArgument": {
+        "title": "Your appeal<br/> argument",
+        "ariaLabel": "Your appeal argument stage"
+      },
+      "yourHearingDetails": {
+        "title": "Your hearing<br/> details",
+        "ariaLabel": "Your hearing details stage"
+      },
+      "yourAppealDecision": {
+        "title": "Your appeal<br/> decision",
+        "ariaLabel": "Your appeal decision stage"
+      }
     }
   },
   "appealTypes": {
@@ -375,9 +424,9 @@
       "errorMessage": "Select yes if you are at least 18 years old"
     },
     {
-      "question": "Are you currently in the UK?",
+      "question": "Are you currently living in England or Wales?",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are currently in the UK"
+      "errorMessage": "Select yes if you are currently living in England or Wales"
     },
     {
       "question": "Are you currently in detention?",
@@ -386,36 +435,15 @@
       "errorMessage": "Select yes if you are currently in detention"
     },
     {
-      "question": "Are you currently a citizen of a country?",
-      "description": "A person who is not a citizen of any country is considered stateless. You should answer no if you are currently stateless.",
+      "question": "Are you appealing an Asylum and/or Humanitarian Protection decision?",
+      "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country.",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are currently a citizen of a country"
+      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision"
     },
     {
       "question": "Is anyone else in your immediate family appealing their own Home Office decision?",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if anyone in your immediate family is appealing their own Home Office decision"
-    },
-    {
-      "question": "Are you appealing a European Economic Area (EEA) decision?",
-      "description": "You should answer yes if your Home Office decision letter says your claim was considered under the Immigration (European Economic Area) Regulations.",
-      "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you are appealing a European Economic Area (EEA) decision"
-    },
-    {
-      "question": "Have you ever been a British citizen?",
-      "eligibleAnswer": [
-        "yes",
-        "no"
-      ],
-      "errorMessage": "Select yes if you have ever been a British citizen"
-    },
-    {
-      "skipIfPrevious": "no",
-      "question": "Are you appealing the removal of your British citizenship?",
-      "description": "This is also known as deprivation of British citizenship.",
-      "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you are appealing the removal of your British citizenship"
     }
   ]
 }

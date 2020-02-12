@@ -142,7 +142,7 @@ module.exports = {
           PostTown: 'Town',
           PostCode: 'CM15 9BN'
         },
-        subscriptions: [{
+        subscriptions: [ {
           id: 1,
           value: {
             subscriber: 'appellant',
@@ -151,7 +151,7 @@ module.exports = {
             wantsSms: 'Yes',
             mobileNumber: '07899999999'
           }
-        }]
+        } ]
       });
     });
 
@@ -193,4 +193,5 @@ module.exports = {
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
     });
-  }};
+  }
+};

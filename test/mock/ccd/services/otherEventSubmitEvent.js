@@ -1,10 +1,21 @@
+function getNextState(body) {
+  switch (body.event.id) {
+    case 'editAppeal':
+      return 'appealStarted';
+    case 'submitAppeal':
+      return 'appealSubmitted';
+    default:
+      throw `Event type ${body.eventType} no next state set`
+  }
+}
+
 module.exports = {
   path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases/:caseId/events',
   method: 'POST',
   template: {
     "id": params => Number(params.caseId),
     "jurisdiction": "IA",
-    "state": "appealStarted",
+    "state": (params, query, body) => { return getNextState(body); },
     "version": 10,
     "case_type_id": "Asylum",
     "created_date": "2019-11-13T10:18:43.271",

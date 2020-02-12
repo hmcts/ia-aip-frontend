@@ -195,3 +195,7 @@ module.exports = {
     });
   }
 };
+
+Then(/^I am on the overview page$/, async (key: string) => {
+  await I.amOnPage(`https://localhost:3000/overview`);
+});

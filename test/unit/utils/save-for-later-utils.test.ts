@@ -1,17 +1,66 @@
+import { NextFunction, Request, Response } from 'express';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
+import Logger from '../../../app/utils/logger';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../../app/utils/save-for-later-utils';
-import { expect } from '../../utils/testUtils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('Save for later utils', () => {
+  let sandbox: sinon.SinonSandbox;
+  let req: Partial<Request>;
+  let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
+  let next: NextFunction;
+  const logger: Logger = new Logger();
+
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    req = {
+      body: {},
+      session: {
+        appeal: {
+          application: {
+            lateAppeal: {}
+          },
+          caseBuilding: {},
+          hearingRequirements: {}
+        } as Appeal
+      } as Partial<Express.Session>,
+      cookies: {},
+      idam: {
+        userDetails: {}
+      },
+      app: {
+        locals: {
+          logger
+        }
+      } as any
+    } as Partial<Request>;
+
+    res = {
+      render: sandbox.stub(),
+      send: sandbox.stub(),
+      redirect: sandbox.spy()
+    } as Partial<Response>;
+
+    next = sandbox.stub() as NextFunction;
+
+    updateAppealService = { submitEvent: sandbox.stub() };
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe('getNextPage', () => {
     it('get next page when save for later clicked', () => {
-      const nextPage = getNextPage({ saveForLater: 'saveForLater' }, 'defaultPath');
+      const nextPage = getNextPage({ saveForLater: 'saveForLater' }, 'defaultPath', req as Request);
 
-      expect(nextPage).to.eq(paths.taskList);
+      expect(nextPage).to.eq(paths.overview);
     });
 
     it('get next page when save and continue clicked', () => {
-      const nextPage = getNextPage({}, 'defaultPath');
+      const nextPage = getNextPage({}, 'defaultPath', req as Request);
 
       expect(nextPage).to.eq('defaultPath');
     });

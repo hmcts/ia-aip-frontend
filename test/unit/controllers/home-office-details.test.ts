@@ -113,7 +113,7 @@ describe('Home Office Details Controller', function () {
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.overview);
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
@@ -202,7 +202,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.overview);
     });
 
     it('should catch exception and call next with the error', async () => {
@@ -316,7 +316,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.overview);
     });
 
     it('should validate and redirect to Appeal Late page and isEdit flag is not updated', async () => {

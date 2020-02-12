@@ -23,6 +23,7 @@ function getLogout(req: Request, res: Response, next: NextFunction) {
 
 function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.appeal.application.isPartiallySaved = false;
     res.redirect(paths.overview);
   } catch (e) {
     next(e);

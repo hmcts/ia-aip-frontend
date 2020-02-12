@@ -72,6 +72,7 @@ describe('application-state-utils', () => {
           'Your appeal details have been sent to the Tribunal.',
           'A Tribunal Caseworker will contact you by <b>{{ applicationNextStep.deadline }}</b> to tell you what to do next.'
         ],
+
         info: {
           title: 'Helpful Information',
           url: '<a href="#">What is a Tribunal Caseworker?</a>'

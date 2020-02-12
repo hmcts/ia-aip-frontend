@@ -4,8 +4,12 @@ function shouldValidateWhenSaveForLater(body, ...fieldNames) {
   return !body.saveForLater || body.saveForLater && fieldNames.some(fieldName => body[fieldName] && body[fieldName] !== '');
 }
 
-function getNextPage(body, nextPage) {
-  return body.saveForLater ? paths.taskList : nextPage;
+function getNextPage(body, nextPage,req) {
+  if (body.saveForLater) {
+    req.session.appeal.application.isPartiallySaved = true;
+    return paths.overview;
+  }
+  return nextPage;
 }
 
 export {

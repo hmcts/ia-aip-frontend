@@ -8,6 +8,8 @@ Feature: Home office letter sent page
     And I have logged in
     And I am on the home office letter sent page
     When I click "Save for later" button
+    Then I am on the overview page
+    Then I click continue
     Then I should see the task-list page
     And I shouldnt be able to click "Your personal details"
 
@@ -24,6 +26,8 @@ Feature: Home office letter sent page
     Given I am on the home office letter sent page
     When I enter a a home letter date in the last 2 weeks
     And I click "Save for later" button
+    Then I am on the overview page
+    Then I click continue
     Then I should see the task-list page
     And I should be able to click "Your personal details"
 

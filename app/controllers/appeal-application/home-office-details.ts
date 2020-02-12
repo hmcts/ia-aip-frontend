@@ -26,7 +26,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'homeOfficeRefNumber')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview);
       }
       const validation = homeOfficeNumberValidation(req.body);
       if (validation) {
@@ -42,7 +42,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       req.session.appeal.application.isPartiallySaved = true;
       req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      const nextPage = getNextPage(req.body, paths.homeOffice.letterSent);
+      const nextPage = getNextPage(req.body, paths.homeOffice.letterSent,req);
       return getConditionalRedirectUrl(req, res, nextPage);
     } catch (e) {
       next(e);
@@ -68,7 +68,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview);
       }
       const validation = dateLetterSentValidation(req.body);
       if (validation) {

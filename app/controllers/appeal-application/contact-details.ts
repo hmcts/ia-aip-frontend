@@ -25,7 +25,7 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview);
       }
       if (!req.body.selections) {
         req.body.selections = '';

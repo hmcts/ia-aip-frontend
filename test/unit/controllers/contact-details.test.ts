@@ -169,7 +169,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(updateAppealService.submitEvent).to.not.have.been.called;
-        expect(res.redirect).to.have.been.calledWith(paths.overview);
+        expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
       });
 
     });

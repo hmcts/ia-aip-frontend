@@ -57,7 +57,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
               };
             }
             await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-            return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.checkAndSend,req));
+            return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.checkAndSend));
           }
         }
 

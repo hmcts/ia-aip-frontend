@@ -108,7 +108,7 @@ describe('Confirmation Page Controller', () => {
       applicationNextStep: expectedNextStep,
       history: null,
       stages: expectedStages,
-      saved: undefined
+      saved: false
     });
   });
 

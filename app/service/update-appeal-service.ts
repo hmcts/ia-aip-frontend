@@ -79,7 +79,6 @@ export default class UpdateAppealService {
       appealLastModified: ccdCase.last_modified,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
-        isPartiallySaved: !!caseData.homeOfficeReferenceNumber,
         appealType: appealType,
         contactDetails: {
           ...contactDetails

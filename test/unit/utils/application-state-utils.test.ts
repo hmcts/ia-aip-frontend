@@ -4,7 +4,6 @@ import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('application-state-utils', () => {
-
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   const logger: Logger = new Logger();

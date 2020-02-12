@@ -32,7 +32,7 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'appealType')) {
-        return getConditionalRedirectUrl(req, res, paths.overview);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = typeOfAppealValidation(req.body);
       if (validation) {

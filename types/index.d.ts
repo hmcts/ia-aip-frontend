@@ -53,7 +53,6 @@ interface AppealDate {
 
 interface AppealApplication {
   homeOfficeRefNumber: string;
-  isPartiallySaved?: boolean;
   dateLetterSent: AppealDate;
   appealType: string | string[];
   isAppealLate: boolean;

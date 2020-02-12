@@ -39,7 +39,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.overview);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = dateOfBirthValidation(req.body);
       if (validation != null) {
@@ -61,7 +61,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       };
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.nationality,req));
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.nationality));
     } catch (e) {
       next(e);
     }
@@ -85,7 +85,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.overview);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = appellantNamesValidation(req.body);
       if (validation) {
@@ -108,7 +108,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.dob,req));
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.dob));
     } catch (e) {
       next(e);
     }
@@ -136,7 +136,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'nationality')) {
-        return getConditionalRedirectUrl(req, res, paths.overview);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = nationalityValidation(req.body);
       if (validation) {
@@ -158,7 +158,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       if (_.has(application, 'personalDetails.address.line1')) {
         return getConditionalRedirectUrl(req, res, paths.personalDetails.enterAddress);
       }
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.enterPostcode,req));
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.enterPostcode));
 
     } catch (e) {
       next(e);
@@ -287,7 +287,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
-        return getConditionalRedirectUrl(req, res, paths.overview);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = addressValidation(req.body);
       if (validation !== null) {

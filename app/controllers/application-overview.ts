@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
 import { paths } from '../paths';
 import { getAppealApplicationHistory, getAppealApplicationNextStep } from '../utils/application-state-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 
 function getApplicationOverview(req: Request, res: Response, next: NextFunction) {
   try {
+    const isPartiallySaved = _.has(req.query, 'saved');
     const loggedInUserFullName = `${req.idam.userDetails.forename} ${req.idam.userDetails.surname}`;
     const stages = buildProgressBarStages(req.session.appeal.appealStatus);
     return res.render('application-overview.njk', {
@@ -12,18 +14,8 @@ function getApplicationOverview(req: Request, res: Response, next: NextFunction)
       applicationNextStep: getAppealApplicationNextStep(req),
       history: getAppealApplicationHistory(),
       stages,
-      saved: req.session.appeal.application.isPartiallySaved
+      saved: isPartiallySaved
     });
-  } catch (e) {
-    next(e);
-  }
-}
-
-// TODO ADD A POST TO RESET THE PARTIALLY SAVED TO FALSE.
-function postApplicationOverview(req: Request, res: Response, next: NextFunction) {
-  try {
-    req.session.appeal.application.isPartiallySaved = false;
-    return res.redirect(paths.taskList);
   } catch (e) {
     next(e);
   }

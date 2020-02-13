@@ -18,7 +18,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
-      previousPage: '/appellant-timeline',
+      previousPage: paths.caseBuilding.timeline,
       applicationReason: req.session.appeal.reasonsForAppeal.applicationReason
     });
   } catch (e) {
@@ -78,7 +78,7 @@ function postAdditionalSupportingEvidenceQuestionPage(req: Request, res: Respons
       return res.render('reasons-for-appeal/supporting-evidence-page.njk', {
         errorList: Object.values(validations),
         error: validations,
-        previousPage: paths.reasonsForAppeal.decision
+        previousPage: paths.reasonsForAppeal.supportingEvidence
       });
     }
     if (answer === 'yes') {
@@ -100,7 +100,7 @@ function getSupportingEvidenceUploadPage(req: Request, res: Response, next: Next
     return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
       evidences: Object.values(evidences),
       evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-      previousPage: paths.reasonsForAppeal.decision
+      previousPage: paths.reasonsForAppeal.supportingEvidence
     });
   } catch (e) {
     next(e);
@@ -162,7 +162,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.reasonsForAppeal.decision
+          previousPage: paths.reasonsForAppeal.supportingEvidence
         });
       }
     } catch (e) {

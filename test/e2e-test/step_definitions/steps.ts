@@ -19,6 +19,7 @@ const { eligibilityQuestions } = require('../pages/eligibility-questions/eligibi
 const { eligible } = require('../pages/eligibility-questions/eligible-page');
 const { ineligibile } = require('../pages/eligibility-questions/ineligible-page');
 const { overviewPage } = require('../pages/overview-page/overview-page');
+const { error404 } = require('../pages/error-pages/404-error-page');
 
 const { I } = inject();
 
@@ -44,3 +45,4 @@ eligibilityQuestions(I);
 eligible(I);
 ineligibile(I);
 overviewPage(I);
+error404(I);

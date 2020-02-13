@@ -279,6 +279,7 @@
         },
         "awaitingReasonsForAppeal": {
           "tellUsWhy": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
+          "partiallySaved": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
           "info": {
             "title": "Helpful Information",
             "url": "<a href=\"#\">Understanding your Home Office documents</a>"

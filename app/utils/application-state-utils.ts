@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { getDeadline } from './event-deadline-date-finder';
@@ -54,6 +54,23 @@ const APPEAL_STATE = {
       url: paths.reasonsForAppeal.decision,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
     }
+  },
+  'awaitingReasonsForAppealPartial': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partiallySaved
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.info.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.info.url
+    },
+    usefulDocuments: {
+      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.usefulDocuments.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.usefulDocuments.url
+    },
+    cta: {
+      url: paths.reasonsForAppeal.decision,
+      respondByText: i18n.pages.overviewPage.doThisNext.respondByText
+    }
   }
 };
 
@@ -73,13 +90,17 @@ function isPartiallySavedAppeal(req: Request, currentAppealStatus: string) {
 
 /**
  * Retrieves the information required based on appeal state also known as 'Do This Next' section
+ * In the case of Partially saved appeal it will append 'Partial' to the current state
+ * e.g 'awaitingReasonsForAppealPartial' which should be defined in APPEAL_STATE.
  * @param req the request containing the session and appeal status
  */
 function getAppealApplicationNextStep(req: Request) {
   let currentAppealStatus = req.session.appeal.appealStatus;
+
   if (isPartiallySavedAppeal(req, currentAppealStatus)) {
     currentAppealStatus = currentAppealStatus + 'Partial';
   }
+
   let doThisNextSection = APPEAL_STATE[currentAppealStatus];
 
   // Added the following to avoid app crashing on events that are to be implemented.
@@ -102,6 +123,7 @@ function getAppealApplicationNextStep(req: Request) {
       date: req.session.appeal.appealLastModified
     }
   };
+
   doThisNextSection.deadline = getDeadline(currentAppealStatus, history);
 
   return doThisNextSection;

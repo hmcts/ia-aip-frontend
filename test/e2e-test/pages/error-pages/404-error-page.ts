@@ -1,5 +1,5 @@
-const config = require('config');
-const testUrl = config.get('testUrl');
+const configFile = require('config');
+const testUrl = configFile.get('testUrl');
 
 module.exports = {
   error404(I) {

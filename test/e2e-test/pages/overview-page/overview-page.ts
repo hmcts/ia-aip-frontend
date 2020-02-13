@@ -31,5 +31,10 @@ module.exports = {
       I.see(i18n.pages.overviewPage.doThisNext.toDo, '//*[@id="doThisNextTitle"]/h2[1]');
       I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.tellUsWhy}</p>`);
     });
+
+    Then(/^I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//*[@id="doThisNextTitle"]/h2[1]');
+      I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partiallySaved}</p>`);
+    });
   }
 };

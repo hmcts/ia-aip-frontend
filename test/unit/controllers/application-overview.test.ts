@@ -118,7 +118,6 @@ describe('Confirmation Page Controller', () => {
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
-    req.session.appeal.application.homeOfficeRefNumber = 'refNumber';
 
     getApplicationOverview(req as Request, res as Response, next);
 
@@ -156,7 +155,57 @@ describe('Confirmation Page Controller', () => {
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
-      appealRefNumber: 'refNumber',
+      appealRefNumber: undefined,
+      applicationNextStep: expectedNextStep,
+      history: null,
+      stages: expectedStages
+    });
+  });
+
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options', () => {
+    req.idam = {
+      userDetails: {
+        forename: 'Alex',
+        surname: 'Developer'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+
+    getApplicationOverview(req as Request, res as Response, next);
+
+    const expectedNextStep = {
+      deadline: 'TBC',
+      descriptionParagraphs: [
+        'Description for event <b>appealStartedPartial</b> not found'
+      ]
+    };
+
+    const expectedStages = [ {
+      active: true,
+      ariaLabel: 'Your appeal details stage',
+      completed: false,
+      title: 'Your appeal<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal argument stage',
+      completed: false,
+      title: 'Your appeal<br/> argument'
+    }, {
+      active: false,
+      ariaLabel: 'Your hearing details stage',
+      completed: false,
+      title: 'Your hearing<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal decision stage',
+      completed: false,
+      title: 'Your appeal<br/> decision'
+    } ];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: 'A1234567',
       applicationNextStep: expectedNextStep,
       history: null,
       stages: expectedStages,

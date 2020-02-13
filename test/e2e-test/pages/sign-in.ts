@@ -53,6 +53,10 @@ module.exports = {
           signInForUser('awaiting-reasons-for-appeal@example.com');
           break;
         }
+        case 'Saved awaitingReasonsForAppeal': {
+          signInForUser('partial-awaiting-reasons-for-appeal@example.com');
+          break;
+        }
       }
 
       await I.seeInTitle('Overview - Immigration & Asylum - GOV.UK');

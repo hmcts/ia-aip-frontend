@@ -20,7 +20,9 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
 
       const evidences: Evidences = req.session.appeal.reasonsForAppeal.evidences;
       const evidenceNames: string[] = Object.values(evidences).map((evidence) => evidence.name);
-      summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
+      if (evidenceNames.length) {
+        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
+      }
     }
 
     return res.render('reasons-for-appeal/check-and-send-page.njk', {

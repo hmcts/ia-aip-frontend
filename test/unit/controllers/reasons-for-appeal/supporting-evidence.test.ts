@@ -101,7 +101,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
         error: { answer: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonsForAppeal.decision
+        previousPage: paths.reasonsForAppeal.supportingEvidence
       });
     });
 

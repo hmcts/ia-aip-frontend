@@ -22,4 +22,11 @@ Feature: Overview page
     And I visit the overview page
     Then I should see the 'do this next section' for 'Appeal submitted'
 
+  Scenario: Awaiting Reasons for appeal
+    Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
+    Then I click continue
+    Then I should see the reasons for appeal decision page
+
 

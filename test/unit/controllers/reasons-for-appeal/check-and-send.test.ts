@@ -82,7 +82,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       getCheckAndSend(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
-        previousPage: paths.reasonsForAppeal.decision
+        previousPage: paths.reasonsForAppeal.supportingEvidenceUpload
       });
     });
 

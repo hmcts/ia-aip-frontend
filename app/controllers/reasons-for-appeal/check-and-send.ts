@@ -9,7 +9,8 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
   try {
-    const editParameter = '?edit';
+    const editParameter: string = '?edit';
+    let previousPage: string = paths.reasonsForAppeal.decision;
 
     const summaryRows = [
       addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
@@ -22,12 +23,13 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
       const evidenceNames: string[] = Object.values(evidences).map((evidence) => evidence.name);
       if (evidenceNames.length) {
         summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
+        previousPage = paths.reasonsForAppeal.supportingEvidenceUpload;
       }
     }
 
     return res.render('reasons-for-appeal/check-and-send-page.njk', {
       summaryRows,
-      previousPage: paths.reasonsForAppeal.decision
+      previousPage: previousPage
     });
   } catch (error) {
     next(error);

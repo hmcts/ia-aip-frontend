@@ -14,9 +14,6 @@ const serverConfig = {
   mode: NODE_ENV,
   target: 'node',
   plugins: [
-    new WebpackShellPlugin({
-      // onBuildEnd: ['yarn run:dev']
-    }),
     new CopyWebpackPlugin([
       { from: path.resolve('node_modules/govuk-frontend/govuk/assets/'), to: 'assets' },
       { from: path.resolve('views'), to: 'views' },
@@ -45,6 +42,7 @@ const serverConfig = {
         test: /\.(sa|sc|c)ss$/,
         loader: [
           MiniCSSExtractPlugin.loader,
+          "style-loader",
           "css-loader",
           "sass-loader"
         ]

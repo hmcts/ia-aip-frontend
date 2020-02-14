@@ -10,7 +10,7 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
   try {
     const editParameter: string = '?edit';
-    let previousPage: string = paths.reasonsForAppeal.decision;
+    let previousPage: string = paths.reasonsForAppeal.supportingEvidence;
 
     const summaryRows = [
       addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),

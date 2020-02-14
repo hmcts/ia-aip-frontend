@@ -1,5 +1,5 @@
 const awaitingReasonsForAppealCaseData = {
-  'ids': 1573640323267110,
+  'id': 1573640323267110,
   'jurisdiction': 'IA',
   'state': 'awaitingReasonsForAppeal',
   'version': 12,

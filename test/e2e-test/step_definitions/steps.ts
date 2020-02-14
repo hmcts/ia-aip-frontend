@@ -18,6 +18,7 @@ const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appe
 const { eligibilityQuestions } = require('../pages/eligibility-questions/eligibility-question-page');
 const { eligible } = require('../pages/eligibility-questions/eligible-page');
 const { ineligibile } = require('../pages/eligibility-questions/ineligible-page');
+const { overviewPage } = require('../pages/overview-page/overview-page');
 
 const { I } = inject();
 
@@ -42,3 +43,4 @@ reasonsForAppeal(I);
 eligibilityQuestions(I);
 eligible(I);
 ineligibile(I);
+overviewPage(I);

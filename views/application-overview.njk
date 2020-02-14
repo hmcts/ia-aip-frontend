@@ -12,11 +12,13 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         {{ progressBar(stages) }}
-        {% if applicationNextStep.cta %}
-          <h2>{{ i18n.pages.overviewPage.doThisNext.toDo }}</h2>
-        {% else %}
-          <h2>{{ i18n.pages.overviewPage.doThisNext.nothingToDo }}</h2>
-        {% endif %}
+        <div id="doThisNextTitle">
+          {% if applicationNextStep.cta %}
+            <h2>{{ i18n.pages.overviewPage.doThisNext.toDo }}</h2>
+          {% else %}
+            <h2>{{ i18n.pages.overviewPage.doThisNext.nothingToDo }}</h2>
+          {% endif %}
+        </div>
         {% if saved %}
           <div class="saved-banner">
             <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>

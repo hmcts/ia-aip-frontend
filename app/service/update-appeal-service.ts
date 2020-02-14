@@ -24,7 +24,7 @@ export default class UpdateAppealService {
 
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
-    const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.id, securityHeaders);
+    const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
 
     const caseData: Partial<CaseData> = ccdCase.case_data;
@@ -133,7 +133,7 @@ export default class UpdateAppealService {
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
 
-    const currentUserId = req.idam.userDetails.id;
+    const currentUserId = req.idam.userDetails.uid;
     const caseData = this.convertToCcdCaseData(req.session.appeal.application);
     const updatedCcdCase = {
       id: req.session.ccdCaseId,

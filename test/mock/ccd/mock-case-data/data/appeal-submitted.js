@@ -1,4 +1,4 @@
-export const appealSubmittedCaseData = {
+const appealSubmittedCaseData = {
   'id': 1573640323267110,
   'jurisdiction': 'IA',
   'state': 'appealSubmitted',
@@ -31,4 +31,8 @@ export const appealSubmittedCaseData = {
     'submissionOutOfTime': 'No',
     'homeOfficeReferenceNumber': 'A1234567'
   }
+};
+
+module.exports = {
+  appealSubmittedCaseData
 };

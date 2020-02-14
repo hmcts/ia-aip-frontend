@@ -1,4 +1,4 @@
-export const partialAppealStartedCaseData = {
+const partialAppealStartedCaseData = {
   'id': 1573640323267110,
   'jurisdiction': 'IA',
   'state': 'appealStarted',
@@ -10,4 +10,8 @@ export const partialAppealStartedCaseData = {
     'journeyType': 'aip',
     'homeOfficeReferenceNumber': 'A1234564'
   }
+};
+
+module.exports = {
+  partialAppealStartedCaseData
 };

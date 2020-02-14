@@ -4,6 +4,8 @@ const defaultUserId = '1';
 const emailToUserId = {
   'no-cases@example.com' : '1',
   'has-case@example.com': '2',
+  'appeal-submitted@example.com': '3',
+  'awaiting-reasons-for-appeal@example.com': '4',
   'setupcase@example.com': '999'
 };
 

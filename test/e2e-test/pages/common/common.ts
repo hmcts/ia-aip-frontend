@@ -46,7 +46,10 @@ const PATHS = {
   'reasons for appeal': paths.reasonsForAppeal.decision,
   'supporting evidence question': paths.reasonsForAppeal.supportingEvidence,
   'supporting evidence upload': paths.reasonsForAppeal.supportingEvidenceUpload,
-  'reasons for appeal check your answers': paths.reasonsForAppeal.checkAndSend
+  'reasons for appeal check your answers': paths.reasonsForAppeal.checkAndSend,
+  'Out of time appeal': paths.homeOffice.appealLate,
+  'Task list': paths.taskList,
+  'Check and send': paths.checkAndSend
 };
 
 module.exports = {
@@ -152,6 +155,46 @@ module.exports = {
             mobileNumber: '07899999999'
           }
         } ]
+      });
+    });
+
+    Given('I have an out of time appeal with reason for being late an evidence', async () => {
+      await setupData({
+        appealType: 'protection',
+        homeOfficeReferenceNumber: 'A1111111',
+        homeOfficeDecisionDate: moment().subtract(20, 'days').format('YYYY-MM-DD'),
+        submissionOutOfTime: 'Yes',
+        applicationOutOfTimeExplanation: 'The reason why the appeal is late',
+        applicationOutOfTimeDocument: {
+          document_filename: '1581607687239-fake.png',
+          document_url: 'http://localhost:20003/documents/08a7d468-cd85-4a5c-832d-f0534b524909'
+        },
+        appellantGivenNames: 'givenName',
+        appellantFamilyName: 'familyName',
+        appellantDateOfBirth: '1981-01-01',
+        appellantNationalities: [
+          {
+            id: '1',
+            value: {
+              code: 'FI'
+            }
+          }
+        ],
+        appellantAddress: {
+          AddressLine1: 'Address line 1',
+          PostTown: 'Town',
+          PostCode: 'CM15 9BN'
+        },
+        subscriptions: [{
+          id: 1,
+          value: {
+            subscriber: 'appellant',
+            wantsEmail: 'No',
+            email: null,
+            wantsSms: 'Yes',
+            mobileNumber: '07899999999'
+          }
+        }]
       });
     });
 

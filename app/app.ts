@@ -11,6 +11,7 @@ import { configureLogger, configureNunjucks, configureS2S } from './app-config';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
 import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
 import { filterRequest } from './middleware/xss-middleware';
+import { paths } from './paths';
 import { router } from './routes';
 import { setupSession } from './session';
 
@@ -26,9 +27,8 @@ function createApp() {
   configureS2S(app);
 
   app.locals.i18n = internationalization;
-  if (environment !== 'test') {
-    app.use(logRequestMiddleware);
-  }
+  app.locals.paths = paths;
+  if (environment !== 'test') app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());

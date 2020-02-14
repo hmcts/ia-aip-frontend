@@ -1,18 +1,18 @@
-export const appealSubmittedCaseData = {
+const awaitingReasonsForAppealCaseData = {
   'id': 1573640323267110,
   'jurisdiction': 'IA',
-  'state': 'appealSubmitted',
-  'version': 9,
+  'state': 'awaitingReasonsForAppeal',
+  'version': 12,
   'case_type_id': 'Asylum',
-  'created_date': '2020-02-12T10:41:51.55',
-  'last_modified': '2020-02-12T10:43:14.23',
+  'created_date': '2020-02-07T16:39:39.894',
+  'last_modified': '2020-02-11T12:18:39.813',
   'case_data': {
     'appellantHasFixedAddress': 'Yes',
     'subscriptions': [ {
-      'id': 'ce208f30-0aae-41a1-95a6-8b79333fa274',
+      'id': 'ef8cb4ca-9df8-42f5-b326-e78725de99be',
       'value': { 'email': 'alejandro@example.net', 'wantsSms': 'No', 'subscriber': 'appellant', 'wantsEmail': 'Yes' }
     } ],
-    'appellantDateOfBirth': '2019-01-01',
+    'appellantDateOfBirth': '1990-01-01',
     'appellantAddress': {
       'County': '',
       'Country': 'United Kingdom',
@@ -22,13 +22,17 @@ export const appealSubmittedCaseData = {
       'AddressLine2': ''
     },
     'appealType': 'protection',
-    'appellantGivenNames': 'aa',
+    'appellantGivenNames': 'Alex',
     'journeyType': 'aip',
-    'appellantFamilyName': 'asd',
-    'appellantNationalities': [ { 'id': '39dd0f68-aa9f-41b0-99a8-e553e1ce0fb1', 'value': { 'code': 'AX' } } ],
-    'homeOfficeDecisionDate': '2020-02-10',
+    'appellantFamilyName': 'NotHere',
+    'appellantNationalities': [ { 'id': 'deb1b9fe-43f7-4a8b-89ef-951eeda7e11d', 'value': { 'code': 'AL' } } ],
+    'homeOfficeDecisionDate': '2020-02-01',
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',
     'homeOfficeReferenceNumber': 'A1234567'
   }
+};
+
+module.exports = {
+  awaitingReasonsForAppealCaseData
 };

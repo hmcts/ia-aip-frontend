@@ -473,19 +473,19 @@ describe('contactDetailsValidation', () => {
 
 describe('reasonForAppealDecisionValidation', () => {
   it('should validate if statement present', () => {
-    const object = { 'moreDetail': 'some reason text here' };
+    const object = { 'applicationReason': 'some reason text here' };
     const validationResult = reasonForAppealDecisionValidation(object);
     expect(validationResult).to.equal(null);
   });
 
   it('should fail validation and return "string.empty" type', () => {
-    const object = { 'moreDetail': '' };
+    const object = { 'applicationReason': '' };
     const validationResult = reasonForAppealDecisionValidation(object);
     const expectedResponse = {
 
-      moreDetail: {
-        href: '#moreDetail',
-        key: 'moreDetail',
+      applicationReason: {
+        href: '#applicationReason',
+        key: 'applicationReason',
         text: 'Enter the reasons you think the Home Office decision is wrong'
       }
 
@@ -496,19 +496,19 @@ describe('reasonForAppealDecisionValidation', () => {
 
 describe('reasonForAppealDecisionValidation', () => {
   it('should validate if statement present', () => {
-    const object = { 'moreDetail': 'some reason text here' };
+    const object = { 'applicationReason': 'some reason text here' };
     const validationResult = reasonForAppealDecisionValidation(object);
     expect(validationResult).to.equal(null);
   });
 
   it('should fail validation and return "string.empty" type', () => {
-    const object = { 'moreDetail': '' };
+    const object = { 'applicationReason': '' };
     const validationResult = reasonForAppealDecisionValidation(object);
     const expectedResponse = {
 
-      moreDetail: {
-        href: '#moreDetail',
-        key: 'moreDetail',
+      applicationReason: {
+        href: '#applicationReason',
+        key: 'applicationReason',
         text: 'Enter the reasons you think the Home Office decision is wrong'
       }
 

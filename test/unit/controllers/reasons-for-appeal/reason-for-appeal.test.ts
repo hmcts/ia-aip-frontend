@@ -1,12 +1,16 @@
 const express = require('express');
-import { NextFunction, Request, Response, text } from 'express';
-import { getReasonForAppeal, postReasonForAppeal, setupReasonsForAppealController } from '../../../../app/controllers/case-building/reason-for-appeal';
+import { NextFunction, Request, Response } from 'express';
+import {
+  getReasonForAppeal,
+  postReasonForAppeal,
+  setupReasonsForAppealController
+} from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
 import { expect, sinon } from '../../../utils/testUtils';
 
-describe('Reasons for Appeal Controller', function() {
+describe('Reasons for Appeal Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -19,9 +23,7 @@ describe('Reasons for Appeal Controller', function() {
     req = {
       session: {
         appeal: {
-          application: {
-            contactDetails: null
-          }
+          reasonsForAppeal: {}
         } as Partial<Appeal>
       } as Partial<Express.Session>,
       body: {},
@@ -58,14 +60,16 @@ describe('Reasons for Appeal Controller', function() {
       setupReasonsForAppealController({ updateAppealService });
       expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.decision);
       expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.decision);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
     });
   });
 
   describe('getReasonForAppeal', () => {
-    it('should render case-building/reasons-for-appeal/reason-for-appeal.njk', function () {
+    it('should render reasons-for-appeal/reason-for-appeal.njk', function () {
       getReasonForAppeal(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/reason-for-appeal-page.njk', {
-        previousPage:  '/appellant-timeline'
+      expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
+        previousPage: paths.caseBuilding.timeline,
+        applicationReason: undefined
       });
     });
   });
@@ -78,33 +82,49 @@ describe('Reasons for Appeal Controller', function() {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should fail validation and render case-building/reasons-for-appeal/reason-for-appeal.njk with error', async () => {
-      req.body.moreDetail = '';
+    it('should fail validation and render reasons-for-appeal/reason-for-appeal.njk with error', async () => {
+      req.body.applicationReason = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const applicationReasonError = {
+        text: 'Enter the reasons you think the Home Office decision is wrong',
+        href: '#applicationReason',
+        key: 'applicationReason'
+      };
+      const error = {
+        applicationReason: applicationReasonError
+      };
+      const errorList = [ applicationReasonError ];
+
       expect(res.render).to.have.been.calledWith(
-                'case-building/reasons-for-appeal/reason-for-appeal-page.njk',
+        'reasons-for-appeal/reason-for-appeal-page.njk',
         {
           error: {
-            moreDetail: {
-              href: '#moreDetail',
-              key: 'moreDetail',
+            applicationReason: {
+              href: '#applicationReason',
+              key: 'applicationReason',
               text: 'Enter the reasons you think the Home Office decision is wrong'
             }
           },
-          errorList: [{
-            href: '#moreDetail',
-            key: 'moreDetail',
+          errorList: [ {
+            href: '#applicationReason',
+            key: 'applicationReason',
             text: 'Enter the reasons you think the Home Office decision is wrong'
-          }]
+          } ]
         }
       );
     });
 
-    it('should pass validation and render case-building/reasons-for-appeal/reason-for-appeal.njk without error', async () => {
-      req.body.moreDetail = 'Text Word';
+    it('should pass validation and render reasons-for-appeal/reason-for-appeal.njk without error', async () => {
+      req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(
-          '/case-building/reason-for-appeal/supporting-evidence');
+      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
+    });
+
+    it('when in Edit mode should pass validation and redirect to check-and-send without error', async () => {
+      req.session.appeal.reasonsForAppeal.isEdit = true;
+      req.body.applicationReason = 'Text Word';
+      await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
     });
   });
 });

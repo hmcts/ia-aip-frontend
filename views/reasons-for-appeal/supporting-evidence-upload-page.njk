@@ -61,20 +61,7 @@
     {% endcall %}
   </form>
   <form action="/case-building/reason-for-appeal/supporting-evidence/submit" method="post">
-    <div class="buttons__container">
-      {{ govukButton({
-        name: 'saveAndContinue',
-        text: i18n.common.buttons.saveAndContinue,
-        classes: "govuk-!-margin-right-1"
-      }) }}
-      {{ govukButton({
-        text: i18n.common.buttons.saveForLater,
-        name: "saveForLater",
-        value: "saveForLater",
-        href: "/case-building/task-list",
-        classes: "govuk-button--secondary"
-      }) }}
-    </div>
+    {{ saveButtons() }}
   </form>
 
   {{ contactUs() }}

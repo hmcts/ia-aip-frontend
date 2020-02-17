@@ -11,10 +11,7 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
 function createSummaryRowsFrom(appealApplication: AppealApplication) {
-  let appealTypes: string[] = !Array.isArray(appealApplication.appealType)
-    ? [ appealApplication.appealType ] : appealApplication.appealType;
-
-  const appealTypeNames: string[] = appealTypes.map(appealType => {
+  const appealTypeNames: string[] = appealApplication.appealType.split(',').map(appealType => {
     return i18n.appealTypes[appealType].name;
   });
   const country = countryList.find(country => country.value === appealApplication.personalDetails.nationality);

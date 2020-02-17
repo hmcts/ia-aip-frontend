@@ -277,7 +277,7 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
 
 function reasonForAppealDecisionValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    moreDetail: Joi.string().required()
+    applicationReason: Joi.string().required()
       .messages({ 'string.empty': i18n.validationErrors.reasonForAppeal.required })
   }).unknown();
   return validate(obj, schema);

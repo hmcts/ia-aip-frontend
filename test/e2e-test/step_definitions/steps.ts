@@ -14,7 +14,9 @@ const { enterPostcode } = require('../pages/personal-details/personal-details-en
 const { selectAddress } = require('../pages/personal-details/personal-details-select-address');
 const { enterAddress } = require('../pages/personal-details/personal-details-enter-address');
 const { contactDetails } = require('../pages/contact-details/contact-details-page');
-const { reasonsForAppeal } = require('../pages/reason-for-appeal/reason-for-appeal');
+const { reasonsForAppeal } = require('../pages/reasons-for-appeal/reasons-for-appeal');
+const { reasonsForAppealCYA } = require('../pages/reasons-for-appeal/reasons-for-appeal-cya');
+const { reasonsForAppealConfirmation } = require('../pages/reasons-for-appeal/reasons-for-appeal-confirmation');
 const { eligibilityQuestions } = require('../pages/eligibility-questions/eligibility-question-page');
 const { eligible } = require('../pages/eligibility-questions/eligible-page');
 const { ineligibile } = require('../pages/eligibility-questions/ineligible-page');
@@ -24,6 +26,7 @@ const { I } = inject();
 
 common(I);
 fileUploadCommon(I);
+
 signIn(I);
 
 taskList(I);
@@ -40,6 +43,8 @@ typeOfAppeal(I);
 outOfTimeAppeal(I);
 checkAndSend(I);
 reasonsForAppeal(I);
+reasonsForAppealCYA(I);
+reasonsForAppealConfirmation(I);
 eligibilityQuestions(I);
 eligible(I);
 ineligibile(I);

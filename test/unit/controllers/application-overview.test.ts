@@ -60,8 +60,7 @@ describe('Confirmation Page Controller', () => {
   it('getApplicationOverview should render application-overview.njk with options', () => {
     req.idam = {
       userDetails: {
-        forename: 'Alex',
-        surname: 'Developer'
+        name: 'Alex Developer'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';

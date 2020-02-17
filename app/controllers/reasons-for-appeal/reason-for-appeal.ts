@@ -41,8 +41,8 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         ...req.session.appeal.reasonsForAppeal,
         applicationReason: req.body.applicationReason
       };
-      // TODO: create new Event editReasonsForAppeal
-      // await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+
+      await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
 
       if (req.body['saveForLater']) {
         if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
@@ -128,8 +128,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
             error: validation
           });
         }
-        // TODO: create new Event editReasonsForAppeal
-        // await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+        await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
         return getConditionalRedirectUrl(req, res, paths.reasonsForAppeal.checkAndSend);
       }
     } catch (e) {

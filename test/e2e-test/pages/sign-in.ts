@@ -17,20 +17,45 @@ module.exports = {
       await I.seeInTitle('Sign in - HMCTS Access');
     });
 
-    When('I enter creds and click sign in',async () => {
+    When('I enter creds and click sign in', async () => {
       await signInHelper();
     });
 
     Given('I am authenticated as a valid appellant', async () => {
       I.amOnPage(testUrl + paths.login);
       await signInHelper();
-      await I.seeInTitle('Task List - Immigration & Asylum - GOV.UK');
+      await I.seeInTitle('Overview - Immigration & Asylum - GOV.UK');
     });
 
     Given('I have logged in', async () => {
       I.amOnPage(testUrl + paths.login);
       signInForUser('setupcase@example.com');
-      await I.seeInTitle('Task List - Immigration & Asylum - GOV.UK');
+      await I.seeInTitle('Overview - Immigration & Asylum - GOV.UK');
+    });
+
+    Given(/^I have logged in as an appellant in state "([^"]*)"$/, async (appealState) => {
+      I.amOnPage(testUrl + paths.login);
+
+      switch (appealState) {
+        case 'New appealStarted': {
+          signInForUser('no-cases@example.com');
+          break;
+        }
+        case 'Saved appealStarted': {
+          signInForUser('has-case@example.com');
+          break;
+        }
+        case 'appealSubmitted': {
+          signInForUser('appeal-submitted@example.com');
+          break;
+        }
+        case 'awaitingReasonsForAppeal': {
+          signInForUser('awaiting-reasons-for-appeal@example.com');
+          break;
+        }
+      }
+
+      await I.seeInTitle('Overview - Immigration & Asylum - GOV.UK');
     });
   }
 };

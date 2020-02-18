@@ -1,31 +1,38 @@
 import { OSPlacesClient } from '@hmcts/os-places-client';
 import * as express from 'express';
 import requestPromise from 'request-promise-native';
-import { setupCheckAndSendController } from './controllers/check-and-send';
-import { setConfirmationController } from './controllers/confirmation-page';
-import { setupContactDetailsController } from './controllers/contact-details';
+import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
+import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
+import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
+import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
+import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
+import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
+import { setupTaskListController } from './controllers/appeal-application/task-list';
+import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
+import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupHealthController } from './controllers/health';
-import { setupHomeOfficeDetailsController } from './controllers/home-office-details';
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
-import { setupOutOfTimeController } from './controllers/out-of-time';
-import { setupPersonalDetailsController } from './controllers/personal-details';
-import { setupReasonsForAppealController } from './controllers/reason-for-appeal';
+import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
+import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupStartController } from './controllers/startController';
-import { setupTaskListController } from './controllers/task-list';
-import { setupTypeOfAppealController } from './controllers/type-of-appeal';
 import { logSession } from './middleware/session-middleware';
+import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
+import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
 
 const config = setupSecrets();
+const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
-export const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), new IdamService(), S2SService.getInstance());
-const osPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
+const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
+const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
+const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 
 const router = express.Router();
 
@@ -40,11 +47,16 @@ const personalDetailsController = setupPersonalDetailsController({ updateAppealS
 const contactDetailsController = setupContactDetailsController(updateAppealService);
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
-const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService });
-const outOfTimeController = setupOutOfTimeController(updateAppealService);
+const outOfTimeController = setupOutOfTimeController({ updateAppealService, documentManagementService });
 const eligibilityController = setupEligibilityController();
+const applicationOverview = setupApplicationOverviewController();
+
+// Reason for Appeal Controllers
+const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
+const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(updateAppealService);
 
 // not protected by idam
+router.use(indexController);
 router.use(healthController);
 router.use(startController);
 router.use(eligibilityController);
@@ -52,8 +64,9 @@ router.use(eligibilityController);
 // protected by idam
 router.use(idamController);
 // router.use(initSession);
-if (process.env.NODE_ENV === 'development') router.use(logSession);
-router.use(indexController);
+if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
+  router.use(logSession);
+}
 router.use(taskListController);
 router.use(homeOfficeDetailsController);
 router.use(personalDetailsController);
@@ -61,7 +74,10 @@ router.use(typeOfAppealController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);
-router.use(reasonsForAppealController);
 router.use(outOfTimeController);
+router.use(applicationOverview);
+
+router.use(reasonsForAppealController);
+router.use(reasonsForAppealCYAController);
 
 export { router };

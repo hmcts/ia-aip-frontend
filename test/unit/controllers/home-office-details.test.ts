@@ -6,7 +6,7 @@ import {
   postDateLetterSent,
   postHomeOfficeDetails,
   setupHomeOfficeDetailsController
-} from '../../../app/controllers/home-office-details';
+} from '../../../app/controllers/appeal-application/home-office-details';
 import { paths } from '../../../app/paths';
 import { Events } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -32,7 +32,7 @@ describe('Home Office Details Controller', function () {
           application: {
             lateAppeal: {}
           },
-          caseBuilding: {},
+          reasonsForAppeal: {},
           hearingRequirements: {}
         } as Appeal
       } as Partial<Express.Session>,

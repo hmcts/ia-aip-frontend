@@ -14,14 +14,12 @@ module.exports = {
       await I.fillField('#text-message-value', phoneNumber);
     });
 
-    Then('I should see the contact details page', async () => {
-      I.seeInCurrentUrl(paths.contactDetails);
+    Then(/^I check the "([^"]*)" option$/, async (option) => {
+      await I.checkOption(option);
     });
 
-    When(/^I check the Text message option and type "([^"]*)" as my phone number and click Save and continue$/, async (num) => {
-      await I.checkOption('Text message');
-      await I.fillField('#text-message-value', num);
-      await I.click('Save and continue');
+    Then('I should see the contact details page', async () => {
+      I.seeInCurrentUrl(paths.contactDetails);
     });
 
     Given(/^I click the contact details link$/, async () => {

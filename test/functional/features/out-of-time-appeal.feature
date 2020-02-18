@@ -5,6 +5,7 @@ Feature: Back button
 
 Scenario: Explain the reason why my appeal is late
   Given I am authenticated as a valid appellant
+  Then I click continue
   When I click on Home office details
   And I enter "A1234567" as the Office ref number and click Save and continue
   And I enter an out of time letter sent date and click Save and continue
@@ -15,14 +16,26 @@ Scenario: Explain the reason why my appeal is late
   And I pick "Angola" from the Nationalities drop down and click continue
   And I type "W1W 7RT" as my postcode and click Find address
   And I choose the first address from the dropdown list and click continue
-  And I click Save and continue
+  And I click "Save and continue" button
   And I click the contact details link
-  And I check the Text message option and type "07899999999" as my phone number and click Save and continue
+  And I check the "Text message" option
+  And I enter text message number "07899999999"
+  And I click "Save and continue" button
   And I click on the type-of-appeal link
   And I click on Protection as my type of appeal and click Save and continue
   And I click on the check and send your appeal link
   Then I should see late appeal page
 
-  When I enter "A reason for being late" as the reason for being late and click Save and continue
-  And I click on the check and send your appeal link
+  When I click "Save and continue" button
+  Then I should see error summary
+
+  When I enter "A reason for being late" as the reason for being late
+  And I choose a file that is "INVALID_TOO_BIG" and click the "Save and continue" button
+  Then I should see error summary
+
+  When I choose a file that is "INVALID_FORMAT" and click the "Save and continue" button
+  Then I should see error summary
+
+  When I choose a file that is "VALID" and click the "Save and continue" button
   Then I should be taken to the check-and-send page
+

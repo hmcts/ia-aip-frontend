@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
-import { yesOrNoRequiredValidation } from '../utils/fields-validations';
+import { yesOrNoRequiredValidation } from '../utils/validations/fields-validations';
 
 function getPreviousPageLink(questionId) {
   return questionId === '0' ? paths.start : `${paths.eligibility.questions}?id=${_.toNumber(questionId) - 1}`;
@@ -63,9 +63,6 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
     req.session.eligibility[questionId] = { answer };
 
     let nextQuestionId = _.toNumber(questionId) + 1;
-    if (i18n.eligibility[nextQuestionId] && i18n.eligibility[nextQuestionId].skipIfPrevious && i18n.eligibility[nextQuestionId].skipIfPrevious === answer) {
-      nextQuestionId++;
-    }
     const isLastQuestion = nextQuestionId === i18n.eligibility.length;
 
     const nextPage = isEligibilityQuestion(questionId, answer) ?

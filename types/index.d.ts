@@ -20,15 +20,28 @@ interface ValidationErrors {
   [key: string]: ValidationError;
 }
 
+interface Evidences {
+  [key: string]: Evidence;
+}
+
 interface Evidence {
+  id?: string;
   url: string;
   name: string;
-  description?: string;
+}
+
+interface DocumentUploadResponse {
+  id: string;
+  url: string;
+  name: string;
 }
 
 interface Appeal {
+  appealStatus?: string;
+  appealCreatedDate?: string;
+  appealLastModified?: string;
   application: AppealApplication;
-  caseBuilding: CaseBuilding;
+  reasonsForAppeal: ReasonsForAppeal;
   hearingRequirements: HearingRequirements;
 }
 
@@ -41,7 +54,7 @@ interface AppealDate {
 interface AppealApplication {
   homeOfficeRefNumber: string;
   dateLetterSent: AppealDate;
-  appealType: string | string[];
+  appealType: string;
   isAppealLate: boolean;
   lateAppeal?: {
     reason?: string;
@@ -75,9 +88,10 @@ interface AppealApplication {
   isEdit?: boolean;
 }
 
-interface CaseBuilding {
-  [key: string]: any;
-  decision: string;
+interface ReasonsForAppeal {
+  applicationReason: string;
+  evidences?: Evidences;
+  isEdit?: boolean;
 }
 
 interface HearingRequirements {

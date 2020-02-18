@@ -112,30 +112,6 @@ describe('Eligibility Controller', () => {
       expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.questions}?id=1`);
     });
 
-    it('redirects to next question if answer eligible without skip', () => {
-      req.body = {
-        questionId: '6',
-        answer: 'yes'
-      };
-      req.session.eligibility = {};
-
-      eligibilityQuestionPost(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.questions}?id=7`);
-    });
-
-    it('redirects to next question with skip', () => {
-      req.body = {
-        questionId: '6',
-        answer: 'no'
-      };
-      req.session.eligibility = {};
-
-      eligibilityQuestionPost(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.eligible}?id=6`);
-    });
-
     it('redirects to ineligible page if answer ineligible', () => {
       req.body = {
         questionId: '0',

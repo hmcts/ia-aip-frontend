@@ -38,12 +38,14 @@ async function createUser() {
 }
 
 async function signInHelper() {
-  if (process.env.NODE_ENV !== 'development') {
+  const environment: string = process.env.NODE_ENV;
+  if (environment !== ('test' || 'development')) {
     const userDetails = await createUser();
     I.fillField('#username', userDetails.email);
-    I.fillField('#password',userDetails.password);
+    I.fillField('#password', userDetails.password);
   }
-  I.click('.button');
+  I.click('Sign in');
+  I.wait(5);
 }
 
 function signInForUser(email: string) {

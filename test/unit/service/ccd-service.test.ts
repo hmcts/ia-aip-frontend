@@ -1,6 +1,6 @@
 import rp from 'request-promise';
+import { SecurityHeaders } from '../../../app/service/authentication-service';
 import { CcdService, Events } from '../../../app/service/ccd-service';
-import { SecurityHeaders } from '../../../app/service/getHeaders';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('idam-service', () => {
@@ -100,7 +100,7 @@ describe('idam-service', () => {
       });
 
       const submitUpdateCaseStub = sinon.stub(ccdService, 'submitUpdateAppeal');
-      const caseData = { journeyType: 'AIP' };
+      const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
       submitUpdateCaseStub.withArgs(userId, caseId, headers, {
         event: {
           id: 'eventId',
@@ -114,7 +114,8 @@ describe('idam-service', () => {
 
       const caseDetails = await ccdService.updateAppeal(Events.EDIT_APPEAL, userId, {
         id: caseId,
-        case_data: caseData
+        state: 'appealStarted',
+        case_data: caseData as CaseData
       }, headers);
 
       expect(caseDetails).eq(expectedResult);

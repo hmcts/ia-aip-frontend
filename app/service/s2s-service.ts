@@ -14,6 +14,7 @@ const microServiceName = config.get('s2s.microserviceName');
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
+
 interface IS2SService {
   buildRequest: () => {};
   requestServiceToken: () => void;

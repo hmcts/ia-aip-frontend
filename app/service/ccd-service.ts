@@ -1,7 +1,7 @@
 import config from 'config';
 import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
-import { SecurityHeaders } from './getHeaders';
+import { SecurityHeaders } from './authentication-service';
 
 const ccdBaseUrl = config.get('ccd.apiUrl');
 const jurisdictionId = config.get('ccd.jurisdictionId');
@@ -12,23 +12,9 @@ const logLabel: string = getLogLabel(__filename);
 
 export const Events = {
   EDIT_APPEAL: { id: 'editAppeal', summary: 'Update appeal case AIP', description: 'Update appeal case AIP' },
-  SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit Appeal case AIP', description: 'Submit Appeal case AIP' }
+  SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit appeal case AIP', description: 'Submit Appeal case AIP' },
+  SUBMIT_REASONS_FOR_APPEAL: { id: 'submitReasonsForAppeal', summary: 'Submits Reasons for appeal case AIP', description: 'Submits Reasons for appeal case AIP' }
 };
-
-interface CcdCaseDetails {
-  id: string;
-  case_data: CaseData;
-}
-
-interface CaseData {
-  appellantTitle?: string;
-  appellantGivenNames?: string;
-  appellantFamilyName?: string;
-  appellantDateOfBirth?: string;
-  homeOfficeReferenceNumber?: string;
-  homeOfficeDecisionDate?: string;
-  journeyType: string;
-}
 
 interface StartEventResponse {
   event_id: string;
@@ -43,7 +29,7 @@ interface Event {
 
 interface SubmitEventData {
   event: Event;
-  data: CaseData;
+  data: Partial<CaseData>;
   event_token: string;
   ignore_warning: boolean;
 }
@@ -105,6 +91,14 @@ class CcdService {
     );
   }
 
+  retrieveCaseHistory(userId: string, headers: SecurityHeaders, caseId: string): Promise<CcdCaseDetails[]> {
+    return rp.get(this.createOptions(
+      userId,
+      headers,
+      `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`)
+    );
+  }
+
   async createCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     const startEventResponse = await this.startCreateCase(userId, headers);
 
@@ -124,7 +118,7 @@ class CcdService {
   }
 
   async updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
-    logger.trace(`Received call to update appeal with event '${event.id}'`, logLabel);
+    logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${updatedCase.id}' `, logLabel);
     const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers);
     logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
 
@@ -145,6 +139,9 @@ class CcdService {
     const cases = await this.loadCasesForUser(userId, headers);
     if (cases.length > 0) {
       logger.trace(`found [${cases.length}] cases`, logLabel);
+
+      // TODO: Retrieve history once endpoint is enabled and add to session.
+      // const history = await this.retrieveCaseHistory(userId, headers, cases[0].id);
       return cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);
@@ -155,6 +152,5 @@ class CcdService {
 }
 
 export {
-  CcdService,
-  CcdCaseDetails
+  CcdService
 };

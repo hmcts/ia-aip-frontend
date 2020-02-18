@@ -4,7 +4,7 @@ import {
   getCheckAndSend,
   postCheckAndSend,
   setupCheckAndSendController
-} from '../../../app/controllers/check-and-send';
+} from '../../../app/controllers/appeal-application/check-and-send';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
@@ -88,7 +88,11 @@ describe('Check and Send Controller', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
-      session: {} as any,
+      session: {
+        appeal: {
+          status: 'appealStarted'
+        }
+      } as any,
       cookies: {},
       idam: {
         userDetails: {}
@@ -100,7 +104,7 @@ describe('Check and Send Controller', () => {
       } as any
     } as Partial<Request>;
 
-    updateAppealService = { submitEvent: sandbox.stub() };
+    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'appealSubmitted' }) };
 
     res = {
       render: sandbox.stub(),
@@ -124,7 +128,7 @@ describe('Check and Send Controller', () => {
     expect(routerPOSTStub).to.have.been.calledWith(paths.checkAndSend);
   });
 
-  it('getCheckAndSend should render check-and-send.njk', () => {
+  it('getCheckAndSend should render check-and-send-page.njk', () => {
     req.session.appeal = createDummyAppealApplication();
     getCheckAndSend(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk');
@@ -159,6 +163,7 @@ describe('Check and Send Controller', () => {
 
     await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+    expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
     expect(res.redirect).to.have.been.calledOnce.calledWith(paths.confirmation);
   });
 

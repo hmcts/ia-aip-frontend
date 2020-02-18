@@ -6,6 +6,8 @@
 {% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
 
 {% set serviceName = i18n.serviceName %}
 {% set serviceUrl = i18n.serviceUrl %}
@@ -20,7 +22,6 @@
 {% endmacro %}
 
 {% macro saveButtons() %}
-
   <div class="buttons__container">
     {{ govukButton({
       name: 'saveAndContinue',
@@ -58,7 +59,7 @@
 {% endmacro %}
 
 {% macro contactUsErrorLink() %}
-  {{ i18n.components.contactUsErrorLink.link | safe }}
+  {{ i18n.components.contactUsErrorLink.linsonk | safe }}
 {% endmacro %}
 
 {% block head %}
@@ -113,3 +114,40 @@
   <script src="/all.js"></script>
 
 {% endblock %}
+
+
+{% macro radioButtons(legendText, hintText, errorMessage) %}
+  {{ govukRadios({
+    classes: "govuk-radios--inline",
+    name: "answer",
+    fieldset: {
+      legend: {
+        text: legendText,
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--xl"
+      }
+    },
+    hint: {
+      text: hintText
+    },
+    errorMessage: {
+      text: errorMessage
+    } if (errorMessage),
+    items: [
+      {
+        value: "yes",
+        text: "Yes"
+      },
+      {
+        value: "no",
+        text: "No"
+      }
+    ]
+  }) }}
+{% endmacro %}
+
+{% macro continueButton() %}
+  {{ govukButton({
+    text: "Continue"
+  }) }}
+{% endmacro %}

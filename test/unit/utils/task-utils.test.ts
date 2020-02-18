@@ -4,6 +4,7 @@ import { expect, sinon } from '../../utils/testUtils';
 describe('getStatus', () => {
 
   const appeal: Appeal = {
+    appealStatus: 'appealStarted',
     application: {
       homeOfficeRefNumber: 'reference no',
       appealType: null,
@@ -50,8 +51,8 @@ describe('getStatus', () => {
       },
       addressLookup: {}
     },
-    caseBuilding: {
-      decision: null
+    reasonsForAppeal: {
+      applicationReason: null
     },
     hearingRequirements: {}
   };
@@ -147,7 +148,7 @@ describe('getStatus', () => {
   });
 
   it('should update status typeOfAppeal as completed', () => {
-    appeal.application.appealType = ['protection'];
+    appeal.application.appealType = 'protection';
     status.typeOfAppeal = {
       ...status.typeOfAppeal,
       completed: true,

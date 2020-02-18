@@ -1,5 +1,6 @@
 import config from 'config';
 import { Request, Response } from 'express';
+import * as _ from 'lodash';
 import { paths } from '../paths';
 
 const appPort = config.get('node.port');
@@ -20,9 +21,16 @@ export function getIdamRedirectUrl(req: Request): string {
  * @param redirectUrl the page to be redirected if action is not an edit
  */
 export function getConditionalRedirectUrl(req: Request, res: Response, redirectUrl: string) {
-  if (req.session.appeal.application.isEdit === true) {
+
+  if (_.has(req.session, 'appeal.application.isEdit')
+    && req.session.appeal.application.isEdit === true) {
     req.session.appeal.application.isEdit = false;
     return res.redirect(paths.checkAndSend);
+  }
+  if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
+    && req.session.appeal.reasonsForAppeal.isEdit === true) {
+    req.session.appeal.reasonsForAppeal.isEdit = false;
+    return res.redirect(paths.reasonsForAppeal.checkAndSend);
   }
   return res.redirect(redirectUrl);
 }

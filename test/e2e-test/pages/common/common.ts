@@ -184,5 +184,14 @@ module.exports = {
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
     });
+
+    Then(/^I click continue$/, async () => {
+      await I.click('Continue');
+    });
+
+    Given(/^I am on the "([^"]*)" page$/, async (key: string) => {
+      await I.seeInCurrentUrl(`${PATHS[key]}`);
+      await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
+    });
   }
 };

@@ -4,9 +4,17 @@ interface SupportingDocument {
   document_binary_url: string;
 }
 
+interface CcdCaseDetails {
+  id: string;
+  state: string;
+  case_data: CaseData;
+  created_date?: string;
+  last_modified?: string;
+}
+
 interface CaseData {
   journeyType: string;
-  appealType: string | string[];
+  appealType: string;
   homeOfficeReferenceNumber: string;
   homeOfficeDecisionDate: string;
   appellantGivenNames: string;
@@ -19,6 +27,8 @@ interface CaseData {
   submissionOutOfTime: 'Yes' | 'No';
   applicationOutOfTimeExplanation: string;
   applicationOutOfTimeDocument: SupportingDocument;
+  reasonsForAppealDecision: string;
+  reasonsForAppealDocuments: SupportingEvidenceCollection[];
 }
 
 interface Nationality {
@@ -38,8 +48,13 @@ interface CCDAddress {
 }
 
 interface SubscriptionCollection {
-  id: number;
+  id?: number;
   value: Subscription;
+}
+
+interface SupportingEvidenceCollection {
+  id?: number;
+  value: SupportingDocument;
 }
 
 interface Subscription {

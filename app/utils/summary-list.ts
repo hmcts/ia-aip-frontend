@@ -15,11 +15,11 @@ export function addSummaryRow(key: string, values: (number | string | string[])[
       html: values.filter(v => v !== '' || undefined).join(separator)
     },
     actions: {
-      items: [
-        {
-          href: href,
-          text: i18n.common.links.change
-        }
+      items: [ href ?
+      {
+        href: href,
+        text: i18n.common.links.change
+      } : null
       ]
     }
   };

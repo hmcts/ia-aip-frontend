@@ -26,7 +26,9 @@ function createApp() {
   configureS2S(app);
 
   app.locals.i18n = internationalization;
-  if (environment !== 'test') app.use(logRequestMiddleware);
+  if (environment !== 'test') {
+    app.use(logRequestMiddleware);
+  }
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());

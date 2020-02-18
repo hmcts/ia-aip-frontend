@@ -1,4 +1,4 @@
-import idamExpressMiddleware from '@hmcts/div-idam-express-middleware';
+import idamExpressMiddleware from '@hmcts/ia-idam-express-middleware';
 import { NextFunction, Request, Response, Router } from 'express';
 import { idamConfig } from '../config/idam-config';
 import { checkSession, initSession } from '../middleware/session-middleware';

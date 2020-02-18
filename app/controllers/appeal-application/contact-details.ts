@@ -67,8 +67,7 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       return getConditionalRedirectUrl(req, res, paths.taskList);
 
-    } catch
-      (error) {
+    } catch (error) {
       next(error);
     }
   };

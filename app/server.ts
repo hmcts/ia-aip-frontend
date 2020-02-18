@@ -12,7 +12,7 @@ const port: number | string = process.env.PORT || 3000;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')

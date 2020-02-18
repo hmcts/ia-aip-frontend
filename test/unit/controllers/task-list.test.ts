@@ -47,7 +47,7 @@ describe('Task List Controller', () => {
               }
             }
           } as Partial<AppealApplication>,
-          caseBuilding: {},
+          reasonsForAppeal: {},
           hearingRequirements: {}
         } as Appeal
       } as Partial<Express.Session>,

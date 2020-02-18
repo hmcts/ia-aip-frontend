@@ -32,7 +32,7 @@ describe('Home Office Details Controller', function () {
           application: {
             lateAppeal: {}
           },
-          caseBuilding: {},
+          reasonsForAppeal: {},
           hearingRequirements: {}
         } as Appeal
       } as Partial<Express.Session>,

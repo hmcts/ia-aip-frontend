@@ -1,6 +1,5 @@
 import config from 'config';
 import { Request } from 'express';
-import * as fs from 'fs';
 import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';

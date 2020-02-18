@@ -14,7 +14,7 @@ interface CcdCaseDetails {
 
 interface CaseData {
   journeyType: string;
-  appealType: string | string[];
+  appealType: string;
   homeOfficeReferenceNumber: string;
   homeOfficeDecisionDate: string;
   appellantGivenNames: string;
@@ -27,6 +27,8 @@ interface CaseData {
   submissionOutOfTime: 'Yes' | 'No';
   applicationOutOfTimeExplanation: string;
   applicationOutOfTimeDocument: SupportingDocument;
+  reasonsForAppealDecision: string;
+  reasonsForAppealDocuments: SupportingEvidenceCollection[];
 }
 
 interface Nationality {
@@ -46,8 +48,13 @@ interface CCDAddress {
 }
 
 interface SubscriptionCollection {
-  id: number;
+  id?: number;
   value: Subscription;
+}
+
+interface SupportingEvidenceCollection {
+  id?: number;
+  value: SupportingDocument;
 }
 
 interface Subscription {

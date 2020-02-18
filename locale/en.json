@@ -18,6 +18,11 @@
     "links": {
       "change": "Change",
       "delete": "Delete"
+    },
+    "cya": {
+      "questionRowTitle": "Question",
+      "answerRowTitle": "Answer",
+      "supportingEvidenceRowTitle": "Supporting evidence"
     }
   },
   "pages": {
@@ -187,7 +192,7 @@
         "panel": "Your appeal details has been sent"
       }
     },
-    "wrongHomeOfficeDecision": {
+    "reasonForAppeal": {
       "title": "Home Office Decision",
       "heading": "Why do you think the Home Office decision is wrong?",
       "usefulInfo": "It may be helpful to look at the <a class=\"evidence-list__link\" href='#'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
@@ -200,6 +205,11 @@
       "bulletFive": "Include supporting evidence where you can. <b>You can do this on the next page</b>",
       "needHelp": "If you need help",
       "bulletLink": "Find organisations that can help you with your appeal"
+    },
+    "reasonForAppealCYA": {
+      "rowTitles": {
+        "supportingEvidence": "<b>Supporting evidence</b>"
+      }
     },
     "caseBuildingSuccess": {
       "titleText": "Your answer has been sent",

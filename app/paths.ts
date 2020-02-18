@@ -10,6 +10,7 @@ const paths = {
   redirectUrl: '/redirectUrl',
   start: '/start',
   confirmation: '/confirmation',
+  tribunalCaseworker: '/caseworker',
   personalDetails: {
     name: '/personal-details/name',
     nationality: '/personal-details/nationality',

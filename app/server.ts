@@ -5,12 +5,17 @@ import { createApp } from './app';
 import { setupSecrets } from './setupSecrets';
 import Logger, { getLogLabel } from './utils/logger';
 
-setupSecrets();
+const config = setupSecrets();
 
 const app: express.Application = createApp();
 const port: number | string = process.env.PORT || 3000;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
+
+logger.trace('ENV:', logLabel);
+logger.trace(JSON.stringify(process.env, null, 2), logLabel);
+logger.trace('CONFIG:', logLabel);
+logger.trace(JSON.stringify(config, null, 2), logLabel);
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   https.createServer({

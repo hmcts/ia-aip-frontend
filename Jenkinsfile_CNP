@@ -27,6 +27,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
      envVariable: envVar
     ]
 }
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withPipeline("nodejs", product, component) {
     after('checkout') {sh 'yarn cache clean'}
@@ -35,6 +36,8 @@ withPipeline("nodejs", product, component) {
     installCharts()
     enableAksStagingDeployment()
     disableLegacyDeployment()
+
+    before('securitychecks') { yarnBuilder.yarn('test:audit') }
 
     before("functionalTest") {
         env.IDAM_API_URL = 'http://idam-api.aat.platform.hmcts.net'

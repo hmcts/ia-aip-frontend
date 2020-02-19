@@ -10,6 +10,7 @@ import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureLogger, configureNunjucks, configureS2S } from './app-config';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
+import { isUserAuthenticated } from './middleware/is-user-authenticated';
 import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
 import { filterRequest } from './middleware/xss-middleware';
 import { paths } from './paths';
@@ -51,6 +52,7 @@ function createApp() {
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });
+  app.use(isUserAuthenticated);
   app.use(router);
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
@@ -73,6 +75,7 @@ function configureHelmet(app) {
       fontSrc: [ '\'self\' data:' ],
       scriptSrc: [
         '\'self\'',
+        '\'unsafe-inline\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
         'tagmanager.google.com'

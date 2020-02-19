@@ -50,6 +50,11 @@ const paths = {
     ineligible: '/ineligible',
     questions: '/eligibility',
     eligible: '/eligible'
+  },
+  footer: {
+    cookies: '/cookie-policy',
+    termsAndConditions: '/terms-and-conditions',
+    privacyPolicy: '/privacy-policy'
   }
 };
 export {

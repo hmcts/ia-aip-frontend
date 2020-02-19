@@ -11,7 +11,7 @@ import { setupTaskListController } from './controllers/appeal-application/task-l
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupEligibilityController } from './controllers/eligibility';
-import { setupGuidancePages } from './controllers/guidance-page';
+import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
@@ -51,7 +51,7 @@ const confirmationController = setConfirmationController();
 const outOfTimeController = setupOutOfTimeController({ updateAppealService, documentManagementService });
 const eligibilityController = setupEligibilityController();
 const applicationOverview = setupApplicationOverviewController();
-const GuidancePages = setupGuidancePages();
+const GuidancePages = setupGuidancePagesController();
 
 // Reason for Appeal Controllers
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
@@ -62,6 +62,7 @@ router.use(indexController);
 router.use(healthController);
 router.use(startController);
 router.use(eligibilityController);
+router.use(GuidancePages);
 
 // protected by idam
 router.use(idamController);
@@ -69,7 +70,6 @@ router.use(idamController);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);
 }
-router.use(GuidancePages);
 router.use(taskListController);
 router.use(homeOfficeDetailsController);
 router.use(personalDetailsController);

@@ -1,26 +1,69 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
+import { getGuidancePageText } from '../utils/guidance-page-utils';
 
-function getGuidancePage(req: Request, res: Response, next: NextFunction) {
+function getCaseworkerPage(req: Request, res: Response, next: NextFunction) {
+  const text = getGuidancePageText('caseworker');
   try {
-    // Pass the req.path into the function
     return res.render('guidance-pages/guidance-page.njk',{
-      title: 'What is a Tribunal Caseworker?',
-      titleText: 'A Tribunal Caseworker manages asylum and immigration appeals to make sure everything is ready for the Judge who decides your appeal if there is a hearing.',
-      textAndBullets: [{ title: 'Hi', text: 'Hello' }, { title: 'Hi', text: 'Hello' }, { title: 'Hi', text: 'Hello' }, { title: 'Hi', text: 'Hello' }]
-    });
+      showContactUs: true,
+      previousPage: '/',
+      page: text});
   } catch (e) {
     next(e);
   }
 }
 
-function setupGuidancePages(): Router {
+function getMoreHelpPage(req: Request, res: Response, next: NextFunction) {
+  const text = getGuidancePageText('helpWithAppeal');
+  try {
+    return res.render('guidance-pages/guidance-page.njk',{
+      showContactUs: true,
+      previousPage: '/',
+      page: text});
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getHomeOfficeDocumentsPage(req: Request, res: Response, next: NextFunction) {
+  const text = getGuidancePageText('homeOfficeDocuments');
+  try {
+    return res.render('guidance-pages/guidance-page.njk',{
+      showContactUs: false,
+      previousPage: '/',
+      page: text});
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextFunction) {
+  const text = getGuidancePageText('evidenceToSupportAppeal');
+  try {
+    return res.render('guidance-pages/guidance-page.njk',{
+      showContactUs: true,
+      previousPage: '/',
+      page: text});
+  } catch (e) {
+    next(e);
+  }
+}
+
+function setupGuidancePagesController(): Router {
   const router = Router();
-  router.get(paths.tribunalCaseworker, getGuidancePage);
+  // TODO Add all pages to path and functions
+  router.get(paths.tribunalCaseworker, getCaseworkerPage);
+  router.get(paths.moreHelp, getMoreHelpPage);
+  router.get(paths.homeOfficeDocuments, getHomeOfficeDocumentsPage);
+  router.get(paths.evidenceToSupportAppeal, getEvidenceToSupportAppealPage);
   return router;
 }
 
 export {
-    setupGuidancePages,
-    getGuidancePage
+  setupGuidancePagesController,
+  getEvidenceToSupportAppealPage,
+  getHomeOfficeDocumentsPage,
+  getMoreHelpPage,
+  getCaseworkerPage
 };

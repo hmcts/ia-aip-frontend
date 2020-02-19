@@ -29,7 +29,7 @@
             <p class="govuk-body">{{ paragraph | eval | safe }}</p>
           {% endfor %}
           {% if applicationNextStep.info %}
-            <p class="govuk-body"><b>{{ applicationNextStep.info.title }}</b></p>
+            <p class="govuk-body"><span  class='govuk-body govuk-!-font-weight-bold'> {{ applicationNextStep.info.title }}</span> </p>
             <p class="govuk-body">{{ applicationNextStep.info.url | safe }}</p>
           {% endif %}
           {% if applicationNextStep.cta %}
@@ -42,7 +42,7 @@
       </div>
       <div class="govuk-grid-column-one-third">
         <div class="contact-us-component">
-          <b class="govuk-!-padding-top-2">{{ i18n.pages.overviewPage.contactUs }}</b>
+          <span class="govuk-!-padding-top-2 govuk-heading-s">{{ i18n.pages.overviewPage.contactUs }}</span>
           <p>{{ i18n.pages.overviewPage.askAQuestion }}</p>
           <p class='govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.telephone }}</p>
           <a href='#'

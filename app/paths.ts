@@ -10,7 +10,10 @@ const paths = {
   redirectUrl: '/redirectUrl',
   start: '/start',
   confirmation: '/confirmation',
-  tribunalCaseworker: '/caseworker',
+  tribunalCaseworker: '/tribunal-caseworker',
+  moreHelp: '/appeal-help',
+  evidenceToSupportAppeal: '/supporting-evidence',
+  homeOfficeDocuments: '/home-office-documents',
   personalDetails: {
     name: '/personal-details/name',
     nationality: '/personal-details/nationality',

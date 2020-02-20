@@ -80,11 +80,9 @@ function configureHelmet(app) {
       fontSrc: [ '\'self\' data:' ],
       scriptSrc: [
         '\'self\'',
-        '\'unsafe-inline\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
-        'tagmanager.google.com',
-        'vcc-eu4.8x8.com'
+        'tagmanager.google.com'
       ],
       styleSrc: [
         '\'self\'',

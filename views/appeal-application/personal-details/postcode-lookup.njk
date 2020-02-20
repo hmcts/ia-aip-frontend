@@ -12,6 +12,7 @@
   {% endif %}
   <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.postcodeLookup.heading }}</h1>
   <form method="post" action="/personal-details/postcode-lookup">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     <p class="govuk-body-l">{{ i18n.pages.postcodeLookup.title }}</p>
     <span><b>{{ postcode }}</b> &emsp;
       <a class="govuk-link app-contact-panel__link"

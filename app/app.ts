@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import csurf from 'csurf';
 import expectCt from 'expect-ct';
 import express from 'express';
 import helmet from 'helmet';
@@ -32,6 +33,7 @@ function createApp() {
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());
+  app.use(csurf());
   app.post('*', filterRequest);
 
   if (environment === 'development') {
@@ -42,6 +44,10 @@ function createApp() {
     app.use(wpDevMiddleware);
   }
 
+  app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken();
+    next();
+  });
   app.use(router);
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);
@@ -64,11 +70,9 @@ function configureHelmet(app) {
       fontSrc: [ '\'self\' data:' ],
       scriptSrc: [
         '\'self\'',
-        '\'unsafe-inline\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
-        'tagmanager.google.com',
-        'vcc-eu4.8x8.com'
+        'tagmanager.google.com'
       ],
       styleSrc: [
         '\'self\'',

@@ -14,6 +14,7 @@
   <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>
 
   <form action="/home-office/appeal-late" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukTextarea({
       name: "appeal-late",
       id: "appeal-late",

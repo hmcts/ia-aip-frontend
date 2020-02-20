@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import csurf from 'csurf';
 import expectCt from 'expect-ct';
 import express from 'express';
 import helmet from 'helmet';
@@ -14,6 +15,16 @@ import { filterRequest } from './middleware/xss-middleware';
 import { paths } from './paths';
 import { router } from './routes';
 import { setupSession } from './session';
+
+const unless = function(paths, middleware) {
+  return function(req, res, next) {
+    if (paths.indexOf(req.path) >= 0 && req.method === 'POST') {
+      return next();
+    } else {
+      return middleware(req, res, next);
+    }
+  };
+};
 
 function createApp() {
   const app: express.Application = express();
@@ -32,6 +43,7 @@ function createApp() {
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());
+  app.use(unless([paths.homeOffice.appealLate, paths.reasonsForAppeal.supportingEvidenceUploadFile], csurf({})));
   app.post('*', filterRequest);
 
   if (environment === 'development') {
@@ -42,6 +54,10 @@ function createApp() {
     app.use(wpDevMiddleware);
   }
 
+  app.use(unless([paths.homeOffice.appealLate, paths.reasonsForAppeal.supportingEvidenceUploadFile], (req, res, next) => {
+    res.locals.csrfToken = req.csrfToken();
+    next();
+  }));
   app.use(router);
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);

@@ -60,6 +60,7 @@
   {% endset %}
 
   <form action="/contact-details" method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukCheckboxes({
       idPrefix: "contactDetails",
       name: "selections",

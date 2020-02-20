@@ -21,6 +21,7 @@
   />
 
   <form action="/home-office/details" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
       label: {
         text: i18n.pages.homeOfficePage.homeOfficeReferenceNumberLabel

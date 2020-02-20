@@ -18,6 +18,7 @@
 
   <form action="/case-building/reason-for-appeal/supporting-evidence/upload" method="post"
         enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
         text: i18n.pages.reasonsForAppealUpload.heading,
@@ -61,6 +62,7 @@
     {% endcall %}
   </form>
   <form action="/case-building/reason-for-appeal/supporting-evidence/submit" method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ saveButtons() }}
   </form>
 

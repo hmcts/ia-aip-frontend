@@ -13,6 +13,7 @@
     }) }}
   {% endif %}
   <form method="post" action="/personal-details/nationality">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
         text: i18n.pages.nationality.heading,

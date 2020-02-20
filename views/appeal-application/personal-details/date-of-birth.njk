@@ -11,6 +11,7 @@
     }) }}
   {% endif %}
   <form method="post" action="/personal-details/date-of-birth" type="submit">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% set errorMessage =  errors.day.text if errors.day %}
     {% set errorMessage =  errors.month.text if errors.month else errorMessage %}
     {% set errorMessage =  errors.year.text if errors.year else errorMessage %}

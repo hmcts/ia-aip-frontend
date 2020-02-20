@@ -46,6 +46,7 @@
     "cookie-parser": "^1.4.4",
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^5.2.1",
+    "csurf": "^1.11.0",
     "dompurify": "^2.0.7",
     "dyson": "^3.0.1",
     "expect-ct": "^0.3.0",

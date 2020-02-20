@@ -14,6 +14,7 @@
     {% endif %}
 
     <form action="/eligibility" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <input type="hidden" name="questionId" value="{{ questionId }}">
         {{ govukRadios({
             classes: "govuk-radios--inline",

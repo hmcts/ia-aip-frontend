@@ -8,7 +8,8 @@ Feature: Type iof appeal
     And I have logged in
     And I am on the type of appeal page
     When I click "Save for later" button
-    Then I should see the task-list page
+    Then I am on the overview page
+    Then I click continue
     And I shouldnt be able to click "Check and send your appeal"
 
     Given I am on the type of appeal page
@@ -18,7 +19,8 @@ Feature: Type iof appeal
     Given I am on the type of appeal page
     When I select appeal type Protection
     And I click "Save for later" button
-    Then I should see the task-list page
+    Then I am on the overview page
+    Then I click continue
     And I should be able to click "Check and send your appeal"
 
     Given I am on the type of appeal page

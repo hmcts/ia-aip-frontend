@@ -236,5 +236,9 @@ module.exports = {
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
     });
+
+    Then(/^I am on the overview page$/, async () => {
+      await I.amOnPage(`https://localhost:3000/overview`);
+    });
   }
 };

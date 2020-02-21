@@ -108,7 +108,8 @@ describe('Confirmation Page Controller', () => {
       name: 'Alex Developer',
       applicationNextStep: expectedNextStep,
       history: null,
-      stages: expectedStages
+      stages: expectedStages,
+      saved: false
     });
   });
 

@@ -266,6 +266,7 @@
         "nothingToDo": "Nothing to do next",
         "appealStarted": {
           "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
+          "finishQuestions": "You need to finish telling us about your appeal.",
           "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
         },
         "appealSubmitted": {

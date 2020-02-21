@@ -6,7 +6,15 @@ module.exports = {
     });
 
     When(/^I enter "([^"]*)" as the reason for being late$/, async (reason) => {
-      I.fillField('#appeal-late', reason);
+      await I.fillField('#appeal-late', reason);
+    });
+
+    Then(/^I see "([^"]*)" as my reason for being late$/, async (reason) => {
+      await I.seeInField('textarea', reason);
+    });
+
+    Then('I dont see Uploaded file list', async () => {
+      I.dontSeeElement('.evidence');
     });
   }
 };

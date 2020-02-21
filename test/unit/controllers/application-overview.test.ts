@@ -28,7 +28,7 @@ describe('Confirmation Page Controller', () => {
       } as Partial<Appeal>,
       cookies: {},
       idam: {
-        userDetails: {}
+        userDetails: {} as Partial<IdamDetails>
       },
       app: {
         locals: {
@@ -60,6 +60,7 @@ describe('Confirmation Page Controller', () => {
   it('getApplicationOverview should render application-overview.njk with options', () => {
     req.idam = {
       userDetails: {
+        uid: 'anId',
         forename: 'Alex',
         surname: 'Developer'
       }

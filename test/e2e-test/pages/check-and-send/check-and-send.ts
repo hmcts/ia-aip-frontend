@@ -7,6 +7,9 @@ module.exports = {
       await I.seeInCurrentUrl('check-and-send');
       await I.see('Check your answers', 'h1');
     });
+    Then('I click Reason for late appeal change button', async () => {
+      await I.click('(//a[contains(text(),"Change")])[9]');
+    });
     // When(/^I check the checkbox and click send$/, async () => {});
     // Then(/^I should be taken to the confirmation page$/, async () => {});
   }

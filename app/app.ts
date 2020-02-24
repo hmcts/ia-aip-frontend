@@ -119,6 +119,7 @@ function configureHelmet(app) {
       vibrate: [ '\'none\'' ]
     }
   }));
+  app.use(helmet.noCache());
 }
 
 export {

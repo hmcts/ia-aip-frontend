@@ -25,3 +25,15 @@ export function addSummaryRow(key: string, values: (number | string | string[])[
   };
   return row;
 }
+
+export function addSummaryRowNoChange(key: string, values: (number | string | string[] | any)[], delimiter?: Delimiter) {
+  const separator = delimiter || '';
+  return {
+    key: {
+      text: key
+    },
+    value: {
+      html: values.filter(v => v !== '' || undefined).join(separator)
+    }
+  };
+}

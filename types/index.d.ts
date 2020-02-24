@@ -43,6 +43,7 @@ interface Appeal {
   application: AppealApplication;
   reasonsForAppeal: ReasonsForAppeal;
   hearingRequirements: HearingRequirements;
+  history?: any;
 }
 
 interface AppealDate {

@@ -1,0 +1,12 @@
+{% extends 'layout.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% set pageTitleName = 'Your appeal details' %}
+
+{% block content %}
+    <h1>Your appeal details</h1>
+    {{ govukSummaryList({
+rows: data
+}) }}
+{% endblock %}
+
+

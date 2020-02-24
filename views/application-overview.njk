@@ -1,5 +1,6 @@
 {% extends 'layout.njk' %}
 {% from "components/progress-bar.njk" import progressBar with context %}
+{% from "components/overview-timeline.njk" import timeline %}
 {% set pageTitleName = i18n.pages.overviewPage.title %}
 
 {% block content %}
@@ -39,6 +40,9 @@
             }) }}
           {% endif %}
         </div>
+        {%  if date %}
+        {{ timeline(links, date) }}
+        {% endif %}
       </div>
       <div class="govuk-grid-column-one-third">
         <div class="contact-us-component">

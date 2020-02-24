@@ -284,7 +284,28 @@
           "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>Date TBC</span> to tell you what to do next."
         }
       },
-      "answersBeenSaved": "Your answers have been saved"
+      "answersBeenSaved": "Your answers have been saved",
+      "timeLine": [{
+      "title": "Your appeal argument",
+      "date": "{{ date }}",
+      "text": " - You told us why you think the Home Office decision to refuse your claim is wrong.",
+      "link": [
+        {
+      "title": "What you sent",
+      "text": "Why you think the Home Office is wrong",
+      "href": "/appeal-details"
+    },
+    {
+      "title": "Useful documents",
+      "text": "Home Office documents about your case (PDF)",
+      "href": "/view/home-office-documents"
+    },
+    {
+      "title": "Helpful information",
+      "text": "Understanding your Home Office documents",
+      "href": "/home-office-documents"
+    }]
+}]
     },
     "eligibleStartPage": {
       "newService": "This is a new online service for people appealing an immigration or asylum decision. Because it is a new service, not everyone will be able to use it right now.",

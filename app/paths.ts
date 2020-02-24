@@ -27,7 +27,8 @@ const paths = {
     letterSent: '/home-office/letter-sent',
     appealLate: '/home-office/appeal-late',
     uploadEvidence: '/home-office/upload-evidence',
-    deleteEvidence: '/home-office/delete-evidence'
+    deleteEvidence: '/home-office/delete-evidence',
+    homeOfficeDetails: '/appeal-details'
   },
   reasonsForAppeal: {
     decision: '/case-building/reason-for-appeal',

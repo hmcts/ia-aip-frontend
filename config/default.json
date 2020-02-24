@@ -32,7 +32,7 @@
     "cookie": {
       "secret": "defaultcookiesecret",
       "maxAgeInMs": 1200000,
-      "secure": true
+      "secure": false
     }
   },
   "s2s": {

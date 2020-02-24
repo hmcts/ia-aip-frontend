@@ -15,6 +15,17 @@ const APPEAL_STATE = {
     },
     cta: paths.taskList
   },
+  'appealStartedPartial': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.appealStarted.finishQuestions,
+      i18n.pages.overviewPage.doThisNext.appealStarted.needHomeOfficeDecision
+    ],
+    info: {
+      title: null,
+      url: null
+    },
+    cta: paths.taskList
+  },
   'appealSubmitted': {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent,
@@ -24,6 +35,13 @@ const APPEAL_STATE = {
       title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
       url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
     },
+    cta: null
+  },
+  'reasonsForAppealSubmitted': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
+      i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
+    ],
     cta: null
   }
 };

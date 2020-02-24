@@ -1,4 +1,10 @@
 {
-  "10047_HTTPS Content Available via HTTP_https://ia-aip-frontend-staging.service.core-compute-aat.internal/assets/images/govuk-apple-touch-icon-167x167.png_GET": "ignore",
-  "https://ia-aip-frontend-staging.service.core-compute-aat.internal/Copy (2) of ruxitagentjs_ICA2SVfqrux_10185200219132536.js": "ignore"
+  "10053_Apache Range Header DoS (CVE-2011-3192)_https://ia-aip-frontend-staging.service.core-compute-aat.internal/main.css_GET": "ignore",
+  "10053_Apache Range Header DoS (CVE-2011-3192)_https://ia-aip-frontend-staging.service.core-compute-aat.internal/assets/images/govuk-apple-touch-icon.png_GET": "ignore",
+  "10053_Apache Range Header DoS (CVE-2011-3192)_https://ia-aip-frontend-staging.service.core-compute-aat.internal/all.js_GET": "ignore",
+  "10053_Apache Range Header DoS (CVE-2011-3192)_https://ia-aip-frontend-staging.service.core-compute-aat.internal/assets/images/govuk-apple-touch-icon-152x152.png_GET": "ignore",
+  "10053_Apache Range Header DoS (CVE-2011-3192)_https://ia-aip-frontend-staging.service.core-compute-aat.internal/assets/images/govuk-apple-touch-icon-180x180.png_GET": "ignore",
+  "10053_Apache Range Header DoS (CVE-2011-3192)_https://ia-aip-frontend-staging.service.core-compute-aat.internal/assets/images/favicon.ico_GET": "ignore",
+  "10053_Apache Range Header DoS (CVE-2011-3192)_https://ia-aip-frontend-staging.service.core-compute-aat.internal/assets/images/govuk-mask-icon.svg_GET": "ignore",
+  "10053_Apache Range Header DoS (CVE-2011-3192)_https://ia-aip-frontend-staging.service.core-compute-aat.internal/assets/images/govuk-apple-touch-icon-167x167.png_GET": "ignore"
 }

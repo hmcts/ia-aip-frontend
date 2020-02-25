@@ -9,6 +9,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "components/header.njk" import header with context %}
+{% from "components/timeout-modal.njk" import timeoutModal with context %}
 
 {% set serviceName = i18n.serviceName %}
 {% set serviceUrl = i18n.serviceUrl %}
@@ -133,6 +134,7 @@
       "</a>"
     ] | join() %}
 
+  {{ timeoutModal() }}
   {{ govukPhaseBanner({
     tag: {
       text: i18n.phaseBanner.version

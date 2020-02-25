@@ -557,6 +557,15 @@
         ]
       }
     },
+    "sessionEnded": {
+      "pageTitle": "Your session has ended",
+      "title": "Sorry, your session has ended",
+      "description": [
+        "Your session automatically ends if you don't use this service for 20 minutes.",
+        "Any information you did not save has been deleted. We do this for your security."
+      ],
+      "cta": "Sign in to continue"
+    },
     "termsAndConditions": {
       "title": "Terms and conditions",
       "description": "By using this service you’re agreeing to the following terms of use. This includes the <a href='/privacy-policy'>privacy policy</a>.",
@@ -1018,6 +1027,15 @@
         "title": "Your appeal<br/> decision",
         "ariaLabel": "Your appeal decision stage"
       }
+    },
+    "timeoutModal": {
+      "title": "This service will time out soon",
+      "initialDescription": "If you do not respond in 2:00 minutes any information you have not saved will be deleted to protect your personal information",
+      "description": [
+        "If you do not respond in", 
+        "minutes any information you have not saved will be deleted to protect your personal information"
+      ],
+      "cta": "Continue with appeal"
     }
   },
   "appealTypes": {

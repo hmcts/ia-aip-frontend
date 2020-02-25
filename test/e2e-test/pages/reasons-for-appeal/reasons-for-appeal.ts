@@ -28,15 +28,8 @@ module.exports = {
     When(/^I click the back button on reasons for appeal$/, async () => {
       await I.click('.govuk-back-link');
     });
-
-    When(/^I select Yes and click continue$/, async (selection: string) => {
-      await I.checkOption('#answer');
-      await I.click('Continue');
-    });
-
-    When(/^I select No and click continue$/, async (selection: string) => {
-      await I.checkOption('#answer-2');
-      await I.click('Continue');
+    Then(/^I should be taken to the appellant timeline$/, async () => {
+      await I.seeInCurrentUrl('appellant-timeline');
     });
   }
 };

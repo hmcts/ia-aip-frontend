@@ -59,6 +59,10 @@ const paths = {
   detailsViewers: {
     document: '/view/document',
     homeOfficeDocuments: '/view/home-office-documents'
+  },
+  session: {
+    extendSession: '/extend-session',
+    sessionExpired: '/session-ended'
   }
 };
 export {

@@ -19,6 +19,7 @@ import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
+import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -55,6 +56,7 @@ const eligibilityController = setupEligibilityController();
 const applicationOverview = setupApplicationOverviewController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
+const sessionController = setupSessionController();
 
 // Reason for Appeal Controllers
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
@@ -90,6 +92,7 @@ router.use(applicationOverview);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
+router.use(sessionController);
 
 router.use(detailViewersController);
 

@@ -27,6 +27,7 @@ function createApp() {
   configureNunjucks(app);
   configureS2S(app);
 
+  app.set('trust proxy', 1);
   app.locals.i18n = internationalization;
   app.locals.paths = paths;
   if (environment !== 'test') app.use(logRequestMiddleware);

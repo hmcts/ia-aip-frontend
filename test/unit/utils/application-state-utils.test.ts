@@ -91,7 +91,7 @@ describe('application-state-utils', () => {
         deadline: undefined,
         descriptionParagraphs: [
           'You have told us why you think the Home Office decision is wrong.',
-          'A Tribunal Caseworker will contact you by <b>Date TBC</b> to tell you what to do next.'
+          'A Tribunal Caseworker will contact you by <span class=\'govuk-body govuk-!-font-weight-bold\'>Date TBC</span> to tell you what to do next.'
         ]
       });
     });

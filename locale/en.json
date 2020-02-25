@@ -277,7 +277,7 @@
         },
         "reasonsForAppealSubmitted": {
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
-          "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>Date TBC</span>to tell you what to do next."
+          "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>Date TBC</span> to tell you what to do next."
         }
       },
       "answersBeenSaved": "Your answers have been saved"

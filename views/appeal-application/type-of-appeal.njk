@@ -28,6 +28,7 @@
   {% endfor %}
 
   <form action="/type-of-appeal" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukRadios({
       idPrefix: "appealType",
       id: "appealType",

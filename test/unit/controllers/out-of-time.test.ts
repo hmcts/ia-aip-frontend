@@ -1,13 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   getAppealLate,
-  getAppealLateDeleteFile,
   postAppealLate,
+  postAppealLateDeleteFile,
   setupOutOfTimeController
 } from '../../../app/controllers/appeal-application/out-of-time';
 import { paths } from '../../../app/paths';
+import { Events } from '../../../app/service/ccd-service';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
@@ -29,7 +31,7 @@ describe('Out of time controller', () => {
           application: {
             lateAppeal: {}
           },
-          caseBuilding: {},
+          reasonsForAppeal: {},
           hearingRequirements: {}
         } as Appeal
       } as Partial<Express.Session>,
@@ -99,6 +101,16 @@ describe('Out of time controller', () => {
       url: '#'
     };
 
+    it('should not validate when save for later and redirect to overview', async () => {
+      req.body = {
+        'appeal-late': '',
+        'saveForLater': 'saveForLater'
+      };
+
+      await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.overview);
+    });
+
     it('should validate and upload a file and redirect to check and send page', async () => {
       const whyAmLate = 'My explanation why am late';
       req.body['appeal-late'] = whyAmLate;
@@ -116,6 +128,33 @@ describe('Out of time controller', () => {
 
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(fileObject);
+      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+    });
+
+    it('should validate, delete previous evidence, upload new evidence and redirect to check and send page', async () => {
+      const whyAmLate = 'My explanation why am late';
+      const evidence: Evidence = {
+        url: 'an-url',
+        name: 'filename'
+      };
+      req.body['appeal-late'] = whyAmLate;
+      req.file = file as Express.Multer.File;
+      req.session.appeal.application.lateAppeal.evidence = evidence;
+      const documentUploadResponse: DocumentUploadResponse = {
+        id: '0000-file.png',
+        url: '#',
+        name: 'file.png'
+      };
+
+      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
+
+      await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidence.url);
+      expect(documentManagementService.uploadFile).to.have.been.calledWith(req);
+      expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(fileObject);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
     });
 
@@ -146,14 +185,18 @@ describe('Out of time controller', () => {
         key: 'uploadFile',
         text: 'The selected file must be smaller than 0.001MB'
       };
+      const evidence: Evidence = {
+        url: 'an-url',
+        name: 'filename'
+      };
       req.body['appeal-late'] = 'My explanation why am late';
+      req.session.appeal.application.lateAppeal.evidence = evidence;
       res.locals.multerError = expectedError.text;
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
-        evidence: null,
-        evidenceCTA: paths.homeOffice.deleteEvidence,
+        evidence,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.taskList
@@ -173,7 +216,6 @@ describe('Out of time controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
         evidence: null,
-        evidenceCTA: paths.homeOffice.deleteEvidence,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.taskList
@@ -188,21 +230,48 @@ describe('Out of time controller', () => {
     });
   });
 
-  describe('getAppealLateDeleteFile', () => {
+  describe('postAppealLateDeleteFile', () => {
 
-    it('Should delete successfully when click on delete link and redirect to the appeal late page', async () => {
-      req.session.appeal.application.lateAppeal.evidence = {
+    it('Should delete successfully when click on delete link, fail validation and render with errors', async () => {
+      const evidence = {
         id: 'someEvidenceId',
         url: 'someUrlToTheFile',
         name: 'name.png'
       };
+      const expectedError: ValidationError = {
+        href: '#appeal-late',
+        key: 'appeal-late',
+        text: i18n.validationErrors.emptyReasonAppealIsLate
+      };
+      req.session.appeal.application.lateAppeal.evidence = { ...evidence };
 
-      await getAppealLateDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidence.url);
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.homeOffice.appealLate);
+      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk', {
+        appealLateReason: undefined,
+        error: { 'appeal-late': expectedError },
+        errorList: [ expectedError ],
+        previousPage: paths.taskList
+      });
     });
 
-    it('getAppealLateDeleteFile should catch exception and call next with the error', async () => {
+    it('Should delete successfully when click on delete link, pass validation and redirect to appeal late page', async () => {
+      const evidence = {
+        id: 'someEvidenceId',
+        url: 'someUrlToTheFile',
+        name: 'name.png'
+      };
+      req.session.appeal.application.lateAppeal.evidence = { ...evidence };
+      req.body['appeal-late'] = 'a reason for being late';
+      await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidence.url);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('postAppealLateDeleteFile should catch exception and call next with the error', async () => {
       req.session.appeal.application.lateAppeal.evidence = {
         id: 'someEvidenceId',
         url: 'someUrlToTheFile',
@@ -210,8 +279,8 @@ describe('Out of time controller', () => {
       };
 
       const error = new Error('an error');
-      res.redirect = sandbox.stub().throws(error);
-      await getAppealLateDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      res.render = sandbox.stub().throws(error);
+      await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

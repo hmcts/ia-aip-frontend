@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { daysToWaitUntilContact } from '../../../../app/controllers/appeal-application/confirmation-page';
 import {
-    getConfirmationPage,
-    setupReasonsForAppealController
-} from '../../../../app/controllers/case-building/reason-for-appeal';
+  getConfirmationPage,
+  setupReasonsForAppealController
+} from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
@@ -24,8 +24,7 @@ describe('Confirmation Page Controller', () => {
     req = {
       session: {
         appeal: {
-          application: {
-            contactDetails: {}
+          reasonsForAppeal: {
           }
         }
       } as Partial<Appeal>,
@@ -64,7 +63,7 @@ describe('Confirmation Page Controller', () => {
 
   it('getConfirmationPage should render confirmation.njk', () => {
     getConfirmationPage(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('case-building/reasons-for-appeal/confirmation-page.njk', {
+    expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/confirmation-page.njk', {
       date: daysToWaitUntilContact(14)
     });
   });

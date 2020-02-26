@@ -41,7 +41,7 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   application: AppealApplication;
-  caseBuilding: CaseBuilding;
+  reasonsForAppeal: ReasonsForAppeal;
   hearingRequirements: HearingRequirements;
 }
 
@@ -54,7 +54,7 @@ interface AppealDate {
 interface AppealApplication {
   homeOfficeRefNumber: string;
   dateLetterSent: AppealDate;
-  appealType: string | string[];
+  appealType: string;
   isAppealLate: boolean;
   lateAppeal?: {
     reason?: string;
@@ -88,10 +88,10 @@ interface AppealApplication {
   isEdit?: boolean;
 }
 
-interface CaseBuilding {
-  [key: string]: any;
-  decision: string;
+interface ReasonsForAppeal {
+  applicationReason: string;
   evidences?: Evidences;
+  isEdit?: boolean;
 }
 
 interface HearingRequirements {
@@ -103,4 +103,10 @@ interface AppealType {
   title: string;
   examples: string;
   checked?: boolean;
+}
+
+interface IdamDetails {
+  uid: string;
+  forename: string;
+  surname: string;
 }

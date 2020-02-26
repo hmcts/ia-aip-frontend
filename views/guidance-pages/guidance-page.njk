@@ -1,0 +1,39 @@
+{% extends '../layout.njk' %}
+{% set pageTitleName = page.title %}
+
+{% block content %}
+<div class="govuk-width-container">
+    <h1 class="gov-heading-l">{{ page.title }}</h1>
+    <h2 class="govuk-body-l">{{ page.titleText | safe if page.titleText}}</h2>
+        {% for item in page.textAndBullets %}
+        {% if item.smallTitle %}
+        <h2 class="govuk-heading-s">{{ item.smallTitle }}</h2>
+        {% endif %}
+        <p>{{ item.title | safe }}</p>
+        <ul class="govuk-list govuk-list--bullet">
+            {% for bullet in item.bullets %}
+            <li>{{ bullet | safe }}</li>
+            {% endfor %}
+            {% for bullet in item.bulletsSpacing %}
+                <li class="guidance-li">{{ bullet | safe }}</li>
+            {% endfor %}
+        </ul>
+        <p>{{ item.text | safe }}</p>
+            {% if item.desc %}
+                <p>{{ item.desc | safe }}</p>
+            {% endif %}
+            {% if item.textLink %}
+                <div class="guidance-div">
+                    <a class="govuk-link" href="{{ item.textLink }}">{{ item.textLink }}</a>
+                </div>
+            {% endif %}
+            {% if item.link %}
+                <div class="appeal-help-div">
+                    <a class="govuk-link"  href="{{ item.link }}">{{ item.link }}</a>
+                </div>
+            {% endif %}
+        {% endfor %}
+</div>
+    {{ contactUs()
+    if showContactUs }}
+{% endblock %}

@@ -1,7 +1,7 @@
 import {
   appellantNamesValidation,
   contactDetailsValidation,
-  dateValidation,
+  dateValidation, DOBValidation,
   emailValidation,
   homeOfficeNumberValidation,
   mobilePhoneValidation,
@@ -46,7 +46,7 @@ describe('fields-validations', () => {
     const errors = { ...i18n.validationErrors.dateLetterSent };
 
     it('should validate', () => {
-      const validDate = { day: '1', month: '1', year: '2019' };
+      const validDate = { day: '1', month: '1', year: '2000' };
       const validations = dateValidation(validDate, errors);
       expect(validations).to.deep.equal(null);
     });
@@ -116,9 +116,42 @@ describe('fields-validations', () => {
     });
 
     it('can have fields that are not part of date', () => {
-      const validDate = { day: '1', month: '1', year: '2019', saveAndContiune: 'saveAndContiune' };
+      const validDate = { day: '1', month: '1', year: '2000', saveAndContiune: 'saveAndContiune' };
       const validations = dateValidation(validDate, errors);
       expect(validations).to.deep.equal(null);
+    });
+
+    it('date must of a person over 18', () => {
+      const date = new Date();
+      const notValidDate = { day: (date.getUTCDate() + 1).toString(), month: (date.getMonth() + 1).toString(), year: (date.getFullYear() - 18).toString() };
+      const validations = DOBValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal(
+        {
+          date: createError('date', errors.underAge)
+        });
+    });
+
+    it('date is empty ', () => {
+      const date = new Date();
+      const notValidDate = { day: '44', month: '22', year: '9999' };
+      const validations = DOBValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal(
+        {
+          date: createError('date', errors.incorrectFormat)
+        });
+    });
+
+    it('date must of a person over 18', () => {
+      const date = new Date();
+      const notValidDate = { day: '', month: '', year: '' };
+      const validations = DOBValidation(notValidDate, errors);
+
+      expect(validations).to.deep.equal(
+        {
+          date: createError('date', errors.incorrectFormat)
+        });
     });
   });
 
@@ -473,19 +506,19 @@ describe('contactDetailsValidation', () => {
 
 describe('reasonForAppealDecisionValidation', () => {
   it('should validate if statement present', () => {
-    const object = { 'moreDetail': 'some reason text here' };
+    const object = { 'applicationReason': 'some reason text here' };
     const validationResult = reasonForAppealDecisionValidation(object);
     expect(validationResult).to.equal(null);
   });
 
   it('should fail validation and return "string.empty" type', () => {
-    const object = { 'moreDetail': '' };
+    const object = { 'applicationReason': '' };
     const validationResult = reasonForAppealDecisionValidation(object);
     const expectedResponse = {
 
-      moreDetail: {
-        href: '#moreDetail',
-        key: 'moreDetail',
+      applicationReason: {
+        href: '#applicationReason',
+        key: 'applicationReason',
         text: 'Enter the reasons you think the Home Office decision is wrong'
       }
 
@@ -496,19 +529,19 @@ describe('reasonForAppealDecisionValidation', () => {
 
 describe('reasonForAppealDecisionValidation', () => {
   it('should validate if statement present', () => {
-    const object = { 'moreDetail': 'some reason text here' };
+    const object = { 'applicationReason': 'some reason text here' };
     const validationResult = reasonForAppealDecisionValidation(object);
     expect(validationResult).to.equal(null);
   });
 
   it('should fail validation and return "string.empty" type', () => {
-    const object = { 'moreDetail': '' };
+    const object = { 'applicationReason': '' };
     const validationResult = reasonForAppealDecisionValidation(object);
     const expectedResponse = {
 
-      moreDetail: {
-        href: '#moreDetail',
-        key: 'moreDetail',
+      applicationReason: {
+        href: '#applicationReason',
+        key: 'applicationReason',
         text: 'Enter the reasons you think the Home Office decision is wrong'
       }
 

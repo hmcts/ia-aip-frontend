@@ -124,7 +124,7 @@ describe('Personal Details Controller', function () {
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {

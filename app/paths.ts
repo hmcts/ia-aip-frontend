@@ -10,6 +10,10 @@ const paths = {
   redirectUrl: '/redirectUrl',
   start: '/start',
   confirmation: '/confirmation',
+  tribunalCaseworker: '/tribunal-caseworker',
+  moreHelp: '/appeal-help',
+  evidenceToSupportAppeal: '/supporting-evidence',
+  homeOfficeDocuments: '/home-office-documents',
   personalDetails: {
     name: '/personal-details/name',
     nationality: '/personal-details/nationality',
@@ -25,9 +29,6 @@ const paths = {
     uploadEvidence: '/home-office/upload-evidence',
     deleteEvidence: '/home-office/delete-evidence'
   },
-  caseBuilding: {
-    taskList: '/case-building/task-list'
-  },
   reasonsForAppeal: {
     decision: '/case-building/reason-for-appeal',
     supportingEvidence: '/case-building/reason-for-appeal/supporting-evidence',
@@ -37,6 +38,9 @@ const paths = {
     supportingEvidenceSubmit: '/case-building/reason-for-appeal/supporting-evidence/submit',
     checkAndSend: '/case-building/reason-for-appeal/check-and-send',
     confirmation: '/case-building/reason-for-appeal/confirmation'
+  },
+  caseBuilding: {
+    timeline: '/case-building/timeline'
   },
   typeOfAppeal: '/type-of-appeal',
   contactDetails: '/contact-details',

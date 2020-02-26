@@ -1,5 +1,5 @@
-export const awaitingReasonsForAppealCaseData = {
-  'ids': 1573640323267110,
+const awaitingReasonsForAppealCaseData = {
+  'id': 1573640323267110,
   'jurisdiction': 'IA',
   'state': 'awaitingReasonsForAppeal',
   'version': 12,
@@ -31,4 +31,6 @@ export const awaitingReasonsForAppealCaseData = {
     'submissionOutOfTime': 'No',
     'homeOfficeReferenceNumber': 'A1234567'
   }
-};
+}
+
+module.exports = { ...awaitingReasonsForAppealCaseData }

@@ -12,7 +12,8 @@ const logLabel: string = getLogLabel(__filename);
 
 export const Events = {
   EDIT_APPEAL: { id: 'editAppeal', summary: 'Update appeal case AIP', description: 'Update appeal case AIP' },
-  SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit Appeal case AIP', description: 'Submit Appeal case AIP' }
+  SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit appeal case AIP', description: 'Submit Appeal case AIP' },
+  SUBMIT_REASONS_FOR_APPEAL: { id: 'submitReasonsForAppeal', summary: 'Submits Reasons for appeal case AIP', description: 'Submits Reasons for appeal case AIP' }
 };
 
 interface StartEventResponse {
@@ -117,7 +118,7 @@ class CcdService {
   }
 
   async updateAppeal(event, userId: string, updatedCase: CcdCaseDetails, headers: SecurityHeaders): Promise<CcdCaseDetails> {
-    logger.trace(`Received call to update appeal with event '${event.id}'`, logLabel);
+    logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${updatedCase.id}' `, logLabel);
     const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers);
     logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
 

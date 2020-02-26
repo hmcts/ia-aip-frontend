@@ -1,6 +1,5 @@
 import config from 'config';
 import { Request } from 'express';
-import * as fs from 'fs';
 import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
@@ -104,11 +103,11 @@ class DocumentManagementService {
    * this endpoint takes one file at a time.
    * @param req - the request that contains all necessary information
    * @property {Express.Multer.File} req.file - the file to be uploaded
-   * @property {string} req.idam.userDetails.id - the user id
+   * @property {string} req.idam.userDetails.uid - the user id
    */
   async uploadFile(req: Request): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
-    const userId: string = req.idam.userDetails.id;
+    const userId: string = req.idam.userDetails.uid;
 
     logger.trace(`Received call to upload file for user with id: '${userId}'`, logLabel);
 
@@ -132,12 +131,12 @@ class DocumentManagementService {
   /**
    * Entry point to delete endpoint used to delete files from the document management service
    * @param req - the request that contains all necessary information
-   * @property {string} req.idam.userDetails.id - the user id
+   * @property {string} req.idam.userDetails.uid - the user id
    * @param fileLocation - the target file url to be deleted
    */
   async deleteFile(req: Request, fileLocation: string): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
-    const userId: string = req.idam.userDetails.id;
+    const userId: string = req.idam.userDetails.uid;
 
     logger.trace(`Received call from user '${userId}' to delete`, logLabel);
     return this.delete(userId, headers, fileLocation);

@@ -10,11 +10,13 @@ import { setupPersonalDetailsController } from './controllers/appeal-application
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
-import { setupReasonsForAppealController } from './controllers/case-building/reason-for-appeal';
 import { setupEligibilityController } from './controllers/eligibility';
+import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
+import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
+import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupStartController } from './controllers/startController';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -46,16 +48,21 @@ const personalDetailsController = setupPersonalDetailsController({ updateAppealS
 const contactDetailsController = setupContactDetailsController(updateAppealService);
 const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
-const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
 const outOfTimeController = setupOutOfTimeController({ updateAppealService, documentManagementService });
 const eligibilityController = setupEligibilityController();
 const applicationOverview = setupApplicationOverviewController();
+const GuidancePages = setupGuidancePagesController();
+
+// Reason for Appeal Controllers
+const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
+const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(updateAppealService);
 
 // not protected by idam
 router.use(indexController);
 router.use(healthController);
 router.use(startController);
 router.use(eligibilityController);
+router.use(GuidancePages);
 
 // protected by idam
 router.use(idamController);
@@ -70,8 +77,10 @@ router.use(typeOfAppealController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);
-router.use(reasonsForAppealController);
 router.use(outOfTimeController);
 router.use(applicationOverview);
+
+router.use(reasonsForAppealController);
+router.use(reasonsForAppealCYAController);
 
 export { router };

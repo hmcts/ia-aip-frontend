@@ -5,7 +5,7 @@ function shouldValidateWhenSaveForLater(body, ...fieldNames) {
 }
 
 function getNextPage(body, nextPage) {
-  return body.saveForLater ? paths.taskList : nextPage;
+  return body.saveForLater ? paths.overview + '?saved' : nextPage;
 }
 
 export {

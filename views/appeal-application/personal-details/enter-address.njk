@@ -14,7 +14,7 @@
   <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.enterAddress.heading }}</h1>
   {% if selectedPostcode %}
     <h3>{{ i18n.pages.enterAddress.inputs.postcode }}</h3>
-    <span><b>{{ selectedPostcode }}</b> &emsp;
+    <span><span  class='govuk-body govuk-!-font-weight-bold'> {{ selectedPostcode }}</span>  &emsp;
       <a class="govuk-link app-contact-panel__link"
          href="/personal-details/enter-postcode">{{ i18n.pages.enterAddress.change }}</a>
     </span>

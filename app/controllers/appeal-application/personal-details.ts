@@ -39,7 +39,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = dateOfBirthValidation(req.body);
       if (validation != null) {
@@ -85,7 +85,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = appellantNamesValidation(req.body);
       if (validation) {
@@ -136,7 +136,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'nationality')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = nationalityValidation(req.body);
       if (validation) {
@@ -287,7 +287,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = addressValidation(req.body);
       if (validation !== null) {

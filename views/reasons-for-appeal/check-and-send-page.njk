@@ -23,6 +23,7 @@
   }) }}
 
   <form method="post" action={{ paths.reasonsForAppeal.checkAndSend }}>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ saveButtons() }}
   </form>
   {{ contactUs() }}

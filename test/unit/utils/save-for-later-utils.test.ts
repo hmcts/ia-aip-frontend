@@ -1,13 +1,23 @@
+import { NextFunction, Request, Response } from 'express';
 import { paths } from '../../../app/paths';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
+import Logger from '../../../app/utils/logger';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../../app/utils/save-for-later-utils';
-import { expect } from '../../utils/testUtils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('Save for later utils', () => {
+  let sandbox: sinon.SinonSandbox;
+  let req: Partial<Request>;
+  let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
+  let next: NextFunction;
+  const logger: Logger = new Logger();
+
   describe('getNextPage', () => {
     it('get next page when save for later clicked', () => {
       const nextPage = getNextPage({ saveForLater: 'saveForLater' }, 'defaultPath');
 
-      expect(nextPage).to.eq(paths.taskList);
+      expect(nextPage).to.eq(paths.overview + '?saved');
     });
 
     it('get next page when save and continue clicked', () => {

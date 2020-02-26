@@ -28,65 +28,79 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
 function postAppealLate(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { application } = req.session.appeal;
-      let validationError;
-
       if (!shouldValidateWhenSaveForLater(req.body, 'appeal-late')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
-      } else {
+        return getConditionalRedirectUrl(req, res, paths.overview);
+      }
 
-        validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
+      const { application } = req.session.appeal;
+      let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
 
-        if (!validationError) {
-          if (res.locals.multerError) {
-            validationError = { uploadFile: createStructuredError('uploadFile', res.locals.multerError) };
-          } else {
-            application.lateAppeal = {
-              ...application.lateAppeal,
-              reason: req.body['appeal-late']
-            };
-            if (req.file) {
-              const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-              application.lateAppeal = {
-                ...application.lateAppeal,
-                evidence: {
-                  id: evidenceStored.id,
-                  url: evidenceStored.url,
-                  name: evidenceStored.name
-                }
-              };
-            }
-            await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-            return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.checkAndSend));
-          }
-        }
+      if (res.locals.multerError) {
+        validationError = {
+          ...validationError,
+          uploadFile: createStructuredError('uploadFile', res.locals.multerError)
+        };
+      }
 
+      if (validationError) {
         let evidence = null;
-        if (_.has(req.session.appeal.application, 'lateAppeal.evidence')) {
-          evidence = req.session.appeal.application.lateAppeal.evidence;
+        if (_.has(application, 'lateAppeal.evidence')) {
+          evidence = application.lateAppeal.evidence;
         }
 
         return res.render('appeal-application/home-office/appeal-late.njk', {
           appealLateReason: req.body['appeal-late'],
-          evidence: evidence,
-          evidenceCTA: paths.homeOffice.deleteEvidence,
+          evidence,
           error: validationError,
           errorList: Object.values(validationError),
           previousPage: paths.taskList
         });
       }
+
+      if (req.file) {
+        if (_.has(application.lateAppeal, 'evidence.url')) {
+          await documentManagementService.deleteFile(req, application.lateAppeal.evidence.url);
+        }
+        const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
+        application.lateAppeal = {
+          ...application.lateAppeal,
+          evidence: {
+            id: evidenceStored.id,
+            url: evidenceStored.url,
+            name: evidenceStored.name
+          }
+        };
+      }
+      application.lateAppeal = {
+        ...application.lateAppeal,
+        reason: req.body['appeal-late']
+      };
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.checkAndSend));
     } catch (e) {
       next(e);
     }
   };
 }
 
-function getAppealLateDeleteFile(documentManagementService: DocumentManagementService) {
+function postAppealLateDeleteFile(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const evidence: Evidence = req.session.appeal.application.lateAppeal.evidence;
       await documentManagementService.deleteFile(req, evidence.url);
       delete req.session.appeal.application.lateAppeal.evidence;
+
+      const validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
+      if (validationError) {
+        return res.render('appeal-application/home-office/appeal-late.njk', {
+          appealLateReason: req.body['appeal-late'],
+          error: validationError,
+          errorList: Object.values(validationError),
+          previousPage: paths.taskList
+        });
+      }
+      req.session.appeal.application.lateAppeal.reason = req.body['appeal-late'];
+      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       return res.redirect(paths.homeOffice.appealLate);
     } catch (e) {
       next(e);
@@ -99,13 +113,13 @@ function setupOutOfTimeController(deps?: any): Router {
   const router = Router();
   router.get(paths.homeOffice.appealLate, getAppealLate);
   router.post(paths.homeOffice.appealLate, uploadConfiguration, handleFileUploadErrors, postAppealLate(deps.documentManagementService, deps.updateAppealService));
-  router.get(paths.homeOffice.deleteEvidence, getAppealLateDeleteFile(deps.documentManagementService));
+  router.post(paths.homeOffice.deleteEvidence, uploadConfiguration, handleFileUploadErrors, postAppealLateDeleteFile(deps.documentManagementService, deps.updateAppealService));
   return router;
 }
 
 export {
   getAppealLate,
   postAppealLate,
-  getAppealLateDeleteFile,
+  postAppealLateDeleteFile,
   setupOutOfTimeController
 };

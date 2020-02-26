@@ -18,7 +18,7 @@ module.exports = {
 
     When(/^I should see the 'do this next section' for 'Saved - Appeal started'$/, () => {
       I.see(i18n.pages.overviewPage.doThisNext.toDo, '//*[@id="doThisNextTitle"]/h2[1]');
-      I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions}</p>`);
+      I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.appealStarted.finishQuestions}</p>`);
 
     });
     When(/^I should see the 'do this next section' for 'Appeal submitted'$/, () => {

@@ -24,6 +24,7 @@
   />
 
   <form action="/home-office/letter-sent" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% set errorMessage =  error.day.text if error.day %}
     {% set errorMessage =  error.month.text if error.month else errorMessage %}
     {% set errorMessage =  error.year.text if error.year else errorMessage %}

@@ -16,7 +16,7 @@
     }) }}
   {% endif %}
 
-  <form action="/case-building/reason-for-appeal/supporting-evidence/upload" method="post"
+  <form action="/case-building/reason-for-appeal/supporting-evidence/upload?_csrf={{ csrfToken }}" method="post"
         enctype="multipart/form-data">
     {% call govukFieldset({
       legend: {
@@ -45,7 +45,7 @@
           name: 'uploadFile',
           classes: "govuk-button--secondary",
           attributes: {
-            formaction: '/case-building/reason-for-appeal/supporting-evidence/upload/file',
+            formaction: '/case-building/reason-for-appeal/supporting-evidence/upload/file?_csrf=' + csrfToken,
             formEnctype: 'multipart/form-data'
           }
         }) }}
@@ -61,6 +61,7 @@
     {% endcall %}
   </form>
   <form action="/case-building/reason-for-appeal/supporting-evidence/submit" method="post">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ saveButtons() }}
   </form>
 

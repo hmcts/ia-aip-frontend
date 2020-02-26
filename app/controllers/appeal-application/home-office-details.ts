@@ -26,7 +26,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'homeOfficeRefNumber')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview);
       }
       const validation = homeOfficeNumberValidation(req.body);
       if (validation) {
@@ -67,7 +67,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.taskList);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = dateLetterSentValidation(req.body);
       if (validation) {

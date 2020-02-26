@@ -28,7 +28,7 @@ describe('Confirmation Page Controller', () => {
       } as Partial<Appeal>,
       cookies: {},
       idam: {
-        userDetails: {}
+        userDetails: {} as Partial<IdamDetails>
       },
       app: {
         locals: {
@@ -60,7 +60,10 @@ describe('Confirmation Page Controller', () => {
   it('getApplicationOverview should render application-overview.njk with options', () => {
     req.idam = {
       userDetails: {
-        name: 'Alex Developer'
+        uid: 'anId',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -106,7 +109,8 @@ describe('Confirmation Page Controller', () => {
       name: 'Alex Developer',
       applicationNextStep: expectedNextStep,
       history: null,
-      stages: expectedStages
+      stages: expectedStages,
+      saved: false
     });
   });
 

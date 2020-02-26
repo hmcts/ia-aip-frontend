@@ -5,7 +5,7 @@ import { createApp } from './app';
 import { setupSecrets } from './setupSecrets';
 import Logger, { getLogLabel } from './utils/logger';
 
-setupSecrets();
+const config = setupSecrets();
 
 const app: express.Application = createApp();
 const port: number | string = process.env.PORT || 3000;

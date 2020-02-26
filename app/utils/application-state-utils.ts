@@ -76,7 +76,7 @@ function getAppealApplicationNextStep(req: Request) {
   if (doThisNextSection === undefined) {
     doThisNextSection = {
       descriptionParagraphs: [
-        `Description for event <b>${currentAppealStatus}</b> not found`
+        `Description for event <span  class='govuk-body govuk-!-font-weight-bold'> ${currentAppealStatus}</span>  not found`
       ]
     };
   }

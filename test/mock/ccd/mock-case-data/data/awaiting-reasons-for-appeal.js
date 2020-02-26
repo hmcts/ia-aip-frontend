@@ -29,8 +29,23 @@ const awaitingReasonsForAppealCaseData = {
     'homeOfficeDecisionDate': '2020-02-01',
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',
-    'homeOfficeReferenceNumber': 'A1234567'
+    'homeOfficeReferenceNumber': 'A1234567',
+    "respondentDocuments": [
+      {
+        "id": "1",
+        "value": {
+          "tag": "respondentEvidence",
+          "document": {
+            "document_url": "http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2",
+            "document_filename": "Evidence_File.png",
+            "document_binary_url": "http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary"
+          },
+          "description": "Screenshot of evidence",
+          "dateUploaded": "2020-02-21"
+        }
+      }
+    ]
   }
-}
+};
 
 module.exports = { ...awaitingReasonsForAppealCaseData }

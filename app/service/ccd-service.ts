@@ -13,6 +13,7 @@ const logLabel: string = getLogLabel(__filename);
 export const Events = {
   EDIT_APPEAL: { id: 'editAppeal', summary: 'Update appeal case AIP', description: 'Update appeal case AIP' },
   SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit appeal case AIP', description: 'Submit Appeal case AIP' },
+  EDIT_REASONS_FOR_APPEAL: { id: 'editReasonsForAppeal', summary: 'Edit reasons for appeal case AIP', description: 'Edit reasons for appeal case AIP' },
   SUBMIT_REASONS_FOR_APPEAL: { id: 'submitReasonsForAppeal', summary: 'Submits Reasons for appeal case AIP', description: 'Submits Reasons for appeal case AIP' }
 };
 
@@ -139,7 +140,6 @@ class CcdService {
     const cases = await this.loadCasesForUser(userId, headers);
     if (cases.length > 0) {
       logger.trace(`found [${cases.length}] cases`, logLabel);
-
       // TODO: Retrieve history once endpoint is enabled and add to session.
       // const history = await this.retrieveCaseHistory(userId, headers, cases[0].id);
       return cases[0];

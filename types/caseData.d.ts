@@ -29,6 +29,7 @@ interface CaseData {
   applicationOutOfTimeDocument: SupportingDocument;
   reasonsForAppealDecision: string;
   reasonsForAppealDocuments: SupportingEvidenceCollection[];
+  respondentDocuments: RespondentEvidenceCollection[];
 }
 
 interface Nationality {
@@ -55,6 +56,11 @@ interface SubscriptionCollection {
 interface SupportingEvidenceCollection {
   id?: number;
   value: SupportingDocument;
+}
+
+interface RespondentEvidenceCollection {
+  id?: number;
+  value: RespondentEvidenceDocument;
 }
 
 interface Subscription {

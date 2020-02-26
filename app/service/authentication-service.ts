@@ -3,8 +3,8 @@ import IdamService from './idam-service';
 import S2SService from './s2s-service';
 
 interface SecurityHeaders {
-  serviceToken: String;
-  userToken: String;
+  serviceToken: string;
+  userToken: string;
 }
 
 export {

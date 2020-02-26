@@ -74,7 +74,7 @@ describe('application-state-utils', () => {
 
         info: {
           title: 'Helpful Information',
-          url: '<a href="#">What is a Tribunal Caseworker?</a>'
+          url: '<a class="govuk-link" href="#">What is a Tribunal Caseworker?</a>'
         }
       });
     });

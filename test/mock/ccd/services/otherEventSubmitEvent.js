@@ -4,6 +4,8 @@ function getNextState(body) {
       return 'appealStarted';
     case 'submitAppeal':
       return 'appealSubmitted';
+    case 'editReasonsForAppeal':
+      return 'awaitingReasonsForAppeal';
     default:
       throw `Event type ${body.eventType} no next state set`
   }
@@ -15,7 +17,9 @@ module.exports = {
   template: {
     "id": params => Number(params.caseId),
     "jurisdiction": "IA",
-    "state": (params, query, body) => { return getNextState(body); },
+    "state": (params, query, body) => {
+      return getNextState(body);
+    },
     "version": 10,
     "case_type_id": "Asylum",
     "created_date": "2019-11-13T10:18:43.271",

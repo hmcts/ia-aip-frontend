@@ -50,6 +50,10 @@ const paths = {
     ineligible: '/ineligible',
     questions: '/eligibility',
     eligible: '/eligible'
+  },
+  detailsViewers: {
+    document: '/view/document',
+    homeOfficeDocuments: '/view/home-office-documents'
   }
 };
 export {

@@ -1,6 +1,7 @@
 import config from 'config';
 import { Request } from 'express';
 import rp from 'request-promise';
+import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 
@@ -49,6 +50,43 @@ class UploadData {
   classification: Classification;
 }
 
+/**
+ * Attempts to find the document store url if found on the documentMap returns the document store file location as a URL
+ * @param id the fileId used as a lookup key
+ * @param documentMap the document map array.
+ */
+function documentMapToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
+  const target: DocumentMap = documentMap.find(e => e.id === id);
+  return target.url;
+}
+
+/**
+ * Adds the document store url into a mapper and returns back it's assigned key.
+ * @param documentUrl the document url to be inserted in the map
+ * @param documentMap the document map array.
+ */
+function addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
+  const documentId: string = uuid();
+  documentMap.push({
+    id: documentId,
+    url: documentUrl
+  });
+
+  return documentId;
+}
+
+// function documentMapToDocStoreUrl(url: string, documentMap: DocumentMap[]): string {
+//   if (_.has(req, 'session.appeal.documentMap')) {
+//     const documentMap: DocumentMap[] = req.session.appeal.documentMap;
+//     if (url.includes(paths.detailsViewers.document)) {
+//       const documentId = url.replace(`${paths.detailsViewers.document}/`, '');
+//       const target: DocumentMap = documentMap.find(e => e.id === documentId);
+//       return target.url;
+//     }
+//   }
+//   return url;
+// }
+
 class DocumentManagementService {
   private authenticationService: AuthenticationService;
 
@@ -75,15 +113,15 @@ class DocumentManagementService {
     );
 
     options.formData = {
-      files: [{
+      files: [ {
         value: uploadData.file.buffer,
         options: {
           filename: `${Date.now()}-${uploadData.file.originalname}`,
           contentType: uploadData.file.mimetype
         }
-      }],
+      } ],
       classification: uploadData.classification,
-      role: uploadData.role
+      roles: uploadData.role
     };
 
     return rp.post(options);
@@ -96,6 +134,17 @@ class DocumentManagementService {
       fileLocation
     );
     return rp.delete(options);
+  }
+
+  private async fetchBinaryFile(userId: string, headers: SecurityHeaders, fileLocation: string): Promise<any> {
+    let options: any = this.createOptions(
+      userId,
+      headers,
+      fileLocation + '/binary'
+    );
+    options.headers = { 'user-roles': 'caseworker-ia', ...options.headers };
+    options = { encoding: 'binary', resolveWithFullResponse: true, ...options };
+    return rp.get(options);
   }
 
   /**
@@ -120,11 +169,12 @@ class DocumentManagementService {
       .then(response => {
         const res: DocumentManagementStoreResponse = JSON.parse(response);
         const docName = res._embedded.documents[0].originalDocumentName;
+        const documentMapperId: string = addToDocumentMapper(res._embedded.documents[0]._links.self.href, req.session.appeal.documentMap);
         return {
           id: docName,
-          url: res._embedded.documents[0]._links.self.href,
+          fileId: documentMapperId,
           name: docName.substring(docName.indexOf('-') + 1)
-        };
+        } as DocumentUploadResponse;
       });
   }
 
@@ -141,8 +191,23 @@ class DocumentManagementService {
     logger.trace(`Received call from user '${userId}' to delete`, logLabel);
     return this.delete(userId, headers, fileLocation);
   }
+
+  /**
+   * Entry point to get endpoint used to retrieve files from the document management service
+   * @param req - the request that contains all necessary information
+   * @property {string} req.idam.userDetails.id - the user id
+   * @param fileLocation - the target file url to be fetched
+   */
+  async fetchFile(req: Request, fileLocation: string) {
+    const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
+    const userId: string = req.idam.userDetails.uid;
+    logger.trace(`Received call from user '${userId}' to fetch file`, logLabel);
+    return this.fetchBinaryFile(userId, headers, fileLocation);
+  }
 }
 
 export {
-  DocumentManagementService
+  DocumentManagementService,
+  documentMapToDocStoreUrl,
+  addToDocumentMapper
 };

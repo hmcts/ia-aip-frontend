@@ -4,7 +4,7 @@ import { CcdService, Events } from '../../../app/service/ccd-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
 describe('update-appeal-service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -122,7 +122,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.personalDetails.address.postcode).eq('W1W 7RT');
       expect(req.session.appeal.application.isAppealLate).eq(true);
       expect(req.session.appeal.application.lateAppeal.evidence.id).eq('1580296112615-evidence-file.jpeg');
-      expect(req.session.appeal.application.lateAppeal.evidence.fileId).to.be.a.uuid();
+      validateUuid(req.session.appeal.application.lateAppeal.evidence.fileId);
       expect(req.session.appeal.application.lateAppeal.evidence.name).eq('evidence-file.jpeg');
       expect(req.session.appeal.application.contactDetails.email).eq('email@example.net');
       expect(req.session.appeal.application.contactDetails.phone).eq('07123456789');

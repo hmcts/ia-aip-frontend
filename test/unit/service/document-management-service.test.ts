@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { addToDocumentMapper, documentMapToDocStoreUrl } from '../../../app/service/document-management-service';
 import Logger from '../../../app/utils/logger';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
 describe('document-management-service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -41,7 +41,7 @@ describe('document-management-service', () => {
       const documentUrl: string = 'http://documenturl/';
 
       const result = addToDocumentMapper(documentUrl, documentMap);
-      expect(result).to.be.a.uuid();
+      validateUuid(result);
     });
 
     it('documentMapToDocStoreUrl should retrieve the doc store url using key', async () => {

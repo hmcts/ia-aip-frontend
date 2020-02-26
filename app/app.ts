@@ -93,7 +93,7 @@ function configureHelmet(app) {
       ],
       imgSrc: [
         '\'self\'',
-        '\'self\' data:',
+        'data:',
         'www.google-analytics.com',
         'www.googletagmanager.com',
         'tagmanager.google.com',

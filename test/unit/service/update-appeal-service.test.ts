@@ -93,6 +93,21 @@ describe('update-appeal-service', () => {
               'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
             }
           }
+          ],
+          'respondentDocuments': [
+            {
+              'id': '1',
+              'value': {
+                'tag': 'respondentEvidence',
+                'document': {
+                  'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+                  'document_filename': 'Screenshot.png',
+                  'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+                },
+                'description': 'Screenshot of evidence',
+                'dateUploaded': '2020-02-21'
+              }
+            }
           ]
         }
       });
@@ -128,6 +143,12 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.contactDetails.phone).eq('07123456789');
       expect(req.session.appeal.application.contactDetails.wantsEmail).eq(true);
       expect(req.session.appeal.application.contactDetails.wantsSms).eq(true);
+      expect(req.session.appeal.documentMap).to.exist;
+      expect(req.session.appeal.respondentDocuments).to.exist;
+      expect(req.session.appeal.respondentDocuments[0].dateUploaded).to.be.eq('2020-02-21');
+      expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
+      validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
+      expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
     });
   });
 
@@ -414,12 +435,12 @@ describe('update-appeal-service', () => {
                 }
               } as Evidences
             },
-            'respondentDocuments': [
+            respondentDocuments: [
               {
-                'dateUploaded': '2020-02-21',
-                'evidence': {
-                  'fileId': '75d96b97-f453-4084-aecf-3f73738e4ded',
-                  'name': 'Screenshot 2020-02-21 at 11.49.28.png'
+                dateUploaded: '2020-02-21',
+                evidence: {
+                  fileId: '75d96b97-f453-4084-aecf-3f73738e4ded',
+                  name: 'Screenshot 2020-02-21 at 11.49.28.png'
                 }
               }
             ],

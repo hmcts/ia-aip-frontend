@@ -75,18 +75,6 @@ function addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
   return documentId;
 }
 
-// function documentMapToDocStoreUrl(url: string, documentMap: DocumentMap[]): string {
-//   if (_.has(req, 'session.appeal.documentMap')) {
-//     const documentMap: DocumentMap[] = req.session.appeal.documentMap;
-//     if (url.includes(paths.detailsViewers.document)) {
-//       const documentId = url.replace(`${paths.detailsViewers.document}/`, '');
-//       const target: DocumentMap = documentMap.find(e => e.id === documentId);
-//       return target.url;
-//     }
-//   }
-//   return url;
-// }
-
 class DocumentManagementService {
   private authenticationService: AuthenticationService;
 

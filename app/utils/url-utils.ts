@@ -5,7 +5,7 @@ import { paths } from '../paths';
 
 const appPort = config.get('node.port');
 
-function getUrl(protocol: string, host: string, path: string): string {
+export function getUrl(protocol: string, host: string, path: string): string {
   const portString = (host === 'localhost') ? ':' + appPort : '';
   return protocol + '://' + host + portString + path;
 }

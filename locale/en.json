@@ -604,7 +604,7 @@
     },
     "contactUs": {
       "heading": "Contact us for help",
-      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p><p>Email: <a href='mailto:customer.service@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>customer.service@justice.gov.uk</a></p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges</a><p>(opens in a new window)</p></div>"
+      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p><p>Email: <a href='mailto:customer.service@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>customer.service@justice.gov.uk</a></p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' rel='noopener noreferrer' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges</a><p>(opens in a new window)</p></div>"
     },
     "contactUsErrorLink": {
       "link": "<a class=\"govuk-link\" href=\"#\">Contact the Immigration & Asylum Helpline</a> if you need to make changes to your application or speak to someone about your tax credits."

@@ -1,10 +1,7 @@
 {% set pageTitleName = i18n.pages.index.title %}
 {% extends "layout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
-{% from "components/evidence-list.njk" import evidenceList with context %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% block content %}
   {% if errorList %}
@@ -16,7 +13,7 @@
   <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeAppealLate.title }}</h1>
   <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>
 
-  <form action="/home-office/appeal-late" method="post" enctype="multipart/form-data">
+  <form action="/home-office/appeal-late?_csrf={{ csrfToken }}" method="post" enctype="multipart/form-data">
     {{ govukTextarea({
       name: "appeal-late",
       id: "appeal-late",
@@ -49,12 +46,12 @@
 
     {% if evidence %}
       <div class="evidence">
-        <h4 class="govuk-heading-s">{{ i18n.pages.homeOfficeAppealLate.uploadedFileTitle }}</h4>
+        <h3 class="govuk-heading-s">{{ i18n.pages.homeOfficeAppealLate.uploadedFileTitle }}</h3>
         <hr class="govuk-section-break govuk-section-break--visible">
         <ul class="govuk-list">
           <li class="list__item">
             <span>{{ evidence.name }}</span>
-            <a href="{{ evidenceCTA }}">{{ i18n.common.links.delete }}</a>
+            <input type="submit" class="evidence-list__link" value="{{ i18n.common.links.delete }}" formaction="{{ paths.homeOffice.deleteEvidence }}?_csrf={{ csrfToken }}"/>
           </li>
         </ul>
       </div>

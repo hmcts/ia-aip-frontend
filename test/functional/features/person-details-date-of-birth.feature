@@ -8,6 +8,8 @@ Feature: Personal details date of birth page
     And I have logged in
     And I am on the personal details date of birth page
     When I click "Save for later" button
+    Then I am on the overview page
+    Then I click continue
     Then I should see the task-list page
     And I shouldnt be able to click "Your contact details"
 
@@ -24,6 +26,8 @@ Feature: Personal details date of birth page
     Given I am on the personal details date of birth page
     When I enter a day "1" month "1" year "1981"
     And I click "Save for later" button
+    Then I am on the overview page
+    Then I click continue
     Then I should see the task-list page
     And I shouldnt be able to click "Your contact details"
 

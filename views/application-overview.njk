@@ -42,13 +42,14 @@
       </div>
       <div class="govuk-grid-column-one-third">
         <div class="contact-us-component">
-          <b class="govuk-!-padding-top-2">{{ i18n.pages.overviewPage.contactUs }}</b>
+          <h2 class=" govuk-heading-s">{{ i18n.pages.overviewPage.contactUs }}</h2>
           <p>{{ i18n.pages.overviewPage.askAQuestion }}</p>
-          <p class='govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.telephone }}</p>
-          <a href='#'
-             class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>{{ i18n.pages.overviewPage.sendMessage }}</a>
+          <p class='govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.telephone  }}</p>
+          <p class='govuk-body  govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.telephoneNumber }}</p>
+          <p class='govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.email | safe }}</p>
+          <a href='mailto:customer.service@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.emailLink }}</a>
           <p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.time }}</p>
-          <a href='https://www.gov.uk/call-charges' target='_blank'
+          <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer"
              class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.charges }}</a>
           <p class="govuk-!-margin-top-0">{{ i18n.pages.overviewPage.newWindow }}</p>
         </div>

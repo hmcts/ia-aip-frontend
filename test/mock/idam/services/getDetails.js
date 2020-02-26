@@ -13,7 +13,7 @@ module.exports = {
   path: '/details',
   method: 'GET',
   template: {
-    id: () => emailToUserId[cache.get('email')] || defaultUserId,
+    uid: () => emailToUserId[cache.get('email')] || defaultUserId,
     email: () => cache.get('email'),
     forename: 'John',
     surname: 'Smith'

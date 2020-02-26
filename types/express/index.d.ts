@@ -1,6 +1,9 @@
 declare namespace Express {
   interface Request {
-    idam?: any;
+    idam?: {
+      userDetails: IdamDetails;
+    };
+    csrfToken?: () => string;
   }
 
   interface SessionData {

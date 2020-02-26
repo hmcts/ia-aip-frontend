@@ -4,7 +4,6 @@ import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('application-state-utils', () => {
-
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   const logger: Logger = new Logger();
@@ -72,6 +71,7 @@ describe('application-state-utils', () => {
           'Your appeal details have been sent to the Tribunal.',
           'A Tribunal Caseworker will contact you by <span  class=\'govuk-body govuk-!-font-weight-bold\'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.'
         ],
+
         info: {
           title: 'Helpful Information',
           url: '<a href="#">What is a Tribunal Caseworker?</a>'

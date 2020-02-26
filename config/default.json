@@ -32,7 +32,8 @@
     "cookie": {
       "secret": "defaultcookiesecret",
       "maxAgeInMs": 1200000,
-      "secure": false
+      "secure": false,
+      "sameSite": true
     }
   },
   "s2s": {

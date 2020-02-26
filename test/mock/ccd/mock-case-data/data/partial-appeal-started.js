@@ -10,8 +10,6 @@ const partialAppealStartedCaseData = {
     'journeyType': 'aip',
     'homeOfficeReferenceNumber': 'A1234564'
   }
-};
+}
 
-module.exports = {
-  partialAppealStartedCaseData
-};
+module.exports = { ...partialAppealStartedCaseData }

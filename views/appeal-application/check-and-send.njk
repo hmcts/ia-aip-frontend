@@ -23,6 +23,7 @@
   }) }}
 
   <form action="/check-and-send" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukCheckboxes({
       idPrefix: "statement",
       name: "statement",

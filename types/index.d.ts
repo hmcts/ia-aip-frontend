@@ -104,3 +104,9 @@ interface AppealType {
   examples: string;
   checked?: boolean;
 }
+
+interface IdamDetails {
+  uid: string;
+  forename: string;
+  surname: string;
+}

@@ -22,7 +22,7 @@
     </br>
   {% endif %}
   <form action="/personal-details/enter-address" method="post">
-
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
       formGroup: {
         classes: 'govuk-!-margin-bottom-3'

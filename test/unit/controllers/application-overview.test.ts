@@ -106,13 +106,15 @@ describe('Confirmation Page Controller', () => {
       appealRefNumber: undefined,
       applicationNextStep: expectedNextStep,
       history: null,
-      stages: expectedStages
+      stages: expectedStages,
+      saved: false
     });
   });
 
   it('getApplicationOverview should render application-overview.njk with options', () => {
     req.idam = {
       userDetails: {
+        uid: 'user-id',
         forename: 'Alex',
         surname: 'Developer'
       }
@@ -158,13 +160,15 @@ describe('Confirmation Page Controller', () => {
       appealRefNumber: undefined,
       applicationNextStep: expectedNextStep,
       history: null,
-      stages: expectedStages
+      stages: expectedStages,
+      saved: false
     });
   });
 
   it('getApplicationOverview should render with appealRefNumber application-overview.njk with options', () => {
     req.idam = {
       userDetails: {
+        uid: 'user-id',
         forename: 'Alex',
         surname: 'Developer'
       }
@@ -175,10 +179,13 @@ describe('Confirmation Page Controller', () => {
     getApplicationOverview(req as Request, res as Response, next);
 
     const expectedNextStep = {
+      cta: { respondByText: null, url: '/task-list' },
       deadline: 'TBC',
       descriptionParagraphs: [
-        'Description for event <b>appealStartedPartial</b> not found'
-      ]
+        'You need to finish telling us about your appeal.',
+        'You will need to have your Home Office decision letter with you to answer some questions.'
+      ],
+      info: null
     };
 
     const expectedStages = [ {

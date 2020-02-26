@@ -1,4 +1,4 @@
-export const partialAwaitingReasonsForAppealCaseData = {
+const partialAwaitingReasonsForAppealCaseData = {
   'ids': 1573640323267110,
   'jurisdiction': 'IA',
   'state': 'awaitingReasonsForAppeal',
@@ -33,3 +33,5 @@ export const partialAwaitingReasonsForAppealCaseData = {
     'reasonsForAppealDecision': 'I decided to appeal because of the following reasons'
   }
 };
+
+module.exports = { ...partialAwaitingReasonsForAppealCaseData };

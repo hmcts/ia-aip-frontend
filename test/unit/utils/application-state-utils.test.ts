@@ -16,7 +16,8 @@ describe('application-state-utils', () => {
       session: {
         appeal: {
           application: {},
-          caseBuilding: {}
+          caseBuilding: {},
+          reasonsForAppeal: {}
         }
       },
       idam: {
@@ -126,7 +127,7 @@ describe('application-state-utils', () => {
   it('when application status is awaitingReasonsForAppeal and it\'s partially completed should get correct \'Do This next section\'', () => {
     req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
     req.session.lastModified = '2020-02-07T16:00:00.000';
-    req.session.appeal.caseBuilding.decision = 'A text description of why I decided to appeal';
+    req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
     const result = getAppealApplicationNextStep(req as Request);
 
     expect(result).to.eql(

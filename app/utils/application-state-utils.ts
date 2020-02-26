@@ -21,11 +21,11 @@ const APPEAL_STATE = {
       i18n.pages.overviewPage.doThisNext.appealStarted.finishQuestions,
       i18n.pages.overviewPage.doThisNext.appealStarted.needHomeOfficeDecision
     ],
-    info: {
-      title: null,
-      url: null
-    },
-    cta: paths.taskList
+    info: null,
+    cta: {
+      url: paths.taskList,
+      respondByText: null
+    }
   },
   'appealSubmitted': {
     descriptionParagraphs: [
@@ -80,7 +80,7 @@ function isPartiallySavedAppeal(req: Request, currentAppealStatus: string) {
       return _.has(req.session.appeal, 'application.homeOfficeRefNumber');
     }
     case 'awaitingReasonsForAppeal': {
-      return _.has(req.session.appeal, 'caseBuilding.decision');
+      return _.has(req.session.appeal, 'reasonsForAppeal.applicationReason');
     }
     default: {
       return false;
@@ -107,7 +107,7 @@ function getAppealApplicationNextStep(req: Request) {
   if (doThisNextSection === undefined) {
     doThisNextSection = {
       descriptionParagraphs: [
-        `Description for event <span  class='govuk-body govuk-!-font-weight-bold'> ${currentAppealStatus}</span>  not found`
+        `Description for event <b>${currentAppealStatus}</b> not found`
       ]
     };
   }

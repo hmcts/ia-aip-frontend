@@ -6,7 +6,7 @@ const usersToCaseData = {
   '2': [ mockData.partialAppealStartedCaseData ],
   '3': [ mockData.appealSubmittedCaseData ],
   '4': [ mockData.awaitingReasonsForAppealCaseData ],
-  '4': [ mockData.partialAwaitingReasonsForAppealCaseData ]
+  '5': [ mockData.partialAwaitingReasonsForAppealCaseData ]
 };
 
 module.exports = {

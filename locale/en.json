@@ -285,27 +285,47 @@
         }
       },
       "answersBeenSaved": "Your answers have been saved",
-      "timeLine": [{
-      "title": "Your appeal argument",
-      "date": "{{ date }}",
-      "text": " - You told us why you think the Home Office decision to refuse your claim is wrong.",
-      "link": [
-        {
-      "title": "What you sent",
-      "text": "Why you think the Home Office is wrong",
-      "href": "/appeal-details"
-    },
-    {
-      "title": "Useful documents",
-      "text": "Home Office documents about your case (PDF)",
-      "href": "/view/home-office-documents"
-    },
-    {
-      "title": "Helpful information",
-      "text": "Understanding your Home Office documents",
-      "href": "/home-office-documents"
-    }]
-}]
+      "timeline": {
+        "submitAppeal": {
+          "title": "Your appeal details",
+          "date": "{{ date }}",
+          "text": "You sent your appeal details to the Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "/appeal-details"
+            },
+            {
+              "title": "Helpful information",
+              "text": "What is a Tribunal Caseworker",
+              "href": "#"
+            }
+          ]
+        },
+        "submitReasonsForAppeal": {
+          "title": "Your appeal argument",
+          "date": "{{ date }}",
+          "text": "You told us why you think the Home Office decision to refuse your claim is wrong.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Why you think the Home Office is wrong",
+              "href": "/view/reason-for-appeal"
+            },
+            {
+              "title": "Useful documents",
+              "text": "Home Office documents about your case",
+              "href": "/view/home-office-documents"
+            },
+            {
+              "title": "Helpful information",
+              "text": "Understanding your Home Office documents",
+              "href": "/home-office-documents"
+            }
+          ]
+        }
+      }
     },
     "eligibleStartPage": {
       "newService": "This is a new online service for people appealing an immigration or asylum decision. Because it is a new service, not everyone will be able to use it right now.",
@@ -339,7 +359,8 @@
               "go to a hearing with you",
               "decide the outcome of your appeal"
             ]
-          }]
+          }
+        ]
       },
       "homeOfficeDocuments": {
         "title": "Understanding your Home Office documents",
@@ -425,7 +446,10 @@
             "smallTitle": "Witness statement",
             "title": "A witness is someone who comes to a hearing to speak on your behalf. This is known as oral evidence. A witness could be:",
             "bullets": [
-              "a community leader", "a religious leader", "a social worker", "anybody who knows something relevant about your case"
+              "a community leader",
+              "a religious leader",
+              "a social worker",
+              "anybody who knows something relevant about your case"
             ],
             "desc": "All witnesses must write a witness statement, which is a written version of their oral evidence. The witness statement should include the appeal reference number as well as the witness’ address, date of birth, signature and photo identification."
           },
@@ -883,14 +907,12 @@
       "incorrectFormat": "Enter the date in the correct format",
       "inPast": "Your date of birth must be in the past",
       "underAge": "You must be at least 18 years old to use this service"
-
     },
     "dateLetterSent": {
       "missing": "Date letter sent must include a day, month and year",
       "incorrectFormat": "Enter the date in the correct format",
       "inPast": "The date letter was sent must be in the past",
       "underAge": "You must be at least 18 years old to use this service"
-
     },
     "nationality": {
       "selectNationality": "Select your Nationality",

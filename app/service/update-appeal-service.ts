@@ -24,14 +24,13 @@ export default class UpdateAppealService {
 
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
-    const caseResponse = await this.ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
-    const ccdCase = caseResponse.case;
-    const history = caseResponse.history;
+    const caseResponse: CcdCaseResponse = await this.ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+    const ccdCase: CcdCaseDetails = caseResponse.case;
+    const history: any = caseResponse.history;
 
     req.session.ccdCaseId = ccdCase.id;
 
     const caseData: Partial<CaseData> = ccdCase.case_data;
-    const historyData: any = history;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
@@ -103,7 +102,7 @@ export default class UpdateAppealService {
         applicationReason: null
       },
       hearingRequirements: {},
-      history: historyData
+      history: history
     };
   }
 

@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import _ from 'lodash';
+import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { getDeadline } from './event-deadline-date-finder';
@@ -98,9 +99,30 @@ function getAppealApplicationNextStep(req: Request) {
   return doThisNextSection;
 }
 
-function getAppealApplicationHistory() {
-  // TODO:
-  return null;
+function constructEventObject(event) {
+  const formattedDate = moment(event.date).format('DD MMMM YYYY');
+  return {
+    date: `${formattedDate}`,
+    title: i18n.pages.overviewPage.timeline[event.id].title,
+    text: i18n.pages.overviewPage.timeline[event.id].text,
+    links: i18n.pages.overviewPage.timeline[event.id].links
+  };
+}
+
+function getAppealApplicationHistory(req: Request) {
+  const history = req.session.appeal.history;
+  const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
+
+  const eventsCollected = [];
+  eventToLookFor.forEach((event: string) => {
+    const eventFound = history.find((e: Event) => event === e.id);
+    if (eventFound) {
+      const eventObject = constructEventObject(eventFound);
+      eventsCollected.push(eventObject);
+    }
+  });
+
+  return eventsCollected;
 }
 
 export {

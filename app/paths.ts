@@ -27,8 +27,7 @@ const paths = {
     letterSent: '/home-office/letter-sent',
     appealLate: '/home-office/appeal-late',
     uploadEvidence: '/home-office/upload-evidence',
-    deleteEvidence: '/home-office/delete-evidence',
-    homeOfficeDetails: '/appeal-details'
+    deleteEvidence: '/home-office/delete-evidence'
   },
   reasonsForAppeal: {
     decision: '/case-building/reason-for-appeal',
@@ -56,6 +55,12 @@ const paths = {
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy'
+  },
+  detailsViewers: {
+    document: '/view/document',
+    homeOfficeDocuments: '/view/home-office-documents',
+    appealDetails: '/view/appeal-details',
+    reasonsForAppeal: '/view/reason-for-appeal'
   }
 };
 export {

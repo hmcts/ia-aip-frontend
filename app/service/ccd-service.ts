@@ -6,6 +6,7 @@ import { SecurityHeaders } from './authentication-service';
 const ccdBaseUrl = config.get('ccd.apiUrl');
 const jurisdictionId = config.get('ccd.jurisdictionId');
 const caseType = config.get('ccd.caseType');
+const timelineEnabled = config.get('features.timelineEnabled');
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -36,6 +37,28 @@ interface SubmitEventData {
   data: Partial<CaseData>;
   event_token: string;
   ignore_warning: boolean;
+}
+
+function extractHistoryDetails(historyResponse: any[]) {
+  return historyResponse.map(event => ({
+    id: event.id,
+    event: {
+      eventName: event.event_name,
+      description: event.description
+    },
+    user: {
+      id: event.user_id,
+      lastName: event.user_last_name,
+      firstName: event.user_first_name
+    },
+    createdDate: event.created_date,
+    caseTypeVersion: event.case_type_version,
+    state: {
+      id: event.state_id,
+      name: event.state_name
+    },
+    data: event.data
+  }));
 }
 
 class CcdService {
@@ -95,7 +118,7 @@ class CcdService {
     );
   }
 
-  retrieveCaseHistory(userId: string, headers: SecurityHeaders, caseId: string): Promise<CcdCaseDetails[]> {
+  retrieveCaseHistory(userId: string, headers: SecurityHeaders, caseId: string): Promise<any[]> {
     const obj = this.createOptions(
       userId,
       headers,
@@ -138,19 +161,21 @@ class CcdService {
     });
   }
 
-  async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<any> {
+  async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseResponse> {
     logger.trace('Loading or creating case', logLabel);
-    const cases = await this.loadCasesForUser(userId, headers);
+    const cases: CcdCaseDetails[] = await this.loadCasesForUser(userId, headers);
+    let history = [];
     if (cases.length > 0) {
       logger.trace(`found [${cases.length}] cases`, logLabel);
-
-      // TODO: Retrieve history once endpoint is enabled and add to session.
-      const history = await this.retrieveCaseHistory(userId, headers, cases[0].id);
+      if (timelineEnabled) {
+        const historyResponse = await this.retrieveCaseHistory(userId, headers, cases[0].id);
+        history = extractHistoryDetails(historyResponse);
+      }
       return { case: cases[0], history: history };
     } else {
       logger.trace('Did not find a case', logLabel);
-      const newCase = await this.createCase(userId, headers);
-      return { case: newCase, history: null };
+      const newCase: CcdCaseDetails = await this.createCase(userId, headers);
+      return { case: newCase, history: history };
     }
   }
 }

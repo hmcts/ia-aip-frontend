@@ -57,5 +57,8 @@
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"
   },
-  "showTests": "SHOW_TESTS"
+  "showTests": "SHOW_TESTS",
+  "features": {
+    "timelineEnabled": "TIMELINE_ENABLED"
+  }
 }

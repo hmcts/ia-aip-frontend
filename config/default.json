@@ -65,5 +65,8 @@
   "maxCharacters": 50000,
   "evidenceUpload": {
     "maxFileSizeInMb": 100
+  },
+  "features": {
+    "timelineEnabled": false
   }
 }

@@ -1,16 +1,16 @@
-{%  macro timeline(links, date) %}
-    <h3 class="govuk-headeing-s">Completed</h3>
-         {%  for test in links %}
-        <h3 class="govuk-headeing-s">{{ test.title }}</h3>
-        <div style="display: inline-flex;">
-            <span class="timeline-tick"></span>
-            <div><span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span>{{ test.text }}</div>
-        </div>
-            {%  for test in test.link %}
-        <div style="margin-left: 7rem">
-            <h3 class="govuk-link govuk-headeing-s govuk-!-margin-bottom-1">{{ test.title }}</h3>
-            <a href="{{test.href}}" class="govuk-link govuk-headeing-s govuk-!-margin-bottom-1">{{ test.text }}</a>
-        </div>
+{% macro timeline(history) %}
+  <h3 class="govuk-heading-s">Completed</h3>
+  {% for event in history %}
+    <h3 class="govuk-heading-s">{{ event.title }}</h3>
+    <div class="inline-flow">
+      <div class="timeline-tick"></div>
+      <div><span class='govuk-body govuk-!-font-weight-bold'>{{ event.date }}</span> - {{ event.text }}</div>
+    </div>
+    {% for link in event.links %}
+      <div class="timeline-margin-left">
+        <h3 class="govuk-link govuk-heading-s govuk-!-margin-bottom-1">{{ link.title }}</h3>
+        <a href="{{ link.href }}" class="govuk-link govuk-heading-s govuk-!-margin-bottom-1">{{ link.text }}</a>
+      </div>
     {% endfor %}
-    {% endfor %}
+  {% endfor %}
 {% endmacro %}

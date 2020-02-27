@@ -58,8 +58,12 @@
   }) }}
 {% endmacro %}
 
-{% macro contactUsErrorLink() %}
-  {{ i18n.components.contactUsErrorLink.linsonk | safe }}
+{% macro contactUsErrorPages() %}
+  <p class="govuk-body govuk-!-margin-top-6"><b>{{ i18n.components.contactUs.heading }}</b></p>
+  <p class="govuk-body">{{ i18n.components.contactUsErrorPages.telephone }}</p>
+  <p class="govuk-body">
+    {{ i18n.components.contactUsErrorPages.linesOpeningTimes }} <br>
+    {{ i18n.components.contactUsErrorPages.callCharges |safe }}</p>
 {% endmacro %}
 
 {% block head %}

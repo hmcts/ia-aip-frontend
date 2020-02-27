@@ -6,14 +6,13 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">{{ i18n.error.error404.header }}</h1>
       <p class="govuk-body">
-        {{ i18n.error.error404.webAddress }}
+        {{ i18n.error.error404.checkAddress }}
       </p>
       <p class="govuk-body">
-        {{ i18n.error.error404.pasted }}
+        {{ i18n.error.error404.orGoBack | safe }}
       </p>
-      <p class="govuk-body">
-        {{ i18n.error.error404.link }}
-        {{ contactUsErrorLink() }}
+      <p class="govuk-body govuk-!-margin-top-9">
+        {{ contactUs() }}
       </p>
     </div>
   </div>

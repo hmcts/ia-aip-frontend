@@ -26,9 +26,6 @@
     }
   },
   "pages": {
-    "overviewPage": {
-      "title": "Overview"
-    },
     "index": {
       "title": "Home"
     },
@@ -265,9 +262,9 @@
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
         "appealStarted": {
-          "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
-          "finishQuestions": "You need to finish telling us about your appeal.",
-          "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
+            "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
+            "finishQuestions": "You need to finish telling us about your appeal.",
+            "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
         },
         "appealSubmitted": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
@@ -276,6 +273,10 @@
             "title": "Helpful Information",
             "url": "<a href=\"#\">What is a Tribunal Caseworker?</a>"
           }
+        },
+        "reasonsForAppealSubmitted": {
+          "detailsSent": "You have told us why you think the Home Office decision is wrong.",
+          "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>Date TBC</span> to tell you what to do next."
         }
       },
       "answersBeenSaved": "Your answers have been saved"
@@ -509,15 +510,13 @@
     "error404": {
       "title": "Page not found",
       "header": "Page not found",
-      "webAddress": "If you typed the web address, check it is correct.",
-      "pasted": "If you pasted the web address, check you copied the entire address.",
-      "link": "If the web address is correct or you selected a link or button"
+      "checkAddress": "Check that you have entered the correct web address.",
+      "orGoBack": "Or <a class='govuk-link', href='/start'>go back to the Start page.</a>"
     },
     "error500": {
       "title": "Service unavailable",
-      "header": "Sorry, there is a problem with the service",
-      "tryAgain": "Try again later.",
-      "savedAnswers": "We saved your answers. They will be available for 30 days."
+      "header": "Sorry, there is a problem with this service",
+      "tryAgain": "Please try again later."
     }
   },
   "cookieBanner": {
@@ -604,10 +603,12 @@
     },
     "contactUs": {
       "heading": "Contact us for help",
-      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p><p>Email: <a href='mailto:customer.service@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>customer.service@justice.gov.uk</a></p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges</a><p>(opens in a new window)</p></div>"
+      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p><p>Email: <a href='mailto:customer.service@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>customer.service@justice.gov.uk</a></p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' rel='noopener noreferrer' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges</a><p>(opens in a new window)</p></div>"
     },
-    "contactUsErrorLink": {
-      "link": "<a class=\"govuk-link\" href=\"#\">Contact the Immigration & Asylum Helpline</a> if you need to make changes to your application or speak to someone about your tax credits."
+    "contactUsErrorPages": {
+      "telephone": "Telephone: 0300 123 1711",
+      "linesOpeningTimes": "Lines open Monday to Friday 8.30am to 5pm",
+      "callCharges": "<a class='govuk-link' href='https://www.gov.uk/call-charges'>Find out about call charges</a>"
     },
     "header": {
       "signOut": "Sign out"

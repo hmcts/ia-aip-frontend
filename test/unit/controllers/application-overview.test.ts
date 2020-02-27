@@ -61,8 +61,9 @@ describe('Confirmation Page Controller', () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
-        forename: 'Alex',
-        surname: 'Developer'
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';

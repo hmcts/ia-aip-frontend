@@ -1,3 +1,5 @@
+import { paths } from '../../../app/paths';
+
 const textToId = {
   'Your personal details': '#personalDetailsLink',
   'Your contact details': '#contactDetailsLink',
@@ -8,7 +10,7 @@ const textToId = {
 module.exports = {
   taskList(I) {
     Then('I should see the task-list page', async () => {
-      await I.seeInCurrentUrl('task-list');
+      await I.seeInCurrentUrl(paths.taskList);
     });
 
     Then('I shouldnt be able to click Personal details', async () => {
@@ -30,7 +32,7 @@ module.exports = {
     });
 
     Then('I should be taken to the task-list page', async () => {
-      await I.seeInCurrentUrl('task-list');
+      await I.seeInCurrentUrl(paths.taskList);
     });
 
     When('I click Your personal details', async () => {

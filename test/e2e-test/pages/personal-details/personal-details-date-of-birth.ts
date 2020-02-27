@@ -11,7 +11,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the DOB page$/, async () => {
-      await I.seeInCurrentUrl('details/date-of-birth');
+      await I.seeInCurrentUrl(paths.personalDetails.dob);
     });
 
     Then('I should see the date of birth page', async () => {

@@ -27,7 +27,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the contact\-details page$/, async () => {
-      await I.seeInCurrentUrl('contact-details');
+      await I.seeInCurrentUrl(paths.contactDetails);
     });
   }
 };

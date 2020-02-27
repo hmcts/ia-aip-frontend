@@ -17,7 +17,7 @@ module.exports = {
     });
 
     Then(/^I should see letter sent page$/, async () => {
-      await I.seeInCurrentUrl('/letter-sent');
+      await I.seeInCurrentUrl(paths.homeOffice.letterSent);
     });
 
     When(/^I enter an on time letter sent date$/, async () => {

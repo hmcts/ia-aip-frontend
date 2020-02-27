@@ -86,7 +86,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: '/personal-details/nationality'
+        previousPage: paths.personalDetails.nationality
       });
     });
 
@@ -110,7 +110,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: '/personal-details/nationality'
+        previousPage: paths.personalDetails.nationality
       });
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
@@ -122,7 +122,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: '/personal-details/nationality'
+        previousPage: paths.personalDetails.nationality
       });
     });
 

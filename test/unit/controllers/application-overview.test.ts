@@ -71,7 +71,7 @@ describe('Confirmation Page Controller', () => {
     getApplicationOverview(req as Request, res as Response, next);
 
     const expectedNextStep = {
-      cta: '/task-list',
+      cta: paths.taskList,
       deadline: null,
       descriptionParagraphs: [
         'You need to answer a few questions about yourself and your appeal to get started.',

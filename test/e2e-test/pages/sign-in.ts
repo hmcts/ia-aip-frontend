@@ -25,13 +25,13 @@ module.exports = {
     Given('I am authenticated as a valid appellant', async () => {
       I.amOnPage(testUrl + paths.login);
       await signInHelper();
-      await I.seeInTitle(`Overview - ${i18n.serviceName} - ${i18n.provider}`);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given('I have logged in', async () => {
       I.amOnPage(testUrl + paths.login);
       signInForUser('setupcase@example.com');
-      await I.seeInTitle(`Overview - ${i18n.serviceName} - ${i18n.provider}`);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given(/^I have logged in as an appellant in state "([^"]*)"$/, async (appealState) => {
@@ -56,7 +56,7 @@ module.exports = {
         }
       }
 
-      await I.seeInTitle(`Overview - ${i18n.serviceName} - ${i18n.provider}`);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
   }
 };

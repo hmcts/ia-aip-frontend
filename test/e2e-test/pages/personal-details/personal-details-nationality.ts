@@ -10,7 +10,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to nationality page$/, async () => {
-      await I.seeInCurrentUrl('details/nationality');
+      await I.seeInCurrentUrl(paths.personalDetails.nationality);
     });
 
     When(/^I pick "([^"]*)" from the Nationalities drop down and click continue$/, async (nation) => {

@@ -11,12 +11,12 @@
     }) }}
   {% endif %}
   <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.postcodeLookup.heading }}</h1>
-  <form method="post" action="/personal-details/postcode-lookup">
+  <form method="post" action="{{ paths.personalDetails.postcodeLookup }}">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    <p class="govuk-body-l">{{ i18n.pages.postcodeLookup.title }}</p>
+    <p class="govuk-body-l">{{ i18n.pages.postcodeLookup.postcodeHeading }}</p>
     <span><span  class='govuk-body govuk-!-font-weight-bold'> {{ postcode }}</span>  &emsp;
       <a class="govuk-link app-contact-panel__link"
-         href="/personal-details/enter-postcode">Change</a></span>
+         href="{{ paths.personalDetails.enterPostcode }}">Change</a></span>
     </br>
     </br>
     {{ govukSelect({
@@ -31,7 +31,7 @@
       } if error['address']
     }) }}
     <a class="govuk-link app-contact-panel__link"
-       href="/personal-details/enter-address">{{ i18n.pages.postcodeLookup.cantFind }}</a>
+       href="{{ paths.personalDetails.enterAddress }}">{{ i18n.pages.postcodeLookup.cantFind }}</a>
     </br>
     </br>
     <div class="buttons__container">
@@ -44,7 +44,7 @@
 
       {{ govukButton({
         text: i18n.common.buttons.saveForLater,
-        href: '/task-list',
+        href: paths.taskList,
         classes: "govuk-button--secondary"
       }) }}
     </div>

@@ -12,7 +12,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form type="submit" action="/case-building/reason-for-appeal" method="post">
+  <form type="submit" action="{{ paths.reasonsForAppeal.decision }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {

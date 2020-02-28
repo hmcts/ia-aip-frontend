@@ -22,11 +22,11 @@ export default class UpdateAppealService {
     this._authenticationService = authenticationService;
   }
 
-  get ccdService(): CcdService {
+  getCcdService(): CcdService {
     return this._ccdService;
   }
 
-  get authenticationService(): AuthenticationService {
+  getAuthenticationService(): AuthenticationService {
     return this._authenticationService;
   }
 

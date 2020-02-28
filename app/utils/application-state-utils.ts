@@ -4,7 +4,6 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
-import { CcdService } from '../service/ccd-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { getDeadline } from './event-deadline-date-finder';
 
@@ -113,9 +112,9 @@ function constructEventObject(event) {
 }
 
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
-  const authenticationService = updateAppealService.authenticationService;
+  const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
-  const ccdService = updateAppealService.ccdService;
+  const ccdService = updateAppealService.getCcdService();
   const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.ccdCaseId, headers);
 
   req.session.appeal.history = history;

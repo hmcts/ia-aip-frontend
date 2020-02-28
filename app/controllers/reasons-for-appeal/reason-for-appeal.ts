@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -18,7 +17,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
-      previousPage: paths.caseBuilding.timeline,
+      previousPage: paths.overview,
       applicationReason: req.session.appeal.reasonsForAppeal.applicationReason
     });
   } catch (e) {
@@ -49,7 +48,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.caseBuilding.timeline);
+        return res.redirect(paths.overview);
       }
 
       return getConditionalRedirectUrl(req, res, paths.reasonsForAppeal.supportingEvidence);
@@ -115,7 +114,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.caseBuilding.timeline);
+        return res.redirect(paths.overview);
       } else {
         if (req.session.appeal.reasonsForAppeal.evidences === undefined) {
           const validation = [ {

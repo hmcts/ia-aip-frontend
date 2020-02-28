@@ -118,7 +118,7 @@ class CcdService {
     );
   }
 
-  retrieveCaseHistory(userId: string, headers: SecurityHeaders, caseId: string): Promise<any[]> {
+  retrieveCaseHistory(userId: string, caseId: string, headers: SecurityHeaders): Promise<any[]> {
     const obj = this.createOptions(
       userId,
       headers,
@@ -178,7 +178,7 @@ class CcdService {
     logger.trace(`Loading history for case with ID ${caseId}`, logLabel);
     let history = [];
     if (timelineEnabled) {
-      const historyResponse = await this.retrieveCaseHistory(userId, headers, caseId);
+      const historyResponse = await this.retrieveCaseHistory(userId, caseId, headers);
       history = extractHistoryDetails(historyResponse);
     }
     return history;

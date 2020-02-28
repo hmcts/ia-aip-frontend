@@ -138,7 +138,6 @@ describe('fields-validations', () => {
     });
 
     it('date is empty ', () => {
-      const date = new Date();
       const notValidDate = { day: '44', month: '22', year: '9999' };
       const validations = DOBValidation(notValidDate, errors);
 
@@ -149,7 +148,6 @@ describe('fields-validations', () => {
     });
 
     it('date must of a person over 18', () => {
-      const date = new Date();
       const notValidDate = { day: '', month: '', year: '' };
       const validations = DOBValidation(notValidDate, errors);
 

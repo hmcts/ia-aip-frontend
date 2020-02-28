@@ -4,7 +4,6 @@
   "serviceName": "Immigration & Asylum",
   "serviceUrl": "#",
   "errorTitlePrefix": "Error:",
-  "completed": "Completed",
   "common": {
     "buttons": {
       "saveAndContinue": "Save and continue",
@@ -278,6 +277,7 @@
       },
       "answersBeenSaved": "Your answers have been saved",
       "timeline": {
+        "completed": "Completed",
         "submitAppeal": {
           "title": "Your appeal details",
           "date": "{{ date }}",

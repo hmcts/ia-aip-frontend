@@ -286,6 +286,7 @@
       },
       "answersBeenSaved": "Your answers have been saved",
       "timeline": {
+        "completed": "Completed",
         "submitAppeal": {
           "title": "Your appeal details",
           "date": "{{ date }}",

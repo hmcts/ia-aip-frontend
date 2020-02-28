@@ -1,6 +1,6 @@
 {% extends 'layout.njk' %}
 {% from "components/progress-bar.njk" import progressBar with context %}
-{% from "components/overview-timeline.njk" import timeline %}
+{% from "components/overview-timeline.njk" import timeline with context %}
 {% set pageTitleName = i18n.pages.overviewPage.title %}
 
 {% block content %}

@@ -15,6 +15,7 @@ import { filterRequest } from './middleware/xss-middleware';
 import { paths } from './paths';
 import { router } from './routes';
 import { setupSession } from './session';
+import { getUrl } from './utils/url-utils';
 
 function createApp() {
   const app: express.Application = express();
@@ -47,6 +48,7 @@ function createApp() {
 
   app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
+    res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });
   app.use(router);
@@ -93,7 +95,7 @@ function configureHelmet(app) {
       ],
       imgSrc: [
         '\'self\'',
-        '\'self\' data:',
+        'data:',
         'www.google-analytics.com',
         'www.googletagmanager.com',
         'tagmanager.google.com',

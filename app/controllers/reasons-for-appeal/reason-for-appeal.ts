@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
+import { Events } from '../../service/ccd-service';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -40,8 +41,8 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         ...req.session.appeal.reasonsForAppeal,
         applicationReason: req.body.applicationReason
       };
-      // TODO: create new Event editReasonsForAppeal
-      // await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+
+      await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
 
       if (req.body['saveForLater']) {
         if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
@@ -127,8 +128,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
             error: validation
           });
         }
-        // TODO: create new Event editReasonsForAppeal
-        // await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+        await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
         return getConditionalRedirectUrl(req, res, paths.reasonsForAppeal.checkAndSend);
       }
     } catch (e) {

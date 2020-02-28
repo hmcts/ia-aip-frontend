@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { getDeadline } from './event-deadline-date-finder';
@@ -71,6 +71,13 @@ const APPEAL_STATE = {
       url: paths.reasonsForAppeal.decision,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
     }
+  },
+  'reasonsForAppealSubmitted': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
+      i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
+    ],
+    cta: null
   }
 };
 

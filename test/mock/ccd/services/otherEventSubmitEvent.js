@@ -4,6 +4,8 @@ function getNextState(body) {
       return 'appealStarted';
     case 'submitAppeal':
       return 'appealSubmitted';
+    case 'editReasonsForAppeal':
+      return 'awaitingReasonsForAppeal';
     default:
       throw `Event type ${body.eventType} no next state set`
   }

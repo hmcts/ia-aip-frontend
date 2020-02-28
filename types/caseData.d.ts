@@ -4,7 +4,7 @@ interface SupportingDocument {
   document_binary_url: string;
 }
 
-interface Event {
+interface EventHistory {
   id: string;
   event: {
     eventName: string;
@@ -22,11 +22,6 @@ interface Event {
     name: string;
   };
   data: any;
-}
-
-interface CcdCaseResponse {
-  case: CcdCaseDetails;
-  history: any;
 }
 
 interface CcdCaseDetails {

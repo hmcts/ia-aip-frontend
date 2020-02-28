@@ -280,7 +280,6 @@
         "completed": "Completed",
         "submitAppeal": {
           "title": "Your appeal details",
-          "date": "{{ date }}",
           "text": "You sent your appeal details to the Tribunal.",
           "links": [
             {
@@ -297,7 +296,6 @@
         },
         "submitReasonsForAppeal": {
           "title": "Your appeal argument",
-          "date": "{{ date }}",
           "text": "You told us why you think the Home Office decision to refuse your claim is wrong.",
           "links": [
             {

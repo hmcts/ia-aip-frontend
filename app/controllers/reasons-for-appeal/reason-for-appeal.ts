@@ -49,7 +49,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.overview);
+        return res.redirect(paths.overview + '?saved');
       }
 
       return getConditionalRedirectUrl(req, res, paths.reasonsForAppeal.supportingEvidence);
@@ -115,7 +115,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.overview);
+        return res.redirect(paths.overview + '?saved');
       } else {
         if (req.session.appeal.reasonsForAppeal.evidences === undefined) {
           const validation = [ {

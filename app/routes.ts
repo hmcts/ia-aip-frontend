@@ -42,6 +42,8 @@ const indexController = setupIndexController();
 const startController = setupStartController();
 const healthController = setupHealthController();
 const idamController = setupIdamController();
+
+const applicationOverview = setupApplicationOverviewController(updateAppealService);
 const taskListController = setupTaskListController();
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(updateAppealService);
@@ -51,7 +53,6 @@ const checkAndSendController = setupCheckAndSendController(updateAppealService);
 const confirmationController = setConfirmationController();
 const outOfTimeController = setupOutOfTimeController({ updateAppealService, documentManagementService });
 const eligibilityController = setupEligibilityController();
-const applicationOverview = setupApplicationOverviewController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
 

@@ -41,7 +41,7 @@ describe('application-state-utils', () => {
     it('when application status is appealStarted should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'appealStarted';
 
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = getAppealApplicationNextStep(req as Request, updateAppealService);
 
       expect(result).to.deep.equal({
         cta: '/task-list',
@@ -62,7 +62,7 @@ describe('application-state-utils', () => {
       req.session.appeal.appealCreatedDate = '2020-02-06T16:00:00.000';
       req.session.appeal.appealLastModified = '2020-02-07T16:00:00.000';
 
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = getAppealApplicationNextStep(req as Request, updateAppealService);
 
       expect(result).to.eql({
         cta: null,

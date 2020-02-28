@@ -36,7 +36,7 @@ interface SubmitEventData {
   ignore_warning: boolean;
 }
 
-function extractHistoryDetails(historyResponse: any[]) {
+function extractHistoryDetails(historyResponse: any[]): EventHistory[] {
   return historyResponse.map(event => ({
     id: event.id,
     event: {
@@ -158,22 +158,27 @@ class CcdService {
     });
   }
 
-  async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseResponse> {
+  async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
     const cases: CcdCaseDetails[] = await this.loadCasesForUser(userId, headers);
-    let history = [];
     if (cases.length > 0) {
       logger.trace(`found [${cases.length}] cases`, logLabel);
-      if (timelineEnabled) {
-        const historyResponse = await this.retrieveCaseHistory(userId, headers, cases[0].id);
-        history = extractHistoryDetails(historyResponse);
-      }
-      return { case: cases[0], history: history };
+      return cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);
       const newCase: CcdCaseDetails = await this.createCase(userId, headers);
-      return { case: newCase, history: history };
+      return newCase;
     }
+  }
+
+  async getCaseHistory(userId: string, caseId: string, headers: SecurityHeaders): Promise<EventHistory[]> {
+    logger.trace(`Loading history for case with ID ${caseId}`, logLabel);
+    let history = [];
+    if (timelineEnabled) {
+      const historyResponse = await this.retrieveCaseHistory(userId, headers, caseId);
+      history = extractHistoryDetails(historyResponse);
+    }
+    return history;
   }
 }
 

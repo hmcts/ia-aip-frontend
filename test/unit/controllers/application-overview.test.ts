@@ -53,7 +53,7 @@ describe('Confirmation Page Controller', () => {
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
-    setupApplicationOverviewController();
+    setupApplicationOverviewController(updateAppealService);
     expect(routerGetStub).to.have.been.calledWith(paths.overview);
   });
 

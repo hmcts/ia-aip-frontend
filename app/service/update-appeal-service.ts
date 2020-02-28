@@ -14,19 +14,25 @@ enum YesOrNo {
 }
 
 export default class UpdateAppealService {
-  private ccdService: CcdService;
-  private authenticationService: AuthenticationService;
+  private readonly _ccdService: CcdService;
+  private readonly _authenticationService: AuthenticationService;
 
   constructor(ccdService: CcdService, authenticationService: AuthenticationService) {
-    this.ccdService = ccdService;
-    this.authenticationService = authenticationService;
+    this._ccdService = ccdService;
+    this._authenticationService = authenticationService;
+  }
+
+  get ccdService(): CcdService {
+    return this._ccdService;
+  }
+
+  get authenticationService(): AuthenticationService {
+    return this._authenticationService;
   }
 
   async loadAppeal(req: Request) {
-    const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
-    const caseResponse: CcdCaseResponse = await this.ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
-    const ccdCase: CcdCaseDetails = caseResponse.case;
-    const history: any = caseResponse.history;
+    const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
+    const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
 
     req.session.ccdCaseId = ccdCase.id;
 
@@ -101,8 +107,7 @@ export default class UpdateAppealService {
       reasonsForAppeal: {
         applicationReason: null
       },
-      hearingRequirements: {},
-      history: history
+      hearingRequirements: {}
     };
   }
 
@@ -135,7 +140,7 @@ export default class UpdateAppealService {
   }
 
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
-    const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
+    const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
 
     const currentUserId = req.idam.userDetails.uid;
     const caseData = this.convertToCcdCaseData(req.session.appeal);
@@ -145,7 +150,7 @@ export default class UpdateAppealService {
       case_data: caseData
     };
 
-    const updatedAppeal = await this.ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
+    const updatedAppeal = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
     return updatedAppeal;
   }
 

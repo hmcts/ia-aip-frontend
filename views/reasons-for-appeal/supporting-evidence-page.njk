@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.evidence.title %}
+{% set pageTitleName = i18n.pages.reasonsForAppealUploadQuestion.title %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
@@ -13,11 +13,11 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form action="/case-building/reason-for-appeal/supporting-evidence" method="post">
+  <form action="{{ paths.reasonsForAppeal.supportingEvidence }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
-        text: i18n.pages.reasonsForAppealUpload.provideSupportingEvidenceQuestion,
+        text: i18n.pages.reasonsForAppealUploadQuestion.provideSupportingEvidenceQuestion,
         classes: "govuk-fieldset__legend--xl",
         isPageHeading: true
       }

@@ -1,7 +1,9 @@
 import config from 'config';
 import express from 'express';
+import * as _ from 'lodash';
 import * as nunjucks from 'nunjucks';
 import path from 'path';
+import { paths } from './paths';
 import S2SService from './service/s2s-service';
 import Logger from './utils/logger';
 
@@ -22,6 +24,9 @@ function configureNunjucks(app: express.Application) {
   });
   nunjucksEnv.addFilter('eval', function(text: string) {
     return nunjucks.renderString(text, this.ctx);
+  });
+  nunjucksEnv.addFilter('path', function(path: string) {
+    return _.get(paths, path);
   });
 }
 

@@ -124,6 +124,7 @@ describe('fields-validations', () => {
 
     it('date must of a person over 18', () => {
       const date = moment().subtract(18, 'years').add(1, 'months').add(1, 'days');
+
       const notValidDate = { day: date.date().toString(), month: (date.month() + 1).toString(), year: date.year().toString() };
 
       const validations = DOBValidation(notValidDate, errors);
@@ -145,7 +146,7 @@ describe('fields-validations', () => {
         });
     });
 
-    it('date must of a person over 18', () => {
+    it('date must of a person over 18 2', () => {
       const date = new Date();
       const notValidDate = { day: '', month: '', year: '' };
       const validations = DOBValidation(notValidDate, errors);

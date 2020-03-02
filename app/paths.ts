@@ -60,7 +60,7 @@ const paths = {
     document: '/view/document',
     homeOfficeDocuments: '/view/home-office-documents',
     appealDetails: '/view/appeal-details',
-    reasonsForAppeal: '/view/reason-for-appeal'
+    reasonsForAppeal: '/view/reasons-for-appeal'
   }
 };
 export {

@@ -285,7 +285,7 @@
             {
               "title": "What you sent",
               "text": "Your appeal details",
-              "href": "/appeal-details"
+              "href": "/view/appeal-details"
             },
             {
               "title": "Helpful information",
@@ -301,7 +301,7 @@
             {
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
-              "href": "/view/reason-for-appeal"
+              "href": "/view/reasons-for-appeal"
             },
             {
               "title": "Useful documents",
@@ -314,6 +314,11 @@
               "href": "/home-office-documents"
             }
           ]
+        },
+        "reasonsForAppealCheckAnswersHistory": {
+          "title": "Why you think the Home Office is wrong",
+          "question": "Question",
+          "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
         }
       }
     },

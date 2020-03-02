@@ -10,6 +10,7 @@ import { setupPersonalDetailsController } from './controllers/appeal-application
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
@@ -44,6 +45,7 @@ const idamController = setupIdamController();
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
 const taskListController = setupTaskListController();
+const detailViewerController = setupDetailViewersController();
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(updateAppealService);
 const personalDetailsController = setupPersonalDetailsController({ updateAppealService, osPlacesClient });
@@ -66,6 +68,7 @@ router.use(eligibilityController);
 router.use(GuidancePages);
 
 // protected by idam
+router.use(detailViewerController);
 router.use(idamController);
 // router.use(initSession);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {

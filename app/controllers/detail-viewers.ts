@@ -6,6 +6,7 @@ import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import { DocumentManagementService } from '../service/document-management-service';
 import { addSummaryRowNoChange, Delimiter } from '../utils/summary-list';
+import { data } from './test';
 
 /**
  * Takes in a fileName and converts it to the correct display format
@@ -80,10 +81,27 @@ function setupAnswers(req: Request): Array<any> {
   return array;
 }
 
-function getReasonsForAppealDetailsViewer(req: Request, res: Response, next: NextFunction): void {
+function setupAnswersReasonsForAppeal(req: Request): Array<any> {
+  const array = [];
+  const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
+  const { data } = reasonsForAppeal[0];
+  const listOfDocuments: string[] = data.respondentDocuments.map(evidence => {
+    return evidence.value.document.document_filename;
+  });
+  array.push(addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.question,[i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong]));
+  if (checkIfValueIsInHistory(req,data.reasonsForAppealDecision)) {
+    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title,[data.reasonsForAppealDecision]));
+  }
+  if (checkIfValueIsInHistory(req,data.respondentDocuments)) {
+    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.heading,[...Object.values(listOfDocuments)],Delimiter.BREAK_LINE));
+  }
+  return array;
+}
+
+function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction): void {
   try {
     let previousPage: string = paths.overview;
-    return res.render('home-office-details.njk', {
+    return res.render('detail-viewers/appeal-details-viewer.njk', {
       previousPage: previousPage,
       data: setupAnswers(req)
     });
@@ -92,14 +110,28 @@ function getReasonsForAppealDetailsViewer(req: Request, res: Response, next: Nex
   }
 }
 
-function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
+function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction): void {
+  try {
+    let previousPage: string = paths.overview;
+    return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      previousPage: previousPage,
+      data: setupAnswersReasonsForAppeal(req)
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function setupDetailViewersController(): Router {
   const router = Router();
-  router.get(paths.detailsViewers.reasonsForAppeal, getReasonsForAppealDetailsViewer);
+  router.get(paths.detailsViewers.appealDetails, getAppealDetailsViewer);
+  router.get(paths.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
 
   return router;
 }
 
 export {
   setupDetailViewersController,
-  getReasonsForAppealDetailsViewer
+  getAppealDetailsViewer,
+  getReasonsForAppealViewer
 };

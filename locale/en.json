@@ -7,7 +7,14 @@
   "errorTitlePrefix": "Error:",
   "phaseBanner": {
     "version": "Beta",
-    "text": "This is a new service – your <a class='govuk-link' href='#' target='_blank'>feedback</a> will help us to improve it. (opens in a new window)"
+    "text": [
+      "This is a new service – your ", 
+      " will help us to improve it. (opens in a new window)"
+    ],
+    "feedbackSurveyLik": {
+      "href": "https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum/",
+      "text": "feedback"
+    }
   },
   "common": {
     "buttons": {

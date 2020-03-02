@@ -11,30 +11,29 @@ module.exports = {
       await I.amOnPage(testUrl + paths.overview);
     });
 
-    Then(/^I should see the 'do this next section' for 'New - Appeal started'$/, () => {
-      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//*[@id="doThisNextTitle"]/h2[1]');
-      I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions}</p>`);
+    When(/^I should see the 'do this next section' for 'New - Appeal started'$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions}</p>`);
     });
 
-    Then(/^I should see the 'do this next section' for 'Saved - Appeal started'$/, () => {
-      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//*[@id="doThisNextTitle"]/h2[1]');
-      I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.appealStarted.finishQuestions}</p>`);
+    When(/^I should see the 'do this next section' for 'Saved - Appeal started'$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.appealStarted.finishQuestions}</p>`);
 
     });
-
-    Then(/^I should see the 'do this next section' for 'Appeal submitted'$/, () => {
-      I.see(i18n.pages.overviewPage.doThisNext.nothingToDo, '//*[@id="doThisNextTitle"]/h2[1]');
-      I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent}</p>`);
+    When(/^I should see the 'do this next section' for 'Appeal submitted'$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.nothingToDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent}</p>`);
     });
 
     Then(/^I should see the 'do this next section' for 'Awaiting reasons for appeal'$/, () => {
-      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//*[@id="doThisNextTitle"]/h2[1]');
-      I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description}</p>`);
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description}</p>`);
     });
 
     Then(/^I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'$/, () => {
-      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//*[@id="doThisNextTitle"]/h2[1]');
-      I.seeInSource(`<p class="govuk-body">${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description}</p>`);
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description}</p>`);
     });
   }
 };

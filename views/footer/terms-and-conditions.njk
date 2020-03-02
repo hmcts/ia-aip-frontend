@@ -1,0 +1,14 @@
+{% extends "layout.njk" %}
+{% set pageTitleName = i18n.pages.termsAndConditions.title %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ i18n.pages.termsAndConditions.title }}</h1>
+  <p>{{ i18n.pages.termsAndConditions.description | safe }}</p>
+  {% for section in i18n.pages.termsAndConditions.sections %}
+    <h2 class="govuk-heading-m">{{ section.title }}</h2>
+    {% for item in section.content %}
+      <p>{{ item | safe }}</p>
+    {% endfor %}  
+  {% endfor %}
+  {{ contactUs() }}
+{% endblock %}

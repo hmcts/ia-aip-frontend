@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   appellantNamesValidation,
   contactDetailsValidation,
@@ -122,8 +123,9 @@ describe('fields-validations', () => {
     });
 
     it('date must of a person over 18', () => {
-      const date = new Date();
-      const notValidDate = { day: (date.getUTCDate() + 1).toString(), month: (date.getMonth() + 1).toString(), year: (date.getFullYear() - 18).toString() };
+      const date = moment().subtract(18, 'years').add(1, 'months').add(1, 'days');
+      const notValidDate = { day: date.date().toString(), month: (date.month() + 1).toString(), year: date.year().toString() };
+
       const validations = DOBValidation(notValidDate, errors);
 
       expect(validations).to.deep.equal(

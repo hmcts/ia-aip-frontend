@@ -240,5 +240,9 @@ module.exports = {
     Then(/^I am on the overview page$/, async () => {
       await I.amOnPage(`https://localhost:3000/overview`);
     });
+
+    Then(/^I see "([^"]*)" in title$/, async (title: string) => {
+      await I.see(title, 'h1');
+    });
   }
 };

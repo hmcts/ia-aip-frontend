@@ -40,6 +40,13 @@ const APPEAL_STATE = {
       url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
     },
     cta: null
+  },
+  'reasonsForAppealSubmitted': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
+      i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
+    ],
+    cta: null
   }
 };
 

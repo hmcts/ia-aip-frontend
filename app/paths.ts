@@ -51,6 +51,11 @@ const paths = {
     questions: '/eligibility',
     eligible: '/eligible'
   },
+  footer: {
+    cookies: '/cookie-policy',
+    termsAndConditions: '/terms-and-conditions',
+    privacyPolicy: '/privacy-policy'
+  },
   detailsViewers: {
     document: '/view/document',
     homeOfficeDocuments: '/view/home-office-documents',

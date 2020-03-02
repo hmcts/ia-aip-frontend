@@ -1,0 +1,23 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% set pageTitleName = i18n.pages.cookies.pageTitle %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ i18n.pages.cookies.title }}</h1>
+  <p>{{ i18n.pages.cookies.description | safe }}</p>
+  {% for section in i18n.pages.cookies.sections %}
+    <h2 class="govuk-heading-m">{{ section.title }}</h2>
+    {% for item in section.content %}
+      {% if item.table %}
+        {{ govukTable({
+          firstCellIsHeader: true,
+          head: item.table.head,
+          rows: item.table.rows
+        }) }}
+      {% else %}
+        <p>{{ item | safe }}</p>
+      {% endif %}
+    {% endfor %}  
+  {% endfor %}
+  {{ contactUs() }}
+{% endblock %}

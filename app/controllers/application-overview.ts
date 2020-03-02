@@ -9,9 +9,11 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const isPartiallySaved = _.has(req.query, 'saved');
-      const loggedInUserFullName = `${req.idam.userDetails.forename} ${req.idam.userDetails.surname}`;
+
+      const loggedInUserFullName = `${req.idam.userDetails.name}`;
       const stages = buildProgressBarStages(req.session.appeal.appealStatus);
       const history = await getAppealApplicationHistory(req, updateAppealService);
+
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
         applicationNextStep: getAppealApplicationNextStep(req),

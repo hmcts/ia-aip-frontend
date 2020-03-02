@@ -108,6 +108,7 @@ interface AppealType {
 
 interface IdamDetails {
   uid: string;
-  forename: string;
-  surname: string;
+  name: string;
+  given_name: string;
+  family_name: string;
 }

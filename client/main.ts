@@ -1,4 +1,5 @@
 import * as govUK from 'govuk-frontend';
+import { addAriaExpandedAttribute,addAriaExpandedEventListener } from './aria-utils';
 import CookiesBanner from './cookies-banner';
 
 const ready = (callback) => {
@@ -10,6 +11,8 @@ ready(() => {
   const cookies: CookiesBanner = new CookiesBanner();
   cookies.init();
   govUK.initAll();
+  addAriaExpandedAttribute();
+  addAriaExpandedEventListener();
 });
 
 export {

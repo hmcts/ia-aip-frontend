@@ -1,13 +1,7 @@
 import { Request } from 'express';
-import { AuthenticationService, SecurityHeaders } from '../../../app/service/authentication-service';
-import { CcdService } from '../../../app/service/ccd-service';
-import IdamService from '../../../app/service/idam-service';
-import S2SService from '../../../app/service/s2s-service';
-import UpdateAppealService from '../../../app/service/update-appeal-service';
-import { getAppealApplicationHistory, getAppealApplicationNextStep } from '../../../app/utils/application-state-utils';
+import { getAppealApplicationNextStep } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
-import { expectedMultipleEventsData } from '../mockData/events/expectation/expected-multiple-events';
 
 describe('application-state-utils', () => {
   let sandbox: sinon.SinonSandbox;
@@ -82,6 +76,23 @@ describe('application-state-utils', () => {
           title: 'Helpful Information',
           url: '<a href="#">What is a Tribunal Caseworker?</a>'
         }
+      });
+    });
+
+    it('when application status is reasonsForAppealSubmitted should get correct Do this next section.', () => {
+      req.session.appeal.appealStatus = 'reasonsForAppealSubmitted';
+      req.session.appeal.appealCreatedDate = '2020-02-06T16:00:00.000';
+      req.session.appeal.appealLastModified = '2020-02-07T16:00:00.000';
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: undefined,
+        descriptionParagraphs: [
+          'You have told us why you think the Home Office decision is wrong.',
+          'A Tribunal Caseworker will contact you by <span class=\'govuk-body govuk-!-font-weight-bold\'>Date TBC</span> to tell you what to do next.'
+        ]
       });
     });
   });

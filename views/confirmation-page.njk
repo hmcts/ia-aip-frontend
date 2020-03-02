@@ -17,13 +17,9 @@
     {%  endif %}
     <h2 class="govuk-heading-m">{{i18n.pages.successPage.whatHappensNext}}</h2>
     <ul class="govuk-list govuk-list--bullet">
-            <li>{{ i18n.pages.successPage.info }}</li>
-        {% if late %}
-            <li> {{ i18n.pages.successPage.caseWorker | eval | safe }} </li>
-        {%  else %}
-                <li> {{ i18n.pages.successPage.tribunalWorker | eval | safe }} </li>
-        {%  endif %}
-                <li>{{ i18n.pages.successPage.noResponse | eval | safe }}</li>
+        <li>{{ i18n.pages.successPage.askHomeOffice }}</li>
+        <li>{{ i18n.pages.successPage.whatToDoNext }}</li>
+        <li>{{ i18n.pages.successPage.timescale | eval }}</li>
     </ul>
         <div class="panel-background">
             <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>

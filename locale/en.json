@@ -192,9 +192,9 @@
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
-      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call <span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or <a class=\"govuk-link\" href=\"#\">send us a message</a>",
-      "caseWorker": "A Tribunal Caseworker will contact you to by <strong>{{ date }}</strong> to tell you if you can continue with your appeal and what to do next",
-      "tribunalWorker": "A Tribunal Caseworker will contact you to by <strong>{{ date }}</strong> to tell you what to do next",
+      "askHomeOffice": "A Tribunal Caseworker will ask the Home Office to send any documents it has about your case to the Tribunal",
+      "whatToDoNext": "A Tribunal Caseworker will check the Home Office documents and then contact you to tell you what to do next",
+      "timescale": "This should be by {{ date }} but it might take longer than that",
       "thingsYouCanDo": "Things you can do now",
       "readMore": "Read more about appealing an immigration or asylum decision",
       "findOutMore": "Find organisations that can you with your appeal",
@@ -202,7 +202,7 @@
         "panel": "Your late appeal details have been sent"
       },
       "inTime": {
-        "panel": "Your appeal details has been sent"
+        "panel": "Your appeal details have been sent"
       }
     },
     "reasonForAppeal": {

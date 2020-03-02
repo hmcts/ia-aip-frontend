@@ -72,9 +72,7 @@ describe('Reasons for Appeal Controller', function () {
         applicationReason: undefined
       });
     });
-  });
 
-  describe('Should catch an error.', function () {
     it('getReasonForAppeal should catch an exception and call next()', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
@@ -82,18 +80,12 @@ describe('Reasons for Appeal Controller', function () {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
+  });
+
+  describe('postReasonForAppeal.', function () {
     it('should fail validation and render reasons-for-appeal/reason-for-appeal.njk with error', async () => {
       req.body.applicationReason = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      const applicationReasonError = {
-        text: 'Enter the reasons you think the Home Office decision is wrong',
-        href: '#applicationReason',
-        key: 'applicationReason'
-      };
-      const error = {
-        applicationReason: applicationReasonError
-      };
-      const errorList = [ applicationReasonError ];
 
       expect(res.render).to.have.been.calledWith(
         'reasons-for-appeal/reason-for-appeal-page.njk',
@@ -125,6 +117,21 @@ describe('Reasons for Appeal Controller', function () {
       req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+    });
+
+    it('when Save for later should pass validation and redirect to overview page without error', async () => {
+      req.body.applicationReason = 'Text Word';
+      req.body.saveForLater = 'saveForLater';
+      await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith('/overview?saved');
+    });
+
+    it('when in edit mode and click on Save for later should pass validation and redirect to overview page without error', async () => {
+      req.session.appeal.reasonsForAppeal.isEdit = true;
+      req.body.applicationReason = 'Text Word';
+      req.body.saveForLater = 'saveForLater';
+      await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith('/overview?saved');
     });
   });
 });

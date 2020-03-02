@@ -85,15 +85,6 @@ describe('Reasons for Appeal Controller', function () {
     it('should fail validation and render reasons-for-appeal/reason-for-appeal.njk with error', async () => {
       req.body.applicationReason = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      const applicationReasonError = {
-        text: 'Enter the reasons you think the Home Office decision is wrong',
-        href: '#applicationReason',
-        key: 'applicationReason'
-      };
-      const error = {
-        applicationReason: applicationReasonError
-      };
-      const errorList = [ applicationReasonError ];
 
       expect(res.render).to.have.been.calledWith(
         'reasons-for-appeal/reason-for-appeal-page.njk',

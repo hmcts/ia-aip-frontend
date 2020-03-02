@@ -2,6 +2,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
+{% set pageTitleName = i18n.pages.nationality.title %}
 {% extends "layout.njk" %}
 
 {% set stateless = 'stateless' %}
@@ -12,11 +13,11 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form method="post" action="/personal-details/nationality">
+  <form method="post" action="{{ paths.personalDetails.nationality }}">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
-        text: i18n.pages.nationality.heading,
+        text: i18n.pages.nationality.title,
         classes: "govuk-fieldset__legend--xl",
         isPageHeading: true
       }

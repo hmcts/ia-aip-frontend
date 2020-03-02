@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { paths } from '../../../app/paths';
 import { getAppealApplicationNextStep } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -44,7 +45,7 @@ describe('application-state-utils', () => {
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.equal({
-        cta: '/task-list',
+        cta: paths.taskList,
         deadline: null,
         descriptionParagraphs: [
           'You need to answer a few questions about yourself and your appeal to get started.',

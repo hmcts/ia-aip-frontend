@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.index.title %}
+{% set pageTitleName = i18n.pages.homeOfficePage.title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -20,7 +20,7 @@
       alt="{{ i18n.pages.homeOfficePage.refImageAltText }}"
   />
 
-  <form action="/home-office/details" method="post">
+  <form action="{{ paths.homeOffice.details }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
       label: {

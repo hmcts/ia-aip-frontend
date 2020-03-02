@@ -90,10 +90,10 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   });
   array.push(addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.question,[i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong]));
   if (checkIfValueIsInHistory(req,data.reasonsForAppealDecision)) {
-    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title,[data.reasonsForAppealDecision]));
+    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.reasonsForAppeal,[data.reasonsForAppealDecision]));
   }
   if (checkIfValueIsInHistory(req,data.respondentDocuments)) {
-    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.heading,[...Object.values(listOfDocuments)],Delimiter.BREAK_LINE));
+    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title,[...Object.values(listOfDocuments)],Delimiter.BREAK_LINE));
   }
   return array;
 }

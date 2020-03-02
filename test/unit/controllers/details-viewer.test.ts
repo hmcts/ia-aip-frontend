@@ -62,8 +62,8 @@ describe('Reasons For Appeal - Check and send Controller', () => {
 
       const summaryRows = [
         addSummaryRowNoChange(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ]),
-        addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title, ['HELLO']),
-        addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.heading, [ '404 1.png<br>500.png' ], Delimiter.BREAK_LINE)
+        addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.reasonsForAppeal, ['HELLO']),
+        addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title, [ '404 1.png<br>500.png' ], Delimiter.BREAK_LINE)
       ];
       getReasonsForAppealViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {

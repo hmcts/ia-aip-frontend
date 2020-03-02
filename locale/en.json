@@ -229,7 +229,7 @@
     },
     "reasonsForAppealUpload": {
       "title": "Providing supporting evidence",
-      "heading": "Providing supporting evidence",
+      "reasonsForAppeal": "Reasons for appeal",
       "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<span  class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
@@ -306,7 +306,7 @@
             {
               "title": "Helpful information",
               "text": "What is a Tribunal Caseworker",
-              "href": "#"
+              "href": "/tribunal-caseworker"
             }
           ]
         },

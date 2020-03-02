@@ -90,7 +90,7 @@ describe('Confirmation Page Controller', () => {
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedNextStep = {
-      cta: '/task-list',
+      cta: '/about-appeal',
       deadline: null,
       descriptionParagraphs: [
         'You need to answer a few questions about yourself and your appeal to get started.',
@@ -125,16 +125,16 @@ describe('Confirmation Page Controller', () => {
     } ];
 
     const expectedHistory = [ {
-      'date': '02 March 2020',
+      'date': '03 March 2020',
       'title': 'Your appeal details',
       'text': 'You sent your appeal details to the Tribunal.',
-      'links': [ {
-        'title': 'What you sent',
-        'text': 'Your appeal details',
-        'href': '/view/appeal-details'
-      }, { 'title': 'Helpful information', 'text': 'What is a Tribunal Caseworker', 'href': '#' } ]
+      links: [{ href: '/view/appeal-details', text: 'Your appeal details', title: 'What you sent' }, {
+        href: '/tribunal-caseworker',
+        text: 'What is a Tribunal Caseworker',
+        title: 'Helpful information'
+      }]
     }, {
-      'date': '02 March 2020',
+      'date': '03 March 2020',
       'title': 'Your appeal argument',
       'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
       'links': [ {

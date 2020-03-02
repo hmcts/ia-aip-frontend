@@ -71,7 +71,7 @@ describe('guidance-page-utils', () => {
           'title': 'Your bundle will include some or all of the following documents:'
         },
         {
-          'desc': 'Your Home Office bundle is accessible from the Overview page. <a class="govuk-link" href="/overview">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. ',
+          'desc': 'Your Home Office bundle is accessible from the Overview page. <a class="govuk-link" href="/appeal-overview">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. ',
           'smallTitle': 'Where to find your Home Office bundle'
         },
         {

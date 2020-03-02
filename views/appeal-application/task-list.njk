@@ -13,7 +13,11 @@
         {% for task in section.tasks %}
           <li class="govuk-!-font-size-24 task-list__item">
             {% if task.active %}
-              {{ i18n.pages.taskList[task.id].htmlLink | safe }}
+              <a id='{{ i18n.pages.taskList[task.id].id }}'
+                 href='{{ i18n.pages.taskList[task.id].path | path }}'
+                 title='{{ i18n.pages.taskList[task.id].title }}'>
+                {{ i18n.pages.taskList[task.id].title }}
+              </a>
             {% else %}
               {{ i18n.pages.taskList[task.id].title }}
             {% endif %}

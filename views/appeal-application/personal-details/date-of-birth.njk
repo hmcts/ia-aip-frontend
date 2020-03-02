@@ -10,7 +10,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form method="post" action="/personal-details/date-of-birth" type="submit">
+  <form method="post" action="{{ paths.personalDetails.dob }}" type="submit">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% set errorMessage =  errors.day.text if errors.day %}
     {% set errorMessage =  errors.month.text if errors.month else errorMessage %}
@@ -21,7 +21,7 @@
       fieldset: {
         legend: {
           isPageHeading: true,
-          text: i18n.pages.DOB.heading,
+          text: i18n.pages.DOB.title,
           classes: 'govuk-fieldset__legend--xl'
         }
       },

@@ -10,7 +10,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the what is your address page$/, async () => {
-      I.seeInCurrentUrl('postcode-lookup');
+      I.seeInCurrentUrl(paths.personalDetails.postcodeLookup);
     });
 
     When(/^I choose the first address from the dropdown list and click continue$/, async () => {

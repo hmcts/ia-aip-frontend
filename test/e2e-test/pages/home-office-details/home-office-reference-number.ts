@@ -14,11 +14,11 @@ module.exports = {
     });
 
     When(/^I click on Home office details$/, async () => {
-      await I.click('a[href*="/home-office"]');
+      await I.click('a[href*="' + paths.homeOffice.details + '"]');
     });
 
     Then(/^I should be taken to the home office ref number page$/, async () => {
-      await I.seeInCurrentUrl('/home-office/details');
+      await I.seeInCurrentUrl(paths.homeOffice.details);
     });
 
     When(/^I enter "([^"]*)" as the Office ref number and click Save and continue/, async (refNumber) => {

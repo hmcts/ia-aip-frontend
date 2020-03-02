@@ -32,7 +32,7 @@
   },
   "pages": {
     "index": {
-      "title": "Home"
+      "title": "Start your appeal"
     },
     "start": {
       "title": "Home",
@@ -45,7 +45,7 @@
       ]
     },
     "taskList": {
-      "title": "Task List",
+      "title": "Tell us about your appeal",
       "header": "Tell us about your appeal",
       "sections": {
         "yourDetails": "Your details",
@@ -53,24 +53,29 @@
         "checkAndSend": "Check and send"
       },
       "homeOfficeDetails": {
+        "id": "homeOfficeDetailsLink",
         "title": "Your Home Office details",
-        "htmlLink": "<a id='homeOfficeDetailsLink' href='/home-office/details' title='Your Home office details'>Your Home Office details</a>"
+        "path": "homeOffice.details"
       },
       "personalDetails": {
+        "id": "personalDetailsLink",
         "title": "Your personal details",
-        "htmlLink": "<a id='personalDetailsLink' href='/personal-details/name' title='Your personal details'>Your personal details</a>"
+        "path": "personalDetails.name"
       },
       "contactDetails": {
+        "id": "contactDetailsLink",
         "title": "Your contact details",
-        "htmlLink": "<a id='contactDetailsLink' href='/contact-details' title='Your contact details'>Your contact details</a>"
+        "path": "contactDetails"
       },
       "typeOfAppeal": {
+        "id": "typeOfAppealLink",
         "title": "Type of appeal",
-        "htmlLink": "<a id='typeOfAppealLink' href='/type-of-appeal' title='Type of appeal'>Type of appeal</a>"
+        "path": "typeOfAppeal"
       },
       "checkAndSend": {
+        "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
-        "htmlLink": "<a id='checkAndSendLink' href='/check-and-send' title='Check and send your appeal'>Check and send your appeal</a>"
+        "path": "checkAndSend"
       }
     },
     "contactDetails": {
@@ -87,19 +92,17 @@
       "exampleSummaryText": "Reasons to select "
     },
     "DOB": {
-      "heading": "What is your date of birth? ",
-      "hint": "For example, 31 3 1980",
-      "title": "Date of Birth"
+      "title": "What is your date of birth? ",
+      "hint": "For example, 31 3 1980"
     },
     "nationality": {
-      "heading": "What is your nationality? ",
-      "title": "Nationality",
+      "title": "What is your nationality?",
       "stateless": "I am stateless (A stateless person is not a citizen of any country).",
       "defaultNationality": "Please select a nationality"
     },
     "checkYourAnswers": {
-      "title": "Check your answers",
-      "header": "Check your answers",
+      "title": "Check your answer",
+      "header": "Check your answer",
       "statement": "Statement of truth",
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
@@ -127,14 +130,14 @@
     },
     "enterPostcode": {
       "heading": "What is your address?",
-      "title": "Address",
+      "title": "What is your address?",
       "hint": "Enter a UK postcode",
       "findAddress": "Find address",
       "manualAddressLink": "I want to enter my address manually"
     },
     "enterAddress": {
       "heading": "What is your address?",
-      "title": "Address",
+      "title": "What is your address?",
       "change": "Change",
       "inputs": {
         "building": "Building and street",
@@ -148,7 +151,8 @@
     },
     "postcodeLookup": {
       "heading": "What is your address?",
-      "title": "Postcode",
+      "title": "What is your address?",
+      "postcodeHeading": "Postcode",
       "select": "Select an address",
       "cantFind": "I cant find my address in the list",
       "addressFound": "1 address found",
@@ -177,7 +181,7 @@
       "uploadedFileTitle": "Uploaded file"
     },
     "successPage": {
-      "title": "Confirmation",
+      "title": "Your appeal details have been sent",
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
@@ -195,7 +199,7 @@
       }
     },
     "reasonForAppeal": {
-      "title": "Home Office Decision",
+      "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
       "usefulInfo": "It may be helpful to look at the <a class=\"evidence-list__link\" href='#'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span  class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span>  - you don't have to have perfect English.",
@@ -219,10 +223,13 @@
       "date": "The Tribunal Caseworker will contact you by <span  class='govuk-body govuk-!-font-weight-bold'> {{ date }}</span>  to tell you what to do next",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"#\">customer.services@justice.gov.uk</a>"
     },
+    "reasonsForAppealUploadQuestion": {
+      "title": "Do you want to provide supporting evidence?",
+      "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
+    },
     "reasonsForAppealUpload": {
-      "title": "Reasons Upload",
+      "title": "Providing supporting evidence",
       "heading": "Providing supporting evidence",
-      "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?",
       "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<span  class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
@@ -232,7 +239,7 @@
       "evidence": "If you want to provide evidence but don't have it right now, you can <a class=\"govuk-link\"href=\"#\"> ask for more time</a>"
     },
     "ineligiblePage": {
-      "title": "You cannot currently use the new appeal service",
+      "title": "You cannot currently use the new service",
       "description": "Based on your answers you can't use the new service at the moment. However, you can still appeal the Home Office decision either online or using our paper form",
       "optionsList": [
         "<a href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Appeal online</a>",
@@ -246,14 +253,14 @@
       }
     },
     "eligiblePage": {
-      "title": "Service Page",
-      "heading": "You can use the new appeal service",
+      "title": "You can use the new service",
+      "heading": "You can use the new service",
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or <a class=\"govuk-link govuk-link--no-visited-state\" href='#'>send us a message</a>"
     },
     "overviewPage": {
-      "title": "Overview",
+      "title": "Your appeal overview",
       "contactUs": "Contact us for help",
       "askAQuestion": "Ask a question or get help in your language",
       "telephone": "Telephone:",
@@ -403,7 +410,7 @@
           },
           {
             "smallTitle": "Where to find your Home Office bundle",
-            "desc": "Your Home Office bundle is accessible from the Overview page. <a class=\"govuk-link\" href=\"/overview\">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. "
+            "desc": "Your Home Office bundle is accessible from the Overview page. <a class=\"govuk-link\" href=\"/appeal-overview\">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. "
           },
           {
             "smallTitle": "Contact us for help",
@@ -878,7 +885,8 @@
       "title": "Page not found",
       "header": "Page not found",
       "checkAddress": "Check that you have entered the correct web address.",
-      "orGoBack": "Or <a class='govuk-link', href='/start'>go back to the Start page.</a>"
+      "orText": "Or",
+      "goBackToStart": "go back to the Start page."
     },
     "error500": {
       "title": "Service unavailable",

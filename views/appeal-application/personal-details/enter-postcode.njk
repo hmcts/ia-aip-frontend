@@ -12,7 +12,7 @@
     }) }}
   {% endif %}
 
-  <form action="/personal-details/enter-postcode" method="post">
+  <form action="{{ paths.personalDetails.enterPostcode }}" method="post">
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
@@ -34,7 +34,7 @@
         } if error['postcode']
       }) }}
       <div class="govuk-form-group">
-        <a href="/personal-details/enter-address">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
+        <a href="{{ paths.personalDetails.enterAddress }}">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
       </div>
       <div class="buttons__container">
           {{ govukButton({
@@ -47,7 +47,7 @@
           {{ govukButton({
               text: i18n.common.buttons.saveForLater,
               id: "saveForLater",
-              href: '/overview?saved',
+              href: paths.overview + '?saved',
               classes: "govuk-button--secondary"
           }) }}
       </div>

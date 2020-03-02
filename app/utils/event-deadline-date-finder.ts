@@ -1,4 +1,7 @@
+import config from 'config';
 import moment from 'moment';
+
+const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 
 function getDeadline(currentAppealStatus: string, history) {
   switch (currentAppealStatus) {
@@ -7,9 +10,8 @@ function getDeadline(currentAppealStatus: string, history) {
     }
     case 'awaitingRespondentEvidence':
     case 'appealSubmitted': {
-      const daysToDeadline = 14;
       const triggeringDate = history['appealSubmitted'].date;
-      const formattedDeadline = moment(triggeringDate).add(daysToDeadline, 'days').format('DD MMMM YYYY');
+      const formattedDeadline = moment(triggeringDate).add(daysToWaitAfterSubmission, 'days').format('DD MMMM YYYY');
       return formattedDeadline || null;
     }
     default: {

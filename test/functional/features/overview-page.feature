@@ -21,6 +21,7 @@ Feature: Overview page
     Given I have logged in as an appellant in state "appealSubmitted"
     And I visit the overview page
     Then I should see the 'do this next section' for 'Appeal submitted'
+    And I see the respond by date is "11 March 2020"
 
   Scenario: Awaiting Reasons for appeal
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal"

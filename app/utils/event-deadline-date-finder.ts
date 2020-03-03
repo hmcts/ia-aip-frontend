@@ -11,8 +11,10 @@ function getDeadline(currentAppealStatus: string, history) {
       const formattedDeadline = moment(triggeringDate).add(daysToDeadline, 'days').format('DD MMMM YYYY');
       return formattedDeadline || null;
     }
+    default: {
+      return 'TBC';
+    }
   }
-  return;
 }
 
 export {

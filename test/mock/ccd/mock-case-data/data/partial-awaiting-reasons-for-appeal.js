@@ -1,5 +1,5 @@
-const awaitingReasonsForAppealCaseData = {
-  'id': 1573640323267110,
+const partialAwaitingReasonsForAppealCaseData = {
+  'ids': 1573640323267110,
   'jurisdiction': 'IA',
   'state': 'awaitingReasonsForAppeal',
   'version': 12,
@@ -29,8 +29,9 @@ const awaitingReasonsForAppealCaseData = {
     'homeOfficeDecisionDate': '2020-02-01',
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',
-    'homeOfficeReferenceNumber': 'A1234567'
+    'homeOfficeReferenceNumber': 'A1234567',
+    'reasonsForAppealDecision': 'I decided to appeal because of the following reasons'
   }
 };
 
-module.exports = { ...awaitingReasonsForAppealCaseData };
+module.exports = { ...partialAwaitingReasonsForAppealCaseData };

@@ -3,10 +3,10 @@ import i18n from '../../locale/en.json';
 function buildProgressBarStages(state: string) {
   const stages = {
     yourAppealDetails: {
-      activeStatus: [ 'appealStarted', 'appealSubmitted', 'awaitingRespondentEvidence', 'awaitingReasonsForAppeal' ]
+      activeStatus: [ 'appealStarted', 'appealSubmitted', 'awaitingRespondentEvidence' ]
     },
     yourAppealArgument: {
-      activeStatus: []
+      activeStatus: [ 'awaitingReasonsForAppeal' ]
     },
     yourHearingDetails: {
       activeStatus: []

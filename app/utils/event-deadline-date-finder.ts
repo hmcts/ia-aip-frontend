@@ -5,6 +5,7 @@ function getDeadline(currentAppealStatus: string, history) {
     case 'appealStarted': {
       return null;
     }
+    case 'awaitingRespondentEvidence':
     case 'appealSubmitted': {
       const daysToDeadline = 14;
       const triggeringDate = history['appealSubmitted'].date;

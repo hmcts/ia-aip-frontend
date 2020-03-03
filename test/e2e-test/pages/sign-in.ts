@@ -54,6 +54,10 @@ module.exports = {
           signInForUser('awaiting-reasons-for-appeal@example.com');
           break;
         }
+        case 'Saved awaitingReasonsForAppeal': {
+          signInForUser('partial-awaiting-reasons-for-appeal@example.com');
+          break;
+        }
       }
 
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);

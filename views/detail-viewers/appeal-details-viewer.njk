@@ -1,9 +1,9 @@
 {% extends '../layout.njk' %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% set pageTitleName = 'Your appeal details' %}
+{% set pageTitleName = i18n.pages.overviewPage.timeline.appealApplicationCheckAnswersHistory.title %}
 
 {% block content %}
-    <h1>Your appeal details</h1>
+    <h1>{{ i18n.pages.overviewPage.timeline.appealApplicationCheckAnswersHistory.title  }}</h1>
     {{ govukSummaryList({
 rows: data
 }) }}

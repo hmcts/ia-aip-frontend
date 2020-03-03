@@ -6,10 +6,10 @@ function buildProgressBarStages(state: string) {
       activeStatus: [ 'appealStarted', 'appealSubmitted', 'awaitingRespondentEvidence' ]
     },
     yourAppealArgument: {
-      activeStatus: ['awaitingReasonsForAppeal']
+      activeStatus: [ 'awaitingReasonsForAppeal', 'reasonsForAppealSubmitted' ]
     },
     yourHearingDetails: {
-      activeStatus: ['reasonsForAppealSubmitted']
+      activeStatus: []
     },
     yourAppealDecision: {
       activeStatus: []

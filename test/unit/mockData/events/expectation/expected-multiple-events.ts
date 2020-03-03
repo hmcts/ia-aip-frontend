@@ -17,7 +17,7 @@ export const expectedMultipleEventsData = [ {
     'currentCaseStateVisibleToLegalRepresentative': 'reasonsForAppealSubmitted',
     'appealGroundsForDisplay': [],
     'legalRepresentativeName': 'Alex Citizen Admin',
-    'legalRepresentativeEmailAddress': 'abaegu+admin1@gmail.com',
+    'legalRepresentativeEmailAddress': 'citizen@example.net',
     'currentCaseStateVisibleToHomeOfficeAll': 'reasonsForAppealSubmitted',
     'appealSubmissionDate': '2020-02-27',
     'legalRepresentativeDocuments': [ {
@@ -168,7 +168,7 @@ export const expectedMultipleEventsData = [ {
     'currentCaseStateVisibleToLegalRepresentative': 'appealSubmitted',
     'appealGroundsForDisplay': [],
     'legalRepresentativeName': 'Alex Citizen Admin',
-    'legalRepresentativeEmailAddress': 'abaegu+admin1@gmail.com',
+    'legalRepresentativeEmailAddress': 'citizen@example.net',
     'currentCaseStateVisibleToHomeOfficeAll': 'appealSubmitted',
     'appealSubmissionDate': '2020-02-27',
     'legalRepresentativeDocuments': [ {

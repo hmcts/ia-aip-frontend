@@ -137,7 +137,7 @@ describe('idam-service', () => {
     });
 
     it('gets events history when timeline is enabled for one event', async () => {
-      const retrieveCaseHistoryStub = sandbox.stub(ccdService, 'retrieveCaseHistory');
+      const retrieveCaseHistoryStub = sandbox.stub(ccdService, 'retrieveCaseHistoryV2');
       retrieveCaseHistoryStub.resolves(startAppealEventData);
 
       const result = await ccdService.getCaseHistory(userId, caseId, headers);
@@ -146,7 +146,7 @@ describe('idam-service', () => {
     });
 
     it('gets events history when timeline is enabled and filters out unnecessary events for multiple events', async () => {
-      const retrieveCaseHistoryStub = sandbox.stub(ccdService, 'retrieveCaseHistory');
+      const retrieveCaseHistoryStub = sandbox.stub(ccdService, 'retrieveCaseHistoryV2');
       retrieveCaseHistoryStub.resolves(multipleEventsData);
 
       const result = await ccdService.getCaseHistory(userId, caseId, headers);
@@ -207,8 +207,8 @@ describe('idam-service', () => {
       expect(submitCreateCase).eq(expectedResultPost);
     });
 
-    it('retrieveCaseHistory', () => {
-      const retrieveCaseHistory = ccdService.retrieveCaseHistory(userId, caseId, headers);
+    it('retrieveCaseHistoryV2', () => {
+      const retrieveCaseHistory = ccdService.retrieveCaseHistoryV2(userId, caseId, headers);
 
       expect(retrieveCaseHistory).eq(expectedResultGet);
     });

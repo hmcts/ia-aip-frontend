@@ -19,7 +19,7 @@
     <ul class="govuk-list govuk-list--bullet">
         <li>{{ i18n.pages.successPage.askHomeOffice }}</li>
         <li>{{ i18n.pages.successPage.whatToDoNext }}</li>
-        <li>{{ i18n.pages.successPage.timescale | eval }}</li>
+        <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
     </ul>
         <div class="panel-background">
             <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>

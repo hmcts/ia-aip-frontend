@@ -40,15 +40,15 @@ const APPEAL_STATE = {
   },
   'awaitingReasonsForAppeal': {
     descriptionParagraphs: [
-      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.tellUsWhy
+      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description
     ],
     info: {
-      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.info.title,
-      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.info.url
+      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
     },
     usefulDocuments: {
-      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.usefulDocuments.title,
-      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.usefulDocuments.url
+      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
     },
     cta: {
       url: paths.reasonsForAppeal.decision,
@@ -57,15 +57,15 @@ const APPEAL_STATE = {
   },
   'awaitingReasonsForAppealPartial': {
     descriptionParagraphs: [
-      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partiallySaved
+      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description
     ],
     info: {
-      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.info.title,
-      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.info.url
+      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.url
     },
     usefulDocuments: {
-      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.usefulDocuments.title,
-      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.usefulDocuments.url
+      title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.url
     },
     cta: {
       url: paths.reasonsForAppeal.decision,

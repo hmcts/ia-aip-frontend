@@ -8,7 +8,7 @@
   "phaseBanner": {
     "version": "Beta",
     "text": [
-      "This is a new service – your ", 
+      "This is a new service – your ",
       " will help us to improve it. (opens in a new window)"
     ],
     "feedbackSurveyLik": {
@@ -297,15 +297,27 @@
           }
         },
         "awaitingReasonsForAppeal": {
-          "tellUsWhy": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
-          "partiallySaved": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
-          "info": {
-            "title": "Helpful Information",
-            "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+          "new": {
+            "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+            },
+            "usefulDocuments": {
+              "title": "Useful documents",
+              "url": "<a href=\"#\">Home Office documents about your case</a>"
+            }
           },
-          "usefulDocuments": {
-            "title": "Useful documents",
-            "url": "<a href=\"#\">Home Office documents about your case</a>"
+          "partial": {
+            "description": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+            },
+            "usefulDocuments": {
+              "title": "Useful documents",
+              "url": "<a href=\"#\">Home Office documents about your case</a>"
+            }
           }
         },
         "reasonsForAppealSubmitted": {

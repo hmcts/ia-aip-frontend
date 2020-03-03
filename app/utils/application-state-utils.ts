@@ -72,6 +72,17 @@ const APPEAL_STATE = {
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
     }
   },
+  'awaitingRespondentEvidence': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
+      i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
+    },
+    cta: null
+  },
   'reasonsForAppealSubmitted': {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,

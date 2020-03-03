@@ -1,0 +1,9 @@
+nodejs:
+  image: ${IMAGE_NAME}
+  ingressHost: ${SERVICE_FQDN}
+  environment:
+    IDAM_WEB_URL: https://idam-web-public-aks.ithc.platform.hmcts.net
+    IDAM_API_URL: http://idam-api.ithc.platform.hmcts.net
+    S2S_URL: http://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal
+    CCD_API_URL: http://ccd-data-store-api-ithc.service.core-compute-ithc.internal
+    REDIS_URL: redis://${SERVICE_NAME}-redis-master

@@ -19,6 +19,7 @@ exports.config = {
   plugins: {
     stepByStepReport: {
       enabled: true,
+      fullPageScreenshots: true,
       deleteSuccessful: false
     }
   },

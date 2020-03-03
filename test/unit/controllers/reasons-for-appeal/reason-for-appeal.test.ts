@@ -124,7 +124,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.applicationReason = 'Text Word';
       req.body.saveForLater = 'saveForLater';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith('/overview?saved');
+      expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
     });
 
     it('when in edit mode and click on Save for later should pass validation and redirect to overview page without error', async () => {
@@ -132,7 +132,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.applicationReason = 'Text Word';
       req.body.saveForLater = 'saveForLater';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith('/overview?saved');
+      expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
     });
   });
 
@@ -176,7 +176,7 @@ describe('Reasons for Appeal Controller', function () {
       req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
       req.body.saveForLater = 'saveForLater';
       await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith('/overview?saved');
+      expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
     });
 
     it('when in edit mode and click on Save for later should pass validation and redirect to overview page without error', async () => {
@@ -184,7 +184,7 @@ describe('Reasons for Appeal Controller', function () {
       req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
       req.body.saveForLater = 'saveForLater';
       await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith('/overview?saved');
+      expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
     });
   });
 });

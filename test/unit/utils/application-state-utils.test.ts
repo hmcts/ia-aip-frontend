@@ -63,7 +63,7 @@ describe('application-state-utils', () => {
       expect(result).to.deep.equal({
         cta: {
           respondByText: null,
-          url: '/task-list'
+          url: '/about-appeal'
         },
         deadline: null,
         descriptionParagraphs: [
@@ -105,7 +105,7 @@ describe('application-state-utils', () => {
         {
           cta: {
             respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
-            url: '/case-building/reason-for-appeal'
+            url: '/case-building/home-office-decision-wrong'
           },
           deadline: 'TBC',
           descriptionParagraphs: [
@@ -134,7 +134,7 @@ describe('application-state-utils', () => {
       {
         cta: {
           respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
-          url: '/case-building/reason-for-appeal'
+          url: '/case-building/home-office-decision-wrong'
         },
         deadline: 'TBC',
         descriptionParagraphs: [

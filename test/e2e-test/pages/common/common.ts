@@ -216,7 +216,7 @@ module.exports = {
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
-      await I.seeInCurrentUrl('/task-list');
+      await I.seeInCurrentUrl(paths.taskList);
     });
 
     Then(/^I should see the "([^"]*)" page$/, async (key: string) => {
@@ -238,7 +238,11 @@ module.exports = {
     });
 
     Then(/^I am on the overview page$/, async () => {
-      await I.amOnPage(`https://localhost:3000/overview`);
+      await I.amOnPage(`https://localhost:3000/appeal-overview`);
+    });
+
+    Then(/^I see "([^"]*)" in title$/, async (title: string) => {
+      await I.see(title, 'h1');
     });
   }
 };

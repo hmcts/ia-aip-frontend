@@ -2,6 +2,7 @@ import { paths } from '../../../app/paths';
 
 const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
+const i18n = require('../../../locale/en.json');
 
 module.exports = {
   signIn(I) {
@@ -24,13 +25,13 @@ module.exports = {
     Given('I am authenticated as a valid appellant', async () => {
       I.amOnPage(testUrl + paths.login);
       await signInHelper();
-      await I.seeInTitle('Overview - Immigration & Asylum - GOV.UK');
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given('I have logged in', async () => {
       I.amOnPage(testUrl + paths.login);
       signInForUser('setupcase@example.com');
-      await I.seeInTitle('Overview - Immigration & Asylum - GOV.UK');
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given(/^I have logged in as an appellant in state "([^"]*)"$/, async (appealState) => {
@@ -59,7 +60,7 @@ module.exports = {
         }
       }
 
-      await I.seeInTitle('Overview - Immigration & Asylum - GOV.UK');
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
   }
 };

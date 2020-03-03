@@ -25,7 +25,7 @@
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional",
     "test:audit": "./bin/run-yarn-audit.sh -f yarn-audit-known-issues",
     "test:crossbrowser": "IDAM_API_URL=http://idam-api.aat.platform.hmcts.net codeceptjs run-multiple -c codecept.crossbrowser.js --all --verbose",
-    "codecept:functional": "TEST_URL=https://localhost:3000 USE_REDIS=false IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 ADDRESS_LOOKUP_URL=http://localhost:20002 DOC_MANAGEMENT_URL=http://localhost:20003 cross-env NODE_ENV=test codeceptjs run -c codecept.functional.js --verbose -g \"@broken\" --invert",
+    "codecept:functional": "TEST_URL=https://localhost:3000 USE_REDIS=false IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 ADDRESS_LOOKUP_URL=http://localhost:20002 DOC_MANAGEMENT_URL=http://localhost:20003 cross-env NODE_ENV=test codeceptjs run -c codecept.functional.js --verbose",
     "codecept:e2e": "IDAM_API_URL=http://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.e2e.js --verbose --debug"
   },
   "husky": {

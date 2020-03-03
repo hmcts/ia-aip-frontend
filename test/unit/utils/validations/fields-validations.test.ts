@@ -2,8 +2,7 @@ import moment from 'moment';
 import {
   appellantNamesValidation,
   contactDetailsValidation,
-  dateValidation,
-  DOBValidation,
+  dateValidation, DOBValidation,
   emailValidation,
   homeOfficeNumberValidation,
   mobilePhoneValidation,
@@ -147,7 +146,7 @@ describe('fields-validations', () => {
         });
     });
 
-    it('date must of a person over 18', () => {
+    it('date must of a person over 18 2', () => {
       const notValidDate = { day: '', month: '', year: '' };
       const validations = DOBValidation(notValidDate, errors);
 

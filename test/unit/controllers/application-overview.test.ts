@@ -71,7 +71,7 @@ describe('Confirmation Page Controller', () => {
     getApplicationOverview(req as Request, res as Response, next);
 
     const expectedNextStep = {
-      cta: { respondByText: null, url: '/task-list' },
+      cta: { respondByText: null, url: '/about-appeal' },
       deadline: null,
       descriptionParagraphs: [
         'You need to answer a few questions about yourself and your appeal to get started.',
@@ -126,7 +126,7 @@ describe('Confirmation Page Controller', () => {
     getApplicationOverview(req as Request, res as Response, next);
 
     const expectedNextStep = {
-      cta: { respondByText: null, url: '/task-list' },
+      cta: { respondByText: null, url: '/about-appeal' },
       deadline: null,
       descriptionParagraphs: [
         'You need to answer a few questions about yourself and your appeal to get started.',
@@ -182,7 +182,7 @@ describe('Confirmation Page Controller', () => {
     getApplicationOverview(req as Request, res as Response, next);
 
     const expectedNextStep = {
-      cta: { respondByText: null, url: '/task-list' },
+      cta: { respondByText: null, url: '/about-appeal' },
       deadline: 'TBC',
       descriptionParagraphs: [
         'You need to finish telling us about your appeal.',

@@ -1,4 +1,6 @@
+{% set pageTitleName = i18n.pages.name.title %}
 {% extends "layout.njk" %}
+{% set pageTitleName = i18n.pages.name.title %}
 
 {% block content %}
   {% if errorList %}
@@ -9,7 +11,7 @@
   {% endif %}
   <h1 class="govuk-heading-l">{{ i18n.pages.name.title }}</h1>
 
-  <form method="post" action="/personal-details/name" type="submit">
+  <form method="post" action="{{ paths.personalDetails.name }}" type="submit">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
       label: {

@@ -1,55 +1,62 @@
+import * as _ from 'lodash';
+
 const paths = {
   index: '/',
   health: '/health',
-  overview: '/overview',
+  overview: '/appeal-overview',
   liveness: '/liveness',
   healthLiveness: '/health/liveness',
-  taskList: '/task-list',
+  taskList: '/about-appeal',
   login: '/login',
   logout: '/logout',
   redirectUrl: '/redirectUrl',
-  start: '/start',
-  confirmation: '/confirmation',
+  start: '/start-appeal',
+  confirmation: '/appeals-details-sent',
   tribunalCaseworker: '/tribunal-caseworker',
   moreHelp: '/appeal-help',
   evidenceToSupportAppeal: '/supporting-evidence',
   homeOfficeDocuments: '/home-office-documents',
   personalDetails: {
-    name: '/personal-details/name',
-    nationality: '/personal-details/nationality',
-    dob: '/personal-details/date-of-birth',
-    enterPostcode: '/personal-details/enter-postcode',
-    enterAddress: '/personal-details/enter-address',
-    postcodeLookup: '/personal-details/postcode-lookup'
+    name: '/name',
+    nationality: '/nationality',
+    dob: '/date-birth',
+    enterPostcode: '/address',
+    enterAddress: '/manual-address',
+    postcodeLookup: '/select-address'
   },
   homeOffice: {
-    details: '/home-office/details',
-    letterSent: '/home-office/letter-sent',
-    appealLate: '/home-office/appeal-late',
+    details: '/home-office-reference-number',
+    letterSent: '/date-letter-sent',
+    appealLate: '/late-appeal',
     uploadEvidence: '/home-office/upload-evidence',
     deleteEvidence: '/home-office/delete-evidence'
   },
   reasonsForAppeal: {
-    decision: '/case-building/reason-for-appeal',
-    supportingEvidence: '/case-building/reason-for-appeal/supporting-evidence',
-    supportingEvidenceUpload: '/case-building/reason-for-appeal/supporting-evidence/upload',
+    decision: '/case-building/home-office-decision-wrong',
+    supportingEvidence: '/case-building/supporting-evidence',
+    supportingEvidenceUpload: '/case-building/provide-supporting-evidence',
     supportingEvidenceUploadFile: '/case-building/reason-for-appeal/supporting-evidence/upload/file',
     supportingEvidenceDeleteFile: '/case-building/reason-for-appeal/supporting-evidence/delete/file',
     supportingEvidenceSubmit: '/case-building/reason-for-appeal/supporting-evidence/submit',
-    checkAndSend: '/case-building/reason-for-appeal/check-and-send',
-    confirmation: '/case-building/reason-for-appeal/confirmation'
+    checkAndSend: '/case-building/check-answer',
+    confirmation: '/case-building/answer-sent'
   },
   caseBuilding: {
     timeline: '/case-building/timeline'
   },
-  typeOfAppeal: '/type-of-appeal',
-  contactDetails: '/contact-details',
-  checkAndSend: '/check-and-send',
+  typeOfAppeal: '/appeal-type',
+  contactDetails: '/contact-preferences',
+  checkAndSend: '/check-answers',
   eligibility: {
     start: '/eligibility-start',
-    ineligible: '/ineligible',
+    ineligible: '/not-eligible',
     questions: '/eligibility',
     eligible: '/eligible'
+  },
+  footer: {
+    cookies: '/cookie-policy',
+    termsAndConditions: '/terms-and-conditions',
+    privacyPolicy: '/privacy-policy'
   }
 };
 export {

@@ -1,0 +1,14 @@
+{% extends "layout.njk" %}
+{% set pageTitleName = i18n.pages.privacyPolicy.title %}
+
+{% block content %}
+  <h1 class="govuk-heading-l">{{ i18n.pages.privacyPolicy.title }}</h1>
+  <p>{{ i18n.pages.privacyPolicy.description | safe }}</p>
+  {% for section in i18n.pages.privacyPolicy.sections %}
+    <h2 class="govuk-heading-m" {{ 'id=' + section.id if section.id }}>{{ section.title }}</h2>
+    {% for item in section.content %}
+      <p>{{ item | safe }}</p>
+    {% endfor %}  
+  {% endfor %}
+  {{ contactUs() }}
+{% endblock %}

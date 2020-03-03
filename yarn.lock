@@ -852,10 +852,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/ia-idam-express-middleware@^6.7.0":
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/ia-idam-express-middleware/-/ia-idam-express-middleware-6.7.0.tgz#d27ed7e503fff12f29fc8a32f6289a2577baa734"
-  integrity sha512-b5ox7HdqIQ8G+MF23NK3Ii2Qhzl3PQacDagsXEWJ/Lht/aWPuQyUxvxEIB6AMkHMFQpt7TTuUh0vdR+tejl+Jw==
+"@hmcts/ia-idam-express-middleware@^6.7.3":
+  version "6.7.3"
+  resolved "https://registry.yarnpkg.com/@hmcts/ia-idam-express-middleware/-/ia-idam-express-middleware-6.7.3.tgz#5e2081bc43b68544afb428d01d98f3a017a89015"
+  integrity sha512-VYeszyKZ3qj8LFHvN9nw7Ns+T68gMCVvAUmPTiDhoxCyzzITi+Gay+3RbQGUd82C/FC7Af3kQjHJKAbfWxjQyg==
   dependencies:
     "@hmcts/nodejs-logging" "^3.0.0"
     diff "^3.5.0"

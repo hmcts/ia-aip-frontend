@@ -1,9 +1,14 @@
 {
-  "provider": "GOV.UK",
+  "provider": "HMCTS",
+  "providerLongName": "HM Courts and Tribunals Service",
   "pageTitle": "Immigration & Asylum",
-  "serviceName": "Immigration & Asylum",
+  "serviceName": "Appeal an immigration or asylum decision",
   "serviceUrl": "#",
   "errorTitlePrefix": "Error:",
+  "phaseBanner": {
+    "version": "Beta",
+    "text": "This is a new service – your <a class='govuk-link' href='#' target='_blank'>feedback</a> will help us to improve it. (opens in a new window)"
+  },
   "common": {
     "buttons": {
       "saveAndContinue": "Save and continue",
@@ -27,7 +32,7 @@
   },
   "pages": {
     "index": {
-      "title": "Home"
+      "title": "Start your appeal"
     },
     "start": {
       "title": "Home",
@@ -40,7 +45,7 @@
       ]
     },
     "taskList": {
-      "title": "Task List",
+      "title": "Tell us about your appeal",
       "header": "Tell us about your appeal",
       "sections": {
         "yourDetails": "Your details",
@@ -48,24 +53,29 @@
         "checkAndSend": "Check and send"
       },
       "homeOfficeDetails": {
+        "id": "homeOfficeDetailsLink",
         "title": "Your Home Office details",
-        "htmlLink": "<a id='homeOfficeDetailsLink' href='/home-office/details' title='Your Home office details'>Your Home Office details</a>"
+        "path": "homeOffice.details"
       },
       "personalDetails": {
+        "id": "personalDetailsLink",
         "title": "Your personal details",
-        "htmlLink": "<a id='personalDetailsLink' href='/personal-details/name' title='Your personal details'>Your personal details</a>"
+        "path": "personalDetails.name"
       },
       "contactDetails": {
+        "id": "contactDetailsLink",
         "title": "Your contact details",
-        "htmlLink": "<a id='contactDetailsLink' href='/contact-details' title='Your contact details'>Your contact details</a>"
+        "path": "contactDetails"
       },
       "typeOfAppeal": {
+        "id": "typeOfAppealLink",
         "title": "Type of appeal",
-        "htmlLink": "<a id='typeOfAppealLink' href='/type-of-appeal' title='Type of appeal'>Type of appeal</a>"
+        "path": "typeOfAppeal"
       },
       "checkAndSend": {
+        "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
-        "htmlLink": "<a id='checkAndSendLink' href='/check-and-send' title='Check and send your appeal'>Check and send your appeal</a>"
+        "path": "checkAndSend"
       }
     },
     "contactDetails": {
@@ -82,19 +92,17 @@
       "exampleSummaryText": "Reasons to select "
     },
     "DOB": {
-      "heading": "What is your date of birth? ",
-      "hint": "For example, 31 3 1980",
-      "title": "Date of Birth"
+      "title": "What is your date of birth? ",
+      "hint": "For example, 31 3 1980"
     },
     "nationality": {
-      "heading": "What is your nationality? ",
-      "title": "Nationality",
+      "title": "What is your nationality?",
       "stateless": "I am stateless (A stateless person is not a citizen of any country).",
       "defaultNationality": "Please select a nationality"
     },
     "checkYourAnswers": {
-      "title": "Check your answers",
-      "header": "Check your answers",
+      "title": "Check your answer",
+      "header": "Check your answer",
       "statement": "Statement of truth",
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
@@ -122,14 +130,14 @@
     },
     "enterPostcode": {
       "heading": "What is your address?",
-      "title": "Address",
+      "title": "What is your address?",
       "hint": "Enter a UK postcode",
       "findAddress": "Find address",
       "manualAddressLink": "I want to enter my address manually"
     },
     "enterAddress": {
       "heading": "What is your address?",
-      "title": "Address",
+      "title": "What is your address?",
       "change": "Change",
       "inputs": {
         "building": "Building and street",
@@ -143,7 +151,8 @@
     },
     "postcodeLookup": {
       "heading": "What is your address?",
-      "title": "Postcode",
+      "title": "What is your address?",
+      "postcodeHeading": "Postcode",
       "select": "Select an address",
       "cantFind": "I cant find my address in the list",
       "addressFound": "1 address found",
@@ -172,7 +181,7 @@
       "uploadedFileTitle": "Uploaded file"
     },
     "successPage": {
-      "title": "Confirmation",
+      "title": "Your appeal details have been sent",
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
@@ -190,7 +199,7 @@
       }
     },
     "reasonForAppeal": {
-      "title": "Home Office Decision",
+      "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
       "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' href='/view/home-office-documents'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
@@ -214,10 +223,13 @@
       "date": "The Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> to tell you what to do next",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"#\">customer.services@justice.gov.uk</a>"
     },
+    "reasonsForAppealUploadQuestion": {
+      "title": "Do you want to provide supporting evidence?",
+      "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
+    },
     "reasonsForAppealUpload": {
-      "title": "Reasons Upload",
+      "title": "Providing supporting evidence",
       "heading": "Providing supporting evidence",
-      "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?",
       "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
@@ -227,7 +239,7 @@
       "evidence": "If you want to provide evidence but don't have it right now, you can <a class=\"govuk-link\" href=\"#\">ask for more time</a>"
     },
     "ineligiblePage": {
-      "title": "You cannot currently use the new appeal service",
+      "title": "You cannot currently use the new service",
       "description": "Based on your answers you can't use the new service at the moment. However, you can still appeal the Home Office decision either online or using our paper form",
       "optionsList": [
         "<a href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Appeal online</a>",
@@ -241,14 +253,14 @@
       }
     },
     "eligiblePage": {
-      "title": "Service Page",
-      "heading": "You can use the new appeal service",
+      "title": "You can use the new service",
+      "heading": "You can use the new service",
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>or <a class=\"govuk-link govuk-link--no-visited-state\" href='#'>send us a message</a>"
     },
     "overviewPage": {
-      "title": "Overview",
+      "title": "Your appeal overview",
       "contactUs": "Contact us for help",
       "askAQuestion": "Ask a question or get help in your language",
       "telephone": "Telephone:",
@@ -262,9 +274,9 @@
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
         "appealStarted": {
-          "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
-          "finishQuestions": "You need to finish telling us about your appeal.",
-          "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
+            "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
+            "finishQuestions": "You need to finish telling us about your appeal.",
+            "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
         },
         "appealSubmitted": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
@@ -273,6 +285,10 @@
             "title": "Helpful Information",
             "url": "<a class=\"govuk-link\" href=\"#\">What is a Tribunal Caseworker?</a>"
           }
+        },
+        "reasonsForAppealSubmitted": {
+          "detailsSent": "You have told us why you think the Home Office decision is wrong.",
+          "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>Date TBC</span> to tell you what to do next."
         }
       },
       "answersBeenSaved": "Your answers have been saved"
@@ -355,7 +371,7 @@
           },
           {
             "smallTitle": "Where to find your Home Office bundle",
-            "desc": "Your Home Office bundle is accessible from the Overview page. <a class=\"govuk-link\" href=\"/overview\">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. "
+            "desc": "Your Home Office bundle is accessible from the Overview page. <a class=\"govuk-link\" href=\"/appeal-overview\">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. "
           },
           {
             "smallTitle": "Contact us for help",
@@ -503,6 +519,319 @@
           }
         ]
       }
+    },
+    "termsAndConditions": {
+      "title": "Terms and conditions",
+      "description": "By using this service you’re agreeing to the following terms of use. This includes the <a href='/privacy-policy'>privacy policy</a>.",
+      "sections": [
+        {
+          "title": "Who we are",
+          "content": [
+            "This service is managed by Her Majesty’s Courts and Tribunals Service.",
+            "You should check these terms and conditions regularly. We may update them at any time without notice. If you continue to use this service after the terms and conditions have changed, you are deemed to have agreed to the changes."
+          ]
+        },
+        {
+          "title": "Information provided by this service",
+          "content": [
+            "This service provides information to support your claim or application. We cannot give legal advice on individual cases.",
+            "You should answer the questions in the service based on your circumstances and seek legal advice if you need it."
+          ]
+        },
+        {
+          "title": "Sharing and storing data",
+          "content": [
+            "Our <a class='govuk-link' href='/privacy-policy'>privacy policy</a> explains where your data is stored, and who it is shared with.",
+            "Our <a class='govuk-link' href='/cookie-policy'>cookie policy</a> explains how this service uses and stores cookies."
+          ]
+        },
+        {
+          "title": "Laws applying to this service",
+          "content": [
+            "Your use of this service and any dispute arising from its use will be governed by and construed in accordance with the laws of England and Wales, including but not limited to the:",
+            "<ul class='govuk-list govuk-list--bullet'><li>Computer Misuse Act 1990</li><li>Data Protection Act 1998 (until 25 May 2018)</li><li>Data Protection Act 2018 (from 25 May 2018)</li><li>General Data Protection Regulation</li><li>Mental Capacity Act 2005</li></ul>"
+          ]
+        },
+        {
+          "title": "How to use this service responsibly",
+          "content": [
+            "There are risks in using a shared computer (for example, in a library) to access this service. It’s your responsibility to be aware of these risks and to avoid using any computer which may leave your personal information accessible to others. You’re responsible if you choose to leave a computer unprotected while using this service.",
+            "You should take your own precautions to ensure that the way you access this service does not expose you to the risk of:",
+            "<ul class='govuk-list govuk-list--bullet'><li>viruses</li><li>malicious computer code</li><li>other forms of interference which may damage your computer system</li></ul>",
+            "You must not misuse this service by knowingly introducing viruses, trojans, worms, logic bombs or other material which is malicious or technologically harmful. You must not attempt to gain unauthorised access to this service, the system on which it is stored, or any server, computer or database connected to it. You must not attack this site using a denial-of-service attack or a distributed denial-of-service attack."
+          ]
+        },
+        {
+          "title": "Entering personally sensitive information",
+          "content": [
+            "This online service contains several free-text fields in which you may choose to enter information which is personally sensitive.",
+            "If you enter information about your:",
+            "<ul class='govuk-list govuk-list--bullet'><li>religious beliefs</li><li>sexual orientation or sex life</li><li>racial or ethnic origins</li><li>political opinions</li><li>religious or philosophical beliefs</li><li>trade union membership</li><li>genetic data or biometric data</li><li>health data</li></ul>",
+            "You give us your consent to processing this information for the purpose of dealing with your application.",
+            "For more information about how we collect and store your personal data, see the privacy policy"
+          ]
+        },
+        {
+          "title": "Disclaimer",
+          "content": [
+            "While we make every effort to keep information up to date, we don’t provide any guarantees, conditions or warranties that it will be:",
+            "<ul class='govuk-list govuk-list--bullet'><li>current</li><li>secure</li><li>accurate</li><li>complete</li><li>free from bugs or viruses</li></ul>",
+            "We don’t publish advice. You should get professional or specialist advice before doing anything on the basis of the information in the service.",
+            "We’re not liable for any loss or damage that may come from using this service. This includes:",
+            "<ul class='govuk-list govuk-list--bullet'><li>any direct, indirect or consequential losses</li><li>any loss or damage caused by civil wrongs (‘tort’, including negligence), breach of contract or otherwise</li><li>the use of this service, GOV.UK and any websites that are linked to or from it</li><li>the inability to use this service, GOV.UK and any websites that are linked to or from it</li></ul>",
+            "This applies if the loss or damage was foreseeable, arose in the normal course of things or you advised us that it might happen.",
+            "This includes (but isn’t limited to) the loss of your:",
+            "<ul class='govuk-list govuk-list--bullet'><li>income or revenue</li><li>salary, benefits or other payments</li><li>business</li><li>profits or contracts</li><li>opportunity</li><li>anticipated savings</li><li>data</li><li>goodwill or reputation</li><li>intangible property, including loss, corruption or damage to data or any computer system</li><li>wasted management or office time</li></ul>",
+            "We may still be liable for:",
+            "<ul class='govuk-list govuk-list--bullet'><li>death or personal injury arising from our negligence</li><li>fraudulent misrepresentation</li><li>any other liability which cannot be excluded or limited under applicable law</li></ul>",
+            "<a class='govuk-link' href='https://hmcts-access.service.gov.uk/contact-us'>Contact us</a> for further information."
+          ]
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Cookies",
+      "pageTitle": "Cookies policy",
+      "description": "A cookie is a small piece of data that’s stored on your computer, tablet, or phone when you visit a website. Most websites need cookies to work properly.",
+      "sections": [
+        {
+          "title": "How cookies are used in this service",
+          "content": [
+            "This service uses them to:",
+            "<ul class='govuk-list govuk-list--bullet'><li>measure how you use the service so it can be improved</li><li>remember the notifications you’ve seen so that you’re not shown them again</li><li>temporarily store the answers you give</li></ul>",
+            "Find out more about <a class='govuk-link' href='http://www.aboutcookies.org/'>how to manage cookies</a>."
+          ]
+        },
+        {
+          "title": "Cookies used to measure website usage",
+          "content": [
+            "We use Google Analytics software to collect information about how you use this service. We do this to help make sure the service is meeting the needs of its users and to help us make improvements, for example improving site search.",
+            "Google Analytics stores information about:",
+            "<ul class='govuk-list govuk-list--bullet'><li>the pages you visit</li><li>how long you spend on each page</li><li>how you got to the service</li><li>what you click on while you’re visiting the service</li></ul>",
+            "We allow Google to use or share this data. Find out more about how they use this information in the <a class='govuk-link' href='https://policies.google.com/privacy/partners?hl=en-GB&gl=uk'>Google privacy policy</a>.",
+            "You can <a class='govuk-link' href='https://policies.google.com/privacy/partners?hl=en-GB&gl=uk'>opt out of Google Analytics</a> if you do not want Google to have access to your information.",
+            "Google Analytics sets the following cookies:",
+            {
+              "table": {
+                "head": [
+                  {
+                    "text": "Cookie name"
+                  },
+                  {
+                    "text": "What this cookie is for"
+                  },
+                  {
+                    "text": "Expires after"
+                  }
+                ],
+                "rows": [
+                  [
+                    {
+                      "text": "_ga"
+                    },
+                    {
+                      "text": "This helps us count how many people visit the service by tracking if you’ve visited before"
+                    },
+                    {
+                      "text": "2 years"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "_gid"
+                    },
+                    {
+                      "text": "Identifies you to the service"
+                    },
+                    {
+                      "text": "24 hours"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "title": "Cookies used to turn our introductory message off",
+          "content": [
+            "You may see a welcome message when you first visit the service. We’ll store a cookie so that your computer knows not to show this message again.",
+            {
+              "table": {
+                "head": [
+                  {
+                    "text": "Cookie name"
+                  },
+                  {
+                    "text": "What this cookie is for"
+                  },
+                  {
+                    "text": "Expires after"
+                  }
+                ],
+                "rows": [
+                  [
+                    {
+                      "text": "seen_cookie_message"
+                    },
+                    {
+                      "text": "Saves a message to let us know that you’ve seen our cookie message"
+                    },
+                    {
+                      "text": "1 month"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "title": "Cookies used to store the answers you’ve given during your visit (known as a ‘session’)",
+          "content": [
+            "Session cookies are stored on your computer as you browse a website, and let the website know what you’ve seen and done so far. These are temporary cookies and are automatically deleted after you leave the website.",
+            {
+              "table": {
+                "head": [
+                  {
+                    "text": "Cookie name"
+                  },
+                  {
+                    "text": "What this cookie is for"
+                  },
+                  {
+                    "text": "Expires after"
+                  }
+                ],
+                "rows": [
+                  [
+                    {
+                      "text": "session"
+                    },
+                    {
+                      "text": "Keeps track of your answers"
+                    },
+                    {
+                      "text": "When you close your browser"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "ARRAffinity"
+                    },
+                    {
+                      "text": "To know which internal IP a request should be routed to."
+                    },
+                    {
+                      "text": "When you close your browser"
+                    }
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "privacyPolicy": {
+      "title": "Privacy policy",
+      "description": "This privacy policy explains why we collect your personal data and what we do with it. It also explains your rights and how to enforce them.",
+      "sections": [
+        {
+          "title": "Who manages this service",
+          "content": [
+            "This service is managed by HM Courts and Tribunals Service (HMCTS), which is an executive agency of the Ministry of Justice (MoJ).",
+            "The MoJ is known as the data controller for data protection purposes. The <a class='govuk-link' href='https://www.gov.uk/government/organisations/ministry-of-justice/about/personal-information-charter'>MoJ personal information charter</a> explains how the MoJ processes personal data.",
+            "As part of the MoJ, HMCTS is responsible for deciding how your personal data is used and for protecting the personal data you provide.",
+            "More information about using this service is in the <a class='govuk-link' href='/terms-and-conditions'>terms and conditions</a>"
+          ]
+        },
+        {
+          "title": "Why we collect your personal data",
+          "content": [
+            "We collect your personal data to:",
+            "<ul class='govuk-list govuk-list--bullet'><li>process your claim or application</li><li>meet legal requirements</li><li>make improvements to this service</li></ul>",
+            "Our staff use your personal data to process your claim or application. They work in the UK and your data is stored in the UK."
+          ]
+        },
+        {
+          "title": "Types of personal data we collect",
+          "content": [
+            "The personal data we collect includes:",
+            "<ul class='govuk-list govuk-list--bullet'><li>your name, address and contact details</li><li>your email and password (if you create an account)</li><li>other personal information you provide in your claim or application</li></ul>",
+            "Some services collect more personal data. Find out more about the <a class='govuk-link' href='#using-your-data'>personal data that is collected by the service you are using</a>."
+          ]
+        },
+        {
+          "title": "Using your data",
+          "id": "using-your-data",
+          "content": [
+            "As part of your claim you’ll be asked to use your email address to set up an account. You will be able to use this email and password to sign into other HMCTS services.",
+            "We may ask for your permission to use your email address to send you emails using GOV.UK Notify. This system processes emails only within the European Economic Area until the point where emails are handed over to the email provider you use.",
+            "We <a class='govuk-link' href='/cookie-policy'>use cookies</a> to collect data that tells us about how you’re using this service, including:",
+            "<ul class='govuk-list govuk-list--bullet'><li>if you open an email from us or click on a link in an email</li><li>your computer, phone or tablet’s IP address</li><li>the region or town where you are using your computer, phone or tablet</li><li>the web browser you use</li></ul>"
+          ]
+        },
+        {
+          "title": "Storing your data",
+          "content": [
+            "When you make your claim or application we store the data you have provided. This is stored in the UK. The amount of time that your data is kept for depends on the service that you are using.",
+            "Find out more about <a class='govuk-link' href='#using-appeal-service'>how long your personal data is stored by the service you are using</a>."
+          ]
+        },
+        {
+          "title": "Sharing your data",
+          "content": [
+            "While processing your claim or application, another government department, agency or organisation might be involved and we may share your data with them.",
+            "If you contact us and ask for help with the service you are using, your personal data may be shared with the Good Things Foundation. This is a company who we have partnered with to offer face to face support.",
+            "In some circumstances we may share your data for example, to prevent or detect crime, or to produce anonymised statistics.",
+            "We use Google Analytics to collect data about how a website is used. This anonymous data is shared with Google. Find out about this in our <a class='govuk-link' href='/terms-and-conditions'>terms and conditions</a>."
+          ]
+        },
+        {
+          "title": "Storing and sharing your data internationally",
+          "content": [
+            "Sometimes we need to send your personal information outside of the UK. When we do this we comply with data protection law."
+          ]
+        },
+        {
+          "title": "Your rights",
+          "content": [
+            "You can ask:",
+            "<ul class='govuk-list govuk-list--bullet'><li>to see the personal data that we hold on you</li><li>to have the personal data corrected</li><li>to have the personal data removed or deleted (this will depend on the circumstances, for example if you decide not to continue your claim or application)</li><li>that access to the personal data is restricted (for example, you can ask to have your data stored for longer and not automatically deleted)</li></ul>",
+            "If you want to see the personal data that we hold on you, you can:",
+            "<ul class='govuk-list govuk-list--bullet'><li>complete a form to <a class='govuk-link' href='https://www.gov.uk/government/publications/request-your-personal-data-from-moj'>make a subject access request</a>. Your request goes to the MoJ as data controller.</li><li>write to us: Disclosure Team, Post point 10.38, 102 Petty France, London, SW1H 9AJ</li></ul>",
+            "You can ask for more information about:",
+            "<ul class='govuk-list govuk-list--bullet'><li>agreements we have on sharing information with other organisations</li><li>when we are allowed to pass on personal information without telling you</li><li>our instructions to staff on how to collect, use or delete your personal information</li><li>how we check that the information we hold is accurate and up-to-date</li></ul>",
+            "You can contact the MoJ data protection officer, by:",
+            "<ul class='govuk-list govuk-list--bullet'><li>writing to us: Post point 10.38, 102 Petty France, London, SW1H 9AJ</li><li>emailing: data.compliance@justice.gov.uk</li></ul>"
+          ]
+        },
+        {
+          "title": "How to complain",
+          "content": [
+            "See our <a class='govuk-link' href='https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure'>complaints procedure</a> if you want to complain about how we've handled your personal data.",
+            "Write to: Post point 10.38, 102 Petty France, London, SW1H 9AJ",
+            "Email: data.compliance@justice.gov.uk",
+            "You can also complain to the <a class='govuk-link' href='https://ico.org.uk/global/contact-us'>Information Commissioner’s Office</a> if you’re not satisfied with our response or believe we are not processing your personal data lawfully."
+          ]
+        },
+        {
+          "title": "Using the Appeal an immigration or asylum decision service",
+          "id": "using-appeal-service",
+          "content": [
+            "<h3 class='govuk-heading-s'>The personal data we need</h3>",
+            "When you use the appeal an immigration or asylum decision service we ask for:",
+            "<ul class='govuk-list govuk-list--bullet'><li>your name</li><li>your date of birth</li><li>your nationality</li><li>your email or mobile phone number</li><li>your address</li><li>your appeal type</li><li>information from the Home Office decision letter</li><li>information on any support you need for a case management appointment or hearing, if you attend one</li></ul>",
+            "<h3 class='govuk-heading-s'>Storing and sharing your data</h3>",
+            "Your data will be shared with the government department that made the decision you are appealing against. For example, the Ministry of Justice. This is so that the department can respond to your appeal.",
+            "<h3 class='govuk-heading-s'>After you submit your information</h3>",
+            "The information you submit will be deleted 2 years after the Tribunal has issued its decision and the last update has been made to your appeal.",
+            "If the Tribunal doesn’t make a decision about your appeal (for example, it is withdrawn, or both parties agree) then the information you provide will be deleted 2 years after the appeal has been closed and the last update made.",
+            "If you make a complaint against the Tribunal then information about the appeal is stored for 3 years after the last update on the complaint."
+          ]
+        }
+      ]
     }
   },
   "error": {
@@ -513,15 +842,14 @@
     "error404": {
       "title": "Page not found",
       "header": "Page not found",
-      "webAddress": "If you typed the web address, check it is correct.",
-      "pasted": "If you pasted the web address, check you copied the entire address.",
-      "link": "If the web address is correct or you selected a link or button"
+      "checkAddress": "Check that you have entered the correct web address.",
+      "orText": "Or",
+      "goBackToStart": "go back to the Start page."
     },
     "error500": {
       "title": "Service unavailable",
-      "header": "Sorry, there is a problem with the service",
-      "tryAgain": "Try again later.",
-      "savedAnswers": "We saved your answers. They will be available for 30 days."
+      "header": "Sorry, there is a problem with this service",
+      "tryAgain": "Please try again later."
     }
   },
   "cookieBanner": {
@@ -608,13 +936,32 @@
     },
     "contactUs": {
       "heading": "Contact us for help",
-      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p><p>Email: <a href='mailto:customer.service@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>customer.service@justice.gov.uk</a></p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges</a><p>(opens in a new window)</p></div>"
+      "content": "<div><p>Ask a question or get help in your language.</p></div><div><p class='govuk-body govuk-!-margin-bottom-0'>Telephone: 0300 123 1711</p><p>Email: <a href='mailto:customer.service@justice.gov.uk' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>customer.service@justice.gov.uk</a></p></div><div><p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>Monday to Friday, 8:30am to 5pm</p><a href='https://www.gov.uk/call-charges' target='_blank' rel='noopener noreferrer' class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>Find out about call charges</a><p>(opens in a new window)</p></div>"
     },
-    "contactUsErrorLink": {
-      "link": "<a class=\"govuk-link\" href=\"#\">Contact the Immigration & Asylum Helpline</a> if you need to make changes to your application or speak to someone about your tax credits."
+    "contactUsErrorPages": {
+      "telephone": "Telephone: 0300 123 1711",
+      "linesOpeningTimes": "Lines open Monday to Friday 8.30am to 5pm",
+      "callCharges": "<a class='govuk-link' href='https://www.gov.uk/call-charges'>Find out about call charges</a>"
     },
     "header": {
       "signOut": "Sign out"
+    },
+    "footer": {
+      "items": {
+        "contactUs": {
+          "href": "https://hmcts-access.service.gov.uk/contact-us",
+          "text": "Contact Us"
+        },
+        "cookies": {
+          "text": "Cookies"
+        },
+        "termsAndConditions": {
+          "text": "Terms and conditions"
+        },
+        "privacyPolicy": {
+          "text": "Privacy policy"
+        }
+      }
     },
     "back": {
       "back": "Back"

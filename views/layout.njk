@@ -7,7 +7,8 @@
 {% from "govuk/components/footer/macro.njk" import govukFooter %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
-
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "components/header.njk" import header with context %}
 
 {% set serviceName = i18n.serviceName %}
 {% set serviceUrl = i18n.serviceUrl %}
@@ -58,63 +59,13 @@
   }) }}
 {% endmacro %}
 
-{% macro contactUsErrorLink() %}
-  {{ i18n.components.contactUsErrorLink.linsonk | safe }}
+{% macro contactUsErrorPages() %}
+  <p class="govuk-body govuk-!-margin-top-6"><b>{{ i18n.components.contactUs.heading }}</b></p>
+  <p class="govuk-body">{{ i18n.components.contactUsErrorPages.telephone }}</p>
+  <p class="govuk-body">
+    {{ i18n.components.contactUsErrorPages.linesOpeningTimes }} <br>
+    {{ i18n.components.contactUsErrorPages.callCharges |safe }}</p>
 {% endmacro %}
-
-{% block head %}
-  <link href="/main.css" rel="stylesheet" type="text/css"/>
-{% endblock %}
-
-{% block pageTitle %}
-  {% if error or errors %}{{ i18n.errorTitlePrefix }} {% endif %}{{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
-{% endblock %}
-
-{% block header %}
-  <div id="cookie-banner">
-    <p class="govuk-width-container">{{ i18n.cookieBanner.content | safe }}</p>
-  </div>
-  {% if not hideSignOut %}
-    {{ govukHeader({
-      homepageUrl: "#",
-      serviceName:  serviceName,
-      serviceUrl: serviceUrl,
-      containerClasses: "govuk-width-container",
-      navigationClasses: "sign-out",
-      navigation: [
-        {
-          href: "/logout",
-          text: i18n.components.header.signOut,
-          active: true
-        }
-      ]
-    }) }}
-  {% else %}
-    {{ govukHeader({
-      homepageUrl: "#",
-      containerClasses: "govuk-width-container",
-      serviceName: serviceName,
-      serviceUrl: serviceUrl
-    }) }}
-  {% endif %}
-
-{% endblock %}
-
-{% block beforeContent %}
-  {% if previousPage %}
-    {{ govukBackLink({
-      text: i18n.components.back.back,
-      href: previousPage
-    }) }}
-  {% endif %}
-{% endblock %}
-
-{% block bodyEnd %}
-  {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
-  <script src="/all.js"></script>
-
-{% endblock %}
-
 
 {% macro radioButtons(legendText, hintText, errorMessage) %}
   {{ govukRadios({
@@ -151,3 +102,71 @@
     text: "Continue"
   }) }}
 {% endmacro %}
+
+{% block head %}
+  <base href="{{ host }}">
+  <link href="/main.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block pageTitle %}
+  {% if error or errors %}{{ i18n.errorTitlePrefix }} {% endif %}{{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
+{% endblock %}
+
+{% block headIcons %}
+  <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon" />
+{% endblock %}
+
+{% block header %}
+  <div id="cookie-banner">
+    <div  class="govuk-width-container">
+      <p>{{ i18n.cookieBanner.content | safe }}</p>
+    </div>
+  </div>
+  {{ header() }}
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: i18n.phaseBanner.version
+    },
+    html: i18n.phaseBanner.text | safe
+  }) }}
+  {% if previousPage %}
+    {{ govukBackLink({
+      text: i18n.components.back.back,
+      href: previousPage if not previousPage.attributes,
+      attributes: previousPage.attributes if previousPage.attributes
+    }) }}
+  {% endif %}
+{% endblock %}
+
+{% block footer %}
+  {{ govukFooter({
+    meta: {
+      items: [
+        {
+          href: i18n.components.footer.items.contactUs.href,
+          text: i18n.components.footer.items.contactUs.text
+        },
+        {
+          href: paths.footer.cookies,
+          text: i18n.components.footer.items.cookies.text
+        },
+        {
+          href: paths.footer.termsAndConditions,
+          text: i18n.components.footer.items.termsAndConditions.text
+        },
+        {
+          href: paths.footer.privacyPolicy,
+          text: i18n.components.footer.items.privacyPolicy.text
+        }
+      ]
+    }
+  }) }}
+{% endblock %}
+
+{% block bodyEnd %}
+  {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
+  <script src="/all.js"></script>
+{% endblock %}

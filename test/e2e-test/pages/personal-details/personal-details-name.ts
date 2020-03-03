@@ -12,7 +12,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the enter your name page$/, async () => {
-      await I.seeInCurrentUrl('details/name');
+      await I.seeInCurrentUrl(paths.personalDetails.name);
     });
 
     When(/^Enter "([^"]*)" "([^"]*)" as my Given and Family Name and click Save and continue$/, async (givenName, familyName) => {

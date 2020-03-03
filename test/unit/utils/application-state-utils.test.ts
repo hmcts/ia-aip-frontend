@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { paths } from '../../../app/paths';
 import { getAppealApplicationNextStep } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -44,7 +45,7 @@ describe('application-state-utils', () => {
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.equal({
-        cta: '/task-list',
+        cta: paths.taskList,
         deadline: null,
         descriptionParagraphs: [
           'You need to answer a few questions about yourself and your appeal to get started.',
@@ -79,5 +80,21 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is reasonsForAppealSubmitted should get correct Do this next section.', () => {
+      req.session.appeal.appealStatus = 'reasonsForAppealSubmitted';
+      req.session.appeal.appealCreatedDate = '2020-02-06T16:00:00.000';
+      req.session.appeal.appealLastModified = '2020-02-07T16:00:00.000';
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: undefined,
+        descriptionParagraphs: [
+          'You have told us why you think the Home Office decision is wrong.',
+          'A Tribunal Caseworker will contact you by <span class=\'govuk-body govuk-!-font-weight-bold\'>Date TBC</span> to tell you what to do next.'
+        ]
+      });
+    });
   });
 });

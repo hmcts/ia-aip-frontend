@@ -61,8 +61,8 @@ const paths = {
   detailsViewers: {
     document: '/view/document',
     homeOfficeDocuments: '/view/home-office-documents',
-    appealDetails: '/view/appeal-details',
-    reasonsForAppeal: '/view/reasons-for-appeal'
+    appealDetails: '/appeal-details',
+    reasonsForAppeal: '/appeal-reasons'
   }
 };
 export {

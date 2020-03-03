@@ -61,8 +61,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       req.session.appeal.history = expectedMultipleEventsData;
 
       const summaryRows = [
-        addSummaryRowNoChange(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ]),
-        addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.reasonsForAppeal, ['HELLO']),
+        addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, ['HELLO']),
         addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title, [ '404 1.png<br>500.png' ], Delimiter.BREAK_LINE)
       ];
       getReasonsForAppealViewer(req as Request, res as Response, next);

@@ -7,7 +7,7 @@
   "errorTitlePrefix": "Error:",
   "phaseBanner": {
     "version": "Beta",
-    "text": "This is a new service – your <a class='govuk-link' href='#' target='_blank'>feedback</a> will help us to improve it. (opens in a new window)"
+    "text": "This is a new service – your <a class='govuk-link' href='#' target='_blank' rel='noopener noreferrer'>feedback</a> will help us to improve it. (opens in a new window)"
   },
   "common": {
     "buttons": {
@@ -201,7 +201,7 @@
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' href='/view/home-office-documents'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",

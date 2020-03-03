@@ -8,7 +8,7 @@ Feature: Overview page
     Given I have logged in as an appellant in state "New appealStarted"
     When I visit the overview page
     Then I should see the 'do this next section' for 'New - Appeal started'
-    Then I click continue
+    And I click continue
     Then I should see the task-list page
 
 #  Scenario: Saved Appeal Started
@@ -19,7 +19,19 @@ Feature: Overview page
 
   Scenario: Appeal Submitted
     Given I have logged in as an appellant in state "appealSubmitted"
-    When I visit the overview page
+    And I visit the overview page
     Then I should see the 'do this next section' for 'Appeal submitted'
 
+  Scenario: Awaiting Reasons for appeal
+    Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
+    Then I click continue
+    Then I should see the reasons for appeal decision page
 
+  Scenario: Awaiting Reasons for appeal
+    Given I have logged in as an appellant in state "Saved awaitingReasonsForAppeal"
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'
+    Then I click continue
+    Then I should see the reasons for appeal decision page

@@ -40,7 +40,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body)) {
-        return res.redirect(paths.caseBuilding.timeline);
+        return res.redirect(paths.overview);
       }
       await updateAppealService.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req);
       return res.redirect(paths.reasonsForAppeal.confirmation);

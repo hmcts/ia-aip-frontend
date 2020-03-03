@@ -67,6 +67,7 @@
     "maxFileSizeInMb": 100
   },
   "daysToWait": {
-    "afterSubmission": 28
+    "afterSubmission": 28,
+    "afterReasonsForAppeal": 14
   }
 }

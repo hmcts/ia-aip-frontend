@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { paths } from '../../../../app/paths';
 const config = require('config');
 
@@ -8,5 +9,10 @@ module.exports = {
     Then('I should see the reasons for appeal confirmation page', async () => {
       I.seeInCurrentUrl(testUrl + paths.reasonsForAppeal.confirmation);
     });
+
+    Then('I see the respond by date is 2 weeks in the future', async () => {
+      I.seeInSource(moment().add(14,'days').format('DD MMMM YYYY'));
+    });
+
   }
 };

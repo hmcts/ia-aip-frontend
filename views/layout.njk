@@ -126,11 +126,19 @@
 {% endblock %}
 
 {% block beforeContent %}
+  {% set feedbackLink = [
+      "<a href=",
+      i18n.phaseBanner.feedbackSurveyLik.href,
+      " target='_blank' rel='noopener noreferrer'>",
+      i18n.phaseBanner.feedbackSurveyLik.text,
+      "</a>"
+    ] | join() %}
+
   {{ govukPhaseBanner({
     tag: {
       text: i18n.phaseBanner.version
     },
-    html: i18n.phaseBanner.text | safe
+    html: i18n.phaseBanner.text[0] + feedbackLink + i18n.phaseBanner.text[1] | safe
   }) }}
   {% if previousPage %}
     {{ govukBackLink({

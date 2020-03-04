@@ -119,7 +119,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       req.body = { saveForLater: 'saveForLater' };
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.caseBuilding.timeline);
+      expect(res.redirect).to.have.been.calledWith(paths.overview);
     });
 
     it('should call next with error render if something happens', async () => {

@@ -18,7 +18,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
-      previousPage: paths.caseBuilding.timeline,
+      previousPage: paths.overview,
       applicationReason: req.session.appeal.reasonsForAppeal.applicationReason
     });
   } catch (e) {
@@ -49,7 +49,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.caseBuilding.timeline);
+        return res.redirect(paths.overview + '?saved');
       }
 
       return getConditionalRedirectUrl(req, res, paths.reasonsForAppeal.supportingEvidence);
@@ -115,7 +115,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.caseBuilding.timeline);
+        return res.redirect(paths.overview + '?saved');
       } else {
         if (req.session.appeal.reasonsForAppeal.evidences === undefined) {
           const validation = [ {

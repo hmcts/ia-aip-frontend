@@ -120,7 +120,7 @@ export default class UpdateAppealService {
         addressLookup: {}
       },
       reasonsForAppeal: {
-        applicationReason: null
+        applicationReason: caseData.reasonsForAppealDecision
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,

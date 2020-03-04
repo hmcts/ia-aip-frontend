@@ -1,6 +1,7 @@
 import { OSPlacesClient } from '@hmcts/os-places-client';
 import * as express from 'express';
 import requestPromise from 'request-promise-native';
+import { setupIndexController } from './controllers';
 import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
 import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
 import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
@@ -16,7 +17,6 @@ import { setupFooterController } from './controllers/footer';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupIdamController } from './controllers/idam';
-import { setupIndexController } from './controllers/index';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupStartController } from './controllers/startController';

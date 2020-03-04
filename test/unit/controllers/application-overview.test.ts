@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import moment from 'moment';
 import {
   getApplicationOverview,
   setupApplicationOverviewController
@@ -123,24 +124,25 @@ describe('Confirmation Page Controller', () => {
       completed: false,
       title: 'Your appeal<br/> decision'
     } ];
+    const date = moment().format('DD MMMM YYYY');
 
     const expectedHistory = [ {
-      'date': '03 March 2020',
+      'date': date,
       'title': 'Your appeal details',
       'text': 'You sent your appeal details to the Tribunal.',
-      links: [{ href: '/view/appeal-details', text: 'Your appeal details', title: 'What you sent' }, {
-        href: '/tribunal-caseworker',
-        text: 'What is a Tribunal Caseworker',
-        title: 'Helpful information'
+      'links': [{ 'href': '/appeal-details', 'text': 'Your appeal details', 'title': 'What you sent' }, {
+        'href': '/tribunal-caseworker',
+        'text': 'What is a Tribunal Caseworker',
+        'title': 'Helpful information'
       }]
     }, {
-      'date': '03 March 2020',
+      'date': date,
       'title': 'Your appeal argument',
       'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
       'links': [ {
         'title': 'What you sent',
         'text': 'Why you think the Home Office is wrong',
-        'href': '/view/reasons-for-appeal'
+        'href': '/appeal-reasons'
       }, {
         'title': 'Useful documents',
         'text': 'Home Office documents about your case',

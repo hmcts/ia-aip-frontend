@@ -4,9 +4,7 @@ import * as path from 'path';
 import i18n from '../../locale/en.json';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
-import { DocumentManagementService } from '../service/document-management-service';
 import { addSummaryRowNoChange, Delimiter } from '../utils/summary-list';
-import { data } from './test';
 
 /**
  * Takes in a fileName and converts it to the correct display format

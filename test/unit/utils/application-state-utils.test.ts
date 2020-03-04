@@ -117,7 +117,7 @@ describe('application-state-utils', () => {
           },
           usefulDocuments: {
             title: 'Useful documents',
-            url: '<a href="#">Home Office documents about your case</a>'
+            url: "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
           }
         }
       );
@@ -146,7 +146,7 @@ describe('application-state-utils', () => {
         },
         usefulDocuments: {
           title: 'Useful documents',
-          url: '<a href="#">Home Office documents about your case</a>'
+          url: "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
         }
       }
     );

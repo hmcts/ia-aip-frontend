@@ -48,33 +48,33 @@ function setupAnswers(req: Request): Array<any> {
   const appealTypeNames: string[] = data.appealType.split(',').map(appealType => {
     return i18n.appealTypes[appealType].name;
   });
-  if (checkIfValueIsInHistory(req,data.homeOfficeReferenceNumber)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,[data.homeOfficeReferenceNumber]));
+  if (checkIfValueIsInHistory(req, data.homeOfficeReferenceNumber)) {
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [ data.homeOfficeReferenceNumber ]));
   }
-  if (checkIfValueIsInHistory(req,data.homeOfficeDecisionDate)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,[formatDateLongDate(data.homeOfficeDecisionDate)]));
+  if (checkIfValueIsInHistory(req, data.homeOfficeDecisionDate)) {
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [ formatDateLongDate(data.homeOfficeDecisionDate) ]));
   }
-  if (checkIfValueIsInHistory(req,data.appellantNameForDisplay)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.name,[data.appellantNameForDisplay]));
+  if (checkIfValueIsInHistory(req, data.appellantNameForDisplay)) {
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.name, [ data.appellantNameForDisplay ]));
   }
-  if (checkIfValueIsInHistory(req,data.appellantDateOfBirth)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.dob,[formatDateLongDate(data.appellantDateOfBirth)]));
+  if (checkIfValueIsInHistory(req, data.appellantDateOfBirth)) {
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.dob, [ formatDateLongDate(data.appellantDateOfBirth) ]));
   }
-  if (checkIfValueIsInHistory(req,data.appellantNationalities[0].value.code)) {
+  if (checkIfValueIsInHistory(req, data.appellantNationalities[0].value.code)) {
     const nation = countryList.find(country => country.value === appealData[0].data.appellantNationalities[0].value.code).name;
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.nationality,[nation]));
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.nationality, [ nation ]));
   }
-  if (checkIfValueIsInHistory(req,data.appellantAddress)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.addressDetails,[...Object.values(data.appellantAddress)],Delimiter.BREAK_LINE));
+  if (checkIfValueIsInHistory(req, data.appellantAddress)) {
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [ ...Object.values(data.appellantAddress) ], Delimiter.BREAK_LINE));
   }
-  if (checkIfValueIsInHistory(req,data.subscriptions[0].value)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.contactDetails,[data.subscriptions[0].value.email ,data.subscriptions[0].value.mobileNumber],Delimiter.BREAK_LINE));
+  if (checkIfValueIsInHistory(req, data.subscriptions[0].value)) {
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [ data.subscriptions[0].value.email, data.subscriptions[0].value.mobileNumber ], Delimiter.BREAK_LINE));
   }
-  if (checkIfValueIsInHistory(req,data.appealType)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.appealType,[appealTypeNames]));
+  if (checkIfValueIsInHistory(req, data.appealType)) {
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.appealType, [ appealTypeNames ]));
   }
-  if (checkIfValueIsInHistory(req,data.applicationOutOfTimeExplanation)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.appealLate,[data.applicationOutOfTimeExplanation]));
+  if (checkIfValueIsInHistory(req, data.applicationOutOfTimeExplanation)) {
+    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ data.applicationOutOfTimeExplanation ]));
   }
   return array;
 }
@@ -84,11 +84,14 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
   const { data } = reasonsForAppeal[0];
   const listOfDocuments: string[] = data.respondentDocuments.map(evidence => {
-    return evidence.value.document.document_filename;
+    // TODO Need to translate docstore url to our internalId using the document mapper to display to the user
+    const fileId = evidence.value.document.document_url;
+    const formattedFileName = fileNameFormatter(evidence.value.document.document_filename);
+    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
   });
-  array.push(addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong,[data.reasonsForAppealDecision]));
-  if (checkIfValueIsInHistory(req,data.respondentDocuments)) {
-    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title,[...Object.values(listOfDocuments)],Delimiter.BREAK_LINE));
+  array.push(addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ]));
+  if (checkIfValueIsInHistory(req, data.respondentDocuments)) {
+    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], Delimiter.BREAK_LINE));
   }
   return array;
 }

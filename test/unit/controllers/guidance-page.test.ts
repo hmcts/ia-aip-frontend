@@ -64,10 +64,10 @@ describe('Contact details Controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupGuidancePagesController();
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOfficeDocuments);
-      expect(routerGetStub).to.have.been.calledWith(paths.evidenceToSupportAppeal);
-      expect(routerGetStub).to.have.been.calledWith(paths.moreHelp);
-      expect(routerGetStub).to.have.been.calledWith(paths.tribunalCaseworker);
+      expect(routerGetStub).to.have.been.calledWith(paths.guidancePages.homeOfficeDocuments);
+      expect(routerGetStub).to.have.been.calledWith(paths.guidancePages.evidenceToSupportAppeal);
+      expect(routerGetStub).to.have.been.calledWith(paths.guidancePages.moreHelp);
+      expect(routerGetStub).to.have.been.calledWith(paths.guidancePages.tribunalCaseworker);
     });
   });
 
@@ -78,7 +78,7 @@ describe('Contact details Controller', () => {
       getCaseworkerPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk',{
         showContactUs: true,
-        previousPage: '/',
+        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
     });
@@ -89,7 +89,7 @@ describe('Contact details Controller', () => {
       getHomeOfficeDocumentsPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk',{
         showContactUs: false,
-        previousPage: '/',
+        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
     });
@@ -100,7 +100,7 @@ describe('Contact details Controller', () => {
       getMoreHelpPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
-        previousPage: '/',
+        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
     });
@@ -111,7 +111,7 @@ describe('Contact details Controller', () => {
       getEvidenceToSupportAppealPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
-        previousPage: '/',
+        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
     });

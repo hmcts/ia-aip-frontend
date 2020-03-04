@@ -293,7 +293,7 @@
           "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-body govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href=\"#\">What is a Tribunal Caseworker?</a>"
+            "url": "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -301,7 +301,7 @@
             "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+              "url": "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
@@ -312,7 +312,7 @@
             "description": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+              "url": "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",

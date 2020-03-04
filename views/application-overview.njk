@@ -46,7 +46,7 @@
           {% endif %}
           {% if applicationNextStep.info %}
             <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span> </p>
-            <p>{{ applicationNextStep.info.url | safe }}</p>
+            <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
       </div>

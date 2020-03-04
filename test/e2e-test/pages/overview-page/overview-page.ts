@@ -11,6 +11,10 @@ module.exports = {
       await I.amOnPage(testUrl + paths.overview);
     });
 
+    Then(/^I should see the appeal overview page$/, async () => {
+      await I.seeInCurrentUrl(paths.overview);
+    });
+
     When(/^I should see the 'do this next section' for 'New - Appeal started'$/, () => {
       I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
       I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions}</p>`);

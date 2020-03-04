@@ -42,6 +42,7 @@ export default class UpdateAppealService {
     const appealType = caseData.appealType || null;
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal = null;
+    let reasonsForAppealDocumentUploads = null;
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
@@ -71,6 +72,16 @@ export default class UpdateAppealService {
         };
       }
     }
+    // TODO needs to use the document mapper.
+    if (caseData.reasonsForAppealDocuments) {
+      reasonsForAppealDocumentUploads = caseData.reasonsForAppealDocuments.map(document => {
+        return {
+          id: document.value.document_filename,
+          url: document.value.document_url,
+          name: this.fileIdToName(document.value.document_filename)
+        };
+      });
+    }
 
     // TODO: Remove created and last modified date, used as a work around while the citizen cannot query the /events endpoint
     req.session.appeal = {
@@ -96,7 +107,8 @@ export default class UpdateAppealService {
         addressLookup: {}
       },
       reasonsForAppeal: {
-        applicationReason: caseData.reasonsForAppealDecision
+        applicationReason: caseData.reasonsForAppealDecision,
+        evidences: reasonsForAppealDocumentUploads
       },
       hearingRequirements: {}
     };

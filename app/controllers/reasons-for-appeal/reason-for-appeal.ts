@@ -137,7 +137,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
   };
 }
 
-function postSupportingEvidenceUploadFile(documentManagementService: DocumentManagementService) {
+function postSupportingEvidenceUploadFile(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
@@ -151,6 +151,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
             name: evidenceStored.name
           }
         };
+        await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
         return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
       } else {
         let validationError;
@@ -204,7 +205,7 @@ function setupReasonsForAppealController(deps?: any): Router {
   router.get(paths.reasonsForAppeal.supportingEvidence, getAdditionalSupportingEvidenceQuestionPage);
   router.post(paths.reasonsForAppeal.supportingEvidence, postAdditionalSupportingEvidenceQuestionPage);
   router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
-  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService));
+  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService, deps.updateAppealService));
   router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
   router.post(paths.reasonsForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit(deps.updateAppealService));
   router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);

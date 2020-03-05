@@ -2,7 +2,7 @@ const config = require('config')
 
 exports.config = {
   name: 'Codecept-crossbrowser',
-  output: './functional-output',
+  output: './functional-output/crossbrowser/reports/',
   helpers: {
     WebDriver: {
       url: process.env.TEST_URL || config.get('testUrl'),

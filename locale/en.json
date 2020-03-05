@@ -290,10 +290,18 @@
         },
         "appealSubmitted": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
-          "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to tell you what to do next.",
+          "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a class=\"govuk-link\" href=\"#\">What is a Tribunal Caseworker?</a>"
+            "url": "<a class='govuk-link' href='/tribunal-caseworker'>What is a Tribunal Caseworker?</a>"
+          }
+        },
+        "awaitingRespondentEvidence": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link' href='/tribunal-caseworker'>What is a Tribunal Caseworker?</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -322,7 +330,7 @@
         },
         "reasonsForAppealSubmitted": {
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
-          "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>Date TBC</span> to tell you what to do next."
+          "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-!-font-weight-bold'>Date TBC</span> to tell you what to do next."
         }
       }
     },

@@ -86,12 +86,12 @@ describe('application-state-utils', () => {
         deadline: '21 February 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
-          "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to tell you what to do next."
+          'A Tribunal Caseworker will contact you by <span  class=\'govuk-!-font-weight-bold\'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.'
         ],
 
         info: {
           title: 'Helpful Information',
-          url: '<a class="govuk-link" href="#">What is a Tribunal Caseworker?</a>'
+          url: '<a class=\'govuk-link\' href=\'/tribunal-caseworker\'>What is a Tribunal Caseworker?</a>'
         }
       });
     });
@@ -164,7 +164,7 @@ describe('application-state-utils', () => {
       deadline: 'TBC',
       descriptionParagraphs: [
         'You have told us why you think the Home Office decision is wrong.',
-        'A Tribunal Caseworker will contact you by <span class=\'govuk-body govuk-!-font-weight-bold\'>Date TBC</span> to tell you what to do next.'
+        'A Tribunal Caseworker will contact you by <span class=\'govuk-!-font-weight-bold\'>Date TBC</span> to tell you what to do next.'
       ]
     });
   });

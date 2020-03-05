@@ -2,7 +2,7 @@ const config = require('config');
 
 exports.config = {
   name: 'codecept',
-  output: './functional-output',
+  output: './functional-output/functional/reports/',
   bootstrap: './test/functional/bootstrap.ts',
   teardown: './test/functional/bootstrap.ts',
   helpers: {

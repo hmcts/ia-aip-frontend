@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 const paths = {
   index: '/',
   health: '/health',

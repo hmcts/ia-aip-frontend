@@ -2,6 +2,7 @@ import { Request } from 'express';
 import * as _ from 'lodash';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
+import { addToDocumentMapper, documentMapToDocStoreUrl } from './document-management-service';
 
 enum Subscriber {
   APPELLANT = 'appellant',
@@ -40,6 +41,8 @@ export default class UpdateAppealService {
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
+    let documentMap: DocumentMap[] = [];
+
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
       line2: caseData.appellantAddress.AddressLine2,
@@ -51,6 +54,7 @@ export default class UpdateAppealService {
     const appealType = caseData.appealType || null;
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal = null;
+    let respondentDocuments: RespondentDocument[] = null;
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
@@ -70,17 +74,37 @@ export default class UpdateAppealService {
       }
 
       if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
+
+        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, documentMap);
         outOfTimeAppeal = {
           ...outOfTimeAppeal,
           evidence: {
             id: caseData.applicationOutOfTimeDocument.document_filename,
-            url: caseData.applicationOutOfTimeDocument.document_url,
+            fileId: documentMapperId,
             name: this.fileIdToName(caseData.applicationOutOfTimeDocument.document_filename)
           }
         };
       }
     }
 
+    if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
+      respondentDocuments = [];
+
+      caseData.respondentDocuments.forEach(document => {
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
+
+        let evidence = {
+          dateUploaded: document.value.dateUploaded,
+          evidence: {
+            fileId: documentMapperId,
+            name: document.value.document.document_filename
+          }
+        };
+        respondentDocuments.push(evidence);
+      });
+    }
+
+    // if (caseData.respondentDocuments)
     // TODO: Remove created and last modified date, used as a work around while the citizen cannot query the /events endpoint
     req.session.appeal = {
       appealStatus: ccdCase.state,
@@ -105,9 +129,11 @@ export default class UpdateAppealService {
         addressLookup: {}
       },
       reasonsForAppeal: {
-        applicationReason: null
+        applicationReason: caseData.reasonsForAppealDecision
       },
-      hearingRequirements: {}
+      hearingRequirements: {},
+      respondentDocuments: respondentDocuments,
+      documentMap: documentMap
     };
   }
 
@@ -173,10 +199,12 @@ export default class UpdateAppealService {
       }
 
       if (_.has(appeal.application.lateAppeal, 'evidence')) {
+
+        const documentLocationUrl: string = documentMapToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
         caseData.applicationOutOfTimeDocument = {
           document_filename: appeal.application.lateAppeal.evidence.id,
-          document_url: appeal.application.lateAppeal.evidence.url,
-          document_binary_url: `${appeal.application.lateAppeal.evidence.url}/binary`
+          document_url: documentLocationUrl,
+          document_binary_url: `${documentLocationUrl}/binary`
         };
       }
 
@@ -242,11 +270,12 @@ export default class UpdateAppealService {
         const evidences: Evidences = appeal.reasonsForAppeal.evidences;
 
         caseData.reasonsForAppealDocuments = Object.values(evidences).map((evidence) => {
+          const documentLocationUrl: string = documentMapToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
               document_filename: evidence.id,
-              document_url: evidence.url,
-              document_binary_url: `${evidence.url}/binary`
+              document_url: documentLocationUrl,
+              document_binary_url: `${documentLocationUrl}/binary`
             } as SupportingDocument
           } as SupportingEvidenceCollection;
         });

@@ -96,7 +96,7 @@ describe('Supporting Evidence Upload Controller', () => {
       const evidences = {
         someEvidenceId: {
           id: 'someEvidenceId',
-          url: 'someUrlToTheFile',
+          fileId: 'someUUID',
           name: 'name.png'
         }
       };
@@ -185,9 +185,12 @@ describe('Supporting Evidence Upload Controller', () => {
 
       const documentUploadResponse: DocumentUploadResponse = {
         id: 'someEvidenceId',
-        url: 'someUrlToTheFile',
+        fileId: 'someUUID',
         name: 'name.png'
       };
+
+      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
+      req.session.appeal.documentMap = [ documentMap ];
 
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
@@ -199,11 +202,15 @@ describe('Supporting Evidence Upload Controller', () => {
       req.session.appeal.reasonsForAppeal.evidences = {
         someEvidenceId: {
           id: 'someEvidenceId',
-          url: 'someUrlToTheFile',
+          fileId: 'someUUID',
           name: 'name.png'
         }
       };
-      req.query['id'] = 'someEvidenceId';
+
+      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
+      req.session.appeal.documentMap = [ documentMap ];
+
+      req.query['id'] = 'someUUID';
 
       const error = new Error('an error');
       res.redirect = sandbox.stub().throws(error);
@@ -218,13 +225,17 @@ describe('Supporting Evidence Upload Controller', () => {
       req.session.appeal.reasonsForAppeal.evidences = {
         someEvidenceId: {
           id: 'someEvidenceId',
-          url: 'someUrlToTheFile',
+          fileId: 'someUUID',
           name: 'name.png'
         }
       };
-      req.query['id'] = 'someEvidenceId';
+
+      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
+      req.session.appeal.documentMap = [ documentMap ];
+
+      req.query['id'] = 'someUUID';
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
-      expect(req.session.appeal.reasonsForAppeal.evidences).to.not.haveOwnProperty('someEvidenceId');
+      expect(req.session.appeal.reasonsForAppeal.evidences).to.not.haveOwnProperty('someUUID');
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
     });
 
@@ -232,11 +243,15 @@ describe('Supporting Evidence Upload Controller', () => {
       req.session.appeal.reasonsForAppeal.evidences = {
         someEvidenceId: {
           id: 'someEvidenceId',
-          url: 'someUrlToTheFile',
+          fileId: 'someUUID',
           name: 'name.png'
         }
       };
-      req.query['id'] = 'someEvidenceId';
+
+      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
+      req.session.appeal.documentMap = [ documentMap ];
+
+      req.query['id'] = 'someUUID';
 
       const error = new Error('an error');
       res.redirect = sandbox.stub().throws(error);

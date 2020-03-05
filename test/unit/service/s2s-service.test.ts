@@ -3,7 +3,7 @@ import S2SService from '../../../app/service/s2s-service';
 import * as jwtUtils from '../../../app/utils/jwt-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('JWT Utils', () => {
+describe('s2s-service', () => {
   let sandbox: sinon.SinonSandbox;
 
   beforeEach(() => {

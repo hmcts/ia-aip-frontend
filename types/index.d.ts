@@ -20,19 +20,24 @@ interface ValidationErrors {
   [key: string]: ValidationError;
 }
 
+interface DocumentMap {
+  id: string;
+  url: string;
+}
+
 interface Evidences {
   [key: string]: Evidence;
 }
 
 interface Evidence {
   id?: string;
-  url: string;
+  fileId: string;
   name: string;
 }
 
 interface DocumentUploadResponse {
   id: string;
-  url: string;
+  fileId: string;
   name: string;
 }
 
@@ -43,6 +48,8 @@ interface Appeal {
   application: AppealApplication;
   reasonsForAppeal: ReasonsForAppeal;
   hearingRequirements: HearingRequirements;
+  respondentDocuments?: RespondentDocument[];
+  documentMap?: DocumentMap[];
   history?: any;
 }
 
@@ -97,6 +104,11 @@ interface ReasonsForAppeal {
 
 interface HearingRequirements {
   [key: string]: any;
+}
+
+interface RespondentDocument {
+  dateUploaded: string;
+  evidence: Evidence;
 }
 
 interface AppealType {

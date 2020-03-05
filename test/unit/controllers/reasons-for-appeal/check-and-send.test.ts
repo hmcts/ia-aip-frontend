@@ -68,14 +68,14 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       ];
       req.session.appeal.reasonsForAppeal.evidences = {
         '1-File1.png': {
-          'id': '1-File1.png',
-          'url': '#',
-          'name': 'File1.png'
+          id: '1-File1.png',
+          fileId: '1234',
+          name: 'File1.png'
         },
         '2-File2.png': {
-          'id': '2-File2.png',
-          'url': '#',
-          'name': 'File2.png'
+          id: '2-File2.png',
+          fileId: '1234',
+          name: 'File2.png'
         }
       };
 
@@ -119,7 +119,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       req.body = { saveForLater: 'saveForLater' };
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.caseBuilding.timeline);
+      expect(res.redirect).to.have.been.calledWith(paths.overview);
     });
 
     it('should call next with error render if something happens', async () => {

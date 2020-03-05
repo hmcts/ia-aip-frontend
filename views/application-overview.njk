@@ -6,20 +6,21 @@
 {% block content %}
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds ">
-        <h1 class="govuk-heading-l govuk-!-margin-0 govuk-!-padding-bottom-6 banner-line">{{ name }}</h1>
+      <div class="govuk-grid-column-two-thirds">
+        <div class="banner-line">
+          <h1 class="govuk-heading-l">{{ name }}</h1>
+          {% if appealRefNumber %}
+            <p>{{ i18n.pages.overviewPage.appealRef }} {{ appealRefNumber }}</p>
+          {% endif %}
+        </div>
       </div>
     </div>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         {{ progressBar(stages) }}
-        <div id="doThisNextTitle">
-          {% if applicationNextStep.cta %}
-            <h2>{{ i18n.pages.overviewPage.doThisNext.toDo }}</h2>
-          {% else %}
-            <h2>{{ i18n.pages.overviewPage.doThisNext.nothingToDo }}</h2>
-          {% endif %}
-        </div>
+        <h2 class="govuk-heading-m">
+          {{ i18n.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDo }}
+        </h2>
         {% if saved %}
           <div class="saved-banner">
             <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>
@@ -30,15 +31,27 @@
             <p class="govuk-body">{{ paragraph | eval | safe }}</p>
           {% endfor %}
           {% if applicationNextStep.info %}
-            <p class="govuk-body"><span
-                  class='govuk-body govuk-!-font-weight-bold'> {{ applicationNextStep.info.title }}</span></p>
+            <p class="govuk-body"><span  class='govuk-body govuk-!-font-weight-bold'> {{ applicationNextStep.info.title }}</span> </p>
             <p class="govuk-body">{{ applicationNextStep.info.url | safe }}</p>
           {% endif %}
           {% if applicationNextStep.cta %}
-            {{ govukButton({
-              text: i18n.common.buttons.continue,
-              href: applicationNextStep.cta
-            }) }}
+            {% if applicationNextStep.cta.url %}
+              {{ govukButton({
+                text: i18n.common.buttons.continue,
+                href: applicationNextStep.cta.url
+              }) }}
+            {% endif %}
+            {% if applicationNextStep.cta.respondByText %}
+              <p class="govuk-body">{{ applicationNextStep.cta.respondByText | eval | safe }}</p>
+            {% endif %}
+          {% endif %}
+          {% if applicationNextStep.usefulDocuments %}
+            <p class="govuk-body"><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
+            <p class="govuk-body">{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
+          {% endif %}
+          {% if applicationNextStep.info %}
+            <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span> </p>
+            <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
         {% if history %}
@@ -47,17 +60,21 @@
       </div>
       <div class="govuk-grid-column-one-third">
         <div class="contact-us-component">
-          <span class="govuk-!-padding-top-2 govuk-heading-s">{{ i18n.pages.overviewPage.contactUs }}</span>
+          <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.contactUs }}</h2>
           <p>{{ i18n.pages.overviewPage.askAQuestion }}</p>
-          <p class='govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.telephone }}</p>
-          <p class='govuk-body  govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.telephoneNumber }}</p>
-          <p class='govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.email | safe }}</p>
-          <a href='mailto:customer.service@justice.gov.uk'
-             class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.emailLink }}</a>
-          <p class='govuk-body govuk-!-margin-top-3 govuk-body govuk-!-margin-bottom-0'>{{ i18n.pages.overviewPage.time }}</p>
-          <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer"
-             class='govuk-link--no-visited-state govuk-body govuk-!-margin-top-0'>{{ i18n.pages.overviewPage.charges }}</a>
-          <p class="govuk-!-margin-top-0">{{ i18n.pages.overviewPage.newWindow }}</p>
+          <p>
+            {{ i18n.pages.overviewPage.telephone }}</br>
+            {{ i18n.pages.overviewPage.telephoneNumber }}
+          </p>
+          <p>
+            {{ i18n.pages.overviewPage.email | safe }}
+            <a href='mailto:{{ i18n.pages.overviewPage.emailLink }}' class="govuk-link">{{ i18n.pages.overviewPage.emailLink }}</a>
+          </p>
+          <p>
+            {{ i18n.pages.overviewPage.time }}
+            <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer" class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a></br>
+            {{ i18n.pages.overviewPage.newWindow }}
+          </p>
         </div>
       </div>
     </div>

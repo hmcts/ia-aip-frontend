@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import {
   getReasonForAppeal,
   postReasonForAppeal,
+  postSupportingEvidenceSubmit,
   setupReasonsForAppealController
 } from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
 import { paths } from '../../../../app/paths';
@@ -68,13 +69,11 @@ describe('Reasons for Appeal Controller', function () {
     it('should render reasons-for-appeal/reason-for-appeal.njk', function () {
       getReasonForAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
-        previousPage: paths.caseBuilding.timeline,
+        previousPage: paths.overview,
         applicationReason: undefined
       });
     });
-  });
 
-  describe('Should catch an error.', function () {
     it('getReasonForAppeal should catch an exception and call next()', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
@@ -82,6 +81,9 @@ describe('Reasons for Appeal Controller', function () {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
+  });
+
+  describe('postReasonForAppeal.', function () {
     it('should fail validation and render reasons-for-appeal/reason-for-appeal.njk with error', async () => {
       req.body.applicationReason = '';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -116,6 +118,73 @@ describe('Reasons for Appeal Controller', function () {
       req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+    });
+
+    it('when Save for later should pass validation and redirect to overview page without error', async () => {
+      req.body.applicationReason = 'Text Word';
+      req.body.saveForLater = 'saveForLater';
+      await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
+    });
+
+    it('when in edit mode and click on Save for later should pass validation and redirect to overview page without error', async () => {
+      req.session.appeal.reasonsForAppeal.isEdit = true;
+      req.body.applicationReason = 'Text Word';
+      req.body.saveForLater = 'saveForLater';
+      await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
+    });
+  });
+
+  describe('postSupportingEvidenceSubmit.', function () {
+
+    const evidenceMock = {
+      someEvidenceId: {
+        id: 'someEvidenceId',
+        fileId: 'someUUID',
+        name: 'name.png'
+      }
+    };
+    it('should fail validation and render reasons-for-appeal/supporting-evidence-upload-page.njk with error', async () => {
+      req.session.appeal.reasonsForAppeal.evidences = undefined;
+      await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith(
+        'reasons-for-appeal/supporting-evidence-upload-page.njk',
+        {
+          error: [ { href: 'uploadFile', text: 'Select a file', value: '#uploadFile' } ],
+          errorList: [ { 'href': 'uploadFile', 'text': 'Select a file', 'value': '#uploadFile' } ]
+        }
+      );
+    });
+
+    it('should pass validation and redirect to check-and-send without errors', async () => {
+      req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
+      await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+    });
+
+    it('when in Edit mode should pass validation and redirect to check-and-send without error', async () => {
+      req.session.appeal.reasonsForAppeal.isEdit = true;
+      req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
+
+      await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+    });
+
+    it('when Save for later should pass validation and redirect to overview page without error', async () => {
+      req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
+      req.body.saveForLater = 'saveForLater';
+      await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
+    });
+
+    it('when in edit mode and click on Save for later should pass validation and redirect to overview page without error', async () => {
+      req.session.appeal.reasonsForAppeal.isEdit = true;
+      req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
+      req.body.saveForLater = 'saveForLater';
+      await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
     });
   });
 });

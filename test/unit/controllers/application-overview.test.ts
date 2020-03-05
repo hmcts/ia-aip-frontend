@@ -64,7 +64,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and completed section', async () => {
+  it('getApplicationOverview should render application-overview.njk with options', () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -190,16 +190,13 @@ describe('Confirmation Page Controller', () => {
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedNextStep = {
-      cta: paths.taskList,
+      cta: { respondByText: null, url: '/about-appeal' },
       deadline: null,
       descriptionParagraphs: [
         'You need to answer a few questions about yourself and your appeal to get started.',
         'You will need to have your Home Office decision letter with you to answer some questions.'
       ],
-      info: {
-        title: null,
-        url: null
-      }
+      info: null
     };
 
     const expectedStages = [ {
@@ -226,6 +223,118 @@ describe('Confirmation Page Controller', () => {
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
+      appealRefNumber: undefined,
+      applicationNextStep: expectedNextStep,
+      history: null,
+      stages: expectedStages,
+      saved: false
+    });
+  });
+
+  it('getApplicationOverview should render application-overview.njk with options', () => {
+    req.idam = {
+      userDetails: {
+        uid: 'user-id',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+
+    getApplicationOverview(req as Request, res as Response, next);
+
+    const expectedNextStep = {
+      cta: { respondByText: null, url: '/about-appeal' },
+      deadline: null,
+      descriptionParagraphs: [
+        'You need to answer a few questions about yourself and your appeal to get started.',
+        'You will need to have your Home Office decision letter with you to answer some questions.'
+      ],
+      info: null
+    };
+
+    const expectedStages = [ {
+      active: true,
+      ariaLabel: 'Your appeal details stage',
+      completed: false,
+      title: 'Your appeal<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal argument stage',
+      completed: false,
+      title: 'Your appeal<br/> argument'
+    }, {
+      active: false,
+      ariaLabel: 'Your hearing details stage',
+      completed: false,
+      title: 'Your hearing<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal decision stage',
+      completed: false,
+      title: 'Your appeal<br/> decision'
+    } ];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: undefined,
+      applicationNextStep: expectedNextStep,
+      history: null,
+      stages: expectedStages,
+      saved: false
+    });
+  });
+
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options', () => {
+    req.idam = {
+      userDetails: {
+        uid: 'user-id',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+
+    getApplicationOverview(req as Request, res as Response, next);
+
+    const expectedNextStep = {
+      cta: { respondByText: null, url: '/about-appeal' },
+      deadline: 'TBC',
+      descriptionParagraphs: [
+        'You need to finish telling us about your appeal.',
+        'You will need to have your Home Office decision letter with you to answer some questions.'
+      ],
+      info: null
+    };
+
+    const expectedStages = [ {
+      active: true,
+      ariaLabel: 'Your appeal details stage',
+      completed: false,
+      title: 'Your appeal<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal argument stage',
+      completed: false,
+      title: 'Your appeal<br/> argument'
+    }, {
+      active: false,
+      ariaLabel: 'Your hearing details stage',
+      completed: false,
+      title: 'Your hearing<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal decision stage',
+      completed: false,
+      title: 'Your appeal<br/> decision'
+    } ];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: 'A1234567',
       applicationNextStep: expectedNextStep,
       history: [],
       stages: expectedStages,

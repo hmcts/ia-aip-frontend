@@ -10,6 +10,7 @@ import { setupPersonalDetailsController } from './controllers/appeal-application
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupFooterController } from './controllers/footer';
 import { setupGuidancePagesController } from './controllers/guidance-page';
@@ -59,6 +60,9 @@ const footerController = setupFooterController();
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
 const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(updateAppealService);
 
+// Details Viewers
+const detailViewersController = setupDetailViewersController(documentManagementService);
+
 // not protected by idam
 router.use(indexController);
 router.use(healthController);
@@ -73,6 +77,7 @@ router.use(idamController);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);
 }
+
 router.use(taskListController);
 router.use(homeOfficeDetailsController);
 router.use(personalDetailsController);
@@ -85,5 +90,7 @@ router.use(applicationOverview);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
+
+router.use(detailViewersController);
 
 export { router };

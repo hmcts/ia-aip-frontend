@@ -21,7 +21,7 @@
         isPageHeading: true
       }
     }) %}
-      <p class="govuk-body">{{ i18n.pages.reasonForAppeal.usefulInfo |  safe }}</p>
+      <p class="govuk-body">{{ i18n.pages.reasonForAppeal.usefulInfo | eval | safe }}</p>
       {{ govukTextarea({
         name: "applicationReason",
         id: "applicationReason",

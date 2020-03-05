@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 const paths = {
   index: '/',
   health: '/health',
@@ -57,6 +55,10 @@ const paths = {
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy'
+  },
+  detailsViewers: {
+    document: '/view/document',
+    homeOfficeDocuments: '/view/home-office-documents'
   }
 };
 export {

@@ -141,7 +141,7 @@ describe('Reasons for Appeal Controller', function () {
     const evidenceMock = {
       someEvidenceId: {
         id: 'someEvidenceId',
-        url: 'someUrlToTheFile',
+        fileId: 'someUUID',
         name: 'name.png'
       }
     };

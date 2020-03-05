@@ -17,12 +17,6 @@ while !(curl -s http://0.0.0.0:1001) > /dev/null
     sleep .1
   done
   echo "ZAP has successfully started"
-
-  curl --fail http://0.0.0.0:1001/OTHER/core/other/jsonreport/?formMethod=GET --output report.json
-  cp *.* functional-output/
-  zap-cli --zap-url http://0.0.0.0 -p 1001 alerts -l Informational --exit-code False
-
-
   zap-cli --zap-url http://0.0.0.0 -p 1001 status -t 120
   zap-cli --zap-url http://0.0.0.0 -p 1001 open-url "${TEST_URL}"
   zap-cli --zap-url http://0.0.0.0 -p 1001 spider ${TEST_URL}
@@ -33,8 +27,10 @@ while !(curl -s http://0.0.0.0:1001) > /dev/null
   chown -R $(id -u):$(id -u) activescan.html
   chown -R $(id -u):$(id -u) activescanReport.xml
 
+  curl --fail http://0.0.0.0:1001/OTHER/core/other/jsonreport/?formMethod=GET --output report.json
   cp *.html functional-output/
   cp activescanReport.xml functional-output/
+  zap-cli --zap-url http://0.0.0.0 -p 1001 alerts -l Informational --exit-code False
 
 echo
 echo ZAP Security vulnerabilities were found that were not ignored

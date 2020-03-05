@@ -144,13 +144,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.contactDetails.wantsEmail).eq(true);
       expect(req.session.appeal.application.contactDetails.wantsSms).eq(true);
       expect(req.session.appeal.reasonsForAppeal.applicationReason).eq('I\'ve decided to appeal because ...');
-      expect(req.session.appeal.reasonsForAppeal.evidences).to.deep.eq([
-        {
-          'id': '1580296112615-supporting-evidence-file.jpeg',
-          'url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
-          'name': 'supporting-evidence-file.jpeg'
-        }
-      ]);
+      expect(req.session.appeal.reasonsForAppeal.evidences).to.exist;
       expect(req.session.appeal.documentMap).to.exist;
       expect(req.session.appeal.respondentDocuments).to.exist;
       expect(req.session.appeal.respondentDocuments[0].dateUploaded).to.be.eq('2020-02-21');

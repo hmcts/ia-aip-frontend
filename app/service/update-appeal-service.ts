@@ -46,7 +46,7 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
-    let reasonsForAppealDocumentUploads = null;
+    let reasonsForAppealDocumentUploads: Evidences = null;
 
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -81,10 +81,12 @@ export default class UpdateAppealService {
     }
     // TODO needs to use the document mapper.
     if (caseData.reasonsForAppealDocuments) {
-      reasonsForAppealDocumentUploads = caseData.reasonsForAppealDocuments.map(document => {
-        return {
-          id: document.value.document_filename,
-          url: document.value.document_url,
+      reasonsForAppealDocumentUploads = {};
+      caseData.reasonsForAppealDocuments.forEach(document => {
+        const documentMapperId: string = addToDocumentMapper(document.value.document_url, documentMap);
+
+        reasonsForAppealDocumentUploads[documentMapperId] = {
+          fileId: documentMapperId,
           name: this.fileIdToName(document.value.document_filename)
         };
       });

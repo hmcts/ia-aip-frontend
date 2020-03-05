@@ -4,7 +4,7 @@ import { CcdService, Events } from '../../../app/service/ccd-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
 describe('update-appeal-service', () => {
   let sandbox: sinon.SinonSandbox;
@@ -93,6 +93,21 @@ describe('update-appeal-service', () => {
               'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
             }
           }
+          ],
+          'respondentDocuments': [
+            {
+              'id': '1',
+              'value': {
+                'tag': 'respondentEvidence',
+                'document': {
+                  'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+                  'document_filename': 'Screenshot.png',
+                  'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+                },
+                'description': 'Screenshot of evidence',
+                'dateUploaded': '2020-02-21'
+              }
+            }
           ]
         }
       });
@@ -122,7 +137,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.personalDetails.address.postcode).eq('W1W 7RT');
       expect(req.session.appeal.application.isAppealLate).eq(true);
       expect(req.session.appeal.application.lateAppeal.evidence.id).eq('1580296112615-evidence-file.jpeg');
-      expect(req.session.appeal.application.lateAppeal.evidence.url).eq('http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891');
+      validateUuid(req.session.appeal.application.lateAppeal.evidence.fileId);
       expect(req.session.appeal.application.lateAppeal.evidence.name).eq('evidence-file.jpeg');
       expect(req.session.appeal.application.contactDetails.email).eq('email@example.net');
       expect(req.session.appeal.application.contactDetails.phone).eq('07123456789');
@@ -136,6 +151,12 @@ describe('update-appeal-service', () => {
           'name': 'supporting-evidence-file.jpeg'
         }
       ]);
+      expect(req.session.appeal.documentMap).to.exist;
+      expect(req.session.appeal.respondentDocuments).to.exist;
+      expect(req.session.appeal.respondentDocuments[0].dateUploaded).to.be.eq('2020-02-21');
+      expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
+      validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
+      expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
     });
   });
 
@@ -345,7 +366,7 @@ describe('update-appeal-service', () => {
   });
 
   describe('submitEvent', () => {
-    let expectedCaseData: CaseData;
+    let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;
     let idamService2: IdamService;
     let s2sService2: Partial<S2SService>;
@@ -379,7 +400,7 @@ describe('update-appeal-service', () => {
                 evidence: {
                   id: '0000-somefile.png',
                   name: 'somefile.png',
-                  url: '#'
+                  fileId: '00000000-0000-0000-0000-000000000000'
                 }
               },
               personalDetails: {
@@ -411,17 +432,40 @@ describe('update-appeal-service', () => {
               applicationReason: 'I\'ve decided to appeal because ...',
               evidences: {
                 '1-File1.png': {
-                  'id': '1-File1.png',
-                  'url': '#',
-                  'name': 'File1.png'
+                  id: '1-File1.png',
+                  fileId: '00000000-0000-0000-0000-000000000001',
+                  name: 'File1.png'
                 },
                 '2-File2.png': {
-                  'id': '2-File2.png',
-                  'url': '#',
-                  'name': 'File2.png'
+                  id: '2-File2.png',
+                  fileId: '00000000-0000-0000-0000-000000000002',
+                  name: 'File2.png'
                 }
               } as Evidences
-            }
+            },
+            respondentDocuments: [
+              {
+                dateUploaded: '2020-02-21',
+                evidence: {
+                  fileId: '75d96b97-f453-4084-aecf-3f73738e4ded',
+                  name: 'Screenshot 2020-02-21 at 11.49.28.png'
+                }
+              }
+            ],
+            documentMap: [
+              {
+                id: '00000000-0000-0000-0000-000000000000',
+                url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000'
+              },
+              {
+                id: '00000000-0000-0000-0000-000000000001',
+                url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001'
+              },
+              {
+                id: '00000000-0000-0000-0000-000000000002',
+                url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002'
+              }
+            ]
           } as Appeal,
           ccdCaseId: caseId
         } as Partial<Express.Session>
@@ -445,8 +489,8 @@ describe('update-appeal-service', () => {
         applicationOutOfTimeExplanation: 'a reason',
         applicationOutOfTimeDocument: {
           document_filename: '0000-somefile.png',
-          document_url: '#',
-          document_binary_url: '#/binary'
+          document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
+          document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
         },
         appellantGivenNames: 'givenNames',
         appellantFamilyName: 'familyName',
@@ -483,16 +527,16 @@ describe('update-appeal-service', () => {
         reasonsForAppealDocuments: [
           {
             value: {
-              document_url: '#',
+              document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
               document_filename: '1-File1.png',
-              document_binary_url: '#/binary'
+              document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
             }
           },
           {
             value: {
-              document_url: '#',
+              document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
               document_filename: '2-File2.png',
-              document_binary_url: '#/binary'
+              document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
             }
           }
         ]

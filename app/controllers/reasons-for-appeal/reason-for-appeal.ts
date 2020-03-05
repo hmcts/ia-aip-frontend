@@ -4,7 +4,7 @@ import i18n from '../../../locale/en.json';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
-import { DocumentManagementService } from '../../service/document-management-service';
+import { DocumentManagementService, documentMapToDocStoreUrl } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
@@ -147,7 +147,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
           ...reasonsForAppeal.evidences,
           [evidenceStored.id]: {
             id: evidenceStored.id,
-            url: evidenceStored.url,
+            fileId: evidenceStored.fileId,
             name: evidenceStored.name
           }
         };
@@ -176,9 +176,8 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
     try {
       if (req.query['id']) {
         const fileId = req.query['id'];
-        const evidences: Evidences = req.session.appeal.reasonsForAppeal.evidences;
-        const target: Evidence = evidences[fileId];
-        await documentManagementService.deleteFile(req, target.url);
+        const targetUrl: string = documentMapToDocStoreUrl(fileId, req.session.appeal.documentMap);
+        await documentManagementService.deleteFile(req, targetUrl);
         delete req.session.appeal.reasonsForAppeal.evidences[fileId];
       }
       return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);

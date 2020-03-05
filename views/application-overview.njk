@@ -42,11 +42,11 @@
           {% endif %}
           {% if applicationNextStep.usefulDocuments %}
             <p class="govuk-body"><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
-            <p class="govuk-body">{{ applicationNextStep.usefulDocuments.url | safe }}</p>
+            <p class="govuk-body">{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
           {% endif %}
           {% if applicationNextStep.info %}
             <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span> </p>
-            <p>{{ applicationNextStep.info.url | safe }}</p>
+            <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
       </div>

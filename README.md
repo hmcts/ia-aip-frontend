@@ -1,3 +1,4 @@
+
 # ia-aip-frontend
 
 
@@ -90,7 +91,7 @@ The pipeline build has the following steps
 | yarn --mutex network install --frozen-lockfile| |
 | yarn lint | |
 | yarn build | |
-| yarn test| Runs `yarn test:unit && cross-env USE_REDIS=false yarn codecept:functional` functional tests start service against mocks and do not use Redis. |
+| yarn test| Runs `yarn test:unit && cross-env USE_REDIS=false yarn codecept:functional` functional tests start service against mocks and do not use Redis. Can add environment variable FUNCTIONAL_TESTS to specify a regex to just run some of the functional tests. |
 | yarn test:coverage | |
 | yarn test:a11y | Starts service and runs against mocks. Just hits each page and checks it is accessible. |
 | yarn sonar-scan | |

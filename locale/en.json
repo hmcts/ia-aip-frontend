@@ -7,7 +7,14 @@
   "errorTitlePrefix": "Error:",
   "phaseBanner": {
     "version": "Beta",
-    "text": "This is a new service – your <a class='govuk-link' href='#' target='_blank'>feedback</a> will help us to improve it. (opens in a new window)"
+    "text": [
+      "This is a new service – your ",
+      " will help us to improve it. (opens in a new window)"
+    ],
+    "feedbackSurveyLik": {
+      "href": "https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum/",
+      "text": "feedback"
+    }
   },
   "common": {
     "buttons": {
@@ -119,7 +126,7 @@
         "addressDetails": "Address",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
-        "supportingEvidence": "<p><span  class='govuk-body govuk-!-font-weight-bold'> Supporting evidence</span> </p>"
+        "supportingEvidence": "<p><span class='govuk-body govuk-!-font-weight-bold'>Supporting evidence</span></p>"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>"
     },
@@ -185,9 +192,9 @@
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
-      "noResponse": "If you haven't heard from us by <strong>{{ date }}</strong> call <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or <a class=\"govuk-link\" href=\"#\">send us a message</a>",
-      "caseWorker": "A Tribunal Caseworker will contact you to by <strong>{{ date }}</strong> to tell you if you can continue with your appeal and what to do next",
-      "tribunalWorker": "A Tribunal Caseworker will contact you to by <strong>{{ date }}</strong> to tell you what to do next",
+      "askHomeOffice": "A Tribunal Caseworker will ask the Home Office to send any documents it has about your case to the Tribunal",
+      "whatToDoNext": "A Tribunal Caseworker will check the Home Office documents and then contact you to tell you what to do next",
+      "timescale": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that",
       "thingsYouCanDo": "Things you can do now",
       "readMore": "Read more about appealing an immigration or asylum decision",
       "findOutMore": "Find organisations that can you with your appeal",
@@ -195,32 +202,32 @@
         "panel": "Your late appeal details have been sent"
       },
       "inTime": {
-        "panel": "Your appeal details has been sent"
+        "panel": "Your appeal details have been sent"
       }
     },
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"evidence-list__link\" href='#'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
-      "textTitle": "<span  class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span>  - you don't have to have perfect English.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",
       "bulletTwo": "Try to understand the parts of your claim the Home Office disagrees with",
       "bulletThree": "Respond to some or all the things the Home Office disagrees with",
-      "bulletFour": "Tell us about anything <span  class='govuk-body govuk-!-font-weight-bold'> new</span>  that will affect your case since you made your claim",
-      "bulletFive": "Include supporting evidence where you can. <span  class='govuk-body govuk-!-font-weight-bold'> You can do this on the next page</span> ",
+      "bulletFour": "Tell us about anything <span class='govuk-body govuk-!-font-weight-bold'> new</span> that will affect your case since you made your claim",
+      "bulletFive": "Include supporting evidence where you can. <span class='govuk-body govuk-!-font-weight-bold'> You can do this on the next page</span> ",
       "needHelp": "If you need help",
       "bulletLink": "Find organisations that can help you with your appeal"
     },
     "reasonForAppealCYA": {
       "rowTitles": {
-        "supportingEvidence": "<span  class='govuk-body govuk-!-font-weight-bold'> Supporting evidence</span> "
+        "supportingEvidence": "<span class='govuk-body govuk-!-font-weight-bold'> Supporting evidence</span> "
       }
     },
     "caseBuildingSuccess": {
       "titleText": "Your answer has been sent",
-      "answer": "A Tribunal Caseworker will look at your answer",
-      "date": "The Tribunal Caseworker will contact you by <span  class='govuk-body govuk-!-font-weight-bold'> {{ date }}</span>  to tell you what to do next",
+      "answer": "A Tribunal Caseworker will look at your answer and contact you to tell you what to do next",
+      "date": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it may take longer than that",
       "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"#\">customer.services@justice.gov.uk</a>"
     },
     "reasonsForAppealUploadQuestion": {
@@ -231,12 +238,12 @@
       "title": "Providing supporting evidence",
       "heading": "Providing supporting evidence",
       "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
-      "uploadFile": "<span  class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
+      "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
       "uploadFiles": "Uploaded files",
       "noFiles": "No files uploaded",
       "needMoreTime": "Need more time?",
-      "evidence": "If you want to provide evidence but don't have it right now, you can <a class=\"govuk-link\"href=\"#\"> ask for more time</a>"
+      "evidence": "If you want to provide evidence but don't have it right now, you can <a class=\"govuk-link\" href=\"#\">ask for more time</a>"
     },
     "ineligiblePage": {
       "title": "You cannot currently use the new service",
@@ -257,47 +264,88 @@
       "heading": "You can use the new service",
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
-      "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or <a class=\"govuk-link govuk-link--no-visited-state\" href='#'>send us a message</a>"
+      "questions": "If you have any questions about the appeal process, call the Tribunal on <span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>or <a class=\"govuk-link govuk-link--no-visited-state\" href='#'>send us a message</a>"
     },
     "overviewPage": {
       "title": "Your appeal overview",
       "contactUs": "Contact us for help",
       "askAQuestion": "Ask a question or get help in your language",
       "telephone": "Telephone:",
-      "telephoneNumber": "0300 123 1171",
+      "telephoneNumber": "0300 123 1711",
       "email": "Email:",
       "emailLink": "customer.service@justice.gov.uk",
       "time": "Monday to Friday, 8:30am to 5pm",
       "charges": "Find out about call charges",
       "newWindow": "(opens in a new window)",
+      "appealRef": "Appeal reference:",
+      "answersBeenSaved": "Your answers have been saved",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
+        "respondByText": "You need to respond by {{ applicationNextStep.deadline }}.",
         "appealStarted": {
-            "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
-            "finishQuestions": "You need to finish telling us about your appeal.",
-            "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
+          "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
+          "finishQuestions": "You need to finish telling us about your appeal.",
+          "needHomeOfficeDecision": "You will need to have your Home Office decision letter with you to answer some questions."
         },
         "appealSubmitted": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
-          "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-body govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href=\"#\">What is a Tribunal Caseworker?</a>"
+            "url": "<a class='govuk-link' href='/tribunal-caseworker'>What is a Tribunal Caseworker?</a>"
+          }
+        },
+        "awaitingRespondentEvidence": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link' href='/tribunal-caseworker'>What is a Tribunal Caseworker?</a>"
+          }
+        },
+        "awaitingReasonsForAppeal": {
+          "new": {
+            "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+            },
+            "usefulDocuments": {
+              "title": "Useful documents",
+              "url": "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+            }
+          },
+          "partial": {
+            "description": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
+            "info": {
+              "title": "Helpful Information",
+              "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+            },
+            "usefulDocuments": {
+              "title": "Useful documents",
+              "url": "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+            }
           }
         },
         "reasonsForAppealSubmitted": {
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
-          "dueDate": "A Tribunal Caseworker will contact you by <span class='govuk-body govuk-!-font-weight-bold'>Date TBC</span> to tell you what to do next."
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
         }
-      },
-      "answersBeenSaved": "Your answers have been saved"
+      }
     },
     "eligibleStartPage": {
       "newService": "This is a new online service for people appealing an immigration or asylum decision. Because it is a new service, not everyone will be able to use it right now.",
       "askQuestions": "We need to ask you a few questions to see if the service is suitable for you.",
       "alreadyStarted": "Have you already started an appeal?",
       "signIn": "Sign in to continue with your appeal"
+    },
+    "detailViewers": {
+      "hoDocuments": {
+        "title": "Home Office documents about your case",
+        "dateUploaded": "Date uploaded",
+        "document": "Document"
+      }
     },
     "guidancePages": {
       "caseWorker": {
@@ -325,7 +373,8 @@
               "go to a hearing with you",
               "decide the outcome of your appeal"
             ]
-          }]
+          }
+        ]
       },
       "homeOfficeDocuments": {
         "title": "Understanding your Home Office documents",
@@ -353,13 +402,13 @@
             "smallTitle": "Documents about your case",
             "title": "Your bundle will include some or all of the following documents:",
             "bulletsSpacing": [
-              "<span  class='govuk-body govuk-!-font-weight-bold'> Visa Application Form:</span>  If you made a Visa application, the application form and any evidence relevant to the decision to refuse you claim will be included in the bundle",
-              "<span  class='govuk-body govuk-!-font-weight-bold'> Screening Interview:</span>  If you have claimed asylum, the Screening Interview is the first interview that takes place. The bundle will include a written record of the interview",
-              "<span  class='govuk-body govuk-!-font-weight-bold'> Asylum Interview Record:</span>  If you have claimed asylum, the Asylum Interview (also known as the Asylum Substantive Interview) is when the Home Office asks you in detail about your reasons for claiming asylum. The bundle will include a written record of the interview",
-              "<span  class='govuk-body govuk-!-font-weight-bold'> Documents submitted by appellant in support of claim:</span>  This is any supporting evidence that you gave to the Home Office as part of your claim. This could be a witness statement, medical records or official documents such as a birth certificate",
-              "<span  class='govuk-body govuk-!-font-weight-bold'> Previous refusal:</span>  If you made a previous claim that was refused, any documents related to this claim will be included in the bundle",
-              "<span  class='govuk-body govuk-!-font-weight-bold'> Previous appeal:</span>  If you made a previous appeal that was dismissed, any documents related to this appeal may be included in the bundle",
-              "<span  class='govuk-body govuk-!-font-weight-bold'> Decision letter:</span>  This is the letter that explains why the Home Office refused your claim. A decision letter is sent to you by post and you should have a copy"
+              "<span class='govuk-body govuk-!-font-weight-bold'> Visa Application Form:</span> If you made a Visa application, the application form and any evidence relevant to the decision to refuse you claim will be included in the bundle",
+              "<span class='govuk-body govuk-!-font-weight-bold'> Screening Interview:</span> If you have claimed asylum, the Screening Interview is the first interview that takes place. The bundle will include a written record of the interview",
+              "<span class='govuk-body govuk-!-font-weight-bold'> Asylum Interview Record:</span> If you have claimed asylum, the Asylum Interview (also known as the Asylum Substantive Interview) is when the Home Office asks you in detail about your reasons for claiming asylum. The bundle will include a written record of the interview",
+              "<span class='govuk-body govuk-!-font-weight-bold'> Documents submitted by appellant in support of claim:</span> This is any supporting evidence that you gave to the Home Office as part of your claim. This could be a witness statement, medical records or official documents such as a birth certificate",
+              "<span class='govuk-body govuk-!-font-weight-bold'> Previous refusal:</span> If you made a previous claim that was refused, any documents related to this claim will be included in the bundle",
+              "<span class='govuk-body govuk-!-font-weight-bold'> Previous appeal:</span> If you made a previous appeal that was dismissed, any documents related to this appeal may be included in the bundle",
+              "<span class='govuk-body govuk-!-font-weight-bold'> Decision letter:</span> This is the letter that explains why the Home Office refused your claim. A decision letter is sent to you by post and you should have a copy"
             ]
           },
           {
@@ -368,7 +417,7 @@
           },
           {
             "smallTitle": "Contact us for help",
-            "desc": "If you need help understanding your Home Office documents, you can call <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or email <a class=\"govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>"
+            "desc": "If you need help understanding your Home Office documents, you can call <span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>or email <a class=\"govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>"
           }
         ]
       },
@@ -411,7 +460,10 @@
             "smallTitle": "Witness statement",
             "title": "A witness is someone who comes to a hearing to speak on your behalf. This is known as oral evidence. A witness could be:",
             "bullets": [
-              "a community leader", "a religious leader", "a social worker", "anybody who knows something relevant about your case"
+              "a community leader",
+              "a religious leader",
+              "a social worker",
+              "anybody who knows something relevant about your case"
             ],
             "desc": "All witnesses must write a witness statement, which is a written version of their oral evidence. The witness statement should include the appeal reference number as well as the witness’ address, date of birth, signature and photo identification."
           },
@@ -870,14 +922,12 @@
       "incorrectFormat": "Enter the date in the correct format",
       "inPast": "Your date of birth must be in the past",
       "underAge": "You must be at least 18 years old to use this service"
-
     },
     "dateLetterSent": {
       "missing": "Date letter sent must include a day, month and year",
       "incorrectFormat": "Enter the date in the correct format",
       "inPast": "The date letter was sent must be in the past",
       "underAge": "You must be at least 18 years old to use this service"
-
     },
     "nationality": {
       "selectNationality": "Select your Nationality",

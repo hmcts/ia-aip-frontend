@@ -31,6 +31,6 @@ const appealSubmittedCaseData = {
     'submissionOutOfTime': 'No',
     'homeOfficeReferenceNumber': 'A1234567'
   }
-}
-  
-module.exports = { ...appealSubmittedCaseData }
+};
+
+module.exports = { ...appealSubmittedCaseData };

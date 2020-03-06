@@ -1,7 +1,7 @@
 import Joi from '@hapi/joi';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
-import { mobilePhoneRegex, postcodeRegex } from '../regular-expressions';
+import { postcodeRegex } from '../regular-expressions';
 
 const MobilePhoneNumberExtension = require('../../../extensions/joi/mobile-number');
 
@@ -182,10 +182,10 @@ function contactDetailsValidation(obj: object) {
         is: Joi.string().regex(/text-message/),
         then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
           .messages({
-              'string.empty': i18n.validationErrors.phoneEmpty,
-              'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-              'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
-            }),
+            'string.empty': i18n.validationErrors.phoneEmpty,
+            'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
+            'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+          }),
         otherwise: Joi.any()
       })
   }).unknown();
@@ -236,29 +236,6 @@ function emailValidation(obj: object): null | ValidationErrors {
 }
 
 /**
- * Validates a phone number using using Joi validation with regex
- * @param obj containing the property 'text-message-value' to validate the phone number
- * @return
- * Joi validation will return:
- * 'string.empty': if phone number string is empty
- * 'string.pattern.base': if phone number does not match format
- * @return ValidationError object if there are issues, null if no issues found
- */
-function mobilePhoneValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.object({
-    'text-message-value': Joi.string()
-      .required()
-      .regex(mobilePhoneRegex)
-      .messages({
-        'string.empty': i18n.validationErrors.phoneEmpty,
-        'string.pattern.base': i18n.validationErrors.phoneFormat
-      })
-  }).unknown();
-
-  return validate(obj, schema);
-}
-
-/**
  * Validates whether the statement of truth checkbox has been checked by checking for object existence
  * @param obj containing the property 'statement' to validate the existence
  * Joi validation will return:
@@ -291,10 +268,10 @@ function addressValidation(obj: object): null | ValidationErrors {
 
 function typeOfAppealValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-      appealType: Joi.string().required().messages({
-        'any.required': i18n.validationErrors.selectAnAppealType
-      })
-    }).unknown();
+    appealType: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.selectAnAppealType
+    })
+  }).unknown();
 
   return validate(obj, schema);
 }
@@ -326,7 +303,6 @@ export {
   postcodeValidation,
   nationalityValidation,
   emailValidation,
-  mobilePhoneValidation,
   textAreaValidation,
   statementOfTruthValidation,
   addressValidation,

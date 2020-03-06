@@ -140,7 +140,6 @@ class CcdService {
     const cases = await this.loadCasesForUser(userId, headers);
     if (cases.length > 0) {
       logger.trace(`found [${cases.length}] cases`, logLabel);
-
       // TODO: Retrieve history once endpoint is enabled and add to session.
       // const history = await this.retrieveCaseHistory(userId, headers, cases[0].id);
       return cases[0];

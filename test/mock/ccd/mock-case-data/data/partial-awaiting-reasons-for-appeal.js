@@ -1,5 +1,5 @@
-const awaitingReasonsForAppealCaseData = {
-  'id': 1573640323267110,
+const partialAwaitingReasonsForAppealCaseData = {
+  'ids': 1573640323267110,
   'jurisdiction': 'IA',
   'state': 'awaitingReasonsForAppeal',
   'version': 12,
@@ -30,22 +30,8 @@ const awaitingReasonsForAppealCaseData = {
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',
     'homeOfficeReferenceNumber': 'A1234567',
-    "respondentDocuments": [
-      {
-        "id": "1",
-        "value": {
-          "tag": "respondentEvidence",
-          "document": {
-            "document_url": "http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2",
-            "document_filename": "Evidence_File.png",
-            "document_binary_url": "http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary"
-          },
-          "description": "Screenshot of evidence",
-          "dateUploaded": "2020-02-21"
-        }
-      }
-    ]
+    'reasonsForAppealDecision': 'I decided to appeal because of the following reasons'
   }
 };
 
-module.exports = { ...awaitingReasonsForAppealCaseData };
+module.exports = { ...partialAwaitingReasonsForAppealCaseData };

@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
-import { DocumentManagementService } from '../../service/document-management-service';
+import { DocumentManagementService, documentMapToDocStoreUrl } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -58,15 +58,16 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       }
 
       if (req.file) {
-        if (_.has(application.lateAppeal, 'evidence.url')) {
-          await documentManagementService.deleteFile(req, application.lateAppeal.evidence.url);
+        if (_.has(application.lateAppeal, 'evidence.fileId')) {
+          const documentLocationUrl: string = documentMapToDocStoreUrl(application.lateAppeal.evidence.fileId, req.session.appeal.documentMap);
+          await documentManagementService.deleteFile(req, documentLocationUrl);
         }
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
         application.lateAppeal = {
           ...application.lateAppeal,
           evidence: {
             id: evidenceStored.id,
-            url: evidenceStored.url,
+            fileId: evidenceStored.fileId,
             name: evidenceStored.name
           }
         };
@@ -87,7 +88,8 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const evidence: Evidence = req.session.appeal.application.lateAppeal.evidence;
-      await documentManagementService.deleteFile(req, evidence.url);
+      const documentLocationUrl: string = documentMapToDocStoreUrl(evidence.fileId, req.session.appeal.documentMap);
+      await documentManagementService.deleteFile(req, documentLocationUrl);
       delete req.session.appeal.application.lateAppeal.evidence;
 
       const validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');

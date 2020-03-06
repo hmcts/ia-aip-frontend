@@ -36,7 +36,7 @@ describe('event-deadline-date-finder', () => {
       const currentAppealStatus = 'appealSubmitted';
       const result = getDeadline(currentAppealStatus, history);
 
-      expect(result).to.be.equal('22 February 2020');
+      expect(result).to.be.equal('07 March 2020');
     });
   });
 });

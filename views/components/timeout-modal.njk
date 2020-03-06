@@ -1,7 +1,7 @@
 {% macro timeoutModal() %}
-  <div class="timeout-modal" id="timeout-modal" role="dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description" aria-hidden="true">
+  <div class="timeout-modal" id="timeout-modal" role="dialog" aria-labelledby="dialog-title" aria-describedby="modal-countdown" aria-hidden="true">
     <h2 class="govuk-heading-l" id="dialog-title">{{ i18n.components.timeoutModal.title }}</h2>
-    <p id="modal-countdown" id="dialog-description">{{ i18n.components.timeoutModal.initialDescription }}</p>
+    <p id="modal-countdown">{{ i18n.components.timeoutModal.initialDescription }}</p>
 
     {{ govukButton({
       text: i18n.components.timeoutModal.cta,

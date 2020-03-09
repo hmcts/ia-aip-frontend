@@ -113,9 +113,10 @@ function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction)
 function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction): void {
   try {
     let previousPage: string = paths.overview;
+    const data = setupAnswersReasonsForAppeal(req);
     return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
       previousPage: previousPage,
-      data: setupAnswersReasonsForAppeal(req)
+      data: data
     });
   } catch (error) {
     next(error);

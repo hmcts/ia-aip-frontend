@@ -2,8 +2,6 @@ import express, { NextFunction, Request, Response } from 'express';
 import { getReasonsForAppealViewer, setupDetailViewersController } from '../../../app/controllers/detail-viewers';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
-import { addSummaryRowNoChange, Delimiter } from '../../../app/utils/summary-list';
-import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedMultipleEventsData } from '../mockData/events/expectations';
 
@@ -60,14 +58,24 @@ describe('Reasons For Appeal - Check and send Controller', () => {
     it('should render detail-viewers/appeal-details-viewer.njk', () => {
 
       req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.documentMap = [ {
+        id: '00000',
+        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      } ];
 
-      const summaryRows = [
-        addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ 'HELLO' ]),
-        addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title, [ '404 1.png<br>500.png' ], Delimiter.BREAK_LINE)
-      ];
+      const expectedSummaryRows = [ {
+        'key': { 'text': 'Why do you think the Home Office decision is wrong?' },
+        'value': { 'html': 'HELLO' }
+      }, {
+        'key': { 'text': 'Providing supporting evidence' },
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00001'>500(PNG)</a>" }
+      } ];
       getReasonsForAppealViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
-        data: summaryRows,
+        data: expectedSummaryRows,
         previousPage: paths.overview
       });
     });

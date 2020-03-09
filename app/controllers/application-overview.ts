@@ -10,17 +10,18 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
     try {
       const isPartiallySaved = _.has(req.query, 'saved');
 
-      const loggedInUserFullName = `${req.idam.userDetails.name}`;
-      const appealRefNumber = req.session.appeal.application.homeOfficeRefNumber;
-      const stages = buildProgressBarStages(req.session.appeal.appealStatus);
+      const loggedInUserFullName: string = `${req.idam.userDetails.name}`;
+      const appealRefNumber: string = req.session.appeal.application.homeOfficeRefNumber;
+      const stagesStatus = buildProgressBarStages(req.session.appeal.appealStatus);
+      const nextSteps = getAppealApplicationNextStep(req);
       const history = await getAppealApplicationHistory(req, updateAppealService);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,
-        applicationNextStep: getAppealApplicationNextStep(req),
+        applicationNextStep: nextSteps,
         history: history,
-        stages,
+        stages: stagesStatus,
         saved: isPartiallySaved
       });
     } catch (e) {

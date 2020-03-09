@@ -127,28 +127,34 @@ describe('Confirmation Page Controller', () => {
       'date': date,
       'title': 'Your appeal details',
       'text': 'You sent your appeal details to the Tribunal.',
-      'links': [{ 'href': '/appeal-details', 'text': 'Your appeal details', 'title': 'What you sent' }, {
-        'href': '/tribunal-caseworker',
-        'text': 'What is a Tribunal Caseworker',
-        'title': 'Helpful information'
-      }]
+      'links': [
+        {
+          'href': '{{ paths.detailsViewers.appealDetails }}',
+          'text': 'Your appeal details',
+          'title': 'What you sent'
+        }, {
+          'href': '{{ paths.tribunalCaseworker }}',
+          'text': 'What is a Tribunal Caseworker',
+          'title': 'Helpful information'
+        } ]
     }, {
       'date': date,
       'title': 'Your appeal argument',
       'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
-      'links': [ {
-        'title': 'What you sent',
-        'text': 'Why you think the Home Office is wrong',
-        'href': '/appeal-reasons'
-      }, {
-        'title': 'Useful documents',
-        'text': 'Home Office documents about your case',
-        'href': '/view/home-office-documents'
-      }, {
-        'title': 'Helpful information',
-        'text': 'Understanding your Home Office documents',
-        'href': '/home-office-documents'
-      } ]
+      'links': [
+        {
+          'title': 'What you sent',
+          'text': 'Why you think the Home Office is wrong',
+          'href': '{{ paths.detailsViewers.reasonsForAppeal }}'
+        }, {
+          'title': 'Useful documents',
+          'text': 'Home Office documents about your case',
+          'href': '{{ paths.detailsViewers.homeOfficeDocuments }}'
+        }, {
+          'title': 'Helpful information',
+          'text': 'Understanding your Home Office documents',
+          'href': '{{ paths.homeOfficeDocuments }}'
+        } ]
     } ];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {

@@ -343,12 +343,12 @@
             {
               "title": "What you sent",
               "text": "Your appeal details",
-              "href": "/appeal-details"
+              "href": "{{ paths.detailsViewers.appealDetails }}"
             },
             {
               "title": "Helpful information",
               "text": "What is a Tribunal Caseworker",
-              "href": "/tribunal-caseworker"
+              "href": "{{ paths.tribunalCaseworker }}"
             }
           ]
         },
@@ -359,17 +359,17 @@
             {
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
-              "href": "/appeal-reasons"
+              "href": "{{ paths.detailsViewers.reasonsForAppeal }}"
             },
             {
               "title": "Useful documents",
               "text": "Home Office documents about your case",
-              "href": "/view/home-office-documents"
+              "href": "{{ paths.detailsViewers.homeOfficeDocuments }}"
             },
             {
               "title": "Helpful information",
               "text": "Understanding your Home Office documents",
-              "href": "/home-office-documents"
+              "href": "{{ paths.homeOfficeDocuments }}"
             }
           ]
         },
@@ -1089,7 +1089,7 @@
       "title": "This service will time out soon",
       "initialDescription": "If you do not respond in 2:00 minutes any information you have not saved will be deleted to protect your personal information",
       "description": [
-        "If you do not respond in", 
+        "If you do not respond in",
         "minutes any information you have not saved will be deleted to protect your personal information"
       ],
       "cta": "Continue with appeal"

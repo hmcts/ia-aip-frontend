@@ -10,7 +10,7 @@
       {% for link in event.links %}
         <div class="timeline-margin-left">
           <h3 class="govuk-heading-s govuk-!-margin-top-3 ">{{ link.title }}</h3>
-          <a href="{{ link.href }}" class="govuk-link govuk-!-margin-bottom-1">{{ link.text }}</a>
+          <a href="{{ link.href | eval }}" class="govuk-link govuk-!-margin-bottom-1">{{ link.text }}</a>
         </div>
       {% endfor %}
     </div>

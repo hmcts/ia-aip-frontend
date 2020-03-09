@@ -25,15 +25,13 @@ function fileNameFormatter(fileName: string): string {
   return `${baseName}(${extName})`;
 }
 
-const getAppealApplicationData = (getStateObj: string, req: Request) => {
+const getAppealApplicationData = (eventId: string, req: Request) => {
   const history = req.session.appeal.history;
-  let arr = [];
-  for (let i = 0; i < history.length; i++) {
-    if (history[i].id === getStateObj) {
-      arr.push(history[i]);
-      return arr;
-    }
+  const result = history.find(history => history.id === eventId);
+  if (result.length) {
+    return result;
   }
+  return [ result ];
 };
 
 const formatDateLongDate = (date: string) => {
@@ -98,19 +96,20 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   return array;
 }
 
-function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction): void {
+function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.overview;
+    const data = setupAnswers(req);
     return res.render('detail-viewers/appeal-details-viewer.njk', {
       previousPage: previousPage,
-      data: setupAnswers(req)
+      data: data
     });
   } catch (error) {
     next(error);
   }
 }
 
-function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction): void {
+function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.overview;
     const data = setupAnswersReasonsForAppeal(req);
@@ -123,27 +122,7 @@ function getReasonsForAppealViewer(req: Request, res: Response, next: NextFuncti
   }
 }
 
-function getDocumentViewer(documentManagementService: DocumentManagementService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const documentId = req.params.documentId;
-      const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
-      if (documentLocationUrl) {
-        const response = await documentManagementService.fetchFile(req, documentLocationUrl);
-        if (response) {
-          res.setHeader('content-type', response.headers['content-type']);
-          return res.send(Buffer.from(response.body, 'binary'));
-        }
-      }
-      return serverErrorHandler;
-
-    } catch (error) {
-      next(error);
-    }
-  };
-}
-
-function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunction): void {
+function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.overview;
     let documents = [];
@@ -169,6 +148,26 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
   } catch (error) {
     next(error);
   }
+}
+
+function getDocumentViewer(documentManagementService: DocumentManagementService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const documentId = req.params.documentId;
+      const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
+      if (documentLocationUrl) {
+        const response = await documentManagementService.fetchFile(req, documentLocationUrl);
+        if (response) {
+          res.setHeader('content-type', response.headers['content-type']);
+          return res.send(Buffer.from(response.body, 'binary'));
+        }
+      }
+      return serverErrorHandler;
+
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {

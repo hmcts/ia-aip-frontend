@@ -47,7 +47,6 @@ const idamController = setupIdamController();
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
 const taskListController = setupTaskListController();
-const detailViewerController = setupDetailViewersController(documentManagementService);
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(updateAppealService);
 const personalDetailsController = setupPersonalDetailsController({ updateAppealService, osPlacesClient });
@@ -76,7 +75,6 @@ router.use(GuidancePages);
 router.use(footerController);
 
 // protected by idam
-router.use(detailViewerController);
 router.use(idamController);
 // router.use(initSession);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {

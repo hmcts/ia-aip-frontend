@@ -11,11 +11,8 @@ describe('Reasons For Appeal - Check and send Controller', () => {
   let res: Partial<Response>;
   let next: NextFunction;
   let routerGetStub: sinon.SinonStub;
-  let routerPostStub: sinon.SinonStub;
 
   let documentManagementService: Partial<DocumentManagementService>;
-
-  const editParameter = '?edit';
 
   beforeEach(() => {
 

@@ -11,13 +11,10 @@ nodejs:
     NODE_ENV: production
     S2S_MICROSERVICE_NAME: iac
     MICROSERVICE: iac
-    IDAM_WEB_URL: "https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net"
     IDAM_API_URL: "http://idam-api.{{ .Values.global.environment }}.platform.hmcts.net"
     S2S_URL: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     CCD_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
-    REDIS_URL: redis://${SERVICE_NAME}-redis-master
     SECURE_SESSION: true
-    TRIGGER_BUILD: "trigger2"
   aadIdentityName: ia
   keyVaults:
     ia:

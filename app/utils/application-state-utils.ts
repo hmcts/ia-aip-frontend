@@ -142,6 +142,10 @@ function getAppealApplicationNextStep(req: Request) {
     appealSubmitted: {
       event: 'appealSubmitted',
       date: req.session.appeal.appealLastModified
+    },
+    submitReasonsForAppeal: {
+      event: 'submitReasonsForAppeal',
+      date: req.session.appeal.appealLastModified
     }
   };
 

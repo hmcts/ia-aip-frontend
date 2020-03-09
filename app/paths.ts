@@ -61,6 +61,10 @@ const paths = {
     homeOfficeDocuments: '/view/home-office-documents',
     appealDetails: '/appeal-details',
     reasonsForAppeal: '/appeal-reasons'
+  },
+  session: {
+    extendSession: '/extend-session',
+    sessionExpired: '/session-ended'
   }
 };
 export {

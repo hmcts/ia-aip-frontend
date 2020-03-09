@@ -83,10 +83,10 @@ describe('application-state-utils', () => {
 
       expect(result).to.eql({
         cta: null,
-        deadline: '21 February 2020',
+        deadline: '06 March 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
-          'A Tribunal Caseworker will contact you by <span  class=\'govuk-!-font-weight-bold\'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.'
+          'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
         ],
 
         info: {
@@ -161,10 +161,10 @@ describe('application-state-utils', () => {
 
     expect(result).to.eql({
       cta: null,
-      deadline: 'TBC',
+      deadline: '21 February 2020',
       descriptionParagraphs: [
         'You have told us why you think the Home Office decision is wrong.',
-        'A Tribunal Caseworker will contact you by <span class=\'govuk-!-font-weight-bold\'>Date TBC</span> to tell you what to do next.'
+        'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
       ]
     });
   });

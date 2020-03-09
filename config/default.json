@@ -60,10 +60,15 @@
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"
   },
+  "functionalTests": "*.feature",
   "showTests": false,
   "maxCharacters": 50000,
   "evidenceUpload": {
     "maxFileSizeInMb": 100
+  },
+  "daysToWait": {
+    "afterSubmission": 28,
+    "afterReasonsForAppeal": 14
   },
   "features": {
     "timelineEnabled": false

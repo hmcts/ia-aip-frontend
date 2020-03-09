@@ -1,10 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
-import {
-  getAppealDetailsViewer,
-  getReasonsForAppealViewer,
-  setupDetailViewersController
-} from '../../../app/controllers/detail-viewers';
+import { getReasonsForAppealViewer, setupDetailViewersController } from '../../../app/controllers/detail-viewers';
 import { paths } from '../../../app/paths';
+import { DocumentManagementService } from '../../../app/service/document-management-service';
 import { addSummaryRowNoChange, Delimiter } from '../../../app/utils/summary-list';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -18,9 +15,12 @@ describe('Reasons For Appeal - Check and send Controller', () => {
   let routerGetStub: sinon.SinonStub;
   let routerPostStub: sinon.SinonStub;
 
+  let documentManagementService: Partial<DocumentManagementService>;
+
   const editParameter = '?edit';
 
   beforeEach(() => {
+
     sandbox = sinon.createSandbox();
     req = {
       session: {
@@ -32,12 +32,13 @@ describe('Reasons For Appeal - Check and send Controller', () => {
         } as Partial<Appeal>
       } as Partial<Express.Session>
     } as Partial<Request>;
-
     res = {
       redirect: sandbox.spy(),
       render: sandbox.stub(),
       send: sandbox.stub()
     } as Partial<Response>;
+
+    documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() };
 
     routerGetStub = sandbox.stub(express.Router as never, 'get');
     next = sandbox.stub() as NextFunction;
@@ -49,7 +50,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
 
   describe('setupDetailViewersController', () => {
     it('should setup the routes', () => {
-      setupDetailViewersController();
+      setupDetailViewersController(documentManagementService as DocumentManagementService);
       expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.appealDetails);
       expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.reasonsForAppeal);
     });
@@ -61,7 +62,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       req.session.appeal.history = expectedMultipleEventsData;
 
       const summaryRows = [
-        addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, ['HELLO']),
+        addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ 'HELLO' ]),
         addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title, [ '404 1.png<br>500.png' ], Delimiter.BREAK_LINE)
       ];
       getReasonsForAppealViewer(req as Request, res as Response, next);

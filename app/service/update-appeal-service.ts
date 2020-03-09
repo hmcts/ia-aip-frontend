@@ -2,7 +2,7 @@ import { Request } from 'express';
 import * as _ from 'lodash';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
-import { addToDocumentMapper, documentMapToDocStoreUrl } from './document-management-service';
+import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
 
 enum Subscriber {
   APPELLANT = 'appellant',
@@ -200,7 +200,7 @@ export default class UpdateAppealService {
 
       if (_.has(appeal.application.lateAppeal, 'evidence')) {
 
-        const documentLocationUrl: string = documentMapToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
+        const documentLocationUrl: string = documentIdToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
         caseData.applicationOutOfTimeDocument = {
           document_filename: appeal.application.lateAppeal.evidence.id,
           document_url: documentLocationUrl,
@@ -270,7 +270,7 @@ export default class UpdateAppealService {
         const evidences: Evidences = appeal.reasonsForAppeal.evidences;
 
         caseData.reasonsForAppealDocuments = Object.values(evidences).map((evidence) => {
-          const documentLocationUrl: string = documentMapToDocStoreUrl(evidence.fileId, appeal.documentMap);
+          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
               document_filename: evidence.id,

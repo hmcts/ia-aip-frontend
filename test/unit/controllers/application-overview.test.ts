@@ -64,7 +64,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options', () => {
+  it('getApplicationOverview should render application-overview.njk with options', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -231,7 +231,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render application-overview.njk with options', () => {
+  it('getApplicationOverview should render application-overview.njk with options', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -242,7 +242,7 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
 
-    getApplicationOverview(req as Request, res as Response, next);
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedNextStep = {
       cta: { respondByText: null, url: '/about-appeal' },
@@ -286,7 +286,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options', () => {
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -298,7 +298,7 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
 
-    getApplicationOverview(req as Request, res as Response, next);
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedNextStep = {
       cta: { respondByText: null, url: '/about-appeal' },

@@ -46,7 +46,7 @@ const idamController = setupIdamController();
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
 const taskListController = setupTaskListController();
-const detailViewerController = setupDetailViewersController();
+const detailViewerController = setupDetailViewersController(documentManagementService);
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(updateAppealService);
 const personalDetailsController = setupPersonalDetailsController({ updateAppealService, osPlacesClient });

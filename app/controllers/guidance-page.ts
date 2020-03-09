@@ -52,7 +52,6 @@ function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextF
 
 function setupGuidancePagesController(): Router {
   const router = Router();
-  // TODO Add all pages to path and functions
   router.get(paths.tribunalCaseworker, getCaseworkerPage);
   router.get(paths.moreHelp, getMoreHelpPage);
   router.get(paths.homeOfficeDocuments, getHomeOfficeDocumentsPage);

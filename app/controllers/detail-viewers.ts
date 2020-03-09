@@ -6,7 +6,11 @@ import i18n from '../../locale/en.json';
 import { countryList } from '../data/country-list';
 import { serverErrorHandler } from '../handlers/error-handler';
 import { paths } from '../paths';
-import { DocumentManagementService, documentMapToDocStoreUrl } from '../service/document-management-service';
+import {
+  docStoreUrlToId,
+  documentIdToDocStoreUrl,
+  DocumentManagementService
+} from '../service/document-management-service';
 import { addSummaryRowNoChange, Delimiter } from '../utils/summary-list';
 
 /**
@@ -30,10 +34,6 @@ const getAppealApplicationData = (getStateObj: string, req: Request) => {
       return arr;
     }
   }
-};
-
-const formatDate = (date: string) => {
-  return moment(date).format('DD MMM YYYY');
 };
 
 const formatDateLongDate = (date: string) => {
@@ -87,8 +87,7 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
   const { data } = reasonsForAppeal[0];
   const listOfDocuments: string[] = data.respondentDocuments.map(evidence => {
-    // TODO Need to translate docstore url to our internalId using the document mapper to display to the user
-    const fileId = evidence.value.document.document_url;
+    const fileId = docStoreUrlToId(evidence.value.document.document_url, req.session.appeal.documentMap);
     const formattedFileName = fileNameFormatter(evidence.value.document.document_filename);
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
   });
@@ -127,7 +126,7 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const documentId = req.params.documentId;
-      const documentLocationUrl: string = documentMapToDocStoreUrl(documentId, req.session.appeal.documentMap);
+      const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
       if (documentLocationUrl) {
         const response = await documentManagementService.fetchFile(req, documentLocationUrl);
         if (response) {

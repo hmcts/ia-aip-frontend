@@ -126,7 +126,7 @@
         "addressDetails": "Address",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
-        "supportingEvidence": "<p><span class='govuk-body govuk-!-font-weight-bold'>Supporting evidence</span></p>"
+        "supportingEvidence": "Supporting evidence"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>"
     },

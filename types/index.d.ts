@@ -62,6 +62,7 @@ interface Appeal {
   appealStatus?: string;
   appealCreatedDate?: string;
   appealLastModified?: string;
+  appealReferenceNumber?: string;
   application: AppealApplication;
   reasonsForAppeal: ReasonsForAppeal;
   hearingRequirements: HearingRequirements;

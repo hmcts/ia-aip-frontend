@@ -122,6 +122,7 @@ export default class UpdateAppealService {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
       appealLastModified: ccdCase.last_modified,
+      appealReferenceNumber: caseData.appealReferenceNumber,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: appealType,

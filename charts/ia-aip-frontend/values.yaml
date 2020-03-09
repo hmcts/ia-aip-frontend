@@ -11,7 +11,6 @@ nodejs:
     NODE_ENV: production
     S2S_MICROSERVICE_NAME: iac
     MICROSERVICE: iac
-    IDAM_API_URL: "http://idam-api.{{ .Values.global.environment }}.platform.hmcts.net"
     S2S_URL: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     CCD_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     SECURE_SESSION: true

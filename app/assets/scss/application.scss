@@ -6,6 +6,7 @@
 @import "_task-list";
 @import "_progress-bar";
 @import "_header";
+@import "_timeout-modal";
 
 body {
   @extend .govuk-body;

@@ -35,6 +35,12 @@
       "questionRowTitle": "Question",
       "answerRowTitle": "Answer",
       "supportingEvidenceRowTitle": "Supporting evidence"
+    },
+    "askForMoreTime": {
+      "text": "Ask for more time.",
+      "needMoreTimeQuestion": "Need more time?",
+      "saveAnswerAndAsk": "Save your answer and ask for more time",
+      "wantToProvideEvidenceLater": "If you want to provide evidence but don't have it right now, you can"
     }
   },
   "pages": {
@@ -1040,7 +1046,7 @@
       "title": "This service will time out soon",
       "initialDescription": "If you do not respond in 2:00 minutes any information you have not saved will be deleted to protect your personal information",
       "description": [
-        "If you do not respond in", 
+        "If you do not respond in",
         "minutes any information you have not saved will be deleted to protect your personal information"
       ],
       "cta": "Continue with appeal"

@@ -77,7 +77,8 @@ describe('Confirmation Page Controller', () => {
         'You need to answer a few questions about yourself and your appeal to get started.',
         'You will need to have your Home Office decision letter with you to answer some questions.'
       ],
-      info: null
+      info: null,
+      allowedAskForMoreTime: false
     };
 
     const expectedStages = [ {
@@ -108,7 +109,8 @@ describe('Confirmation Page Controller', () => {
       applicationNextStep: expectedNextStep,
       history: null,
       stages: expectedStages,
-      saved: false
+      saved: false,
+      askForMoreTimeFeatureEnabled: false
     });
   });
 
@@ -126,6 +128,7 @@ describe('Confirmation Page Controller', () => {
     getApplicationOverview(req as Request, res as Response, next);
 
     const expectedNextStep = {
+      allowedAskForMoreTime: false,
       cta: { respondByText: null, url: '/about-appeal' },
       deadline: null,
       descriptionParagraphs: [
@@ -163,7 +166,8 @@ describe('Confirmation Page Controller', () => {
       applicationNextStep: expectedNextStep,
       history: null,
       stages: expectedStages,
-      saved: false
+      saved: false,
+      askForMoreTimeFeatureEnabled: false
     });
   });
 
@@ -182,6 +186,7 @@ describe('Confirmation Page Controller', () => {
     getApplicationOverview(req as Request, res as Response, next);
 
     const expectedNextStep = {
+      allowedAskForMoreTime: false,
       cta: { respondByText: null, url: '/about-appeal' },
       deadline: 'TBC',
       descriptionParagraphs: [
@@ -219,7 +224,8 @@ describe('Confirmation Page Controller', () => {
       applicationNextStep: expectedNextStep,
       history: null,
       stages: expectedStages,
-      saved: false
+      saved: false,
+      askForMoreTimeFeatureEnabled: false
     });
   });
 

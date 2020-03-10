@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
@@ -7,6 +8,7 @@ import { Events } from '../../service/ccd-service';
 import { DocumentManagementService, documentMapToDocStoreUrl } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { asBooleanValue } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
@@ -14,12 +16,15 @@ import {
 } from '../../utils/validations/fields-validations';
 import { daysToWaitUntilContact } from '../appeal-application/confirmation-page';
 
+const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
+
 function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
       previousPage: paths.overview,
-      applicationReason: req.session.appeal.reasonsForAppeal.applicationReason
+      applicationReason: req.session.appeal.reasonsForAppeal.applicationReason,
+      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
     });
   } catch (e) {
     next(e);
@@ -34,7 +39,8 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
       if (validation != null) {
         return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
           errorList: Object.values(validation),
-          error: validation
+          error: validation,
+          askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
         });
       }
       req.session.appeal.reasonsForAppeal = {
@@ -63,7 +69,8 @@ function getAdditionalSupportingEvidenceQuestionPage(req: Request, res: Response
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/supporting-evidence-page.njk', {
-      previousPage: paths.reasonsForAppeal.decision
+      previousPage: paths.reasonsForAppeal.decision,
+      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
     });
   } catch (e) {
     next(e);
@@ -78,7 +85,8 @@ function postAdditionalSupportingEvidenceQuestionPage(req: Request, res: Respons
       return res.render('reasons-for-appeal/supporting-evidence-page.njk', {
         errorList: Object.values(validations),
         error: validations,
-        previousPage: paths.reasonsForAppeal.supportingEvidence
+        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
       });
     }
     if (answer === 'yes') {
@@ -100,7 +108,8 @@ function getSupportingEvidenceUploadPage(req: Request, res: Response, next: Next
     return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
       evidences: Object.values(evidences),
       evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-      previousPage: paths.reasonsForAppeal.supportingEvidence
+      previousPage: paths.reasonsForAppeal.supportingEvidence,
+      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
     });
   } catch (e) {
     next(e);
@@ -125,7 +134,8 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
           } ];
           return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
             errorList: Object.values(validation),
-            error: validation
+            error: validation,
+            askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
           });
         }
         await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
@@ -161,7 +171,9 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.reasonsForAppeal.supportingEvidence
+          previousPage: paths.reasonsForAppeal.supportingEvidence,
+          askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
+
         });
       }
     } catch (e) {

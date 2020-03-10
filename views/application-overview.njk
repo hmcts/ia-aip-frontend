@@ -37,7 +37,12 @@
               }) }}
             {% endif %}
             {% if applicationNextStep.cta.respondByText %}
-              <p class="govuk-body">{{ applicationNextStep.cta.respondByText | eval | safe }}</p>
+              <p class="govuk-body">
+                {{ applicationNextStep.cta.respondByText | eval | safe }}
+                {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime %}
+                  <a href='{{ paths.askForMoreTime }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                {% endif %}
+              </p>
             {% endif %}
           {% endif %}
           {% if applicationNextStep.usefulDocuments %}
@@ -45,7 +50,7 @@
             <p class="govuk-body">{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
           {% endif %}
           {% if applicationNextStep.info %}
-            <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span> </p>
+            <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span></p>
             <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
@@ -60,11 +65,13 @@
           </p>
           <p>
             {{ i18n.pages.overviewPage.email | safe }}
-            <a href='mailto:{{ i18n.pages.overviewPage.emailLink }}' class="govuk-link">{{ i18n.pages.overviewPage.emailLink }}</a>
+            <a href='mailto:{{ i18n.pages.overviewPage.emailLink }}'
+               class="govuk-link">{{ i18n.pages.overviewPage.emailLink }}</a>
           </p>
           <p>
             {{ i18n.pages.overviewPage.time }}
-            <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer" class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a></br>
+            <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer"
+               class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a></br>
             {{ i18n.pages.overviewPage.newWindow }}
           </p>
         </div>

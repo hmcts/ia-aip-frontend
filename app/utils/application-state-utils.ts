@@ -14,7 +14,8 @@ const APPEAL_STATE = {
     cta: {
       url: paths.taskList,
       respondByText: null
-    }
+    },
+    allowedAskForMoreTime: false
   },
   'appealStartedPartial': {
     descriptionParagraphs: [
@@ -25,7 +26,8 @@ const APPEAL_STATE = {
     cta: {
       url: paths.taskList,
       respondByText: null
-    }
+    },
+    allowedAskForMoreTime: false
   },
   'appealSubmitted': {
     descriptionParagraphs: [
@@ -36,7 +38,20 @@ const APPEAL_STATE = {
       title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
       url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
     },
-    cta: null
+    cta: null,
+    allowedAskForMoreTime: false
+  },
+  'awaitingRespondentEvidence': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
+      i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
+    },
+    cta: null,
+    allowedAskForMoreTime: false
   },
   'awaitingReasonsForAppeal': {
     descriptionParagraphs: [
@@ -53,7 +68,8 @@ const APPEAL_STATE = {
     cta: {
       url: paths.reasonsForAppeal.decision,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
-    }
+    },
+    allowedAskForMoreTime: true
   },
   'awaitingReasonsForAppealPartial': {
     descriptionParagraphs: [
@@ -70,28 +86,24 @@ const APPEAL_STATE = {
     cta: {
       url: paths.reasonsForAppeal.decision,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
-    }
-  },
-  'awaitingRespondentEvidence': {
-    descriptionParagraphs: [
-      i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
-      i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
-    ],
-    info: {
-      title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
-      url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
     },
-    cta: null
+    allowedAskForMoreTime: true
   },
   'reasonsForAppealSubmitted': {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
       i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
     ],
-    cta: null
+    cta: null,
+    allowedAskForMoreTime: false
   }
 };
 
+/**
+ * Determines whether a status is partially completed by looking at the first possible user input property.
+ * @param req the request containing the session
+ * @param currentAppealStatus the current appeal status.
+ */
 function isPartiallySavedAppeal(req: Request, currentAppealStatus: string) {
   switch (currentAppealStatus) {
     case 'appealStarted': {

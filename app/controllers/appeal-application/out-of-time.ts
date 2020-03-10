@@ -66,7 +66,6 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
         application.lateAppeal = {
           ...application.lateAppeal,
           evidence: {
-            id: evidenceStored.id,
             fileId: evidenceStored.fileId,
             name: evidenceStored.name
           }

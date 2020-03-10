@@ -21,6 +21,12 @@ describe('Supporting Evidence Upload Controller', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
   const logger: Logger = new Logger();
+  const someEvidences: Evidence[] = [
+    {
+      fileId: 'someUUID',
+      name: 'name.png'
+    }
+  ];
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -80,7 +86,7 @@ describe('Supporting Evidence Upload Controller', () => {
 
   describe('getSupportingEvidenceUploadPage', () => {
     it('should render reasons-for-appeal/supporting-evidence-upload-page.njk', () => {
-      const evidences = {};
+      const evidences: Evidence[] = [];
       req.session.appeal.reasonsForAppeal.evidences = evidences;
 
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
@@ -94,19 +100,11 @@ describe('Supporting Evidence Upload Controller', () => {
     });
 
     it('should render reasons-for-appeal/supporting-evidence-upload-page.njk with saved evidences', () => {
-      const evidences = {
-        someEvidenceId: {
-          id: 'someEvidenceId',
-          fileId: 'someUUID',
-          name: 'name.png'
-        }
-      };
-
-      req.session.appeal.reasonsForAppeal.evidences = evidences;
+      req.session.appeal.reasonsForAppeal.evidences = someEvidences;
       getSupportingEvidenceUploadPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
-        evidences: Object.values(evidences),
+        evidences: someEvidences,
         evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
         previousPage: paths.reasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
@@ -192,7 +190,6 @@ describe('Supporting Evidence Upload Controller', () => {
       req.file = mockFile as Express.Multer.File;
 
       const documentUploadResponse: DocumentUploadResponse = {
-        id: 'someEvidenceId',
         fileId: 'someUUID',
         name: 'name.png'
       };
@@ -207,13 +204,7 @@ describe('Supporting Evidence Upload Controller', () => {
     });
 
     it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {
-      req.session.appeal.reasonsForAppeal.evidences = {
-        someEvidenceId: {
-          id: 'someEvidenceId',
-          fileId: 'someUUID',
-          name: 'name.png'
-        }
-      };
+      req.session.appeal.reasonsForAppeal.evidences = someEvidences;
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
@@ -230,13 +221,7 @@ describe('Supporting Evidence Upload Controller', () => {
   describe('getSupportingEvidenceDeleteFile', () => {
 
     it('Should delete successfully when click on delete link and redirect to the upload-page page', async () => {
-      req.session.appeal.reasonsForAppeal.evidences = {
-        someEvidenceId: {
-          id: 'someEvidenceId',
-          fileId: 'someUUID',
-          name: 'name.png'
-        }
-      };
+      req.session.appeal.reasonsForAppeal.evidences = someEvidences;
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
@@ -248,13 +233,7 @@ describe('Supporting Evidence Upload Controller', () => {
     });
 
     it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {
-      req.session.appeal.reasonsForAppeal.evidences = {
-        someEvidenceId: {
-          id: 'someEvidenceId',
-          fileId: 'someUUID',
-          name: 'name.png'
-        }
-      };
+      req.session.appeal.reasonsForAppeal.evidences = someEvidences;
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];

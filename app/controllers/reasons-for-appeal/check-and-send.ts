@@ -19,8 +19,8 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
 
     if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {
 
-      const evidences: Evidences = req.session.appeal.reasonsForAppeal.evidences;
-      const evidenceNames: string[] = Object.values(evidences).map((evidence) => evidence.name);
+      const evidences: Evidence[] = req.session.appeal.reasonsForAppeal.evidences;
+      const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {
         summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
         previousPage = paths.reasonsForAppeal.supportingEvidenceUpload;

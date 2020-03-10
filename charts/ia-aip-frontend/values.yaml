@@ -23,6 +23,7 @@ nodejs:
         - s2s-secret
         - ia-redis-access-key
         - ia-redis-connection-string
+        - AppInsightsInstrumentationKey
 redis:
   cluster:
     enabled: false

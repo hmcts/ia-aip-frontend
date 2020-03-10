@@ -158,8 +158,10 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         validationError = res.locals.multerError
           ? { uploadFile: createStructuredError('uploadFile', res.locals.multerError) }
           : { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload.noFileSelected) };
+        const evidences = req.session.appeal.reasonsForAppeal.evidences || {};
 
         return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
+          evidences: Object.values(evidences),
           error: validationError,
           errorList: Object.values(validationError),
           previousPage: paths.reasonsForAppeal.supportingEvidence

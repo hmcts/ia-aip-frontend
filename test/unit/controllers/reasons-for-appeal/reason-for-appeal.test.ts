@@ -138,13 +138,12 @@ describe('Reasons for Appeal Controller', function () {
 
   describe('postSupportingEvidenceSubmit.', function () {
 
-    const evidenceMock = {
-      someEvidenceId: {
-        id: 'someEvidenceId',
+    const evidenceMock = [
+      {
         fileId: 'someUUID',
         name: 'name.png'
       }
-    };
+    ];
     it('should fail validation and render reasons-for-appeal/supporting-evidence-upload-page.njk with error', async () => {
       req.session.appeal.reasonsForAppeal.evidences = undefined;
       await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

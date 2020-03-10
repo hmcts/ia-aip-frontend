@@ -25,18 +25,12 @@ interface DocumentMap {
   url: string;
 }
 
-interface Evidences {
-  [key: string]: Evidence;
-}
-
 interface Evidence {
-  id?: string;
   fileId: string;
   name: string;
 }
 
 interface DocumentUploadResponse {
-  id: string;
   fileId: string;
   name: string;
 }
@@ -58,15 +52,17 @@ interface AppealDate {
   year: number;
 }
 
+interface LateAppeal {
+  reason: string;
+  evidence?: Evidence;
+}
+
 interface AppealApplication {
   homeOfficeRefNumber: string;
   dateLetterSent: AppealDate;
   appealType: string;
   isAppealLate: boolean;
-  lateAppeal?: {
-    reason?: string;
-    evidence?: Evidence;
-  };
+  lateAppeal?: LateAppeal;
   personalDetails: {
     givenNames: string;
     familyName: string;
@@ -97,7 +93,7 @@ interface AppealApplication {
 
 interface ReasonsForAppeal {
   applicationReason: string;
-  evidences?: Evidences;
+  evidences?: Evidence[];
   isEdit?: boolean;
 }
 

@@ -21,6 +21,10 @@ describe('Out of time controller', () => {
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
   let next: NextFunction;
+  const evidenceExample: Evidence = {
+    fileId: 'someUUID',
+    name: 'filename'
+  };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -95,8 +99,7 @@ describe('Out of time controller', () => {
       mimetype: 'type'
     };
 
-    const fileObject = {
-      id: `0000-${file.originalname}`,
+    const evidence: Evidence = {
       name: file.originalname,
       fileId: 'someUUID'
     };
@@ -117,7 +120,6 @@ describe('Out of time controller', () => {
       req.file = file as Express.Multer.File;
 
       const documentUploadResponse: DocumentUploadResponse = {
-        id: '0000-file.png',
         fileId: 'someUUID',
         name: 'file.png'
       };
@@ -127,24 +129,19 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(fileObject);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
     });
 
     it('should validate, delete previous evidence, upload new evidence and redirect to check and send page', async () => {
       const whyAmLate = 'My explanation why am late';
-      const evidence: Evidence = {
-        fileId: 'someUUID',
-        name: 'filename'
-      };
 
       req.body['appeal-late'] = whyAmLate;
       req.file = file as Express.Multer.File;
-      req.session.appeal.application.lateAppeal.evidence = evidence;
+      req.session.appeal.application.lateAppeal.evidence = evidenceExample;
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
       const documentUploadResponse: DocumentUploadResponse = {
-        id: '0000-file.png',
         fileId: 'someUUID',
         name: 'file.png'
       };
@@ -156,7 +153,7 @@ describe('Out of time controller', () => {
       expect(documentManagementService.deleteFile).to.have.been.calledWith(req, documentMap.url);
       expect(documentManagementService.uploadFile).to.have.been.calledWith(req);
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(fileObject);
+      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
     });
@@ -167,7 +164,6 @@ describe('Out of time controller', () => {
       req.file = file as Express.Multer.File;
 
       const documentUploadResponse: DocumentUploadResponse = {
-        id: '0000-file.png',
         fileId: 'someUUID',
         name: 'file.png'
       };
@@ -188,18 +184,14 @@ describe('Out of time controller', () => {
         key: 'uploadFile',
         text: 'The selected file must be smaller than 0.001MB'
       };
-      const evidence: Evidence = {
-        fileId: 'someUUID',
-        name: 'filename'
-      };
       req.body['appeal-late'] = 'My explanation why am late';
-      req.session.appeal.application.lateAppeal.evidence = evidence;
+      req.session.appeal.application.lateAppeal.evidence = evidenceExample;
       res.locals.multerError = expectedError.text;
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: 'My explanation why am late',
-        evidence,
+        evidence: evidenceExample,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.taskList
@@ -236,17 +228,12 @@ describe('Out of time controller', () => {
   describe('postAppealLateDeleteFile', () => {
 
     it('Should delete successfully when click on delete link, fail validation and render with errors', async () => {
-      const evidence = {
-        id: 'someEvidenceId',
-        fileId: 'someUUID',
-        name: 'name.png'
-      };
       const expectedError: ValidationError = {
         href: '#appeal-late',
         key: 'appeal-late',
         text: i18n.validationErrors.emptyReasonAppealIsLate
       };
-      req.session.appeal.application.lateAppeal.evidence = { ...evidence };
+      req.session.appeal.application.lateAppeal.evidence = evidenceExample;
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
@@ -263,12 +250,7 @@ describe('Out of time controller', () => {
     });
 
     it('Should delete successfully when click on delete link, pass validation and redirect to appeal late page', async () => {
-      const evidence = {
-        id: 'someEvidenceId',
-        fileId: 'someUUID',
-        name: 'name.png'
-      };
-      req.session.appeal.application.lateAppeal.evidence = { ...evidence };
+      req.session.appeal.application.lateAppeal.evidence = evidenceExample;
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
@@ -282,11 +264,7 @@ describe('Out of time controller', () => {
     });
 
     it('postAppealLateDeleteFile should catch exception and call next with the error', async () => {
-      req.session.appeal.application.lateAppeal.evidence = {
-        id: 'someEvidenceId',
-        fileId: 'someUUID',
-        name: 'name.png'
-      };
+      req.session.appeal.application.lateAppeal.evidence = evidenceExample;
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];

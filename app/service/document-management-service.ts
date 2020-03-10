@@ -104,7 +104,7 @@ class DocumentManagementService {
       files: [ {
         value: uploadData.file.buffer,
         options: {
-          filename: `${Date.now()}-${uploadData.file.originalname}`,
+          filename: uploadData.file.originalname,
           contentType: uploadData.file.mimetype
         }
       } ],
@@ -156,12 +156,10 @@ class DocumentManagementService {
     return this.upload(userId, headers, uploadData)
       .then(response => {
         const res: DocumentManagementStoreResponse = JSON.parse(response);
-        const docName = res._embedded.documents[0].originalDocumentName;
         const documentMapperId: string = addToDocumentMapper(res._embedded.documents[0]._links.self.href, req.session.appeal.documentMap);
         return {
-          id: docName,
           fileId: documentMapperId,
-          name: docName.substring(docName.indexOf('-') + 1)
+          name: res._embedded.documents[0].originalDocumentName
         } as DocumentUploadResponse;
       });
   }

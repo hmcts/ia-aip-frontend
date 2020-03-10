@@ -16,10 +16,7 @@
       <tr class="govuk-table__row evidence">
         <td class="govuk-table__cell">{{ evidence.name }}</td>
         <td class="govuk-table__cell">
-          <a href="{{ cta }}?id={{ evidence.id }}">
-            <input type="button" name="delete[{{ evidence.id }}]" value="{{ i18n.components.evidenceList.delete }}"
-                   class="evidence-list__link">
-          </a>
+          <a class="govuk-link" href="{{ cta }}?id={{ evidence.fileId }}">{{ i18n.components.evidenceList.delete }}</a>
         </td>
       </tr>
     {% else %}

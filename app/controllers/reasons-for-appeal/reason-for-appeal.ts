@@ -142,15 +142,12 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
     try {
       if (req.file) {
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-        const { reasonsForAppeal } = req.session.appeal;
-        reasonsForAppeal.evidences = {
-          ...reasonsForAppeal.evidences,
-          [evidenceStored.id]: {
-            id: evidenceStored.id,
-            fileId: evidenceStored.fileId,
-            name: evidenceStored.name
-          }
-        };
+        const evidences: Evidence[] = [ ...(req.session.appeal.reasonsForAppeal.evidences || []) ];
+        evidences.push({
+          fileId: evidenceStored.fileId,
+          name: evidenceStored.name
+        });
+        req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];
         return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
       } else {
         let validationError;
@@ -177,7 +174,8 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
         const fileId = req.query['id'];
         const targetUrl: string = documentMapToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
-        delete req.session.appeal.reasonsForAppeal.evidences[fileId];
+        const evidences: Evidence[] = [ ...req.session.appeal.reasonsForAppeal.evidences ];
+        req.session.appeal.reasonsForAppeal.evidences = evidences.filter((evidence: Evidence) => evidence.fileId !== req.query['id']);
       }
       return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
     } catch (e) {

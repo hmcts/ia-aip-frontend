@@ -38,12 +38,15 @@ describe('update-appeal-service', () => {
       idam: {
         userDetails: {
           uid: userId,
-          forename: 'idamForename',
-          surname: 'idamSurname'
+          name: 'name',
+          given_name: 'given',
+          family_name: 'family'
         }
       },
-      session: {}
-    } as any;
+      session: {
+        appeal: {}
+      }
+    } as Partial<Request>;
 
     ccdServiceMock.expects('loadOrCreateCase')
       .withArgs(userId, { userToken, serviceToken })
@@ -136,9 +139,8 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.personalDetails.address.city).eq('LONDON');
       expect(req.session.appeal.application.personalDetails.address.postcode).eq('W1W 7RT');
       expect(req.session.appeal.application.isAppealLate).eq(true);
-      expect(req.session.appeal.application.lateAppeal.evidence.id).eq('1580296112615-evidence-file.jpeg');
+      expect(req.session.appeal.application.lateAppeal.evidence.name).eq('1580296112615-evidence-file.jpeg');
       validateUuid(req.session.appeal.application.lateAppeal.evidence.fileId);
-      expect(req.session.appeal.application.lateAppeal.evidence.name).eq('evidence-file.jpeg');
       expect(req.session.appeal.application.contactDetails.email).eq('email@example.net');
       expect(req.session.appeal.application.contactDetails.phone).eq('07123456789');
       expect(req.session.appeal.application.contactDetails.wantsEmail).eq(true);
@@ -390,7 +392,6 @@ describe('update-appeal-service', () => {
               lateAppeal: {
                 reason: 'a reason',
                 evidence: {
-                  id: '0000-somefile.png',
                   name: 'somefile.png',
                   fileId: '00000000-0000-0000-0000-000000000000'
                 }
@@ -422,18 +423,16 @@ describe('update-appeal-service', () => {
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
-              evidences: {
-                '1-File1.png': {
-                  id: '1-File1.png',
+              evidences: [
+                {
                   fileId: '00000000-0000-0000-0000-000000000001',
                   name: 'File1.png'
                 },
-                '2-File2.png': {
-                  id: '2-File2.png',
+                {
                   fileId: '00000000-0000-0000-0000-000000000002',
                   name: 'File2.png'
                 }
-              } as Evidences
+              ] as Evidence[]
             },
             respondentDocuments: [
               {
@@ -480,7 +479,7 @@ describe('update-appeal-service', () => {
         submissionOutOfTime: 'Yes',
         applicationOutOfTimeExplanation: 'a reason',
         applicationOutOfTimeDocument: {
-          document_filename: '0000-somefile.png',
+          document_filename: 'somefile.png',
           document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
           document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
         },
@@ -520,14 +519,14 @@ describe('update-appeal-service', () => {
           {
             value: {
               document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
-              document_filename: '1-File1.png',
+              document_filename: 'File1.png',
               document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
             }
           },
           {
             value: {
               document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
-              document_filename: '2-File2.png',
+              document_filename: 'File2.png',
               document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
             }
           }

@@ -28,11 +28,11 @@
         {% endif %}
         <div class="overview-banner govuk-!-margin-top-0">
           {% for paragraph in applicationNextStep.descriptionParagraphs %}
-            <p class="govuk-body">{{ paragraph | eval | safe }}</p>
+            <p addSummaryRow{{ paragraph | eval | safe }}</p>
           {% endfor %}
           {% if applicationNextStep.info %}
-            <p class="govuk-body"><span  class='govuk-body govuk-!-font-weight-bold'> {{ applicationNextStep.info.title }}</span> </p>
-            <p class="govuk-body">{{ applicationNextStep.info.url | safe }}</p>
+            <p addSummaryRow<span  class='govuk-body govuk-!-font-weight-bold'> {{ applicationNextStep.info.title }}</span> </p>
+            <p addSummaryRow{{ applicationNextStep.info.url | safe }}</p>
           {% endif %}
           {% if applicationNextStep.cta %}
             {% if applicationNextStep.cta.url %}
@@ -42,12 +42,12 @@
               }) }}
             {% endif %}
             {% if applicationNextStep.cta.respondByText %}
-              <p class="govuk-body">{{ applicationNextStep.cta.respondByText | eval | safe }}</p>
+              <p addSummaryRow{{ applicationNextStep.cta.respondByText | eval | safe }}</p>
             {% endif %}
           {% endif %}
           {% if applicationNextStep.usefulDocuments %}
-            <p class="govuk-body"><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
-            <p class="govuk-body">{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
+            <p addSummaryRow<b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
+            <p addSummaryRow{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
           {% endif %}
           {% if applicationNextStep.info %}
             <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span> </p>

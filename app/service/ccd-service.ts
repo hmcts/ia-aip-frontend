@@ -36,7 +36,7 @@ interface SubmitEventData {
   ignore_warning: boolean;
 }
 
-function extractHistoryDetails(historyEvents: any[]): EventHistory[] {
+function extractHistoryDetails(historyEvents: any[]): HistoryEvent[] {
   return historyEvents.map(event => ({
     id: event.id,
     event: {
@@ -175,7 +175,7 @@ class CcdService {
     }
   }
 
-  async getCaseHistory(userId: string, caseId: string, headers: SecurityHeaders): Promise<EventHistory[]> {
+  async getCaseHistory(userId: string, caseId: string, headers: SecurityHeaders): Promise<HistoryEvent[]> {
     logger.trace(`Loading history for case with ID ${caseId}`, logLabel);
     let history = [];
     if (timelineEnabled) {

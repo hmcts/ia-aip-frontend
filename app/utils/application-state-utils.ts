@@ -175,7 +175,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   const eventsCollected = [];
   eventToLookFor.forEach((event: string) => {
-    const eventFound = history.find((e: EventHistory) => event === e.id);
+    const eventFound = history.find((e: HistoryEvent) => event === e.id);
     if (eventFound) {
       const eventObject = constructEventObject(eventFound);
       eventsCollected.push(eventObject);

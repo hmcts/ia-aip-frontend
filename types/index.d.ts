@@ -1,3 +1,20 @@
+interface Href {
+  href: string;
+  text: string;
+}
+
+interface SummaryRow {
+  key: {
+    text: string
+  };
+  value: {
+    html: string
+  };
+  actions?: {
+    items: Href[]
+  };
+}
+
 interface Task {
   id?: string;
   saved: boolean;
@@ -50,7 +67,27 @@ interface Appeal {
   hearingRequirements: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   documentMap?: DocumentMap[];
-  history?: any;
+  history?: HistoryEvent[];
+}
+
+interface HistoryEvent {
+  id: string;
+  event: {
+    eventName: string;
+    description: string;
+  };
+  user: {
+    id: string;
+    lastName: string;
+    firstName: string;
+  };
+  createdDate: string;
+  caseTypeVersion: number;
+  state: {
+    id: string;
+    name: string;
+  };
+  data: any;
 }
 
 interface AppealDate {

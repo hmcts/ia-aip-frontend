@@ -14,7 +14,7 @@
     @include for-tablet-portrait-up {
       flex-direction: column;
       &:not(:first-child) {
-        width: 100%;    
+        width: 100%;
       }
     }
 
@@ -48,7 +48,7 @@
           left: calc(100% - 2.75rem);
         }
       }
-    
+
       &:before {
         display: block;
         content: '';
@@ -102,20 +102,4 @@
     background-position: center;
     border: .25rem solid $govuk-link-colour;
   }
-}
-.timeline-tick {
-  background-image: url('/assets/images/tick.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 2.7rem;
-  height: 2.1rem;
-  box-sizing: border-box;
-  border-radius: 50%;
-  background-color: #1d70b8;
-  border: 0.25rem solid #1d70b8;
-  margin-right: 2rem;
-}
-
-.timeline-padding {
-  padding-bottom: 3rem;
 }

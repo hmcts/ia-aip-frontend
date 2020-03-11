@@ -11,7 +11,7 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService
 } from '../service/document-management-service';
-import { addSummaryRowNoChange, Delimiter } from '../utils/summary-list';
+import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
 /**
  * Takes in a fileName and converts it to the correct display format
@@ -26,21 +26,14 @@ function fileNameFormatter(fileName: string): string {
 }
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
-  const history = req.session.appeal.history;
-  const result = history.find(history => history.id === eventId);
-  if (result.length) {
-    return result;
-  }
-  return [ result ];
+  const history: HistoryEvent[] = req.session.appeal.history;
+  const result = history.filter(history => history.id === eventId);
+  return result;
 };
 
 const formatDateLongDate = (date: string) => {
   return moment(date).format('DD MMMM YYYY');
 };
-
-function checkIfValueIsInHistory(valueFromHistory: string) {
-  return !!valueFromHistory;
-}
 
 function setupAppealDetails(req: Request): Array<any> {
   const array = [];
@@ -49,40 +42,40 @@ function setupAppealDetails(req: Request): Array<any> {
   const appealTypeNames: string[] = data.appealType.split(',').map(appealType => {
     return i18n.appealTypes[appealType].name;
   });
-  if (checkIfValueIsInHistory(data.homeOfficeReferenceNumber)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [ data.homeOfficeReferenceNumber ]));
+  if (_.has(data, 'homeOfficeReferenceNumber')) {
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [ data.homeOfficeReferenceNumber ], null));
   }
-  if (checkIfValueIsInHistory(data.homeOfficeDecisionDate)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [ formatDateLongDate(data.homeOfficeDecisionDate) ]));
+  if (_.has(data, 'homeOfficeDecisionDate')) {
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [ formatDateLongDate(data.homeOfficeDecisionDate) ], null));
   }
-  if (checkIfValueIsInHistory(data.appellantNameForDisplay)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.name, [ data.appellantNameForDisplay ]));
+  if (_.has(data, 'appellantNameForDisplay')) {
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [ data.appellantNameForDisplay ], null));
   }
-  if (checkIfValueIsInHistory(data.appellantDateOfBirth)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.dob, [ formatDateLongDate(data.appellantDateOfBirth) ]));
+  if (_.has(data, 'appellantDateOfBirth')) {
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [ formatDateLongDate(data.appellantDateOfBirth) ], null));
   }
-  if (checkIfValueIsInHistory(data.appellantNationalities[0].value.code)) {
+  if (_.has(data, 'appellantNationalities[0].value.code')) {
     const nation = countryList.find(country => country.value === appealData[0].data.appellantNationalities[0].value.code).name;
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.nationality, [ nation ]));
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [ nation ], null));
   }
-  if (checkIfValueIsInHistory(data.appellantAddress)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [ ...Object.values(data.appellantAddress) ], Delimiter.BREAK_LINE));
+  if (_.has(data, 'appellantAddress')) {
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [ ...Object.values(data.appellantAddress) ], null, Delimiter.BREAK_LINE));
   }
-  if (checkIfValueIsInHistory(data.subscriptions[0].value)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [ data.subscriptions[0].value.email, data.subscriptions[0].value.mobileNumber ], Delimiter.BREAK_LINE));
+  if (_.has(data, 'subscriptions[0].value')) {
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [ data.subscriptions[0].value.email, data.subscriptions[0].value.mobileNumber ], null, Delimiter.BREAK_LINE));
   }
-  if (checkIfValueIsInHistory(data.appealType)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.appealType, [ appealTypeNames ]));
+  if (_.has(data, 'appealType')) {
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [ appealTypeNames ], null));
   }
-  if (checkIfValueIsInHistory(data.applicationOutOfTimeExplanation)) {
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ data.applicationOutOfTimeExplanation ]));
+  if (_.has(data, 'applicationOutOfTimeExplanation')) {
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ data.applicationOutOfTimeExplanation ], null));
   }
-  if (checkIfValueIsInHistory(data.applicationOutOfTimeDocument)) {
+  if (_.has(data, 'applicationOutOfTimeDocument')) {
     const evidence = data.applicationOutOfTimeDocument;
     const fileId = docStoreUrlToId(evidence.document_url, req.session.appeal.documentMap);
     const formattedFileName = fileNameFormatter(evidence.document_filename);
     const urlHtml = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
-    array.push(addSummaryRowNoChange(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ urlHtml ]));
+    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ urlHtml ], null));
   }
   return array;
 }
@@ -91,14 +84,14 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const array = [];
   const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
   const { data } = reasonsForAppeal[0];
-  const listOfDocuments: string[] = data.respondentDocuments.map(evidence => {
-    const fileId = docStoreUrlToId(evidence.value.document.document_url, req.session.appeal.documentMap);
-    const formattedFileName = fileNameFormatter(evidence.value.document.document_filename);
-    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
-  });
-  array.push(addSummaryRowNoChange(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ]));
-  if (checkIfValueIsInHistory(data.respondentDocuments)) {
-    array.push(addSummaryRowNoChange(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], Delimiter.BREAK_LINE));
+  if (_.has(data, 'respondentDocuments')) {
+    const listOfDocuments: string[] = data.respondentDocuments.map(evidence => {
+      const fileId = docStoreUrlToId(evidence.value.document.document_url, req.session.appeal.documentMap);
+      const formattedFileName = fileNameFormatter(evidence.value.document.document_filename);
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
+    });
+    array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
+    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
   }
   return array;
 }

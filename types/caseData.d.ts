@@ -4,26 +4,6 @@ interface SupportingDocument {
   document_binary_url: string;
 }
 
-interface EventHistory {
-  id: string;
-  event: {
-    eventName: string;
-    description: string;
-  };
-  user: {
-    id: string;
-    lastName: string;
-    firstName: string;
-  };
-  createdDate: string;
-  caseTypeVersion: number;
-  state: {
-    id: string;
-    name: string;
-  };
-  data: any;
-}
-
 interface CcdCaseDetails {
   id: string;
   state: string;

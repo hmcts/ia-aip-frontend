@@ -123,3 +123,13 @@ interface IdamDetails {
   given_name: string;
   family_name: string;
 }
+
+interface MetadataObj {
+  [key: string]: any;
+}
+
+interface SummaryRow {
+  key: MetadataObj;
+  value: MetadataObj;
+  actions?: MetadataObj;
+}

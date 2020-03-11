@@ -1,5 +1,8 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
+
+const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 
 import { paths } from '../../paths';
 
@@ -13,7 +16,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     const isLate = () => application.isAppealLate ;
 
     res.render('confirmation-page.njk', {
-      date: daysToWaitUntilContact(14),
+      date: daysToWaitUntilContact(daysToWaitAfterSubmission),
       late: isLate()
     });
   } catch (e) {

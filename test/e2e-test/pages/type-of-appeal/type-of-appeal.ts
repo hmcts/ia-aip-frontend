@@ -13,7 +13,7 @@ module.exports = {
     });
     When(/^I click on Protection as my type of appeal and click Save and continue$/, async () => {
       await I.checkOption('Protection');
-      await I.click('.govuk-button');
+      await I.click('Save and continue');
     });
 
     Given('I am on the type of appeal page', async () => {

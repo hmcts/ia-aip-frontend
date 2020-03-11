@@ -10,6 +10,7 @@ import { setupPersonalDetailsController } from './controllers/appeal-application
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupFooterController } from './controllers/footer';
 import { setupGuidancePagesController } from './controllers/guidance-page';
@@ -18,6 +19,7 @@ import { setupIdamController } from './controllers/idam';
 import { setupIndexController } from './controllers/index';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
+import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -54,10 +56,14 @@ const eligibilityController = setupEligibilityController();
 const applicationOverview = setupApplicationOverviewController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
+const sessionController = setupSessionController();
 
 // Reason for Appeal Controllers
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
 const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(updateAppealService);
+
+// Details Viewers
+const detailViewersController = setupDetailViewersController(documentManagementService);
 
 // not protected by idam
 router.use(indexController);
@@ -73,6 +79,7 @@ router.use(idamController);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);
 }
+
 router.use(taskListController);
 router.use(homeOfficeDetailsController);
 router.use(personalDetailsController);
@@ -85,5 +92,8 @@ router.use(applicationOverview);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
+router.use(sessionController);
+
+router.use(detailViewersController);
 
 export { router };

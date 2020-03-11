@@ -5,7 +5,6 @@ import {
   dateValidation, DOBValidation,
   emailValidation,
   homeOfficeNumberValidation,
-  mobilePhoneValidation,
   reasonForAppealDecisionValidation,
   statementOfTruthValidation,
   textAreaValidation,
@@ -235,319 +234,227 @@ describe('fields-validations', () => {
     });
   });
 
-  describe('mobilePhoneValidation', () => {
-    it('should fail validation with landline phone number', () => {
-      const object = { 'text-message-value': '01632960001' };
-      const validationResult = mobilePhoneValidation(object);
+  describe('textAreaValidation', () => {
+    it('should validate', () => {
+      const text: string = 'Some text here.';
+      const key: string = 'aKey';
+      const validations = textAreaValidation(text, key);
+
+      expect(validations).to.equal(null);
+    });
+
+    it('should fail validation', () => {
+      const text: string = '';
+      const key: string = 'aKey';
+      const validations = textAreaValidation(text, key);
+
+      expect(validations).to.deep.equal(
+        {
+          [key]: {
+            href: '#aKey',
+            key: 'aKey',
+            text: i18n.validationErrors.emptyReasonAppealIsLate
+          }
+        }
+      );
+    });
+  });
+
+  describe('statementOfTruthValidation', () => {
+    it('should validate if statement present', () => {
+      const object = { 'statement': 'acceptance' };
+      const validationResult = statementOfTruthValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation and return "any.required" type', () => {
+      const object = {};
+      const validationResult = statementOfTruthValidation(object);
       const expectedResponse = {
-        'text-message-value': {
-          href: '#text-message-value',
-          key: 'text-message-value',
-          text: 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999'
+        statement: {
+          href: '#statement',
+          key: 'statement',
+          text: 'Select if you believe the information you have given is true.'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
+
   });
 
-  describe('mobile phone number cases', () => {
-    it('should validate a mobile phone number', () => {
-      const object = { 'text-message-value': '07700900982' };
-      const validationResult = mobilePhoneValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should validate a mobile phone number with spaces', () => {
-      const object = { 'text-message-value': '07700 900 982' };
-      const validationResult = mobilePhoneValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should fail validation if not a valid UK mobile phone number', () => {
-      const object = { 'text-message-value': '09700000000' };
-      const validationResult = mobilePhoneValidation(object);
-
-      const expectedResponse = {
-        'text-message-value': {
-          href: '#text-message-value',
-          key: 'text-message-value',
-          text: 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999'
-        }
-      };
-
-      expect(validationResult).to.deep.equal(expectedResponse);
-    });
-  });
-
-  describe('mobile phone number with prefix cases', () => {
-
-    it('should validate a valid mobile phone number with prefix', () => {
-      const object = { 'text-message-value': '+447123456789' };
-      const validationResult = mobilePhoneValidation(object);
-      expect(validationResult).to.equal(null);
-    });
-
-    it('should fail validation with a phone number with prefix', () => {
-      const object = { 'text-message-value': '+448081570192' };
-      const validationResult = mobilePhoneValidation(object);
-      const expectedResponse = {
-        'text-message-value': {
-          'key': 'text-message-value',
-          'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
-          'href': '#text-message-value'
-        }
-      };
-      expect(validationResult).to.deep.equal(expectedResponse);
-    });
-  });
-
-  it('should fail phone validation and return "string.empty" type', () => {
-    const object = { 'text-message-value': '' };
-    const validationResult = mobilePhoneValidation(object);
-    const expectedResponse = {
-      'text-message-value': {
-        'key': 'text-message-value',
-        'text': 'Enter a phone number',
-        'href': '#text-message-value'
-      }
-    };
-    expect(validationResult).to.deep.equal(expectedResponse);
-  });
-
-  it('should fail phone validation and return "string.format" type', () => {
-    const object = { 'text-message-value': '1234567890' };
-    const validationResult = mobilePhoneValidation(object);
-    const expectedResponse = {
-      'text-message-value': {
-        'key': 'text-message-value',
-        'text': 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999',
-        'href': '#text-message-value'
-      }
-    };
-    expect(validationResult).to.deep.equal(expectedResponse);
-  });
-});
-
-describe('textAreaValidation', () => {
-  it('should validate', () => {
-    const text: string = 'Some text here.';
-    const key: string = 'aKey';
-    const validations = textAreaValidation(text, key);
-
-    expect(validations).to.equal(null);
-  });
-
-  it('should fail validation', () => {
-    const text: string = '';
-    const key: string = 'aKey';
-    const validations = textAreaValidation(text, key);
-
-    expect(validations).to.deep.equal(
-      {
-        [key]: {
-          href: '#aKey',
-          key: 'aKey',
-          text: i18n.validationErrors.emptyReasonAppealIsLate
-        }
-      }
-    );
-  });
-});
-
-describe('statementOfTruthValidation', () => {
-  it('should validate if statement present', () => {
-    const object = { 'statement': 'acceptance' };
-    const validationResult = statementOfTruthValidation(object);
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should fail validation and return "any.required" type', () => {
-    const object = {};
-    const validationResult = statementOfTruthValidation(object);
-    const expectedResponse = {
-      statement: {
-        href: '#statement',
-        key: 'statement',
-        text: 'Select if you believe the information you have given is true.'
-      }
-    };
-    expect(validationResult).to.deep.equal(expectedResponse);
-  });
-
-});
-
-describe('contactDetailsValidation', () => {
-  function testContactDetailsValidation(object, key, message) {
-    const validationResult = contactDetailsValidation(object);
-    const expectedResponse = {};
-    expectedResponse[key] = {
-      'href': `#${key}`,
-      'key': key,
-      'text': message
-    };
-    expect(validationResult).to.deep.equal(expectedResponse);
-  }
-
-  it('should fail validation if no type of contact details found', () => {
-    testContactDetailsValidation({ selections: '' }, 'selections', 'Select at least one of the contact options');
-  });
-
-  it('should fail validation if no email entered', () => {
-    testContactDetailsValidation({ selections: 'email' }, 'email-value', 'Enter an email address');
-    testContactDetailsValidation({ selections: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
-  });
-
-  it('should fail validation if email not in correct format', () => {
-    testContactDetailsValidation(
-      { selections: 'email', 'email-value': 'not an email' },
-      'email-value',
-      'Enter an email address in the correct format, like name@example.com'
-    );
-  });
-
-  it('should pass validation when an email is entered', () => {
-    const validationResult = contactDetailsValidation({ selections: 'email', 'email-value': 'foo@bar.com' });
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should fail validation if no mobile phone number entered entered', () => {
-    testContactDetailsValidation({
-      selections: 'text-message',
-      'text-message-value': ''
-    }, 'text-message-value', 'Enter a phone number');
-  });
-
-  it('should fail validation if mobile phone number not incorrect format', () => {
-    testContactDetailsValidation({
-      selections: 'text-message',
-      'text-message-value': 'qwerty'
-    }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
-  });
-
-  it('should fail validation if mobile phone number not a mobile phone number', () => {
-    testContactDetailsValidation({
-      selections: 'text-message',
-      'text-message-value': '01277222222'
-    }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
-  });
-
-  it('should pass validation when a mobile phone number is entered', () => {
-    const validationResult = contactDetailsValidation({
-      selections: 'text-message',
-      'text-message-value': '07899999999'
-    });
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should pass validation when an email and mobile phone number is entered', () => {
-    const validationResult = contactDetailsValidation({
-      selections: 'email,text-message',
-      'email-value': 'foo@bar.com',
-      'text-message-value': '07899999999'
-    });
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should pass validation when an invalid email entered but only text-message selected', () => {
-    const validationResult = contactDetailsValidation({
-      selections: 'text-message',
-      'email-value': 'invalid',
-      'text-message-value': '07899999999'
-    });
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should pass validation when an invalid mobile number entered but only email selected', () => {
-    const validationResult = contactDetailsValidation({
-      selections: 'email',
-      'email-value': 'foo@bar.com',
-      'text-message-value': 'invalid'
-    });
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should fail validation when an email and mobile phone number are not entered', () => {
-    const validationResult = contactDetailsValidation({
-      selections: 'email,text-message',
-      'email-value': '',
-      'text-message-value': ''
-    });
-    expect(validationResult).to.deep.equal({
-      'email-value': {
-        'href': '#email-value',
-        'key': 'email-value',
-        'text': 'Enter an email address'
-      },
-      'text-message-value': {
-        'href': '#text-message-value',
-        'key': 'text-message-value',
-        'text': 'Enter a phone number'
-      }
-    });
-  });
-
-  describe('yesOrNoRequiredValidation', () => {
-    it('no error if yes selected', () => {
-      const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
-
-      expect(validationResult).to.deep.equal(null);
-    });
-
-    it('error if yes on no not selected', () => {
-      const validationResult = yesOrNoRequiredValidation({}, 'error message');
+  describe('contactDetailsValidation', () => {
+    function testContactDetailsValidation(object, key, message) {
+      const validationResult = contactDetailsValidation(object);
       const expectedResponse = {};
-      expectedResponse['answer'] = {
-        'href': '#answer',
-        'key': 'answer',
-        'text': 'error message'
+      expectedResponse[key] = {
+        'href': `#${key}`,
+        'key': key,
+        'text': message
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    }
+
+    it('should fail validation if no type of contact details found', () => {
+      testContactDetailsValidation({ selections: '' }, 'selections', 'Select at least one of the contact options');
+    });
+
+    it('should fail validation if no email entered', () => {
+      testContactDetailsValidation({ selections: 'email' }, 'email-value', 'Enter an email address');
+      testContactDetailsValidation({ selections: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
+    });
+
+    it('should fail validation if email not in correct format', () => {
+      testContactDetailsValidation(
+        { selections: 'email', 'email-value': 'not an email' },
+        'email-value',
+        'Enter an email address in the correct format, like name@example.com'
+      );
+    });
+
+    it('should pass validation when an email is entered', () => {
+      const validationResult = contactDetailsValidation({ selections: 'email', 'email-value': 'foo@bar.com' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation if no mobile phone number entered entered', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': ''
+      }, 'text-message-value', 'Enter a phone number');
+    });
+
+    it('should fail validation if mobile phone number not incorrect format', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': 'qwerty'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+
+    it('should fail validation if mobile phone number not a mobile phone number', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '01277222222'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+
+    it('should pass validation when a mobile phone number is entered', () => {
+      const validationResult = contactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an email and mobile phone number is entered', () => {
+      const validationResult = contactDetailsValidation({
+        selections: 'email,text-message',
+        'email-value': 'foo@bar.com',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an invalid email entered but only text-message selected', () => {
+      const validationResult = contactDetailsValidation({
+        selections: 'text-message',
+        'email-value': 'invalid',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an invalid mobile number entered but only email selected', () => {
+      const validationResult = contactDetailsValidation({
+        selections: 'email',
+        'email-value': 'foo@bar.com',
+        'text-message-value': 'invalid'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation when an email and mobile phone number are not entered', () => {
+      const validationResult = contactDetailsValidation({
+        selections: 'email,text-message',
+        'email-value': '',
+        'text-message-value': ''
+      });
+      expect(validationResult).to.deep.equal({
+        'email-value': {
+          'href': '#email-value',
+          'key': 'email-value',
+          'text': 'Enter an email address'
+        },
+        'text-message-value': {
+          'href': '#text-message-value',
+          'key': 'text-message-value',
+          'text': 'Enter a phone number'
+        }
+      });
+    });
+
+    describe('yesOrNoRequiredValidation', () => {
+      it('no error if yes selected', () => {
+        const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
+
+        expect(validationResult).to.deep.equal(null);
+      });
+
+      it('error if yes on no not selected', () => {
+        const validationResult = yesOrNoRequiredValidation({}, 'error message');
+        const expectedResponse = {};
+        expectedResponse['answer'] = {
+          'href': '#answer',
+          'key': 'answer',
+          'text': 'error message'
+        };
+        expect(validationResult).to.deep.equal(expectedResponse);
+      });
+    });
+  });
+
+  describe('reasonForAppealDecisionValidation', () => {
+    it('should validate if statement present', () => {
+      const object = { 'applicationReason': 'some reason text here' };
+      const validationResult = reasonForAppealDecisionValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation and return "string.empty" type', () => {
+      const object = { 'applicationReason': '' };
+      const validationResult = reasonForAppealDecisionValidation(object);
+      const expectedResponse = {
+
+        applicationReason: {
+          href: '#applicationReason',
+          key: 'applicationReason',
+          text: 'Enter the reasons you think the Home Office decision is wrong'
+        }
+
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
   });
-});
 
-describe('reasonForAppealDecisionValidation', () => {
-  it('should validate if statement present', () => {
-    const object = { 'applicationReason': 'some reason text here' };
-    const validationResult = reasonForAppealDecisionValidation(object);
-    expect(validationResult).to.equal(null);
-  });
+  describe('reasonForAppealDecisionValidation', () => {
+    it('should validate if statement present', () => {
+      const object = { 'applicationReason': 'some reason text here' };
+      const validationResult = reasonForAppealDecisionValidation(object);
+      expect(validationResult).to.equal(null);
+    });
 
-  it('should fail validation and return "string.empty" type', () => {
-    const object = { 'applicationReason': '' };
-    const validationResult = reasonForAppealDecisionValidation(object);
-    const expectedResponse = {
+    it('should fail validation and return "string.empty" type', () => {
+      const object = { 'applicationReason': '' };
+      const validationResult = reasonForAppealDecisionValidation(object);
+      const expectedResponse = {
 
-      applicationReason: {
-        href: '#applicationReason',
-        key: 'applicationReason',
-        text: 'Enter the reasons you think the Home Office decision is wrong'
-      }
+        applicationReason: {
+          href: '#applicationReason',
+          key: 'applicationReason',
+          text: 'Enter the reasons you think the Home Office decision is wrong'
+        }
 
-    };
-    expect(validationResult).to.deep.equal(expectedResponse);
-  });
-});
-
-describe('reasonForAppealDecisionValidation', () => {
-  it('should validate if statement present', () => {
-    const object = { 'applicationReason': 'some reason text here' };
-    const validationResult = reasonForAppealDecisionValidation(object);
-    expect(validationResult).to.equal(null);
-  });
-
-  it('should fail validation and return "string.empty" type', () => {
-    const object = { 'applicationReason': '' };
-    const validationResult = reasonForAppealDecisionValidation(object);
-    const expectedResponse = {
-
-      applicationReason: {
-        href: '#applicationReason',
-        key: 'applicationReason',
-        text: 'Enter the reasons you think the Home Office decision is wrong'
-      }
-
-    };
-    expect(validationResult).to.deep.equal(expectedResponse);
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
   });
 });

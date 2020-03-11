@@ -11,7 +11,7 @@ module.exports = {
     });
 
     When('I click start now', async () => {
-      await I.click('.govuk-button');
+      await I.click('Start now');
     });
 
     Then('I should see the sign in page', async () => {

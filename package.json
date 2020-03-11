@@ -112,7 +112,7 @@
     "mocha": "^7.1.0",
     "multiparty": "^4.2.1",
     "node-sass": "^4.13.0",
-    "nodemon": "^1.19.2",
+    "nodemon": "^2.0.2",
     "nyc": "^15.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "puppeteer": "^1.20.0",

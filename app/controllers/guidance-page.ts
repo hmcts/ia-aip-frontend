@@ -5,10 +5,13 @@ import { getGuidancePageText } from '../utils/guidance-page-utils';
 function getCaseworkerPage(req: Request, res: Response, next: NextFunction) {
   const text = getGuidancePageText('caseworker');
   try {
-    return res.render('guidance-pages/guidance-page.njk',{
+    return res.render('guidance-pages/guidance-page.njk', {
       showContactUs: true,
-      previousPage: '/',
-      page: text});
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      page: text
+    });
   } catch (e) {
     next(e);
   }
@@ -17,10 +20,13 @@ function getCaseworkerPage(req: Request, res: Response, next: NextFunction) {
 function getMoreHelpPage(req: Request, res: Response, next: NextFunction) {
   const text = getGuidancePageText('helpWithAppeal');
   try {
-    return res.render('guidance-pages/guidance-page.njk',{
+    return res.render('guidance-pages/guidance-page.njk', {
       showContactUs: true,
-      previousPage: '/',
-      page: text});
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      page: text
+    });
   } catch (e) {
     next(e);
   }
@@ -29,10 +35,13 @@ function getMoreHelpPage(req: Request, res: Response, next: NextFunction) {
 function getHomeOfficeDocumentsPage(req: Request, res: Response, next: NextFunction) {
   const text = getGuidancePageText('homeOfficeDocuments');
   try {
-    return res.render('guidance-pages/guidance-page.njk',{
+    return res.render('guidance-pages/guidance-page.njk', {
       showContactUs: false,
-      previousPage: '/',
-      page: text});
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      page: text
+    });
   } catch (e) {
     next(e);
   }
@@ -41,10 +50,13 @@ function getHomeOfficeDocumentsPage(req: Request, res: Response, next: NextFunct
 function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextFunction) {
   const text = getGuidancePageText('evidenceToSupportAppeal');
   try {
-    return res.render('guidance-pages/guidance-page.njk',{
+    return res.render('guidance-pages/guidance-page.njk', {
       showContactUs: true,
-      previousPage: '/',
-      page: text});
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      page: text
+    });
   } catch (e) {
     next(e);
   }
@@ -52,11 +64,10 @@ function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextF
 
 function setupGuidancePagesController(): Router {
   const router = Router();
-  // TODO Add all pages to path and functions
-  router.get(paths.tribunalCaseworker, getCaseworkerPage);
-  router.get(paths.moreHelp, getMoreHelpPage);
-  router.get(paths.homeOfficeDocuments, getHomeOfficeDocumentsPage);
-  router.get(paths.evidenceToSupportAppeal, getEvidenceToSupportAppealPage);
+  router.get(paths.guidancePages.tribunalCaseworker, getCaseworkerPage);
+  router.get(paths.guidancePages.moreHelp, getMoreHelpPage);
+  router.get(paths.guidancePages.homeOfficeDocuments, getHomeOfficeDocumentsPage);
+  router.get(paths.guidancePages.evidenceToSupportAppeal, getEvidenceToSupportAppealPage);
   return router;
 }
 

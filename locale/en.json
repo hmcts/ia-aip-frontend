@@ -197,7 +197,7 @@
       "timescale": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that",
       "thingsYouCanDo": "Things you can do now",
       "readMore": "Read more about appealing an immigration or asylum decision",
-      "findOutMore": "Find organisations that can you with your appeal",
+      "findOutMore": "Find organisations that can help with your appeal",
       "outOfTime": {
         "panel": "Your late appeal details have been sent"
       },
@@ -293,7 +293,7 @@
           "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a class='govuk-link' href='/tribunal-caseworker'>What is a Tribunal Caseworker?</a>"
+            "url": "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "awaitingRespondentEvidence": {
@@ -301,7 +301,7 @@
           "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a class='govuk-link' href='/tribunal-caseworker'>What is a Tribunal Caseworker?</a>"
+            "url": "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -309,7 +309,7 @@
             "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+              "url": "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
@@ -320,7 +320,7 @@
             "description": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href=\"#\">Understanding your Home Office documents</a>"
+              "url": "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
@@ -1040,7 +1040,7 @@
       "title": "This service will time out soon",
       "initialDescription": "If you do not respond in 2:00 minutes any information you have not saved will be deleted to protect your personal information",
       "description": [
-        "If you do not respond in", 
+        "If you do not respond in",
         "minutes any information you have not saved will be deleted to protect your personal information"
       ],
       "cta": "Continue with appeal"

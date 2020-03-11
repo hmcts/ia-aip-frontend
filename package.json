@@ -107,7 +107,7 @@
     "config": "^3.2.2",
     "css-loader": "^3.2.0",
     "cucumber": "^6.0.3",
-    "husky": "^3.0.8",
+    "husky": "^4.2.3",
     "memory-cache": "^0.2.0",
     "mocha": "^6.2.0",
     "multiparty": "^4.2.1",

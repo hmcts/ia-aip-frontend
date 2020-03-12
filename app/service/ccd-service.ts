@@ -1,12 +1,13 @@
 import config from 'config';
 import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
+import { asBooleanValue } from '../utils/utils';
 import { SecurityHeaders } from './authentication-service';
 
 const ccdBaseUrl = config.get('ccd.apiUrl');
 const jurisdictionId = config.get('ccd.jurisdictionId');
 const caseType = config.get('ccd.caseType');
-const timelineEnabled = config.get('features.timelineEnabled');
+const timelineEnabled = asBooleanValue(config.get('features.timelineEnabled'));
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);

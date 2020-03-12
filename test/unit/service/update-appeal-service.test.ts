@@ -522,14 +522,14 @@ describe('update-appeal-service', () => {
           {
             value: {
               document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
-              document_filename: '1-File1.png',
+              document_filename: 'File1.png',
               document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
             }
           },
           {
             value: {
               document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
-              document_filename: '2-File2.png',
+              document_filename: 'File2.png',
               document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
             }
           }

@@ -132,6 +132,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
+        evidences: [],
         previousPage: paths.reasonsForAppeal.supportingEvidence
       });
     });
@@ -149,6 +150,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
+        evidences: [],
         previousPage: paths.reasonsForAppeal.supportingEvidence
       });
     });
@@ -168,6 +170,7 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
+        evidences: [],
         previousPage: paths.reasonsForAppeal.supportingEvidence
       });
     });

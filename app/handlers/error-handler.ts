@@ -11,7 +11,7 @@ function pageNotFoundHandler(req: Request, res: Response, next: NextFunction) {
   res.status(NOT_FOUND);
 
   const accept = req.headers['accept'];
-  const list = accept.split(',');
+  const list = accept ? accept.split(',') : [];
 
   if (list.includes('text/html')) {
     res.render('errors/404.njk');
@@ -33,7 +33,7 @@ function serverErrorHandler(err: any, req: Request, res: Response, next: NextFun
   res.status(INTERNAL_SERVER_ERROR);
 
   const accept = req.headers['accept'];
-  const list = accept.split(',');
+  const list = accept ? accept.split(',') : [];
 
   if (list.includes('text/html')) {
     res.render('errors/500.njk');

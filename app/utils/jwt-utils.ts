@@ -21,13 +21,14 @@ export function decodeJWTToken(jwtToken: string) {
  * @param jwtToken the jwt token to be verified
  */
 export function isJWTExpired(jwtToken: string) {
-  let offset = 20 * 1000; // 20 seconds
-  let dateNow = new Date();
+  let offset = 20; // 20 seconds
   let isExpiredToken = false;
 
   const decoded = decodeJWTToken(jwtToken);
 
-  if (decoded && decoded.exp < (dateNow.getUTCMilliseconds() - offset)) {
+  const currentTime = Math.round(new Date().getTime() / 1000);
+
+  if (decoded && decoded.exp < (currentTime - offset)) {
     isExpiredToken = true;
   }
   return isExpiredToken;

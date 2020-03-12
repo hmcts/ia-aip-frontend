@@ -272,12 +272,11 @@ export default class UpdateAppealService {
       }
       if (appeal.reasonsForAppeal.evidences) {
         const evidences: Evidences = appeal.reasonsForAppeal.evidences;
-
         caseData.reasonsForAppealDocuments = Object.values(evidences).map((evidence) => {
           const documentLocationUrl: string = documentMapToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
-              document_filename: evidence.id,
+              document_filename: evidence.name,
               document_url: documentLocationUrl,
               document_binary_url: `${documentLocationUrl}/binary`
             } as SupportingDocument

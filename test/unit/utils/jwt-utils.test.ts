@@ -35,7 +35,7 @@ describe('JWT Utils', () => {
     expect(result).eq(true);
   });
 
-  it('checks that a token is expired taking into account the 20 seconds offset', () => {
+  it('checks that a token is expired taking into account the 5 minute offset', () => {
     const dateInSeconds = currentDateInSeconds() - 30;
 
     const mockedDecodedToken = {
@@ -52,8 +52,9 @@ describe('JWT Utils', () => {
     expect(result).eq(true);
   });
 
-  it('checks that a token is valid taking into account the 20 seconds offset', () => {
-    const dateInSeconds = currentDateInSeconds();
+  it('checks that a token is valid taking into account the 5 minute offset', () => {
+    const justOverFiveMinutesInSeconds = 5 * 60 + 10;
+    const dateInSeconds = currentDateInSeconds() + justOverFiveMinutesInSeconds;
 
     const mockedDecodedToken = {
       'sub': 'someSubject',

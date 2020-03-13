@@ -17,6 +17,7 @@ const setupSecrets = () => {
   setSecret('secrets.ia.s2s-secret', 's2s.secret');
   setSecret('secrets.ia.ia-redis-connection-string', 'session.redis.url');
   setSecret('secrets.ia.ia-redis-access-key', 'session.redis.secret');
+  setSecret('secrets.ia.AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');
 
   return config;
 };

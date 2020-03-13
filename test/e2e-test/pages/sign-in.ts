@@ -38,7 +38,7 @@ module.exports = {
       I.amOnPage(testUrl + paths.login);
 
       switch (appealState) {
-        case 'New appealStarted': {
+        case 'appealStarted': {
           signInForUser('no-cases@example.com');
           break;
         }

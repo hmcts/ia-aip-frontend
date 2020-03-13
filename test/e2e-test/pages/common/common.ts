@@ -236,6 +236,10 @@ module.exports = {
       await I.click(selector);
     });
 
+    When(/^I click "([^"]*)" link$/, async (selector: string) => {
+      await I.click(selector);
+    });
+
     When(/^I enter a day "([^"]*)" month "([^"]*)" year "([^"]*)"$/, async (day, month, year) => {
       await fillInDate(day, month, year);
     });

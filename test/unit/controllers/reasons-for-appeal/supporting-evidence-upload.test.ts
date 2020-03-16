@@ -130,10 +130,11 @@ describe('Supporting Evidence Upload Controller', () => {
         text: 'Select a file'
       };
 
-      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
+        evidences: [],
         previousPage: paths.reasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
       });
@@ -148,10 +149,11 @@ describe('Supporting Evidence Upload Controller', () => {
 
       res.locals.multerError = expectedError.text;
 
-      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
+        evidences: [],
         previousPage: paths.reasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
       });
@@ -168,10 +170,11 @@ describe('Supporting Evidence Upload Controller', () => {
 
       res.locals.multerError = expectedError.text;
 
-      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
+        evidences: [],
         previousPage: paths.reasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
       });
@@ -199,7 +202,7 @@ describe('Supporting Evidence Upload Controller', () => {
 
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
-      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
     });
 

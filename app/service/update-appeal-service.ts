@@ -55,6 +55,8 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
+    let reasonsForAppealDocumentUploads: Evidences = null;
+
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
@@ -86,6 +88,18 @@ export default class UpdateAppealService {
         };
       }
     }
+    // TODO needs to use the document mapper.
+    if (caseData.reasonsForAppealDocuments) {
+      reasonsForAppealDocumentUploads = {};
+      caseData.reasonsForAppealDocuments.forEach(document => {
+        const documentMapperId: string = addToDocumentMapper(document.value.document_url, documentMap);
+
+        reasonsForAppealDocumentUploads[documentMapperId] = {
+          fileId: documentMapperId,
+          name: this.fileIdToName(document.value.document_filename)
+        };
+      });
+    }
 
     if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
       respondentDocuments = [];
@@ -104,8 +118,6 @@ export default class UpdateAppealService {
       });
     }
 
-    // if (caseData.respondentDocuments)
-    // TODO: Remove created and last modified date, used as a work around while the citizen cannot query the /events endpoint
     req.session.appeal = {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
@@ -129,7 +141,8 @@ export default class UpdateAppealService {
         addressLookup: {}
       },
       reasonsForAppeal: {
-        applicationReason: caseData.reasonsForAppealDecision
+        applicationReason: caseData.reasonsForAppealDecision,
+        evidences: reasonsForAppealDocumentUploads
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
@@ -268,12 +281,11 @@ export default class UpdateAppealService {
       }
       if (appeal.reasonsForAppeal.evidences) {
         const evidences: Evidences = appeal.reasonsForAppeal.evidences;
-
         caseData.reasonsForAppealDocuments = Object.values(evidences).map((evidence) => {
           const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
-              document_filename: evidence.id,
+              document_filename: evidence.name,
               document_url: documentLocationUrl,
               document_binary_url: `${documentLocationUrl}/binary`
             } as SupportingDocument

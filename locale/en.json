@@ -228,7 +228,7 @@
       "titleText": "Your answer has been sent",
       "answer": "A Tribunal Caseworker will look at your answer and contact you to tell you what to do next",
       "date": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it may take longer than that",
-      "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"#\">customer.services@justice.gov.uk</a>"
+      "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'>0300 123 1711</span> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\">customer.services@justice.gov.uk</a>"
     },
     "reasonsForAppealUploadQuestion": {
       "title": "Do you want to provide supporting evidence?",
@@ -265,7 +265,8 @@
       "heading": "You can use the new service",
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
-      "questions": "If you have any questions about the appeal process, call the Tribunal on <span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>or <a class=\"govuk-link govuk-link--no-visited-state\" href='#'>send us a message</a>"
+      "questions": "If you have any questions about the appeal process, call the Tribunal on<span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\"> customer.services@justice.gov.uk</a>"
+
     },
     "overviewPage": {
       "title": "Your appeal overview",

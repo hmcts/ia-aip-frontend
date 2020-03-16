@@ -158,12 +158,12 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
       const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
       if (documentLocationUrl) {
         const response = await documentManagementService.fetchFile(req, documentLocationUrl);
-        if (response) {
+        if (response.statusCode === 200) {
           res.setHeader('content-type', response.headers['content-type']);
           return res.send(Buffer.from(response.body, 'binary'));
         }
       }
-      return serverErrorHandler;
+      return res.redirect(paths.common.fileNotFound);
 
     } catch (error) {
       next(error);

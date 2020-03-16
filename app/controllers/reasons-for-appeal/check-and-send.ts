@@ -19,7 +19,6 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
     ];
 
     if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {
-
       const evidences: Evidence[] = req.session.appeal.reasonsForAppeal.evidences || [];
       const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {

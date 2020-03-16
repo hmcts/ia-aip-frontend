@@ -30,5 +30,13 @@ module.exports = {
       await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear() - 1);
       I.click('Save and continue');
     });
+
+    When('I visit a non-existent document', async () => {
+      I.amOnPage(testUrl + '/view/document/fileID');
+    });
+
+    Then('I should see the no file found page', async () => {
+      I.seeInCurrentUrl(paths.common.fileNotFound);
+    });
   }
 };

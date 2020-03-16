@@ -950,9 +950,6 @@
         }
       ]
     },
-    "forbidden": {
-      "title": "This page is unavailable"
-    },
     "askForMoreTimePage": {
       "title": "Ask for more time",
       "header": "Ask for more time",
@@ -971,8 +968,13 @@
     },
     "forbidden": {
       "title": "This page is unavailable"
-    }
-  },
+    },
+    "fileNotFoundPage": {
+      "title": "File not found",
+      "fileNoLongerAvailable": "This file is no longer available.",
+      "link": " Go back to the previous page"
+       }
+    },
   "error": {
     "summary": {
       "title": "There is a problem",

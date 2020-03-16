@@ -5,7 +5,7 @@ import i18n from '../../../locale/en.json';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
-import { DocumentManagementService, documentMapToDocStoreUrl } from '../../service/document-management-service';
+import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { asBooleanValue } from '../../utils/utils';
@@ -187,7 +187,7 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
     try {
       if (req.query['id']) {
         const fileId = req.query['id'];
-        const targetUrl: string = documentMapToDocStoreUrl(fileId, req.session.appeal.documentMap);
+        const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
         delete req.session.appeal.reasonsForAppeal.evidences[fileId];
       }

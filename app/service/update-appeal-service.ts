@@ -2,7 +2,7 @@ import { Request } from 'express';
 import * as _ from 'lodash';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
-import { addToDocumentMapper, documentMapToDocStoreUrl } from './document-management-service';
+import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
 
 enum Subscriber {
   APPELLANT = 'appellant',
@@ -15,17 +15,26 @@ enum YesOrNo {
 }
 
 export default class UpdateAppealService {
-  private ccdService: CcdService;
-  private authenticationService: AuthenticationService;
+  private readonly _ccdService: CcdService;
+  private readonly _authenticationService: AuthenticationService;
 
   constructor(ccdService: CcdService, authenticationService: AuthenticationService) {
-    this.ccdService = ccdService;
-    this.authenticationService = authenticationService;
+    this._ccdService = ccdService;
+    this._authenticationService = authenticationService;
+  }
+
+  getCcdService(): CcdService {
+    return this._ccdService;
+  }
+
+  getAuthenticationService(): AuthenticationService {
+    return this._authenticationService;
   }
 
   async loadAppeal(req: Request) {
-    const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
-    const ccdCase = await this.ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+    const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
+    const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+
     req.session.ccdCaseId = ccdCase.id;
 
     const caseData: Partial<CaseData> = ccdCase.case_data;
@@ -157,7 +166,7 @@ export default class UpdateAppealService {
   }
 
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
-    const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
+    const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
 
     const currentUserId = req.idam.userDetails.uid;
     const caseData = this.convertToCcdCaseData(req.session.appeal);
@@ -167,7 +176,7 @@ export default class UpdateAppealService {
       case_data: caseData
     };
 
-    const updatedAppeal = await this.ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
+    const updatedAppeal = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
     return updatedAppeal;
   }
 
@@ -191,7 +200,7 @@ export default class UpdateAppealService {
 
       if (_.has(appeal.application.lateAppeal, 'evidence')) {
 
-        const documentLocationUrl: string = documentMapToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
+        const documentLocationUrl: string = documentIdToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
         caseData.applicationOutOfTimeDocument = {
           document_filename: appeal.application.lateAppeal.evidence.id,
           document_url: documentLocationUrl,
@@ -261,7 +270,7 @@ export default class UpdateAppealService {
         const evidences: Evidences = appeal.reasonsForAppeal.evidences;
 
         caseData.reasonsForAppealDocuments = Object.values(evidences).map((evidence) => {
-          const documentLocationUrl: string = documentMapToDocStoreUrl(evidence.fileId, appeal.documentMap);
+          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
               document_filename: evidence.id,

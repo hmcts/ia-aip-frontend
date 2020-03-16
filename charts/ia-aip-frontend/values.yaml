@@ -13,6 +13,7 @@ nodejs:
     MICROSERVICE: iac
     S2S_URL: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     CCD_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    DOC_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     SECURE_SESSION: true
   aadIdentityName: ia
   keyVaults:
@@ -23,6 +24,7 @@ nodejs:
         - s2s-secret
         - ia-redis-access-key
         - ia-redis-connection-string
+        - AppInsightsInstrumentationKey
 redis:
   cluster:
     enabled: false

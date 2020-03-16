@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { addToDocumentMapper, documentMapToDocStoreUrl } from '../../../app/service/document-management-service';
+import { addToDocumentMapper, documentIdToDocStoreUrl } from '../../../app/service/document-management-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
@@ -48,7 +48,7 @@ describe('document-management-service', () => {
       const documentMap: DocumentMap[] = [
         { id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/' }
       ];
-      const result = documentMapToDocStoreUrl('00000000-0000-0000-0000-000000000000', documentMap);
+      const result = documentIdToDocStoreUrl('00000000-0000-0000-0000-000000000000', documentMap);
       expect(result).to.be.a('string');
       expect(result).to.be.eq('http://someDocumentUrl/');
     });

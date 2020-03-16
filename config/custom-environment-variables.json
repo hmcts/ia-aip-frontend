@@ -58,5 +58,8 @@
     "secret": "SAUCELABS_SECRET"
   },
   "showTests": "SHOW_TESTS",
-  "functionalTests": "FUNCTIONAL_TESTS"
+  "functionalTests": "FUNCTIONAL_TESTS",
+  "features": {
+    "timelineEnabled": "TIMELINE_ENABLED"
+  }
 }

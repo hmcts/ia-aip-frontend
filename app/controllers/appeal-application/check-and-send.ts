@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
-import * as nunjucks from 'nunjucks';
 import i18n from '../../../locale/en.json';
 import { countryList } from '../../data/country-list';
 import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';
@@ -63,15 +62,13 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
       paths.typeOfAppeal + editParameter
     )
   ];
+
   if (appealApplication.isAppealLate) {
     const lateAppealValue = [ appealApplication.lateAppeal.reason ];
     if (appealApplication.lateAppeal.evidence) {
-      const evidence = {
-        evidence: appealApplication.lateAppeal.evidence.name,
-        evidenceUrl: '#'
-      };
+      const urlHtml = `<br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence);
-      lateAppealValue.push(nunjucks.renderString(i18n.pages.checkYourAnswers.supportingEvidence, evidence));
+      lateAppealValue.push(urlHtml);
     }
     const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.homeOffice.appealLate);
     rows.push(lateAppealRow);

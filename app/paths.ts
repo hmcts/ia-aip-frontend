@@ -60,7 +60,9 @@ const paths = {
   },
   detailsViewers: {
     document: '/view/document',
-    homeOfficeDocuments: '/view/home-office-documents'
+    homeOfficeDocuments: '/view/home-office-documents',
+    appealDetails: '/appeal-details',
+    reasonsForAppeal: '/appeal-reasons'
   },
   session: {
     extendSession: '/extend-session',

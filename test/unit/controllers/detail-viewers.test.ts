@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import {
+  getAppealDetailsViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
+  getReasonsForAppealViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+import { expectedMultipleEventsData } from '../mockData/events/expectation/expected-multiple-events';
 
 const express = require('express');
 
@@ -128,6 +131,63 @@ describe('Detail viewer Controller', () => {
       documentManagementService.fetchFile = sandbox.stub().throws(error);
       await getDocumentViewer(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getAppealDetailsViewer', () => {
+    it('should render detail-viewers/appeal-details-viewer.njk', () => {
+
+      req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.documentMap = [ {
+        id: '00000',
+        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      } ];
+
+      const expectedSummaryRows = [
+        { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
+        { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
+        { key: { text: 'Name' }, value: { html: 'Aleka sad' } },
+        { key: { text: 'Date of birth' }, value: { html: '20 July 1994' } },
+        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+        { key: { text: 'Address' }, value: { html: 'United Kingdom<br>W1W 7RT<br>LONDON<br>60 GREAT PORTLAND STREET' } },
+        { key: { text: 'Contact details' }, value: { html: 'alejandro@example.net<br>' } },
+        { key: { text: 'Appeal type' }, value: { html: 'Protection' } } ];
+
+      getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/appeal-details-viewer.njk', {
+        data: expectedSummaryRows,
+        previousPage: paths.overview
+      });
+    });
+  });
+
+  describe('getReasonsForAppealViewer', () => {
+    it('should render detail-viewers/reasons-for-appeal-details-viewer.njk', () => {
+
+      req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.documentMap = [ {
+        id: '00000',
+        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      } ];
+
+      const expectedSummaryRows = [ {
+        'key': { 'text': 'Why do you think the Home Office decision is wrong?' },
+        'value': { 'html': 'HELLO' }
+      }, {
+        'key': { 'text': 'Providing supporting evidence' },
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00001'>500(PNG)</a>" }
+      } ];
+      getReasonsForAppealViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+        data: expectedSummaryRows,
+        previousPage: paths.overview
+      });
     });
   });
 });

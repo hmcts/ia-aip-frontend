@@ -70,7 +70,8 @@ describe('application-state-utils', () => {
           'You need to answer a few questions about yourself and your appeal to get started.',
           'You will need to have your Home Office decision letter with you to answer some questions.'
         ],
-        info: null
+        info: null,
+        allowedAskForMoreTime: false
       });
     });
 
@@ -88,11 +89,11 @@ describe('application-state-utils', () => {
           'Your appeal details have been sent to the Tribunal.',
           'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
         ],
-
         info: {
           title: 'Helpful Information',
           url: "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
-        }
+        },
+        allowedAskForMoreTime: false
       });
     });
 
@@ -103,6 +104,7 @@ describe('application-state-utils', () => {
 
       expect(result).to.eql(
         {
+          allowedAskForMoreTime: true,
           cta: {
             respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
             url: '/case-building/home-office-decision-wrong'
@@ -147,7 +149,8 @@ describe('application-state-utils', () => {
         usefulDocuments: {
           title: 'Useful documents',
           url: "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
-        }
+        },
+        allowedAskForMoreTime: true
       }
     );
   });
@@ -165,8 +168,8 @@ describe('application-state-utils', () => {
       descriptionParagraphs: [
         'You have told us why you think the Home Office decision is wrong.',
         'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
-      ]
+      ],
+      allowedAskForMoreTime: false
     });
   });
-
 });

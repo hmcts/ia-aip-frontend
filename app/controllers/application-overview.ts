@@ -1,9 +1,13 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
 import { getAppealApplicationHistory, getAppealApplicationNextStep } from '../utils/application-state-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
+import { asBooleanValue } from '../utils/utils';
+
+const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +26,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         applicationNextStep: nextSteps,
         history: history,
         stages: stagesStatus,
-        saved: isPartiallySaved
+        saved: isPartiallySaved,
+        askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
       });
     } catch (e) {
       next(e);

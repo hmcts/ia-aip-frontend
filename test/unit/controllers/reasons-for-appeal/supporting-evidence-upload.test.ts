@@ -88,7 +88,8 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
         evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-        previousPage: paths.reasonsForAppeal.supportingEvidence
+        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        askForMoreTimeFeatureEnabled: false
       });
     });
 
@@ -107,7 +108,8 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
         evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-        previousPage: paths.reasonsForAppeal.supportingEvidence
+        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        askForMoreTimeFeatureEnabled: false
       });
     });
 
@@ -133,7 +135,8 @@ describe('Supporting Evidence Upload Controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
-        previousPage: paths.reasonsForAppeal.supportingEvidence
+        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        askForMoreTimeFeatureEnabled: false
       });
     });
 
@@ -151,7 +154,8 @@ describe('Supporting Evidence Upload Controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
-        previousPage: paths.reasonsForAppeal.supportingEvidence
+        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        askForMoreTimeFeatureEnabled: false
       });
     });
 
@@ -171,7 +175,8 @@ describe('Supporting Evidence Upload Controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
-        previousPage: paths.reasonsForAppeal.supportingEvidence
+        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        askForMoreTimeFeatureEnabled: false
       });
     });
 

@@ -67,7 +67,8 @@ const paths = {
   session: {
     extendSession: '/extend-session',
     sessionExpired: '/session-ended'
-  }
+  },
+  askForMoreTime: '/ask-for-more-time'
 };
 export {
   paths

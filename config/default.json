@@ -71,7 +71,7 @@
     "afterReasonsForAppeal": 14
   },
   "features": {
+    "askForMoreTime": false,
     "timelineEnabled": false
   }
 }
-

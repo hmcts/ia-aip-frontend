@@ -38,8 +38,12 @@
               }) }}
             {% endif %}
             {% if applicationNextStep.cta.respondByText %}
-              <p>{{ applicationNextStep.cta.respondByText | eval | safe }}</p>
-            {% endif %}
+              <p>
+                {{ applicationNextStep.cta.respondByText | eval | safe }}
+                {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime %}
+                  <a href='{{ paths.askForMoreTime }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                {% endif %}
+              </p>            {% endif %}
           {% endif %}
           {% if applicationNextStep.usefulDocuments %}
             <p><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>

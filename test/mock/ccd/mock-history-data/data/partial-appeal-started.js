@@ -1,4 +1,4 @@
-const partialAppealStartedCaseData = { auditEvents: [
+const partialAppealStartedHistoryEvent = { auditEvents: [
   {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
@@ -58,4 +58,4 @@ const partialAppealStartedCaseData = { auditEvents: [
     }
   } ]};
 
-module.exports = { ...partialAppealStartedCaseData };
+module.exports = { ...partialAppealStartedHistoryEvent };

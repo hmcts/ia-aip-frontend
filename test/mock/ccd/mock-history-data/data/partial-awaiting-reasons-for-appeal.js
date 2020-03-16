@@ -1,4 +1,4 @@
-const partialAawaitingReasonsForAppealHistoryEvent = {
+const partialAwaitingReasonsForAppealHistoryEvent = {
   auditEvents: [ {
     'id': 'submitAppeal',
     'event': { 'eventName': 'Submit your appeal', 'description': 'Submit appeal case AIP' },
@@ -411,4 +411,4 @@ const partialAawaitingReasonsForAppealHistoryEvent = {
 };
 
 
-module.exports = { ...partialAawaitingReasonsForAppealHistoryEvent };
+module.exports = { ...partialAwaitingReasonsForAppealHistoryEvent };

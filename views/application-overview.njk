@@ -30,10 +30,6 @@
           {% for paragraph in applicationNextStep.descriptionParagraphs %}
             <p>{{ paragraph | eval | safe }}</p>
           {% endfor %}
-          {% if applicationNextStep.info %}
-            <p><span class='govuk-body govuk-!-font-weight-bold'> {{ applicationNextStep.info.title }}</span></p>
-            <p>{{ applicationNextStep.info.url | safe }}</p>
-          {% endif %}
           {% if applicationNextStep.cta %}
             {% if applicationNextStep.cta.url %}
               {{ govukButton({
@@ -54,7 +50,7 @@
             <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
-        {% if history %}
+        {% if history | length %}
           {{ timeline(history) }}
         {% endif %}
       </div>

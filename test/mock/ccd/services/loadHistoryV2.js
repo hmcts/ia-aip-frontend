@@ -1,11 +1,11 @@
-const mockData = require('../mock-case-data');
+const mockData = require('../mock-history-data');
 
 const caseIdToHistory = {
-  '1': [ { auditEvents: [] } ],
-  '2': [ mockData.partialAppealStartedCaseData ],
-  '3': [ mockData.appealSubmittedCaseData ],
-  '4': [ mockData.awaitingReasonsForAppealCaseData ],
-  '5': [ mockData.partialAwaitingReasonsForAppealCaseData ]
+  '1': { auditEvents: [] },
+  '2': mockData.partialAppealStartedHistoryEvent,
+  '3': mockData.appealSubmittedHistoryEvent,
+  '4': mockData.awaitingReasonsForAppealHistoryEvent,
+  '5': mockData.partialAwaitingReasonsForAppealHistoryEvent
 };
 
 module.exports = {
@@ -14,6 +14,7 @@ module.exports = {
   cache: false,
   template: params => {
     if (caseIdToHistory[params.caseId]) {
+      console.info(caseIdToHistory[params.caseId]);
       return caseIdToHistory[params.caseId];
     } else {
       return caseIdToHistory['1'];

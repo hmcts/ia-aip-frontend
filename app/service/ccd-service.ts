@@ -1,11 +1,13 @@
 import config from 'config';
 import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
+import { asBooleanValue } from '../utils/utils';
 import { SecurityHeaders } from './authentication-service';
 
 const ccdBaseUrl = config.get('ccd.apiUrl');
 const jurisdictionId = config.get('ccd.jurisdictionId');
 const caseType = config.get('ccd.caseType');
+const timelineEnabled = asBooleanValue(config.get('features.timelineEnabled'));
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -33,6 +35,28 @@ interface SubmitEventData {
   data: Partial<CaseData>;
   event_token: string;
   ignore_warning: boolean;
+}
+
+function extractHistoryDetails(historyEvents: any[]): HistoryEvent[] {
+  return historyEvents.map(event => ({
+    id: event.id,
+    event: {
+      eventName: event.event_name,
+      description: event.description
+    },
+    user: {
+      id: event.user_id,
+      lastName: event.user_last_name,
+      firstName: event.user_first_name
+    },
+    createdDate: event.created_date,
+    caseTypeVersion: event.case_type_version,
+    state: {
+      id: event.state_id,
+      name: event.state_name
+    },
+    data: event.data
+  }));
 }
 
 class CcdService {
@@ -92,12 +116,16 @@ class CcdService {
     );
   }
 
-  retrieveCaseHistory(userId: string, headers: SecurityHeaders, caseId: string): Promise<CcdCaseDetails[]> {
-    return rp.get(this.createOptions(
+  retrieveCaseHistoryV2(userId: string, caseId: string, headers: SecurityHeaders): Promise<any> {
+    const obj = this.createOptions(
       userId,
       headers,
-      `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`)
-    );
+      `${ccdBaseUrl}/cases/${caseId}/events`);
+    // The following extra headers are needed to use the v2 endpoint
+    obj.headers['accept'] = 'application/vnd.uk.gov.hmcts.ccd-data-store-api.case-events.v2+json;charset=UTF-8';
+    obj.headers['experimental'] = 'true';
+
+    return rp.get(obj);
   }
 
   async createCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
@@ -137,18 +165,27 @@ class CcdService {
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
-    const cases = await this.loadCasesForUser(userId, headers);
+    const cases: CcdCaseDetails[] = await this.loadCasesForUser(userId, headers);
     if (cases.length > 0) {
       logger.trace(`found [${cases.length}] cases`, logLabel);
-      // TODO: Retrieve history once endpoint is enabled and add to session.
-      // const history = await this.retrieveCaseHistory(userId, headers, cases[0].id);
       return cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);
-      return this.createCase(userId, headers);
+      const newCase: CcdCaseDetails = await this.createCase(userId, headers);
+      return newCase;
     }
   }
 
+  async getCaseHistory(userId: string, caseId: string, headers: SecurityHeaders): Promise<HistoryEvent[]> {
+    logger.trace(`Loading history for case with ID ${caseId}`, logLabel);
+    let history = [];
+    if (timelineEnabled) {
+      const historyResponse = await this.retrieveCaseHistoryV2(userId, caseId, headers);
+      const events = historyResponse.auditEvents || [];
+      history = extractHistoryDetails(events);
+    }
+    return history;
+  }
 }
 
 export {

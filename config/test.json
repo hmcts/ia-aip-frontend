@@ -5,5 +5,8 @@
   },
   "evidenceUpload": {
     "maxFileSizeInMb": 0.001
+  },
+  "features": {
+    "timelineEnabled": true
   }
 }

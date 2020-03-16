@@ -1,5 +1,5 @@
 const partialAwaitingReasonsForAppealCaseData = {
-  'ids': 1573640323267110,
+  'id': 5,
   'jurisdiction': 'IA',
   'state': 'awaitingReasonsForAppeal',
   'version': 12,

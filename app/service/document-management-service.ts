@@ -55,9 +55,19 @@ class UploadData {
  * @param id the fileId used as a lookup key
  * @param documentMap the document map array.
  */
-function documentMapToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
+function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
   const target: DocumentMap = documentMap.find(e => e.id === id);
   return target.url;
+}
+
+/**
+ * Attempts to retrieve the internal fileId for a document store url and returns the internal id
+ * @param url the url to search for
+ * @param documentMap the document map array.
+ */
+function docStoreUrlToId(url: string, documentMap: DocumentMap[]): string {
+  const target: DocumentMap = documentMap.find(e => e.url === url);
+  return target.id;
 }
 
 /**
@@ -196,6 +206,7 @@ class DocumentManagementService {
 
 export {
   DocumentManagementService,
-  documentMapToDocStoreUrl,
+  documentIdToDocStoreUrl,
+  docStoreUrlToId,
   addToDocumentMapper
 };

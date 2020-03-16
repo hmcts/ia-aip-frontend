@@ -2,8 +2,13 @@ import jwt from 'jsonwebtoken';
 import { isJWTExpired } from '../../../app/utils/jwt-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
+function currentDateInSeconds() {
+  return Math.round((new Date().getTime()) / 1000);
+}
+
 describe('JWT Utils', () => {
   let sandbox: sinon.SinonSandbox;
+  const token = 'someExpiredToken';
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -14,14 +19,11 @@ describe('JWT Utils', () => {
   });
 
   it('checks that a token is expired', () => {
+    const dateInSeconds = currentDateInSeconds() - (24 * 60 * 60) * 7;
 
-    let dateOffset = (24 * 60 * 60 * 1000) * 7; // 7Days off-set
-    let dateInMillis = new Date().getUTCMilliseconds() - dateOffset;
-
-    const token = 'someExpiredToken';
     const mockedDecodedToken = {
       'sub': 'someSubject',
-      'exp': dateInMillis
+      'exp': dateInSeconds
     };
 
     const stub = sandbox.stub(jwt, 'decode').withArgs(token).callsFake(() => {
@@ -33,15 +35,12 @@ describe('JWT Utils', () => {
     expect(result).eq(true);
   });
 
-  it('checks that a token is exoired taking into account the 20 seconds offset', () => {
+  it('checks that a token is expired taking into account the 5 minute offset', () => {
+    const dateInSeconds = currentDateInSeconds() - 30;
 
-    let dateOffset = (30 * 1000); // 30 seconds offset
-    let dateInMillis = new Date().getUTCMilliseconds() - dateOffset;
-
-    const token = 'someExpiredToken';
     const mockedDecodedToken = {
       'sub': 'someSubject',
-      'exp': dateInMillis
+      'exp': dateInSeconds
     };
 
     const stub = sandbox.stub(jwt, 'decode').withArgs(token).callsFake(() => {
@@ -53,14 +52,13 @@ describe('JWT Utils', () => {
     expect(result).eq(true);
   });
 
-  it('checks that a token is valid taking into account the 20 seconds offset', () => {
+  it('checks that a token is valid taking into account the 5 minute offset', () => {
+    const justOverFiveMinutesInSeconds = 5 * 60 + 10;
+    const dateInSeconds = currentDateInSeconds() + justOverFiveMinutesInSeconds;
 
-    let dateInMillis = new Date().getUTCMilliseconds();
-
-    const token = 'someExpiredToken';
     const mockedDecodedToken = {
       'sub': 'someSubject',
-      'exp': dateInMillis
+      'exp': dateInSeconds
     };
 
     const stub = sandbox.stub(jwt, 'decode').withArgs(token).callsFake(() => {
@@ -81,7 +79,6 @@ describe('JWT Utils', () => {
     });
 
     expect(() => isJWTExpired(token)).to.throw(Error, 'Could not decode token decoding token');
-
   });
 
 });

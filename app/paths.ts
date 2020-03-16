@@ -10,10 +10,12 @@ const paths = {
   redirectUrl: '/redirectUrl',
   start: '/start-appeal',
   confirmation: '/appeals-details-sent',
-  tribunalCaseworker: '/tribunal-caseworker',
-  moreHelp: '/appeal-help',
-  evidenceToSupportAppeal: '/supporting-evidence',
-  homeOfficeDocuments: '/home-office-documents',
+  guidancePages: {
+    tribunalCaseworker: '/tribunal-caseworker',
+    moreHelp: '/appeal-help',
+    evidenceToSupportAppeal: '/supporting-evidence',
+    homeOfficeDocuments: '/home-office-documents'
+  },
   personalDetails: {
     name: '/name',
     nationality: '/nationality',
@@ -58,7 +60,9 @@ const paths = {
   },
   detailsViewers: {
     document: '/view/document',
-    homeOfficeDocuments: '/view/home-office-documents'
+    homeOfficeDocuments: '/view/home-office-documents',
+    appealDetails: '/appeal-details',
+    reasonsForAppeal: '/appeal-reasons'
   },
   session: {
     extendSession: '/extend-session',

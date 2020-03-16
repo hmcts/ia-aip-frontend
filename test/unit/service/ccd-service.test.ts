@@ -2,6 +2,8 @@ import rp from 'request-promise';
 import { SecurityHeaders } from '../../../app/service/authentication-service';
 import { CcdService, Events } from '../../../app/service/ccd-service';
 import { expect, sinon } from '../../utils/testUtils';
+import { multipleEventsData, startAppealEventData } from '../mockData/events/data';
+import { expectedMultipleEventsData, expectedStartAppealEventData } from '../mockData/events/expectations';
 
 describe('idam-service', () => {
   const headers = {} as SecurityHeaders;
@@ -18,7 +20,7 @@ describe('idam-service', () => {
     before(async () => {
       loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
       loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve([expectedCase]);
+        resolve([ expectedCase ]);
       }));
 
       createCaseStub = sinon.mock(ccdService).expects('createCase').never();
@@ -68,7 +70,7 @@ describe('idam-service', () => {
       });
 
       const submitCreateCaseStub = sinon.stub(ccdService, 'submitCreateCase');
-      const expectedResult = { } as any;
+      const expectedResult = {} as any;
       submitCreateCaseStub.withArgs(userId, headers, {
         event: {
           id: 'eventId',
@@ -90,7 +92,7 @@ describe('idam-service', () => {
 
   describe('updateCase', () => {
     const ccdService = new CcdService();
-    const expectedResult = { } as any;
+    const expectedResult = {} as any;
 
     it('updates case', async () => {
       const startUpdateCaseStub = sinon.stub(ccdService, 'startUpdateAppeal');
@@ -119,6 +121,37 @@ describe('idam-service', () => {
       }, headers);
 
       expect(caseDetails).eq(expectedResult);
+    });
+  });
+
+  describe('getCaseHistory', () => {
+    const ccdService = new CcdService();
+    let sandbox: sinon.SinonSandbox;
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    it('gets events history when timeline is enabled for one event', async () => {
+      const retrieveCaseHistoryStub = sandbox.stub(ccdService, 'retrieveCaseHistoryV2');
+      retrieveCaseHistoryStub.resolves(startAppealEventData);
+
+      const result = await ccdService.getCaseHistory(userId, caseId, headers);
+
+      expect(result).deep.equal(expectedStartAppealEventData);
+    });
+
+    it('gets events history when timeline is enabled and filters out unnecessary events for multiple events', async () => {
+      const retrieveCaseHistoryStub = sandbox.stub(ccdService, 'retrieveCaseHistoryV2');
+      retrieveCaseHistoryStub.resolves(multipleEventsData);
+
+      const result = await ccdService.getCaseHistory(userId, caseId, headers);
+
+      expect(result).deep.equal(expectedMultipleEventsData);
     });
   });
 
@@ -169,9 +202,15 @@ describe('idam-service', () => {
     });
 
     it('submitUpdateCase', () => {
-      const submitCreateCase = ccdService.submitUpdateAppeal(userId, caseId,headers, {} as any);
+      const submitCreateCase = ccdService.submitUpdateAppeal(userId, caseId, headers, {} as any);
 
       expect(submitCreateCase).eq(expectedResultPost);
+    });
+
+    it('retrieveCaseHistoryV2', () => {
+      const retrieveCaseHistory = ccdService.retrieveCaseHistoryV2(userId, caseId, headers);
+
+      expect(retrieveCaseHistory).eq(expectedResultGet);
     });
   });
 });

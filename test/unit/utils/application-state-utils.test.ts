@@ -168,4 +168,5 @@ describe('application-state-utils', () => {
       ]
     });
   });
+
 });

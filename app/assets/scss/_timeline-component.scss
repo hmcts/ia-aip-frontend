@@ -1,0 +1,30 @@
+
+.timeline-tick {
+  background-image: url('/assets/images/tick.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background-color: #1d70b8;
+  margin-right: 2rem;
+  min-height: 2.1rem;
+  min-width: 2.1rem;
+}
+
+.timeline-padding {
+  padding-bottom: 3rem;
+}
+
+.inline-flow {
+  display: inline-flex
+}
+
+.timeline-margin-left {
+  margin-left: 7rem
+}
+
+.timeline-padding {
+  padding-bottom: 3rem;
+}

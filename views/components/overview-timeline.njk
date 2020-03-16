@@ -1,0 +1,18 @@
+{% macro timeline(history) %}
+  <h2 class="govuk-heading-m">{{ i18n.pages.overviewPage.timeline.completed }}</h2>
+  {% for event in history %}
+    <div class="govuk-!-margin-bottom-3">
+      <h3 class="govuk-heading-s">{{ event.title }}</h3>
+      <div class="inline-flow">
+        <div class="timeline-tick"></div>
+        <div><span class='govuk-body govuk-!-font-weight-bold'>{{ event.date }}</span> - {{ event.text }}</div>
+      </div>
+      {% for link in event.links %}
+        <div class="timeline-margin-left">
+          <h4 class="govuk-heading-s govuk-!-margin-top-3 ">{{ link.title }}</h4>
+          <a href="{{ link.href | eval | safe}}" class="govuk-link govuk-!-margin-bottom-1">{{ link.text }}</a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% endmacro %}

@@ -1,7 +1,10 @@
 import { Request } from 'express';
 import _ from 'lodash';
+import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
+import { SecurityHeaders } from '../service/authentication-service';
+import UpdateAppealService from '../service/update-appeal-service';
 import { getDeadline } from './event-deadline-date-finder';
 
 const APPEAL_STATE = {
@@ -151,9 +154,35 @@ function getAppealApplicationNextStep(req: Request) {
   return doThisNextSection;
 }
 
-function getAppealApplicationHistory() {
-  // TODO:
-  return null;
+function constructEventObject(event) {
+  const formattedDate = moment(event.date).format('DD MMMM YYYY');
+  return {
+    date: `${formattedDate}`,
+    title: i18n.pages.overviewPage.timeline[event.id].title,
+    text: i18n.pages.overviewPage.timeline[event.id].text,
+    links: i18n.pages.overviewPage.timeline[event.id].links
+  };
+}
+
+async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
+  const authenticationService = updateAppealService.getAuthenticationService();
+  const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
+  const ccdService = updateAppealService.getCcdService();
+  const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.ccdCaseId, headers);
+
+  req.session.appeal.history = history;
+  const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
+
+  const eventsCollected = [];
+  eventToLookFor.forEach((event: string) => {
+    const eventFound = history.find((e: HistoryEvent) => event === e.id);
+    if (eventFound) {
+      const eventObject = constructEventObject(eventFound);
+      eventsCollected.push(eventObject);
+    }
+  });
+
+  return eventsCollected;
 }
 
 export {

@@ -126,7 +126,7 @@
         "addressDetails": "Address",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
-        "supportingEvidence": "<p><span class='govuk-body govuk-!-font-weight-bold'>Supporting evidence</span></p>"
+        "supportingEvidence": "Supporting evidence"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>"
     },
@@ -237,6 +237,7 @@
     "reasonsForAppealUpload": {
       "title": "Providing supporting evidence",
       "heading": "Providing supporting evidence",
+      "reasonsForAppeal": "Reasons for appeal",
       "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
@@ -331,6 +332,54 @@
         "reasonsForAppealSubmitted": {
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+        }
+      },
+      "timeline": {
+        "completed": "Completed",
+        "submitAppeal": {
+          "title": "Your appeal details",
+          "text": "You sent your appeal details to the Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "{{ paths.detailsViewers.appealDetails }}"
+            },
+            {
+              "title": "Helpful information",
+              "text": "What is a Tribunal Caseworker",
+              "href": "{{ paths.tribunalCaseworker }}"
+            }
+          ]
+        },
+        "submitReasonsForAppeal": {
+          "title": "Your appeal argument",
+          "text": "You told us why you think the Home Office decision to refuse your claim is wrong.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Why you think the Home Office is wrong",
+              "href": "{{ paths.detailsViewers.reasonsForAppeal }}"
+            },
+            {
+              "title": "Useful documents",
+              "text": "Home Office documents about your case",
+              "href": "{{ paths.detailsViewers.homeOfficeDocuments }}"
+            },
+            {
+              "title": "Helpful information",
+              "text": "Understanding your Home Office documents",
+              "href": "{{ paths.homeOfficeDocuments }}"
+            }
+          ]
+        },
+        "reasonsForAppealCheckAnswersHistory": {
+          "title": "Why you think the Home Office is wrong",
+          "question": "Question",
+          "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
+        },
+        "appealApplicationCheckAnswersHistory": {
+          "title": "Your appeal details"
         }
       }
     },

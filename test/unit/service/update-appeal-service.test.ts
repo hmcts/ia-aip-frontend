@@ -143,6 +143,8 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.contactDetails.phone).eq('07123456789');
       expect(req.session.appeal.application.contactDetails.wantsEmail).eq(true);
       expect(req.session.appeal.application.contactDetails.wantsSms).eq(true);
+      expect(req.session.appeal.reasonsForAppeal.applicationReason).eq('I\'ve decided to appeal because ...');
+      expect(req.session.appeal.reasonsForAppeal.evidences).to.exist;
       expect(req.session.appeal.documentMap).to.exist;
       expect(req.session.appeal.respondentDocuments).to.exist;
       expect(req.session.appeal.respondentDocuments[0].dateUploaded).to.be.eq('2020-02-21');
@@ -520,18 +522,19 @@ describe('update-appeal-service', () => {
           {
             value: {
               document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
-              document_filename: '1-File1.png',
+              document_filename: 'File1.png',
               document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
             }
           },
           {
             value: {
               document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
-              document_filename: '2-File2.png',
+              document_filename: 'File2.png',
               document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
             }
           }
         ]
+
       };
     });
 

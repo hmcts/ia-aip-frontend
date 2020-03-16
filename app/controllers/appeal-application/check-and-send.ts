@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
-import * as nunjucks from 'nunjucks';
 import i18n from '../../../locale/en.json';
 import { countryList } from '../../data/country-list';
 import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';

@@ -1,5 +1,5 @@
-import { asBooleanValue } from './app/utils/utils';
-import { expect } from './test/utils/testUtils';
+import { asBooleanValue } from '../../../app/utils/utils';
+import { expect } from '../../utils/testUtils';
 
 describe('asBooleanValue', () => {
   it('should be true', () => {

@@ -27,7 +27,7 @@ function fileNameFormatter(fileName: string): string {
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
-  const result = history.filter(history => history.id === eventId);
+  const result = history.filter(h => h.id === eventId);
   return result;
 };
 

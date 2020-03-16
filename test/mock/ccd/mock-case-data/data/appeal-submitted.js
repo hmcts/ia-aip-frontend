@@ -1,5 +1,5 @@
 const appealSubmittedCaseData = {
-  'id': 1573640323267110,
+  'id': 3,
   'jurisdiction': 'IA',
   'state': 'appealSubmitted',
   'version': 9,

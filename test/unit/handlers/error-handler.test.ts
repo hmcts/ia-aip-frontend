@@ -31,30 +31,10 @@ describe('Error Handler', () => {
 
   describe('pageNotFoundHandler', () => {
     it('gives 404 page in HTML', () => {
-      req.headers = { accept: 'text/html' };
-
       pageNotFoundHandler(req as Request, res as Response, next);
 
       expect(res.status).to.have.been.calledOnce.calledWith(NOT_FOUND);
       expect(res.render).to.have.been.calledOnce.calledWith('errors/404.njk');
-    });
-
-    it('gives 404 page in JSON', () => {
-      req.headers = { accept: 'application/json' };
-
-      pageNotFoundHandler(req as Request, res as Response, next);
-
-      expect(res.status).to.have.been.calledOnce.calledWith(NOT_FOUND);
-      expect(res.send).to.have.been.calledOnce.calledWith({ error: NOT_FOUND, message: 'Page not found' });
-    });
-
-    it('gives 404 page in text', () => {
-      req.headers = { accept: 'text' };
-
-      pageNotFoundHandler(req as Request, res as Response, next);
-
-      expect(res.status).to.have.been.calledOnce.calledWith(NOT_FOUND);
-      expect(res.send).to.have.been.calledOnce.calledWith('Page not found');
     });
   });
 
@@ -65,25 +45,6 @@ describe('Error Handler', () => {
       serverErrorHandler(err, req as Request, res as Response, next);
       expect(res.status).to.have.been.calledOnce.calledWith(INTERNAL_SERVER_ERROR);
       expect(res.render).to.have.been.calledOnce.calledWith('errors/500.njk');
-    });
-
-    it('gives 500 page in JSON', () => {
-      req.headers = { accept: 'application/json' };
-      const err = new Error('Service is unavailable');
-      serverErrorHandler(err, req as Request, res as Response, next);
-      expect(res.status).to.have.been.calledOnce.calledWith(INTERNAL_SERVER_ERROR);
-      expect(res.send).to.have.been.calledOnce.calledWith({
-        error: INTERNAL_SERVER_ERROR,
-        message: 'Service unavailable'
-      });
-    });
-
-    it('gives 500 page in text', () => {
-      req.headers = { accept: 'text' };
-      const err = new Error('Service is unavailable');
-      serverErrorHandler(err, req as Request, res as Response, next);
-      expect(res.status).to.have.been.calledOnce.calledWith(INTERNAL_SERVER_ERROR);
-      expect(res.send).to.have.been.calledOnce.calledWith('Service unavailable');
     });
   });
 });

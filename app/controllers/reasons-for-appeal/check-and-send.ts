@@ -42,7 +42,8 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body)) {
         return res.redirect(paths.overview);
       }
-      await updateAppealService.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req);
+      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req);
+      req.session.appeal.appealStatus = updatedAppeal.state;
       return res.redirect(paths.reasonsForAppeal.confirmation);
     } catch (error) {
       next(error);

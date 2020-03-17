@@ -69,5 +69,9 @@
   "daysToWait": {
     "afterSubmission": 28,
     "afterReasonsForAppeal": 14
+  },
+  "features": {
+    "askForMoreTime": false,
+    "timelineEnabled": false
   }
 }

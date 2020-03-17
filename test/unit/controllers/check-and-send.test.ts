@@ -14,7 +14,7 @@ import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
 const express = require('express');
 
-function getMockedSummaryRows() {
+function getMockedSummaryRows(): SummaryRow[] {
   return [ {
     actions: { items: [ { href: '/home-office-reference-number?edit', text: 'Change' } ] },
     key: { text: 'Home Office reference number' },

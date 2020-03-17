@@ -5,7 +5,9 @@ import { idamConfig } from '../config/idam-config';
 import { paths } from '../paths';
 
 function getExtendSession(req: Request, res: Response, next: NextFunction) {
-  return res.send({ timeout: config.get('session.cookie.maxAgeInMs') });
+  return res.send({
+    timeout: new Date().getTime() + config.get('session.cookie.maxAgeInMs')
+  });
 }
 
 function getSessionEnded(req: Request, res: Response, next: NextFunction) {

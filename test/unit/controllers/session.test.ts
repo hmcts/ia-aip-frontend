@@ -59,7 +59,9 @@ describe('session controller', () => {
     it('should send a new timeout', () => {
       getExtendSession(req as Request, res as Response, next);
 
-      expect(res.send).to.have.been.calledWith({ timeout: config.get('session.cookie.maxAgeInMs') });
+      expect(res.send).to.have.been.calledWith({
+        timeout: sinon.match.typeOf('number')
+      });
     });
   });
 

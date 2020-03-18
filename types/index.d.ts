@@ -151,7 +151,7 @@ interface IdamDetails {
 }
 
 interface MetadataObj {
-  [key: string]: any;
+  [key: string]: any
 }
 
 interface SummaryRow {

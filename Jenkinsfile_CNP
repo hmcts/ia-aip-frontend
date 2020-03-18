@@ -40,6 +40,6 @@ withPipeline("nodejs", product, component) {
     before('securitychecks') { yarnBuilder.yarn('test:audit') }
 
     before("functionalTest") {
-        env.IDAM_API_URL = 'http://idam-api.aat.platform.hmcts.net'
+        env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     }
 }

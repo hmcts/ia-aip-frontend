@@ -16,7 +16,7 @@
     }) }}
   {% endif %}
 
-  <form action="{{ paths.awaitingReasonsForAppeal.supportingEvidenceUpload }}?_csrf={{ csrfToken }}" method="post"
+  <form action="{{ paths.commomn.reasonsForAppeal.supportingEvidenceUpload }}?_csrf={{ csrfToken }}" method="post"
         enctype="multipart/form-data">
     {% call govukFieldset({
       legend: {
@@ -45,7 +45,7 @@
           name: 'uploadFile',
           classes: "govuk-button--secondary",
           attributes: {
-            formaction: paths.awaitingReasonsForAppeal.supportingEvidenceUploadFile + '?_csrf=' + csrfToken,
+            formaction: paths.common.reasonsForAppeal.supportingEvidenceUploadFile + '?_csrf=' + csrfToken,
             formEnctype: 'multipart/form-data'
           }
         }) }}
@@ -64,7 +64,7 @@
       {% endif %}
     {% endcall %}
   </form>
-  <form action="{{ paths.awaitingReasonsForAppeal.supportingEvidenceSubmit }}" method="post">
+  <form action="{{ paths.common.reasonsForAppeal.supportingEvidenceSubmit }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ saveButtons() }}
   </form>

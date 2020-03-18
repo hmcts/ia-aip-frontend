@@ -1,5 +1,6 @@
 import axios from 'axios';
 import config from 'config';
+import moment from 'moment';
 import { paths } from '../../../app/paths';
 import SessionTimeout from '../../../client/session-timeout';
 import i18n from '../../../locale/en.json';
@@ -119,16 +120,16 @@ describe('Session Timeout @only', () => {
     });
 
     it('should startCounter countdown and call relevant functions', () => {
-      sessionTimeout.maxAge = config.get('session.cookie.maxAgeInMs');
+      sessionTimeout.sessionExpirationTime = moment().add(config.get('session.cookie.maxAgeInMs'), 'milliseconds').format();
       signOutStub = sandbox.stub(sessionTimeout, 'signOut');
       openModalStub = sandbox.stub(sessionTimeout, 'openModal');
       startModalCountdownStub = sandbox.stub(sessionTimeout, 'startModalCountdown');
       sessionTimeout.startCounter();
-      clock.tick((sessionTimeout.maxAge - sessionTimeout.bufferSessionExtension) + 1);
+      clock.tick((sessionTimeout.sessionTimeoutCountdown - sessionTimeout.bufferSessionExtension) + 1);
       expect(openModalStub).to.have.been.calledOnce;
       expect(startModalCountdownStub).to.have.been.calledOnce;
 
-      clock.tick(sessionTimeout.maxAge + 1);
+      clock.tick(sessionTimeout.sessionTimeoutCountdown + 1);
       expect(signOutStub).to.have.been.calledOnce;
     });
   });
@@ -191,7 +192,7 @@ describe('Session Timeout @only', () => {
       stopCountersStub = sandbox.stub(sessionTimeout, 'stopCounters');
 
       sessionTimeout.extendSession().then(() => {
-        expect(sessionTimeout.maxAge).to.be.equal(1000);
+        expect(sessionTimeout.sessionExpirationTime).to.be.equal(1000);
         expect(restartCountersStub).to.have.been.calledOnce;
       }).then(done, done);
     });

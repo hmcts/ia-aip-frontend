@@ -85,11 +85,7 @@ function configureHelmet(app) {
         'tagmanager.google.com',
         'fonts.googleapis.com/'
       ],
-      connectSrc: [
-        '\'self\'',
-        'www.gov.uk',
-        'http://localhost'
-      ],
+      connectSrc: [ '\'self\'', 'www.gov.uk' ],
       mediaSrc: [ '\'self\'' ],
       frameSrc: [
         '\'self\'',

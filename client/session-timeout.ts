@@ -5,7 +5,7 @@ import i18n from '../locale/en.json';
 
 export default class SessionTimeout {
   public maxAge: number;
-  public expirationTime: number;
+  // public expirationTime: number;
   public bufferSessionExtension: number = 2 * 60 * 1000;
   private sessionTimeout: number;
   private modalTimeout: number;
@@ -48,21 +48,21 @@ export default class SessionTimeout {
   }
 
   startCounter = () => {
-    const now = new Date();
+    // const now = new Date();
     // tslint:disable no-console
-    console.log('timeout should be at', new Date(this.expirationTime));
-    console.log('maxAge', new Date(now.getTime() + this.maxAge));
-    const sessionTimeoutCountdown = this.expirationTime - now.getTime();
-    const modalTimeoutCountdown = sessionTimeoutCountdown - this.bufferSessionExtension;
-    console.log('sessionTimeout in', sessionTimeoutCountdown / 60 * 1000);
-    console.log('modalTimeout in', modalTimeoutCountdown / 60 * 1000);
+    // console.log('timeout should be at', new Date(this.expirationTime));
+    // console.log('maxAge', new Date(now.getTime() + this.maxAge));
+    // const sessionTimeoutCountdown = this.expirationTime - now.getTime();
+    // const modalTimeoutCountdown = sessionTimeoutCountdown - this.bufferSessionExtension;
+    // console.log('sessionTimeout in', sessionTimeoutCountdown / 60 * 1000);
+    // console.log('modalTimeout in', modalTimeoutCountdown / 60 * 1000);
     this.sessionTimeout = window.setTimeout(() => {
       this.signOut();
-    }, sessionTimeoutCountdown);
+    }, this.maxAge);
     this.modalTimeout = window.setTimeout(() => {
       this.openModal();
       this.startModalCountdown();
-    }, sessionTimeoutCountdown - this.bufferSessionExtension);
+    }, this.maxAge - this.bufferSessionExtension);
   }
 
   stopCounters = () => {
@@ -133,7 +133,7 @@ export default class SessionTimeout {
   extendSession = (): Promise<void> => {
     return axios.get(paths.session.extendSession).then((response: any): void => {
       this.maxAge = response.data.timeout;
-      this.expirationTime = response.data.time;
+      // this.expirationTime = response.data.time;
       this.restartCounters();
       this.closeModal();
     }).catch((e) => {

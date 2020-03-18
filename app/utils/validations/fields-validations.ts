@@ -291,6 +291,15 @@ function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
   return validate(obj, schema);
 }
 
+function askForMoreTimeValidation(obj: object) {
+  const schema = Joi.object({
+    askForMoreTime: Joi.string().required().messages({
+      'string.empty': i18n.validationErrors.askForMoreTime
+    })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -309,5 +318,6 @@ export {
   typeOfAppealValidation,
   reasonForAppealDecisionValidation,
   yesOrNoRequiredValidation,
-  DOBValidation
+  DOBValidation,
+  askForMoreTimeValidation
 };

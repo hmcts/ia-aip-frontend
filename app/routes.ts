@@ -11,6 +11,7 @@ import { setupPersonalDetailsController } from './controllers/appeal-application
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupFooterController } from './controllers/footer';
@@ -66,6 +67,7 @@ const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
 const sessionController = setupSessionController();
 const forbiddenController = setupForbiddenController();
+const askForMoreTime = setupAskForMoreTimeController({ updateAppealService, documentManagementService });
 
 // not protected by idam
 router.use(indexController);
@@ -78,6 +80,7 @@ router.use(sessionController);
 
 // protected by idam
 router.use(idamController);
+router.use(askForMoreTime);
 // router.use(initSession);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);

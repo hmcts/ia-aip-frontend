@@ -6,7 +6,7 @@ import { paths } from '../paths';
 
 function getExtendSession(req: Request, res: Response, next: NextFunction) {
   const timeout: number = new Date().getTime() + config.get('session.cookie.maxAgeInMs');
-  return res.send({ timeout: config.get('session.cookie.maxAgeInMs') });
+  return res.send({ timeout });
 }
 
 function getSessionEnded(req: Request, res: Response, next: NextFunction) {

@@ -940,6 +940,16 @@
           ]
         }
       ]
+    },
+    "askForMoreTimePage": {
+      "title": "Ask for more time",
+      "header": "Ask for more time",
+      "howMuchTimeNeeded": "You must tell us how much time you will need and why you need it. You should provide supporting evidence for your answer if you have any.",
+      "youMayGetMoreTime": "You might not get more time. You should still respond to the Tribunal by the date you were given if you can.",
+      "textAreaText": "How much time to you need and why do you need it?",
+      "supportingEvidence": "Supporting evidence for why you need more time",
+      "uploadSupportingEvidence": "You will be able to add supporting evidence for your answer on the next page if you want to.",
+      "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
     }
   },
   "error": {
@@ -1026,7 +1036,8 @@
       "fileTooLarge": "The selected file must be smaller than",
       "incorrectFormat": "The selected file must be a",
       "fileCannotBeUploaded": "The file cannot be uploaded"
-    }
+    },
+    "askForMoreTime": "Enter how much time you need and why you need it"
   },
   "components": {
     "evidenceList": {

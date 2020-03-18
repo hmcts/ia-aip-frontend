@@ -11,6 +11,7 @@ import { setupPersonalDetailsController } from './controllers/appeal-application
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupFooterController } from './controllers/footer';
@@ -58,6 +59,7 @@ const eligibilityController = setupEligibilityController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
 const sessionController = setupSessionController();
+const askForMoreTime = setupAskForMoreTimeController();
 
 // Reason for Appeal Controllers
 const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
@@ -76,6 +78,7 @@ router.use(footerController);
 
 // protected by idam
 router.use(idamController);
+router.use(askForMoreTime);
 // router.use(initSession);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);

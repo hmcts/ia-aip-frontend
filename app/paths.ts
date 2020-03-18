@@ -68,7 +68,14 @@ const paths = {
     extendSession: '/extend-session',
     sessionExpired: '/session-ended'
   },
-  askForMoreTime: '/ask-for-more-time'
+  askForMoreTime: {
+    reason: '/ask-for-more-time',
+    evidenceYesNo: '/ask-for-more-time-have-evidence',
+    supportingEvidenceUpload: '/ask-for-more-time-evidence-upload',
+    supportingEvidenceSubmit: '/ask-for-more-time-evidence-submit',
+    supportingEvidenceDelete: '/ask-for-more-time-evidence-delete',
+    checkAndSend: '/ask-for-more-time-check-and-send'
+  }
 };
 export {
   paths

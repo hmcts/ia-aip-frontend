@@ -12,3 +12,7 @@ export function asBooleanValue(value: string | number | boolean | null | undefin
   }
   return !!value;
 }
+
+export function nowIsoDate() {
+  return new Date().toISOString().split('T')[0];
+}

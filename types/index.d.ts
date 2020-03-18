@@ -63,6 +63,17 @@ interface Appeal {
   respondentDocuments?: RespondentDocument[];
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
+  askForMoreTime?: AskForMoreTime;
+  previousAskForMoreTime?: AskForMoreTime[];
+}
+
+interface AskForMoreTime {
+  reason?: string;
+  status?: string;
+  state?: string;
+  evidence?: Evidence[];
+  requestedDate?: string;
+  reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
 interface HistoryEvent {

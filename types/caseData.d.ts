@@ -38,6 +38,8 @@ interface CaseData {
   reasonsForAppealDecision: string;
   reasonsForAppealDocuments: SupportingEvidenceCollection[];
   respondentDocuments: RespondentEvidenceCollection[];
+  timeExtensions: TimeExtensionCollection[];
+  reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: DirectionCollection[];
 }
 
@@ -72,6 +74,11 @@ interface RespondentEvidenceCollection {
   value: RespondentEvidenceDocument;
 }
 
+interface TimeExtensionCollection {
+  id?: number;
+  value: TimeExtension;
+}
+
 interface DirectionValue {
   tag: string;
   dateDue: string;
@@ -92,4 +99,12 @@ interface Subscription {
   email: string;
   wantsSms: 'Yes' | 'No';
   mobileNumber: string;
+}
+
+interface TimeExtension {
+  reason: string;
+  evidence?: SupportingEvidenceCollection[];
+  status: string;
+  state: string;
+  requestedDate?: string;
 }

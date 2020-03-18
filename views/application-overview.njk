@@ -41,7 +41,7 @@
               <p>
                 {{ applicationNextStep.cta.respondByText | eval | safe }}
                 {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime %}
-                  <a href='{{ paths.common.askForMoreTime }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                  <a href='{{ paths.common.askForMoreTime.reason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
                 {% endif %}
               </p>            {% endif %}
           {% endif %}

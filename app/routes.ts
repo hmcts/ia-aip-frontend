@@ -73,6 +73,7 @@ router.use(startController);
 router.use(eligibilityController);
 router.use(GuidancePages);
 router.use(footerController);
+router.use(sessionController);
 
 // protected by idam
 router.use(idamController);
@@ -93,7 +94,6 @@ router.use(applicationOverview);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
-router.use(sessionController);
 
 router.use(detailViewersController);
 

@@ -4,7 +4,8 @@ import { paths } from '../app/paths';
 import i18n from '../locale/en.json';
 
 export default class SessionTimeout {
-  public maxAge: number;
+  public sessionExpirationTime: string;
+  public sessionTimeoutCountdown: number;
   public bufferSessionExtension: number = 2 * 60 * 1000;
   private sessionTimeout: number;
   private modalTimeout: number;
@@ -47,13 +48,15 @@ export default class SessionTimeout {
   }
 
   startCounter = () => {
+    const sessionExpirationTimeMoment = moment(this.sessionExpirationTime);
+    this.sessionTimeoutCountdown = sessionExpirationTimeMoment.diff(moment());
     this.sessionTimeout = window.setTimeout(() => {
       this.signOut();
-    }, this.maxAge);
+    }, this.sessionTimeoutCountdown);
     this.modalTimeout = window.setTimeout(() => {
       this.openModal();
       this.startModalCountdown();
-    }, this.maxAge - this.bufferSessionExtension);
+    }, this.sessionTimeoutCountdown - (this.bufferSessionExtension + 1));
   }
 
   stopCounters = () => {
@@ -123,7 +126,7 @@ export default class SessionTimeout {
 
   extendSession = (): Promise<void> => {
     return axios.get(paths.session.extendSession).then((response: any): void => {
-      this.maxAge = response.data.timeout;
+      this.sessionExpirationTime = response.data.timeout;
       this.restartCounters();
       this.closeModal();
     }).catch((e) => {

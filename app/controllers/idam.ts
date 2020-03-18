@@ -3,7 +3,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { idamConfig } from '../config/idam-config';
 import { checkSession, initSession } from '../middleware/session-middleware';
 import { paths } from '../paths';
-import { getIdamRedirectUrl } from '../utils/url-utils';
+import { getIdamLoginUrl, getIdamRedirectUrl } from '../utils/url-utils';
 
 function getLogin(req: Request, res: Response, next: NextFunction) {
   try {
@@ -31,6 +31,7 @@ function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
 
 function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {
   idamConfig.redirectUri = getIdamRedirectUrl(req);
+  idamConfig.idamLoginUrl = getIdamLoginUrl(req);
   idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
 }
 

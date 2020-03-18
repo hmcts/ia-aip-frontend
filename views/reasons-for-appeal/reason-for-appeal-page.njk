@@ -43,9 +43,16 @@
           <li>{{ i18n.pages.reasonForAppeal.bulletFive | safe }}</li>
           <br/>
         </ul>
+        {% if askForMoreTimeFeatureEnabled %}
+          <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
+          <ul>
+            <li><a href='{{ paths.askForMoreTime }}'
+                   class='govuk-link'>{{ i18n.common.askForMoreTime.saveAnswerAndAsk }}</a></li>
+          </ul>
+        {% endif %}
         <h2 class="govuk-heading-s">{{ i18n.pages.reasonForAppeal.needHelp }}</h2>
         <ul>
-          <li><a class="evidence-list__link" href="#">{{ i18n.pages.reasonForAppeal.bulletLink }}</a></li>
+          <li><a class="evidence-list__link" href="{{ paths.moreHelp }}">{{ i18n.pages.reasonForAppeal.bulletLink }}</a></li>
         </ul>
       </div>
       <br/>

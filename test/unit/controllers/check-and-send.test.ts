@@ -14,7 +14,7 @@ import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
 const express = require('express');
 
-function getMockedSummaryRows() {
+function getMockedSummaryRows(): SummaryRow[] {
   return [ {
     actions: { items: [ { href: '/home-office-reference-number?edit', text: 'Change' } ] },
     key: { text: 'Home Office reference number' },
@@ -71,7 +71,7 @@ describe('createSummaryRowsFrom', () => {
 
     const rows: any[] = createSummaryRowsFrom(appeal.application);
     const appealLateRow = addSummaryRow('Reason for late appeal', [ appeal.application.lateAppeal.reason ], paths.homeOffice.appealLate);
-    const mockedRows = getMockedSummaryRows();
+    const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
   });

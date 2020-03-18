@@ -3,35 +3,76 @@ import i18n from '../../../locale/en.json';
 import { expect } from '../../utils/testUtils';
 
 describe('progress-bar utils', () => {
-  it('should build progress bar stages using state', () => {
-    const expectedStages = [
-      {
-        title: i18n.components.progressBar.yourAppealDetails.title,
-        ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,
-        active: true,
-        completed: false
-      },
-      {
-        title: i18n.components.progressBar.yourAppealArgument.title,
-        ariaLabel: i18n.components.progressBar.yourAppealArgument.ariaLabel,
-        active: false,
-        completed: false
-      },
-      {
-        title: i18n.components.progressBar.yourHearingDetails.title,
-        ariaLabel: i18n.components.progressBar.yourHearingDetails.ariaLabel,
-        active: false,
-        completed: false
-      },
-      {
-        title: i18n.components.progressBar.yourAppealDecision.title,
-        ariaLabel: i18n.components.progressBar.yourAppealDecision.ariaLabel,
-        active: false,
-        completed: false
-      }
-    ];
+  let defaultStages = [
+    {
+      title: i18n.components.progressBar.yourAppealDetails.title,
+      ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,
+      active: false,
+      completed: false
+    },
+    {
+      title: i18n.components.progressBar.yourAppealArgument.title,
+      ariaLabel: i18n.components.progressBar.yourAppealArgument.ariaLabel,
+      active: false,
+      completed: false
+    },
+    {
+      title: i18n.components.progressBar.yourHearingDetails.title,
+      ariaLabel: i18n.components.progressBar.yourHearingDetails.ariaLabel,
+      active: false,
+      completed: false
+    },
+    {
+      title: i18n.components.progressBar.yourAppealDecision.title,
+      ariaLabel: i18n.components.progressBar.yourAppealDecision.ariaLabel,
+      active: false,
+      completed: false
+    }
+  ];
 
-    const stages = buildProgressBarStages('appealStarted');
-    expect(expectedStages).to.deep.equal(stages);
+  describe('should build progress bar stages using state', () => {
+
+    it('appealStarted', () => {
+      const stages = buildProgressBarStages('appealStarted');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = true;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('appealSubmitted', () => {
+      const stages = buildProgressBarStages('appealSubmitted');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = true;
+      expectedStages[0].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('awaitingRespondentEvidence', () => {
+      const stages = buildProgressBarStages('awaitingRespondentEvidence');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = true;
+      expectedStages[0].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('awaitingReasonsForAppeal', () => {
+      const stages = buildProgressBarStages('awaitingReasonsForAppeal');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expectedStages[1].active = true;
+      expectedStages[1].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('reasonsForAppealSubmitted', () => {
+      const stages = buildProgressBarStages('reasonsForAppealSubmitted');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expectedStages[1].active = true;
+      expectedStages[1].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
   });
 });

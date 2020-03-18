@@ -1,5 +1,5 @@
 const partialAppealStartedCaseData = {
-  'id': 1573640323267110,
+  'id': 2,
   'jurisdiction': 'IA',
   'state': 'appealStarted',
   'version': 8,

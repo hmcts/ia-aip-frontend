@@ -70,7 +70,8 @@ describe('Reasons for Appeal Controller', function () {
       getReasonForAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
         previousPage: paths.overview,
-        applicationReason: undefined
+        applicationReason: undefined,
+        askForMoreTimeFeatureEnabled: false
       });
     });
 
@@ -102,7 +103,8 @@ describe('Reasons for Appeal Controller', function () {
             href: '#applicationReason',
             key: 'applicationReason',
             text: 'Enter the reasons you think the Home Office decision is wrong'
-          } ]
+          } ],
+          askForMoreTimeFeatureEnabled: false
         }
       );
     });
@@ -153,7 +155,8 @@ describe('Reasons for Appeal Controller', function () {
         'reasons-for-appeal/supporting-evidence-upload-page.njk',
         {
           error: [ { href: 'uploadFile', text: 'Select a file', value: '#uploadFile' } ],
-          errorList: [ { 'href': 'uploadFile', 'text': 'Select a file', 'value': '#uploadFile' } ]
+          errorList: [ { 'href': 'uploadFile', 'text': 'Select a file', 'value': '#uploadFile' } ],
+          askForMoreTimeFeatureEnabled: false
         }
       );
     });

@@ -1,5 +1,6 @@
 {% extends 'layout.njk' %}
 {% from "components/progress-bar.njk" import progressBar with context %}
+{% from "components/overview-timeline.njk" import timeline with context %}
 {% set pageTitleName = i18n.pages.overviewPage.title %}
 
 {% block content %}
@@ -37,18 +38,25 @@
               }) }}
             {% endif %}
             {% if applicationNextStep.cta.respondByText %}
-              <p class="govuk-body">{{ applicationNextStep.cta.respondByText | eval | safe }}</p>
-            {% endif %}
+              <p>
+                {{ applicationNextStep.cta.respondByText | eval | safe }}
+                {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime %}
+                  <a href='{{ paths.askForMoreTime }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                {% endif %}
+              </p>            {% endif %}
           {% endif %}
           {% if applicationNextStep.usefulDocuments %}
-            <p class="govuk-body"><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
-            <p class="govuk-body">{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
+            <p><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
+            <p>{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
           {% endif %}
           {% if applicationNextStep.info %}
-            <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span> </p>
+            <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span></p>
             <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
+        {% if history | length %}
+          {{ timeline(history) }}
+        {% endif %}
       </div>
       <div class="govuk-grid-column-one-third">
         <div class="contact-us-component">
@@ -60,11 +68,13 @@
           </p>
           <p>
             {{ i18n.pages.overviewPage.email | safe }}
-            <a href='mailto:{{ i18n.pages.overviewPage.emailLink }}' class="govuk-link">{{ i18n.pages.overviewPage.emailLink }}</a>
+            <a href='mailto:{{ i18n.pages.overviewPage.emailLink }}'
+               class="govuk-link">{{ i18n.pages.overviewPage.emailLink }}</a>
           </p>
           <p>
             {{ i18n.pages.overviewPage.time }}
-            <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer" class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a></br>
+            <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer"
+               class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a></br>
             {{ i18n.pages.overviewPage.newWindow }}
           </p>
         </div>

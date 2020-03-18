@@ -51,17 +51,21 @@
         }) }}
       </div>
       {{ evidenceList(evidences, evidenceCTA) }}
-
-      <div class="panel-background">
-        <h2 class="govuk-heading-s">{{ i18n.pages.reasonsForAppealUpload.needMoreTime }}</h2>
-        <ul>
-          <li>{{ i18n.pages.reasonsForAppealUpload.evidence | safe }}</li>
-        </ul>
-      </div>
+      {% if askForMoreTimeFeatureEnabled %}
+        <div class="panel-background">
+          <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
+          <ul>
+            <li>{{ i18n.common.askForMoreTime.wantToProvideEvidenceLater }}
+              <a href='{{ paths.askForMoreTime }}'
+                 class='govuk-link'>{{ i18n.common.askForMoreTime.saveAnswerAndAsk | lower }}</a>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
     {% endcall %}
   </form>
   <form action="{{ paths.reasonsForAppeal.supportingEvidenceSubmit }}" method="post">
-      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ saveButtons() }}
   </form>
 

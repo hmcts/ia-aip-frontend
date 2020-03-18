@@ -99,11 +99,7 @@ function configureHelmet(app) {
             ? `'unsafe-inline'`
             : `'nonce-${res.locals.nonce}'`
       ],
-      connectSrc: [
-        '\'self\'',
-        'www.gov.uk',
-        'http://localhost'
-      ],
+      connectSrc: [ '\'self\'', 'www.gov.uk' ],
       mediaSrc: [ '\'self\'' ],
       frameSrc: [
         '\'self\'',

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import {
-  appellantNamesValidation,
+  appellantNamesValidation, askForMoreTimeValidation,
   contactDetailsValidation,
   dateValidation, DOBValidation,
   emailValidation,
@@ -453,6 +453,20 @@ describe('fields-validations', () => {
           text: 'Enter the reasons you think the Home Office decision is wrong'
         }
 
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail validation and return "string.empty" type ask for more time', () => {
+      const object = { 'askForMoreTime': '' };
+      const validationResult = askForMoreTimeValidation(object);
+      const expectedResponse = {
+
+        askForMoreTime: {
+          href: '#askForMoreTime',
+          key: 'askForMoreTime',
+          text: 'Enter how much time you need and why you need it'
+        }
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });

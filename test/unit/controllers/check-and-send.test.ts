@@ -89,6 +89,7 @@ describe('Check and Send Controller', () => {
     sandbox = sinon.createSandbox();
     req = {
       session: {
+        ccdCaseId: '1234567',
         appeal: {
           status: 'appealStarted'
         }
@@ -104,7 +105,12 @@ describe('Check and Send Controller', () => {
       } as any
     } as Partial<Request>;
 
-    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'appealSubmitted' }) };
+    updateAppealService = {
+      submitEvent: sandbox.stub().returns({ state: 'appealSubmitted' }),
+      assignAppealDetailsToSession: sandbox.spy(UpdateAppealService.prototype, 'assignAppealDetailsToSession'),
+      getDate: sandbox.spy(UpdateAppealService.prototype, 'getDate'),
+      yesNoToBool: sandbox.spy(UpdateAppealService.prototype, 'yesNoToBool')
+    } as Partial<UpdateAppealService>;
 
     res = {
       render: sandbox.stub(),

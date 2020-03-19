@@ -105,8 +105,8 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           previousPage: paths.taskList
         });
       }
-      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
-      req.session.appeal.appealStatus = updatedAppeal.state;
+      const ccdCase: CcdCaseDetails = await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
+      updateAppealService.assignAppealDetailsToSession(req, ccdCase);
       return res.redirect(paths.confirmation);
     } catch (error) {
       next(error);

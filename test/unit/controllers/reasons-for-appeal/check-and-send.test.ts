@@ -44,7 +44,14 @@ describe('Reasons For Appeal - Check and send Controller', () => {
     routerGetStub = sandbox.stub(express.Router as never, 'get');
     routerPostStub = sandbox.stub(express.Router as never, 'post');
     next = sandbox.stub() as NextFunction;
-    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'reasonsForAppealSubmitted' }) } as Partial<UpdateAppealService>;
+
+    updateAppealService = {
+      submitEvent: sandbox.stub().returns({ state: 'reasonsForAppealSubmitted' }),
+      assignAppealDetailsToSession: sandbox.spy(UpdateAppealService.prototype, 'assignAppealDetailsToSession'),
+      getDate: sandbox.spy(UpdateAppealService.prototype, 'getDate'),
+      yesNoToBool: sandbox.spy(UpdateAppealService.prototype, 'yesNoToBool')
+    } as Partial<UpdateAppealService>;
+
   });
 
   afterEach(() => {

@@ -34,10 +34,13 @@ export default class UpdateAppealService {
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+    this.assignAppealDetailsToSession(req, ccdCase);
+  }
 
+  assignAppealDetailsToSession(req: Request, ccdCase: CcdCaseDetails) {
     req.session.ccdCaseId = ccdCase.id;
 
-    const caseData: Partial<CaseData> = ccdCase.case_data;
+    const caseData: Partial<CaseData> = ccdCase.case_data || {};
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
@@ -150,7 +153,7 @@ export default class UpdateAppealService {
     };
   }
 
-  private getDate(ccdDate): AppealDate {
+  getDate(ccdDate): AppealDate {
     if (ccdDate) {
       let dateLetterSent = {
         year: null,
@@ -189,8 +192,8 @@ export default class UpdateAppealService {
       case_data: caseData
     };
 
-    const updatedAppeal = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
-    return updatedAppeal;
+    const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
+    return ccdCase;
   }
 
   convertToCcdCaseData(appeal: Appeal) {

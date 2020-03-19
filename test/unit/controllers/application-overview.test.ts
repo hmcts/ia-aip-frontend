@@ -134,8 +134,8 @@ describe('Confirmation Page Controller', () => {
           'text': 'Your appeal details',
           'title': 'What you sent'
         }, {
-          'href': '{{ paths.tribunalCaseworker }}',
-          'text': 'What is a Tribunal Caseworker',
+          'href': '{{ paths.guidancePages.tribunalCaseworker }}',
+          'text': 'What is a Tribunal Caseworker?',
           'title': 'Helpful information'
         } ]
     }, {

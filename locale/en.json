@@ -355,7 +355,7 @@
             {
               "title": "Helpful information",
               "text": "What is a Tribunal Caseworker",
-              "href": "{{ paths.tribunalCaseworker }}"
+              "href": "{{ paths.guidancePages.tribunalCaseworker }}"
             }
           ]
         },

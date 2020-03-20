@@ -166,13 +166,16 @@ function getAppealApplicationNextStep(req: Request) {
   return doThisNextSection;
 }
 
-function constructEventObject(event) {
+function constructEventObject(event, req) {
+  const appealStatus = req.session.appeal.appealStatus;
   const formattedDate = moment(event.date).format('DD MMMM YYYY');
+  const joinAdditionalLinks = [...i18n.pages.overviewPage.timeline[event.id].links,...i18n.pages.overviewPage.timeline[event.id].editableLink];
+  const addAdditionalLink = event.id === 'submitAppeal' && appealStatus === 'awaitingReasonsForAppeal';
   return {
     date: `${formattedDate}`,
     title: i18n.pages.overviewPage.timeline[event.id].title,
     text: i18n.pages.overviewPage.timeline[event.id].text,
-    links: i18n.pages.overviewPage.timeline[event.id].links
+    links:  addAdditionalLink ? joinAdditionalLinks : i18n.pages.overviewPage.timeline[event.id].links
   };
 }
 
@@ -184,12 +187,12 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   req.session.appeal.history = history;
   const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
-
+  const appealStatus = req.session.appeal.appealStatus;
   const eventsCollected = [];
   eventToLookFor.forEach((event: string) => {
     const eventFound = history.find((e: HistoryEvent) => event === e.id);
     if (eventFound) {
-      const eventObject = constructEventObject(eventFound);
+      const eventObject = constructEventObject(eventFound,req);
       eventsCollected.push(eventObject);
     }
   });

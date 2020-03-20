@@ -184,12 +184,16 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   req.session.appeal.history = history;
   const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
-
   const eventsCollected = [];
-  eventToLookFor.forEach((event: string) => {
+  eventToLookFor.forEach((event: string,index: number) => {
     const eventFound = history.find((e: HistoryEvent) => event === e.id);
     if (eventFound) {
-      const eventObject = constructEventObject(eventFound);
+      let eventObject = constructEventObject(eventFound);
+      // TODO - CLEAN UP CHECKING FOR TCW LINK
+      const { appealStatus } = req.session.appeal;
+      if ((['awaitingRespondentEvidence', 'appealSubmitted'].includes(appealStatus)) && event === 'submitAppeal') {
+        delete eventObject.links[1];
+      }
       eventsCollected.push(eventObject);
     }
   });

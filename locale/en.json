@@ -234,7 +234,7 @@
       "titleText": "Your answer has been sent",
       "answer": "A Tribunal Caseworker will look at your answer and contact you to tell you what to do next",
       "date": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it may take longer than that",
-      "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'>0300 123 1711</span> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk/a>"
+      "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'>0300 123 1711</span> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>"
     },
     "reasonsForAppealUploadQuestion": {
       "title": "Do you want to provide supporting evidence?",
@@ -349,11 +349,6 @@
               "title": "What you sent",
               "text": "Your appeal details",
               "href": "{{ paths.detailsViewers.appealDetails }}"
-            },
-            {
-              "title": "Helpful information",
-              "text": "What is a Tribunal Caseworker",
-              "href": "{{ paths.tribunalCaseworker }}"
             }
           ]
         },

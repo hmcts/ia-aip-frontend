@@ -74,7 +74,7 @@ function setupAppealDetails(req: Request): Array<any> {
     const evidence = data.applicationOutOfTimeDocument;
     const fileId = docStoreUrlToId(evidence.document_url, req.session.appeal.documentMap);
     const formattedFileName = fileNameFormatter(evidence.document_filename);
-    const urlHtml = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
+    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
     array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ urlHtml ], null));
   }
   return array;

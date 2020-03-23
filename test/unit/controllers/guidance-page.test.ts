@@ -88,7 +88,7 @@ describe('Contact details Controller', () => {
 
       getHomeOfficeDocumentsPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk',{
-        showContactUs: false,
+        showContactUs: true,
         previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });

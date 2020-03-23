@@ -36,7 +36,7 @@ function getHomeOfficeDocumentsPage(req: Request, res: Response, next: NextFunct
   const text = getGuidancePageText('homeOfficeDocuments');
   try {
     return res.render('guidance-pages/guidance-page.njk', {
-      showContactUs: false,
+      showContactUs: true,
       previousPage: {
         attributes: { onclick: 'history.go(-1); return false;' }
       },

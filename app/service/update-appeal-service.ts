@@ -53,9 +53,9 @@ export default class UpdateAppealService {
 
     const appealType = caseData.appealType || null;
     const subscriptions = caseData.subscriptions || [];
-    let outOfTimeAppeal = null;
+    let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
-    let reasonsForAppealDocumentUploads: Evidences = null;
+    let reasonsForAppealDocumentUploads: Evidence[] = null;
 
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -81,23 +81,24 @@ export default class UpdateAppealService {
         outOfTimeAppeal = {
           ...outOfTimeAppeal,
           evidence: {
-            id: caseData.applicationOutOfTimeDocument.document_filename,
             fileId: documentMapperId,
-            name: this.fileIdToName(caseData.applicationOutOfTimeDocument.document_filename)
+            name: caseData.applicationOutOfTimeDocument.document_filename
           }
         };
       }
     }
     // TODO needs to use the document mapper.
     if (caseData.reasonsForAppealDocuments) {
-      reasonsForAppealDocumentUploads = {};
+      reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
         const documentMapperId: string = addToDocumentMapper(document.value.document_url, documentMap);
 
-        reasonsForAppealDocumentUploads[documentMapperId] = {
-          fileId: documentMapperId,
-          name: this.fileIdToName(document.value.document_filename)
-        };
+        reasonsForAppealDocumentUploads.push(
+          {
+            fileId: documentMapperId,
+            name: document.value.document_filename
+          }
+        );
       });
     }
 
@@ -122,6 +123,7 @@ export default class UpdateAppealService {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
       appealLastModified: ccdCase.last_modified,
+      appealReferenceNumber: caseData.appealReferenceNumber,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: appealType,
@@ -174,10 +176,6 @@ export default class UpdateAppealService {
     } else if (answer === 'No') return false;
   }
 
-  fileIdToName(fileID: string): string {
-    return fileID.substring(fileID.indexOf('-') + 1);
-  }
-
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
 
@@ -215,7 +213,7 @@ export default class UpdateAppealService {
 
         const documentLocationUrl: string = documentIdToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
         caseData.applicationOutOfTimeDocument = {
-          document_filename: appeal.application.lateAppeal.evidence.id,
+          document_filename: appeal.application.lateAppeal.evidence.name,
           document_url: documentLocationUrl,
           document_binary_url: `${documentLocationUrl}/binary`
         };
@@ -275,13 +273,13 @@ export default class UpdateAppealService {
     }
 
     if (_.has(appeal, 'reasonsForAppeal')) {
-      // save text and evidence file
       if (appeal.reasonsForAppeal.applicationReason) {
         caseData.reasonsForAppealDecision = appeal.reasonsForAppeal.applicationReason;
       }
       if (appeal.reasonsForAppeal.evidences) {
-        const evidences: Evidences = appeal.reasonsForAppeal.evidences;
-        caseData.reasonsForAppealDocuments = Object.values(evidences).map((evidence) => {
+        const evidences: Evidence[] = appeal.reasonsForAppeal.evidences;
+
+        caseData.reasonsForAppealDocuments = evidences.map((evidence) => {
           const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {

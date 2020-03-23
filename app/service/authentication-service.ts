@@ -5,6 +5,8 @@ import S2SService from './s2s-service';
 interface SecurityHeaders {
   serviceToken: string;
   userToken: string;
+  accept?: string;
+  experimental?: string;
 }
 
 export {

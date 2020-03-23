@@ -76,7 +76,9 @@ describe('Supporting Evidence Upload Controller', () => {
     it('should render reasons-for-appeal/supporting-evidence-page.njk', () => {
       getAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
-        previousPage: paths.reasonsForAppeal.decision
+        previousPage: paths.reasonsForAppeal.decision,
+        askForMoreTimeFeatureEnabled: false
+
       });
     });
 
@@ -101,7 +103,8 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
         error: { answer: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonsForAppeal.supportingEvidence
+        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        askForMoreTimeFeatureEnabled: false
       });
     });
 

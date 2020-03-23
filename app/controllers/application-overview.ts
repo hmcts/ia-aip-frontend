@@ -7,15 +7,21 @@ import { getAppealApplicationHistory, getAppealApplicationNextStep } from '../ut
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { asBooleanValue } from '../utils/utils';
 
+function getAppealRefNumber(appealRef: string) {
+  if (appealRef && appealRef.toUpperCase() === 'DRAFT') {
+    return null;
+  }
+  return appealRef;
+}
 const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const isPartiallySaved = _.has(req.query, 'saved');
-
+      const { appealReferenceNumber } = req.session.appeal;
       const loggedInUserFullName: string = `${req.idam.userDetails.name}`;
-      const appealRefNumber: string = req.session.appeal.application.homeOfficeRefNumber;
+      const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
       const stagesStatus = buildProgressBarStages(req.session.appeal.appealStatus);
       const nextSteps = getAppealApplicationNextStep(req);
       const history = await getAppealApplicationHistory(req, updateAppealService);
@@ -43,5 +49,6 @@ function setupApplicationOverviewController(updateAppealService: UpdateAppealSer
 
 export {
   setupApplicationOverviewController,
-  getApplicationOverview
+  getApplicationOverview,
+  getAppealRefNumber
 };

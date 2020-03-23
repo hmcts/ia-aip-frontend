@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import {
+  getAppealRefNumber,
   getApplicationOverview,
   setupApplicationOverviewController
 } from '../../../app/controllers/application-overview';
@@ -74,6 +75,7 @@ describe('Confirmation Page Controller', () => {
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'DRAFT';
 
     const headers = {};
     const mockAuthenticationService = {
@@ -160,7 +162,7 @@ describe('Confirmation Page Controller', () => {
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
-      appealRefNumber: undefined,
+      appealRefNumber: null,
       applicationNextStep: expectedNextStep,
       history: expectedHistory,
       stages: expectedStages,
@@ -206,7 +208,7 @@ describe('Confirmation Page Controller', () => {
       allowedAskForMoreTime: false
     };
 
-    const expectedStages = [ {
+    const expectedStages = [{
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -226,7 +228,7 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    } ];
+    }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
@@ -249,6 +251,7 @@ describe('Confirmation Page Controller', () => {
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'appealNumber';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -263,7 +266,7 @@ describe('Confirmation Page Controller', () => {
       info: null
     };
 
-    const expectedStages = [ {
+    const expectedStages = [{
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -283,11 +286,11 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    } ];
+    }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
-      appealRefNumber: undefined,
+      appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
       history: [],
       stages: expectedStages,
@@ -307,6 +310,7 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+    req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -321,7 +325,7 @@ describe('Confirmation Page Controller', () => {
       info: null
     };
 
-    const expectedStages = [ {
+    const expectedStages = [{
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -341,11 +345,11 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    } ];
+    }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
-      appealRefNumber: 'A1234567',
+      appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
       history: [],
       stages: expectedStages,
@@ -359,8 +363,36 @@ describe('Confirmation Page Controller', () => {
     res.render = sandbox.stub().throws(error);
 
     req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'appealNumber';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
+  });
+
+  it('getAppealRefNumber with appeal ref number', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealReferenceNumber: 'RP/5004/2020'
+
+        }
+      }
+    };
+    const { appealReferenceNumber } = req.session.appeal;
+    const result = getAppealRefNumber(appealReferenceNumber);
+    expect(result).to.equal(appealReferenceNumber);
+  });
+
+  it('getAppealRefNumber with inital draft ',() => {
+    const req = {
+      session: {
+        appeal: {
+          appealReferenceNumber: 'DRAFT'
+        }
+      }
+    };
+    const { appealReferenceNumber } = req.session.appeal;
+    const result = getAppealRefNumber(appealReferenceNumber);
+    expect(result).to.equal(null);
   });
 });

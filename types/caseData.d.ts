@@ -16,6 +16,7 @@ interface CaseData {
   journeyType: string;
   appealType: string;
   homeOfficeReferenceNumber: string;
+  appealReferenceNumber: string;
   homeOfficeDecisionDate: string;
   appellantGivenNames: string;
   appellantFamilyName: string;

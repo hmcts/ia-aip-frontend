@@ -2,7 +2,6 @@ import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
-import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
@@ -215,7 +214,7 @@ function setupReasonsForAppealController(deps?: any): Router {
   router.get(paths.reasonsForAppeal.supportingEvidence, getAdditionalSupportingEvidenceQuestionPage);
   router.post(paths.reasonsForAppeal.supportingEvidence, postAdditionalSupportingEvidenceQuestionPage);
   router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
-  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService, deps.updateAppealService));
+  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, postSupportingEvidenceUploadFile(deps.documentManagementService, deps.updateAppealService));
   router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
   router.post(paths.reasonsForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit(deps.updateAppealService));
   router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);

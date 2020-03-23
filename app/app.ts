@@ -10,6 +10,7 @@ import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureLogger, configureNunjucks, configureS2S } from './app-config';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
+import { handleFileUploadErrors, uploadConfiguration } from './middleware/file-upload-validation-middleware';
 import { isUserAuthenticated } from './middleware/is-user-authenticated';
 import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
 import { filterRequest } from './middleware/xss-middleware';
@@ -37,6 +38,7 @@ function createApp() {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.use(csurf());
+  app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
 
   if (environment === 'development') {

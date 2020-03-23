@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
-import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
@@ -113,8 +112,8 @@ function setupOutOfTimeController(deps?: any): Router {
 
   const router = Router();
   router.get(paths.homeOffice.appealLate, getAppealLate);
-  router.post(paths.homeOffice.appealLate, uploadConfiguration, handleFileUploadErrors, postAppealLate(deps.documentManagementService, deps.updateAppealService));
-  router.post(paths.homeOffice.deleteEvidence, uploadConfiguration, handleFileUploadErrors, postAppealLateDeleteFile(deps.documentManagementService, deps.updateAppealService));
+  router.post(paths.homeOffice.appealLate, postAppealLate(deps.documentManagementService, deps.updateAppealService));
+  router.post(paths.homeOffice.deleteEvidence, postAppealLateDeleteFile(deps.documentManagementService, deps.updateAppealService));
   return router;
 }
 

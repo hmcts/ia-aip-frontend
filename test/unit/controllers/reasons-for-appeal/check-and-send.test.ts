@@ -29,7 +29,8 @@ describe('Reasons For Appeal - Check and send Controller', () => {
         appeal: {
           application: {},
           reasonsForAppeal: {
-            applicationReason: 'a reason'
+            applicationReason: 'a reason',
+            evidences: [] as Evidence[]
           }
         } as Partial<Appeal>
       } as Partial<Express.Session>
@@ -66,18 +67,15 @@ describe('Reasons For Appeal - Check and send Controller', () => {
         addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.decision + editParameter),
         addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [ 'File1.png', 'File2.png' ], paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE)
       ];
-      req.session.appeal.reasonsForAppeal.evidences = {
-        '1-File1.png': {
-          id: '1-File1.png',
+      req.session.appeal.reasonsForAppeal.evidences = [
+        {
           fileId: '1234',
           name: 'File1.png'
-        },
-        '2-File2.png': {
-          id: '2-File2.png',
+        }, {
           fileId: '1234',
           name: 'File2.png'
         }
-      };
+      ];
 
       getCheckAndSend(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
@@ -119,7 +117,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       req.body = { saveForLater: 'saveForLater' };
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.overview);
+      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
     });
 
     it('should call next with error render if something happens', async () => {

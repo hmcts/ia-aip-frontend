@@ -66,8 +66,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   if (appealApplication.isAppealLate) {
     const lateAppealValue = [ appealApplication.lateAppeal.reason ];
     if (appealApplication.lateAppeal.evidence) {
-      const urlHtml = `<br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
-      lateAppealValue.push(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence);
+      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(urlHtml);
     }
     const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.homeOffice.appealLate);
@@ -107,6 +106,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
       }
       const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
       req.session.appeal.appealStatus = updatedAppeal.state;
+      req.session.appeal.appealReferenceNumber = updatedAppeal.case_data.appealReferenceNumber;
       return res.redirect(paths.confirmation);
     } catch (error) {
       next(error);

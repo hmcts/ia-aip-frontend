@@ -55,6 +55,7 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
+    let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
 
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
@@ -118,7 +119,18 @@ export default class UpdateAppealService {
         respondentDocuments.push(evidence);
       });
     }
-
+    if (caseData.directions) {
+      directions = [];
+      caseData.directions.forEach(d => {
+        let direction: Direction = {
+          tag: d.value.tag,
+          parties: d.value.parties,
+          dueDate: d.value.dateDue,
+          dateSent: d.value.dateSent
+        };
+        directions.push(direction);
+      });
+    }
     req.session.appeal = {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
@@ -148,7 +160,8 @@ export default class UpdateAppealService {
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
-      documentMap: documentMap
+      documentMap: documentMap,
+      directions: directions
     };
   }
 

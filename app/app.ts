@@ -85,7 +85,11 @@ function configureHelmet(app) {
       styleSrc: [
         '\'self\'',
         'tagmanager.google.com',
-        'fonts.googleapis.com/'
+        'fonts.googleapis.com/',
+        (req, res) =>
+          req.url.includes('/view/document/')
+            ? `'unsafe-inline'`
+            : `'nonce-${res.locals.nonce}'`
       ],
       connectSrc: [ '\'self\'', 'www.gov.uk' ],
       mediaSrc: [ '\'self\'' ],

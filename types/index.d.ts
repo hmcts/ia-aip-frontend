@@ -45,6 +45,8 @@ interface DocumentMap {
 interface Evidence {
   fileId: string;
   name: string;
+  dateUploaded?: AppealDate;
+  description?: string;
 }
 
 interface DocumentUploadResponse {

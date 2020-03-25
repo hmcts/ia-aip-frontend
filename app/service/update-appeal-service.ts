@@ -91,12 +91,14 @@ export default class UpdateAppealService {
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document_url, documentMap);
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
 
         reasonsForAppealDocumentUploads.push(
           {
             fileId: documentMapperId,
-            name: document.value.document_filename
+            name: document.value.document.document_filename,
+            dateUploaded: this.getDate(document.value.dateUploaded),
+            description: document.value.description
           }
         );
       });
@@ -283,10 +285,14 @@ export default class UpdateAppealService {
           const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
-              document_filename: evidence.name,
-              document_url: documentLocationUrl,
-              document_binary_url: `${documentLocationUrl}/binary`
-            } as SupportingDocument
+              dateUploaded: this.toIsoDate(evidence.dateUploaded),
+              description: evidence.description,
+              document: {
+                document_filename: evidence.name,
+                document_url: documentLocationUrl,
+                document_binary_url: `${documentLocationUrl}/binary`
+              }
+            } as DocumentWithMetaData
           } as SupportingEvidenceCollection;
         });
       }

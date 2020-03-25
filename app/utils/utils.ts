@@ -12,3 +12,12 @@ export function asBooleanValue(value: string | number | boolean | null | undefin
   }
   return !!value;
 }
+
+export function nowAppealDate(): AppealDate {
+  const now = new Date();
+  return {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+    day: now.getDate()
+  } as AppealDate;
+}

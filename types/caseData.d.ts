@@ -4,6 +4,13 @@ interface SupportingDocument {
   document_binary_url: string;
 }
 
+interface DocumentWithMetaData {
+  suppliedBy?: string;
+  description?: string;
+  dateUploaded?: string;
+  document: SupportingDocument;
+}
+
 interface CcdCaseDetails {
   id: string;
   state: string;
@@ -57,7 +64,7 @@ interface SubscriptionCollection {
 
 interface SupportingEvidenceCollection {
   id?: number;
-  value: SupportingDocument;
+  value: DocumentWithMetaData;
 }
 
 interface RespondentEvidenceCollection {

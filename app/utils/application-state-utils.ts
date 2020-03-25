@@ -5,6 +5,7 @@ import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import UpdateAppealService from '../service/update-appeal-service';
+import { dayMonthYearFormat } from './date-formats';
 import { getDeadline } from './event-deadline-date-finder';
 
 const APPEAL_STATE = {
@@ -167,7 +168,7 @@ function getAppealApplicationNextStep(req: Request) {
 }
 
 function constructEventObject(event) {
-  const formattedDate = moment(event.date).format('DD MMMM YYYY');
+  const formattedDate = moment(event.date).format(dayMonthYearFormat);
   return {
     date: `${formattedDate}`,
     title: i18n.pages.overviewPage.timeline[event.id].title,

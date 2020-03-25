@@ -1,5 +1,6 @@
 import config from 'config';
 import moment from 'moment';
+import { dayMonthYearFormat } from './date-formats';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');
@@ -11,10 +12,12 @@ const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAp
  */
 function getFormattedDirectionDueDate(directions: Direction[], directionTagToLookFor: string) {
   let formattedDeadline = null;
-  const direction = directions.find(d => d.tag === directionTagToLookFor);
-  if (direction) {
-    const dueDate = direction.dueDate;
-    formattedDeadline = moment(dueDate).format('DD MMMM YYYY');
+  if (directions) {
+    const direction = directions.find(d => d.tag === directionTagToLookFor);
+    if (direction) {
+      const dueDate = direction.dueDate;
+      formattedDeadline = moment(dueDate).format(dayMonthYearFormat);
+    }
   }
   return formattedDeadline;
 }
@@ -36,16 +39,17 @@ function getDeadline(currentAppealStatus: string, directions: Direction[], histo
     case 'appealSubmitted':
     case 'awaitingRespondentEvidence': {
       const triggeringDate = history['appealSubmitted'].date;
-      formattedDeadline = moment(triggeringDate).add(daysToWaitAfterSubmission, 'days').format('DD MMMM YYYY');
+      formattedDeadline = moment(triggeringDate).add(daysToWaitAfterSubmission, 'days').format(dayMonthYearFormat);
       break;
     }
-    case 'awaitingReasonsForAppeal': {
+    case 'awaitingReasonsForAppeal':
+    case 'awaitingReasonsForAppealPartial': {
       formattedDeadline = getFormattedDirectionDueDate(directions, 'requestReasonsForAppeal');
       break;
     }
     case 'reasonsForAppealSubmitted': {
       const triggeringDate = history['submitReasonsForAppeal'].date;
-      formattedDeadline = moment(triggeringDate).add(daysToWaitAfterReasonsForAppeal, 'days').format('DD MMMM YYYY');
+      formattedDeadline = moment(triggeringDate).add(daysToWaitAfterReasonsForAppeal, 'days').format(dayMonthYearFormat);
       break;
     }
     default: {

@@ -24,7 +24,21 @@
 
   <form method="post" action={{ paths.reasonsForAppeal.checkAndSend }}>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {{ saveButtons() }}
+    <div class="buttons__container">
+      {{ govukButton({
+        name: "send",
+        text: i18n.common.buttons.send,
+        classes: "govuk-!-margin-right-1",
+        preventDoubleClick: true
+      }) }}
+
+      {{ govukButton({
+        text: i18n.common.buttons.saveForLater,
+        name: "saveForLater",
+        value: "saveForLater",
+        classes: "govuk-button--secondary"
+      }) }}
+    </div>
   </form>
   {{ contactUs() }}
 {% endblock %}

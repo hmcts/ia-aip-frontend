@@ -35,7 +35,7 @@ Feature: Reason for appeal
     And I click "Save and continue" button
     Then I should see the reasons for appeal CYA page
 
-    When I click "Save and continue" button
+    When I click "Send" button
     Then I should see the reasons for appeal confirmation page
     And I see the respond by date is 2 weeks in the future
 

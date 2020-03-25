@@ -35,7 +35,31 @@ Feature: Reason for appeal
     And I click "Save and continue" button
     Then I should see the reasons for appeal CYA page
 
-    When I click "Save and continue" button
+    When I click "Send" button
     Then I should see the reasons for appeal confirmation page
     And I see the respond by date is 2 weeks in the future
+
+  Scenario: Navigate through reasons for appeal with no additional evidence
+    Given I am authenticated as a valid appellant
+    When I visit reasons for appeal
+    And I click "Save and continue" button
+    Then I should see error summary
+
+    When I click "Save for later" button
+    Then I should see error summary
+
+    When I visit the "reasons for appeal" page
+    Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
+    Then I should see the "supporting evidence question" page
+
+    When I click "Continue" button
+    Then I should see error summary
+
+    When I select No and click continue
+    Then I should see the reasons for appeal CYA page
+
+    When I click "Send" button
+    Then I should see the reasons for appeal confirmation page
+    And I see the respond by date is 2 weeks in the future
+
 

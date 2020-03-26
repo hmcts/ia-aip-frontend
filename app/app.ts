@@ -19,9 +19,17 @@ import { router } from './routes';
 import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
 
+const uuid = require('uuid');
+
 function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
+
+  // Inject nonce Id on every request.
+  app.use((req, res, next) => {
+    res.locals.nonce = uuid.v4();
+    next();
+  });
 
   configureHelmet(app);
 
@@ -85,7 +93,11 @@ function configureHelmet(app) {
       styleSrc: [
         '\'self\'',
         'tagmanager.google.com',
-        'fonts.googleapis.com/'
+        'fonts.googleapis.com/',
+        (req, res) =>
+          req.url.includes('/view/document/')
+            ? `'unsafe-inline'`
+            : `'nonce-${res.locals.nonce}'`
       ],
       connectSrc: [ '\'self\'', 'www.gov.uk' ],
       mediaSrc: [ '\'self\'' ],

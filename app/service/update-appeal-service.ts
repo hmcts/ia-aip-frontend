@@ -88,7 +88,7 @@ export default class UpdateAppealService {
         };
       }
     }
-    // TODO needs to use the document mapper.
+
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
@@ -120,17 +120,16 @@ export default class UpdateAppealService {
       });
     }
     if (caseData.directions) {
-      directions = [];
-      caseData.directions.forEach(d => {
-        let direction: Direction = {
+      directions = caseData.directions.map(d => {
+        return {
           tag: d.value.tag,
           parties: d.value.parties,
           dueDate: d.value.dateDue,
           dateSent: d.value.dateSent
         };
-        directions.push(direction);
       });
     }
+
     req.session.appeal = {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,

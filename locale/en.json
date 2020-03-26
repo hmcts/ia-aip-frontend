@@ -22,7 +22,8 @@
       "continue": "Continue",
       "saveForLater": "Save for later",
       "uploadFile": "Upload file",
-      "send": "Send"
+      "send": "Send",
+      "cancel": "Cancel"
     },
     "requirements": {
       "heading": "You will need to:"

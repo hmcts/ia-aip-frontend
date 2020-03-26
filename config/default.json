@@ -72,6 +72,6 @@
   },
   "features": {
     "askForMoreTime": false,
-    "timelineEnabled": false
+    "timelineEnabled": true
   }
 }

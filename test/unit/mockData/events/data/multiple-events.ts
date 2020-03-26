@@ -102,7 +102,7 @@ export const multipleEventsData = {
         'id': '9026b41d-b822-4201-83d7-4a2172cef49a',
         'value': {
           'document_url': 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641',
-          'document_filename': '1582821986580-404 1.png',
+          'document_filename': '404 1.png',
           'document_binary_url': 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641/binary'
         }
       } ],

@@ -137,6 +137,17 @@ describe('Personal Details Controller', function () {
       expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
     });
+
+    it('should redirect to CYA page and validate when save for later clicked', async () => {
+      req.body = {
+        'saveForLater': 'saveForLater',
+        'familyName': 'Joey',
+        'givenNames': 'Trib'
+      };
+      await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.submitEvent).to.have.been.called;
+      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
+    });
   });
 
   describe('Should catch an error.', () => {

@@ -23,7 +23,7 @@
       alt="{{ i18n.pages.homeOfficeLetterSent.letterSentImageAltText }}"
   />
 
-  <form action="{{ paths.homeOffice.letterSent }}" method="post">
+  <form action="{{ paths.appealStarted.letterSent }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% set errorMessage =  error.day.text if error.day %}
     {% set errorMessage =  error.month.text if error.month else errorMessage %}

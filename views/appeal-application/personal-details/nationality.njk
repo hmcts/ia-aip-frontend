@@ -13,7 +13,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form method="post" action="{{ paths.personalDetails.nationality }}">
+  <form method="post" action="{{ paths.appealStarted.nationality }}">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {

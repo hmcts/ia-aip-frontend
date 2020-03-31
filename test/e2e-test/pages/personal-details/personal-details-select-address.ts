@@ -6,11 +6,11 @@ const testUrl = config.get('testUrl');
 module.exports = {
   selectAddress(I) {
     Then('I should see the select address page', async () => {
-      I.seeInCurrentUrl(paths.personalDetails.postcodeLookup);
+      I.seeInCurrentUrl(paths.appealStarted.postcodeLookup);
     });
 
     Then(/^I should be taken to the what is your address page$/, async () => {
-      I.seeInCurrentUrl(paths.personalDetails.postcodeLookup);
+      I.seeInCurrentUrl(paths.appealStarted.postcodeLookup);
     });
 
     When(/^I choose the first address from the dropdown list and click continue$/, async () => {

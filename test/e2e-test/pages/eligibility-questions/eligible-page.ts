@@ -6,7 +6,7 @@ const testUrl = require('config').get('testUrl');
 module.exports = {
   eligible(I) {
     When('I go to eligible page without answering the questions', async () => {
-      I.amOnPage(testUrl + paths.eligibility.eligible);
+      I.amOnPage(testUrl + paths.common.eligible);
     });
 
     When('I click continue', async () => {

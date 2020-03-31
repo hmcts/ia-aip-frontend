@@ -168,3 +168,5 @@ interface IdamDetails {
   given_name: string;
   family_name: string;
 }
+
+type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

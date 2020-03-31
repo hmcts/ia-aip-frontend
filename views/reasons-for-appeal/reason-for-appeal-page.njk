@@ -12,7 +12,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form type="submit" action="{{ paths.reasonsForAppeal.decision }}" method="post">
+  <form type="submit" action="{{ paths.awaitingReasonsForAppeal.decision }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
@@ -46,7 +46,7 @@
         {% if askForMoreTimeFeatureEnabled %}
           <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
           <ul>
-            <li><a href='{{ paths.askForMoreTime }}'
+            <li><a href='{{ paths.common.askForMoreTime }}'
                    class='govuk-link'>{{ i18n.common.askForMoreTime.saveAnswerAndAsk }}</a></li>
           </ul>
         {% endif %}

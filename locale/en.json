@@ -22,7 +22,8 @@
       "continue": "Continue",
       "saveForLater": "Save for later",
       "uploadFile": "Upload file",
-      "send": "Send"
+      "send": "Send",
+      "seeProgress": "See your appeal progress"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -68,27 +69,27 @@
       "homeOfficeDetails": {
         "id": "homeOfficeDetailsLink",
         "title": "Your Home Office details",
-        "path": "homeOffice.details"
+        "path": "appealStarted.details"
       },
       "personalDetails": {
         "id": "personalDetailsLink",
         "title": "Your personal details",
-        "path": "personalDetails.name"
+        "path": "appealStarted.name"
       },
       "contactDetails": {
         "id": "contactDetailsLink",
         "title": "Your contact details",
-        "path": "contactDetails"
+        "path": "appealStarted.contactDetails"
       },
       "typeOfAppeal": {
         "id": "typeOfAppealLink",
         "title": "Type of appeal",
-        "path": "typeOfAppeal"
+        "path": "appealStarted.typeOfAppeal"
       },
       "checkAndSend": {
         "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
-        "path": "checkAndSend"
+        "path": "appealStarted.checkAndSend"
       }
     },
     "contactDetails": {
@@ -214,7 +215,7 @@
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",
@@ -298,7 +299,7 @@
           "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "awaitingRespondentEvidence": {
@@ -306,7 +307,7 @@
           "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -314,22 +315,22 @@
             "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
             }
           },
           "partial": {
             "description": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
             }
           }
         },
@@ -347,7 +348,7 @@
             {
               "title": "What you sent",
               "text": "Your appeal details",
-              "href": "{{ paths.detailsViewers.appealDetails }}"
+              "href": "{{ paths.common.viewAppealDetails }}"
             },
             {
               "title": "Helpful information",
@@ -363,12 +364,12 @@
             {
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
-              "href": "{{ paths.detailsViewers.reasonsForAppeal }}"
+              "href": "{{ paths.common.viewReasonsForAppeal }}"
             },
             {
               "title": "Useful documents",
               "text": "Home Office documents about your case",
-              "href": "{{ paths.detailsViewers.homeOfficeDocuments }}"
+              "href": "{{ paths.common.viewHomeOfficeDocuments }}"
             },
             {
               "title": "Helpful information",
@@ -939,6 +940,9 @@
           ]
         }
       ]
+    },
+    "forbidden": {
+      "title": "This page is unavailable"
     }
   },
   "error": {

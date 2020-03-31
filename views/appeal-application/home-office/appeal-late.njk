@@ -13,7 +13,7 @@
   <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeAppealLate.title }}</h1>
   <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>
 
-  <form action="{{ paths.homeOffice.appealLate }}?_csrf={{ csrfToken }}" method="post" enctype="multipart/form-data">
+  <form action="{{ paths.appealStarted.appealLate }}?_csrf={{ csrfToken }}" method="post" enctype="multipart/form-data">
     {{ govukTextarea({
       name: "appeal-late",
       id: "appeal-late",
@@ -51,7 +51,7 @@
         <ul class="govuk-list">
           <li class="list__item">
             <span>{{ evidence.name }}</span>
-            <input type="submit" class="evidence-list__link" value="{{ i18n.common.links.delete }}" formaction="{{ paths.homeOffice.deleteEvidence }}?_csrf={{ csrfToken }}"/>
+            <input type="submit" class="evidence-list__link" value="{{ i18n.common.links.delete }}" formaction="{{ paths.appealStarted.deleteEvidence }}?_csrf={{ csrfToken }}"/>
           </li>
         </ul>
       </div>

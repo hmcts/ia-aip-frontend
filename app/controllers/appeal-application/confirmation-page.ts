@@ -25,9 +25,9 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function setConfirmationController(): Router {
+function setConfirmationController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.confirmation, getConfirmationPage);
+  router.get(paths.appealSubmitted.confirmation, middleware, getConfirmationPage);
   return router;
 }
 

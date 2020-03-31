@@ -33,12 +33,12 @@ export function getConditionalRedirectUrl(req: Request, res: Response, redirectU
   if (_.has(req.session, 'appeal.application.isEdit')
     && req.session.appeal.application.isEdit === true) {
     req.session.appeal.application.isEdit = false;
-    return res.redirect(paths.checkAndSend);
+    return res.redirect(paths.appealStarted.checkAndSend);
   }
   if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
     && req.session.appeal.reasonsForAppeal.isEdit === true) {
     req.session.appeal.reasonsForAppeal.isEdit = false;
-    return res.redirect(paths.reasonsForAppeal.checkAndSend);
+    return res.redirect(paths.awaitingReasonsForAppeal.checkAndSend);
   }
   return res.redirect(redirectUrl);
 }

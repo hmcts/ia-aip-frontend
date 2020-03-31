@@ -6,7 +6,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   contactDetails(I) {
     Given('I am on the contact details page', async () => {
-      I.amOnPage(testUrl + paths.contactDetails);
+      I.amOnPage(testUrl + paths.appealStarted.contactDetails);
     });
 
     When(/^I enter text message number "([^"]*)"$/, async (phoneNumber) => {
@@ -19,7 +19,7 @@ module.exports = {
     });
 
     Then('I should see the contact details page', async () => {
-      I.seeInCurrentUrl(paths.contactDetails);
+      I.seeInCurrentUrl(paths.appealStarted.contactDetails);
     });
 
     Given(/^I click the contact details link$/, async () => {
@@ -27,7 +27,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the contact\-details page$/, async () => {
-      await I.seeInCurrentUrl(paths.contactDetails);
+      await I.seeInCurrentUrl(paths.appealStarted.contactDetails);
     });
   }
 };

@@ -47,12 +47,12 @@ describe('session controller', () => {
     sandbox.restore();
   });
 
-  describe('setupDateOfBirthController', () => {
+  describe('setupSessionController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       setupSessionController();
-      expect(routerGetStub).to.have.been.calledWith(paths.session.extendSession);
-      expect(routerGetStub).to.have.been.calledWith(paths.session.sessionExpired);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.extendSession);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.sessionExpired);
     });
   });
 

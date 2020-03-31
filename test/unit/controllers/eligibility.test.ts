@@ -37,7 +37,7 @@ describe('Eligibility Controller', () => {
         question: i18n.eligibility[0].question,
         description: i18n.eligibility[0].description,
         questionId: '0',
-        previousPage: paths.start,
+        previousPage: paths.common.start,
         answer: '',
         errors: undefined,
         errorList: undefined
@@ -54,7 +54,7 @@ describe('Eligibility Controller', () => {
         question: i18n.eligibility[2].question,
         description: i18n.eligibility[2].description,
         questionId: '2',
-        previousPage: `${paths.eligibility.questions}?id=1`,
+        previousPage: `${paths.common.questions}?id=1`,
         answer: '',
         errors: undefined,
         errorList: undefined
@@ -75,7 +75,7 @@ describe('Eligibility Controller', () => {
         question: i18n.eligibility[1].question,
         description: i18n.eligibility[1].description,
         questionId: '1',
-        previousPage: `${paths.eligibility.questions}?id=0`,
+        previousPage: `${paths.common.questions}?id=0`,
         answer: 'yes',
         errors: undefined,
         errorList: undefined
@@ -91,7 +91,7 @@ describe('Eligibility Controller', () => {
         question: i18n.eligibility[0].question,
         description: i18n.eligibility[0].description,
         questionId: '0',
-        previousPage: paths.start,
+        previousPage: paths.common.start,
         answer: '',
         errors: undefined,
         errorList: undefined
@@ -109,7 +109,7 @@ describe('Eligibility Controller', () => {
 
       eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.questions}?id=1`);
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.questions}?id=1`);
     });
 
     it('redirects to ineligible page if answer ineligible', () => {
@@ -121,7 +121,7 @@ describe('Eligibility Controller', () => {
 
       eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.ineligible}?id=0`);
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.ineligible}?id=0`);
     });
 
     it('redirects to eligible page if all answers eligible', () => {
@@ -134,7 +134,7 @@ describe('Eligibility Controller', () => {
 
       eligibilityQuestionPost(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(`${paths.eligibility.eligible}?id=${finalQuestionId}`);
+      expect(res.redirect).to.have.been.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`);
     });
 
     it('stores answer in session', () => {
@@ -178,7 +178,7 @@ describe('Eligibility Controller', () => {
       getEligible(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('eligibility/eligible-page.njk',
         {
-          previousPage: `${paths.eligibility.questions}?id=123`
+          previousPage: `${paths.common.questions}?id=123`
         }
       );
     });
@@ -194,7 +194,7 @@ describe('Eligibility Controller', () => {
 
     it('should redirect to first question if the users has gone directly to the eligible page', () => {
       getEligible(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.eligibility.questions);
+      expect(res.redirect).to.have.been.calledWith(paths.common.questions);
     });
   });
 
@@ -204,7 +204,7 @@ describe('Eligibility Controller', () => {
       getIneligible(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('eligibility/ineligible-page.njk',
         {
-          previousPage: `${paths.eligibility.questions}?id=123`
+          previousPage: `${paths.common.questions}?id=123`
         }
       );
     });

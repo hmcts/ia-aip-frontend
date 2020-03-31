@@ -8,11 +8,11 @@ const testUrl = config.get('testUrl');
 module.exports = {
   overviewPage(I) {
     When(/^I visit the overview page$/, async () => {
-      await I.amOnPage(testUrl + paths.overview);
+      await I.amOnPage(testUrl + paths.common.overview);
     });
 
     Then(/^I should see the appeal overview page$/, async () => {
-      await I.seeInCurrentUrl(paths.overview);
+      await I.seeInCurrentUrl(paths.common.overview);
     });
 
     When(/^I should see the 'do this next section' for 'New - Appeal started'$/, () => {

@@ -18,8 +18,8 @@ function getSessionEnded(req: Request, res: Response, next: NextFunction) {
 
 function setupSessionController() {
   const router = Router();
-  router.get(paths.session.extendSession, idamExpressMiddleware.protect(idamConfig), checkSession(idamConfig), getExtendSession);
-  router.get(paths.session.sessionExpired, idamExpressMiddleware.logout(idamConfig), getSessionEnded);
+  router.get(paths.common.extendSession, idamExpressMiddleware.protect(idamConfig), checkSession(idamConfig), getExtendSession);
+  router.get(paths.common.sessionExpired, idamExpressMiddleware.logout(idamConfig), getSessionEnded);
   return router;
 }
 

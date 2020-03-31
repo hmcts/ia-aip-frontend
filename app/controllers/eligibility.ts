@@ -5,7 +5,7 @@ import { paths } from '../paths';
 import { yesOrNoRequiredValidation } from '../utils/validations/fields-validations';
 
 function getPreviousPageLink(questionId) {
-  return questionId === '0' ? paths.start : `${paths.eligibility.questions}?id=${_.toNumber(questionId) - 1}`;
+  return questionId === '0' ? paths.common.start : `${paths.common.questions}?id=${_.toNumber(questionId) - 1}`;
 }
 
 function getModel(nextId, answer) {
@@ -66,8 +66,8 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
     const isLastQuestion = nextQuestionId === i18n.eligibility.length;
 
     const nextPage = isEligibilityQuestion(questionId, answer) ?
-    isLastQuestion ? `${paths.eligibility.eligible}?id=${_.toNumber(questionId)}` : `${paths.eligibility.questions}?id=${nextQuestionId}` :
-    `${paths.eligibility.ineligible}?id=${_.toNumber(questionId)}`;
+    isLastQuestion ? `${paths.common.eligible}?id=${_.toNumber(questionId)}` : `${paths.common.questions}?id=${nextQuestionId}` :
+    `${paths.common.ineligible}?id=${_.toNumber(questionId)}`;
 
     return res.redirect(nextPage);
   } catch (error) {
@@ -78,11 +78,11 @@ function getEligible(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.session.eligibility) {
       req.session.eligibility = {};
-      return res.redirect(paths.eligibility.questions);
+      return res.redirect(paths.common.questions);
     }
 
     res.render('eligibility/eligible-page.njk', {
-      previousPage: `${paths.eligibility.questions}?id=${req.query.id}`
+      previousPage: `${paths.common.questions}?id=${req.query.id}`
     });
   } catch (e) {
     next(e);
@@ -92,7 +92,7 @@ function getEligible(req: Request, res: Response, next: NextFunction) {
 function getIneligible(req: Request, res: Response, next: NextFunction) {
   try {
     res.render('eligibility/ineligible-page.njk', {
-      previousPage: `${paths.eligibility.questions}?id=${req.query.id}`
+      previousPage: `${paths.common.questions}?id=${req.query.id}`
     });
   } catch (e) {
     next(e);
@@ -101,10 +101,10 @@ function getIneligible(req: Request, res: Response, next: NextFunction) {
 
 function setupEligibilityController(): Router {
   const router = Router();
-  router.get(paths.eligibility.questions, eligibilityQuestionGet);
-  router.post(paths.eligibility.questions, eligibilityQuestionPost);
-  router.get(paths.eligibility.eligible, getEligible);
-  router.get(paths.eligibility.ineligible, getIneligible);
+  router.get(paths.common.questions, eligibilityQuestionGet);
+  router.post(paths.common.questions, eligibilityQuestionPost);
+  router.get(paths.common.eligible, getEligible);
+  router.get(paths.common.ineligible, getIneligible);
 
   return router;
 }

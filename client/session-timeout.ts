@@ -121,11 +121,11 @@ export default class SessionTimeout {
   }
 
   signOut() {
-    window.location.assign(paths.session.sessionExpired);
+    window.location.assign(paths.common.sessionExpired);
   }
 
   extendSession = (): Promise<void> => {
-    return axios.get(paths.session.extendSession).then((response: any): void => {
+    return axios.get(paths.common.extendSession).then((response: any): void => {
       this.sessionExpirationTime = response.data.timeout;
       this.restartCounters();
       this.closeModal();

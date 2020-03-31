@@ -184,7 +184,7 @@ describe('Session Timeout @only', () => {
   describe('extendSession', () => {
     it('should extend session and call restartCounters and closeModal', (done) => {
       const resolved = new Promise((r) => r({ data: { timeout: 1000 } }));
-      axiosStub = sandbox.stub(axios, 'get').withArgs(paths.session.extendSession).returns(resolved);
+      axiosStub = sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(resolved);
 
       restartCountersStub = sandbox.stub(sessionTimeout, 'restartCounters');
       closeModalStub = sandbox.stub(sessionTimeout, 'closeModal');
@@ -199,7 +199,7 @@ describe('Session Timeout @only', () => {
 
     it('should not extend session and call removeListeners and stopCounters', (done) => {
       const rejected = new Promise((_, r) => r());
-      axiosStub = sandbox.stub(axios, 'get').withArgs(paths.session.extendSession).returns(rejected);
+      axiosStub = sandbox.stub(axios, 'get').withArgs(paths.common.extendSession).returns(rejected);
 
       restartCountersStub = sandbox.stub(sessionTimeout, 'restartCounters');
       closeModalStub = sandbox.stub(sessionTimeout, 'closeModal');

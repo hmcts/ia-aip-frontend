@@ -70,16 +70,17 @@ describe('Personal Details Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupPersonalDetailsController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.postcodeLookup);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.postcodeLookup);
+      const middleware = [];
+      setupPersonalDetailsController(middleware, { updateAppealService });
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.postcodeLookup, middleware);
     });
   });
 
   describe('getPostcodeLookupPage', () => {
     it('should redirect to enter postcode page if postcode not present', async () => {
       await getPostcodeLookupPage(osPlacesClient)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.personalDetails.enterPostcode);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.enterPostcode);
     });
 
     it('should render appeal-application/personal-details/postcode-lookup.njk', async () => {
@@ -142,7 +143,7 @@ describe('Personal Details Controller', function () {
           addresses: [{ text: '1 address found', value: '' }, { text: 'formattedAddress', value: 'udprn' }],
           error: { address: error },
           errorList: [ error ],
-          previousPage: paths.personalDetails.enterPostcode
+          previousPage: paths.appealStarted.enterPostcode
         }
       );
     });
@@ -160,7 +161,7 @@ describe('Personal Details Controller', function () {
       } as any;
       req.body.address = 'an address';
       postPostcodeLookupPage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.personalDetails.enterAddress);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.enterAddress);
     });
 
     it('should catch an exception and call next()', () => {

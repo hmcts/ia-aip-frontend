@@ -8,7 +8,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   homeOfficeLetterSent(I) {
     Given('I am on the home office letter sent page', async () => {
-      I.amOnPage(testUrl + paths.homeOffice.letterSent);
+      I.amOnPage(testUrl + paths.appealStarted.letterSent);
     });
 
     When(/^I enter a a home letter date in the last 2 weeks$/, async () => {
@@ -17,7 +17,7 @@ module.exports = {
     });
 
     Then(/^I should see letter sent page$/, async () => {
-      await I.seeInCurrentUrl(paths.homeOffice.letterSent);
+      await I.seeInCurrentUrl(paths.appealStarted.letterSent);
     });
 
     When(/^I enter an on time letter sent date$/, async () => {

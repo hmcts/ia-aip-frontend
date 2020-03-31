@@ -27,9 +27,9 @@ function getTermsAndConditionsPage(req: Request, res: Response, next: NextFuncti
 
 function setupFooterController(): Router {
   const router: Router = Router();
-  router.get(paths.footer.cookies, getCookiesPage);
-  router.get(paths.footer.privacyPolicy, getPrivacyPolicyPage);
-  router.get(paths.footer.termsAndConditions, getTermsAndConditionsPage);
+  router.get(paths.common.cookies, getCookiesPage);
+  router.get(paths.common.privacyPolicy, getPrivacyPolicyPage);
+  router.get(paths.common.termsAndConditions, getTermsAndConditionsPage);
   return router;
 }
 

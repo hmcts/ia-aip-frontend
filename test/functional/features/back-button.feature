@@ -6,7 +6,7 @@ Feature: Back button
   Scenario: Navigate back to task list page
     Given I am authenticated as a valid appellant
     And I click continue
-    When I click on Home office details
+    And I click "Your Home Office details" link
     Then I should be taken to the home office ref number page
     When I enter "A12345" as the Office ref number and click Save and continue
     Then I should see error summary

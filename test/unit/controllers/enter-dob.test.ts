@@ -59,9 +59,11 @@ describe('Personal Details Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupPersonalDetailsController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.dob);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.dob);
+      const middleware = [];
+
+      setupPersonalDetailsController(middleware, { updateAppealService });
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.dob, middleware);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.dob, middleware);
     });
   });
 
@@ -91,7 +93,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledWith(paths.personalDetails.nationality);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.nationality);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
@@ -104,7 +106,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
     });
 
@@ -116,7 +118,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -128,7 +130,7 @@ describe('Personal Details Controller', function () {
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
   });
 
@@ -163,7 +165,7 @@ describe('Personal Details Controller', function () {
             day: errorDay
           },
           errorList: [ errorDay ],
-          previousPage: paths.personalDetails.name
+          previousPage: paths.appealStarted.name
         }
       );
     });
@@ -183,7 +185,7 @@ describe('Personal Details Controller', function () {
             month: errorMonth
           },
           errorList: [ errorMonth ],
-          previousPage: paths.personalDetails.name
+          previousPage: paths.appealStarted.name
         }
       );
     });
@@ -204,7 +206,7 @@ describe('Personal Details Controller', function () {
             year: errorYear
           },
           errorList: [ errorYear ],
-          previousPage: paths.personalDetails.name
+          previousPage: paths.appealStarted.name
         }
       );
     });
@@ -225,7 +227,7 @@ describe('Personal Details Controller', function () {
             date: errorDate
           },
           errorList: [ errorDate ],
-          previousPage: paths.personalDetails.name
+          previousPage: paths.appealStarted.name
         }
       );
     });

@@ -17,7 +17,7 @@ describe('Save for later utils', () => {
     it('get next page when save for later clicked', () => {
       const nextPage = getNextPage({ saveForLater: 'saveForLater' }, 'defaultPath');
 
-      expect(nextPage).to.eq(paths.overview + '?saved');
+      expect(nextPage).to.eq(paths.common.overview + '?saved');
     });
 
     it('get next page when save and continue clicked', () => {

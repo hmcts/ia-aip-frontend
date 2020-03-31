@@ -62,9 +62,9 @@ describe('Confirmation Page Controller', () => {
 
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-
-    setupApplicationOverviewController(updateAppealService as UpdateAppealService);
-    expect(routerGetStub).to.have.been.calledWith(paths.overview);
+    const middlewares = [];
+    setupApplicationOverviewController(middlewares, updateAppealService as UpdateAppealService);
+    expect(routerGetStub).to.have.been.calledWith(paths.common.overview);
   });
 
   it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
@@ -136,7 +136,7 @@ describe('Confirmation Page Controller', () => {
         {
           'title': 'What you sent',
           'text': 'Your appeal details',
-          'href': '{{ paths.detailsViewers.appealDetails }}'
+          'href': '{{ paths.common.viewAppealDetails }}'
         }, {
           'href': '{{ paths.guidancePages.tribunalCaseworker }}',
           'text': 'What is a Tribunal Caseworker?',
@@ -150,11 +150,11 @@ describe('Confirmation Page Controller', () => {
         {
           'title': 'What you sent',
           'text': 'Why you think the Home Office is wrong',
-          'href': '{{ paths.detailsViewers.reasonsForAppeal }}'
+          'href': '{{ paths.common.viewReasonsForAppeal }}'
         }, {
           'title': 'Useful documents',
           'text': 'Home Office documents about your case',
-          'href': '{{ paths.detailsViewers.homeOfficeDocuments }}'
+          'href': '{{ paths.common.viewHomeOfficeDocuments }}'
         }, {
           'title': 'Helpful information',
           'text': 'Understanding your Home Office documents',

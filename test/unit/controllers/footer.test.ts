@@ -30,9 +30,9 @@ describe('footer controller', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
     setupFooterController();
-    expect(routerGetStub).to.have.been.calledWith(paths.footer.cookies);
-    expect(routerGetStub).to.have.been.calledWith(paths.footer.privacyPolicy);
-    expect(routerGetStub).to.have.been.calledWith(paths.footer.termsAndConditions);
+    expect(routerGetStub).to.have.been.calledWith(paths.common.cookies);
+    expect(routerGetStub).to.have.been.calledWith(paths.common.privacyPolicy);
+    expect(routerGetStub).to.have.been.calledWith(paths.common.termsAndConditions);
   });
 
   it('should render cookies page', () => {

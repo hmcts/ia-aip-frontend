@@ -64,10 +64,10 @@ function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextF
 
 function setupGuidancePagesController(): Router {
   const router = Router();
-  router.get(paths.guidancePages.tribunalCaseworker, getCaseworkerPage);
-  router.get(paths.guidancePages.moreHelp, getMoreHelpPage);
-  router.get(paths.guidancePages.homeOfficeDocuments, getHomeOfficeDocumentsPage);
-  router.get(paths.guidancePages.evidenceToSupportAppeal, getEvidenceToSupportAppealPage);
+  router.get(paths.common.tribunalCaseworker, getCaseworkerPage);
+  router.get(paths.common.moreHelp, getMoreHelpPage);
+  router.get(paths.common.homeOfficeDocuments, getHomeOfficeDocumentsPage);
+  router.get(paths.common.evidenceToSupportAppeal, getEvidenceToSupportAppealPage);
   return router;
 }
 

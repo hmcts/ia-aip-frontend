@@ -9,7 +9,7 @@ module.exports = {
       await I.click('Type of appeal');
     });
     Then(/^I should be taken to the appeal page$/, async () => {
-      await I.seeInCurrentUrl(paths.typeOfAppeal);
+      await I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });
     When(/^I click on Protection as my type of appeal and click Save and continue$/, async () => {
       await I.checkOption('Protection');
@@ -17,7 +17,7 @@ module.exports = {
     });
 
     Given('I am on the type of appeal page', async () => {
-      I.amOnPage(testUrl + paths.typeOfAppeal);
+      I.amOnPage(testUrl + paths.appealStarted.typeOfAppeal);
     });
 
     When('I select appeal type Protection', async () => {
@@ -25,7 +25,7 @@ module.exports = {
     });
 
     Then('I should see the type of appeal page', async () => {
-      I.seeInCurrentUrl(paths.typeOfAppeal);
+      I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });
   }
 };

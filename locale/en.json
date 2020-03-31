@@ -964,6 +964,9 @@
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
       "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+    },
+    "forbidden": {
+      "title": "This page is unavailable"
     }
   },
   "error": {

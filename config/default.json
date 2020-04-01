@@ -20,7 +20,7 @@
       "sha256sBackup": "ZyXwVu456="
     }
   },
-  "microservice": "iac",
+  "microservice": "ccd_gateway",
   "session": {
     "useRedis": true,
     "useLogger": false,

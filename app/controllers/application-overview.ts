@@ -17,7 +17,7 @@ function getAppealRefNumber(appealRef: string) {
 const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
 function getAppellantName(req: Request) {
-  let name = '';
+  let name = req.idam.userDetails.name;
   if (_.has(req.session.appeal, 'application.personalDetails.givenNames')) {
     name = `${req.session.appeal.application.personalDetails.givenNames} ${req.session.appeal.application.personalDetails.familyName}`;
   }

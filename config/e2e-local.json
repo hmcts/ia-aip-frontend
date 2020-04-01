@@ -1,0 +1,33 @@
+{
+  "testUrl": "https://localhost:3000",
+  "httpProxy": false,
+  "microservice": "ccd_gateway",
+  "s2s": {
+    "microserviceName": "iac",
+    "secret": "AAAAAAAAAAAAAAAC",
+    "url": "http://localhost:4502"
+  },
+  "idam": {
+    "apiUrl": "http://localhost:5000",
+    "webUrl": "IDAM_WEB_URL",
+    "secret": "OOOOOOOOOOOOOOOO"
+  },
+  "ccd": {
+    "apiUrl": "http://localhost:4452",
+    "jurisdictionId": "IA",
+    "caseType": "Asylum"
+  },
+  "documentManagement": {
+    "apiUrl": "http://dm-store:4506"
+  },
+    "features": {
+    "askForMoreTime": true,
+    "timelineEnabled": true
+  },
+  "testAccounts": {
+    "testCaseOfficerUserName": "ia-caseofficer@fake.hmcts.net",
+    "testCaseOfficerPassword": "London01",
+    "testHomeOfficeGenericUserName": "ia-respondentgen@fake.hmcts.net",
+    "testHomeOfficeGenericPassword": "London13"
+  }
+}

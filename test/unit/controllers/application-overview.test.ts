@@ -66,7 +66,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and no name', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -162,7 +162,7 @@ describe('Confirmation Page Controller', () => {
     } ];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
-      name: '',
+      name: 'Alex Developer',
       appealRefNumber: null,
       applicationNextStep: expectedNextStep,
       history: expectedHistory,
@@ -172,7 +172,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and no name and no events', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name and no events', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -232,7 +232,7 @@ describe('Confirmation Page Controller', () => {
     }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
-      name: '',
+      name: 'Alex Developer',
       appealRefNumber: undefined,
       applicationNextStep: expectedNextStep,
       history: [],
@@ -242,7 +242,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and no name', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -290,7 +290,7 @@ describe('Confirmation Page Controller', () => {
     }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
-      name: '',
+      name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
       history: [],
@@ -300,7 +300,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and no name', async () => {
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -349,7 +349,7 @@ describe('Confirmation Page Controller', () => {
     }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
-      name: '',
+      name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
       history: [],
@@ -359,7 +359,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and name', async () => {
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',

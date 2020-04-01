@@ -20,7 +20,7 @@
       "sha256sBackup": "ZyXwVu456="
     }
   },
-  "microservice": "MICROSERVICE",
+  "microservice": "iac",
   "session": {
     "useRedis": true,
     "useLogger": false,

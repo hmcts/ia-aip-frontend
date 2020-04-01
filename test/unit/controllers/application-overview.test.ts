@@ -371,7 +371,8 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
-    req.session.appeal.application.personalDetails = { givenNames: 'Appellant', familyName: 'Name' };
+    req.session.appeal.application.personalDetails.givenNames = 'Appellant';
+    req.session.appeal.application.personalDetails.familyName = 'Name';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

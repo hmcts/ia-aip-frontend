@@ -13,14 +13,23 @@ function getAppealRefNumber(appealRef: string) {
   }
   return appealRef;
 }
+
 const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
+
+function getAppellantName(req: Request) {
+  let name = '';
+  if (_.has(req.session.appeal, 'application.personalDetails.givenNames')) {
+    name = `${req.session.appeal.application.personalDetails.givenNames} ${req.session.appeal.application.personalDetails.familyName}`;
+  }
+  return name;
+}
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const isPartiallySaved = _.has(req.query, 'saved');
       const { appealReferenceNumber } = req.session.appeal;
-      const loggedInUserFullName: string = `${req.idam.userDetails.name}`;
+      const loggedInUserFullName: string = getAppellantName(req);
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
       const stagesStatus = buildProgressBarStages(req.session.appeal.appealStatus);
       const nextSteps = getAppealApplicationNextStep(req);

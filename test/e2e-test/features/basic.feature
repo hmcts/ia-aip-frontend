@@ -3,7 +3,7 @@ Feature: Business rules
   As a person
   I want be able to sign in
 
-  Scenario: Sign into form
+  Scenario: Complete appeal application
     Given I am on home page
     When I click start now
     Then I should see the "Are you at least 18 years old" eligibility page
@@ -20,7 +20,9 @@ Feature: Business rules
     When I click continue
     Then I should see the sign in page
     When I enter creds and click sign in
-    And I click continue
+    Then I should see the appeal overview page
+    And I should see the 'do this next section' for 'New - Appeal started'
+    When I click continue
     Then I should see the task-list page
     When I click on Home office details
     Then I should be taken to the home office ref number page
@@ -55,9 +57,58 @@ Feature: Business rules
 
     When I click on the type-of-appeal link
     Then I should be taken to the appeal page
-    When I click on Protection as my type of appeal and click Save and continue
-    Then I should be taken to the task-list page
+
+    When I select appeal type Protection
+    And I click "Save and continue" button
+    Then I should see the task-list page
+
     When I click on the check and send your appeal link
     Then I should be taken to the check-and-send page
-    # When I check the checkbox and click send
-    # Then I should be taken to the confirmation page
+
+    When I check the statement of truth
+    And I click send
+    Then I am on the appeal details sent page
+    And I see "Your appeal details have been sent" in title
+    And I see the respond by date is 4 weeks in the future
+
+    # Case Progression
+    Then I sign in as a Case Officer and request HO Bundle
+    Then I sign in as a Home Office Generic and upload the HO Bundle
+    Then I sign in as a Case Officer and request the reasons for appeal
+
+    # Appellant
+    Given I sign in as the Appellant
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
+    Then I click continue
+    Then I should see the reasons for appeal decision page
+    When I visit reasons for appeal
+
+    Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
+    Then I should see the "supporting evidence question" page
+
+    When I select No and click continue
+    Then I should see the reasons for appeal CYA page
+
+    When I click "Send" button
+    Then I should see the reasons for appeal confirmation page
+    And I see the respond by date is 2 weeks in the future
+
+#    Then I should see the sign in page
+#    When I enter creds and click sign in
+#    And I click continue
+#    Then I should see the task-list page
+#    Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
+#    Then I should see the appeal overview page
+#    Then I click continue
+#    Then I should see the reasons for appeal decision page
+#    Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
+#    Then I should see the "supporting evidence question" page
+#    When I select Yes and click continue
+#    Then I should see the "supporting evidence upload" page
+#    When I choose a file that is "VALID" and click the "Upload file" button
+#    And I click "Save and continue" button
+#    Then I should see the reasons for appeal CYA page
+#    When I click "Send" button
+#    Then I should see the reasons for appeal confirmation page
+#    And I see the respond by date is 2 weeks in the future

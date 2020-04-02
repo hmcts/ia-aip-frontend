@@ -42,9 +42,10 @@ withPipeline("nodejs", product, component) {
 
     before('securitychecks') { yarnBuilder.yarn('test:audit') }
 
+    env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
+    env.CCD_API_URL =  'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+
     before("functionalTest") {
         env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
-        env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
-        env.CCD_API_URL =  'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
     }
 }

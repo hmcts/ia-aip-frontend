@@ -12,7 +12,7 @@ def component = "aip-frontend"
 def secrets = [
         'ia-${env}': [
                 secret('s2s-secret', 'S2S_SECRET'),
-                secret('idam-secret', 'IDAM_CLIENT_SECRET'),
+                secret('idam-secret', 'IDAM_SECRET'),
                 secret('saucelabs', 'SAUCELABS_SECRET'),
                 secret('addressLookupToken', 'ADDRESS_LOOKUP_TOKEN'),
                 secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),

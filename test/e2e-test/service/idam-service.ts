@@ -62,10 +62,6 @@ async function getUserToken(userConfig) {
   console.info('======================');
   console.info('Retrieving User Token');
   console.info('======================');
-  console.info('idamUrl', idamUrl);
-  console.info('microservice', microservice);
-  console.info('redirectUrl', redirectUrl);
-  console.info('======================');
   let authResponse = null;
 
   const authOptions = {

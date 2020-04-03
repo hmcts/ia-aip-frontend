@@ -57,7 +57,7 @@ export default class UpdateAppealService {
     let respondentDocuments: RespondentDocument[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
 
-    const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
+    const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
         return {
@@ -128,7 +128,7 @@ export default class UpdateAppealService {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: appealType,
         contactDetails: {
-          ...contactDetails
+          ...appellantContactDetails
         },
         dateLetterSent,
         isAppealLate: caseData.submissionOutOfTime ? this.yesNoToBool(caseData.submissionOutOfTime) : undefined,
@@ -154,11 +154,7 @@ export default class UpdateAppealService {
 
   private getDate(ccdDate): AppealDate {
     if (ccdDate) {
-      let dateLetterSent = {
-        year: null,
-        month: null,
-        day: null
-      };
+      let dateLetterSent;
       const decisionDate = new Date(ccdDate);
       dateLetterSent = {
         year: decisionDate.getFullYear().toString(),

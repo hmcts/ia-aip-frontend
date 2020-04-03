@@ -140,14 +140,16 @@ export default class SessionTimeout {
       event.preventDefault();
       if (!this.modalElement.contains(document.activeElement) || this.focusableElements.length === 1) {
         this.firstFocusableElement.focus();
+        return;
       }
-    } else if (event.shiftKey) {
-      if (document.activeElement === this.firstFocusableElement) {
-        this.lastFocusableElement.focus();
-      }
-    } else {
-      if (document.activeElement === this.lastFocusableElement) {
-        this.firstFocusableElement.focus();
+      if (event.shiftKey) {
+        if (document.activeElement === this.firstFocusableElement) {
+          this.lastFocusableElement.focus();
+        }
+      } else {
+        if (document.activeElement === this.lastFocusableElement) {
+          this.firstFocusableElement.focus();
+        }
       }
     }
   }

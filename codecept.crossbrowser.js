@@ -4,14 +4,21 @@ exports.config = {
   name: 'Codecept-crossbrowser',
   output: './functional-output/crossbrowser/reports/',
   helpers: {
-    WebDriver: {
+    // WebDriver: {
+    //   url: process.env.TEST_URL || config.get('testUrl'),
+    //   browser: "internet explorer",
+    //   timeouts: {
+    //     "script": 60000,
+    //     "page load": 30000
+    //   },
+    //   desiredCapabilities: {}
+    // }
+    Puppeteer: {
       url: process.env.TEST_URL || config.get('testUrl'),
-      browser: "internet explorer",
-      timeouts: {
-        "script": 60000,
-        "page load": 30000
-      },
-      desiredCapabilities: {}
+      show: true,
+      "chrome": {
+        "ignoreHTTPSErrors": true
+      }
     }
   },
   multiple: {

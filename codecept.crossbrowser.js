@@ -24,10 +24,6 @@ exports.config = {
         {
           browser: 'internet explorer',
           version: 'latest'
-        },
-        {
-          browser: 'firefox',
-          version: 'latest'
         }
       ]
     }

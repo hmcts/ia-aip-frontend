@@ -9,7 +9,7 @@ exports.config = {
       browser: "internet explorer",
       timeouts: {
         "script": 60000,
-        "page load": 10000
+        "page load": 30000
       },
       desiredCapabilities: {}
     }
@@ -25,6 +25,10 @@ exports.config = {
           browser: 'internet explorer',
           version: 'latest'
         },
+        {
+          browser: 'firefox',
+          version: 'latest'
+        }
       ]
     }
   },
@@ -50,7 +54,7 @@ exports.config = {
     },
     stepByStepReport: {
       enabled: true,
-      deleteSuccessful: false,
+      deleteSuccessful: true,
       fullPageScreenshots: true
     }
   },

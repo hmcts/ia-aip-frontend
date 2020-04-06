@@ -177,6 +177,16 @@ function constructEventObject(event) {
   };
 }
 
+function sortList(a, b) {
+  if (Date.parse(a.date) < Date.parse(b.date)) {
+    return 1;
+  } else if (Date.parse(a.date) > Date.parse(b.date)) {
+    return -1;
+  } else if (Date.parse(a.date) === Date.parse(b.date)) {
+    return 0;
+  }
+}
+
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
@@ -198,8 +208,11 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
       eventsCollected.push(eventObject);
     }
   });
-
-  return eventsCollected;
+  if (eventsCollected.length > 1) {
+    return eventsCollected.sort(sortList);
+  } else {
+    return eventsCollected;
+  }
 }
 
 export {

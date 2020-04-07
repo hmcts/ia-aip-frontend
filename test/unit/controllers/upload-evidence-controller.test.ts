@@ -226,7 +226,6 @@ describe('upload evidence controller', () => {
       req.file = mockFile as Express.Multer.File;
 
       const documentUploadResponse: DocumentUploadResponse = {
-        id: 'someEvidenceId',
         fileId: 'someUUID',
         name: 'name.png'
       };

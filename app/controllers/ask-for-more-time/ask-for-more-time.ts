@@ -131,8 +131,8 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
     let previousPage = paths.askForMoreTime.reason;
 
     if (askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req)) {
-      const evidences: Evidences = askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req);
-      const evidenceNames: string[] = Object.values(evidences).map((evidence) => evidence.name);
+      const evidences: Evidence[] = askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req);
+      const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {
         summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.askForMoreTime.supportingEvidenceUpload, Delimiter.BREAK_LINE));
         previousPage = paths.askForMoreTime.evidenceYesNo;

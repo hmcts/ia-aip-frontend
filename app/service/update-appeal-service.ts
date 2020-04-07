@@ -185,7 +185,7 @@ export default class UpdateAppealService {
       return {
         id: documentMapperId,
         fileId: documentMapperId,
-        name: this.fileIdToName(evidence.value.document_filename)
+        name: evidence.value.document_filename
       };
     }) : [];
     return {
@@ -342,7 +342,7 @@ export default class UpdateAppealService {
     const previousAskForMoreTimes = appeal.previousAskForMoreTime;
 
     if (previousAskForMoreTimes) {
-      previousAskForMoreTimes.map(askForMoreTime => {
+      previousAskForMoreTimes.forEach(askForMoreTime => {
         this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
       });
     }

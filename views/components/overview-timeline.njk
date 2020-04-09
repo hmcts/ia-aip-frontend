@@ -8,10 +8,12 @@
         <div><span class='govuk-body govuk-!-font-weight-bold'>{{ event.date }}</span> - {{ event.text }}</div>
       </div>
       {% for link in event.links %}
+        {% if link %}
         <div class="timeline-margin-left">
           <h4 class="govuk-heading-s govuk-!-margin-top-3 ">{{ link.title }}</h4>
           <a href="{{ link.href | eval | safe}}" class="govuk-link govuk-!-margin-bottom-1">{{ link.text }}</a>
         </div>
+        {% endif %}
       {% endfor %}
     </div>
   {% endfor %}

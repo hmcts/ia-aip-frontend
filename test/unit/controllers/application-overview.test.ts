@@ -137,8 +137,8 @@ describe('Confirmation Page Controller', () => {
           'text': 'Your appeal details',
           'title': 'What you sent'
         }, {
-          'href': '{{ paths.tribunalCaseworker }}',
-          'text': 'What is a Tribunal Caseworker',
+          'href': '{{ paths.guidancePages.tribunalCaseworker }}',
+          'text': 'What is a Tribunal Caseworker?',
           'title': 'Helpful information'
         } ]
     }, {
@@ -157,7 +157,7 @@ describe('Confirmation Page Controller', () => {
         }, {
           'title': 'Helpful information',
           'text': 'Understanding your Home Office documents',
-          'href': '{{ paths.homeOfficeDocuments }}'
+          'href': '{{ paths.guidancePages.homeOfficeDocuments }}'
         } ]
     } ];
 

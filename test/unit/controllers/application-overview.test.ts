@@ -9,6 +9,7 @@ import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
+import { dayMonthYearFormat } from '../../../app/utils/date-formats';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedMultipleEventsData } from '../mockData/events/expectations';
@@ -125,7 +126,7 @@ describe('Confirmation Page Controller', () => {
       completed: false,
       title: 'Your appeal<br/> decision'
     } ];
-    const date = moment().format('DD MMMM YYYY');
+    const date = moment().format(dayMonthYearFormat);
 
     const expectedHistory = [ {
       'date': date,
@@ -133,9 +134,9 @@ describe('Confirmation Page Controller', () => {
       'text': 'You sent your appeal details to the Tribunal.',
       'links': [
         {
-          'href': '{{ paths.detailsViewers.appealDetails }}',
+          'title': 'What you sent',
           'text': 'Your appeal details',
-          'title': 'What you sent'
+          'href': '{{ paths.detailsViewers.appealDetails }}'
         }, {
           'href': '{{ paths.guidancePages.tribunalCaseworker }}',
           'text': 'What is a Tribunal Caseworker?',

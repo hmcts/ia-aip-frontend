@@ -5,6 +5,7 @@ const testUrl = config.get('testUrl');
 
 module.exports = {
   checkAndSend(I) {
+
     Given(/^I am on the check your answers page$/, async () => {
       I.amOnPage(testUrl + paths.checkAndSend);
     });

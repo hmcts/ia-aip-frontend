@@ -38,6 +38,7 @@ interface CaseData {
   reasonsForAppealDecision: string;
   reasonsForAppealDocuments: SupportingEvidenceCollection[];
   respondentDocuments: RespondentEvidenceCollection[];
+  directions: DirectionCollection[];
 }
 
 interface Nationality {
@@ -69,6 +70,20 @@ interface SupportingEvidenceCollection {
 interface RespondentEvidenceCollection {
   id?: number;
   value: RespondentEvidenceDocument;
+}
+
+interface DirectionValue {
+  tag: string;
+  dateDue: string;
+  parties: string;
+  dateSent: string;
+  explanation: string;
+  previousDates: string[];
+}
+
+interface DirectionCollection {
+  id?: number;
+  value: DirectionValue;
 }
 
 interface Subscription {

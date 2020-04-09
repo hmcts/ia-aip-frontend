@@ -17,6 +17,10 @@ def secrets = [
         secret('idam-secret', 'IDAM_CLIENT_SECRET'),
         secret('saucelabs', 'SAUCELABS_SECRET'),
         secret('addressLookupToken', 'ADDRESS_LOOKUP_TOKEN'),
+        secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),
+        secret('test-caseofficer-password', 'TEST_CASEOFFICER_PASSWORD'),
+        secret('test-homeoffice-generic-username', 'TEST_HOMEOFFICE_GENERIC_USERNAME'),
+        secret('test-homeoffice-generic-password', 'TEST_HOMEOFFICE_GENERIC_PASSWORD')
     ]
 ]
 
@@ -35,4 +39,9 @@ withNightlyPipeline("nodejs", product, component) {
     enableCrossBrowserTest()
     enableSlackNotifications('#aip-tech')
     enableSecurityScan()
+
+    env.S2S_MICROSERVICE_NAME =  'iac'
+    env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
+    env.CCD_API_URL =  'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+
 }

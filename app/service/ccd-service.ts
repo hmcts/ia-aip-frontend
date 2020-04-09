@@ -12,31 +12,6 @@ const timelineEnabled = asBooleanValue(config.get('features.timelineEnabled'));
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
-export const Events = {
-  EDIT_APPEAL: { id: 'editAppeal', summary: 'Update appeal case AIP', description: 'Update appeal case AIP' },
-  SUBMIT_APPEAL: { id: 'submitAppeal', summary: 'Submit appeal case AIP', description: 'Submit Appeal case AIP' },
-  EDIT_REASONS_FOR_APPEAL: { id: 'editReasonsForAppeal', summary: 'Edit reasons for appeal case AIP', description: 'Edit reasons for appeal case AIP' },
-  SUBMIT_REASONS_FOR_APPEAL: { id: 'submitReasonsForAppeal', summary: 'Submits Reasons for appeal case AIP', description: 'Submits Reasons for appeal case AIP' }
-};
-
-interface StartEventResponse {
-  event_id: string;
-  token: string;
-}
-
-interface Event {
-  id: string;
-  summary: string;
-  description: string;
-}
-
-interface SubmitEventData {
-  event: Event;
-  data: Partial<CaseData>;
-  event_token: string;
-  ignore_warning: boolean;
-}
-
 function extractHistoryDetails(historyEvents: any[]): HistoryEvent[] {
   return historyEvents.map(event => ({
     id: event.id,

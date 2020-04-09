@@ -2,6 +2,7 @@ import { Request } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
+import { Events } from '../data/events';
 import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import UpdateAppealService from '../service/update-appeal-service';
@@ -166,14 +167,46 @@ function getAppealApplicationNextStep(req: Request) {
   return doThisNextSection;
 }
 
+/**
+ * Construct an event object used in the sections, pulls the content of the event from the translations file.
+ * @param event the event containing the date and id.
+ */
 function constructEventObject(event) {
   const formattedDate = moment(event.date).format('DD MMMM YYYY');
   return {
     date: `${formattedDate}`,
-    title: i18n.pages.overviewPage.timeline[event.id].title,
     text: i18n.pages.overviewPage.timeline[event.id].text,
     links: i18n.pages.overviewPage.timeline[event.id].links
   };
+}
+
+/**
+ * Constructs a section object, finds the events specified within the history and an optional case state
+ * @param eventsToLookFor and array of type CcdEvent used to find events within the history
+ * @param history the history
+ * @param caseState optional use if a section must be constructed within a specific state only
+ */
+function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], caseState: CcdEvent | null) {
+  const eventsCollected = [];
+  eventsToLookFor.forEach((event: CcdEvent) => {
+
+    const eventFound = caseState
+      ? history.find((e: HistoryEvent) => event.id === e.id && e.state.id === caseState.id)
+      : history.find((e: HistoryEvent) => event.id === e.id);
+
+    if (eventFound) {
+      let eventObject = constructEventObject(eventFound);
+
+      // If it is a time extension review the outcome should be injected within the text
+      if (event.id === Events.REVIEW_TIME_EXTENSION.id) {
+        // eventObject.text = `${eventObject.text} ${event.outcome}.`;
+        eventObject.text = `${eventObject.text} granted.`;
+
+      }
+      eventsCollected.push(eventObject);
+    }
+  });
+  return eventsCollected;
 }
 
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
@@ -183,18 +216,14 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.ccdCaseId, headers);
 
   req.session.appeal.history = history;
-  const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
 
-  const eventsCollected = [];
-  eventToLookFor.forEach((event: string) => {
-    const eventFound = history.find((e: HistoryEvent) => event === e.id);
-    if (eventFound) {
-      const eventObject = constructEventObject(eventFound);
-      eventsCollected.push(eventObject);
-    }
-  });
+  const appealArgumentSection = [ Events.SUBMIT_REASONS_FOR_APPEAL, Events.REQUEST_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION ];
+  const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
 
-  return eventsCollected;
+  return {
+    appealArgumentSection: constructSection(appealArgumentSection, history, Events.AWAITING_REASONS_FOR_APPEAL),
+    appealDetailsSection: constructSection(appealDetailsSection, history, null)
+  };
 }
 
 export {

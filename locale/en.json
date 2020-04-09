@@ -340,8 +340,11 @@
       },
       "timeline": {
         "completed": "Completed",
+        "sections": {
+          "appealArgumentSection": "Your appeal argument",
+          "appealDetailsSection": "Your appeal details"
+        },
         "submitAppeal": {
-          "title": "Your appeal details",
           "text": "You sent your appeal details to the Tribunal.",
           "links": [
             {
@@ -357,7 +360,6 @@
           ]
         },
         "submitReasonsForAppeal": {
-          "title": "Your appeal argument",
           "text": "You told us why you think the Home Office decision to refuse your claim is wrong.",
           "links": [
             {
@@ -377,13 +379,30 @@
             }
           ]
         },
+        "requestTimeExtension": {
+          "text": "You asked for more time.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Reason you needed more time",
+              "href": "{{ paths.detailsViewers.reasonsForAppeal }}"
+            }
+          ]
+        },
+        "reviewTimeExtension": {
+          "text": "Your request for more time was",
+          "links": [
+            {
+              "title": "What the Tribunal said ",
+              "text": "Reason for decision",
+              "href": "{{ paths.detailsViewers.reasonsForAppeal }}"
+            }
+          ]
+        },
         "reasonsForAppealCheckAnswersHistory": {
           "title": "Why you think the Home Office is wrong",
           "question": "Question",
           "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
-        },
-        "appealApplicationCheckAnswersHistory": {
-          "title": "Your appeal details"
         }
       }
     },

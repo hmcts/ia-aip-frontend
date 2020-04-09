@@ -54,7 +54,7 @@
             <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
-        {% if history | length %}
+        {% if history.appealDetailsSection | length > 0  %}
           {{ timeline(history) }}
         {% endif %}
       </div>

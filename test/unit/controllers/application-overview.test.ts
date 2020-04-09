@@ -30,7 +30,8 @@ describe('Confirmation Page Controller', () => {
       session: {
         appeal: {
           application: {
-            contactDetails: {}
+            contactDetails: {},
+            personalDetails: {}
           }
         }
       } as Partial<Appeal>,
@@ -65,7 +66,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -171,7 +172,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and no events', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name and no events', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -241,7 +242,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render application-overview.njk with options', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -299,7 +300,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options', async () => {
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -349,6 +350,67 @@ describe('Confirmation Page Controller', () => {
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
+      appealRefNumber: 'RP/50004/2020',
+      applicationNextStep: expectedNextStep,
+      history: [],
+      stages: expectedStages,
+      saved: false,
+      askForMoreTimeFeatureEnabled: false
+    });
+  });
+
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name', async () => {
+    req.idam = {
+      userDetails: {
+        uid: 'user-id',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+    req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
+    req.session.appeal.application.personalDetails.givenNames = 'Appellant';
+    req.session.appeal.application.personalDetails.familyName = 'Name';
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedNextStep = {
+      allowedAskForMoreTime: false,
+      cta: { respondByText: null, url: '/about-appeal' },
+      deadline: 'TBC',
+      descriptionParagraphs: [
+        'You need to finish telling us about your appeal.',
+        'You will need to have your Home Office decision letter with you to answer some questions.'
+      ],
+      info: null
+    };
+
+    const expectedStages = [{
+      active: true,
+      ariaLabel: 'Your appeal details stage',
+      completed: false,
+      title: 'Your appeal<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal argument stage',
+      completed: false,
+      title: 'Your appeal<br/> argument'
+    }, {
+      active: false,
+      ariaLabel: 'Your hearing details stage',
+      completed: false,
+      title: 'Your hearing<br/> details'
+    }, {
+      active: false,
+      ariaLabel: 'Your appeal decision stage',
+      completed: false,
+      title: 'Your appeal<br/> decision'
+    }];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Appellant Name',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
       history: [],

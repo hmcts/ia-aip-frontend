@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { paths } from '../../../../app/paths';
+import { dayMonthYearFormat } from '../../../../app/utils/date-formats';
 
 module.exports = {
   appealSent(I) {
@@ -8,7 +9,7 @@ module.exports = {
     });
 
     Then('I see the respond by date is 4 weeks in the future', async () => {
-      I.seeInSource(moment().add(28,'days').format('DD MMMM YYYY'));
+      I.seeInSource(moment().add(28,'days').format(dayMonthYearFormat));
     });
   }
 };

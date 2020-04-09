@@ -2,11 +2,11 @@ import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
-import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { asBooleanValue } from '../../utils/utils';
 import {
@@ -91,7 +91,7 @@ function postAdditionalSupportingEvidenceQuestionPage(req: Request, res: Respons
     }
     if (answer === 'yes') {
       return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
-    } else {
+    } else if (answer === 'no') {
       return res.redirect(paths.reasonsForAppeal.checkAndSend);
     }
   } catch (e) {
@@ -152,16 +152,12 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
     try {
       if (req.file) {
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-        const { reasonsForAppeal } = req.session.appeal;
-        reasonsForAppeal.evidences = {
-          ...reasonsForAppeal.evidences,
-          [evidenceStored.id]: {
-            id: evidenceStored.id,
-            fileId: evidenceStored.fileId,
-            name: evidenceStored.name
-          }
-        };
-        await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
+        const evidences: Evidence[] = [ ...(req.session.appeal.reasonsForAppeal.evidences || []) ];
+        evidences.push({
+          fileId: evidenceStored.fileId,
+          name: evidenceStored.name
+        });
+        req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];
         return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
       } else {
         let validationError;
@@ -192,7 +188,8 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
         const fileId = req.query['id'];
         const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
-        delete req.session.appeal.reasonsForAppeal.evidences[fileId];
+        const evidences: Evidence[] = [ ...req.session.appeal.reasonsForAppeal.evidences ];
+        req.session.appeal.reasonsForAppeal.evidences = evidences.filter((evidence: Evidence) => evidence.fileId !== req.query['id']);
       }
       return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
     } catch (e) {
@@ -218,7 +215,7 @@ function setupReasonsForAppealController(deps?: any): Router {
   router.get(paths.reasonsForAppeal.supportingEvidence, getAdditionalSupportingEvidenceQuestionPage);
   router.post(paths.reasonsForAppeal.supportingEvidence, postAdditionalSupportingEvidenceQuestionPage);
   router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
-  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, uploadConfiguration, handleFileUploadErrors, postSupportingEvidenceUploadFile(deps.documentManagementService, deps.updateAppealService));
+  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, postSupportingEvidenceUploadFile(deps.documentManagementService, deps.updateAppealService));
   router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
   router.post(paths.reasonsForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit(deps.updateAppealService));
   router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);

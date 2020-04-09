@@ -10,6 +10,7 @@ import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureLogger, configureNunjucks, configureS2S } from './app-config';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
+import { handleFileUploadErrors, uploadConfiguration } from './middleware/file-upload-validation-middleware';
 import { isUserAuthenticated } from './middleware/is-user-authenticated';
 import { logErrorMiddleware, logRequestMiddleware } from './middleware/logger';
 import { filterRequest } from './middleware/xss-middleware';
@@ -18,9 +19,17 @@ import { router } from './routes';
 import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
 
+const uuid = require('uuid');
+
 function createApp() {
   const app: express.Application = express();
   const environment: string = process.env.NODE_ENV;
+
+  // Inject nonce Id on every request.
+  app.use((req, res, next) => {
+    res.locals.nonce = uuid.v4();
+    next();
+  });
 
   configureHelmet(app);
 
@@ -37,6 +46,7 @@ function createApp() {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.use(csurf());
+  app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
 
   if (environment === 'development') {
@@ -83,7 +93,11 @@ function configureHelmet(app) {
       styleSrc: [
         '\'self\'',
         'tagmanager.google.com',
-        'fonts.googleapis.com/'
+        'fonts.googleapis.com/',
+        (req, res) =>
+          req.url.includes('/view/document/')
+            ? `'unsafe-inline'`
+            : `'nonce-${res.locals.nonce}'`
       ],
       connectSrc: [ '\'self\'', 'www.gov.uk' ],
       mediaSrc: [ '\'self\'' ],

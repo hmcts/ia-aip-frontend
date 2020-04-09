@@ -71,7 +71,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
 function getNamePage(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    const personalDetails = req.session.appeal.application.personalDetails;
+    const personalDetails = req.session.appeal.application.personalDetails || null;
     return res.render('appeal-application/personal-details/name.njk', {
       personalDetails,
       previousPage: paths.taskList
@@ -84,7 +84,7 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
 function postNamePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
+      if (!shouldValidateWhenSaveForLater(req.body, 'familyName', 'givenNames')) {
         return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const validation = appellantNamesValidation(req.body);
@@ -107,7 +107,6 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       };
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-
       return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.dob));
     } catch (e) {
       next(e);

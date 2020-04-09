@@ -6,6 +6,7 @@ import { Events } from '../../service/ccd-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { getConditionalRedirectUrl } from '../../utils/url-utils';
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
   try {
@@ -19,8 +20,8 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
 
     if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {
 
-      const evidences: Evidences = req.session.appeal.reasonsForAppeal.evidences;
-      const evidenceNames: string[] = Object.values(evidences).map((evidence) => evidence.name);
+      const evidences: Evidence[] = req.session.appeal.reasonsForAppeal.evidences || [];
+      const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {
         summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
         previousPage = paths.reasonsForAppeal.supportingEvidenceUpload;
@@ -40,7 +41,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body)) {
-        return res.redirect(paths.overview);
+        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
       }
       const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req);
       req.session.appeal.appealStatus = updatedAppeal.state;

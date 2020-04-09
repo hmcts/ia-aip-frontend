@@ -234,7 +234,7 @@
       "titleText": "Your answer has been sent",
       "answer": "A Tribunal Caseworker will look at your answer and contact you to tell you what to do next",
       "date": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it may take longer than that",
-      "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'>0300 123 1711</span> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\">customer.services@justice.gov.uk</a>"
+      "questions": "If you have any questions about the appeal process, call the Tribunal on <span  class='govuk-body govuk-!-font-weight-bold'>0300 123 1711</span> or email <a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>"
     },
     "reasonsForAppealUploadQuestion": {
       "title": "Do you want to provide supporting evidence?",
@@ -243,14 +243,12 @@
     "reasonsForAppealUpload": {
       "title": "Providing supporting evidence",
       "heading": "Providing supporting evidence",
-      "reasonsForAppeal": "Reasons for appeal",
       "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
       "uploadFiles": "Uploaded files",
       "noFiles": "No files uploaded",
-      "needMoreTime": "Need more time?",
-      "evidence": "If you want to provide evidence but don't have it right now, you can <a class=\"govuk-link\" href=\"#\">ask for more time</a>"
+      "needMoreTime": "Need more time?"
     },
     "ineligiblePage": {
       "title": "You cannot currently use the new service",
@@ -271,8 +269,7 @@
       "heading": "You can use the new service",
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
-      "questions": "If you have any questions about the appeal process, call the Tribunal on<span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.services@justice.gov.uk\"> customer.services@justice.gov.uk</a>"
-
+      "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.service@justice.gov.uk\"> customer.service@justice.gov.uk/a>"
     },
     "overviewPage": {
       "title": "Your appeal overview",
@@ -354,8 +351,8 @@
             },
             {
               "title": "Helpful information",
-              "text": "What is a Tribunal Caseworker",
-              "href": "{{ paths.tribunalCaseworker }}"
+              "text": "What is a Tribunal Caseworker?",
+              "href": "{{ paths.guidancePages.tribunalCaseworker }}"
             }
           ]
         },
@@ -376,7 +373,7 @@
             {
               "title": "Helpful information",
               "text": "Understanding your Home Office documents",
-              "href": "{{ paths.homeOfficeDocuments }}"
+              "href": "{{ paths.guidancePages.homeOfficeDocuments }}"
             }
           ]
         },
@@ -473,7 +470,7 @@
           },
           {
             "smallTitle": "Contact us for help",
-            "desc": "If you need help understanding your Home Office documents, you can call <span class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>or email <a class=\"govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>"
+            "desc": "If you need help understanding your Home Office documents, you can call <span class='govuk-body govuk-!-font-weight-bold'>0300 123 1711 </span>or email <a class=\"govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>"
           }
         ]
       },

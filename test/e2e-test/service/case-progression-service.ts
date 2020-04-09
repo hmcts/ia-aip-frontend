@@ -4,6 +4,7 @@ import { AuthenticationService } from './authentication-service';
 import { updateAppeal } from './ccd-service';
 import { aipCurrentUser, getUserId, getUserToken } from './idam-service';
 import { getS2sToken } from './s2s-service';
+
 const config = require('config');
 const testUrl = config.get('testUrl');
 const docStoreUrl = config.get('documentManagement.apiUrl');
@@ -29,8 +30,8 @@ module.exports = {
   caseProgression(I) {
 
     Given(/^I sign in as the Appellant$/, async () => {
-      await I.amOnPage(testUrl + paths.logout);
-      I.amOnPage(testUrl + paths.login);
+      await I.amOnPage(testUrl + paths.common.logout);
+      I.amOnPage(testUrl + paths.common.login);
       await I.seeInTitle('Sign in - HMCTS Access');
       I.fillField('#username', aipCurrentUser.email);
       I.fillField('#password', aipCurrentUser.password);

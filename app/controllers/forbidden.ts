@@ -3,11 +3,7 @@ import { paths } from '../paths';
 
 function getForbiddenPage(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('forbidden/forbidden.njk', {
-      previousPage: {
-        attributes: { onclick: 'history.go(-1); return false;' }
-      }
-    });
+    res.render('forbidden/forbidden.njk');
   } catch (e) {
     next(e);
   }

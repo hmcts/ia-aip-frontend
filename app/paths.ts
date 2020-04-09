@@ -63,7 +63,7 @@ const paths = {
     extendSession: '/extend-session',
     sessionExpired: '/session-ended',
 
-    // Forbidden page
+    // Forbidden page endpoint
     forbidden: '/forbidden',
 
     // Guidance pages endpoints

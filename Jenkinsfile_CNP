@@ -40,11 +40,6 @@ withPipeline("nodejs", product, component) {
     before('securitychecks') { yarnBuilder.yarn('test:audit') }
 
     before("functionalTest") {
-        env.IDAM_API_URL = 'http://idam-api.aat.platform.hmcts.net'
-    }
-    before('buildinfra:prod') {
-        currentBuild.result = 'Success'
-        currentBuild.description = "Success"
-        error 'ia aip projects are not authorised to be in production environments yet.'
+        env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     }
 }

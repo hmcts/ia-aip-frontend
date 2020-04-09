@@ -55,6 +55,7 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
+    let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
 
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
@@ -87,7 +88,7 @@ export default class UpdateAppealService {
         };
       }
     }
-    // TODO needs to use the document mapper.
+
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
@@ -116,6 +117,16 @@ export default class UpdateAppealService {
           }
         };
         respondentDocuments.push(evidence);
+      });
+    }
+    if (caseData.directions) {
+      directions = caseData.directions.map(d => {
+        return {
+          tag: d.value.tag,
+          parties: d.value.parties,
+          dueDate: d.value.dateDue,
+          dateSent: d.value.dateSent
+        };
       });
     }
 
@@ -148,7 +159,8 @@ export default class UpdateAppealService {
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
-      documentMap: documentMap
+      documentMap: documentMap,
+      directions: directions
     };
   }
 

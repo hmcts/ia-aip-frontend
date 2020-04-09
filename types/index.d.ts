@@ -52,6 +52,13 @@ interface DocumentUploadResponse {
   name: string;
 }
 
+interface Direction {
+  tag: string;
+  parties: string;
+  dueDate: string;
+  dateSent: string;
+}
+
 interface Appeal {
   appealStatus?: string;
   appealCreatedDate?: string;
@@ -62,6 +69,7 @@ interface Appeal {
   hearingRequirements: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   documentMap?: DocumentMap[];
+  directions?: Direction[];
   history?: HistoryEvent[];
 }
 

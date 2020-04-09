@@ -11,6 +11,7 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService
 } from '../service/document-management-service';
+import { dayMonthYearFormat } from '../utils/date-formats';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
 /**
@@ -32,7 +33,7 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
 };
 
 const formatDateLongDate = (date: string) => {
-  return moment(date).format('DD MMMM YYYY');
+  return moment(date).format(dayMonthYearFormat);
 };
 
 function setupAppealDetails(req: Request): Array<any> {
@@ -133,7 +134,7 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
       documents = respondentDocs.map(document => {
         const formattedFileName = fileNameFormatter(document.evidence.name);
         const urlHtml = `<a class='govuk-link' target='_blank' rel="noopener noreferrer" href='${paths.detailsViewers.document}/${document.evidence.fileId}'>${formattedFileName}</a>`;
-        const formattedDate = moment(document.dateUploaded).format('DD MMMM YYYY');
+        const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
           url: urlHtml

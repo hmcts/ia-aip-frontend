@@ -18,6 +18,14 @@ module.exports = {
       await I.seeInTitle('Sign in - HMCTS Access');
     });
 
+    Then('I should see the Create an account page', async () => {
+      await I.seeInTitle('Self Register - HMCTS Access');
+    });
+
+    When('I click Sign in to your account', async () => {
+      await I.click('Sign in to your account.');
+    });
+
     When('I enter creds and click sign in', async () => {
       await signInHelper();
     });

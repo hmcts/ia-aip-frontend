@@ -36,7 +36,8 @@ describe('session controller', () => {
     res = {
       render: sandbox.stub(),
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: sinon.spy(),
+      locals: {}
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
@@ -59,7 +60,9 @@ describe('session controller', () => {
     it('should send a new timeout', () => {
       getExtendSession(req as Request, res as Response, next);
 
-      expect(res.send).to.have.been.calledWith({ timeout: config.get('session.cookie.maxAgeInMs') });
+      expect(res.send).to.have.been.calledWith({
+        timeout: sinon.match.typeOf('object')
+      });
     });
   });
 

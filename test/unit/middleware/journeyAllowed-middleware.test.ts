@@ -53,4 +53,11 @@ describe('isJourneyAllowedMiddleware', () => {
     isJourneyAllowedMiddleware(req as Request, res as Response, next);
     expect(res.redirect).to.have.been.called.calledWith(paths.common.forbidden);
   });
+
+  it('should allow access to document viewer', () => {
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.path = paths.common.documentViewer + 'someFileName';
+    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    expect(next).to.have.been.called;
+  });
 });

@@ -142,7 +142,11 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
       const evidences: Evidence[] = askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req);
       const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {
-        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.common.askForMoreTime.supportingEvidenceUpload, Delimiter.BREAK_LINE));
+        const evidenceText = evidences.map((evidence) => {
+          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+        });
+
+        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.common.askForMoreTime.supportingEvidenceUpload, Delimiter.BREAK_LINE));
         previousPage = paths.common.askForMoreTime.evidenceYesNo;
       }
     }

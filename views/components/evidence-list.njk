@@ -14,7 +14,11 @@
     <tbody class="govuk-table__body">
     {% for evidence in evidences %}
       <tr class="govuk-table__row evidence">
-        <td class="govuk-table__cell">{{ evidence.name }}</td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="{{ paths.common.documentViewer }}/{{ evidence.fileId }}">
+            {{ evidence.name }}
+          </a>
+        </td>
         <td class="govuk-table__cell">
           <a class="govuk-link" href="{{ cta }}?id={{ evidence.fileId }}">{{ i18n.components.evidenceList.delete }}</a>
         </td>

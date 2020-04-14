@@ -56,6 +56,7 @@ export default class UpdateAppealService {
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
+    let timeExtensions: TimeExtension[] = null;
 
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -87,7 +88,7 @@ export default class UpdateAppealService {
         };
       }
     }
-    // TODO needs to use the document mapper.
+
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
@@ -118,7 +119,29 @@ export default class UpdateAppealService {
         respondentDocuments.push(evidence);
       });
     }
+    if (caseData.timeExtensions) {
+      timeExtensions = [];
 
+      caseData.timeExtensions.forEach(timeExtension => {
+        let timeExt: TimeExtension = {
+          requestedDate: timeExtension.value.requestedDate,
+          state: timeExtension.value.state,
+          status: timeExtension.value.status,
+          decision: timeExtension.value.decision,
+          decisionReason: timeExtension.value.decisionReason,
+          newDueDate: timeExtension.value.newDueDate
+        };
+
+        if (timeExtension.value.evidence) {
+          const documentMapperId: string = addToDocumentMapper(timeExtension.value.evidence.document_url, documentMap);
+          timeExt.evidence = {
+            fileId: documentMapperId,
+            name: timeExtension.value.evidence.document_filename
+          };
+        }
+        timeExtensions.push(timeExt);
+      });
+    }
     req.session.appeal = {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
@@ -148,7 +171,8 @@ export default class UpdateAppealService {
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
-      documentMap: documentMap
+      documentMap: documentMap,
+      timeExtensions: timeExtensions
     };
   }
 

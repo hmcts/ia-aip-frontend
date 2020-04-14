@@ -63,6 +63,7 @@ interface Appeal {
   respondentDocuments?: RespondentDocument[];
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
+  timeExtensions?: TimeExtension[];
 }
 
 interface HistoryEvent {
@@ -157,4 +158,14 @@ interface IdamDetails {
   name: string;
   given_name: string;
   family_name: string;
+}
+
+interface TimeExtension {
+  requestedDate: string;
+  state: string;
+  status: string;
+  evidence?: Evidence;
+  decision: string;
+  decisionReason: string;
+  newDueDate: string;
 }

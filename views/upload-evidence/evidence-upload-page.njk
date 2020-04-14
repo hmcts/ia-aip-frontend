@@ -29,7 +29,7 @@
 
       <ul>
       {% for advice in i18n.pages.askForMoreTimePage.advice %}
-        <li>{{ advice }}</li>
+        <li>{{ advice | safe }}</li>
       {% endfor %}
       </ul>
 

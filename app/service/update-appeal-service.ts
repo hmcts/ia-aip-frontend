@@ -381,7 +381,7 @@ export default class UpdateAppealService {
     return new Date().toISOString().split('T')[0];
   }
 
-  private toSupportingDocument(evidences: Evidence[], appeal: Appeal): SupportingEvidenceCollection[] {
+  private toSupportingDocument(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {
     return evidences ? evidences.map((evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
       return {
@@ -390,7 +390,7 @@ export default class UpdateAppealService {
           document_url: documentLocationUrl,
           document_binary_url: `${documentLocationUrl}/binary`
         } as SupportingDocument
-      } as SupportingEvidenceCollection;
+      } as TimeExtensionEvidenceCollection;
     }) : null;
   }
 }

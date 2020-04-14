@@ -65,7 +65,10 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
         addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.decision + editParameter),
-        addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [ 'File1.png', 'File2.png' ], paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE)
+        addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [
+          '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/1234\'>File1.png</a>',
+          '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/1234\'>File2.png</a>'
+        ], paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE)
       ];
       req.session.appeal.reasonsForAppeal.evidences = [
         {

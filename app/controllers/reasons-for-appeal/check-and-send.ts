@@ -21,9 +21,13 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
     if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {
 
       const evidences: Evidence[] = req.session.appeal.reasonsForAppeal.evidences || [];
-      const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
-      if (evidenceNames.length) {
-        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
+
+      if (evidences.length) {
+        const evidenceText = evidences.map((evidence) => {
+          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${evidence.fileId}'>${evidence.name}</a>`;
+        });
+
+        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
         previousPage = paths.reasonsForAppeal.supportingEvidenceUpload;
       }
     }

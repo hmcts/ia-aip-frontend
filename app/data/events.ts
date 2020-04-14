@@ -9,16 +9,6 @@ export const Events = {
     summary: 'Submit appeal case AIP',
     description: 'Submit Appeal case AIP'
   },
-  AWAITING_RESPONDENT_EVIDENCE: {
-    id: 'awaitingRespondentEvidence',
-    summary: 'Waiting for respondent evidence to be uploaded for appeal case AIP',
-    description: 'Waiting for respondent evidence to be uploaded for appeal case AIP'
-  },
-  AWAITING_REASONS_FOR_APPEAL: {
-    id: 'awaitingReasonsForAppeal',
-    summary: 'Waiting for reasons for appeal to be uploaded for appeal case AIP',
-    description: 'Waiting for reasons for appeal to be uploaded for appeal case AIP'
-  },
   EDIT_REASONS_FOR_APPEAL: {
     id: 'editReasonsForAppeal',
     summary: 'Edit reasons for appeal case AIP',

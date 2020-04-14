@@ -3,6 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { Events } from '../data/events';
+import { States } from '../data/states';
 import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import UpdateAppealService from '../service/update-appeal-service';
@@ -186,7 +187,7 @@ function constructEventObject(event) {
  * @param history the history
  * @param caseState optional use if a section must be constructed within a specific state only
  */
-function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], caseState: CcdEvent | null) {
+function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], caseState: CcdState | null) {
   const eventsCollected = [];
   eventsToLookFor.forEach((event: CcdEvent) => {
 
@@ -201,7 +202,6 @@ function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], 
       if (event.id === Events.REVIEW_TIME_EXTENSION.id) {
         // eventObject.text = `${eventObject.text} ${event.outcome}.`;
         eventObject.text = `${eventObject.text} granted.`;
-
       }
       eventsCollected.push(eventObject);
     }
@@ -221,7 +221,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
 
   return {
-    appealArgumentSection: constructSection(appealArgumentSection, history, Events.AWAITING_REASONS_FOR_APPEAL),
+    appealArgumentSection: constructSection(appealArgumentSection, history, States.REASONS_FOR_APPEAL_SUBMITTED),
     appealDetailsSection: constructSection(appealDetailsSection, history, null)
   };
 }

@@ -9,6 +9,11 @@ interface CcdEvent {
   description: string;
 }
 
+interface CcdState {
+  id: string;
+  name: string;
+}
+
 interface SubmitEventData {
   event: CcdEvent;
   data: Partial<CaseData>;

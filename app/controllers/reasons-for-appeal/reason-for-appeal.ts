@@ -6,7 +6,6 @@ import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { asBooleanValue, nowAppealDate } from '../../utils/utils';
 import {

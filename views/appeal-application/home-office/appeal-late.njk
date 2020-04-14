@@ -30,7 +30,11 @@
     }) }}
 
     <h2 class="govuk-heading-m">{{ i18n.pages.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
-    <p>{{ i18n.pages.homeOfficeAppealLate.provideEvidenceDescription }}</p>
+    <ul>
+      {% for provideEvidenceDescription in i18n.pages.homeOfficeAppealLate.provideEvidenceDescription %}
+        <li>{{ provideEvidenceDescription | safe }}</li>
+      {% endfor %}
+    </ul>
     <div class="govuk-inset-text">
       {{ govukFileUpload({
         id: "file-upload",

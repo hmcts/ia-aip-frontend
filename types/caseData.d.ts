@@ -69,6 +69,11 @@ interface SupportingEvidenceCollection {
   value: DocumentWithMetaData;
 }
 
+interface TimeExtensionEvidenceCollection {
+  id?: number;
+  value: SupportingDocument;
+}
+
 interface RespondentEvidenceCollection {
   id?: number;
   value: RespondentEvidenceDocument;
@@ -103,7 +108,7 @@ interface Subscription {
 
 interface TimeExtension {
   reason: string;
-  evidence?: SupportingEvidenceCollection[];
+  evidence?: TimeExtensionEvidenceCollection[];
   status: string;
   state: string;
   requestedDate?: string;

@@ -49,95 +49,100 @@ describe('update-appeal-service', () => {
       }
     } as Partial<Request>;
 
+    expectedCaseData = {
+      'appealType': 'protection',
+      'journeyType': 'aip',
+      'homeOfficeReferenceNumber': 'A1234567',
+      'homeOfficeDecisionDate': '2019-01-02',
+      'appellantFamilyName': 'Pedro',
+      'appellantGivenNames': 'Jimenez',
+      'appellantDateOfBirth': '1990-03-21',
+      'appellantNationalities': [ { 'id': '0f583a62-e98a-4a76-abe2-130ad5547726', 'value': { 'code': 'AF' } } ],
+      'appellantHasFixedAddress': 'Yes',
+      'appellantAddress': {
+        'County': '',
+        'Country': 'United Kingdom',
+        'PostCode': 'W1W 7RT',
+        'PostTown': 'LONDON',
+        'AddressLine1': '123 An Address',
+        'AddressLine2': ''
+      },
+      'submissionOutOfTime': 'Yes',
+      'applicationOutOfTimeExplanation': 'An Explanation on why this appeal was late',
+      'applicationOutOfTimeDocument': {
+        'document_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891',
+        'document_filename': '1580296112615-evidence-file.jpeg',
+        'document_binary_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891/binary'
+      },
+      'subscriptions': [ {
+        'id': '7166f13d-1f99-4323-9459-b22a8325db9d',
+        'value': {
+          'subscriber': 'appellant',
+          'email': 'email@example.net',
+          'wantsSms': 'Yes',
+          'mobileNumber': '07123456789',
+          'wantsEmail': 'Yes'
+        }
+      } ],
+      'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
+      'reasonsForAppealDocuments': [ {
+        'id': 'f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
+        'value': {
+          document: {
+            'document_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
+            'document_filename': '1580296112615-supporting-evidence-file.jpeg',
+            'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
+          }
+        }
+      }
+      ],
+      'respondentDocuments': [
+        {
+          'id': '1',
+          'value': {
+            'tag': 'respondentEvidence',
+            'document': {
+              'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+              'document_filename': 'Screenshot.png',
+              'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+            },
+            'description': 'Screenshot of evidence',
+            'dateUploaded': '2020-02-21'
+          }
+        }
+      ],
+      'timeExtensions': [
+        {
+          value: {
+            requestedDate: '2020-01-01',
+            reason: 'first reason',
+            status: 'completed',
+            evidence: [],
+            state: 'awaitingReasonsForAppeal'
+          }},
+        {
+          value: {
+            reason: 'some reason',
+            status: 'inProgress',
+            state: 'awaitingReasonsForAppeal',
+            evidence: [{
+              value: {
+                'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+                'document_filename': 'expected_time_extension_evidence.png',
+                'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+              }
+            }],
+            type: 'awaitingReasonsForAppeal'
+          }}
+      ]
+    };
+
     ccdServiceMock.expects('loadOrCreateCase')
       .withArgs(userId, { userToken, serviceToken })
       .resolves({
         id: caseId,
-        case_data: {
-          'appealType': 'protection',
-          'journeyType': 'aip',
-          'homeOfficeReferenceNumber': 'A1234567',
-          'homeOfficeDecisionDate': '2019-01-02',
-          'appellantFamilyName': 'Pedro',
-          'appellantGivenNames': 'Jimenez',
-          'appellantDateOfBirth': '1990-03-21',
-          'appellantNationalities': [ { 'id': '0f583a62-e98a-4a76-abe2-130ad5547726', 'value': { 'code': 'AF' } } ],
-          'appellantHasFixedAddress': 'Yes',
-          'appellantAddress': {
-            'County': '',
-            'Country': 'United Kingdom',
-            'PostCode': 'W1W 7RT',
-            'PostTown': 'LONDON',
-            'AddressLine1': '123 An Address',
-            'AddressLine2': ''
-          },
-          'submissionOutOfTime': 'Yes',
-          'applicationOutOfTimeExplanation': 'An Explanation on why this appeal was late',
-          'applicationOutOfTimeDocument': {
-            'document_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891',
-            'document_filename': '1580296112615-evidence-file.jpeg',
-            'document_binary_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891/binary'
-          },
-          'subscriptions': [ {
-            'id': '7166f13d-1f99-4323-9459-b22a8325db9d',
-            'value': {
-              'subscriber': 'appellant',
-              'email': 'email@example.net',
-              'wantsSms': 'Yes',
-              'mobileNumber': '07123456789',
-              'wantsEmail': 'Yes'
-            }
-          } ],
-          'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
-          'reasonsForAppealDocuments': [ {
-            'id': 'f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
-            'value': {
-              document: {
-                'document_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
-                'document_filename': '1580296112615-supporting-evidence-file.jpeg',
-                'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
-              }
-            }
-          }
-          ],
-          'respondentDocuments': [
-            {
-              'id': '1',
-              'value': {
-                'tag': 'respondentEvidence',
-                'document': {
-                  'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
-                  'document_filename': 'Screenshot.png',
-                  'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
-                },
-                'description': 'Screenshot of evidence',
-                'dateUploaded': '2020-02-21'
-              }
-            }
-          ],
-          'timeExtensions': [
-            {value: {
-              requestedDate: '2020-01-01',
-              reason: 'first reason',
-              status: 'completed',
-              evidence: [],
-              state: 'awaitingReasonsForAppeal'
-            }},
-            {value: {
-              reason: 'some reason',
-              status: 'inProgress',
-              state: 'awaitingReasonsForAppeal',
-              evidence: [{
-                value: {
-                  'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
-                  'document_filename': 'expected_time_extension_evidence.png',
-                  'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
-                }
-              }],
-              type: 'awaitingReasonsForAppeal'
-            }}
-          ]
-        }
+        state: 'awaitingReasonsForAppeal',
+        case_data: expectedCaseData
       });
   })
   ;

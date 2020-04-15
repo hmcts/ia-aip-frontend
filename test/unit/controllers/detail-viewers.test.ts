@@ -170,7 +170,7 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.history = expectedMultipleEventsData;
       req.session.appeal.documentMap = [ {
         id: '00000',
-        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
       }, {
         id: '00001',
         url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
@@ -181,7 +181,7 @@ describe('Detail viewer Controller', () => {
         'value': { 'html': 'HELLO' }
       }, {
         'key': { 'text': 'Providing supporting evidence' },
-        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00001'>500(PNG)</a>" }
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a>" }
       } ];
       getReasonsForAppealViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {

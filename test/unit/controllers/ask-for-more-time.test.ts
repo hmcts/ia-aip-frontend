@@ -129,7 +129,7 @@ describe('Ask for more time Controller', function () {
 
       expect(res.render).to.have.been.calledWith(
         './ask-for-more-time/check-and-send.njk',{
-          previousPage: paths.askForMoreTime.reason,
+          previousPage: paths.askForMoreTime.evidenceYesNo,
           summaryRows: [{
             key: { text: 'Question' },
             value: { html: 'How much time to you need and why do you need it?' }

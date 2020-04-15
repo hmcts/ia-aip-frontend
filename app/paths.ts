@@ -62,13 +62,22 @@ const paths = {
     document: '/view/document',
     homeOfficeDocuments: '/view/home-office-documents',
     appealDetails: '/appeal-details',
-    reasonsForAppeal: '/appeal-reasons'
+    reasonsForAppeal: '/appeal-reasons',
+    timeExtension: '/view/time-extension',
+    timeExtensionDecision: '/view/time-extension-decision'
   },
   session: {
     extendSession: '/extend-session',
     sessionExpired: '/session-ended'
   },
-  askForMoreTime: '/ask-for-more-time'
+  askForMoreTime: {
+    reason: '/ask-for-more-time',
+    evidenceYesNo: '/ask-for-more-time-have-evidence',
+    supportingEvidenceUpload: '/ask-for-more-time-evidence-upload',
+    supportingEvidenceSubmit: '/ask-for-more-time-evidence-submit',
+    supportingEvidenceDelete: '/ask-for-more-time-evidence-delete',
+    checkAndSend: '/ask-for-more-time-check-and-send'
+  }
 };
 export {
   paths

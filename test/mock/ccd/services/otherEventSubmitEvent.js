@@ -8,6 +8,10 @@ function getNextState(body) {
       return 'awaitingReasonsForAppeal';
     case 'submitReasonsForAppeal':
       return 'reasonsForAppealSubmitted';
+    case 'editTimeExtension':
+      return 'awaitingReasonsForAppeal';
+    case 'submitTimeExtension':
+      return 'awaitingReasonsForAppeal';
     default:
       throw `Event type ${body.eventType} no next state set`
   }

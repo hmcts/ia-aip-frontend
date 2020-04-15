@@ -42,6 +42,11 @@ interface DocumentMap {
   url: string;
 }
 
+interface TimeExtensionEventMap {
+  id: string;
+  data: HistoryEvent;
+}
+
 interface Evidence {
   fileId: string;
   name: string;
@@ -63,7 +68,20 @@ interface Appeal {
   respondentDocuments?: RespondentDocument[];
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
+  askForMoreTime?: AskForMoreTime;
+  previousAskForMoreTime?: AskForMoreTime[];
   timeExtensions?: TimeExtension[];
+  timeExtensionEventsMap?: TimeExtensionEventMap[];
+
+}
+
+interface AskForMoreTime {
+  reason?: string;
+  status?: string;
+  state?: string;
+  evidence?: Evidence[];
+  requestedDate?: string;
+  reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
 interface HistoryEvent {
@@ -164,8 +182,8 @@ interface TimeExtension {
   requestedDate: string;
   state: string;
   status: string;
-  evidence?: Evidence;
-  decision: string;
-  decisionReason: string;
-  newDueDate: string;
+  evidence?: Evidence[];
+  decision?: string;
+  decisionReason?: string;
+  newDueDate?: string;
 }

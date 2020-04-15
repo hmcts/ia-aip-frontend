@@ -19,14 +19,19 @@ export const Events = {
     summary: 'Submits Reasons for appeal case AIP',
     description: 'Submits Reasons for appeal case AIP'
   },
-  REQUEST_TIME_EXTENSION: {
-    id: 'requestTimeExtension',
-    summary: 'Requests a time extension for appeal case AIP',
-    description: 'Requests a time extension for appeal case AIP'
+  SUBMIT_TIME_EXTENSION: {
+    id: 'submitTimeExtension',
+    summary: 'Submit time extension AIP',
+    description: 'Submit time extensions for case AIP'
   },
   REVIEW_TIME_EXTENSION: {
     id: 'reviewTimeExtension',
     summary: 'Submits review of time extension for appeal case AIP',
     description: 'Submits review of time extension for appeal case AIP'
+  },
+  EDIT_TIME_EXTENSION: {
+    id: 'editTimeExtension',
+    summary: 'Edit time extension AIP',
+    description: 'edits time extensions for case AIP'
   }
 };

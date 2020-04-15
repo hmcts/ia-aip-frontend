@@ -8,6 +8,10 @@ function getCurrentState(params) {
       return 'awaitingReasonsForAppeal';
     case 'submitReasonsForAppeal':
       return 'awaitingReasonsForAppeal';
+    case 'editTimeExtension':
+      return 'awaitingReasonsForAppeal';
+    case 'submitTimeExtension':
+      return 'awaitingReasonsForAppeal';
     default:
       throw `Event type ${params.eventType} no current state set`
   }

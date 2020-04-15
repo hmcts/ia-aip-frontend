@@ -31,7 +31,8 @@ interface CaseData {
   reasonsForAppealDecision: string;
   reasonsForAppealDocuments: SupportingEvidenceCollection[];
   respondentDocuments: RespondentEvidenceCollection[];
-  timeExtensions: TimeExtensionsCollection[];
+  timeExtensions: TimeExtensionCollection[];
+  reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
 interface Nationality {
@@ -65,19 +66,17 @@ interface RespondentEvidenceCollection {
   value: RespondentEvidenceDocument;
 }
 
-interface TimeExtensionsCollection {
+interface TimeExtensionCollection {
   id?: number;
   value: CcdTimeExtension;
 }
 
 interface CcdTimeExtension {
-  requestedDate: string;
-  state: string;
+  reason: string;
+  evidence?: SupportingEvidenceCollection[];
   status: string;
-  evidence: SupportingDocument;
-  decision: string;
-  decisionReason: string;
-  newDueDate: string;
+  state: string;
+  requestedDate?: string;
 }
 
 interface Subscription {

@@ -22,7 +22,8 @@
       "continue": "Continue",
       "saveForLater": "Save for later",
       "uploadFile": "Upload file",
-      "send": "Send"
+      "send": "Send",
+      "cancel": "Cancel"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -41,6 +42,10 @@
       "needMoreTimeQuestion": "Need more time?",
       "saveAnswerAndAsk": "Save your answer and ask for more time",
       "wantToProvideEvidenceLater": "If you want to provide evidence but don't have it right now, you can"
+    },
+    "askForMoreTimeEvidenceYesNo": {
+      "question": "Do you want to provide supporting evidence for you why you need more time?",
+      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }
   },
   "pages": {
@@ -379,13 +384,13 @@
             }
           ]
         },
-        "requestTimeExtension": {
+        "submitTimeExtension": {
           "text": "You asked for more time.",
           "links": [
             {
               "title": "What you sent",
               "text": "Reason you needed more time",
-              "href": "{{ paths.detailsViewers.reasonsForAppeal }}"
+              "href": "{{ paths.detailsViewers.timeExtension }}"
             }
           ]
         },
@@ -395,14 +400,9 @@
             {
               "title": "What the Tribunal said ",
               "text": "Reason for decision",
-              "href": "{{ paths.detailsViewers.reasonsForAppeal }}"
+              "href": "{{ paths.detailsViewers.timeExtensionDecision }}"
             }
           ]
-        },
-        "reasonsForAppealCheckAnswersHistory": {
-          "title": "Why you think the Home Office is wrong",
-          "question": "Question",
-          "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
         }
       }
     },
@@ -417,6 +417,16 @@
         "title": "Home Office documents about your case",
         "dateUploaded": "Date uploaded",
         "document": "Document"
+      },
+      "reasonsForAppealCheckAnswersHistory": {
+        "title": "Why you think the Home Office is wrong",
+        "question": "Question",
+        "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
+      },
+      "timeExtensionRequest": {
+        "title": "Reason you needed more time",
+        "question": "How much time to you need and why do you need it?",
+        "supportingEvidence": "Supporting evidence"
       }
     },
     "guidancePages": {
@@ -958,6 +968,21 @@
           ]
         }
       ]
+    },
+    "askForMoreTimePage": {
+      "title": "Ask for more time",
+      "header": "Ask for more time",
+      "howMuchTimeNeeded": "You must tell us how much time you will need and why you need it. You should provide supporting evidence for your answer if you have any.",
+      "youMayGetMoreTime": "You might not get more time. You should still respond to the Tribunal by the date you were given if you can.",
+      "textAreaText": "How much time to you need and why do you need it?",
+      "supportingEvidence": "Supporting evidence for why you need more time",
+      "addingSupportingEvidence": "You will be able to add supporting evidence on the next page if you want to.",
+      "adviceHeader": "Advice on providing supporting evidence",
+      "advice": [
+        "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
+        "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
+        ],
+      "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
     }
   },
   "error": {
@@ -1044,7 +1069,8 @@
       "fileTooLarge": "The selected file must be smaller than",
       "incorrectFormat": "The selected file must be a",
       "fileCannotBeUploaded": "The file cannot be uploaded"
-    }
+    },
+    "askForMoreTime": "Enter how much time you need and why you need it"
   },
   "components": {
     "evidenceList": {

@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
+import { v4 as uuid } from 'uuid';
 import i18n from '../../locale/en.json';
 import { Events } from '../data/events';
 import { States } from '../data/states';
@@ -169,6 +170,30 @@ function getAppealApplicationNextStep(req: Request) {
 }
 
 /**
+ * Adds the timeline event into a mapper and returns back it's assigned key.
+ * @param timeExtensionEvent the history event data to be inserted in the map
+ * @param req the request containing the session to update the timeExtensionsMap
+ */
+function addToTimeExtensionMapper(timeExtensionEvent: HistoryEvent, req: Request) {
+  const timeExtensionId: string = uuid();
+  req.session.appeal.timeExtensionEventsMap.push({
+    id: timeExtensionId,
+    data: timeExtensionEvent
+  });
+  return timeExtensionId;
+}
+
+/**
+ * Attempts to find the time extension event by id if found on the timeExtensionEventMap returns HistoryEvent data
+ * @param id the timeExtensionId used as a lookup key
+ * @param timeExtensionEventMap the time extension event map array.
+ */
+function timeExtensionIdToEventData(id: string, timeExtensionEventMap: TimeExtensionEventMap[]): HistoryEvent {
+  const target: TimeExtensionEventMap = timeExtensionEventMap.find(e => e.id === id);
+  return target.data;
+}
+
+/**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
  * @param event the event containing the date and id.
  */
@@ -186,27 +211,29 @@ function constructEventObject(event) {
  * @param eventsToLookFor and array of type CcdEvent used to find events within the history
  * @param history the history
  * @param caseState optional use if a section must be constructed within a specific state only
+ * @param req the request containing the session to update the timeExtensionsMap
  */
-function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], caseState: CcdState | null) {
-  const eventsCollected = [];
-  eventsToLookFor.forEach((event: CcdEvent) => {
+function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], caseState: CcdState[] | null, req: Request) {
 
-    const eventFound = caseState
-      ? history.find((e: HistoryEvent) => event.id === e.id && e.state.id === caseState.id)
-      : history.find((e: HistoryEvent) => event.id === e.id);
+  const filteredEvents = caseState
+    ? history.filter(history => eventsToLookFor.some(evnt => evnt.id === history.id) && caseState.some(cs => cs.id === history.state.id))
+    : history.filter(history => eventsToLookFor.some(evnt => evnt.id === history.id));
 
-    if (eventFound) {
-      let eventObject = constructEventObject(eventFound);
-
-      // If it is a time extension review the outcome should be injected within the text
-      if (event.id === Events.REVIEW_TIME_EXTENSION.id) {
-        // eventObject.text = `${eventObject.text} ${event.outcome}.`;
-        eventObject.text = `${eventObject.text} granted.`;
-      }
-      eventsCollected.push(eventObject);
+  return filteredEvents.map(event => {
+    let eventObject = constructEventObject(event);
+    // If it is a time extension submission the link should point to a timeExtensionMap resource
+    if (event.id === Events.SUBMIT_TIME_EXTENSION.id) {
+      const requestId: string = addToTimeExtensionMapper(event, req);
+      eventObject.links[0].href = `${eventObject.links[0].href}/${requestId}`;
     }
+    // If it is a time extension review the outcome should be injected within the text and point to  point to a timeExtensionMap resource
+    if (event.id === Events.REVIEW_TIME_EXTENSION.id) {
+      const reviewId: string = addToTimeExtensionMapper(event, req);
+      eventObject.text = `${eventObject.text} ${event.data.reviewTimeExtensionDecision}.`;
+      eventObject.links[0].href = `${eventObject.links[0].href}/${reviewId}`;
+    }
+    return eventObject;
   });
-  return eventsCollected;
 }
 
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
@@ -217,16 +244,17 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   req.session.appeal.history = history;
 
-  const appealArgumentSection = [ Events.SUBMIT_REASONS_FOR_APPEAL, Events.REQUEST_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION ];
+  const appealArgumentSection = [ Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION ];
   const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
 
   return {
-    appealArgumentSection: constructSection(appealArgumentSection, history, States.REASONS_FOR_APPEAL_SUBMITTED),
-    appealDetailsSection: constructSection(appealDetailsSection, history, null)
+    appealArgumentSection: constructSection(appealArgumentSection, history, [ States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL ], req),
+    appealDetailsSection: constructSection(appealDetailsSection, history, null, req)
   };
 }
 
 export {
   getAppealApplicationNextStep,
-  getAppealApplicationHistory
+  getAppealApplicationHistory,
+  timeExtensionIdToEventData
 };

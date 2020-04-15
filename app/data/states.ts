@@ -13,10 +13,10 @@ export const States = {
   },
   AWAITING_REASONS_FOR_APPEAL: {
     id: 'awaitingReasonsForAppeal',
-    description: 'Awaiting reasons for appeal'
+    name: 'Awaiting reasons for appeal'
   },
   REASONS_FOR_APPEAL_SUBMITTED: {
     id: 'reasonsForAppealSubmitted',
-    description: 'Reasons for appeal submitted'
+    name: 'Reasons for appeal submitted'
   }
 };

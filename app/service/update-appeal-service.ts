@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
+import { toIsoDate } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
@@ -42,6 +43,7 @@ export default class UpdateAppealService {
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
     let documentMap: DocumentMap[] = [];
+    let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
 
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
@@ -126,20 +128,23 @@ export default class UpdateAppealService {
         let timeExt: TimeExtension = {
           requestedDate: timeExtension.value.requestedDate,
           state: timeExtension.value.state,
-          status: timeExtension.value.status,
-          decision: timeExtension.value.decision,
-          decisionReason: timeExtension.value.decisionReason,
-          newDueDate: timeExtension.value.newDueDate
+          status: timeExtension.value.status
         };
 
         if (timeExtension.value.evidence) {
-          const documentMapperId: string = addToDocumentMapper(timeExtension.value.evidence.document_url, documentMap);
-          timeExt.evidence = {
-            fileId: documentMapperId,
-            name: timeExtension.value.evidence.document_filename
-          };
+
+          let evidences = [];
+          timeExtension.value.evidence.forEach(evidence => {
+            const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, documentMap);
+            evidences.push({
+              fileId: documentMapperId,
+              name: evidence.value.document_filename
+            });
+          });
+          timeExt.evidence = evidences;
         }
         timeExtensions.push(timeExt);
+
       });
     }
     req.session.appeal = {
@@ -172,7 +177,39 @@ export default class UpdateAppealService {
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: documentMap,
+      timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions
+    };
+
+    req.session.appeal.askForMoreTime = {};
+    req.session.appeal.previousAskForMoreTime = [];
+    if (caseData.timeExtensions) {
+      caseData.timeExtensions.forEach(timeExtension => {
+        const askForMoreTime = this.convertToAskForMoreTime(timeExtension.value, documentMap);
+        if (timeExtension.value.status === 'inProgress' && timeExtension.value.state === ccdCase.state) {
+          req.session.appeal.askForMoreTime = askForMoreTime;
+        } else {
+          req.session.appeal.previousAskForMoreTime.push(askForMoreTime);
+        }
+      });
+    }
+  }
+
+  private convertToAskForMoreTime(askForMoreTime, documentMap) {
+    const askForMoreTimeEvidence = askForMoreTime.evidence ? askForMoreTime.evidence.map(evidence => {
+      const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, documentMap);
+      return {
+        id: documentMapperId,
+        fileId: documentMapperId,
+        name: evidence.value.document_filename
+      };
+    }) : [];
+    return {
+      reason: askForMoreTime.reason,
+      evidence: askForMoreTimeEvidence,
+      state: askForMoreTime.state,
+      status: askForMoreTime.status,
+      requestedDate: askForMoreTime.requestedDate
     };
   }
 
@@ -205,6 +242,7 @@ export default class UpdateAppealService {
 
     const currentUserId = req.idam.userDetails.uid;
     const caseData = this.convertToCcdCaseData(req.session.appeal);
+
     const updatedCcdCase = {
       id: req.session.ccdCaseId,
       state: req.session.appeal.appealStatus,
@@ -225,7 +263,7 @@ export default class UpdateAppealService {
         caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
       }
       if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
-        caseData.homeOfficeDecisionDate = this.toIsoDate(appeal.application.dateLetterSent);
+        caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
       }
 
@@ -250,7 +288,7 @@ export default class UpdateAppealService {
         caseData.appellantFamilyName = appeal.application.personalDetails.familyName;
       }
       if (appeal.application.personalDetails.dob && appeal.application.personalDetails.dob.year) {
-        caseData.appellantDateOfBirth = this.toIsoDate(appeal.application.personalDetails.dob);
+        caseData.appellantDateOfBirth = toIsoDate(appeal.application.personalDetails.dob);
       }
       if (appeal.application.personalDetails && appeal.application.personalDetails.nationality) {
         caseData.appellantNationalities = [
@@ -315,12 +353,50 @@ export default class UpdateAppealService {
         });
       }
     }
+
+    caseData.timeExtensions = [];
+    const previousAskForMoreTimes = appeal.previousAskForMoreTime;
+
+    if (previousAskForMoreTimes) {
+      previousAskForMoreTimes.forEach(askForMoreTime => {
+        this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
+      });
+    }
+    const askForMoreTime = appeal.askForMoreTime;
+    if (askForMoreTime && askForMoreTime.reason) {
+      this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
+    }
+
     return caseData;
   }
 
-  private toIsoDate(appealDate: AppealDate) {
-    const appealDateString = new Date(`${appealDate.year}-${appealDate.month}-${appealDate.day}`);
-    const dateLetterSentIso = appealDateString.toISOString().split('T')[0];
-    return dateLetterSentIso;
+  private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
+    const currentTimeExtension = {
+      reason: askForMoreTime.reason,
+      state: askForMoreTime.state,
+      status: askForMoreTime.status,
+      requestedDate: askForMoreTime.requestedDate
+    } as CcdTimeExtension;
+
+    if (askForMoreTime.reviewTimeExtensionRequired === 'Yes') {
+      caseData.reviewTimeExtensionRequired = 'Yes';
+    }
+    if (askForMoreTime.evidence) {
+      currentTimeExtension.evidence = this.toSupportingDocument(askForMoreTime.evidence, appeal);
+    }
+    caseData.timeExtensions.push({ value: currentTimeExtension });
+  }
+
+  private toSupportingDocument(evidences: Evidence[], appeal: Appeal): SupportingEvidenceCollection[] {
+    return evidences ? evidences.map((evidence) => {
+      const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+      return {
+        value: {
+          document_filename: evidence.name,
+          document_url: documentLocationUrl,
+          document_binary_url: `${documentLocationUrl}/binary`
+        } as SupportingDocument
+      } as SupportingEvidenceCollection;
+    }) : null;
   }
 }

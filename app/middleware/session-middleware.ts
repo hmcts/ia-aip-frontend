@@ -44,10 +44,23 @@ function applicationStatusUpdate(req: Request, res: Response, next: NextFunction
   }
 }
 
+/**
+ * Used to ignore values from printing cleaning up noise
+ */
+function replacer(key, value) {
+  switch (key) {
+    case 'history':
+    case 'data':
+      return '**OMITTED**';
+    default:
+      return value;
+  }
+}
+
 function logSession(req: Request, res: Response, next: NextFunction) {
   try {
     const logger: Logger = req.app.locals.logger;
-    logger.request(JSON.stringify(req.session, null, 2), 'logSession');
+    logger.request(JSON.stringify(req.session, replacer, 2), 'logSession');
     next();
   } catch (e) {
     next(e);

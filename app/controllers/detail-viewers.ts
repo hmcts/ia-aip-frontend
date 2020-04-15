@@ -11,6 +11,7 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService
 } from '../service/document-management-service';
+import { timeExtensionIdToEventData } from '../utils/application-state-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
 /**
@@ -27,8 +28,7 @@ function fileNameFormatter(fileName: string): string {
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
-  const result = history.filter(h => h.id === eventId);
-  return result;
+  return history.filter(h => h.id === eventId);
 };
 
 const formatDateLongDate = (date: string) => {
@@ -90,8 +90,25 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
       const formattedFileName = fileNameFormatter(evidence.value.document.document_filename);
       return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
     });
-    array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
+    array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
     array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
+  }
+  return array;
+}
+
+function setupTimeExtension(req: Request, timeExtensionEvent: HistoryEvent) {
+  const array = [];
+  const data = timeExtensionEvent.data.timeExtensions[0].value;
+  if (_.has(data, 'reason')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.question, [ data.reason ], null));
+  }
+  if (_.has(data, 'evidence')) {
+    const listOfDocuments: string[] = data.evidence.map(evidence => {
+      const fileId = docStoreUrlToId(evidence.value.document_url, req.session.appeal.documentMap);
+      const formattedFileName = fileNameFormatter(evidence.value.document_filename);
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
+    });
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.supportingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
   }
   return array;
 }
@@ -170,12 +187,33 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
   };
 }
 
+function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const timeExtensionId = req.params.id;
+    const historyEvent: HistoryEvent = timeExtensionIdToEventData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+    if (historyEvent) {
+      let previousPage: string = paths.overview;
+      const data = setupTimeExtension(req, historyEvent);
+      return res.render('detail-viewers/time-extension-details-viewer.njk', {
+        previousPage: previousPage,
+        data: data
+      });
+    }
+    // SHOULD THROW NOT FOUND
+    return serverErrorHandler;
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
   router.get(paths.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
   router.get(paths.detailsViewers.appealDetails, getAppealDetailsViewer);
   router.get(paths.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
+  router.get(paths.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
+  // router.get(paths.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
 
   return router;
 }
@@ -185,5 +223,6 @@ export {
   getReasonsForAppealViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
+  getTimeExtensionViewer,
   setupDetailViewersController
 };

@@ -136,7 +136,7 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
             key: { text: 'Answer' },
-            value: { html: req.session.appeal.askForMoreTime.reason }
+            value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
           }]
         });
     });
@@ -160,7 +160,7 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
             key: { text: 'Answer' },
-            value: { html: req.session.appeal.askForMoreTime.reason }
+            value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
           }, {
             actions: { items: [{ href: '/ask-for-more-time-evidence-upload', text: 'Change' }] },
             key: { text: 'Supporting evidence' },

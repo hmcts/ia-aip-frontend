@@ -124,9 +124,10 @@ function postSubmitEvidence(updateAppealService: UpdateAppealService) {
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
+    const reasonFormattingPreserved = `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>`;
     const summaryRows = [
       addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.askForMoreTimePage.textAreaText], null),
-      addSummaryRow(i18n.common.cya.answerRowTitle, [req.session.appeal.askForMoreTime.reason], paths.askForMoreTime.reason)
+      addSummaryRow(i18n.common.cya.answerRowTitle, [ reasonFormattingPreserved ], paths.askForMoreTime.reason)
     ];
     let previousPage = paths.askForMoreTime.evidenceYesNo;
 

@@ -39,7 +39,7 @@
       "supportingEvidenceRowTitle": "Supporting evidence"
     },
     "askForMoreTime": {
-      "text": "Ask for more time.",
+      "text": "Ask for more time",
       "needMoreTimeQuestion": "Need more time?",
       "saveAnswerAndAsk": "Save your answer and ask for more time",
       "wantToProvideEvidenceLater": "If you want to provide evidence but don't have it right now, you can"

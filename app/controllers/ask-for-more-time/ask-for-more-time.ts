@@ -128,7 +128,7 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
       addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.askForMoreTimePage.textAreaText], null),
       addSummaryRow(i18n.common.cya.answerRowTitle, [req.session.appeal.askForMoreTime.reason], paths.askForMoreTime.reason)
     ];
-    let previousPage = paths.askForMoreTime.reason;
+    let previousPage = paths.askForMoreTime.evidenceYesNo;
 
     if (askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req)) {
       const evidences: Evidence[] = askForMoreTimeEvidenceUploadConfig.getEvidenceFromSessionFunction(req);

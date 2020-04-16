@@ -148,7 +148,7 @@ describe('Ask for more time Controller', function () {
           previousPage: paths.askForMoreTime.evidenceYesNo,
           summaryRows: [{
             key: { text: 'Question' },
-            value: { html: 'How much time to you need and why do you need it?' }
+            value: { html: 'How much time do you need and why do you need it?' }
           }, {
             actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
             key: { text: 'Answer' },
@@ -172,7 +172,7 @@ describe('Ask for more time Controller', function () {
           previousPage: paths.askForMoreTime.evidenceYesNo,
           summaryRows: [{
             key: { text: 'Question' },
-            value: { html: 'How much time to you need and why do you need it?' }
+            value: { html: 'How much time do you need and why do you need it?' }
           }, {
             actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
             key: { text: 'Answer' },

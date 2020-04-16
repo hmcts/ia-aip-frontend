@@ -952,9 +952,9 @@
     "askForMoreTimePage": {
       "title": "Ask for more time",
       "header": "Ask for more time",
-      "howMuchTimeNeeded": "You must tell us how much time you will need and why you need it. You should provide supporting evidence for your answer if you have any.",
+      "howMuchTimeNeeded": "You must tell us how much time you need and why you need it. You should provide supporting evidence for your answer if you have any.",
       "youMayGetMoreTime": "You might not get more time. You should still respond to the Tribunal by the date you were given if you can.",
-      "textAreaText": "How much time to you need and why do you need it?",
+      "textAreaText": "How much time do you need and why do you need it?",
       "supportingEvidence": "Supporting evidence for why you need more time",
       "addingSupportingEvidence": "You will be able to add supporting evidence on the next page if you want to.",
       "adviceHeader": "Advice on providing supporting evidence",

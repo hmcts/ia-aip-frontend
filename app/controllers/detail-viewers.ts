@@ -11,8 +11,8 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService
 } from '../service/document-management-service';
-import { timeExtensionIdToTimeExtensionData } from '../utils/application-state-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
+import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
 
 /**
  * Takes in a fileName and converts it to the correct display format

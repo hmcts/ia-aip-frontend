@@ -1,6 +1,7 @@
 import { Request } from 'express';
+import { Events } from '../../../app/data/events';
 import { AuthenticationService } from '../../../app/service/authentication-service';
-import { CcdService, Events } from '../../../app/service/ccd-service';
+import { CcdService } from '../../../app/service/ccd-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';

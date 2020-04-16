@@ -92,7 +92,7 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
       return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${fileId}'>${formattedFileName}</a>`;
     });
     array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
-    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
+    array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.providingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
   }
   return array;
 }

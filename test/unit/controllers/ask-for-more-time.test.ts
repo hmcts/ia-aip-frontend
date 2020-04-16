@@ -178,7 +178,7 @@ describe('Ask for more time Controller', function () {
             key: { text: 'Answer' },
             value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
           }, {
-            actions: { items: [{ href: '/ask-for-more-time-evidence-upload', text: 'Change' }] },
+            actions: { items: [{ href: paths.askForMoreTime.supportingEvidenceUpload, text: 'Change' }] },
             key: { text: 'Supporting evidence' },
             value: { html: 'name.txt' }
           }]

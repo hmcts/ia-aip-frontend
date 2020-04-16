@@ -59,12 +59,12 @@ const paths = {
     // Ask for more time
     askForMoreTime: {
       reason: '/ask-for-more-time',
-      cancel: '/cancel-ask-for-more-time',
-      evidenceYesNo: '/ask-for-more-time-have-evidence',
-      supportingEvidenceUpload: '/ask-for-more-time-evidence-upload',
-      supportingEvidenceSubmit: '/ask-for-more-time-evidence-submit',
-      supportingEvidenceDelete: '/ask-for-more-time-evidence-delete',
-      checkAndSend: '/ask-for-more-time-check-and-send'
+      cancel: '/ask-for-more-time-cancel',
+      evidenceYesNo: '/supporting-evidence-more-time',
+      supportingEvidenceUpload: '/provide-supporting-evidence-more-time',
+      supportingEvidenceSubmit: '/provide-supporting-evidence-more-time-submit',
+      supportingEvidenceDelete: '/provide-supporting-evidence-more-time-delete',
+      checkAndSend: '/check-answer-more-time'
     },
 
     // Session extension

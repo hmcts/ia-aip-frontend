@@ -196,32 +196,5 @@ describe('Ask for more time Controller', function () {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.SUBMIT_TIME_EXTENSION, req);
     });
-
-    it('resets ask for more time in session', async () => {
-      req.session.appeal.askForMoreTime = {
-        reason: 'some reason',
-        status: 'inProgress',
-        evidence: [
-          {
-            fileId: 'fileId',
-            name: 'name.txt'
-          }
-        ]
-      };
-      req.session.appeal.previousAskForMoreTime = [];
-
-      await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
-      expect(req.session.appeal.previousAskForMoreTime[0].reason).to.be.eql('some reason');
-      expect(req.session.appeal.previousAskForMoreTime[0].requestedDate).to.exist;
-      expect(req.session.appeal.previousAskForMoreTime[0].status).to.be.eql('submitted');
-      expect(req.session.appeal.previousAskForMoreTime[0].evidence).to.be.eql([
-        {
-          fileId: 'fileId',
-          name: 'name.txt'
-        }
-      ]);
-    });
   });
 });

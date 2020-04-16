@@ -59,6 +59,7 @@ const paths = {
     // Ask for more time
     askForMoreTime: {
       reason: '/ask-for-more-time',
+      cancel: '/cancel-ask-for-more-time',
       evidenceYesNo: '/ask-for-more-time-have-evidence',
       supportingEvidenceUpload: '/ask-for-more-time-evidence-upload',
       supportingEvidenceSubmit: '/ask-for-more-time-evidence-submit',

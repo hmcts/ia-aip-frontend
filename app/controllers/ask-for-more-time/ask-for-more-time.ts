@@ -25,6 +25,7 @@ const askForMoreTimeEvidenceUploadConfig: EvidenceUploadConfig = {
   evidenceUploadPath: paths.askForMoreTime.supportingEvidenceUpload,
   evidenceDeletePath: paths.askForMoreTime.supportingEvidenceDelete,
   evidenceSubmitPath: paths.askForMoreTime.supportingEvidenceSubmit,
+  cancelPath: paths.askForMoreTime.cancel,
   nextPath: paths.askForMoreTime.checkAndSend,
   askForMoreTimeFeatureEnabled: false,
   updateCcdEvent: Events.EDIT_TIME_EXTENSION,
@@ -52,6 +53,12 @@ function getAskForMoreTimePage(req: Request, res: Response, next: NextFunction) 
   } catch (e) {
     next(e);
   }
+}
+
+function getCancelAskForMoreTime(req: Request, res: Response) {
+  req.session.appeal.askForMoreTime = {};
+  const nextPage = getNextPage(req.body, paths.overview);
+  return getConditionalRedirectUrl(req, res, nextPage);
 }
 
 function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
@@ -169,6 +176,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
 function setupAskForMoreTimeController(deps?: any): Router {
   const router = Router();
   router.get(paths.askForMoreTime.reason, getAskForMoreTimePage);
+  router.get(paths.askForMoreTime.cancel, getCancelAskForMoreTime);
   router.post(paths.askForMoreTime.reason, postAskForMoreTimePage(deps.updateAppealService));
   router.get(paths.askForMoreTime.evidenceYesNo, getAskForMoreTimeEvidence);
   router.post(paths.askForMoreTime.evidenceYesNo, postAdditionalSupportingEvidenceQuestionPage);
@@ -185,6 +193,7 @@ function setupAskForMoreTimeController(deps?: any): Router {
 export {
   setupAskForMoreTimeController,
   getAskForMoreTimePage,
+  getCancelAskForMoreTime,
   postAskForMoreTimePage,
   getCheckAndSend,
   postCheckAndSend

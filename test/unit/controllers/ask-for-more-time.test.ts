@@ -2,6 +2,7 @@ const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import {
   getAskForMoreTimePage,
+  getCancelAskForMoreTime,
   getCheckAndSend,
   postAskForMoreTimePage,
   postCheckAndSend,
@@ -88,6 +89,21 @@ describe('Ask for more time Controller', function () {
       });
     });
 
+  });
+
+  describe('getCancelAskForMoreTime', function() {
+    it('getAskForMoreTimePage redirects to overview and clear ask for more time iun session', () => {
+      req.session.appeal.askForMoreTime = {
+        reason: 'some reason'
+      };
+      getCancelAskForMoreTime(req as Request, res as Response);
+
+      expect(res.redirect).to.have.been.calledWith(
+        paths.overview
+      );
+
+      expect(req.session.appeal.askForMoreTime).to.be.eql({});
+    });
   });
 
   describe('postAskForMoreTimePage.', function () {

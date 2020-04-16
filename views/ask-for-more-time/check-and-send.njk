@@ -23,7 +23,7 @@
     <form method="post" action={{ paths.askForMoreTime.checkAndSend }}>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {{ continueButton() }}
-        <a class="govuk-!-margin-left-5" href="{{ paths.overview }}">{{ i18n.common.buttons.cancel }}</a>
+        <a class="govuk-!-margin-left-5" href="{{ paths.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
     </form>
     {{ contactUs() }}
 {% endblock %}

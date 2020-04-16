@@ -63,6 +63,7 @@ describe('upload evidence controller', () => {
       askForMoreTimeFeatureEnabled: false,
       evidenceUploadPath: 'evidenceUploadPath',
       evidenceSubmitPath: 'evidenceSubmitPath',
+      cancelPath: 'cancelPath',
       nextPath: 'nextPath',
       getEvidenceFromSessionFunction: () => {
         return evidence;
@@ -143,7 +144,8 @@ describe('upload evidence controller', () => {
       previousPage: 'evidenceYesNoPath',
       askForMoreTimeFeatureEnabled: false,
       pathToUploadEvidence: 'evidenceUploadPath',
-      pathToSubmitEvidence: 'evidenceSubmitPath'
+      pathToSubmitEvidence: 'evidenceSubmitPath',
+      pathToCancel: 'cancelPath'
     });
   });
 
@@ -164,6 +166,7 @@ describe('upload evidence controller', () => {
         pathToSubmitEvidence: 'evidenceSubmitPath',
         pathToUploadEvidence: 'evidenceUploadPath',
         previousPage: 'evidenceYesNoPath',
+        pathToCancel: 'cancelPath',
         askForMoreTimeFeatureEnabled: false
       });
     });
@@ -186,6 +189,7 @@ describe('upload evidence controller', () => {
         pathToSubmitEvidence: 'evidenceSubmitPath',
         pathToUploadEvidence: 'evidenceUploadPath',
         previousPage: 'evidenceYesNoPath',
+        pathToCancel: 'cancelPath',
         askForMoreTimeFeatureEnabled: false
       });
     });
@@ -210,6 +214,7 @@ describe('upload evidence controller', () => {
         pathToSubmitEvidence: 'evidenceSubmitPath',
         pathToUploadEvidence: 'evidenceUploadPath',
         previousPage: 'evidenceYesNoPath',
+        pathToCancel: 'cancelPath',
         askForMoreTimeFeatureEnabled: false
       });
     });

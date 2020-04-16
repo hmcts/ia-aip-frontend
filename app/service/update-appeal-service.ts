@@ -170,11 +170,7 @@ export default class UpdateAppealService {
     if (caseData.timeExtensions) {
       caseData.timeExtensions.forEach(timeExtension => {
         const askForMoreTime = this.convertToAskForMoreTime(timeExtension.value, documentMap);
-        if (timeExtension.value.status === 'inProgress' && timeExtension.value.state === ccdCase.state) {
-          req.session.appeal.askForMoreTime = askForMoreTime;
-        } else {
-          req.session.appeal.previousAskForMoreTime.push(askForMoreTime);
-        }
+        req.session.appeal.previousAskForMoreTime.push(askForMoreTime);
       });
     }
   }
@@ -347,7 +343,7 @@ export default class UpdateAppealService {
       });
     }
     const askForMoreTime = appeal.askForMoreTime;
-    if (askForMoreTime && askForMoreTime.reason) {
+    if (askForMoreTime && askForMoreTime.status === 'submitted') {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 

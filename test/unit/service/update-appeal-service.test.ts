@@ -187,21 +187,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.askForMoreTime).to.be.eql({});
 
       expect(req.session.appeal.previousAskForMoreTime.length).to.be.eq(2);
-
-      expect(req.session.appeal.previousAskForMoreTime[0]).to.be.eql({
-        reason: 'first reason',
-        requestedDate: '2020-01-01',
-        evidence: [],
-        state: 'awaitingReasonsForAppeal',
-        status: 'completed'
-      });
-
-      expect(req.session.appeal.previousAskForMoreTime[1].reason).to.be.eq('some reason');
-      expect(req.session.appeal.previousAskForMoreTime[1].requestedDate).to.be.undefined;
-      expect(req.session.appeal.previousAskForMoreTime[1].evidence.length).to.be.eq(1);
-      validateUuid(req.session.appeal.previousAskForMoreTime[1].evidence[0].fileId);
-      expect(req.session.appeal.previousAskForMoreTime[1].evidence[0].name).to.be.eq('expected_time_extension_evidence.png');
-      expect(req.session.appeal.previousAskForMoreTime[1].state).to.be.eq('awaitingReasonsForAppeal');
+      expect(req.session.appeal.previousAskForMoreTime).to.be.eq(expectedCaseData.timeExtensions);
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -234,7 +220,8 @@ describe('update-appeal-service', () => {
 
       expect(req.session.appeal.askForMoreTime).to.be.eql({});
       expect(req.session.appeal.previousAskForMoreTime.length).to.be.eq(1);
-      checkAskForMoreTime('some reason', 'expected_time_extension_evidence.png', 'submitted', 'awaitingReasonsForAppeal', req.session.appeal.previousAskForMoreTime[0]);
+
+      expect(req.session.appeal.previousAskForMoreTime).to.be.eql(expectedCaseData.timeExtensions);
     });
 
     function aTimeExtension(reason: string, documentFileName: string, status: string, state: string = 'awaitingReasonsForAppeal') {
@@ -521,17 +508,19 @@ describe('update-appeal-service', () => {
       emptyApplication.askForMoreTime = {};
 
       emptyApplication.previousAskForMoreTime = [{
-        reason: 'more time reason',
-        status: 'submitted',
-        state: 'awaitingReasonsForAppeal',
-        requestedDate: '2020-01-01T00:00:00.000',
-        evidence: [
-          {
-            id: 'id',
-            fileId: 'fileId',
-            name: 'name'
-          }
-        ]
+        value: {
+          reason: 'more time reason',
+          status: 'submitted',
+          state: 'awaitingReasonsForAppeal',
+          requestedDate: '2020-01-01T00:00:00.000',
+          evidence: [{
+            value: {
+              document_binary_url: 'someurl/binary',
+              document_filename: 'name',
+              document_url: 'someurl'
+            }
+          }]
+        }
       }];
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
 
@@ -576,17 +565,19 @@ describe('update-appeal-service', () => {
       };
 
       emptyApplication.previousAskForMoreTime = [{
-        reason: 'more time reason',
-        status: 'submitted',
-        state: 'awaitingReasonsForAppeal',
-        requestedDate: '2020-01-01T00:00:00.000',
-        evidence: [
-          {
-            id: 'id2',
-            fileId: 'fileId2',
-            name: 'name2'
-          }
-        ]
+        value: {
+          reason: 'more time reason',
+          status: 'submitted',
+          state: 'awaitingReasonsForAppeal',
+          requestedDate: '2020-01-01T00:00:00.000',
+          evidence: [{
+            value: {
+              document_binary_url: 'someurl2/binary',
+              document_filename: 'name2',
+              document_url: 'someurl2'
+            }
+          }]
+        }
       }];
       emptyApplication.documentMap = [
         { id: 'fileId1', url: 'someurl1' },

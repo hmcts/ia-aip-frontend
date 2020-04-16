@@ -74,7 +74,7 @@ interface Appeal {
   directions?: Direction[];
   history?: HistoryEvent[];
   askForMoreTime?: AskForMoreTime;
-  previousAskForMoreTime?: AskForMoreTime[];
+  previousAskForMoreTime?: TimeExtensionCollection[];
 }
 
 interface AskForMoreTime {

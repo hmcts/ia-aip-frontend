@@ -66,6 +66,12 @@ module.exports = {
           signInForUser('partial-awaiting-reasons-for-appeal@example.com');
           break;
         }
+        case 'awaitingClarifyingQuestionsAnswers': {
+          signInForUser('clarifying-questions@example.com');
+          break;
+        }
+        default:
+          break;
       }
 
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);

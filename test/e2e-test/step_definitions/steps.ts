@@ -26,6 +26,7 @@ const { guidancePages } = require('../pages/guidance-pages/guidance-pages');
 const { appealSent } = require('../pages/appeal-sent/appeal-sent');
 const { askForMoreTime } = require('../pages/ask-for-more-time/ask-for-more-time');
 const { caseProgression } = require('../service/case-progression-service');
+const { clarifyingQuestions } = require('../pages/clarifying-questions/clarifying-questions');
 
 const { I } = inject();
 
@@ -59,3 +60,4 @@ guidancePages(I);
 appealSent(I);
 askForMoreTime(I);
 caseProgression(I);
+clarifyingQuestions(I);

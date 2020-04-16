@@ -76,6 +76,8 @@ interface CcdTimeExtension {
   evidence?: SupportingEvidenceCollection[];
   status: string;
   state: string;
+  decision?: string;
+  decisionReason?: string;
   requestedDate?: string;
 }
 

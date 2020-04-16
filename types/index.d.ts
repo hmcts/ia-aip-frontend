@@ -44,7 +44,8 @@ interface DocumentMap {
 
 interface TimeExtensionEventMap {
   id: string;
-  data: HistoryEvent;
+  externalId: string;
+  historyData: HistoryEvent;
 }
 
 interface Evidence {

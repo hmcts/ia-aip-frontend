@@ -1,0 +1,12 @@
+{% extends '../layout.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% set pageTitleName = i18n.pages.detailViewers.timeExtensionReview.title %}
+
+{% block content %}
+    <h1>{{ i18n.pages.detailViewers.timeExtensionReview.title  }}</h1>
+    {{ govukSummaryList({
+        rows: data
+    }) }}
+{% endblock %}
+
+

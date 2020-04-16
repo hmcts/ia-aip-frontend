@@ -11,7 +11,7 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService
 } from '../service/document-management-service';
-import { timeExtensionIdToEventData } from '../utils/application-state-utils';
+import { timeExtensionIdToTimeExtensionData } from '../utils/application-state-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
 /**
@@ -96,9 +96,21 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   return array;
 }
 
-function setupTimeExtension(req: Request, timeExtensionEvent: HistoryEvent) {
+function setupTimeExtensionDecision(req: Request, timeExtensionEvent: TimeExtensionCollection) {
   const array = [];
-  const data = timeExtensionEvent.data.timeExtensions[0].value;
+  const data = timeExtensionEvent.value;
+  if (_.has(data, 'decision')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.decision, [ data.decision ], null));
+  }
+  if (_.has(data, 'decisionReason')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.reason, [ data.decisionReason ], null));
+  }
+  return array;
+}
+
+function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionCollection) {
+  const array = [];
+  const data = timeExtensionEvent.value;
   if (_.has(data, 'reason')) {
     array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.question, [ data.reason ], null));
   }
@@ -190,11 +202,30 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
 function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
   try {
     const timeExtensionId = req.params.id;
-    const historyEvent: HistoryEvent = timeExtensionIdToEventData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
-    if (historyEvent) {
+    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+    if (timeExtensionData) {
       let previousPage: string = paths.overview;
-      const data = setupTimeExtension(req, historyEvent);
+      const data = setupTimeExtension(req, timeExtensionData);
       return res.render('detail-viewers/time-extension-details-viewer.njk', {
+        previousPage: previousPage,
+        data: data
+      });
+    }
+    // SHOULD THROW NOT FOUND
+    return serverErrorHandler;
+  } catch (error) {
+    next(error);
+  }
+}
+
+function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const timeExtensionId = req.params.id;
+    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+    if (timeExtensionData) {
+      let previousPage: string = paths.overview;
+      const data = setupTimeExtensionDecision(req, timeExtensionData);
+      return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
         previousPage: previousPage,
         data: data
       });
@@ -213,7 +244,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.detailsViewers.appealDetails, getAppealDetailsViewer);
   router.get(paths.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
   router.get(paths.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
-  // router.get(paths.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
+  router.get(paths.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
 
   return router;
 }
@@ -224,5 +255,6 @@ export {
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getTimeExtensionViewer,
+  getTimeExtensionDecisionViewer,
   setupDetailViewersController
 };

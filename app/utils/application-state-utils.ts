@@ -175,12 +175,15 @@ function getAppealApplicationNextStep(req: Request) {
  * @param req the request containing the session to update the timeExtensionsMap
  */
 function addToTimeExtensionMapper(timeExtensionEvent: HistoryEvent, req: Request) {
-  const timeExtensionId: string = uuid();
-  req.session.appeal.timeExtensionEventsMap.push({
-    id: timeExtensionId,
-    data: timeExtensionEvent
-  });
-  return timeExtensionId;
+  const timeExtensionInternalId: string = uuid();
+  const lastTimeExtension = timeExtensionEvent.data.timeExtensions[timeExtensionEvent.data.timeExtensions.length - 1];
+  req.session.appeal.timeExtensionEventsMap.push(
+    {
+      id: timeExtensionInternalId,
+      externalId: lastTimeExtension.id,
+      historyData: timeExtensionEvent
+    });
+  return timeExtensionInternalId;
 }
 
 /**
@@ -188,22 +191,38 @@ function addToTimeExtensionMapper(timeExtensionEvent: HistoryEvent, req: Request
  * @param id the timeExtensionId used as a lookup key
  * @param timeExtensionEventMap the time extension event map array.
  */
-function timeExtensionIdToEventData(id: string, timeExtensionEventMap: TimeExtensionEventMap[]): HistoryEvent {
+function timeExtensionIdToTimeExtensionData(id: string, timeExtensionEventMap: TimeExtensionEventMap[]) {
   const target: TimeExtensionEventMap = timeExtensionEventMap.find(e => e.id === id);
-  return target.data;
+  return target.historyData.data.timeExtensions.find(timeExt => timeExt.id === target.externalId);
 }
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
  * @param event the event containing the date and id.
+ * @param req the request containing the session to update the timeExtensionsMap
  */
-function constructEventObject(event) {
-  const formattedDate = moment(event.date).format('DD MMMM YYYY');
-  return {
-    date: `${formattedDate}`,
-    text: i18n.pages.overviewPage.timeline[event.id].text,
-    links: i18n.pages.overviewPage.timeline[event.id].links
+function constructEventObject(event: HistoryEvent, req: Request) {
+
+  const formattedDate = moment(event.createdDate).format('DD MMMM YYYY');
+  const eventContent = JSON.parse(JSON.stringify(i18n.pages.overviewPage.timeline[event.id]));
+
+  let eventObject = {
+    date: formattedDate,
+    text: eventContent.text,
+    links: eventContent.links
   };
+  // If it is a time extension submission the link should point to a timeExtensionMap resource
+  if (event.id === Events.SUBMIT_TIME_EXTENSION.id) {
+    const requestId: string = addToTimeExtensionMapper(event, req);
+    eventObject.links[0].href = `${eventObject.links[0].href}/${requestId}`;
+  }
+  // If it is a time extension review the outcome should be injected within the text and point to  point to a timeExtensionMap resource
+  if (event.id === Events.REVIEW_TIME_EXTENSION.id) {
+    const reviewId: string = addToTimeExtensionMapper(event, req);
+    eventObject.text = `${eventObject.text} ${event.data.reviewTimeExtensionDecision}.`;
+    eventObject.links[0].href = `${eventObject.links[0].href}/${reviewId}`;
+  }
+  return eventObject;
 }
 
 /**
@@ -219,21 +238,7 @@ function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], 
     ? history.filter(history => eventsToLookFor.some(evnt => evnt.id === history.id) && caseState.some(cs => cs.id === history.state.id))
     : history.filter(history => eventsToLookFor.some(evnt => evnt.id === history.id));
 
-  return filteredEvents.map(event => {
-    let eventObject = constructEventObject(event);
-    // If it is a time extension submission the link should point to a timeExtensionMap resource
-    if (event.id === Events.SUBMIT_TIME_EXTENSION.id) {
-      const requestId: string = addToTimeExtensionMapper(event, req);
-      eventObject.links[0].href = `${eventObject.links[0].href}/${requestId}`;
-    }
-    // If it is a time extension review the outcome should be injected within the text and point to  point to a timeExtensionMap resource
-    if (event.id === Events.REVIEW_TIME_EXTENSION.id) {
-      const reviewId: string = addToTimeExtensionMapper(event, req);
-      eventObject.text = `${eventObject.text} ${event.data.reviewTimeExtensionDecision}.`;
-      eventObject.links[0].href = `${eventObject.links[0].href}/${reviewId}`;
-    }
-    return eventObject;
-  });
+  return filteredEvents.map(event => constructEventObject(event, req));
 }
 
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
@@ -256,5 +261,5 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 export {
   getAppealApplicationNextStep,
   getAppealApplicationHistory,
-  timeExtensionIdToEventData
+  timeExtensionIdToTimeExtensionData
 };

@@ -13,7 +13,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   const appealTypeNames: string[] = appealApplication.appealType.split(',').map(appealType => {
     return i18n.appealTypes[appealType].name;
   });
-  const country = countryList.find(country => country.value === appealApplication.personalDetails.nationality);
+  const nationality = countryList.find(country => country.value === appealApplication.personalDetails.nationality);
   const editParameter = '?edit';
   const rows = [
     addSummaryRow(
@@ -41,7 +41,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.nationality,
-      [ country.name ],
+      [ nationality.name ],
       paths.personalDetails.nationality + editParameter
     ),
     addSummaryRow(

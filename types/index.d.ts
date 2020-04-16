@@ -45,11 +45,20 @@ interface DocumentMap {
 interface Evidence {
   fileId: string;
   name: string;
+  dateUploaded?: AppealDate;
+  description?: string;
 }
 
 interface DocumentUploadResponse {
   fileId: string;
   name: string;
+}
+
+interface Direction {
+  tag: string;
+  parties: string;
+  dueDate: string;
+  dateSent: string;
 }
 
 interface Appeal {
@@ -62,6 +71,7 @@ interface Appeal {
   hearingRequirements: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   documentMap?: DocumentMap[];
+  directions?: Direction[];
   history?: HistoryEvent[];
 }
 

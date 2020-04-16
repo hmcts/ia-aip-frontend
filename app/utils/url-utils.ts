@@ -1,6 +1,7 @@
 import config from 'config';
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
+import { idamConfig } from '../config/idam-config';
 import { paths } from '../paths';
 
 const appPort = config.get('node.port');
@@ -12,6 +13,13 @@ export function getUrl(protocol: string, host: string, path: string): string {
 
 export function getIdamRedirectUrl(req: Request): string {
   return getUrl('https', req.hostname, '/redirectUrl');
+}
+
+export function getIdamLoginUrl(req: Request) {
+  if (req.query['register']) {
+    return idamConfig.idamRegistrationUrl;
+  }
+  return idamConfig.idamUserLoginUrl;
 }
 
 /**

@@ -11,6 +11,7 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService
 } from '../service/document-management-service';
+import { dayMonthYearFormat } from '../utils/date-formats';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
 /**
@@ -32,7 +33,7 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
 };
 
 const formatDateLongDate = (date: string) => {
-  return moment(date).format('DD MMMM YYYY');
+  return moment(date).format(dayMonthYearFormat);
 };
 
 function setupAppealDetails(req: Request): Array<any> {
@@ -84,10 +85,10 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const array = [];
   const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
   const { data } = reasonsForAppeal[0];
-  if (_.has(data, 'respondentDocuments')) {
-    const listOfDocuments: string[] = data.respondentDocuments.map(evidence => {
-      const fileId = docStoreUrlToId(evidence.value.document.document_url, req.session.appeal.documentMap);
-      const formattedFileName = fileNameFormatter(evidence.value.document.document_filename);
+  if (_.has(data, 'reasonsForAppealDocuments')) {
+    const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
+      const fileId = docStoreUrlToId(evidence.value.document_url, req.session.appeal.documentMap);
+      const formattedFileName = fileNameFormatter(evidence.value.document_filename);
       return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
     });
     array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
@@ -133,7 +134,7 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
       documents = respondentDocs.map(document => {
         const formattedFileName = fileNameFormatter(document.evidence.name);
         const urlHtml = `<a class='govuk-link' target='_blank' rel="noopener noreferrer" href='${paths.detailsViewers.document}/${document.evidence.fileId}'>${formattedFileName}</a>`;
-        const formattedDate = moment(document.dateUploaded).format('DD MMMM YYYY');
+        const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
           url: urlHtml

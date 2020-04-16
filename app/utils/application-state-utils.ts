@@ -5,6 +5,7 @@ import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import UpdateAppealService from '../service/update-appeal-service';
+import { dayMonthYearFormat } from './date-formats';
 import { getDeadline } from './event-deadline-date-finder';
 
 const APPEAL_STATE = {
@@ -161,13 +162,13 @@ function getAppealApplicationNextStep(req: Request) {
     }
   };
 
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, history);
-
+  const directions = req.session.appeal.directions;
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, directions, history);
   return doThisNextSection;
 }
 
 function constructEventObject(event) {
-  const formattedDate = moment(event.date).format('DD MMMM YYYY');
+  const formattedDate = moment(event.date).format(dayMonthYearFormat);
   return {
     date: `${formattedDate}`,
     title: i18n.pages.overviewPage.timeline[event.id].title,
@@ -184,12 +185,16 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   req.session.appeal.history = history;
   const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
-
   const eventsCollected = [];
-  eventToLookFor.forEach((event: string) => {
+  eventToLookFor.forEach((event: string,index: number) => {
     const eventFound = history.find((e: HistoryEvent) => event === e.id);
     if (eventFound) {
-      const eventObject = constructEventObject(eventFound);
+      let eventObject = constructEventObject(eventFound);
+      // TODO - CLEAN UP CHECKING FOR TCW LINK
+      const { appealStatus } = req.session.appeal;
+      if ((['awaitingRespondentEvidence', 'appealSubmitted'].includes(appealStatus)) && event === 'submitAppeal') {
+        delete eventObject.links[1];
+      }
       eventsCollected.push(eventObject);
     }
   });

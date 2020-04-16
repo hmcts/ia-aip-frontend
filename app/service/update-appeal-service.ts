@@ -55,9 +55,10 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
+    let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
 
-    const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
+    const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
         return {
@@ -87,16 +88,18 @@ export default class UpdateAppealService {
         };
       }
     }
-    // TODO needs to use the document mapper.
+
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document_url, documentMap);
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
 
         reasonsForAppealDocumentUploads.push(
           {
             fileId: documentMapperId,
-            name: document.value.document_filename
+            name: document.value.document.document_filename,
+            dateUploaded: this.getDate(document.value.dateUploaded),
+            description: document.value.description
           }
         );
       });
@@ -118,6 +121,16 @@ export default class UpdateAppealService {
         respondentDocuments.push(evidence);
       });
     }
+    if (caseData.directions) {
+      directions = caseData.directions.map(d => {
+        return {
+          tag: d.value.tag,
+          parties: d.value.parties,
+          dueDate: d.value.dateDue,
+          dateSent: d.value.dateSent
+        };
+      });
+    }
 
     req.session.appeal = {
       appealStatus: ccdCase.state,
@@ -128,7 +141,7 @@ export default class UpdateAppealService {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: appealType,
         contactDetails: {
-          ...contactDetails
+          ...appellantContactDetails
         },
         dateLetterSent,
         isAppealLate: caseData.submissionOutOfTime ? this.yesNoToBool(caseData.submissionOutOfTime) : undefined,
@@ -148,17 +161,14 @@ export default class UpdateAppealService {
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
-      documentMap: documentMap
+      documentMap: documentMap,
+      directions: directions
     };
   }
 
   private getDate(ccdDate): AppealDate {
     if (ccdDate) {
-      let dateLetterSent = {
-        year: null,
-        month: null,
-        day: null
-      };
+      let dateLetterSent;
       const decisionDate = new Date(ccdDate);
       dateLetterSent = {
         year: decisionDate.getFullYear().toString(),
@@ -283,10 +293,14 @@ export default class UpdateAppealService {
           const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
-              document_filename: evidence.name,
-              document_url: documentLocationUrl,
-              document_binary_url: `${documentLocationUrl}/binary`
-            } as SupportingDocument
+              dateUploaded: this.toIsoDate(evidence.dateUploaded),
+              description: evidence.description,
+              document: {
+                document_filename: evidence.name,
+                document_url: documentLocationUrl,
+                document_binary_url: `${documentLocationUrl}/binary`
+              }
+            } as DocumentWithMetaData
           } as SupportingEvidenceCollection;
         });
       }

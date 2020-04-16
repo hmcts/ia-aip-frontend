@@ -91,9 +91,11 @@ describe('update-appeal-service', () => {
           'reasonsForAppealDocuments': [ {
             'id': 'f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
             'value': {
-              'document_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
-              'document_filename': '1580296112615-supporting-evidence-file.jpeg',
-              'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
+              document: {
+                'document_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
+                'document_filename': '1580296112615-supporting-evidence-file.jpeg',
+                'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
+              }
             }
           }
           ],
@@ -395,7 +397,13 @@ describe('update-appeal-service', () => {
                 reason: 'a reason',
                 evidence: {
                   name: 'somefile.png',
-                  fileId: '00000000-0000-0000-0000-000000000000'
+                  fileId: '00000000-0000-0000-0000-000000000000',
+                  dateUploaded:  {
+                    year: 2020,
+                    month: 1,
+                    day: 1
+                  },
+                  description: 'Some evidence 1'
                 }
               },
               personalDetails: {
@@ -428,11 +436,23 @@ describe('update-appeal-service', () => {
               evidences: [
                 {
                   fileId: '00000000-0000-0000-0000-000000000001',
-                  name: 'File1.png'
+                  name: 'File1.png',
+                  dateUploaded:  {
+                    year: 2020,
+                    month: 1,
+                    day: 1
+                  },
+                  description: 'Some evidence 1'
                 },
                 {
                   fileId: '00000000-0000-0000-0000-000000000002',
-                  name: 'File2.png'
+                  name: 'File2.png',
+                  dateUploaded:  {
+                    year: 2020,
+                    month: 2,
+                    day: 2
+                  },
+                  description: 'Some evidence 2'
                 }
               ] as Evidence[]
             },
@@ -520,16 +540,24 @@ describe('update-appeal-service', () => {
         reasonsForAppealDocuments: [
           {
             value: {
-              document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
-              document_filename: 'File1.png',
-              document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              dateUploaded: '2020-01-01',
+              description: 'Some evidence 1',
+              document: {
+                document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                document_filename: 'File1.png',
+                document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              }
             }
           },
           {
             value: {
-              document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
-              document_filename: 'File2.png',
-              document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
+              dateUploaded: '2020-02-02',
+              description: 'Some evidence 2',
+              document: {
+                document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
+                document_filename: 'File2.png',
+                document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
+              }
             }
           }
         ]

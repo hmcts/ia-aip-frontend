@@ -6,9 +6,8 @@ import { paths } from '../../paths';
 import { Events } from '../../service/ccd-service';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue } from '../../utils/utils';
+import { asBooleanValue, nowAppealDate } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
@@ -155,7 +154,9 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         const evidences: Evidence[] = [ ...(req.session.appeal.reasonsForAppeal.evidences || []) ];
         evidences.push({
           fileId: evidenceStored.fileId,
-          name: evidenceStored.name
+          name: evidenceStored.name,
+          dateUploaded: nowAppealDate(),
+          description: 'Appeal Reasons supporting evidence'
         });
         req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];
         return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);

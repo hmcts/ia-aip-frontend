@@ -169,24 +169,6 @@ export default class UpdateAppealService {
     req.session.appeal.previousAskForMoreTime = caseData.timeExtensions || [];
   }
 
-  private convertToAskForMoreTime(askForMoreTime, documentMap) {
-    const askForMoreTimeEvidence = askForMoreTime.evidence ? askForMoreTime.evidence.map(evidence => {
-      const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, documentMap);
-      return {
-        id: documentMapperId,
-        fileId: documentMapperId,
-        name: evidence.value.document_filename
-      };
-    }) : [];
-    return {
-      reason: askForMoreTime.reason,
-      evidence: askForMoreTimeEvidence,
-      state: askForMoreTime.state,
-      status: askForMoreTime.status,
-      requestedDate: askForMoreTime.requestedDate
-    };
-  }
-
   private getDate(ccdDate): AppealDate {
     if (ccdDate) {
       let dateLetterSent;

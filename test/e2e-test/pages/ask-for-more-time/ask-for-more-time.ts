@@ -16,7 +16,7 @@ module.exports = {
 
     Then(/^I should see do you want to upload evidence page$/, async () => {
       I.amOnPage(testUrl + paths.askForMoreTime.evidenceYesNo);
-      I.seeInTitle('Do you want to provide supporting evidence?');
+      I.seeInTitle('Do you want to provide supporting evidence for why you need more time?');
     });
 
     Then(/^I should see the ask for more time check you answers page$/, async () => {
@@ -34,7 +34,7 @@ module.exports = {
 
     Then(/^I am on the evidence upload page$/, async () => {
       I.amOnPage(testUrl + paths.askForMoreTime.supportingEvidenceUpload);
-      I.seeInTitle('Providing supporting evidence');
+      I.seeInTitle('Provide supporting evidence');
     });
 
     When(/^I enter a time extensions reason$/, async () => {

@@ -42,14 +42,14 @@ function validate(obj: object, schema: any, abortEarly: boolean = false): Valida
   return null;
 }
 
-function textAreaValidation(text: string, theKey: string): ValidationErrors | null {
+function textAreaValidation(text: string, theKey: string, errorMessage: string = null): ValidationErrors | null {
   const schema = Joi.object({
     [theKey]: Joi.string()
       .required()
       .trim()
       .messages({
-        'any.required': i18n.validationErrors.emptyReasonAppealIsLate,
-        'string.empty': i18n.validationErrors.emptyReasonAppealIsLate
+        'any.required': errorMessage || i18n.validationErrors.emptyReasonAppealIsLate,
+        'string.empty': errorMessage || i18n.validationErrors.emptyReasonAppealIsLate
       })
   });
 

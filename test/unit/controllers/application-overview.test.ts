@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import {
@@ -62,8 +63,7 @@ describe('Confirmation Page Controller', () => {
 
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-    const middlewares = [];
-    setupApplicationOverviewController(middlewares, updateAppealService as UpdateAppealService);
+    setupApplicationOverviewController(updateAppealService as UpdateAppealService);
     expect(routerGetStub).to.have.been.calledWith(paths.common.overview);
   });
 
@@ -169,7 +169,7 @@ describe('Confirmation Page Controller', () => {
       history: expectedHistory,
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: false
+      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
     });
   });
 
@@ -239,7 +239,7 @@ describe('Confirmation Page Controller', () => {
       history: [],
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: false
+      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
     });
   });
 
@@ -297,7 +297,7 @@ describe('Confirmation Page Controller', () => {
       history: [],
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: false
+      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
     });
   });
 
@@ -356,7 +356,7 @@ describe('Confirmation Page Controller', () => {
       history: [],
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: false
+      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
     });
   });
 
@@ -417,7 +417,7 @@ describe('Confirmation Page Controller', () => {
       history: [],
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: false
+      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
     });
   });
 

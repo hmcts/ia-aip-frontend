@@ -6,7 +6,7 @@ import SessionTimeout from '../../../client/session-timeout';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Session Timeout @only', () => {
+describe('Session Timeout', () => {
   let sandbox: sinon.SinonSandbox;
   let sessionTimeout: SessionTimeout;
   let extendSessionStub: sinon.SinonStub;

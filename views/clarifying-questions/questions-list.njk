@@ -1,0 +1,49 @@
+{% set pageTitleName = i18n.pages.clarifyingQuestionsList.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.clarifyingQuestionsList.title }}</h1>
+  <ol class="task-list">
+    <li >
+      <h2 class="govuk-heading-m">{{ i18n.pages.clarifyingQuestionsList.sections.questions.header }}</h2>
+      <ul class="govuk-list">
+        {% for question in questions %}
+          {% set url = paths.awaitingClarifyingQuestionsAnswers.question | replace(":id", loop.index) %}
+          <li class="govuk-!-font-size-24 task-list__item">
+            <a href={{ url }}>{{ i18n.pages.clarifyingQuestionsList.sections.questions.itemTitle }} {{ loop.index }} </a>
+            {% if question.value.answer %}
+              {{ govukTag({
+                  text: "SAVED"
+              }) }}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </li>
+    <li>
+      <h2 class="govuk-heading-m">{{ i18n.pages.clarifyingQuestionsList.sections.otherInformation.header }}</h2>
+      <ul class="govuk-list">
+        <li class="govuk-!-font-size-24 task-list__item">
+          {% if questionsCompleted %}
+            <a href={{ paths.awaitingClarifyingQuestionsAnswers.anythingElse }}>{{ i18n.pages.clarifyingQuestionsList.sections.otherInformation.itemTitle }}</a>
+          {% else %}
+            {{ i18n.pages.clarifyingQuestionsList.sections.otherInformation.itemTitle }}
+          {% endif %}
+        </li>
+      </ul>
+    </li>
+    <li>
+      <h2 class="govuk-heading-m">{{ i18n.pages.clarifyingQuestionsList.sections.checkAndSend.header }}</h2>
+      <ul class="govuk-list">
+        <li class="govuk-!-font-size-24 task-list__item">
+          {% if questionsCompleted and false %}
+            <a href={{ paths.awaitingClarifyingQuestionsAnswers.checkAndSend }}>{{ i18n.pages.clarifyingQuestionsList.sections.checkAndSend.itemTitle }}</a>
+          {% else %}
+            {{ i18n.pages.clarifyingQuestionsList.sections.checkAndSend.itemTitle }}
+          {% endif %}
+        </li>
+      </ul>
+    </li>
+  </ol>
+{% endblock %}

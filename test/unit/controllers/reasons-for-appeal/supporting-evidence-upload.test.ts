@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import {
   getSupportingEvidenceDeleteFile,
@@ -96,7 +97,7 @@ describe('Supporting Evidence Upload Controller', () => {
         evidences: Object.values(evidences),
         evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 
@@ -108,7 +109,7 @@ describe('Supporting Evidence Upload Controller', () => {
         evidences: someEvidences,
         evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 
@@ -135,7 +136,7 @@ describe('Supporting Evidence Upload Controller', () => {
         errorList: [ expectedError ],
         evidences: [],
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 
@@ -154,7 +155,7 @@ describe('Supporting Evidence Upload Controller', () => {
         errorList: [ expectedError ],
         evidences: [],
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 
@@ -175,7 +176,7 @@ describe('Supporting Evidence Upload Controller', () => {
         errorList: [ expectedError ],
         evidences: [],
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 

@@ -27,7 +27,7 @@
       }), options) %}
   {% endfor %}
 
-  <form action="{{ paths.typeOfAppeal }}" method="post">
+  <form action="{{ paths.appealStarted.typeOfAppeal }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukRadios({
       idPrefix: "appealType",

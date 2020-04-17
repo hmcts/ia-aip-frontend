@@ -43,13 +43,13 @@ async function setupData(newCaseData) {
 }
 
 const PATHS = {
-  'reasons for appeal': paths.reasonsForAppeal.decision,
-  'supporting evidence question': paths.reasonsForAppeal.supportingEvidence,
-  'supporting evidence upload': paths.reasonsForAppeal.supportingEvidenceUpload,
-  'reasons for appeal check your answers': paths.reasonsForAppeal.checkAndSend,
-  'Out of time appeal': paths.homeOffice.appealLate,
-  'Task list': paths.taskList,
-  'Check and send': paths.checkAndSend
+  'reasons for appeal': paths.awaitingReasonsForAppeal.decision,
+  'supporting evidence question': paths.awaitingReasonsForAppeal.supportingEvidence,
+  'supporting evidence upload': paths.awaitingReasonsForAppeal.supportingEvidenceUpload,
+  'reasons for appeal check your answers': paths.awaitingReasonsForAppeal.checkAndSend,
+  'Out of time appeal': paths.appealStarted.appealLate,
+  'Task list': paths.appealStarted.taskList,
+  'Check and send': paths.appealStarted.checkAndSend
 };
 
 module.exports = {
@@ -254,7 +254,7 @@ module.exports = {
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
-      await I.seeInCurrentUrl(paths.taskList);
+      await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
     Then(/^I should see the "([^"]*)" page$/, async (key: string) => {

@@ -22,7 +22,7 @@
     rows: summaryRows
   }) }}
 
-  <form action="{{ paths.checkAndSend }}" method="post">
+  <form action="{{ paths.appealStarted.checkAndSend }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukCheckboxes({
       idPrefix: "statement",

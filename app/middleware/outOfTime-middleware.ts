@@ -5,7 +5,7 @@ function appealOutOfTimeMiddleware(req: Request, res: Response, next: NextFuncti
   const application = req.session.appeal.application;
   if (application.isAppealLate) {
     if (!application.lateAppeal || !application.lateAppeal.reason) {
-      return res.redirect(paths.homeOffice.appealLate);
+      return res.redirect(paths.appealStarted.appealLate);
     }
   }
   return next();

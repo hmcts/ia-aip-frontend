@@ -6,7 +6,7 @@ const loginUrl = `${config.get('idam.webUrl')}/login`;
 
 export const idamConfig = {
   redirectUri: 'https://localhost:3000/redirectUrl',
-  indexUrl: paths.login,
+  indexUrl: paths.common.login,
   idamApiUrl: config.get('idam.apiUrl'),
   idamLoginUrl: loginUrl,
   idamUserLoginUrl: loginUrl,

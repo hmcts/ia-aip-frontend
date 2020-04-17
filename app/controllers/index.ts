@@ -3,7 +3,7 @@ import { paths } from '../paths';
 
 function getIndex(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.redirect(paths.start);
+    return res.redirect(paths.common.start);
   } catch (e) {
     next(e);
   }
@@ -11,7 +11,7 @@ function getIndex(req: Request, res: Response, next: NextFunction) {
 
 function setupIndexController(): Router {
   const router = Router();
-  router.get(paths.index, getIndex);
+  router.get(paths.common.index, getIndex);
   return router;
 }
 

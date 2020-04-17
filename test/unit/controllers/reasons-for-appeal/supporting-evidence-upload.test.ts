@@ -77,10 +77,11 @@ describe('Supporting Evidence Upload Controller', () => {
         updateAppealService: updateAppealService as UpdateAppealService,
         documentManagementService: documentManagementService as DocumentManagementService
       };
-      setupReasonsForAppealController(deps);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidenceUploadFile);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidenceDeleteFile);
+      const middleware = [];
+      setupReasonsForAppealController(middleware, deps);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload, middleware);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUploadFile, middleware);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile, middleware);
     });
   });
 
@@ -93,8 +94,8 @@ describe('Supporting Evidence Upload Controller', () => {
 
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: Object.values(evidences),
-        evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
       });
     });
@@ -105,8 +106,8 @@ describe('Supporting Evidence Upload Controller', () => {
 
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-upload-page.njk', {
         evidences: someEvidences,
-        evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
       });
     });
@@ -133,7 +134,7 @@ describe('Supporting Evidence Upload Controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
-        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
       });
     });
@@ -152,7 +153,7 @@ describe('Supporting Evidence Upload Controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
-        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
       });
     });
@@ -173,7 +174,7 @@ describe('Supporting Evidence Upload Controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         evidences: [],
-        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: false
       });
     });
@@ -200,7 +201,7 @@ describe('Supporting Evidence Upload Controller', () => {
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
       await postSupportingEvidenceUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
     });
 
     it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {
@@ -229,7 +230,7 @@ describe('Supporting Evidence Upload Controller', () => {
       req.query['id'] = 'someUUID';
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
       expect(req.session.appeal.reasonsForAppeal.evidences).to.not.haveOwnProperty('someUUID');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
     });
 
     it('getSupportingEvidenceDeleteFile should catch exception and call next with the error', async () => {

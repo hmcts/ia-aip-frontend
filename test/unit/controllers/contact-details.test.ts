@@ -62,10 +62,10 @@ describe('Contact details Controller', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-
-      setupContactDetailsController(updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.contactDetails);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.contactDetails);
+      const middleware = [];
+      setupContactDetailsController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.contactDetails);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.contactDetails);
     });
   });
 
@@ -112,7 +112,7 @@ describe('Contact details Controller', () => {
           contactDetails: contactDetailsExpectation,
           errors: { 'selections': error },
           errorList: [ error ],
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -150,7 +150,7 @@ describe('Contact details Controller', () => {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': emailError, 'text-message-value': textMessageError },
           errorList: [ emailError, textMessageError ],
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -169,7 +169,7 @@ describe('Contact details Controller', () => {
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(updateAppealService.submitEvent).to.not.have.been.called;
-        expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
       });
 
     });
@@ -198,7 +198,7 @@ describe('Contact details Controller', () => {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': error },
           errorList: [ error ],
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -230,7 +230,7 @@ describe('Contact details Controller', () => {
           contactDetails: contactDetailsExpectation,
           errors: { 'email-value': error },
           errorList: [ error ],
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -256,7 +256,7 @@ describe('Contact details Controller', () => {
 
         expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
         expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
-        expect(res.redirect).to.have.been.calledWith(paths.taskList);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
       });
       it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
         req.session.appeal.application.isEdit = true;
@@ -277,7 +277,7 @@ describe('Contact details Controller', () => {
 
         expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
         expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
-        expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
         expect(req.session.appeal.application.isEdit).to.have.eq(false);
       });
     });
@@ -306,7 +306,7 @@ describe('Contact details Controller', () => {
           contactDetails: contactDetailsExpectation,
           errors: { 'text-message-value': error },
           errorList: [ error ],
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -338,7 +338,7 @@ describe('Contact details Controller', () => {
           contactDetails: contactDetailsExpectation,
           errors: { 'text-message-value': error },
           errorList: [ error ],
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         };
 
         await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -364,7 +364,7 @@ describe('Contact details Controller', () => {
 
         expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
         expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
-        expect(res.redirect).to.have.been.calledWith(paths.taskList);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
       });
     });
 
@@ -387,7 +387,7 @@ describe('Contact details Controller', () => {
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
     });
   });

@@ -7,15 +7,15 @@ const testUrl = config.get('testUrl');
 module.exports = {
   dateOfBirth(I) {
     Given('I am on the personal details date of birth page', async () => {
-      I.amOnPage(testUrl + paths.personalDetails.dob);
+      I.amOnPage(testUrl + paths.appealStarted.dob);
     });
 
     Then(/^I should be taken to the DOB page$/, async () => {
-      await I.seeInCurrentUrl(paths.personalDetails.dob);
+      await I.seeInCurrentUrl(paths.appealStarted.dob);
     });
 
     Then('I should see the date of birth page', async () => {
-      I.seeInCurrentUrl(paths.personalDetails.dob);
+      I.seeInCurrentUrl(paths.appealStarted.dob);
     });
 
     When(/^I enter "([^"]*)" "([^"]*)" "([^"]*)" as my DOB and click Save and continue$/, (day,month,year) => {

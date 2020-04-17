@@ -54,9 +54,10 @@ describe('Reasons For Appeal - Check and send Controller', () => {
 
   describe('setupCheckAndSendController', () => {
     it('should setup the routes', () => {
-      setupCheckAndSendController(updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
-      expect(routerPostStub).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+      const middleware = [];
+      setupCheckAndSendController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
+      expect(routerPostStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
     });
   });
 
@@ -64,8 +65,8 @@ describe('Reasons For Appeal - Check and send Controller', () => {
     it('should render reasons-for-appeal/check-and-send-page.njk with supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.decision + editParameter),
-        addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [ 'File1.png', 'File2.png' ], paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.awaitingReasonsForAppeal.decision + editParameter),
+        addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [ 'File1.png', 'File2.png' ], paths.awaitingReasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE)
       ];
       req.session.appeal.reasonsForAppeal.evidences = [
         {
@@ -80,20 +81,20 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       getCheckAndSend(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
-        previousPage: paths.reasonsForAppeal.supportingEvidenceUpload
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidenceUpload
       });
     });
 
     it('should render reasons-for-appeal/check-and-send-page.njk without supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.decision + editParameter)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.awaitingReasonsForAppeal.decision + editParameter)
       ];
 
       getCheckAndSend(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('reasons-for-appeal/check-and-send-page.njk', {
         summaryRows,
-        previousPage: paths.reasonsForAppeal.supportingEvidence
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence
       });
     });
 
@@ -110,14 +111,14 @@ describe('Reasons For Appeal - Check and send Controller', () => {
       req.body = {};
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.have.been.calledOnceWith(Events.SUBMIT_REASONS_FOR_APPEAL, req);
-      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
+      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppealSubmitted.confirmation);
     });
 
     it('should redirect to timeline page when click save for later', async () => {
       req.body = { saveForLater: 'saveForLater' };
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should call next with error render if something happens', async () => {

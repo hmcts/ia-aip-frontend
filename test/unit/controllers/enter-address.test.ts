@@ -72,9 +72,10 @@ describe('Personal Details Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupPersonalDetailsController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.enterAddress);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.enterAddress);
+      const middleware = [];
+      setupPersonalDetailsController(middleware, { updateAppealService });
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.enterAddress, middleware);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.enterAddress, middleware);
     });
   });
 
@@ -86,7 +87,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: paths.personalDetails.nationality
+        previousPage: paths.appealStarted.nationality
       });
     });
 
@@ -110,7 +111,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: paths.personalDetails.nationality
+        previousPage: paths.appealStarted.nationality
       });
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
@@ -122,7 +123,7 @@ describe('Personal Details Controller', function () {
       getManualEnterAddressPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/personal-details/enter-address.njk', {
         address,
-        previousPage: paths.personalDetails.nationality
+        previousPage: paths.appealStarted.nationality
       });
     });
 
@@ -165,7 +166,7 @@ describe('Personal Details Controller', function () {
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
     });
 
     it('should catch an exception and call next()', async () => {
@@ -188,7 +189,7 @@ describe('Personal Details Controller', function () {
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -198,7 +199,7 @@ describe('Personal Details Controller', function () {
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -209,7 +210,7 @@ describe('Personal Details Controller', function () {
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should catch an exception and call next()', async () => {

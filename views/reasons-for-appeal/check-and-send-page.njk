@@ -22,7 +22,7 @@
     rows: summaryRows
   }) }}
 
-  <form method="post" action={{ paths.reasonsForAppeal.checkAndSend }}>
+  <form method="post" action={{ paths.awaitingReasonsForAppeal.checkAndSend }}>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     <div class="buttons__container">
       {{ govukButton({

@@ -10,7 +10,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form method="post" action="{{ paths.personalDetails.dob }}" type="submit">
+  <form method="post" action="{{ paths.appealStarted.dob }}" type="submit">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% set errorMessage =  errors.day.text if errors.day %}
     {% set errorMessage =  errors.month.text if errors.month else errorMessage %}

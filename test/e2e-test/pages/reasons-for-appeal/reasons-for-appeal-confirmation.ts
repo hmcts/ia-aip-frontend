@@ -8,7 +8,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   reasonsForAppealConfirmation(I) {
     Then('I should see the reasons for appeal confirmation page', async () => {
-      I.seeInCurrentUrl(testUrl + paths.reasonsForAppeal.confirmation);
+      I.seeInCurrentUrl(testUrl + paths.reasonsForAppealSubmitted.confirmation);
     });
 
     Then('I see the respond by date is 2 weeks in the future', async () => {

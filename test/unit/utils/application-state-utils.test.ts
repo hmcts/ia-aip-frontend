@@ -92,7 +92,7 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          url: "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
         },
         allowedAskForMoreTime: false
       });
@@ -129,11 +129,11 @@ describe('application-state-utils', () => {
           ],
           info: {
             title: 'Helpful Information',
-            url: "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+            url: "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
           },
           usefulDocuments: {
             title: 'Useful documents',
-            url: "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+            url: "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
           }
         }
       );
@@ -171,11 +171,11 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+          url: "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
         },
         usefulDocuments: {
           title: 'Useful documents',
-          url: "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+          url: "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
         },
         allowedAskForMoreTime: true
       }

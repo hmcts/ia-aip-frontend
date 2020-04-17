@@ -7,7 +7,7 @@ import { getIdamLoginUrl, getIdamRedirectUrl } from '../utils/url-utils';
 
 function getLogin(req: Request, res: Response, next: NextFunction) {
   try {
-    res.redirect(paths.overview);
+    res.redirect(paths.common.overview);
   } catch (e) {
     next(e);
   }
@@ -15,7 +15,7 @@ function getLogin(req: Request, res: Response, next: NextFunction) {
 
 function getLogout(req: Request, res: Response, next: NextFunction) {
   try {
-    res.redirect(paths.start);
+    res.redirect(paths.common.start);
   } catch (e) {
     next(e);
   }
@@ -23,7 +23,7 @@ function getLogout(req: Request, res: Response, next: NextFunction) {
 
 function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
-    res.redirect(paths.overview);
+    res.redirect(paths.common.overview);
   } catch (e) {
     next(e);
   }
@@ -38,10 +38,10 @@ function authenticateMiddleware(req: Request, res: Response, next: NextFunction)
 function setupIdamController(): Router {
   const router = Router();
   router.use(idamExpressMiddleware.userDetails(idamConfig));
-  router.get(paths.login, authenticateMiddleware, getLogin);
-  router.get(paths.redirectUrl, idamExpressMiddleware.landingPage(idamConfig), initSession, getRedirectUrl);
+  router.get(paths.common.login, authenticateMiddleware, getLogin);
+  router.get(paths.common.redirectUrl, idamExpressMiddleware.landingPage(idamConfig), initSession, getRedirectUrl);
   router.use(idamExpressMiddleware.protect(idamConfig), checkSession(idamConfig));
-  router.get(paths.logout, idamExpressMiddleware.logout(idamConfig), getLogout);
+  router.get(paths.common.logout, idamExpressMiddleware.logout(idamConfig), getLogout);
 
   return router;
 }

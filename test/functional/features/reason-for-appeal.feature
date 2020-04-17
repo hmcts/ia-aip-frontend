@@ -4,7 +4,7 @@ Feature: Reason for appeal
   I want to be able to fill in the reason text field
 
   Scenario: Navigate through reasons for appeal
-    Given I am authenticated as a valid appellant
+    Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit reasons for appeal
     And I click "Save and continue" button
     Then I should see error summary
@@ -40,7 +40,7 @@ Feature: Reason for appeal
     And I see the respond by date is 2 weeks in the future
 
   Scenario: Navigate through reasons for appeal with no additional evidence
-    Given I am authenticated as a valid appellant
+    Given I have logged in as an appellant in state "awaitingReasonsForAppeal"
     When I visit reasons for appeal
     And I click "Save and continue" button
     Then I should see error summary

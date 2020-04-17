@@ -16,7 +16,7 @@ const APPEAL_STATE = {
     ],
     info: null,
     cta: {
-      url: paths.taskList,
+      url: paths.appealStarted.taskList,
       respondByText: null
     },
     allowedAskForMoreTime: false
@@ -28,7 +28,7 @@ const APPEAL_STATE = {
     ],
     info: null,
     cta: {
-      url: paths.taskList,
+      url: paths.appealStarted.taskList,
       respondByText: null
     },
     allowedAskForMoreTime: false
@@ -70,7 +70,7 @@ const APPEAL_STATE = {
       url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
     },
     cta: {
-      url: paths.reasonsForAppeal.decision,
+      url: paths.awaitingReasonsForAppeal.decision,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
     },
     allowedAskForMoreTime: true
@@ -88,7 +88,7 @@ const APPEAL_STATE = {
       url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.url
     },
     cta: {
-      url: paths.reasonsForAppeal.decision,
+      url: paths.awaitingReasonsForAppeal.decision,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
     },
     allowedAskForMoreTime: true

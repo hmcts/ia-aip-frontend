@@ -3,7 +3,7 @@ import { paths } from '../../../../app/paths';
 module.exports = {
   outOfTimeAppeal(I) {
     Then(/^I should see late appeal page$/, async () => {
-      await I.seeInCurrentUrl(paths.homeOffice.appealLate);
+      await I.seeInCurrentUrl(paths.appealStarted.appealLate);
       await I.see('Your appeal is late', 'h1');
     });
 

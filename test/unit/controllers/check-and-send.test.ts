@@ -20,35 +20,35 @@ function getMockedSummaryRows(): SummaryRow[] {
     key: { text: 'Home Office reference number' },
     value: { html: 'A1234567' }
   }, {
-    actions: { items: [ { href: paths.homeOffice.letterSent + '?edit', text: 'Change' } ] },
+    actions: { items: [ { href: paths.appealStarted.letterSent + '?edit', text: 'Change' } ] },
     key: { text: 'Date letter sent' },
     value: { html: '1 July 2019' }
   }, {
-    actions: { items: [ { href: paths.personalDetails.name + '?edit', text: 'Change' } ] },
+    actions: { items: [ { href: paths.appealStarted.name + '?edit', text: 'Change' } ] },
     key: { text: 'Name' },
     value: { html: 'Pedro Jimenez' }
   }, {
-    actions: { items: [ { href: paths.personalDetails.dob + '?edit', text: 'Change' } ] },
+    actions: { items: [ { href: paths.appealStarted.dob + '?edit', text: 'Change' } ] },
     key: { text: 'Date of birth' },
     value: { html: '10 October 1980' }
   }, {
-    actions: { items: [ { href: paths.personalDetails.nationality + '?edit', text: 'Change' } ] },
+    actions: { items: [ { href: paths.appealStarted.nationality + '?edit', text: 'Change' } ] },
     key: { text: 'Nationality' },
     value: { html: 'Austria' }
   }, {
-    actions: { items: [ { href: paths.personalDetails.enterAddress + '?edit', text: 'Change' } ] },
+    actions: { items: [ { href: paths.appealStarted.enterAddress + '?edit', text: 'Change' } ] },
     key: { text: 'Address' },
     value: {
       html: '60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London'
     }
   }, {
-    actions: { items: [ { href: paths.contactDetails + '?edit', text: 'Change' } ] },
+    actions: { items: [ { href: paths.appealStarted.contactDetails + '?edit', text: 'Change' } ] },
     key: { text: 'Contact details' },
     value: {
       html: 'pedro.jimenez@example.net<br>07123456789'
     }
   }, {
-    actions: { items: [ { href: paths.typeOfAppeal + '?edit', text: 'Change' } ] },
+    actions: { items: [ { href: paths.appealStarted.typeOfAppeal + '?edit', text: 'Change' } ] },
     key: { text: 'Appeal type' },
     value: { html: 'Protection' }
   } ];
@@ -70,7 +70,7 @@ describe('createSummaryRowsFrom', () => {
     };
 
     const rows: any[] = createSummaryRowsFrom(appeal.application);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [ appeal.application.lateAppeal.reason ], paths.homeOffice.appealLate);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ appeal.application.lateAppeal.reason ], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
@@ -127,10 +127,11 @@ describe('Check and Send Controller', () => {
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+    const middleware = [];
 
-    setupCheckAndSendController(updateAppealService as UpdateAppealService);
-    expect(routerGetStub).to.have.been.calledWith(paths.checkAndSend);
-    expect(routerPOSTStub).to.have.been.calledWith(paths.checkAndSend);
+    setupCheckAndSendController(middleware, updateAppealService as UpdateAppealService);
+    expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
+    expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
   });
 
   it('getCheckAndSend should render check-and-send-page.njk', () => {
@@ -158,7 +159,7 @@ describe('Check and Send Controller', () => {
       error: expectedError,
       errorList: Object.values(expectedError),
       summaryRows: summaryRows,
-      previousPage: paths.taskList
+      previousPage: paths.appealStarted.taskList
     });
   });
 
@@ -169,7 +170,7 @@ describe('Check and Send Controller', () => {
 
     expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
     expect(req.session.appeal.appealReferenceNumber).to.be.equal('PA/1234567');
-    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.confirmation);
+    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.confirmation);
   });
 
   it('getCheckAndSend should catch exception and call next with the error', () => {

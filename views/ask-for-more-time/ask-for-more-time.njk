@@ -17,7 +17,7 @@
   {{ govukInsetText({
     text:  i18n.pages.askForMoreTimePage.youMayGetMoreTime
   }) }}
-  <form action="{{ paths.askForMoreTime.reason }}" method="post" >
+  <form action="{{ paths.common.askForMoreTime.reason }}" method="post" >
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       {{ govukTextarea({
     name: "askForMoreTime",
@@ -40,7 +40,7 @@
           </p>
       </div>
       {{ continueButton() }}
-      <a class="cancel-button" href="{{ paths.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
+      <a class="cancel-button" href="{{ paths.common.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
   </form>
 
   {{ contactUs() }}

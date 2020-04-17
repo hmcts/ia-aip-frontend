@@ -143,7 +143,7 @@ export function postSupportingEvidence(updateAppealService: UpdateAppealService,
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (req.body['saveForLater']) {
-        return res.redirect(paths.overview + '?saved');
+        return res.redirect(paths.common.overview + '?saved');
       } else {
         const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req);
 

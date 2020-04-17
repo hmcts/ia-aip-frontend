@@ -31,7 +31,10 @@ function addToTimeExtensionMapper(timeExtensionEvent: HistoryEvent, req: Request
  */
 function timeExtensionIdToTimeExtensionData(id: string, timeExtensionEventMap: TimeExtensionEventMap[]) {
   const target: TimeExtensionEventMap = timeExtensionEventMap.find(e => e.id === id);
-  return target.historyData.data.timeExtensions.find(timeExt => timeExt.id === target.externalId);
+  if (target) {
+    return target.historyData.data.timeExtensions.find(timeExt => timeExt.id === target.externalId);
+  }
+  return null;
 }
 
 /**
@@ -98,5 +101,6 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
 export {
   getAppealApplicationHistory,
-  timeExtensionIdToTimeExtensionData
+  timeExtensionIdToTimeExtensionData,
+  constructSection
 };

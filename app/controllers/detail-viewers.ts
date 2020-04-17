@@ -7,6 +7,7 @@ import { countryList } from '../data/country-list';
 import { serverErrorHandler } from '../handlers/error-handler';
 import { paths } from '../paths';
 import {
+  addToDocumentMapper,
   docStoreUrlToId,
   documentIdToDocStoreUrl,
   DocumentManagementService
@@ -116,7 +117,7 @@ function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionColle
   }
   if (_.has(data, 'evidence')) {
     const listOfDocuments: string[] = data.evidence.map(evidence => {
-      const fileId = docStoreUrlToId(evidence.value.document_url, req.session.appeal.documentMap);
+      const fileId = addToDocumentMapper(evidence.value.document_url, req.session.appeal.documentMap);
       const formattedFileName = fileNameFormatter(evidence.value.document_filename);
       return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
     });
@@ -225,7 +226,7 @@ function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextF
     if (timeExtensionData) {
       let previousPage: string = paths.overview;
       const data = setupTimeExtensionDecision(req, timeExtensionData);
-      return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
+      return res.render('detail-viewers/time-extension-details-decision-viewer.njk', {
         previousPage: previousPage,
         data: data
       });

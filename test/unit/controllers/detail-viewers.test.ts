@@ -4,13 +4,17 @@ import {
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getReasonsForAppealViewer,
+  getTimeExtensionDecisionViewer,
+  getTimeExtensionViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
+import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 import { expectedMultipleEventsData } from '../mockData/events/expectation/expected-multiple-events';
+import { expectedTimeExtensionMap } from '../mockData/events/expectation/timeExtensionMap/expected-time-extension-map';
 
 const express = require('express');
 
@@ -62,8 +66,12 @@ describe('Detail viewer Controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupDetailViewersController(documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.homeOfficeDocuments);
       expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.document + '/:documentId');
+      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.homeOfficeDocuments);
+      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.appealDetails);
+      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.reasonsForAppeal);
+      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.timeExtension + '/:id');
+      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.timeExtensionDecision + '/:id');
     });
   });
 
@@ -152,7 +160,10 @@ describe('Detail viewer Controller', () => {
         { key: { text: 'Name' }, value: { html: 'Aleka sad' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1994' } },
         { key: { text: 'Nationality' }, value: { html: 'Albania' } },
-        { key: { text: 'Address' }, value: { html: 'United Kingdom<br>W1W 7RT<br>LONDON<br>60 GREAT PORTLAND STREET' } },
+        {
+          key: { text: 'Address' },
+          value: { html: 'United Kingdom<br>W1W 7RT<br>LONDON<br>60 GREAT PORTLAND STREET' }
+        },
         { key: { text: 'Contact details' }, value: { html: 'alejandro@example.net<br>' } },
         { key: { text: 'Appeal type' }, value: { html: 'Protection' } } ];
 
@@ -161,6 +172,23 @@ describe('Detail viewer Controller', () => {
         data: expectedSummaryRows,
         previousPage: paths.overview
       });
+    });
+
+    it('getAppealDetailsViewer should catch exception and call next with the error', () => {
+
+      req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.documentMap = [ {
+        id: '00000',
+        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      } ];
+
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
@@ -188,6 +216,194 @@ describe('Detail viewer Controller', () => {
         data: expectedSummaryRows,
         previousPage: paths.overview
       });
+    });
+
+    it('getReasonsForAppealViewer should catch exception and call next with the error', () => {
+
+      req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.documentMap = [ {
+        id: '00000',
+        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      } ];
+
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getReasonsForAppealViewer', () => {
+    it('should render detail-viewers/reasons-for-appeal-details-viewer.njk', () => {
+
+      req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.documentMap = [ {
+        id: '00000',
+        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      } ];
+
+      const expectedSummaryRows = [ {
+        'key': { 'text': 'Why do you think the Home Office decision is wrong?' },
+        'value': { 'html': 'HELLO' }
+      }, {
+        'key': { 'text': 'Providing supporting evidence' },
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00001'>500(PNG)</a>" }
+      } ];
+      getReasonsForAppealViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+        data: expectedSummaryRows,
+        previousPage: paths.overview
+      });
+    });
+
+    it('getReasonsForAppealViewer should catch exception and call next with the error', () => {
+
+      req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.documentMap = [ {
+        id: '00000',
+        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      } ];
+
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getTimeExtensionViewer', () => {
+    it('should render detail-viewers/time-extension-details-viewer.njk with no evidences', () => {
+
+      req.params.id = '0af8b4fe-664c-41d2-9587-2cb96e5bfe51';
+
+      req.session.appeal.history = expectedEventsWithTimeExtensionsData;
+      req.session.appeal.timeExtensionEventsMap = expectedTimeExtensionMap;
+
+      const expectedSummaryRows = [
+        {
+          key: { text: 'How much time to you need and why do you need it?' },
+          value: { html: 'I need more time while I am waiting for a letter' }
+        } ];
+
+      getTimeExtensionViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-viewer.njk', {
+        data: expectedSummaryRows,
+        previousPage: paths.overview
+      });
+    });
+
+    it('should render detail-viewers/time-extension-details-viewer.njk with evidences', () => {
+
+      req.params.id = '1d1479a7-95a4-42c8-b718-44b764e6b935';
+
+      req.session.appeal.history = expectedEventsWithTimeExtensionsData;
+      req.session.appeal.timeExtensionEventsMap = expectedTimeExtensionMap;
+      req.session.appeal.documentMap = [];
+
+      getTimeExtensionViewer(req as Request, res as Response, next);
+
+      const expectedDocumentId = req.session.appeal.documentMap[0].id;
+      const expectedSummaryRows = [
+        {
+          key: { text: 'How much time to you need and why do you need it?' },
+          value: { html: 'I need an extra 2 weeks' }
+        },
+        {
+          key: { text: 'Supporting evidence' },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${expectedDocumentId}'>supporting evidence(JPG)</a>` }
+        } ];
+
+      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-viewer.njk', {
+        data: expectedSummaryRows,
+        previousPage: paths.overview
+      });
+    });
+
+    it('getTimeExtensionViewer should catch exception and call next with the error', () => {
+
+      req.params.id = '25134779-79b7-4519-a4bd-e23e2f1d5ba8';
+
+      req.session.appeal.history = expectedEventsWithTimeExtensionsData;
+      req.session.appeal.timeExtensionEventsMap = expectedTimeExtensionMap;
+
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getTimeExtensionViewer(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getTimeExtensionDecisionViewer', () => {
+    it('should render detail-viewers/time-extension-details-decision-viewer.njk with refused decision', () => {
+
+      req.params.id = '25134779-79b7-4519-a4bd-e23e2f1d5ba8';
+
+      req.session.appeal.history = expectedEventsWithTimeExtensionsData;
+      req.session.appeal.timeExtensionEventsMap = expectedTimeExtensionMap;
+
+      const expectedSummaryRows = [
+        {
+          key: { text: 'How much time to you need and why do you need it?' },
+          value: { html: 'granted' }
+        },
+        {
+          key: { text: 'Decision' },
+          value: { html: 'I have granted your request you know have more time' }
+        } ];
+
+      getTimeExtensionDecisionViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-decision-viewer.njk', {
+        data: expectedSummaryRows,
+        previousPage: paths.overview
+      });
+    });
+
+    it('should render detail-viewers/time-extension-details-decision-viewer.njk with granted decision', () => {
+
+      req.params.id = 'c5532555-aa49-4a11-88a4-69d98d27ba95';
+
+      req.session.appeal.history = expectedEventsWithTimeExtensionsData;
+      req.session.appeal.timeExtensionEventsMap = expectedTimeExtensionMap;
+      req.session.appeal.documentMap = [];
+
+      getTimeExtensionDecisionViewer(req as Request, res as Response, next);
+
+      const expectedSummaryRows = [
+        {
+          key: { text: 'How much time to you need and why do you need it?' },
+          value: { html: 'refused' }
+        },
+        {
+          key: { text: 'Decision' },
+          value: { html: 'Not enough information' }
+        } ];
+
+      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-decision-viewer.njk', {
+        data: expectedSummaryRows,
+        previousPage: paths.overview
+      });
+    });
+
+    it('getTimeExtensionDecisionViewer should catch exception and call next with the error', () => {
+
+      req.params.id = 'c5532555-aa49-4a11-88a4-69d98d27ba95';
+
+      req.session.appeal.history = expectedEventsWithTimeExtensionsData;
+      req.session.appeal.timeExtensionEventsMap = expectedTimeExtensionMap;
+
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getTimeExtensionDecisionViewer(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 });

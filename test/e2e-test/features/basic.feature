@@ -91,7 +91,7 @@ Feature: Business rules
     Then I should see do you want to upload evidence page
     When I select No and click continue
     Then I should see the ask for more time check you answers page
-    When I click continue
+    When I click send
     Then I am on the overview page
 
     Then I click continue

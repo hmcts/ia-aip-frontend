@@ -39,6 +39,14 @@ module.exports = {
       I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description}</p>`);
     });
 
+    Then(/^I should see the 'ask for more time' link$/, () => {
+      I.seeElement('//a[contains(., "Ask for more time")]');
+    });
+
+    When(/^I click 'ask for more time'$/, () => {
+      I.click('Ask for more time');
+    });
+
     Then(/^I see the respond by date is "([^"]*)"$/, async (respondByDate) => {
       I.seeInSource(respondByDate);
     });

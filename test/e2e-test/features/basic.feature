@@ -82,6 +82,18 @@ Feature: Business rules
     Given I sign in as the Appellant
     When I visit the overview page
     Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
+    Then I should see the 'ask for more time' link
+
+    When I click 'ask for more time'
+    Then I should see the ask-for-more-time page
+    When I enter a time extensions reason
+    And I click continue
+    Then I should see do you want to upload evidence page
+    When I select No and click continue
+    Then I should see the ask for more time check you answers page
+    When I click continue
+    Then I am on the overview page
+
     Then I click continue
     Then I should see the reasons for appeal decision page
     When I visit reasons for appeal

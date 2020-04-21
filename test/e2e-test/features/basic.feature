@@ -82,7 +82,7 @@ Feature: Business rules
     Given I sign in as the Appellant
     When I visit the overview page
     Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
-    Then I should see the 'ask for more time' link
+#    Then I should see the 'ask for more time' link
 
 #    Reenable when ask for more time flag is on by default
 #    When I click 'ask for more time'

@@ -59,6 +59,7 @@ export default class UpdateAppealService {
     let respondentDocuments: RespondentDocument[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let timeExtensions: TimeExtension[] = null;
+    let directions: Direction[] = null;
 
     const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -126,7 +127,7 @@ export default class UpdateAppealService {
 
       caseData.timeExtensions.forEach(timeExtension => {
         let timeExt: TimeExtension = {
-          requestedDate: timeExtension.value.requestedDate,
+          requestDate: timeExtension.value.requestDate,
           state: timeExtension.value.state,
           status: timeExtension.value.status
         };
@@ -146,7 +147,19 @@ export default class UpdateAppealService {
         timeExtensions.push(timeExt);
 
       });
+
+      if (caseData.directions) {
+        directions = caseData.directions.map(d => {
+          return {
+            id: d.id,
+            tag: d.value.tag,
+            dateDue: d.value.dateDue,
+            dateSent: d.value.dateSent
+          } as Direction;
+        });
+      }
     }
+
     req.session.appeal = {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
@@ -178,7 +191,8 @@ export default class UpdateAppealService {
       respondentDocuments: respondentDocuments,
       documentMap: documentMap,
       timeExtensionEventsMap: timeExtensionEventsMap,
-      timeExtensions: timeExtensions
+      timeExtensions: timeExtensions,
+      directions: directions
     };
 
     req.session.appeal.askForMoreTime = {};
@@ -209,7 +223,7 @@ export default class UpdateAppealService {
       evidence: askForMoreTimeEvidence,
       state: askForMoreTime.state,
       status: askForMoreTime.status,
-      requestedDate: askForMoreTime.requestedDate
+      requestDate: askForMoreTime.requestDate
     };
   }
 
@@ -375,7 +389,7 @@ export default class UpdateAppealService {
       reason: askForMoreTime.reason,
       state: askForMoreTime.state,
       status: askForMoreTime.status,
-      requestedDate: askForMoreTime.requestedDate
+      requestDate: askForMoreTime.requestDate
     } as CcdTimeExtension;
 
     if (askForMoreTime.reviewTimeExtensionRequired === 'Yes') {

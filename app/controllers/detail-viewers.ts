@@ -226,7 +226,7 @@ function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextF
     if (timeExtensionData) {
       let previousPage: string = paths.overview;
       const data = setupTimeExtensionDecision(req, timeExtensionData);
-      return res.render('detail-viewers/time-extension-details-decision-viewer.njk', {
+      return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
         previousPage: previousPage,
         data: data
       });

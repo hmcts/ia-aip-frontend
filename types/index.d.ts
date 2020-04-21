@@ -73,6 +73,7 @@ interface Appeal {
   previousAskForMoreTime?: AskForMoreTime[];
   timeExtensions?: TimeExtension[];
   timeExtensionEventsMap?: TimeExtensionEventMap[];
+  directions?: Direction[];
 
 }
 
@@ -81,7 +82,7 @@ interface AskForMoreTime {
   status?: string;
   state?: string;
   evidence?: Evidence[];
-  requestedDate?: string;
+  requestDate?: string;
   reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
@@ -180,11 +181,18 @@ interface IdamDetails {
 }
 
 interface TimeExtension {
-  requestedDate: string;
+  requestDate: string;
   state: string;
   status: string;
   evidence?: Evidence[];
   decision?: string;
   decisionReason?: string;
-  newDueDate?: string;
+  decisionOutcomeDate?: string;
+}
+
+interface Direction {
+  id: number;
+  tag: string;
+  dateDue: string;
+  dateSent: string;
 }

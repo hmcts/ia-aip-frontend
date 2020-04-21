@@ -97,7 +97,7 @@ export const expectedEventsWithTimeExtensionsData = [ {
             'document_binary_url': 'http://dm-store:4506/documents/0a1c449d-a312-48d7-9b8e-36e1b83e39f4/binary'
           }
         } ],
-        'requestedDate': '2020-04-14'
+        'requestDate': '2020-04-14'
       }
     }, {
       'id': 'fe677942-46f6-45fc-8552-19d52cc1cbab',
@@ -106,7 +106,7 @@ export const expectedEventsWithTimeExtensionsData = [ {
         'reason': 'I need more time while I am waiting for a letter',
         'status': 'granted',
         'decision': 'granted',
-        'requestedDate': '2020-04-15',
+        'requestDate': '2020-04-15',
         'decisionReason': 'I have granted your request you know have more time'
       }
     } ],
@@ -269,7 +269,7 @@ export const expectedEventsWithTimeExtensionsData = [ {
             'document_binary_url': 'http://dm-store:4506/documents/0a1c449d-a312-48d7-9b8e-36e1b83e39f4/binary'
           }
         } ],
-        'requestedDate': '2020-04-14'
+        'requestDate': '2020-04-14'
       }
     }, {
       'id': 'fe677942-46f6-45fc-8552-19d52cc1cbab',
@@ -277,7 +277,7 @@ export const expectedEventsWithTimeExtensionsData = [ {
         'state': 'awaitingReasonsForAppeal',
         'reason': 'I need more time Request 2',
         'status': 'submitted',
-        'requestedDate': '2020-04-15'
+        'requestDate': '2020-04-15'
       }
     } ],
     'appealReferenceNumber': 'PA/50002/2020',
@@ -439,7 +439,7 @@ export const expectedEventsWithTimeExtensionsData = [ {
             'document_binary_url': 'http://dm-store:4506/documents/0a1c449d-a312-48d7-9b8e-36e1b83e39f4/binary'
           }
         } ],
-        'requestedDate': '2020-04-14'
+        'requestDate': '2020-04-14'
       }
     }, {
       'id': 'a5597615-6758-44ff-a501-684fac217860',
@@ -599,7 +599,7 @@ export const expectedEventsWithTimeExtensionsData = [ {
             'document_binary_url': 'http://dm-store:4506/documents/0a1c449d-a312-48d7-9b8e-36e1b83e39f4/binary'
           }
         } ],
-        'requestedDate': '2020-04-14',
+        'requestDate': '2020-04-14',
         'decisionReason': 'Not enough information'
       }
     } ],
@@ -758,7 +758,7 @@ export const expectedEventsWithTimeExtensionsData = [ {
             'document_binary_url': 'http://dm-store:4506/documents/0a1c449d-a312-48d7-9b8e-36e1b83e39f4/binary'
           }
         } ],
-        'requestedDate': '2020-04-14'
+        'requestDate': '2020-04-14'
       }
     } ],
     'appealReferenceNumber': 'PA/50002/2020',

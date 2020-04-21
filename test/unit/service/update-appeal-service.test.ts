@@ -112,7 +112,7 @@ describe('update-appeal-service', () => {
       ],
       'timeExtensions': [
         {value: {
-          requestedDate: '2020-01-01',
+          requestDate: '2020-01-01',
           reason: 'first reason',
           status: 'completed',
           evidence: [],
@@ -181,7 +181,7 @@ describe('update-appeal-service', () => {
       validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
       expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
       expect(req.session.appeal.askForMoreTime.reason).to.be.eq('some reason');
-      expect(req.session.appeal.askForMoreTime.requestedDate).to.be.undefined;
+      expect(req.session.appeal.askForMoreTime.requestDate).to.be.undefined;
       expect(req.session.appeal.askForMoreTime.evidence.length).to.be.eq(1);
       validateUuid(req.session.appeal.askForMoreTime.evidence[0].fileId);
       expect(req.session.appeal.askForMoreTime.evidence[0].name).to.be.eq('expected_time_extension_evidence.png');
@@ -286,7 +286,7 @@ describe('update-appeal-service', () => {
         reason: reason,
         status: status,
         state: state,
-        requestedDate: '2020-01-01T00:00:00.000',
+        requestDate: '2020-01-01T00:00:00.000',
         evidence: [{
           value: {
             'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
@@ -304,7 +304,7 @@ describe('update-appeal-service', () => {
       expect(askForMoreTime.evidence[0].name).to.be.eq(evidenceName);
       expect(askForMoreTime.state).to.be.eq(state);
       expect(askForMoreTime.status).to.be.eq(status);
-      expect(askForMoreTime.requestedDate).to.be.eq('2020-01-01T00:00:00.000');
+      expect(askForMoreTime.requestDate).to.be.eq('2020-01-01T00:00:00.000');
     }
   });
 
@@ -561,7 +561,7 @@ describe('update-appeal-service', () => {
               reason: 'more time reason',
               status: 'inProgress',
               state: 'awaitingReasonsForAppeal',
-              requestedDate: undefined,
+              requestDate: undefined,
               evidence: [{
                 value: {
                   document_binary_url: 'someurl/binary',
@@ -582,7 +582,7 @@ describe('update-appeal-service', () => {
         reason: 'more time reason',
         status: 'submitted',
         state: 'awaitingReasonsForAppeal',
-        requestedDate: '2020-01-01T00:00:00.000',
+        requestDate: '2020-01-01T00:00:00.000',
         evidence: [
           {
             id: 'id',
@@ -603,7 +603,7 @@ describe('update-appeal-service', () => {
               reason: 'more time reason',
               status: 'submitted',
               state: 'awaitingReasonsForAppeal',
-              requestedDate: '2020-01-01T00:00:00.000',
+              requestDate: '2020-01-01T00:00:00.000',
               evidence: [{
                 value: {
                   document_binary_url: 'someurl/binary',
@@ -635,7 +635,7 @@ describe('update-appeal-service', () => {
         reason: 'more time reason',
         status: 'submitted',
         state: 'awaitingReasonsForAppeal',
-        requestedDate: '2020-01-01T00:00:00.000',
+        requestDate: '2020-01-01T00:00:00.000',
         evidence: [
           {
             id: 'id2',
@@ -659,7 +659,7 @@ describe('update-appeal-service', () => {
               reason: 'more time reason',
               status: 'submitted',
               state: 'awaitingReasonsForAppeal',
-              requestedDate: '2020-01-01T00:00:00.000',
+              requestDate: '2020-01-01T00:00:00.000',
               evidence: [{
                 value: {
                   document_binary_url: 'someurl2/binary',
@@ -674,7 +674,7 @@ describe('update-appeal-service', () => {
               reason: 'more time reason in progress',
               status: 'inProgress',
               state: 'awaitingReasonsForAppeal',
-              requestedDate: undefined,
+              requestDate: undefined,
               evidence: [{
                 value: {
                   document_binary_url: 'someurl1/binary',
@@ -791,7 +791,7 @@ describe('update-appeal-service', () => {
               reason: 'ask for more time reason',
               status: 'inProgress',
               state: 'awaitingReasonsForAppeal',
-              requestedDate: undefined,
+              requestDate: undefined,
               evidence: []
             }
           } as Appeal,
@@ -874,7 +874,7 @@ describe('update-appeal-service', () => {
             reason: 'ask for more time reason',
             status: 'inProgress',
             state: 'awaitingReasonsForAppeal',
-            requestedDate: undefined
+            requestDate: undefined
           }
         }]
 

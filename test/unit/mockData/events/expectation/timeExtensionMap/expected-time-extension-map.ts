@@ -126,7 +126,7 @@ export const expectedTimeExtensionMap = [
                   }
                 }
               ],
-              'requestedDate': '2020-04-14'
+              'requestDate': '2020-04-14'
             }
           },
           {
@@ -136,7 +136,7 @@ export const expectedTimeExtensionMap = [
               'reason': 'I need more time while I am waiting for a letter',
               'status': 'granted',
               'decision': 'granted',
-              'requestedDate': '2020-04-15',
+              'requestDate': '2020-04-15',
               'decisionReason': 'I have granted your request you know have more time'
             }
           }
@@ -341,7 +341,7 @@ export const expectedTimeExtensionMap = [
                   }
                 }
               ],
-              'requestedDate': '2020-04-14'
+              'requestDate': '2020-04-14'
             }
           },
           {
@@ -350,7 +350,7 @@ export const expectedTimeExtensionMap = [
               'state': 'awaitingReasonsForAppeal',
               'reason': 'I need more time while I am waiting for a letter',
               'status': 'submitted',
-              'requestedDate': '2020-04-15'
+              'requestDate': '2020-04-15'
             }
           }
         ],
@@ -554,7 +554,7 @@ export const expectedTimeExtensionMap = [
                   }
                 }
               ],
-              'requestedDate': '2020-04-14',
+              'requestDate': '2020-04-14',
               'decisionReason': 'Not enough information'
             }
           }
@@ -755,7 +755,7 @@ export const expectedTimeExtensionMap = [
                   }
                 }
               ],
-              'requestedDate': '2020-04-14'
+              'requestDate': '2020-04-14'
             }
           }
         ],
@@ -957,7 +957,7 @@ export const expectedTimeExtensionMap = [
                   }
                 }
               ],
-              'requestedDate': '2020-04-14'
+              'requestDate': '2020-04-14'
             }
           },
           {
@@ -967,7 +967,7 @@ export const expectedTimeExtensionMap = [
               'reason': 'I need more time while I am waiting for a letter',
               'status': 'granted',
               'decision': 'granted',
-              'requestedDate': '2020-04-15',
+              'requestDate': '2020-04-15',
               'decisionReason': 'I have granted your request you know have more time'
             }
           }
@@ -1172,7 +1172,7 @@ export const expectedTimeExtensionMap = [
                   }
                 }
               ],
-              'requestedDate': '2020-04-14'
+              'requestDate': '2020-04-14'
             }
           },
           {
@@ -1181,7 +1181,7 @@ export const expectedTimeExtensionMap = [
               'state': 'awaitingReasonsForAppeal',
               'reason': 'I need more time while I am waiting for a letter',
               'status': 'submitted',
-              'requestedDate': '2020-04-15'
+              'requestDate': '2020-04-15'
             }
           }
         ],
@@ -1385,7 +1385,7 @@ export const expectedTimeExtensionMap = [
                   }
                 }
               ],
-              'requestedDate': '2020-04-14',
+              'requestDate': '2020-04-14',
               'decisionReason': 'Not enough information'
             }
           }
@@ -1586,7 +1586,7 @@ export const expectedTimeExtensionMap = [
                   }
                 }
               ],
-              'requestedDate': '2020-04-14'
+              'requestDate': '2020-04-14'
             }
           }
         ],

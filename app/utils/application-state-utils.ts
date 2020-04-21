@@ -158,7 +158,7 @@ function getAppealApplicationNextStep(req: Request) {
     }
   };
 
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, history);
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, history, req);
 
   return doThisNextSection;
 }

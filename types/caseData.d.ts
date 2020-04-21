@@ -32,6 +32,7 @@ interface CaseData {
   reasonsForAppealDocuments: SupportingEvidenceCollection[];
   respondentDocuments: RespondentEvidenceCollection[];
   timeExtensions: TimeExtensionCollection[];
+  directions: DirectionCollection[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
@@ -71,16 +72,40 @@ interface TimeExtensionCollection {
   value: CcdTimeExtension;
 }
 
+interface DirectionCollection {
+  id?: number;
+  value: CcdDirection;
+}
+
+interface PreviousDateCollection {
+  id?: number;
+  value: CcdPreviousDate;
+}
+
 interface CcdTimeExtension {
+  requestDate?: string;
   reason: string;
   evidence?: SupportingEvidenceCollection[];
   status: string;
   state: string;
   decision?: string;
   decisionReason?: string;
-  requestedDate?: string;
+  decisionOutcomeDate?: string;
 }
 
+interface CcdDirection {
+  tag: string;
+  dateDue: string;
+  parties: string;
+  dateSent: string;
+  explanation: string;
+  previousDates?: PreviousDateCollection[];
+}
+
+interface CcdPreviousDate {
+  dateDue: string;
+  dateSent: string;
+}
 interface Subscription {
   subscriber: string;
   wantsEmail: 'Yes' | 'No';

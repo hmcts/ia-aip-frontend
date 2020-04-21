@@ -198,7 +198,7 @@ describe('Ask for more time Controller', function () {
 
       expect(req.session.appeal.askForMoreTime).to.be.eql({});
       expect(req.session.appeal.previousAskForMoreTime[0].reason).to.be.eql('some reason');
-      expect(req.session.appeal.previousAskForMoreTime[0].requestedDate).to.exist;
+      expect(req.session.appeal.previousAskForMoreTime[0].requestDate).to.exist;
       expect(req.session.appeal.previousAskForMoreTime[0].status).to.be.eql('submitted');
       expect(req.session.appeal.previousAskForMoreTime[0].evidence).to.be.eql([
         {

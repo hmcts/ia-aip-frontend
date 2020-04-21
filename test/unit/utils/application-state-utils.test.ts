@@ -100,6 +100,20 @@ describe('application-state-utils', () => {
     it('when application status is awaitingReasonsForAppeal should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
       req.session.lastModified = '2020-02-07T16:00:00.000';
+      req.session.appeal.directions = [
+        {
+          'id': 2,
+          'tag': 'requestReasonsForAppeal',
+          'dateDue': '2020-09-01',
+          'dateSent': '2020-04-21'
+        },
+        {
+          'id': 1,
+          'tag': 'respondentEvidence',
+          'dateDue': '2020-04-28',
+          'dateSent': '2020-04-14'
+        }
+      ];
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
@@ -109,7 +123,7 @@ describe('application-state-utils', () => {
             respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
             url: '/case-building/home-office-decision-wrong'
           },
-          deadline: 'TBC',
+          deadline: '01 September 2020',
           descriptionParagraphs: [
             'Tell us why you think the Home Office decision to refuse your claim is wrong.'
           ],

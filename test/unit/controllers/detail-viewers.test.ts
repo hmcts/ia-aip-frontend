@@ -343,7 +343,7 @@ describe('Detail viewer Controller', () => {
   });
 
   describe('getTimeExtensionDecisionViewer', () => {
-    it('should render detail-viewers/time-extension-details-decision-viewer.njk with refused decision', () => {
+    it('should render detail-viewers/time-extension-decision-details-viewer.njk  with refused decision', () => {
 
       req.params.id = '25134779-79b7-4519-a4bd-e23e2f1d5ba8';
 
@@ -361,13 +361,13 @@ describe('Detail viewer Controller', () => {
         } ];
 
       getTimeExtensionDecisionViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-decision-viewer.njk', {
+      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-decision-details-viewer.njk', {
         data: expectedSummaryRows,
         previousPage: paths.overview
       });
     });
 
-    it('should render detail-viewers/time-extension-details-decision-viewer.njk with granted decision', () => {
+    it('should render detail-viewers/time-extension-decision-details-viewer.njk with granted decision', () => {
 
       req.params.id = 'c5532555-aa49-4a11-88a4-69d98d27ba95';
 
@@ -387,7 +387,7 @@ describe('Detail viewer Controller', () => {
           value: { html: 'Not enough information' }
         } ];
 
-      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-decision-viewer.njk', {
+      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-decision-details-viewer.njk', {
         data: expectedSummaryRows,
         previousPage: paths.overview
       });

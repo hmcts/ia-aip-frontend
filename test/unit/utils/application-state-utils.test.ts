@@ -170,7 +170,7 @@ describe('application-state-utils', () => {
           respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
           url: '/case-building/home-office-decision-wrong'
         },
-        deadline: '22 April 2020',
+        deadline: '21 April 2020',
         descriptionParagraphs: [
           'You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.'
         ],

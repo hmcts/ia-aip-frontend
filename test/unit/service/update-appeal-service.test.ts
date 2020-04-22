@@ -515,7 +515,7 @@ describe('update-appeal-service', () => {
       );
     });
 
-    it('converts time extension persists in progress', () => {
+    it('converts time extension inProgress and persists as submitted', () => {
       emptyApplication.askForMoreTime.requestDate = '2020-01-02';
       emptyApplication.askForMoreTime.reason = 'more time reason';
       emptyApplication.askForMoreTime.status = 'inProgress';
@@ -552,7 +552,7 @@ describe('update-appeal-service', () => {
                 'reason': 'more time reason',
                 'requestDate': '2020-01-02',
                 'state': 'awaitingReasonsForAppeal',
-                'status': 'inProgress'
+                'status': 'submitted'
               }
             }
           ]

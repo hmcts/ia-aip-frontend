@@ -391,7 +391,7 @@
             {
               "title": "What you sent",
               "text": "Reason you needed more time",
-              "href": "{{ paths.detailsViewers.timeExtension }}"
+              "href": "{{ paths.common.detailsViewers.timeExtension }}"
             }
           ]
         },
@@ -401,7 +401,7 @@
             {
               "title": "What the Tribunal said ",
               "text": "Reason for decision",
-              "href": "{{ paths.detailsViewers.timeExtensionDecision }}"
+              "href": "{{ paths.common.detailsViewers.timeExtensionDecision }}"
             }
           ]
         }

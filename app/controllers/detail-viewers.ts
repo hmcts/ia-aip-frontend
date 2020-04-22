@@ -239,14 +239,14 @@ function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextF
   }
 }
 
-function setupDetailViewersController(middleware: Middleware[], documentManagementService: DocumentManagementService): Router {
+function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.common.detailsViewers.document + '/:documentId', middleware, getDocumentViewer(documentManagementService));
-  router.get(paths.common.detailsViewers.homeOfficeDocuments, middleware, getHoEvidenceDetailsViewer);
-  router.get(paths.common.detailsViewers.appealDetails, middleware, getAppealDetailsViewer);
-  router.get(paths.common.detailsViewers.reasonsForAppeal, middleware, getReasonsForAppealViewer);
-  router.get(paths.common.detailsViewers.timeExtension + '/:id', middleware, getTimeExtensionViewer);
-  router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', middleware, getTimeExtensionDecisionViewer);
+  router.get(paths.common.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
+  router.get(paths.common.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
+  router.get(paths.common.detailsViewers.appealDetails, getAppealDetailsViewer);
+  router.get(paths.common.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
+  router.get(paths.common.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
+  router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
 
   return router;
 }

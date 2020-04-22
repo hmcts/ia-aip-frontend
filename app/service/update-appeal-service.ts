@@ -390,6 +390,9 @@ export default class UpdateAppealService {
   }
 
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
+    if (askForMoreTime.status === 'inProgress') {
+      askForMoreTime.status = 'submitted';
+    }
     const currentTimeExtension = {
       reason: askForMoreTime.reason,
       state: askForMoreTime.state,

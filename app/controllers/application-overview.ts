@@ -34,7 +34,6 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const stagesStatus = buildProgressBarStages(req.session.appeal.appealStatus);
       const nextSteps = getAppealApplicationNextStep(req);
       const history = await getAppealApplicationHistory(req, updateAppealService);
-
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,

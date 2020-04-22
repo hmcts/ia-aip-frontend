@@ -128,39 +128,40 @@ describe('Confirmation Page Controller', () => {
     } ];
     const date = moment().format(dayMonthYearFormat);
 
-    const expectedHistory = [ {
-      'date': date,
-      'title': 'Your appeal details',
-      'text': 'You sent your appeal details to the Tribunal.',
-      'links': [
-        {
+    const expectedHistory = [
+      {
+        'date': date,
+        'title': 'Your appeal argument',
+        'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
+        'links': [{
           'title': 'What you sent',
-          'text': 'Your appeal details',
-          'href': '{{ paths.common.viewAppealDetails }}'
-        }, {
-          'href': '{{ paths.guidancePages.tribunalCaseworker }}',
-          'text': 'What is a Tribunal Caseworker?',
-          'title': 'Helpful information'
-        } ]
-    }, {
-      'date': date,
-      'title': 'Your appeal argument',
-      'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
-      'links': [
-        {
-          'title': 'What you sent',
-          'text': 'Why you think the Home Office is wrong',
-          'href': '{{ paths.common.viewReasonsForAppeal }}'
-        }, {
-          'title': 'Useful documents',
-          'text': 'Home Office documents about your case',
-          'href': '{{ paths.common.viewHomeOfficeDocuments }}'
-        }, {
-          'title': 'Helpful information',
-          'text': 'Understanding your Home Office documents',
-          'href': '{{ paths.guidancePages.homeOfficeDocuments }}'
-        } ]
-    } ];
+          'text': 'Why you think the Home Office is wrong','href': '{{ paths.common.viewReasonsForAppeal }}'
+        },
+          {
+            'title': 'Useful documents',
+            'text': 'Home Office documents about your case',
+            'href': '{{ paths.common.viewHomeOfficeDocuments }}'
+          },
+          {
+            'title': 'Helpful information',
+            'text': 'Understanding your Home Office documents',
+            'href': '{{ paths.guidancePages.homeOfficeDocuments }}'
+          }]},
+      {
+        'date': date,
+        'title': 'Your appeal details',
+        'text': 'You sent your appeal details to the Tribunal.',
+        'links': [
+          { 'title': 'What you sent',
+            'text': 'Your appeal details',
+            'href': '{{ paths.common.viewAppealDetails }}'
+          },
+          {
+            'title': 'Helpful information',
+            'text': 'What is a Tribunal Caseworker?',
+            'href': '{{ paths.guidancePages.tribunalCaseworker }}'
+          }]
+      }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',

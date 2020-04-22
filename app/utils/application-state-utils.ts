@@ -177,16 +177,6 @@ function constructEventObject(event) {
   };
 }
 
-function sortList(a, b) {
-  if (Date.parse(a.date) < Date.parse(b.date)) {
-    return 1;
-  } else if (Date.parse(a.date) > Date.parse(b.date)) {
-    return -1;
-  } else if (Date.parse(a.date) === Date.parse(b.date)) {
-    return 0;
-  }
-}
-
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
@@ -195,24 +185,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   req.session.appeal.history = history;
   const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
-  const eventsCollected = [];
-  eventToLookFor.forEach((event: string,index: number) => {
-    const eventFound = history.find((e: HistoryEvent) => event === e.id);
-    if (eventFound) {
-      let eventObject = constructEventObject(eventFound);
-      // TODO - CLEAN UP CHECKING FOR TCW LINK
-      const { appealStatus } = req.session.appeal;
-      if ((['awaitingRespondentEvidence', 'appealSubmitted'].includes(appealStatus)) && event === 'submitAppeal') {
-        delete eventObject.links[1];
-      }
-      eventsCollected.push(eventObject);
-    }
-  });
-  if (eventsCollected.length > 1) {
-    return eventsCollected.sort(sortList);
-  } else {
-    return eventsCollected;
-  }
+  return history.filter(event => eventToLookFor.includes(event.id)).map(event => constructEventObject(event));
 }
 
 export {

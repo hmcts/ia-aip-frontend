@@ -59,10 +59,11 @@ describe('Type of appeal Controller', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+      const middleware = [];
 
-      setupTypeOfAppealController(updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.typeOfAppeal);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.typeOfAppeal);
+      setupTypeOfAppealController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.typeOfAppeal);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.typeOfAppeal);
     });
   });
 
@@ -71,7 +72,7 @@ describe('Type of appeal Controller', () => {
       getTypeOfAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
-        previousPage: paths.taskList
+        previousPage: paths.appealStarted.taskList
       });
     });
 
@@ -83,7 +84,7 @@ describe('Type of appeal Controller', () => {
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
-        previousPage: paths.taskList
+        previousPage: paths.appealStarted.taskList
       });
     });
 
@@ -111,7 +112,7 @@ describe('Type of appeal Controller', () => {
         types: appealTypes,
         errors: { appealType: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.taskList
+        previousPage: paths.appealStarted.taskList
       });
     });
 
@@ -121,7 +122,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.overview + '?saved');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -132,7 +133,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should validate and redirect to the task-list page', async () => {
@@ -141,7 +142,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
     it('when in edit mode should validate and redirect to the CYA page and reset isEdit flag', async () => {
@@ -152,7 +153,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
     });
 
@@ -162,7 +163,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
     it('postTypeOfAppeal when in edit mode when clicked on save-and-continue with multiple selections should redirect to CYA page and reset isEdit flag', async () => {
@@ -173,7 +174,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });

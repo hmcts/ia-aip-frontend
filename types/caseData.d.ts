@@ -4,6 +4,13 @@ interface SupportingDocument {
   document_binary_url: string;
 }
 
+interface DocumentWithMetaData {
+  suppliedBy?: string;
+  description?: string;
+  dateUploaded?: string;
+  document: SupportingDocument;
+}
+
 interface CcdCaseDetails {
   id: string;
   state: string;
@@ -32,8 +39,8 @@ interface CaseData {
   reasonsForAppealDocuments: SupportingEvidenceCollection[];
   respondentDocuments: RespondentEvidenceCollection[];
   timeExtensions: TimeExtensionCollection[];
-  directions: DirectionCollection[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
+  directions: DirectionCollection[];
 }
 
 interface Nationality {
@@ -58,6 +65,11 @@ interface SubscriptionCollection {
 }
 
 interface SupportingEvidenceCollection {
+  id?: number;
+  value: DocumentWithMetaData;
+}
+
+interface TimeExtensionEvidenceCollection {
   id?: number;
   value: SupportingDocument;
 }
@@ -85,7 +97,7 @@ interface PreviousDateCollection {
 interface CcdTimeExtension {
   requestDate?: string;
   reason: string;
-  evidence?: SupportingEvidenceCollection[];
+  evidence?: TimeExtensionEvidenceCollection[];
   status: string;
   state: string;
   decision?: string;

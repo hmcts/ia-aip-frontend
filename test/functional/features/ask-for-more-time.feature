@@ -25,7 +25,7 @@ Feature: Ask for more time page
     And I click continue
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click continue
+    When I click send
     Then I am on the overview page
 
   Scenario: AFMT without evidence
@@ -39,5 +39,5 @@ Feature: Ask for more time page
     When I select No and click continue
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
-    When I click continue
+    When I click send
     Then I am on the overview page

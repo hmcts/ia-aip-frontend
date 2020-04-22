@@ -70,12 +70,13 @@ describe('Out of time controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const updateAppealServiceDependency = updateAppealService as UpdateAppealService;
       const documentManagementServiceDependency = documentManagementService as DocumentManagementService;
-      setupOutOfTimeController({
+      const middleware = [];
+      setupOutOfTimeController(middleware, {
         updateAppealService: updateAppealServiceDependency,
         documentManagementService: documentManagementServiceDependency
       });
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.appealLate);
-      expect(routerPostStub).to.have.been.calledWith(paths.homeOffice.appealLate);
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.appealLate, middleware);
+      expect(routerPostStub).to.have.been.calledWith(paths.appealStarted.appealLate, middleware);
     });
   });
 
@@ -111,7 +112,7 @@ describe('Out of time controller', () => {
       };
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.overview);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 
     it('should validate and upload a file and redirect to check and send page', async () => {
@@ -130,7 +131,7 @@ describe('Out of time controller', () => {
 
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should validate, delete previous evidence, upload new evidence and redirect to check and send page', async () => {
@@ -155,7 +156,7 @@ describe('Out of time controller', () => {
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('when in edit mode should validate and redirect to CYA and reset isEdit flag', async () => {
@@ -172,7 +173,7 @@ describe('Out of time controller', () => {
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
@@ -194,7 +195,7 @@ describe('Out of time controller', () => {
         evidence: evidenceExample,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.taskList
+        previousPage: paths.appealStarted.taskList
       });
     });
 
@@ -213,7 +214,7 @@ describe('Out of time controller', () => {
         evidence: null,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.taskList
+        previousPage: paths.appealStarted.taskList
       });
     });
 
@@ -245,7 +246,7 @@ describe('Out of time controller', () => {
         appealLateReason: undefined,
         error: { 'appeal-late': expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.taskList
+        previousPage: paths.appealStarted.taskList
       });
     });
 

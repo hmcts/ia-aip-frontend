@@ -14,7 +14,7 @@ function getContactDetails(req: Request, res: Response, next: NextFunction) {
     const contactDetails = application && application.contactDetails || null;
     return res.render('appeal-application/contact-details.njk', {
       contactDetails,
-      previousPage: paths.taskList
+      previousPage: paths.appealStarted.taskList
     });
   } catch (error) {
     next(error);
@@ -25,7 +25,7 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
-        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       if (!req.body.selections) {
         req.body.selections = '';
@@ -59,13 +59,13 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
           contactDetails,
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         });
       }
 
       req.session.appeal.application.contactDetails = contactDetails;
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, paths.taskList);
+      return getConditionalRedirectUrl(req, res, paths.appealStarted.taskList);
 
     } catch (error) {
       next(error);
@@ -73,10 +73,10 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupContactDetailsController(updateAppealService: UpdateAppealService): Router {
+function setupContactDetailsController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.contactDetails, getContactDetails);
-  router.post(paths.contactDetails, postContactDetails(updateAppealService));
+  router.get(paths.appealStarted.contactDetails, middleware, getContactDetails);
+  router.post(paths.appealStarted.contactDetails, middleware, postContactDetails(updateAppealService));
   return router;
 }
 

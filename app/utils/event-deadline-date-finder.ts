@@ -1,36 +1,65 @@
 import config from 'config';
 import { Request } from 'express';
 import moment from 'moment';
+import { dayMonthYearFormat } from './date-formats';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');
 
+/**
+ * Finds a targeted direction, retrieves it's due date and returns it as a string with the correct date format
+ * @param directions the directions
+ * @param directionTagToLookFor the direction to find
+ */
+function getFormattedDirectionDueDate(directions: Direction[], directionTagToLookFor: string) {
+  let formattedDeadline = null;
+  if (directions) {
+    const direction = directions.find(d => d.tag === directionTagToLookFor);
+    if (direction) {
+      const dueDate = direction.dateDue;
+      formattedDeadline = moment(dueDate).format(dayMonthYearFormat);
+    }
+  }
+  return formattedDeadline;
+}
+
+/**
+ * Given the current case status it retrieves deadlines based on the business logic.
+ * @param currentAppealStatus the appeal status
+ * @param req the request containing  all the directions in session
+ */
 function getDeadline(currentAppealStatus: string, history, req: Request) {
+
+  let formattedDeadline;
+
   switch (currentAppealStatus) {
     case 'appealStarted': {
-      return null;
+      formattedDeadline = null;
+      break;
     }
-    case 'awaitingRespondentEvidence':
-    case 'appealSubmitted': {
+    case 'appealSubmitted':
+    case 'awaitingRespondentEvidence': {
       const triggeringDate = history['appealSubmitted'].date;
-      const formattedDeadline = moment(triggeringDate).add(daysToWaitAfterSubmission, 'days').format('DD MMMM YYYY');
-      return formattedDeadline || null;
+      formattedDeadline = moment(triggeringDate).add(daysToWaitAfterSubmission, 'days').format(dayMonthYearFormat);
+      break;
     }
-    case 'awaitingReasonsForAppeal': {
-      const direction = req.session.appeal.directions.find(d => d.tag === 'requestReasonsForAppeal');
-      return direction
-        ? moment(direction.dateDue).format('DD MMMM YYYY')
-        : null;
+    case 'awaitingReasonsForAppeal':
+    case 'awaitingReasonsForAppealPartial': {
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestReasonsForAppeal');
+      break;
     }
     case 'reasonsForAppealSubmitted': {
       const triggeringDate = history['submitReasonsForAppeal'].date;
-      const formattedDeadline = moment(triggeringDate).add(daysToWaitAfterReasonsForAppeal, 'days').format('DD MMMM YYYY');
-      return formattedDeadline || null;
+      formattedDeadline = moment(triggeringDate).add(daysToWaitAfterReasonsForAppeal, 'days').format(dayMonthYearFormat);
+      break;
     }
     default: {
-      return 'TBC';
+      formattedDeadline = 'TBC';
+      break;
     }
   }
+
+  return formattedDeadline;
 }
 
 export {

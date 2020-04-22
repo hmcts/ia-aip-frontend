@@ -52,7 +52,7 @@ describe('update-appeal-service', () => {
 
     expectedCaseData = {
       'appealType': 'protection',
-      'journeyType': 'awaitingReasonsForAppeal',
+      'journeyType': 'aip',
       'homeOfficeReferenceNumber': 'A1234567',
       'homeOfficeDecisionDate': '2019-01-02',
       'appellantFamilyName': 'Pedro',
@@ -89,9 +89,11 @@ describe('update-appeal-service', () => {
       'reasonsForAppealDocuments': [ {
         'id': 'f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
         'value': {
-          'document_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
-          'document_filename': '1580296112615-supporting-evidence-file.jpeg',
-          'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
+          document: {
+            'document_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
+            'document_filename': '1580296112615-supporting-evidence-file.jpeg',
+            'document_binary_url': 'http://dm-store:4506/documents/f29cde8d-e407-4ed1-8137-0eb2f9b3cc42/binary'
+          }
         }
       }
       ],
@@ -111,26 +113,31 @@ describe('update-appeal-service', () => {
         }
       ],
       'timeExtensions': [
-        {value: {
-          requestDate: '2020-01-01',
-          reason: 'first reason',
-          status: 'completed',
-          evidence: [],
-          state: 'awaitingReasonsForAppeal'
-        }},
-        {value: {
-          reason: 'some reason',
-          status: 'inProgress',
-          state: 'awaitingReasonsForAppeal',
-          evidence: [{
-            value: {
-              'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
-              'document_filename': 'expected_time_extension_evidence.png',
-              'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
-            }
-          }],
-          type: 'awaitingReasonsForAppeal'
-        }}
+        {
+          value: {
+            requestDate: '2020-01-01',
+            reason: 'first reason',
+            status: 'completed',
+            evidence: [],
+            state: 'awaitingReasonsForAppeal'
+          }
+        },
+        {
+          value: {
+            requestDate: '2020-01-02',
+            reason: 'some reason',
+            status: 'inProgress',
+            state: 'awaitingReasonsForAppeal',
+            evidence: [ {
+              value: {
+                'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+                'document_filename': 'expected_time_extension_evidence.png',
+                'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+              }
+            } ],
+            type: 'awaitingReasonsForAppeal'
+          }
+        }
       ]
     };
     ccdServiceMock.expects('loadOrCreateCase')
@@ -180,12 +187,29 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
       validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
       expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
-      expect(req.session.appeal.askForMoreTime.reason).to.be.eq('some reason');
-      expect(req.session.appeal.askForMoreTime.requestDate).to.be.undefined;
-      expect(req.session.appeal.askForMoreTime.evidence.length).to.be.eq(1);
-      validateUuid(req.session.appeal.askForMoreTime.evidence[0].fileId);
-      expect(req.session.appeal.askForMoreTime.evidence[0].name).to.be.eq('expected_time_extension_evidence.png');
-      expect(req.session.appeal.askForMoreTime.state).to.be.eq('awaitingReasonsForAppeal');
+      expect(req.session.appeal.askForMoreTime).to.deep.eq({
+        'evidence': [
+          {
+            'fileId': req.session.appeal.askForMoreTime.evidence[0].fileId,
+            'id': req.session.appeal.askForMoreTime.evidence[0].id,
+            'name': 'expected_time_extension_evidence.png'
+          }
+        ],
+        'reason': 'some reason',
+        'requestDate': '2020-01-02',
+        'state': 'awaitingReasonsForAppeal',
+        'status': 'inProgress'
+      });
+
+      expect(req.session.appeal.previousAskForMoreTime.length).to.be.eq(1);
+      expect(req.session.appeal.previousAskForMoreTime).to.deep.eq([ {
+        'evidence': [],
+        'reason': 'first reason',
+        'requestDate': '2020-01-01',
+        'state': 'awaitingReasonsForAppeal',
+        'status': 'completed'
+      } ]);
+
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -200,24 +224,6 @@ describe('update-appeal-service', () => {
       await updateAppealService.loadAppeal(req as Request);
 
       expect(req.session.appeal.askForMoreTime).to.be.eql({});
-      expect(req.session.appeal.previousAskForMoreTime).to.be.eql([]);
-    });
-
-    it('load time extensions when one previous time extensions inProgress', async () => {
-      expectedCaseData.timeExtensions = [
-        { value: aTimeExtension('some reason', 'expected_time_extension_evidence.png', 'inProgress') }
-      ];
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-
-      checkAskForMoreTime('some reason', 'expected_time_extension_evidence.png', 'inProgress', 'awaitingReasonsForAppeal', req.session.appeal.askForMoreTime);
-
       expect(req.session.appeal.previousAskForMoreTime).to.be.eql([]);
     });
 
@@ -236,48 +242,22 @@ describe('update-appeal-service', () => {
 
       expect(req.session.appeal.askForMoreTime).to.be.eql({});
       expect(req.session.appeal.previousAskForMoreTime.length).to.be.eq(1);
-      checkAskForMoreTime('some reason', 'expected_time_extension_evidence.png', 'submitted', 'awaitingReasonsForAppeal', req.session.appeal.previousAskForMoreTime[0]);
-    });
 
-    it('load time extensions when inProgress time extensions and previous time extensions', async () => {
-      expectedCaseData.timeExtensions = [
-        { value: aTimeExtension('some reason submitted', 'expected_time_extension_evidence_submitted.png', 'submitted') },
-        { value: aTimeExtension('some reason in progress', 'expected_time_extension_evidence_in_progress.png', 'inProgress') }
-      ];
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-
-      checkAskForMoreTime('some reason in progress', 'expected_time_extension_evidence_in_progress.png', 'inProgress', 'awaitingReasonsForAppeal', req.session.appeal.askForMoreTime);
-
-      expect(req.session.appeal.previousAskForMoreTime.length).to.be.eq(1);
-      checkAskForMoreTime('some reason submitted', 'expected_time_extension_evidence_submitted.png', 'submitted', 'awaitingReasonsForAppeal', req.session.appeal.previousAskForMoreTime[0]);
-    });
-
-    it('load time extensions when inProgress time extensions is not for current state and previous time extensions', async () => {
-      expectedCaseData.timeExtensions = [
-        { value: aTimeExtension('some reason submitted', 'expected_time_extension_evidence_submitted.png', 'submitted') },
-        { value: aTimeExtension('some reason in progress', 'expected_time_extension_evidence_in_progress.png', 'inProgress', 'someOtherState') }
-      ];
-      expectedCaseData.state = 'awaitingReasonsForAppeal';
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
-      expect(req.session.appeal.previousAskForMoreTime.length).to.be.eq(2);
-      checkAskForMoreTime('some reason submitted', 'expected_time_extension_evidence_submitted.png', 'submitted', 'awaitingReasonsForAppeal', req.session.appeal.previousAskForMoreTime[0]);
-      checkAskForMoreTime('some reason in progress', 'expected_time_extension_evidence_in_progress.png', 'inProgress', 'someOtherState', req.session.appeal.previousAskForMoreTime[1]);
+      expect(req.session.appeal.previousAskForMoreTime).to.deep.eq([
+        {
+          'evidence': [
+            {
+              'fileId': req.session.appeal.previousAskForMoreTime[0].evidence[0].fileId,
+              'id': req.session.appeal.previousAskForMoreTime[0].evidence[0].id,
+              'name': 'expected_time_extension_evidence.png'
+            }
+          ],
+          'reason': 'some reason',
+          'requestDate': '2020-01-01T00:00:00.000',
+          'state': 'awaitingReasonsForAppeal',
+          'status': 'submitted'
+        }
+      ]);
     });
 
     function aTimeExtension(reason: string, documentFileName: string, status: string, state: string = 'awaitingReasonsForAppeal') {
@@ -287,13 +267,13 @@ describe('update-appeal-service', () => {
         status: status,
         state: state,
         requestDate: '2020-01-01T00:00:00.000',
-        evidence: [{
+        evidence: [ {
           value: {
             'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
             'document_filename': documentFileName,
             'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
           }
-        }]
+        } ]
       };
     }
 
@@ -535,7 +515,8 @@ describe('update-appeal-service', () => {
       );
     });
 
-    it('converts time extension when no previous time extensions', () => {
+    it('converts time extension persists in progress', () => {
+      emptyApplication.askForMoreTime.requestDate = '2020-01-02';
       emptyApplication.askForMoreTime.reason = 'more time reason';
       emptyApplication.askForMoreTime.status = 'inProgress';
       emptyApplication.askForMoreTime.state = 'awaitingReasonsForAppeal';
@@ -547,30 +528,34 @@ describe('update-appeal-service', () => {
           name: 'name'
         }
       ];
-      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
+      emptyApplication.documentMap = [ { id: 'fileId', url: 'someurl' } ] as DocumentMap[];
       emptyApplication.previousAskForMoreTime = [];
 
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).eql(
         {
-          journeyType: 'aip',
-          reviewTimeExtensionRequired: 'Yes',
-          timeExtensions: [{
-            value: {
-              reason: 'more time reason',
-              status: 'inProgress',
-              state: 'awaitingReasonsForAppeal',
-              requestDate: undefined,
-              evidence: [{
-                value: {
-                  document_binary_url: 'someurl/binary',
-                  document_filename: 'name',
-                  document_url: 'someurl'
-                }
-              }]
+          'journeyType': 'aip',
+          'reviewTimeExtensionRequired': 'Yes',
+          'timeExtensions': [
+            {
+              'value': {
+                'evidence': [
+                  {
+                    'value': {
+                      'document_binary_url': 'someurl/binary',
+                      'document_filename': 'name',
+                      'document_url': 'someurl'
+                    }
+                  }
+                ],
+                'reason': 'more time reason',
+                'requestDate': '2020-01-02',
+                'state': 'awaitingReasonsForAppeal',
+                'status': 'inProgress'
+              }
             }
-          }]
+          ]
         }
       );
     });
@@ -578,41 +563,40 @@ describe('update-appeal-service', () => {
     it('converts time extension when no current time extensions but previous ones', () => {
       emptyApplication.askForMoreTime = {};
 
-      emptyApplication.previousAskForMoreTime = [{
+      emptyApplication.previousAskForMoreTime = [ {
         reason: 'more time reason',
         status: 'submitted',
         state: 'awaitingReasonsForAppeal',
-        requestDate: '2020-01-01T00:00:00.000',
-        evidence: [
-          {
-            id: 'id',
-            fileId: 'fileId',
-            name: 'name'
-          }
-        ]
-      }];
-      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
+        requestDate: '2020-01-01',
+        evidence: [ {
+          id: 'id',
+          fileId: 'fileId',
+          name: 'name'
+        } ]
+      } ];
+
+      emptyApplication.documentMap = [ { id: 'fileId', url: 'someurl' } ] as DocumentMap[];
 
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).eql(
         {
           journeyType: 'aip',
-          timeExtensions: [{
+          timeExtensions: [ {
             value: {
               reason: 'more time reason',
               status: 'submitted',
               state: 'awaitingReasonsForAppeal',
-              requestDate: '2020-01-01T00:00:00.000',
-              evidence: [{
+              requestDate: '2020-01-01',
+              evidence: [ {
                 value: {
                   document_binary_url: 'someurl/binary',
                   document_filename: 'name',
                   document_url: 'someurl'
                 }
-              }]
+              } ]
             }
-          }]
+          } ]
         }
       );
     });
@@ -620,8 +604,10 @@ describe('update-appeal-service', () => {
     it('converts time extension when current time extensions and previous ones', () => {
       emptyApplication.askForMoreTime = {
         reason: 'more time reason in progress',
-        status: 'inProgress',
+        status: 'submitted',
         state: 'awaitingReasonsForAppeal',
+        reviewTimeExtensionRequired: 'yes',
+        requestDate: '2020-02-02T00:00:00.000',
         evidence: [
           {
             id: 'id1',
@@ -631,19 +617,18 @@ describe('update-appeal-service', () => {
         ]
       };
 
-      emptyApplication.previousAskForMoreTime = [{
+      emptyApplication.previousAskForMoreTime = [ {
         reason: 'more time reason',
         status: 'submitted',
         state: 'awaitingReasonsForAppeal',
-        requestDate: '2020-01-01T00:00:00.000',
-        evidence: [
-          {
-            id: 'id2',
-            fileId: 'fileId2',
-            name: 'name2'
-          }
-        ]
-      }];
+        requestDate: '2020-01-01',
+        evidence: [ {
+          id: 'id2',
+          fileId: 'fileId2',
+          name: 'name2'
+        } ]
+      } ];
+
       emptyApplication.documentMap = [
         { id: 'fileId1', url: 'someurl1' },
         { id: 'fileId2', url: 'someurl2' }
@@ -654,36 +639,37 @@ describe('update-appeal-service', () => {
       expect(caseData).eql(
         {
           journeyType: 'aip',
-          timeExtensions: [{
+          timeExtensions: [ {
             value: {
               reason: 'more time reason',
               status: 'submitted',
               state: 'awaitingReasonsForAppeal',
-              requestDate: '2020-01-01T00:00:00.000',
-              evidence: [{
+              requestDate: '2020-01-01',
+              evidence: [ {
                 value: {
                   document_binary_url: 'someurl2/binary',
                   document_filename: 'name2',
                   document_url: 'someurl2'
                 }
-              }]
+              } ]
             }
-          },
-          {
+          }, {
             value: {
-              reason: 'more time reason in progress',
-              status: 'inProgress',
-              state: 'awaitingReasonsForAppeal',
-              requestDate: undefined,
-              evidence: [{
-                value: {
-                  document_binary_url: 'someurl1/binary',
-                  document_filename: 'name1',
-                  document_url: 'someurl1'
+              evidence: [
+                {
+                  value: {
+                    document_binary_url: 'someurl1/binary',
+                    document_filename: 'name1',
+                    document_url: 'someurl1'
+                  }
                 }
-              }]
+              ],
+              reason: 'more time reason in progress',
+              state: 'awaitingReasonsForAppeal',
+              status: 'submitted',
+              requestDate: '2020-02-02T00:00:00.000'
             }
-          }]
+          } ]
         }
       );
     });
@@ -723,7 +709,13 @@ describe('update-appeal-service', () => {
                 reason: 'a reason',
                 evidence: {
                   name: 'somefile.png',
-                  fileId: '00000000-0000-0000-0000-000000000000'
+                  fileId: '00000000-0000-0000-0000-000000000000',
+                  dateUploaded: {
+                    year: 2020,
+                    month: 1,
+                    day: 1
+                  },
+                  description: 'Some evidence 1'
                 }
               },
               personalDetails: {
@@ -756,11 +748,23 @@ describe('update-appeal-service', () => {
               evidences: [
                 {
                   fileId: '00000000-0000-0000-0000-000000000001',
-                  name: 'File1.png'
+                  name: 'File1.png',
+                  dateUploaded: {
+                    year: 2020,
+                    month: 1,
+                    day: 1
+                  },
+                  description: 'Some evidence 1'
                 },
                 {
                   fileId: '00000000-0000-0000-0000-000000000002',
-                  name: 'File2.png'
+                  name: 'File2.png',
+                  dateUploaded: {
+                    year: 2020,
+                    month: 2,
+                    day: 2
+                  },
+                  description: 'Some evidence 2'
                 }
               ] as Evidence[]
             },
@@ -789,7 +793,7 @@ describe('update-appeal-service', () => {
             ],
             askForMoreTime: {
               reason: 'ask for more time reason',
-              status: 'inProgress',
+              status: 'submitted',
               state: 'awaitingReasonsForAppeal',
               requestDate: undefined,
               evidence: []
@@ -855,28 +859,36 @@ describe('update-appeal-service', () => {
         reasonsForAppealDocuments: [
           {
             value: {
-              document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
-              document_filename: 'File1.png',
-              document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              dateUploaded: '2020-01-01',
+              description: 'Some evidence 1',
+              document: {
+                document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                document_filename: 'File1.png',
+                document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              }
             }
           },
           {
             value: {
-              document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
-              document_filename: 'File2.png',
-              document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
+              dateUploaded: '2020-02-02',
+              description: 'Some evidence 2',
+              document: {
+                document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
+                document_filename: 'File2.png',
+                document_binary_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002/binary'
+              }
             }
           }
         ],
-        timeExtensions: [{
+        timeExtensions: [ {
           value: {
             evidence: [],
             reason: 'ask for more time reason',
-            status: 'inProgress',
+            status: 'submitted',
             state: 'awaitingReasonsForAppeal',
             requestDate: undefined
           }
-        }]
+        } ]
 
       };
     });

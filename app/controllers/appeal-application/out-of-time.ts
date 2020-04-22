@@ -16,8 +16,8 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
     res.render('appeal-application/home-office/appeal-late.njk', {
       appealLateReason,
       evidence: evidence,
-      evidenceCTA: paths.homeOffice.deleteEvidence,
-      previousPage: paths.taskList
+      evidenceCTA: paths.appealStarted.deleteEvidence,
+      previousPage: paths.appealStarted.taskList
     });
   } catch (e) {
     next(e);
@@ -28,7 +28,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'appeal-late')) {
-        return getConditionalRedirectUrl(req, res, paths.overview);
+        return getConditionalRedirectUrl(req, res, paths.common.overview);
       }
 
       const { application } = req.session.appeal;
@@ -52,7 +52,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
           evidence,
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         });
       }
 
@@ -75,7 +75,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
         reason: req.body['appeal-late']
       };
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.checkAndSend));
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.appealStarted.checkAndSend));
     } catch (e) {
       next(e);
     }
@@ -96,24 +96,24 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
           appealLateReason: req.body['appeal-late'],
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         });
       }
       req.session.appeal.application.lateAppeal.reason = req.body['appeal-late'];
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return res.redirect(paths.homeOffice.appealLate);
+      return res.redirect(paths.appealStarted.appealLate);
     } catch (e) {
       next(e);
     }
   };
 }
 
-function setupOutOfTimeController(deps?: any): Router {
+function setupOutOfTimeController(middleware: Middleware[], deps?: any): Router {
 
   const router = Router();
-  router.get(paths.homeOffice.appealLate, getAppealLate);
-  router.post(paths.homeOffice.appealLate, postAppealLate(deps.documentManagementService, deps.updateAppealService));
-  router.post(paths.homeOffice.deleteEvidence, postAppealLateDeleteFile(deps.documentManagementService, deps.updateAppealService));
+  router.get(paths.appealStarted.appealLate, middleware, getAppealLate);
+  router.post(paths.appealStarted.appealLate, middleware, postAppealLate(deps.documentManagementService, deps.updateAppealService));
+  router.post(paths.appealStarted.deleteEvidence, middleware, postAppealLateDeleteFile(deps.documentManagementService, deps.updateAppealService));
   return router;
 }
 

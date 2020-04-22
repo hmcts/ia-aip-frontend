@@ -20,10 +20,13 @@
         rows: summaryRows
     }) }}
 
-    <form method="post" action={{ paths.askForMoreTime.checkAndSend }}>
+    <form method="post" action={{ paths.common.askForMoreTime.checkAndSend }}>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {{ continueButton() }}
-        <a class="govuk-!-margin-left-5" href="{{ paths.overview }}">{{ i18n.common.buttons.cancel }}</a>
+        {{ govukButton({
+            text: i18n.common.buttons.send,
+            preventDoubleClick: true
+        }) }}
+        <a class="govuk-!-margin-left-5" href="{{ paths.common.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
     </form>
     {{ contactUs() }}
 {% endblock %}

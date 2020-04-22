@@ -56,9 +56,10 @@ describe('Personal Details Controller', function() {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupPersonalDetailsController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.enterPostcode);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.enterPostcode);
+      const middleware = [];
+      setupPersonalDetailsController(middleware, { updateAppealService });
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.enterPostcode, middleware);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.enterPostcode, middleware);
     });
   });
 
@@ -105,7 +106,7 @@ describe('Personal Details Controller', function() {
           error: { postcode: error },
           errorList: [ error ],
           postcode: 'invalid',
-          previousPage: paths.personalDetails.nationality
+          previousPage: paths.appealStarted.nationality
         });
     });
 
@@ -127,7 +128,7 @@ describe('Personal Details Controller', function() {
           error: { postcode },
           errorList: emptyPostcodeText,
           postcode: '',
-          previousPage: paths.personalDetails.nationality
+          previousPage: paths.appealStarted.nationality
         });
     });
   });

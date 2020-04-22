@@ -73,5 +73,11 @@
   "features": {
     "askForMoreTime": false,
     "timelineEnabled": false
+  },
+  "testAccounts": {
+    "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",
+    "testCaseOfficerPassword": "TEST_CASEOFFICER_PASSWORD",
+    "testHomeOfficeGenericUserName": "TEST_HOMEOFFICE_GENERIC_USERNAME",
+    "testHomeOfficeGenericPassword": "TEST_HOMEOFFICE_GENERIC_PASSWORD"
   }
 }

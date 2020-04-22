@@ -56,9 +56,10 @@ describe('Confirmation Page Controller', () => {
 
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
+    const middleware = [];
 
-    setupReasonsForAppealController({ updateAppealService });
-    expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
+    setupReasonsForAppealController(middleware, { updateAppealService });
+    expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppealSubmitted.confirmation, middleware);
   });
 
   it('getConfirmationPage should render confirmation.njk', () => {

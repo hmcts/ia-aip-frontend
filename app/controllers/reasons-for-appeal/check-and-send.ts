@@ -11,11 +11,11 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
   try {
     const editParameter: string = '?edit';
-    let previousPage: string = paths.reasonsForAppeal.supportingEvidence;
+    let previousPage: string = paths.awaitingReasonsForAppeal.supportingEvidence;
 
     const summaryRows = [
       addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-      addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.reasonsForAppeal.decision + editParameter)
+      addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.awaitingReasonsForAppeal.decision + editParameter)
     ];
 
     if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {
@@ -23,8 +23,8 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
       const evidences: Evidence[] = req.session.appeal.reasonsForAppeal.evidences || [];
       const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {
-        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.reasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
-        previousPage = paths.reasonsForAppeal.supportingEvidenceUpload;
+        summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceNames, paths.awaitingReasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));
+        previousPage = paths.awaitingReasonsForAppeal.supportingEvidenceUpload;
       }
     }
 
@@ -41,21 +41,21 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body)) {
-        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req);
       req.session.appeal.appealStatus = updatedAppeal.state;
-      return res.redirect(paths.reasonsForAppeal.confirmation);
+      return res.redirect(paths.reasonsForAppealSubmitted.confirmation);
     } catch (error) {
       next(error);
     }
   };
 }
 
-function setupCheckAndSendController(updateAppealService: UpdateAppealService): Router {
+function setupCheckAndSendController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.reasonsForAppeal.checkAndSend, getCheckAndSend);
-  router.post(paths.reasonsForAppeal.checkAndSend, postCheckAndSend(updateAppealService));
+  router.get(paths.awaitingReasonsForAppeal.checkAndSend, middleware, getCheckAndSend);
+  router.post(paths.awaitingReasonsForAppeal.checkAndSend, middleware, postCheckAndSend(updateAppealService));
   return router;
 }
 

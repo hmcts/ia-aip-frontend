@@ -64,10 +64,11 @@ describe('Nationality details Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+      const middleware = [];
 
-      setupPersonalDetailsController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.personalDetails.nationality);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.personalDetails.nationality);
+      setupPersonalDetailsController(middleware, { updateAppealService });
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.nationality, middleware);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.nationality, middleware);
     });
   });
 
@@ -98,7 +99,7 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterPostcode);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
@@ -108,7 +109,7 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
@@ -128,7 +129,7 @@ describe('Nationality details Controller', function () {
           errorList: [ error ],
           errors: { 'nationality': error },
           nationalitiesOptions,
-          previousPage: paths.personalDetails.dob
+          previousPage: paths.appealStarted.dob
         });
     });
 
@@ -139,7 +140,7 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
@@ -150,7 +151,7 @@ describe('Nationality details Controller', function () {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should catch an exception and call next() with error', async () => {
@@ -166,7 +167,7 @@ describe('Nationality details Controller', function () {
       req.body.nationality = 'Taiwan';
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterPostcode);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
     });
 
     it('redirects to enter address page if address has been set', async () => {
@@ -174,7 +175,7 @@ describe('Nationality details Controller', function () {
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.personalDetails.enterAddress);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterAddress);
     });
   });
 });

@@ -97,11 +97,11 @@ describe('timeline-utils', () => {
           'links': [ {
             'title': 'What you sent',
             'text': 'Your appeal details',
-            'href': '{{ paths.detailsViewers.appealDetails }}'
+            'href': '{{ paths.common.detailsViewers.appealDetails }}'
           }, {
             'title': 'Helpful information',
             'text': 'What is a Tribunal Caseworker?',
-            'href': '{{ paths.guidancePages.tribunalCaseworker }}'
+            'href': '{{ paths.common.tribunalCaseworker }}'
           } ]
         } ]
       );

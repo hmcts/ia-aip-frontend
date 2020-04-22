@@ -23,7 +23,8 @@
       "saveForLater": "Save for later",
       "uploadFile": "Upload file",
       "send": "Send",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "seeProgress": "See your appeal progress"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -38,13 +39,13 @@
       "supportingEvidenceRowTitle": "Supporting evidence"
     },
     "askForMoreTime": {
-      "text": "Ask for more time.",
+      "text": "Ask for more time",
       "needMoreTimeQuestion": "Need more time?",
       "saveAnswerAndAsk": "Save your answer and ask for more time",
       "wantToProvideEvidenceLater": "If you want to provide evidence but don't have it right now, you can"
     },
     "askForMoreTimeEvidenceYesNo": {
-      "question": "Do you want to provide supporting evidence for you why you need more time?",
+      "question": "Do you want to provide supporting evidence for why you need more time?",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }
   },
@@ -73,27 +74,27 @@
       "homeOfficeDetails": {
         "id": "homeOfficeDetailsLink",
         "title": "Your Home Office details",
-        "path": "homeOffice.details"
+        "path": "appealStarted.details"
       },
       "personalDetails": {
         "id": "personalDetailsLink",
         "title": "Your personal details",
-        "path": "personalDetails.name"
+        "path": "appealStarted.name"
       },
       "contactDetails": {
         "id": "contactDetailsLink",
         "title": "Your contact details",
-        "path": "contactDetails"
+        "path": "appealStarted.contactDetails"
       },
       "typeOfAppeal": {
         "id": "typeOfAppealLink",
         "title": "Type of appeal",
-        "path": "typeOfAppeal"
+        "path": "appealStarted.typeOfAppeal"
       },
       "checkAndSend": {
         "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
-        "path": "checkAndSend"
+        "path": "appealStarted.checkAndSend"
       }
     },
     "contactDetails": {
@@ -219,7 +220,7 @@
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",
@@ -246,8 +247,8 @@
       "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
     },
     "reasonsForAppealUpload": {
-      "title": "Providing supporting evidence",
-      "heading": "Providing supporting evidence",
+      "title": "Provide supporting evidence",
+      "heading": "Provide supporting evidence",
       "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
@@ -303,7 +304,7 @@
           "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "awaitingRespondentEvidence": {
@@ -311,7 +312,7 @@
           "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -319,22 +320,22 @@
             "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
             }
           },
           "partial": {
             "description": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
             }
           }
         },
@@ -355,12 +356,12 @@
             {
               "title": "What you sent",
               "text": "Your appeal details",
-              "href": "{{ paths.detailsViewers.appealDetails }}"
+              "href": "{{ paths.common.detailsViewers.appealDetails }}"
             },
             {
               "title": "Helpful information",
               "text": "What is a Tribunal Caseworker?",
-              "href": "{{ paths.guidancePages.tribunalCaseworker }}"
+              "href": "{{ paths.common.tribunalCaseworker }}"
             }
           ]
         },
@@ -370,17 +371,17 @@
             {
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
-              "href": "{{ paths.detailsViewers.reasonsForAppeal }}"
+              "href": "{{ paths.common.detailsViewers.reasonsForAppeal }}"
             },
             {
               "title": "Useful documents",
               "text": "Home Office documents about your case",
-              "href": "{{ paths.detailsViewers.homeOfficeDocuments }}"
+              "href": "{{ paths.common.detailsViewers.homeOfficeDocuments }}"
             },
             {
               "title": "Helpful information",
               "text": "Understanding your Home Office documents",
-              "href": "{{ paths.guidancePages.homeOfficeDocuments }}"
+              "href": "{{ paths.common.homeOfficeDocuments }}"
             }
           ]
         },
@@ -974,19 +975,22 @@
         }
       ]
     },
+    "forbidden": {
+      "title": "This page is unavailable"
+    },
     "askForMoreTimePage": {
       "title": "Ask for more time",
       "header": "Ask for more time",
-      "howMuchTimeNeeded": "You must tell us how much time you will need and why you need it. You should provide supporting evidence for your answer if you have any.",
+      "howMuchTimeNeeded": "You must tell us how much time you need and why you need it. You should provide supporting evidence for your answer if you have any.",
       "youMayGetMoreTime": "You might not get more time. You should still respond to the Tribunal by the date you were given if you can.",
-      "textAreaText": "How much time to you need and why do you need it?",
+      "textAreaText": "How much time do you need and why do you need it?",
       "supportingEvidence": "Supporting evidence for why you need more time",
-      "addingSupportingEvidence": "You will be able to add supporting evidence on the next page if you want to.",
+      "addingSupportingEvidence": "You will be able to add supporting evidence for your answer on the next page if you want to.",
       "adviceHeader": "Advice on providing supporting evidence",
       "advice": [
         "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
-        ],
+      ],
       "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
     }
   },

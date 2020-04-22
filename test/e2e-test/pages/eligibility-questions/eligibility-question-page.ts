@@ -15,7 +15,7 @@ module.exports = {
     });
 
     When('I go to the second eligibility question without answering the first', async () => {
-      I.amOnPage(testUrl + paths.eligibility.questions + '?id=1');
+      I.amOnPage(testUrl + paths.common.questions + '?id=1');
     });
 
     Then(/^I should see the "([^"]*)" eligibility page$/, async (eligibilityQuestion) => {

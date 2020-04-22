@@ -84,7 +84,7 @@ describe('session-middleware', () => {
     req.session.appeal = {} as any;
     checkSession({})(req as Request, res as Response, next);
 
-    expect(res.redirect).to.have.been.calledWith(paths.login);
+    expect(res.redirect).to.have.been.calledWith(paths.common.login);
     expect(res.clearCookie).to.have.been.called;
   });
 

@@ -6,11 +6,12 @@ Feature: Out of Time appeal
 Scenario: Explain the reason why my appeal is late
   Given I am authenticated as a valid appellant
   Then I click continue
-  When I click on Home office details
+  And I click "Your Home Office details" link
+  # When I click on Home office details
   And I enter "A1234567" as the Office ref number and click Save and continue
   And I enter an out of time letter sent date and click Save and continue
 
-  And I click Your personal details
+  And I click "Your personal details" link
   And Enter "Random" "User" as my Given and Family Name and click Save and continue
   And I enter "11" "11" "1999" as my DOB and click Save and continue
   And I pick "Angola" from the Nationalities drop down and click continue

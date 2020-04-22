@@ -12,6 +12,7 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService
 } from '../service/document-management-service';
+import { dayMonthYearFormat } from '../utils/date-formats';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
 
@@ -33,7 +34,7 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
 };
 
 const formatDateLongDate = (date: string) => {
-  return moment(date).format('DD MMMM YYYY');
+  return moment(date).format(dayMonthYearFormat);
 };
 
 function setupAppealDetails(req: Request): Array<any> {
@@ -75,7 +76,7 @@ function setupAppealDetails(req: Request): Array<any> {
     const evidence = data.applicationOutOfTimeDocument;
     const fileId = docStoreUrlToId(evidence.document_url, req.session.appeal.documentMap);
     const formattedFileName = fileNameFormatter(evidence.document_filename);
-    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
+    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
     array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ urlHtml ], null));
   }
   return array;
@@ -85,11 +86,11 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const array = [];
   const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
   const { data } = reasonsForAppeal[0];
-  if (_.has(data, 'respondentDocuments')) {
-    const listOfDocuments: string[] = data.respondentDocuments.map(evidence => {
-      const fileId = docStoreUrlToId(evidence.value.document.document_url, req.session.appeal.documentMap);
-      const formattedFileName = fileNameFormatter(evidence.value.document.document_filename);
-      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
+  if (_.has(data, 'reasonsForAppealDocuments')) {
+    const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
+      const fileId = docStoreUrlToId(evidence.value.document_url, req.session.appeal.documentMap);
+      const formattedFileName = fileNameFormatter(evidence.value.document_filename);
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
     });
     array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
     array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
@@ -119,7 +120,7 @@ function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionColle
     const listOfDocuments: string[] = data.evidence.map(evidence => {
       const fileId = addToDocumentMapper(evidence.value.document_url, req.session.appeal.documentMap);
       const formattedFileName = fileNameFormatter(evidence.value.document_filename);
-      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
     });
     array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.supportingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
   }
@@ -128,7 +129,7 @@ function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionColle
 
 function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.overview;
+    let previousPage: string = paths.common.overview;
     const data = setupAppealDetails(req);
     return res.render('detail-viewers/appeal-details-viewer.njk', {
       previousPage: previousPage,
@@ -141,7 +142,7 @@ function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction)
 
 function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.overview;
+    let previousPage: string = paths.common.overview;
     const data = setupAnswersReasonsForAppeal(req);
     return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
       previousPage: previousPage,
@@ -154,7 +155,7 @@ function getReasonsForAppealViewer(req: Request, res: Response, next: NextFuncti
 
 function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.overview;
+    let previousPage: string = paths.common.overview;
     let documents = [];
 
     if (_.has(req.session.appeal, 'respondentDocuments')) {
@@ -162,8 +163,8 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
 
       documents = respondentDocs.map(document => {
         const formattedFileName = fileNameFormatter(document.evidence.name);
-        const urlHtml = `<a class='govuk-link' target='_blank' rel="noopener noreferrer" href='${paths.detailsViewers.document}/${document.evidence.fileId}'>${formattedFileName}</a>`;
-        const formattedDate = moment(document.dateUploaded).format('DD MMMM YYYY');
+        const urlHtml = `<a class='govuk-link' target='_blank' rel="noopener noreferrer" href='${paths.common.detailsViewers.document}/${document.evidence.fileId}'>${formattedFileName}</a>`;
+        const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
           url: urlHtml
@@ -205,7 +206,7 @@ function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction)
     const timeExtensionId = req.params.id;
     const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
     if (timeExtensionData) {
-      let previousPage: string = paths.overview;
+      let previousPage: string = paths.common.overview;
       const data = setupTimeExtension(req, timeExtensionData);
       return res.render('detail-viewers/time-extension-details-viewer.njk', {
         previousPage: previousPage,
@@ -224,7 +225,7 @@ function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextF
     const timeExtensionId = req.params.id;
     const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
     if (timeExtensionData) {
-      let previousPage: string = paths.overview;
+      let previousPage: string = paths.common.overview;
       const data = setupTimeExtensionDecision(req, timeExtensionData);
       return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
         previousPage: previousPage,
@@ -238,14 +239,14 @@ function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextF
   }
 }
 
-function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
+function setupDetailViewersController(middleware: Middleware[], documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
-  router.get(paths.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
-  router.get(paths.detailsViewers.appealDetails, getAppealDetailsViewer);
-  router.get(paths.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
-  router.get(paths.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
-  router.get(paths.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
+  router.get(paths.common.detailsViewers.document + '/:documentId', middleware, getDocumentViewer(documentManagementService));
+  router.get(paths.common.detailsViewers.homeOfficeDocuments, middleware, getHoEvidenceDetailsViewer);
+  router.get(paths.common.detailsViewers.appealDetails, middleware, getAppealDetailsViewer);
+  router.get(paths.common.detailsViewers.reasonsForAppeal, middleware, getReasonsForAppealViewer);
+  router.get(paths.common.detailsViewers.timeExtension + '/:id', middleware, getTimeExtensionViewer);
+  router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', middleware, getTimeExtensionDecisionViewer);
 
   return router;
 }

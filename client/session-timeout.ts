@@ -121,11 +121,11 @@ export default class SessionTimeout {
   }
 
   signOut() {
-    window.location.assign(paths.session.sessionExpired);
+    window.location.assign(paths.common.sessionExpired);
   }
 
   extendSession = (): Promise<void> => {
-    return axios.get(paths.session.extendSession).then((response: any): void => {
+    return axios.get(paths.common.extendSession).then((response: any): void => {
       this.sessionExpirationTime = response.data.timeout;
       this.restartCounters();
       this.closeModal();
@@ -136,25 +136,21 @@ export default class SessionTimeout {
   }
 
   keyDownEventListener = (event) => {
-    switch (event.key) {
-      case 'Tab':
-        event.preventDefault();
-        if (!this.modalElement.contains(document.activeElement) || this.focusableElements.length === 1) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      if (!this.modalElement.contains(document.activeElement) || this.focusableElements.length === 1) {
+        this.firstFocusableElement.focus();
+        return;
+      }
+      if (event.shiftKey) {
+        if (document.activeElement === this.firstFocusableElement) {
+          this.lastFocusableElement.focus();
+        }
+      } else {
+        if (document.activeElement === this.lastFocusableElement) {
           this.firstFocusableElement.focus();
-          break;
         }
-        if (event.shiftKey) {
-          if (document.activeElement === this.firstFocusableElement) {
-            this.lastFocusableElement.focus();
-          }
-        } else {
-          if (document.activeElement === this.lastFocusableElement) {
-            this.firstFocusableElement.focus();
-          }
-        }
-        break;
-      default:
-        break;
+      }
     }
   }
 }

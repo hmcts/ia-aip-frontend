@@ -25,6 +25,7 @@ const { error404 } = require('../pages/error-pages/404-error-page');
 const { guidancePages } = require('../pages/guidance-pages/guidance-pages');
 const { appealSent } = require('../pages/appeal-sent/appeal-sent');
 const { askForMoreTime } = require('../pages/ask-for-more-time/ask-for-more-time');
+const { caseProgression } = require('../service/case-progression-service');
 
 const { I } = inject();
 
@@ -57,3 +58,4 @@ error404(I);
 guidancePages(I);
 appealSent(I);
 askForMoreTime(I);
+caseProgression(I);

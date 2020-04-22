@@ -61,7 +61,7 @@ export default class UpdateAppealService {
     let timeExtensions: TimeExtension[] = null;
     let directions: Direction[] = null;
 
-    const contactDetails = subscriptions.reduce((contactDetails, subscription) => {
+    const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
         return {
@@ -95,12 +95,14 @@ export default class UpdateAppealService {
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document_url, documentMap);
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
 
         reasonsForAppealDocumentUploads.push(
           {
             fileId: documentMapperId,
-            name: document.value.document_filename
+            name: document.value.document.document_filename,
+            dateUploaded: this.getDate(document.value.dateUploaded),
+            description: document.value.description
           }
         );
       });
@@ -122,6 +124,7 @@ export default class UpdateAppealService {
         respondentDocuments.push(evidence);
       });
     }
+
     if (caseData.timeExtensions) {
       timeExtensions = [];
 
@@ -153,6 +156,7 @@ export default class UpdateAppealService {
           return {
             id: d.id,
             tag: d.value.tag,
+            parties: d.value.parties,
             dateDue: d.value.dateDue,
             dateSent: d.value.dateSent
           } as Direction;
@@ -169,7 +173,7 @@ export default class UpdateAppealService {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: appealType,
         contactDetails: {
-          ...contactDetails
+          ...appellantContactDetails
         },
         dateLetterSent,
         isAppealLate: caseData.submissionOutOfTime ? this.yesNoToBool(caseData.submissionOutOfTime) : undefined,
@@ -190,13 +194,14 @@ export default class UpdateAppealService {
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: documentMap,
+      directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
-      timeExtensions: timeExtensions,
-      directions: directions
+      timeExtensions: timeExtensions
     };
 
     req.session.appeal.askForMoreTime = {};
     req.session.appeal.previousAskForMoreTime = [];
+
     if (caseData.timeExtensions) {
       caseData.timeExtensions.forEach(timeExtension => {
         const askForMoreTime = this.convertToAskForMoreTime(timeExtension.value, documentMap);
@@ -229,11 +234,7 @@ export default class UpdateAppealService {
 
   private getDate(ccdDate): AppealDate {
     if (ccdDate) {
-      let dateLetterSent = {
-        year: null,
-        month: null,
-        day: null
-      };
+      let dateLetterSent;
       const decisionDate = new Date(ccdDate);
       dateLetterSent = {
         year: decisionDate.getFullYear().toString(),
@@ -359,10 +360,14 @@ export default class UpdateAppealService {
           const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
-              document_filename: evidence.name,
-              document_url: documentLocationUrl,
-              document_binary_url: `${documentLocationUrl}/binary`
-            } as SupportingDocument
+              dateUploaded: toIsoDate(evidence.dateUploaded),
+              description: evidence.description,
+              document: {
+                document_filename: evidence.name,
+                document_url: documentLocationUrl,
+                document_binary_url: `${documentLocationUrl}/binary`
+              }
+            } as DocumentWithMetaData
           } as SupportingEvidenceCollection;
         });
       }
@@ -401,7 +406,7 @@ export default class UpdateAppealService {
     caseData.timeExtensions.push({ value: currentTimeExtension });
   }
 
-  private toSupportingDocument(evidences: Evidence[], appeal: Appeal): SupportingEvidenceCollection[] {
+  private toSupportingDocument(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {
     return evidences ? evidences.map((evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
       return {
@@ -410,7 +415,7 @@ export default class UpdateAppealService {
           document_url: documentLocationUrl,
           document_binary_url: `${documentLocationUrl}/binary`
         } as SupportingDocument
-      } as SupportingEvidenceCollection;
+      } as TimeExtensionEvidenceCollection;
     }) : null;
   }
 }

@@ -7,20 +7,20 @@ const testUrl = config.get('testUrl');
 module.exports = {
   askForMoreTime(I) {
     Then(/^I click Ask for more time$/, async () => {
-      await I.amOnPage(testUrl + paths.askForMoreTime.reason);
+      await I.amOnPage(testUrl + paths.common.askForMoreTime.reason);
     });
 
     Then(/^I should see the ask-for-more-time page$/, async () => {
-      await I.seeInCurrentUrl(paths.askForMoreTime.reason);
+      await I.seeInCurrentUrl(paths.common.askForMoreTime.reason);
     });
 
     Then(/^I should see do you want to upload evidence page$/, async () => {
-      I.amOnPage(testUrl + paths.askForMoreTime.evidenceYesNo);
-      I.seeInTitle('Do you want to provide supporting evidence?');
+      I.amOnPage(testUrl + paths.common.askForMoreTime.evidenceYesNo);
+      I.seeInTitle('Do you want to provide supporting evidence for why you need more time?');
     });
 
     Then(/^I should see the ask for more time check you answers page$/, async () => {
-      I.amOnPage(testUrl + paths.askForMoreTime.checkAndSend);
+      I.amOnPage(testUrl + paths.common.askForMoreTime.checkAndSend);
       I.seeInTitle('Check your answer');
     });
 
@@ -33,8 +33,8 @@ module.exports = {
     });
 
     Then(/^I am on the evidence upload page$/, async () => {
-      I.amOnPage(testUrl + paths.askForMoreTime.supportingEvidenceUpload);
-      I.seeInTitle('Providing supporting evidence');
+      I.amOnPage(testUrl + paths.common.askForMoreTime.supportingEvidenceUpload);
+      I.seeInTitle('Provide supporting evidence');
     });
 
     When(/^I enter a time extensions reason$/, async () => {

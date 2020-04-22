@@ -18,6 +18,27 @@ For information about the software versions used to build this application and a
 
 ### Running the application
 
+Fore Local development you will need to set the following environment variables:
+
+```
+IDAM_SECRET=OOOOOOOOOOOOOOOO
+IDAM_WEB_URL=http://localhost:3501
+IDAM_API_URL=http://localhost:5000
+S2S_SECRET=AAAAAAAAAAAAAAAC
+S2S_URL=http://localhost:4502
+CCD_API_URL=http://localhost:4452
+S2S_MICROSERVICE_NAME=iac
+MICROSERVICE=ccd_gateway
+DOC_MANAGEMENT_URL=http://dm-store:4506
+ADDRESS_LOOKUP_TOKEN=THE_ADDRESS_LOOKUP_TOKEN
+```
+Specific features, the app contains some toggleable features to enable these use the following environment variables according to your needs.
+
+```   
+USE_SESSION_LOGGER=true
+TIMELINE_ENABLED=true
+ASK_FOR_MORE_TIME_ENABLED=true
+```
 You can run the application as follows:
 
 ```

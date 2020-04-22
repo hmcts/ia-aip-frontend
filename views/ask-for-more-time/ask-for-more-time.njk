@@ -17,7 +17,7 @@
   {{ govukInsetText({
     text:  i18n.pages.askForMoreTimePage.youMayGetMoreTime
   }) }}
-  <form action="{{ paths.askForMoreTime.reason }}" method="post" >
+  <form action="{{ paths.common.askForMoreTime.reason }}" method="post" >
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       {{ govukTextarea({
     name: "askForMoreTime",
@@ -31,16 +31,16 @@
       } if errors
   }) }}
 
-      <div class="overview-banner govuk-!-margin-bottom-6">
+      <div class="panel-background">
           <h2 class='govuk-heading-s'>
               {{  i18n.pages.askForMoreTimePage.supportingEvidence }}
           </h2>
           <p>
-              {{  i18n.pages.askForMoreTimePage.addingSupportingEvidence }}
+              <ul><li>{{  i18n.pages.askForMoreTimePage.addingSupportingEvidence }}</li></ul>
           </p>
       </div>
       {{ continueButton() }}
-      <a class="cancel-button" href="{{ paths.overview }}">{{ i18n.common.buttons.cancel }}</a>
+      <a class="cancel-button" href="{{ paths.common.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
   </form>
 
   {{ contactUs() }}

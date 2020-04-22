@@ -28,7 +28,7 @@ function checkSession(args: any = {}) {
     const tokenCookieName = args.tokenCookieName || '__auth-token';
     if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
       res.clearCookie(tokenCookieName, '/');
-      res.redirect(paths.login);
+      res.redirect(paths.common.login);
     } else {
       next();
     }

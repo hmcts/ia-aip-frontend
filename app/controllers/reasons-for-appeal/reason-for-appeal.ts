@@ -7,7 +7,7 @@ import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue } from '../../utils/utils';
+import { asBooleanValue, nowAppealDate } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
@@ -21,7 +21,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
-      previousPage: paths.overview,
+      previousPage: paths.common.overview,
       applicationReason: req.session.appeal.reasonsForAppeal.applicationReason,
       askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
     });
@@ -54,10 +54,10 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.overview + '?saved');
+        return res.redirect(paths.common.overview + '?saved');
       }
 
-      return getConditionalRedirectUrl(req, res, paths.reasonsForAppeal.supportingEvidence);
+      return getConditionalRedirectUrl(req, res, paths.awaitingReasonsForAppeal.supportingEvidence);
     } catch (e) {
       next(e);
     }
@@ -68,7 +68,7 @@ function getAdditionalSupportingEvidenceQuestionPage(req: Request, res: Response
   try {
     req.session.appeal.reasonsForAppeal.isEdit = _.has(req.query, 'edit');
     return res.render('reasons-for-appeal/supporting-evidence-page.njk', {
-      previousPage: paths.reasonsForAppeal.decision,
+      previousPage: paths.awaitingReasonsForAppeal.decision,
       askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
     });
   } catch (e) {
@@ -84,14 +84,14 @@ function postAdditionalSupportingEvidenceQuestionPage(req: Request, res: Respons
       return res.render('reasons-for-appeal/supporting-evidence-page.njk', {
         errorList: Object.values(validations),
         error: validations,
-        previousPage: paths.reasonsForAppeal.supportingEvidence,
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
         askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
       });
     }
     if (answer === 'yes') {
-      return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
+      return res.redirect(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
     } else if (answer === 'no') {
-      return res.redirect(paths.reasonsForAppeal.checkAndSend);
+      return res.redirect(paths.awaitingReasonsForAppeal.checkAndSend);
     }
   } catch (e) {
     next(e);
@@ -106,8 +106,8 @@ function getSupportingEvidenceUploadPage(req: Request, res: Response, next: Next
     const evidences = req.session.appeal.reasonsForAppeal.evidences || {};
     return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
       evidences: Object.values(evidences),
-      evidenceCTA: paths.reasonsForAppeal.supportingEvidenceDeleteFile,
-      previousPage: paths.reasonsForAppeal.supportingEvidence,
+      evidenceCTA: paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile,
+      previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
       askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
     });
   } catch (e) {
@@ -123,7 +123,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.overview + '?saved');
+        return res.redirect(paths.common.overview + '?saved');
       } else {
         if (req.session.appeal.reasonsForAppeal.evidences === undefined) {
           const validation = [ {
@@ -138,7 +138,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
           });
         }
         await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
-        return getConditionalRedirectUrl(req, res, paths.reasonsForAppeal.checkAndSend);
+        return getConditionalRedirectUrl(req, res, paths.awaitingReasonsForAppeal.checkAndSend);
       }
     } catch (e) {
       next(e);
@@ -154,10 +154,12 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         const evidences: Evidence[] = [ ...(req.session.appeal.reasonsForAppeal.evidences || []) ];
         evidences.push({
           fileId: evidenceStored.fileId,
-          name: evidenceStored.name
+          name: evidenceStored.name,
+          dateUploaded: nowAppealDate(),
+          description: 'Appeal Reasons supporting evidence'
         });
         req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];
-        return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
+        return res.redirect(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
       } else {
         let validationError;
         validationError = res.locals.multerError
@@ -169,7 +171,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
           evidences: Object.values(evidences),
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.reasonsForAppeal.supportingEvidence,
+          previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
           askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
 
         });
@@ -190,7 +192,7 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
         const evidences: Evidence[] = [ ...req.session.appeal.reasonsForAppeal.evidences ];
         req.session.appeal.reasonsForAppeal.evidences = evidences.filter((evidence: Evidence) => evidence.fileId !== req.query['id']);
       }
-      return res.redirect(paths.reasonsForAppeal.supportingEvidenceUpload);
+      return res.redirect(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
     } catch (e) {
       next(e);
     }
@@ -207,17 +209,17 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function setupReasonsForAppealController(deps?: any): Router {
+function setupReasonsForAppealController(middleare: Middleware[], deps?: any): Router {
   const router = Router();
-  router.get(paths.reasonsForAppeal.decision, getReasonForAppeal);
-  router.post(paths.reasonsForAppeal.decision, postReasonForAppeal(deps.updateAppealService));
-  router.get(paths.reasonsForAppeal.supportingEvidence, getAdditionalSupportingEvidenceQuestionPage);
-  router.post(paths.reasonsForAppeal.supportingEvidence, postAdditionalSupportingEvidenceQuestionPage);
-  router.get(paths.reasonsForAppeal.supportingEvidenceUpload, getSupportingEvidenceUploadPage);
-  router.post(paths.reasonsForAppeal.supportingEvidenceUploadFile, postSupportingEvidenceUploadFile(deps.documentManagementService, deps.updateAppealService));
-  router.get(paths.reasonsForAppeal.supportingEvidenceDeleteFile, getSupportingEvidenceDeleteFile(deps.documentManagementService));
-  router.post(paths.reasonsForAppeal.supportingEvidenceSubmit, postSupportingEvidenceSubmit(deps.updateAppealService));
-  router.get(paths.reasonsForAppeal.confirmation, getConfirmationPage);
+  router.get(paths.awaitingReasonsForAppeal.decision, middleare, getReasonForAppeal);
+  router.post(paths.awaitingReasonsForAppeal.decision, middleare, postReasonForAppeal(deps.updateAppealService));
+  router.get(paths.awaitingReasonsForAppeal.supportingEvidence, middleare, getAdditionalSupportingEvidenceQuestionPage);
+  router.post(paths.awaitingReasonsForAppeal.supportingEvidence, middleare, postAdditionalSupportingEvidenceQuestionPage);
+  router.get(paths.awaitingReasonsForAppeal.supportingEvidenceUpload, middleare, getSupportingEvidenceUploadPage);
+  router.post(paths.awaitingReasonsForAppeal.supportingEvidenceUploadFile, middleare, postSupportingEvidenceUploadFile(deps.documentManagementService, deps.updateAppealService));
+  router.get(paths.awaitingReasonsForAppeal.supportingEvidenceDeleteFile, middleare, getSupportingEvidenceDeleteFile(deps.documentManagementService));
+  router.post(paths.awaitingReasonsForAppeal.supportingEvidenceSubmit, middleare, postSupportingEvidenceSubmit(deps.updateAppealService));
+  router.get(paths.reasonsForAppealSubmitted.confirmation, middleare, getConfirmationPage);
 
   return router;
 }

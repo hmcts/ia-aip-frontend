@@ -20,7 +20,7 @@ function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
 
     return res.render('appeal-application/type-of-appeal.njk', {
       types,
-      previousPage: paths.taskList
+      previousPage: paths.appealStarted.taskList
     });
   } catch (error) {
     next(error);
@@ -31,7 +31,7 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'appealType')) {
-        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = typeOfAppealValidation(req.body);
       if (validation) {
@@ -39,24 +39,24 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
           types: appealTypes,
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         });
       }
 
       req.session.appeal.application.appealType = req.body['appealType'];
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 
-      return getConditionalRedirectUrl(req, res, paths.taskList);
+      return getConditionalRedirectUrl(req, res, paths.appealStarted.taskList);
     } catch (error) {
       next(error);
     }
   };
 }
 
-function setupTypeOfAppealController(updateAppealService: UpdateAppealService): Router {
+function setupTypeOfAppealController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.typeOfAppeal, getTypeOfAppeal);
-  router.post(paths.typeOfAppeal, postTypeOfAppeal(updateAppealService));
+  router.get(paths.appealStarted.typeOfAppeal, middleware, getTypeOfAppeal);
+  router.post(paths.appealStarted.typeOfAppeal, middleware, postTypeOfAppeal(updateAppealService));
   return router;
 }
 

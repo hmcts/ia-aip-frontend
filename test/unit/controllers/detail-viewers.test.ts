@@ -64,14 +64,15 @@ describe('Detail viewer Controller', () => {
   describe('setupDetailViewersController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
+      const middleware = [];
 
-      setupDetailViewersController(documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.document + '/:documentId');
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.homeOfficeDocuments);
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.appealDetails);
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.reasonsForAppeal);
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.timeExtension + '/:id');
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.timeExtensionDecision + '/:id');
+      setupDetailViewersController(middleware, documentManagementService as DocumentManagementService);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.document + '/:documentId');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.homeOfficeDocuments);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.appealDetails);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.reasonsForAppeal);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.timeExtension + '/:id');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.timeExtensionDecision + '/:id');
     });
   });
 
@@ -81,7 +82,7 @@ describe('Detail viewer Controller', () => {
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('detail-viewers/view-ho-details.njk', {
         documents: [],
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -103,7 +104,7 @@ describe('Detail viewer Controller', () => {
           dateUploaded: '21 February 2020',
           url: "<a class='govuk-link' target='_blank' rel=\"noopener noreferrer\" href='/view/document/someUUID'>evidence_file(PNG)</a>"
         } ],
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -160,17 +161,14 @@ describe('Detail viewer Controller', () => {
         { key: { text: 'Name' }, value: { html: 'Aleka sad' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1994' } },
         { key: { text: 'Nationality' }, value: { html: 'Albania' } },
-        {
-          key: { text: 'Address' },
-          value: { html: 'United Kingdom<br>W1W 7RT<br>LONDON<br>60 GREAT PORTLAND STREET' }
-        },
+        { key: { text: 'Address' }, value: { html: 'United Kingdom<br>W1W 7RT<br>LONDON<br>60 GREAT PORTLAND STREET' } },
         { key: { text: 'Contact details' }, value: { html: 'alejandro@example.net<br>' } },
         { key: { text: 'Appeal type' }, value: { html: 'Protection' } } ];
 
       getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/appeal-details-viewer.njk', {
         data: expectedSummaryRows,
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -198,7 +196,7 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.history = expectedMultipleEventsData;
       req.session.appeal.documentMap = [ {
         id: '00000',
-        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
       }, {
         id: '00001',
         url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
@@ -208,57 +206,13 @@ describe('Detail viewer Controller', () => {
         'key': { 'text': 'Why do you think the Home Office decision is wrong?' },
         'value': { 'html': 'HELLO' }
       }, {
-        'key': { 'text': 'Providing supporting evidence' },
-        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00001'>500(PNG)</a>" }
+        'key': { 'text': 'Provide supporting evidence' },
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a>" }
       } ];
       getReasonsForAppealViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
         data: expectedSummaryRows,
-        previousPage: paths.overview
-      });
-    });
-
-    it('getReasonsForAppealViewer should catch exception and call next with the error', () => {
-
-      req.session.appeal.history = expectedMultipleEventsData;
-      req.session.appeal.documentMap = [ {
-        id: '00000',
-        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
-      }, {
-        id: '00001',
-        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
-      } ];
-
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
-  describe('getReasonsForAppealViewer', () => {
-    it('should render detail-viewers/reasons-for-appeal-details-viewer.njk', () => {
-
-      req.session.appeal.history = expectedMultipleEventsData;
-      req.session.appeal.documentMap = [ {
-        id: '00000',
-        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
-      }, {
-        id: '00001',
-        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
-      } ];
-
-      const expectedSummaryRows = [ {
-        'key': { 'text': 'Why do you think the Home Office decision is wrong?' },
-        'value': { 'html': 'HELLO' }
-      }, {
-        'key': { 'text': 'Providing supporting evidence' },
-        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00001'>500(PNG)</a>" }
-      } ];
-      getReasonsForAppealViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
-        data: expectedSummaryRows,
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -297,7 +251,7 @@ describe('Detail viewer Controller', () => {
       getTimeExtensionViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-viewer.njk', {
         data: expectedSummaryRows,
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -324,7 +278,7 @@ describe('Detail viewer Controller', () => {
 
       expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-viewer.njk', {
         data: expectedSummaryRows,
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -363,7 +317,7 @@ describe('Detail viewer Controller', () => {
       getTimeExtensionDecisionViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-decision-details-viewer.njk', {
         data: expectedSummaryRows,
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -389,7 +343,7 @@ describe('Detail viewer Controller', () => {
 
       expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-decision-details-viewer.njk', {
         data: expectedSummaryRows,
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 

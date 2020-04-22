@@ -11,6 +11,7 @@ export interface EvidenceUploadConfig {
   evidenceUploadPath: string;
   evidenceDeletePath: string;
   evidenceSubmitPath: string;
+  cancelPath: string;
   nextPath: string;
   askForMoreTimeFeatureEnabled: boolean;
   updateCcdEvent: any; // todo work out how to put an enum here
@@ -69,7 +70,8 @@ function getEvidenceUploadPageOptions(evidences, evidenceUploadConfig: EvidenceU
     previousPage: evidenceUploadConfig.evidenceYesNoPath,
     askForMoreTimeFeatureEnabled: evidenceUploadConfig.askForMoreTimeFeatureEnabled,
     pathToUploadEvidence: evidenceUploadConfig.evidenceUploadPath,
-    pathToSubmitEvidence: evidenceUploadConfig.evidenceSubmitPath
+    pathToSubmitEvidence: evidenceUploadConfig.evidenceSubmitPath,
+    pathToCancel: evidenceUploadConfig.cancelPath
   };
 }
 
@@ -141,7 +143,7 @@ export function postSupportingEvidence(updateAppealService: UpdateAppealService,
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (req.body['saveForLater']) {
-        return res.redirect(paths.overview + '?saved');
+        return res.redirect(paths.common.overview + '?saved');
       } else {
         const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req);
 

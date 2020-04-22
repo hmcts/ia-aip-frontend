@@ -10,7 +10,7 @@ const textToId = {
 module.exports = {
   taskList(I) {
     Then('I should see the task-list page', async () => {
-      await I.seeInCurrentUrl(paths.taskList);
+      await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
     Then('I shouldnt be able to click Personal details', async () => {
@@ -32,7 +32,7 @@ module.exports = {
     });
 
     Then('I should be taken to the task-list page', async () => {
-      await I.seeInCurrentUrl(paths.taskList);
+      await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
     When('I click Your personal details', async () => {

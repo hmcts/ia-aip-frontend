@@ -15,6 +15,7 @@ import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/a
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupFooterController } from './controllers/footer';
+import { setupForbiddenController } from './controllers/forbidden';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupIdamController } from './controllers/idam';
@@ -22,6 +23,7 @@ import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendControl
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
+import { isJourneyAllowedMiddleware } from './middleware/journeyAllowed-middleware';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
@@ -46,27 +48,26 @@ const startController = setupStartController();
 const healthController = setupHealthController();
 const idamController = setupIdamController();
 
-const applicationOverview = setupApplicationOverviewController(updateAppealService);
-const taskListController = setupTaskListController();
-const homeOfficeDetailsController = setupHomeOfficeDetailsController(updateAppealService);
-const typeOfAppealController = setupTypeOfAppealController(updateAppealService);
-const personalDetailsController = setupPersonalDetailsController({ updateAppealService, osPlacesClient });
-const contactDetailsController = setupContactDetailsController(updateAppealService);
-const checkAndSendController = setupCheckAndSendController(updateAppealService);
-const confirmationController = setConfirmationController();
-const outOfTimeController = setupOutOfTimeController({ updateAppealService, documentManagementService });
+const middleware = [ isJourneyAllowedMiddleware ];
+
+const applicationOverview = setupApplicationOverviewController(middleware, updateAppealService);
+const taskListController = setupTaskListController(middleware);
+const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware, updateAppealService);
+const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
+const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
+const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
+const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService);
+const confirmationController = setConfirmationController(middleware);
+const outOfTimeController = setupOutOfTimeController(middleware, { updateAppealService, documentManagementService });
+const reasonsForAppealController = setupReasonsForAppealController(middleware, { updateAppealService, documentManagementService });
+const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(middleware, updateAppealService);
+const detailViewersController = setupDetailViewersController(middleware, documentManagementService);
 const eligibilityController = setupEligibilityController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
 const sessionController = setupSessionController();
+const forbiddenController = setupForbiddenController();
 const askForMoreTime = setupAskForMoreTimeController({ updateAppealService, documentManagementService });
-
-// Reason for Appeal Controllers
-const reasonsForAppealController = setupReasonsForAppealController({ updateAppealService, documentManagementService });
-const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(updateAppealService);
-
-// Details Viewers
-const detailViewersController = setupDetailViewersController(documentManagementService);
 
 // not protected by idam
 router.use(indexController);
@@ -99,5 +100,6 @@ router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
 
 router.use(detailViewersController);
+router.use(forbiddenController);
 
 export { router };

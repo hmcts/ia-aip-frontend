@@ -12,9 +12,9 @@ function liveness(req: Request, res: Response) {
 /* istanbul ignore next */
 function setupHealthController(): Router {
   const router = Router();
-  router.get(paths.health, health);
-  router.get(paths.liveness, liveness);
-  router.get(paths.healthLiveness, liveness);
+  router.get(paths.common.health, health);
+  router.get(paths.common.liveness, liveness);
+  router.get(paths.common.healthLiveness, liveness);
   return router;
 }
 

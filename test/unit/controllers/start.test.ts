@@ -59,7 +59,7 @@ describe('Index Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupStartController();
-      expect(routerGetStub).to.have.been.calledWith(paths.start);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.start);
     });
   });
 });

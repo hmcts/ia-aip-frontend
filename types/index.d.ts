@@ -49,8 +49,11 @@ interface TimeExtensionEventMap {
 }
 
 interface Evidence {
+  id?: string;
   fileId: string;
   name: string;
+  dateUploaded?: AppealDate;
+  description?: string;
 }
 
 interface DocumentUploadResponse {
@@ -193,6 +196,9 @@ interface TimeExtension {
 interface Direction {
   id: number;
   tag: string;
+  parties: string;
   dateDue: string;
   dateSent: string;
 }
+
+type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

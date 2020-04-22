@@ -66,7 +66,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   if (appealApplication.isAppealLate) {
     const lateAppealValue = [ appealApplication.lateAppeal.reason ];
     if (appealApplication.lateAppeal.evidence) {
-      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
+      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(urlHtml);
     }
     const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);

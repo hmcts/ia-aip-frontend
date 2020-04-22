@@ -105,12 +105,14 @@ describe('application-state-utils', () => {
         {
           'id': 2,
           'tag': 'requestReasonsForAppeal',
+          'parties': 'appellant',
           'dateDue': '2020-09-01',
           'dateSent': '2020-04-21'
         },
         {
           'id': 1,
           'tag': 'respondentEvidence',
+          'parties': 'respondent',
           'dateDue': '2020-04-28',
           'dateSent': '2020-04-14'
         }
@@ -150,14 +152,14 @@ describe('application-state-utils', () => {
         id: 2,
         tag: 'requestReasonsForAppeal',
         parties: 'appellant',
-        dueDate: '2020-04-21',
+        dateDue: '2020-04-21',
         dateSent: '2020-03-24'
       },
       {
         id: 1,
         tag: 'respondentEvidence',
         parties: 'respondent',
-        dueDate: '2020-04-07',
+        dateDue: '2020-04-07',
         dateSent: '2020-03-24'
       } ];
     const result = getAppealApplicationNextStep(req as Request);

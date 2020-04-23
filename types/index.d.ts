@@ -184,6 +184,7 @@ interface IdamDetails {
 
 interface TimeExtension {
   requestDate: string;
+  reason: string;
   state: string;
   status: string;
   evidence?: Evidence[];

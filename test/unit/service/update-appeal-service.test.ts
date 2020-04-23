@@ -491,7 +491,7 @@ describe('update-appeal-service', () => {
 
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql(
+      expect(caseData).to.deep.eq(
         {
           'journeyType': 'aip',
           'timeExtensions': []

@@ -133,7 +133,9 @@ export default class UpdateAppealService {
           requestDate: timeExtension.value.requestDate,
           state: timeExtension.value.state,
           status: timeExtension.value.status,
-          reason: timeExtension.value.reason
+          reason: timeExtension.value.reason,
+          decision: timeExtension.value.decision,
+          decisionReason: timeExtension.value.decisionReason
         };
 
         if (timeExtension.value.evidence) {
@@ -349,8 +351,8 @@ export default class UpdateAppealService {
     const previousTimeExtensions = appeal.timeExtensions;
 
     if (previousTimeExtensions && previousTimeExtensions.length) {
-      previousTimeExtensions.forEach(askForMoreTime => {
-        this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
+      previousTimeExtensions.forEach(timeExt => {
+        this.addCcdTimeExtension(timeExt, appeal, caseData);
       });
     }
 
@@ -367,7 +369,9 @@ export default class UpdateAppealService {
       reason: askForMoreTime.reason,
       state: askForMoreTime.state,
       status: askForMoreTime.status,
-      requestDate: askForMoreTime.requestDate
+      requestDate: askForMoreTime.requestDate,
+      decision: askForMoreTime.decision || null,
+      decisionReason: askForMoreTime.decisionReason || null
     } as CcdTimeExtension;
 
     if (askForMoreTime.reviewTimeExtensionRequired === YesOrNo.YES) {

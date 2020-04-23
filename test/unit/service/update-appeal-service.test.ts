@@ -115,6 +115,8 @@ describe('update-appeal-service', () => {
       'timeExtensions': [
         {
           value: {
+            decisionReason: 'Time extension has been granted',
+            decision: 'granted',
             requestDate: '2020-01-01',
             reason: 'first reason',
             status: 'completed',
@@ -498,6 +500,54 @@ describe('update-appeal-service', () => {
         }
       );
     });
+
+    it('converts time extension and previous timeExtensions', () => {
+      emptyApplication.askForMoreTime.requestDate = '2020-01-02';
+      emptyApplication.askForMoreTime.reason = 'more time reason';
+      emptyApplication.askForMoreTime.status = 'inProgress';
+      emptyApplication.askForMoreTime.state = 'awaitingReasonsForAppeal';
+      emptyApplication.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
+      emptyApplication.askForMoreTime.evidence = [
+        {
+          id: 'id',
+          fileId: 'fileId',
+          name: 'name'
+        }
+      ];
+
+      emptyApplication.timeExtensions = [ {
+        evidence: [],
+        decision: 'granted',
+        decisionReason: 'Request has been granted',
+        reason: 'ask for more time reason',
+        status: 'granted',
+        state: 'awaitingReasonsForAppeal',
+        requestDate: '2020-04-21'
+      } ];
+
+      emptyApplication.documentMap = [ { id: 'fileId', url: 'someurl' } ] as DocumentMap[];
+
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData).to.deep.eq(
+        {
+          'journeyType': 'aip',
+          'timeExtensions': [
+            {
+              'value': {
+                'decision': 'granted',
+                'decisionReason': 'Request has been granted',
+                'evidence': [],
+                'reason': 'ask for more time reason',
+                'requestDate': '2020-04-21',
+                'state': 'awaitingReasonsForAppeal',
+                'status': 'granted'
+              }
+            }
+          ]
+        }
+      );
+    });
   });
 
   describe('submitEvent', () => {
@@ -620,7 +670,7 @@ describe('update-appeal-service', () => {
               reason: 'ask for more time reason',
               status: 'submitted',
               state: 'awaitingReasonsForAppeal',
-              requestDate: undefined,
+              requestDate: '2020-04-21',
               evidence: []
             }
           } as Appeal,
@@ -707,11 +757,13 @@ describe('update-appeal-service', () => {
         ],
         timeExtensions: [ {
           value: {
+            decision: null,
+            decisionReason: null,
             evidence: [],
             reason: 'ask for more time reason',
             status: 'submitted',
             state: 'awaitingReasonsForAppeal',
-            requestDate: undefined
+            requestDate: '2020-04-21'
           }
         } ]
 

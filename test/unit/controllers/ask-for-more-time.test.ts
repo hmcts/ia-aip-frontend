@@ -28,8 +28,7 @@ describe('Ask for more time Controller', function () {
       session: {
         appeal: {
           reasonsForAppeal: {},
-          askForMoreTime: {},
-          previousAskForMoreTime: []
+          askForMoreTime: {}
         } as Partial<Appeal>
       } as Partial<Express.Session>,
       body: {},

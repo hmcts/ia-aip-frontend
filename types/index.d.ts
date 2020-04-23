@@ -73,7 +73,6 @@ interface Appeal {
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
   askForMoreTime?: AskForMoreTime;
-  previousAskForMoreTime?: AskForMoreTime[];
   timeExtensions?: TimeExtension[];
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];

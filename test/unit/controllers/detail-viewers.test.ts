@@ -101,7 +101,7 @@ describe('Detail viewer Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('detail-viewers/view-ho-details.njk', {
         documents: [ {
           dateUploaded: '21 February 2020',
-          url: "<a class='govuk-link' target='_blank' rel=\"noopener noreferrer\" href='/view/document/someUUID'>evidence_file(PNG)</a>"
+          url: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/someUUID'>evidence_file(PNG)</a>"
         } ],
         previousPage: paths.common.overview
       });

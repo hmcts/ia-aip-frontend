@@ -200,36 +200,6 @@ export default class UpdateAppealService {
     };
 
     req.session.appeal.askForMoreTime = {};
-    req.session.appeal.previousAskForMoreTime = [];
-
-    if (caseData.timeExtensions) {
-      caseData.timeExtensions.forEach(timeExtension => {
-        const askForMoreTime = this.convertToAskForMoreTime(timeExtension.value, documentMap);
-        if (timeExtension.value.status === 'inProgress' && timeExtension.value.state === ccdCase.state) {
-          req.session.appeal.askForMoreTime = askForMoreTime;
-        } else {
-          req.session.appeal.previousAskForMoreTime.push(askForMoreTime);
-        }
-      });
-    }
-  }
-
-  private convertToAskForMoreTime(askForMoreTime, documentMap) {
-    const askForMoreTimeEvidence = askForMoreTime.evidence ? askForMoreTime.evidence.map(evidence => {
-      const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, documentMap);
-      return {
-        id: documentMapperId,
-        fileId: documentMapperId,
-        name: evidence.value.document_filename
-      };
-    }) : [];
-    return {
-      reason: askForMoreTime.reason,
-      evidence: askForMoreTimeEvidence,
-      state: askForMoreTime.state,
-      status: askForMoreTime.status,
-      requestDate: askForMoreTime.requestDate
-    };
   }
 
   private getDate(ccdDate): AppealDate {
@@ -374,15 +344,9 @@ export default class UpdateAppealService {
     }
 
     caseData.timeExtensions = [];
-    const previousAskForMoreTimes = appeal.previousAskForMoreTime;
 
-    if (previousAskForMoreTimes) {
-      previousAskForMoreTimes.forEach(askForMoreTime => {
-        this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
-      });
-    }
     const askForMoreTime = appeal.askForMoreTime;
-    if (askForMoreTime && askForMoreTime.reason) {
+    if (askForMoreTime && askForMoreTime.reason && askForMoreTime.status !== 'inProgress') {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 
@@ -390,9 +354,6 @@ export default class UpdateAppealService {
   }
 
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
-    if (askForMoreTime.status === 'inProgress') {
-      askForMoreTime.status = 'submitted';
-    }
     const currentTimeExtension = {
       reason: askForMoreTime.reason,
       state: askForMoreTime.state,
@@ -400,8 +361,8 @@ export default class UpdateAppealService {
       requestDate: askForMoreTime.requestDate
     } as CcdTimeExtension;
 
-    if (askForMoreTime.reviewTimeExtensionRequired === 'Yes') {
-      caseData.reviewTimeExtensionRequired = 'Yes';
+    if (askForMoreTime.reviewTimeExtensionRequired === YesOrNo.YES) {
+      caseData.reviewTimeExtensionRequired = YesOrNo.YES;
     }
     if (askForMoreTime.evidence) {
       currentTimeExtension.evidence = this.toSupportingDocument(askForMoreTime.evidence, appeal);

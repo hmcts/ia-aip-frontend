@@ -76,8 +76,8 @@ function constructEventObject(event: HistoryEvent, req: Request) {
 function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], caseState: CcdState[] | null, req: Request) {
 
   const filteredEvents = caseState
-    ? history.filter(history => eventsToLookFor.some(evnt => evnt.id === history.id) && caseState.some(cs => cs.id === history.state.id))
-    : history.filter(history => eventsToLookFor.some(evnt => evnt.id === history.id));
+    ? history.filter(h => eventsToLookFor.some(evnt => evnt.id === h.id) && caseState.some(cs => cs.id === history.state.id))
+    : history.filter(h => eventsToLookFor.some(evnt => evnt.id === h.id));
 
   return filteredEvents.map(event => constructEventObject(event, req));
 }

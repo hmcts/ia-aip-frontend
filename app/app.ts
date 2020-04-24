@@ -8,7 +8,7 @@ import webpack from 'webpack';
 import webpackDevMiddleware, { Options } from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
-import { configureLogger, configureNunjucks, configureS2S } from './app-config';
+import { configureIdam, configureLogger, configureNunjucks, configureS2S } from './app-config';
 import { pageNotFoundHandler, serverErrorHandler } from './handlers/error-handler';
 import { handleFileUploadErrors, uploadConfiguration } from './middleware/file-upload-validation-middleware';
 import { isUserAuthenticated } from './middleware/is-user-authenticated';
@@ -35,6 +35,7 @@ function createApp() {
 
   app.use(setupSession());
   configureLogger(app);
+  configureIdam(app);
   configureNunjucks(app);
   configureS2S(app);
 

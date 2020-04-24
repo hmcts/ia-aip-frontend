@@ -169,26 +169,35 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
       await updateAppealService.submitEvent(Events.SUBMIT_TIME_EXTENSION, req);
       req.session.appeal.askForMoreTime = {};
 
-      res.redirect(paths.common.overview);
+      res.redirect(paths.common.askForMoreTime.confirmation);
     } catch (e) {
       next(e);
     }
   };
 }
 
-function setupAskForMoreTimeController(deps?: any): Router {
+function getConfirmation(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.render('./ask-for-more-time/confirmation.njk', {});
+  } catch (e) {
+    next(e);
+  }
+}
+
+function setupAskForMoreTimeController(middleware, deps?: any): Router {
   const router = Router();
-  router.get(paths.common.askForMoreTime.reason, getAskForMoreTimePage);
-  router.get(paths.common.askForMoreTime.cancel, getCancelAskForMoreTime);
-  router.post(paths.common.askForMoreTime.reason, postAskForMoreTimePage(deps.updateAppealService));
-  router.get(paths.common.askForMoreTime.evidenceYesNo, getAskForMoreTimeEvidence);
-  router.post(paths.common.askForMoreTime.evidenceYesNo, postAdditionalSupportingEvidenceQuestionPage);
-  router.get(paths.common.askForMoreTime.supportingEvidenceUpload, getUploadEvidence);
-  router.post(paths.common.askForMoreTime.supportingEvidenceUpload, uploadConfiguration, handleFileUploadErrors, postUploadEvidence(deps.documentManagementService, deps.updateAppealService));
-  router.get(paths.common.askForMoreTime.supportingEvidenceDelete, getDeleteEvidence(deps.documentManagementService));
-  router.post(paths.common.askForMoreTime.supportingEvidenceSubmit, postSubmitEvidence(deps.updateAppealService));
-  router.get(paths.common.askForMoreTime.checkAndSend, getCheckAndSend);
-  router.post(paths.common.askForMoreTime.checkAndSend, postCheckAndSend(deps.updateAppealService));
+  router.get(paths.common.askForMoreTime.reason, middleware, getAskForMoreTimePage);
+  router.get(paths.common.askForMoreTime.cancel, middleware, getCancelAskForMoreTime);
+  router.post(paths.common.askForMoreTime.reason, middleware, postAskForMoreTimePage(deps.updateAppealService));
+  router.get(paths.common.askForMoreTime.evidenceYesNo, middleware, getAskForMoreTimeEvidence);
+  router.post(paths.common.askForMoreTime.evidenceYesNo, middleware, postAdditionalSupportingEvidenceQuestionPage);
+  router.get(paths.common.askForMoreTime.supportingEvidenceUpload, middleware, getUploadEvidence);
+  router.post(paths.common.askForMoreTime.supportingEvidenceUpload, middleware, uploadConfiguration, handleFileUploadErrors, postUploadEvidence(deps.documentManagementService, deps.updateAppealService));
+  router.get(paths.common.askForMoreTime.supportingEvidenceDelete, middleware, getDeleteEvidence(deps.documentManagementService));
+  router.post(paths.common.askForMoreTime.supportingEvidenceSubmit, middleware, postSubmitEvidence(deps.updateAppealService));
+  router.get(paths.common.askForMoreTime.checkAndSend, middleware, getCheckAndSend);
+  router.post(paths.common.askForMoreTime.checkAndSend, middleware, postCheckAndSend(deps.updateAppealService));
+  router.get(paths.common.askForMoreTime.confirmation, getConfirmation);
 
   return router;
 }
@@ -197,6 +206,7 @@ export {
   setupAskForMoreTimeController,
   getAskForMoreTimePage,
   getCancelAskForMoreTime,
+  getConfirmation,
   postAskForMoreTimePage,
   getCheckAndSend,
   postCheckAndSend

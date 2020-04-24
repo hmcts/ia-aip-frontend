@@ -104,16 +104,40 @@
   }) }}
 {% endmacro %}
 
-{% block head %}
-  <link href="/main.css" rel="stylesheet" type="text/css"/>
-{% endblock %}
-
 {% block pageTitle %}
   {% if error or errors %}{{ i18n.errorTitlePrefix }} {% endif %}{{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
 {% endblock %}
 
 {% block headIcons %}
   <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon" />
+{% endblock %}
+
+{% block head %}
+  <link href="/main.css" rel="stylesheet" type="text/css"/>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159574540-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-159574540-1');
+  </script>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-W4WSRN2');</script>
+  <!-- End Google Tag Manager -->
+{% endblock %}
+
+{% block bodyStart %}
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W4WSRN2"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 {% endblock %}
 
 {% block header %}

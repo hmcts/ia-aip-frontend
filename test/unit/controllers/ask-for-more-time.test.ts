@@ -179,7 +179,7 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [{ href: paths.common.askForMoreTime.supportingEvidenceUpload, text: 'Change' }] },
             key: { text: 'Supporting evidence' },
-            value: { html: 'name.txt' }
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/fileId\'>name.txt</a>' }
           }]
         });
     });

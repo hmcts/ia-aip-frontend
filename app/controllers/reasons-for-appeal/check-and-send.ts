@@ -24,7 +24,7 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
       const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {
         const evidenceText = evidences.map((evidence) => {
-          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${evidence.fileId}'>${evidence.name}</a>`;
         });
 
         summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.awaitingReasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));

@@ -56,7 +56,7 @@ describe('isJourneyAllowedMiddleware', () => {
 
   it('should allow access to document viewer', () => {
     req.session.appeal.appealStatus = 'appealStarted';
-    req.path = paths.common.documentViewer + 'someFileName';
+    req.path = paths.common.detailsViewers.document + 'someFileName';
     isJourneyAllowedMiddleware(req as Request, res as Response, next);
     expect(next).to.have.been.called;
   });

@@ -15,7 +15,7 @@
     {% for evidence in evidences %}
       <tr class="govuk-table__row evidence">
         <td class="govuk-table__cell">
-          <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="{{ paths.common.documentViewer }}/{{ evidence.fileId }}">
+          <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="{{ paths.common.detailsViewers.document }}/{{ evidence.fileId }}">
             {{ evidence.name }}
           </a>
         </td>

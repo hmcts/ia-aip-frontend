@@ -194,8 +194,11 @@
       "title": "Your appeal is late",
       "appealLateLabel": "Why is your appeal late?",
       "description": "Appeals should be made within 14 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
-      "provideEvidenceTitle": "Provide supporting evidence",
-      "provideEvidenceDescription": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
+      "provideEvidenceTitle": "Supporting evidence for why your appeal is late",
+      "provideEvidenceDescription": [
+        "You can upload <b>one piece of evidence</b> to support your answer such as a letter, photo or document. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
+        "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
+      ],
       "fileUploadTitle": "Upload a file",
       "uploadedFileTitle": "Uploaded file"
     },
@@ -249,7 +252,7 @@
     "reasonsForAppealUpload": {
       "title": "Provide supporting evidence",
       "heading": "Provide supporting evidence",
-      "uploadInfo": "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
+      "uploadInfo": "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",
       "findOutMore": "Find out more about the evidence to support your appeal",
       "uploadFiles": "Uploaded files",
@@ -960,7 +963,8 @@
       "addingSupportingEvidence": "You will be able to add supporting evidence for your answer on the next page if you want to.",
       "adviceHeader": "Advice on providing supporting evidence",
       "advice": [
-        "You can upload evidence to support your answer such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
+        "It will be helpful to <a href='/supporting-evidence'>read our information about supporting evidence</a>",
+        "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
       "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"

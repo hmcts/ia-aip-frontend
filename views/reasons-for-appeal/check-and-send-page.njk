@@ -24,7 +24,7 @@
 
   <form method="post" action={{ paths.awaitingReasonsForAppeal.checkAndSend }}>
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    <div class="buttons__container">
+    <div class="save-buttons__container">
       {{ govukButton({
         name: "send",
         text: i18n.common.buttons.send,

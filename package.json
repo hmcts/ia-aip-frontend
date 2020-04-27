@@ -22,7 +22,7 @@
     "sonar-scan": "sonar-scanner",
     "test:smoke": "yarn codecept:e2e -g @smoke",
     "test:smoke-local": "yarn codecept:e2e-local -g @smoke",
-    "test:functional": "yarn codecept:functional",
+    "test:functional": "yarn test:e2e",
     "test:e2e": "yarn codecept:e2e -g @e2e",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional && yarn test:e2e",
     "test:audit": "exit 0",

@@ -3,10 +3,10 @@
 {% set pageTitleName = i18n.pages.overviewPage.timeline.appealApplicationCheckAnswersHistory.title %}
 
 {% block content %}
-    <h1>{{ i18n.pages.overviewPage.timeline.appealApplicationCheckAnswersHistory.title  }}</h1>
-    {{ govukSummaryList({
-rows: data
-}) }}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.overviewPage.timeline.appealApplicationCheckAnswersHistory.title }}</h1>
+  {{ govukSummaryList({
+    rows: data
+  }) }}
 {% endblock %}
 
 

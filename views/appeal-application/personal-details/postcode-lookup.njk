@@ -1,6 +1,7 @@
-{% extends '../../layout.njk' %}
+{% extends 'layout.njk' %}
 {% set pageTitleName = i18n.pages.postcodeLookup.title %}
-{% from "govuk/components/select/macro.njk" import govukSelect %}]
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% block content %}
   {% if error %}
@@ -10,44 +11,38 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.postcodeLookup.heading }}</h1>
   <form method="post" action="{{ paths.appealStarted.postcodeLookup }}">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    <p class="govuk-body-l">{{ i18n.pages.postcodeLookup.postcodeHeading }}</p>
-    <span><span  class='govuk-body govuk-!-font-weight-bold'> {{ postcode }}</span>  &emsp;
-      <a class="govuk-link app-contact-panel__link"
-         href="{{ paths.appealStarted.enterPostcode }}">Change</a></span>
-    </br>
-    </br>
-    {{ govukSelect({
-      id: "address",
-      name: "address",
-      label: {
-        text:  i18n.pages.postcodeLookup.select
-      },
-      items: addresses,
-      errorMessage: {
-        text:  error['address'].text
-      } if error['address']
-    }) }}
-    <a class="govuk-link app-contact-panel__link"
-       href="{{ paths.appealStarted.enterAddress }}">{{ i18n.pages.postcodeLookup.cantFind }}</a>
-    </br>
-    </br>
-    <div class="buttons__container">
-      {{ govukButton({
-        text: i18n.common.buttons.saveAndContinue,
-        name: "buttton",
-        value: "submit",
-        classes: "govuk-!-margin-right-1"
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.postcodeLookup.heading,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <p class="govuk-body-l">{{ i18n.pages.postcodeLookup.postcodeHeading }}</p>
+      <span><span  class='govuk-body govuk-!-font-weight-bold'> {{ postcode }}</span>  &emsp;
+        <a class="govuk-link app-contact-panel__link"
+          href="{{ paths.appealStarted.enterPostcode }}">Change</a></span>
+      </br>
+      </br>
+      {{ govukSelect({
+        id: "address",
+        name: "address",
+        label: {
+          text:  i18n.pages.postcodeLookup.select
+        },
+        items: addresses,
+        errorMessage: {
+          text:  error['address'].text
+        } if error['address']
       }) }}
-
-      {{ govukButton({
-        text: i18n.common.buttons.saveForLater,
-        href: paths.appealStarted.taskList,
-        classes: "govuk-button--secondary"
-      }) }}
-    </div>
-    {{ contactUs() }}
+      
+      <a class="govuk-link app-contact-panel__link" href="{{ paths.appealStarted.enterAddress }}">
+        {{ i18n.pages.postcodeLookup.cantFind }}
+      </a>
+      {{ saveButtons() }}
+    {% endcall %}
   </form>
+  {{ contactUs() }}
 {% endblock %}

@@ -3,6 +3,7 @@ import express from 'express';
 import * as _ from 'lodash';
 import * as nunjucks from 'nunjucks';
 import path from 'path';
+import { setupIdamConfig } from './config/idam-config';
 import { paths } from './paths';
 import S2SService from './service/s2s-service';
 import Logger from './utils/logger';
@@ -34,8 +35,14 @@ function configureS2S(app: express.Application) {
   const s2s = S2SService.getInstance();
   app.locals.s2s = s2s;
 }
+
+function configureIdam(app: express.Application) {
+  setupIdamConfig(app.locals.logger);
+}
+
 export {
   configureLogger,
   configureNunjucks,
-  configureS2S
+  configureS2S,
+  configureIdam
 };

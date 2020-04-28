@@ -36,6 +36,7 @@ interface CaseData {
   applicationOutOfTimeExplanation: string;
   applicationOutOfTimeDocument: SupportingDocument;
   reasonsForAppealDecision: string;
+  reasonsForAppealDateUploaded?: string;
   reasonsForAppealDocuments: SupportingEvidenceCollection[];
   respondentDocuments: RespondentEvidenceCollection[];
   timeExtensions: TimeExtensionCollection[];

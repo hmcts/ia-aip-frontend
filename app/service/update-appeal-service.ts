@@ -201,7 +201,8 @@ export default class UpdateAppealService {
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
-        evidences: reasonsForAppealDocumentUploads
+        evidences: reasonsForAppealDocumentUploads,
+        uploadDate: caseData.reasonsForAppealDateUploaded
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
@@ -354,6 +355,9 @@ export default class UpdateAppealService {
             } as DocumentWithMetaData
           } as SupportingEvidenceCollection;
         });
+      }
+      if (appeal.reasonsForAppeal.uploadDate) {
+        caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
       }
     }
 

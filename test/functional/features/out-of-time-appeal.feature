@@ -53,18 +53,3 @@ Scenario: Delete an evidence changes on reason should persist
   And I click "Delete" button
   Then I see "reason" as my reason for being late
   And I dont see Uploaded file list
-
-
-  Scenario: Delete an evidence changes on reason should persist
-    Given I have an out of time appeal with reason for being late an evidence
-    And I have logged in
-    And I click "Continue" button
-    And I should see the "Task list" page
-    And I click "Check and send your appeal" button
-    And I should see the "Check and send" page
-    And I click Reason for late appeal change button
-    And I should see the "Out of time appeal" page
-    And I enter "reason" as the reason for being late
-    And I click "Delete" button
-    Then I see "reason" as my reason for being late
-    And I dont see Uploaded file list

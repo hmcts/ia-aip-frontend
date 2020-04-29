@@ -1,59 +1,52 @@
 const config = require('config')
 
+const SAUCE_USERNAME = 'lewis.williams';
+const SAUCE_ACCESS_KEY = config.get('saucelabs.secret');
+const TEST_URL = config.get('testUrl');
+
 exports.config = {
   name: 'Codecept-crossbrowser',
   output: './functional-output/crossbrowser/reports/',
   helpers: {
     WebDriver: {
-      url: process.env.TEST_URL || config.get('testUrl'),
-      browser: "internet explorer",
-      timeouts: {
-        "script": 60000,
-        "page load": 10000
-      },
-      desiredCapabilities: {}
+      url: TEST_URL,
+      browser: 'chrome',
+      services: [ 'sauce' ],
+      user: SAUCE_USERNAME,
+      key: SAUCE_ACCESS_KEY,
+      sauceConnect: true,
+      region: 'eu',
+      restart: true,
+      smartWait: 5000,
     }
   },
   multiple: {
-    basic: {
+    smoke: {
+      grep: "@smokeCrossbrowser",
+      // store results into `output/smoke` directory
+      outputName: "smoke",
       browsers: [
-        {
-          browser: 'chrome',
-          version: 'latest'
-        },
-        {
-          browser: 'internet explorer',
-          version: 'latest'
-        },
-      ]
+        { browser: 'chrome', windowSize: 'maximize', version: 'latest' },
+        { browser: 'firefox', windowSize: 'maximize', version: 'latest' },
+        { browser: 'safari', windowSize: 'maximize', version: 'latest' },
+        { browser: 'edge', windowSize: 'maximize', version: 'latest' },
+        { browser: 'internet explorer', windowSize: 'maximize', version: '11' }
+      ],
     }
   },
   bootstrapAll: './test/functional/bootstrap-all.ts',
   teardownAll: './test/functional/bootstrap-all.ts',
   gherkin: {
     features: './test/e2e-test/features/*.feature',
-    steps: ['./test/e2e-test/step_definitions/steps.ts']
+    steps: [ './test/e2e-test/step_definitions/steps.ts' ]
   },
   plugins: {
-    wdio: {
-      enabled: true,
-      services: ['sauce'],
-      user: 'lewis.williams',
-      key: config.get('saucelabs.secret'),
-      region: 'eu',
-      sauceConnect: false,
-      sauceConnectOpts: {
-        x: 'https://eu-central-1.saucelabs.com/rest/v1',
-        verbose: true,
-      },
-      doctor: true,
-    },
     stepByStepReport: {
       enabled: true,
-      deleteSuccessful: false,
-      fullPageScreenshots: true
+      fullPageScreenshots: true,
+      deleteSuccessful: false
     }
   },
-  require: ['ts-node/register/transpile-only']
+  require: [ 'ts-node/register/transpile-only' ]
 };
 

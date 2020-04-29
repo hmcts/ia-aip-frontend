@@ -14,7 +14,12 @@ const getBrowserConfig = browserGroup => {
   const browserConfig = [];
 
   const browsersToTest = browsers[browserGroup];
+  const environment = process.env.NODE_ENV;
+
+  const environmentTag = environment || 'LOCAL';
+
   browsersToTest.forEach(browser => {
+      browser.name = '[' + environmentTag + '] - ' + browser.name;
       browser.tags = [ 'IA - AIP' ];
       browser.windowSize = '1920x1080';
 
@@ -34,17 +39,16 @@ exports.config = {
       url: TEST_URL,
       browser: 'chrome',
       waitForTimeout: 60000,
+      cssSelectorsEnabled: 'true',
       host: 'ondemand.eu-central-1.saucelabs.com',
       port: 80,
       region: 'eu',
       user: SAUCE_USERNAME,
       key: SAUCE_ACCESS_KEY,
       desiredCapabilities: {},
-
     },
-    REST: {},
-    SauceHelper: {
-      require: "codeceptjs-saucehelper"
+    StatusUpdateHelper: {
+      require: "./helpers/status-update-helper"
     }
   },
   multiple: {

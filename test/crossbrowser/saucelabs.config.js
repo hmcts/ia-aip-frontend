@@ -21,7 +21,7 @@ const getBrowserConfig = browserGroup => {
   browsersToTest.forEach(browser => {
       browser.name = '[' + environmentTag + '] - ' + browser.name;
       browser.tags = [ 'IA - AIP' ];
-      browser.screenResolution = '1920x1080';
+      browser.screenResolution = '1024x768';
 
       browserConfig.push({
         browser: browser.browserName,

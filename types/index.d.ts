@@ -76,7 +76,6 @@ interface Appeal {
   timeExtensions?: TimeExtension[];
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
-
 }
 
 interface AskForMoreTime {

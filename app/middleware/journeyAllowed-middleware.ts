@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { paths } from '../paths';
+import { hasInflightTimeExtension } from '../utils/utils';
 
 const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const pathsCopy = { ...paths[req.session.appeal.appealStatus] } || {};
@@ -14,15 +15,7 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
 };
 
 const isTimeExtensionsInProgress = (req: Request, res: Response, next: NextFunction) => {
-  const currentPath: string = req.path;
-  const hasInFlightAskForMoreTime = req.session.appeal.previousAskForMoreTime.filter(askForMoreTime => {
-    return askForMoreTime.value.status === 'submitted' &&
-      askForMoreTime.value.state === req.session.appeal.appealStatus;
-  }).length > 0;
-
-  const isJourneyAllowed = !Object.values(paths.common.askForMoreTime).includes(currentPath) || !hasInFlightAskForMoreTime;
-
-  if (isJourneyAllowed) {
+  if (!hasInflightTimeExtension(req.session.appeal)) {
     return next();
   }
   return res.redirect(paths.common.forbidden);

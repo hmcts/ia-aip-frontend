@@ -29,7 +29,8 @@ describe('Ask for more time Controller', function () {
       session: {
         appeal: {
           reasonsForAppeal: {},
-          askForMoreTime: {}
+          askForMoreTime: {},
+          timeExtensions: []
         } as Partial<Appeal>
       } as Partial<Express.Session>,
       body: {},
@@ -65,7 +66,8 @@ describe('Ask for more time Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupAskForMoreTimeController({ updateAppealService });
+      const middleware = sandbox.stub();
+      setupAskForMoreTimeController([ middleware ], { updateAppealService });
       expect(routerPOSTStub).to.have.been.calledWith(paths.common.askForMoreTime.reason);
       expect(routerGetStub).to.have.been.calledWith(paths.common.askForMoreTime.reason);
     });

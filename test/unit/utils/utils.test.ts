@@ -1,4 +1,4 @@
-import { asBooleanValue, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
+import { asBooleanValue, hasInflightTimeExtension, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
 import { expect } from '../../utils/testUtils';
 
 describe('utils', () => {
@@ -66,6 +66,49 @@ describe('utils', () => {
 
     it('handles summer time year', () => {
       expect(toIsoDate({ year: 2020, month: 3, day: 30 })).to.be.eq('2020-03-30');
+    });
+  });
+
+  describe('hasInflightTimeExtension', () => {
+    it('does not have inflight appeals if no time extensions', () => {
+      const inflightTimeExtension = hasInflightTimeExtension({
+        timeExtensions: [],
+        appealStatus: 'currentState'
+      } as Appeal);
+      expect(inflightTimeExtension).to.be.eq(false);
+    });
+
+    it('does not have inflight appeals if previous time extension for different state', () => {
+      const inflightTimeExtension = hasInflightTimeExtension({
+        timeExtensions: [{
+          status: 'submitted',
+          state: 'oldState'
+        }],
+        appealStatus: 'currentState'
+      } as Appeal);
+      expect(inflightTimeExtension).to.be.eq(false);
+    });
+
+    it('does not have inflight appeals if previous time extension not submitted', () => {
+      const inflightTimeExtension = hasInflightTimeExtension({
+        timeExtensions: [{
+          status: 'rejected',
+          state: 'currentState'
+        }],
+        appealStatus: 'currentState'
+      } as Appeal);
+      expect(inflightTimeExtension).to.be.eq(false);
+    });
+
+    it('has inflight appeal', () => {
+      const inflightTimeExtension = hasInflightTimeExtension({
+        timeExtensions: [{
+          status: 'submitted',
+          state: 'currentState'
+        }],
+        appealStatus: 'currentState'
+      } as Appeal);
+      expect(inflightTimeExtension).to.be.eq(true);
     });
   });
 });

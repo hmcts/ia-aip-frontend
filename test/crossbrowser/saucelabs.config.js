@@ -1,0 +1,85 @@
+const browsers = require('./browsers.js');
+const config = require('config');
+
+const SAUCE_USERNAME = 'lewis.williams';
+const SAUCE_ACCESS_KEY = config.get('saucelabs.secret');
+const TEST_URL = config.get('testUrl');
+
+/**
+ * Retrieves supported browser capabilities and configuration defined in crossbrowser/browsers.js
+ * @param browserGroup the browser group e.g 'chrome' as defined in browsers.js
+ * @return a list of browser configurations to be run.
+ */
+const getBrowserConfig = browserGroup => {
+  const browserConfig = [];
+
+  const browsersToTest = browsers[browserGroup];
+  browsersToTest.forEach(browser => {
+      browser.tags = [ 'IA - AIP' ];
+      browser.windowSize = '1920x1080';
+
+      browserConfig.push({
+        browser: browser.browserName,
+        desiredCapabilities: browser
+      });
+    }
+  );
+  return browserConfig;
+};
+
+exports.config = {
+  name: 'AIP Frontend Tests',
+  helpers: {
+    WebDriverIO: {
+      url: TEST_URL,
+      browser: 'chrome',
+      waitForTimeout: 60000,
+      host: 'ondemand.eu-central-1.saucelabs.com',
+      port: 80,
+      region: 'eu',
+      user: SAUCE_USERNAME,
+      key: SAUCE_ACCESS_KEY,
+      desiredCapabilities: {},
+
+    },
+    REST: {},
+    SauceHelper: {
+      require: "codeceptjs-saucehelper"
+    }
+  },
+  multiple: {
+    microsoftIE11: {
+      grep: '@crossbrowser',
+      browsers: getBrowserConfig('microsoftIE11')
+    },
+    microsoftEdge: {
+      grep: '@crossbrowser',
+      browsers: getBrowserConfig('microsoftEdge')
+    },
+    chrome: {
+      grep: '@crossbrowser',
+      browsers: getBrowserConfig('chrome')
+    },
+    firefox: {
+      grep: '@crossbrowser',
+      browsers: getBrowserConfig('firefox')
+    }
+    // safari: {
+    //   browsers: getBrowserConfig('safari')
+    // }
+  },
+  bootstrapAll: '../functional/bootstrap-all.ts',
+  teardownAll: '../functional/bootstrap-all.ts',
+  gherkin: {
+    features: '../e2e-test/features/*.feature',
+    steps: [ '../e2e-test/step_definitions/steps.ts' ]
+  },
+  plugins: {
+    stepByStepReport: {
+      enabled: true,
+      fullPageScreenshots: true,
+      deleteSuccessful: false
+    }
+  },
+  require: [ 'ts-node/register/transpile-only' ]
+};

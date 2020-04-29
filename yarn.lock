@@ -2677,11 +2677,6 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codeceptjs-saucehelper@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/codeceptjs-saucehelper/-/codeceptjs-saucehelper-1.4.0.tgz#1b94dd73670d93194b2dcfbb7824a8730b0a391a"
-  integrity sha512-ZsEuSJFqHhQxKymWjcrYeZqj/tlEX7jbpN8VhXJRb5EEfCLPQxDjzRzNNlY6pugcReoJ/Hy/aflfQKbS80BlQg==
-
 codeceptjs@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/codeceptjs/-/codeceptjs-2.6.2.tgz#aba58c7872ef4de01fe04a3e924694f431cef4b5"

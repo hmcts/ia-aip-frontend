@@ -21,7 +21,7 @@ const getBrowserConfig = browserGroup => {
   browsersToTest.forEach(browser => {
       browser.name = '[' + environmentTag + '] - ' + browser.name;
       browser.tags = [ 'IA - AIP' ];
-      browser.windowSize = '1920x1080';
+      browser.screenResolution = '1920x1080';
 
       browserConfig.push({
         browser: browser.browserName,
@@ -46,7 +46,7 @@ exports.config = {
       user: SAUCE_USERNAME,
       key: SAUCE_ACCESS_KEY,
       desiredCapabilities: {},
-    },
+},
     StatusUpdateHelper: {
       require: "./helpers/status-update-helper"
     }

@@ -72,7 +72,8 @@ describe('Reasons for Appeal Controller', function () {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
         previousPage: paths.common.overview,
         applicationReason: undefined,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: false,
+        askForMoreTimeInFlight: false
       });
     });
 

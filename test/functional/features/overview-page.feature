@@ -38,7 +38,7 @@ Feature: Overview page
     Then I click continue
     Then I should see the reasons for appeal decision page
 
-  Scenario: Awaiting Reasons for appeal
+  Scenario: Saved Awaiting Reasons for appeal
     Given I have logged in as an appellant in state "Saved awaitingReasonsForAppeal"
     When I visit the overview page
     Then I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'
@@ -48,3 +48,9 @@ Feature: Overview page
     Then I should see the appeal overview page
     Then I click continue
     Then I should see the reasons for appeal decision page
+
+  Scenario: Awaiting Reasons for appeal with time extension
+    Given I have logged in as an appellant in state "awaitingReasonsForAppeal with time extensions"
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'Awaiting reasons for appeal with time extensions' with respond by date '01 January 2020'
+

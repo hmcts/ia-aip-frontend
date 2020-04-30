@@ -63,6 +63,13 @@ describe('utils', () => {
       expect(inflightTimeExtension).to.be.eq(false);
     });
 
+    it('does not have inflight appeals if previous time extensions are not set', () => {
+      const inflightTimeExtension = hasInflightTimeExtension({
+        appealStatus: 'currentState'
+      } as Appeal);
+      expect(inflightTimeExtension).to.be.eq(false);
+    });
+
     it('does not have inflight appeals if previous time extension for different state', () => {
       const inflightTimeExtension = hasInflightTimeExtension({
         timeExtensions: [{

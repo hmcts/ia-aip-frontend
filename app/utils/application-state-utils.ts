@@ -57,6 +57,9 @@ const APPEAL_STATE = {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description
     ],
+    descriptionParagraphsAskForMoreTime: [
+      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime
+    ],
     info: {
       title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
       url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
@@ -67,13 +70,17 @@ const APPEAL_STATE = {
     },
     cta: {
       url: paths.awaitingReasonsForAppeal.decision,
-      respondByText: i18n.pages.overviewPage.doThisNext.respondByText
+      respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
+      respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime
     },
     allowedAskForMoreTime: true
   },
   'awaitingReasonsForAppealPartial': {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description
+    ],
+    descriptionParagraphsAskForMoreTime: [
+      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime
     ],
     info: {
       title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.title,
@@ -85,7 +92,8 @@ const APPEAL_STATE = {
     },
     cta: {
       url: paths.awaitingReasonsForAppeal.decision,
-      respondByText: i18n.pages.overviewPage.doThisNext.respondByText
+      respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
+      respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime
     },
     allowedAskForMoreTime: true
   },

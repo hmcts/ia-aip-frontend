@@ -14,7 +14,9 @@ export function asBooleanValue(value: string | number | boolean | null | undefin
 }
 
 export function toIsoDate(appealDate: AppealDate) {
-  const date = new Date(`${appealDate.year}-${appealDate.month}-${appealDate.day}`);
+  const month = appealDate.month.toString().padStart(2, '0');
+  const day = appealDate.day.toString().padStart(2, '0');
+  const date = new Date(`${appealDate.year}-${month}-${day}`);
   const isoDate = date.toISOString().split('T')[0];
   return isoDate;
 }

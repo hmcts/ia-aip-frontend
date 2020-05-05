@@ -31,6 +31,12 @@ const paths = {
   reasonsForAppealSubmitted: {
     confirmation: '/case-building/answer-sent'
   },
+  awaitingClarifyingQuestionsAnswers: {
+    questionsList: '/questions-about-appeal',
+    question: '/question/:id',
+    anythingElse: '/anything-else',
+    checkAndSend: '/check-your-answers'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',

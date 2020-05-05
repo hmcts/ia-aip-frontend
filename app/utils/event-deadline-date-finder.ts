@@ -52,6 +52,10 @@ function getDeadline(currentAppealStatus: string, directions: Direction[], histo
       formattedDeadline = moment(triggeringDate).add(daysToWaitAfterReasonsForAppeal, 'days').format(dayMonthYearFormat);
       break;
     }
+    case 'awaitingClarifyingQuestionsAnswers': {
+      formattedDeadline = getFormattedDirectionDueDate(directions, 'requestClarifyingQuestions');
+      break;
+    }
     default: {
       formattedDeadline = 'TBC';
       break;

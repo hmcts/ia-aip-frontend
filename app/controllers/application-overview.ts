@@ -50,9 +50,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupApplicationOverviewController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupApplicationOverviewController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.common.overview, middleware, getApplicationOverview(updateAppealService));
+  router.get(paths.common.overview, getApplicationOverview(updateAppealService));
   return router;
 }
 

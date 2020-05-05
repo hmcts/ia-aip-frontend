@@ -1,3 +1,4 @@
+import config from 'config';
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import {
@@ -72,7 +73,7 @@ describe('Reasons for Appeal Controller', function () {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
         previousPage: paths.common.overview,
         applicationReason: undefined,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 
@@ -105,7 +106,7 @@ describe('Reasons for Appeal Controller', function () {
             key: 'applicationReason',
             text: 'Enter the reasons you think the Home Office decision is wrong'
           } ],
-          askForMoreTimeFeatureEnabled: false
+          askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
         }
       );
     });
@@ -156,7 +157,7 @@ describe('Reasons for Appeal Controller', function () {
         {
           error: [ { href: 'uploadFile', text: 'Select a file', value: '#uploadFile' } ],
           errorList: [ { 'href': 'uploadFile', 'text': 'Select a file', 'value': '#uploadFile' } ],
-          askForMoreTimeFeatureEnabled: false
+          askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
         }
       );
     });

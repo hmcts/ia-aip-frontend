@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import {
   getAdditionalSupportingEvidenceQuestionPage,
@@ -78,7 +79,7 @@ describe('Supporting Evidence Upload Controller', () => {
       getAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
         previousPage: paths.awaitingReasonsForAppeal.decision,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
 
       });
     });
@@ -105,7 +106,7 @@ describe('Supporting Evidence Upload Controller', () => {
         error: { answer: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 

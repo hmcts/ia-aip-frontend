@@ -13,7 +13,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form action="{{ paths.reasonsForAppeal.supportingEvidence }}" method="post">
+  <form action="{{ paths.awaitingReasonsForAppeal.supportingEvidence }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
@@ -28,7 +28,7 @@
           <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
           <ul>
             <li>{{ i18n.common.askForMoreTime.wantToProvideEvidenceLater }}
-              <a href='{{ paths.askForMoreTime }}'
+              <a href='{{ paths.common.askForMoreTime.reason }}'
                  class='govuk-link'>{{ i18n.common.askForMoreTime.saveAnswerAndAsk | lower }}</a>
             </li>
           </ul>

@@ -8,6 +8,7 @@
 @import "_timeline-component.scss";
 @import "_header";
 @import "_timeout-modal";
+@import "save-buttons-component";
 
 body {
   @extend .govuk-body;
@@ -70,4 +71,17 @@ img {
   padding-bottom: 4rem;
 }
 
+.cancel-button{
+  display: inline-block;
+  margin-left: 30px;
+  padding-top: 5px;
+}
+
+.answer {
+  white-space: pre-line;
+}
+
+pre {
+  font-family: "GDS Transport", Arial, sans-serif;
+}
 

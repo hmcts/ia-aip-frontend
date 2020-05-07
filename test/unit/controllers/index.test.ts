@@ -44,7 +44,7 @@ describe('Index Controller', function() {
   describe('getIndex', () => {
     it('get Index should redirect to start page', function() {
       getIndex(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.start);
+      expect(res.redirect).to.have.been.calledWith(paths.common.start);
     });
 
     it('should catch exception and call next with the error', function () {
@@ -60,7 +60,7 @@ describe('Index Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupIndexController();
-      expect(routerGetStub).to.have.been.calledWith(paths.index);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.index);
     });
   });
 });

@@ -12,3 +12,16 @@ export function asBooleanValue(value: string | number | boolean | null | undefin
   }
   return !!value;
 }
+
+export function nowIsoDate() {
+  return new Date().toISOString().split('T')[0];
+}
+
+export function nowAppealDate(): AppealDate {
+  const now = new Date();
+  return {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+    day: now.getDate()
+  } as AppealDate;
+}

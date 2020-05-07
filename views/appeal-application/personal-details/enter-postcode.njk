@@ -12,8 +12,8 @@
     }) }}
   {% endif %}
 
-  <form action="{{ paths.personalDetails.enterPostcode }}" method="post">
-      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+  <form action="{{ paths.appealStarted.enterPostcode }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
         text: i18n.pages.enterPostcode.heading,
@@ -34,9 +34,9 @@
         } if error['postcode']
       }) }}
       <div class="govuk-form-group">
-        <a href="{{ paths.personalDetails.enterAddress }}">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
+        <a href="{{ paths.appealStarted.enterAddress }}">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
       </div>
-      <div class="buttons__container">
+      <div class="save-buttons__container">
           {{ govukButton({
               text: i18n.pages.enterPostcode.findAddress,
               name: "findAddress",
@@ -47,7 +47,7 @@
           {{ govukButton({
               text: i18n.common.buttons.saveForLater,
               id: "saveForLater",
-              href: paths.overview + '?saved',
+              href: paths.common.overview + '?saved',
               classes: "govuk-button--secondary"
           }) }}
       </div>

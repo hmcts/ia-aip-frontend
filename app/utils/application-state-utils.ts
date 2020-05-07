@@ -5,6 +5,7 @@ import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import UpdateAppealService from '../service/update-appeal-service';
+import { dayMonthYearFormat } from './date-formats';
 import { getDeadline } from './event-deadline-date-finder';
 
 const APPEAL_STATE = {
@@ -15,7 +16,7 @@ const APPEAL_STATE = {
     ],
     info: null,
     cta: {
-      url: paths.taskList,
+      url: paths.appealStarted.taskList,
       respondByText: null
     },
     allowedAskForMoreTime: false
@@ -27,7 +28,7 @@ const APPEAL_STATE = {
     ],
     info: null,
     cta: {
-      url: paths.taskList,
+      url: paths.appealStarted.taskList,
       respondByText: null
     },
     allowedAskForMoreTime: false
@@ -69,7 +70,7 @@ const APPEAL_STATE = {
       url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
     },
     cta: {
-      url: paths.reasonsForAppeal.decision,
+      url: paths.awaitingReasonsForAppeal.decision,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
     },
     allowedAskForMoreTime: true
@@ -87,7 +88,7 @@ const APPEAL_STATE = {
       url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.url
     },
     cta: {
-      url: paths.reasonsForAppeal.decision,
+      url: paths.awaitingReasonsForAppeal.decision,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText
     },
     allowedAskForMoreTime: true
@@ -99,6 +100,17 @@ const APPEAL_STATE = {
     ],
     cta: null,
     allowedAskForMoreTime: false
+  },
+  'awaitingClarifyingQuestionsAnswers': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description
+    ],
+    info: null,
+    cta: {
+      url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
+      respondByText: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText
+    },
+    allowedAskForMoreTime: true
   }
 };
 
@@ -161,14 +173,14 @@ function getAppealApplicationNextStep(req: Request) {
     }
   };
 
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, history);
-
+  const directions = req.session.appeal.directions;
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, directions, history);
   return doThisNextSection;
 }
 
 function constructEventObject(event, req) {
   const appealStatus = req.session.appeal.appealStatus;
-  const formattedDate = moment(event.date).format('DD MMMM YYYY');
+  const formattedDate = moment(event.date).format(dayMonthYearFormat);
   const joinAdditionalLinks = [...i18n.pages.overviewPage.timeline[event.id].links,...i18n.pages.overviewPage.timeline[event.id].editableLink];
   const addAdditionalLink = event.id === 'submitAppeal' && appealStatus === 'awaitingReasonsForAppeal';
   return {
@@ -187,13 +199,13 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   req.session.appeal.history = history;
   const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
-  const appealStatus = req.session.appeal.appealStatus;
   const eventsCollected = [];
-  eventToLookFor.forEach((event: string) => {
+  eventToLookFor.forEach((event: string,index: number) => {
     const eventFound = history.find((e: HistoryEvent) => event === e.id);
     if (eventFound) {
       const eventObject = constructEventObject(eventFound,req);
       eventsCollected.push(eventObject);
+      }
     }
   });
 

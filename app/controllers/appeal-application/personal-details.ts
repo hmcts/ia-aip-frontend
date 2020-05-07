@@ -28,7 +28,7 @@ function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
     const dob = application.personalDetails && application.personalDetails.dob || null;
     return res.render('appeal-application/personal-details/date-of-birth.njk', {
       dob,
-      previousPage: paths.personalDetails.name
+      previousPage: paths.appealStarted.name
     });
   } catch (e) {
     next(e);
@@ -39,7 +39,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = dateOfBirthValidation(req.body);
       if (validation != null) {
@@ -47,7 +47,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
           errors: validation,
           errorList: Object.values(validation),
           dob: { ...req.body },
-          previousPage: paths.personalDetails.name
+          previousPage: paths.appealStarted.name
         });
       }
 
@@ -61,7 +61,7 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
       };
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.nationality));
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.appealStarted.nationality));
     } catch (e) {
       next(e);
     }
@@ -74,7 +74,7 @@ function getNamePage(req: Request, res: Response, next: NextFunction) {
     const personalDetails = req.session.appeal.application.personalDetails || null;
     return res.render('appeal-application/personal-details/name.njk', {
       personalDetails,
-      previousPage: paths.taskList
+      previousPage: paths.appealStarted.taskList
     });
   } catch (e) {
     next(e);
@@ -85,7 +85,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'familyName', 'givenNames')) {
-        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = appellantNamesValidation(req.body);
       if (validation) {
@@ -96,7 +96,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
           },
           error: validation,
           errorList: Object.values(validation),
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         });
       }
       const { application } = req.session.appeal;
@@ -107,7 +107,8 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       };
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.dob));
+
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.appealStarted.dob));
     } catch (e) {
       next(e);
     }
@@ -116,7 +117,7 @@ function postNamePage(updateAppealService: UpdateAppealService) {
 
 function getNationalityPage(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.previousPage = paths.personalDetails.nationality;
+    req.session.previousPage = paths.appealStarted.nationality;
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { application } = req.session.appeal;
@@ -124,7 +125,7 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
     const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
     return res.render('appeal-application/personal-details/nationality.njk', {
       nationalitiesOptions,
-      previousPage: paths.personalDetails.dob
+      previousPage: paths.appealStarted.dob
     });
   } catch (e) {
     next(e);
@@ -135,7 +136,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'nationality')) {
-        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = nationalityValidation(req.body);
       if (validation) {
@@ -145,7 +146,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
           nationalitiesOptions,
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.personalDetails.dob
+          previousPage: paths.appealStarted.dob
         });
       }
       const { application } = req.session.appeal;
@@ -155,9 +156,9 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       };
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
       if (_.has(application, 'personalDetails.address.line1')) {
-        return getConditionalRedirectUrl(req, res, paths.personalDetails.enterAddress);
+        return getConditionalRedirectUrl(req, res, paths.appealStarted.enterAddress);
       }
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.personalDetails.enterPostcode));
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.appealStarted.enterPostcode));
 
     } catch (e) {
       next(e);
@@ -167,13 +168,13 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
 
 function getEnterPostcodePage(req: Request, res: Response, next: NextFunction) {
   try {
-    req.session.previousPage = paths.personalDetails.enterPostcode;
+    req.session.previousPage = paths.appealStarted.enterPostcode;
     _.set(req.session.appeal.application, 'addressLookup', {});
     const { personalDetails } = req.session.appeal.application;
     const postcode = personalDetails && personalDetails.address && personalDetails.address.postcode || null;
     res.render('appeal-application/personal-details/enter-postcode.njk', {
       postcode,
-      previousPage: paths.personalDetails.nationality
+      previousPage: paths.appealStarted.nationality
     });
   } catch (e) {
     next(e);
@@ -188,13 +189,13 @@ function postEnterPostcodePage(req: Request, res: Response, next: NextFunction) 
         error: validation,
         errorList: Object.values(validation),
         postcode: req.body.postcode,
-        previousPage: paths.personalDetails.nationality
+        previousPage: paths.appealStarted.nationality
       });
     }
     req.session.appeal.application.personalDetails.address = {
       postcode: req.body.postcode
     };
-    return res.redirect(paths.personalDetails.postcodeLookup);
+    return res.redirect(paths.appealStarted.postcodeLookup);
   } catch (e) {
     next(e);
   }
@@ -221,10 +222,10 @@ function buildAddressList(addressLookupResult) {
 
 function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    req.session.previousPage = paths.personalDetails.postcodeLookup;
+    req.session.previousPage = paths.appealStarted.postcodeLookup;
     try {
       const postcode = _.get(req.session.appeal.application, 'personalDetails.address.postcode');
-      if (!postcode) return res.redirect(paths.personalDetails.enterPostcode);
+      if (!postcode) return res.redirect(paths.appealStarted.enterPostcode);
       const addressLookupResult = await osPlacesClient.lookupByPostcode(postcode);
       req.session.appeal.application.addressLookup.result = addressLookupResult;
       const addresses = buildAddressList(addressLookupResult);
@@ -232,7 +233,7 @@ function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
       res.render('appeal-application/personal-details/postcode-lookup.njk', {
         addresses,
         postcode,
-        previousPage: paths.personalDetails.enterPostcode
+        previousPage: paths.appealStarted.enterPostcode
       });
     } catch (e) {
       next(e);
@@ -242,6 +243,9 @@ function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
 
 function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
   try {
+    if (!shouldValidateWhenSaveForLater(req.body, 'address')) {
+      return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+    }
     const validation = dropdownValidation(req.body.address, 'address');
     if (validation) {
       const addresses = buildAddressList(_.get(req.session.appeal.application, 'addressLookup.result'));
@@ -250,7 +254,7 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
         error: validation,
         errorList: Object.values(validation),
         addresses: addresses,
-        previousPage: paths.personalDetails.enterPostcode
+        previousPage: paths.appealStarted.enterPostcode
       });
     }
     const osAddress = findAddress(req.body.address, _.get(req.session.appeal.application, 'addressLookup.result.addresses'));
@@ -259,7 +263,7 @@ function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction)
       ...address
     };
 
-    return res.redirect(paths.personalDetails.enterAddress);
+    return res.redirect(paths.appealStarted.enterAddress);
   } catch (e) {
     next(e);
   }
@@ -274,7 +278,7 @@ function getManualEnterAddressPage(req: Request, res: Response, next: NextFuncti
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const address = _.get(req.session.appeal.application, 'personalDetails.address');
 
-    const previousPage = req.session.previousPage ? req.session.previousPage : paths.personalDetails.nationality;
+    const previousPage = req.session.previousPage ? req.session.previousPage : paths.appealStarted.nationality;
 
     res.render('appeal-application/personal-details/enter-address.njk', { address, previousPage });
   } catch (e) {
@@ -286,11 +290,11 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'address-line-1', 'address-line-2', 'address-town', 'address-county', 'address-postcode')) {
-        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = addressValidation(req.body);
       if (validation !== null) {
-        const previousPage = req.session.previousPage ? req.session.previousPage : paths.personalDetails.nationality;
+        const previousPage = req.session.previousPage ? req.session.previousPage : paths.appealStarted.nationality;
         return res.render('appeal-application/personal-details/enter-address.njk', {
           address: {
             line1: req.body['address-line-1'],
@@ -316,27 +320,27 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
         }
       };
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, paths.taskList);
+      return getConditionalRedirectUrl(req, res, paths.appealStarted.taskList);
     } catch (e) {
       next(e);
     }
   };
 }
 
-function setupPersonalDetailsController(deps?: any): Router {
+function setupPersonalDetailsController(middleware: Middleware[] ,deps?: any): Router {
   const router = Router();
-  router.get(paths.personalDetails.name, getNamePage);
-  router.post(paths.personalDetails.name, postNamePage(deps.updateAppealService));
-  router.get(paths.personalDetails.dob, getDateOfBirthPage);
-  router.post(paths.personalDetails.dob, postDateOfBirth(deps.updateAppealService));
-  router.get(paths.personalDetails.nationality, getNationalityPage);
-  router.post(paths.personalDetails.nationality, postNationalityPage(deps.updateAppealService));
-  router.get(paths.personalDetails.enterPostcode, getEnterPostcodePage);
-  router.post(paths.personalDetails.enterPostcode, postEnterPostcodePage);
-  router.get(paths.personalDetails.enterAddress, getManualEnterAddressPage);
-  router.post(paths.personalDetails.enterAddress, postManualEnterAddressPage(deps.updateAppealService));
-  router.get(paths.personalDetails.postcodeLookup, getPostcodeLookupPage(deps.osPlacesClient));
-  router.post(paths.personalDetails.postcodeLookup, postPostcodeLookupPage);
+  router.get(paths.appealStarted.name, middleware, getNamePage);
+  router.post(paths.appealStarted.name, middleware, postNamePage(deps.updateAppealService));
+  router.get(paths.appealStarted.dob, middleware, getDateOfBirthPage);
+  router.post(paths.appealStarted.dob, middleware, postDateOfBirth(deps.updateAppealService));
+  router.get(paths.appealStarted.nationality, middleware, getNationalityPage);
+  router.post(paths.appealStarted.nationality, middleware, postNationalityPage(deps.updateAppealService));
+  router.get(paths.appealStarted.enterPostcode, middleware, getEnterPostcodePage);
+  router.post(paths.appealStarted.enterPostcode, middleware, postEnterPostcodePage);
+  router.get(paths.appealStarted.enterAddress, middleware, getManualEnterAddressPage);
+  router.post(paths.appealStarted.enterAddress, middleware, postManualEnterAddressPage(deps.updateAppealService));
+  router.get(paths.appealStarted.postcodeLookup, middleware, getPostcodeLookupPage(deps.osPlacesClient));
+  router.post(paths.appealStarted.postcodeLookup, middleware, postPostcodeLookupPage);
   return router;
 }
 

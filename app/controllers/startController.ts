@@ -12,7 +12,7 @@ function getStart(req: Request, res: Response, next: NextFunction) {
 
 function setupStartController(): Router {
   const router = Router();
-  router.get(paths.start, getStart);
+  router.get(paths.common.start, getStart);
   return router;
 }
 

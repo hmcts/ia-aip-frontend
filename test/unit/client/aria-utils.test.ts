@@ -1,7 +1,7 @@
 import * as utils from '../../../client/aria-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('aria utils @only', () => {
+describe('aria utils', () => {
   let details: HTMLDetailsElement;
   let sandbox: sinon.SinonSandbox;
   beforeEach(() => {

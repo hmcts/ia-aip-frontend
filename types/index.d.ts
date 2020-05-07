@@ -45,11 +45,20 @@ interface DocumentMap {
 interface Evidence {
   fileId: string;
   name: string;
+  dateUploaded?: AppealDate;
+  description?: string;
 }
 
 interface DocumentUploadResponse {
   fileId: string;
   name: string;
+}
+
+interface Direction {
+  tag: string;
+  parties: string;
+  dueDate: string;
+  dateSent: string;
 }
 
 interface Appeal {
@@ -62,7 +71,20 @@ interface Appeal {
   hearingRequirements: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   documentMap?: DocumentMap[];
+  directions?: Direction[];
   history?: HistoryEvent[];
+  askForMoreTime?: AskForMoreTime;
+  previousAskForMoreTime?: TimeExtensionCollection[];
+  draftClarifyingQuestionsAnswers?: ClarifyingQuestion[]
+}
+
+interface AskForMoreTime {
+  reason?: string;
+  status?: string;
+  state?: string;
+  evidence?: Evidence[];
+  requestedDate?: string;
+  reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
 interface HistoryEvent {
@@ -158,3 +180,13 @@ interface IdamDetails {
   given_name: string;
   family_name: string;
 }
+
+interface ClarifyingQuestion {
+  id: string;
+  value: {
+    question: string;
+    answer?: string;
+  }
+}
+
+type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

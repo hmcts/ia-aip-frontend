@@ -1,7 +1,7 @@
+{% set pageTitleName = i18n.pages.enterAddress.title %}
+{% extends 'layout.njk' %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
-{% set pageTitleName = i18n.pages.enterAddress.title %}
-{% extends '../../layout.njk' %}
 
 {% block content %}
   {% if error %}
@@ -11,87 +11,85 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <h1 class="govuk-fieldset__legend--xl">{{ i18n.pages.enterAddress.heading }}</h1>
-  {% if selectedPostcode %}
-    <h3>{{ i18n.pages.enterAddress.inputs.postcode }}</h3>
-    <span><span  class='govuk-body govuk-!-font-weight-bold'> {{ selectedPostcode }}</span>  &emsp;
-      <a class="govuk-link app-contact-panel__link"
-         href="{{ paths.personalDetails.enterPostcode }}">{{ i18n.pages.enterAddress.change }}</a>
-    </span>
-    </br>
-    </br>
-  {% endif %}
-  <form action="{{ paths.personalDetails.enterAddress }}" method="post">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {{ govukInput({
-      formGroup: {
-        classes: 'govuk-!-margin-bottom-3'
-      },
-      label: {
-        html: i18n.pages.enterAddress.inputs.buildingAndStreet,
-        classes: 'govuk-!-margin-bottom-2'
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "address-line-1",
-      name: "address-line-1",
-      value: address.line1,
-      errorMessage: {
-        text:  error['address-line-1'].text
-      } if error['address-line-1']
-    }) }}
+  <form action="{{ paths.appealStarted.enterAddress }}" method="post">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.enterAddress.heading,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {{ govukInput({
+        formGroup: {
+          classes: 'govuk-!-margin-bottom-3'
+        },
+        label: {
+          html: i18n.pages.enterAddress.inputs.buildingAndStreet,
+          classes: 'govuk-!-margin-bottom-2'
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "address-line-1",
+        name: "address-line-1",
+        value: address.line1,
+        errorMessage: {
+          text:  error['address-line-1'].text
+        } if error['address-line-1']
+      }) }}
 
-    {{ govukInput({
-      label: {
-        html: i18n.pages.enterAddress.inputs.buildingAndStreet2
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "address-line-2",
-      name: "address-line-2",
-      value: address.line2
-    }) }}
+      {{ govukInput({
+        label: {
+          html: i18n.pages.enterAddress.inputs.buildingAndStreet2
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "address-line-2",
+        name: "address-line-2",
+        value: address.line2
+      }) }}
 
-    {{ govukInput({
-      label: {
-        text: i18n.pages.enterAddress.inputs.town,
-        classes: 'govuk-!-margin-bottom-2'
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "address-town",
-      name: "address-town",
-      value: address.city,
-      errorMessage: {
-        text:  error['address-town'].text
-      } if error['address-town']
-    }) }}
+      {{ govukInput({
+        label: {
+          text: i18n.pages.enterAddress.inputs.town,
+          classes: 'govuk-!-margin-bottom-2'
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "address-town",
+        name: "address-town",
+        value: address.city,
+        errorMessage: {
+          text:  error['address-town'].text
+        } if error['address-town']
+      }) }}
 
-    {{ govukInput({
-      label: {
-        text: i18n.pages.enterAddress.inputs.county,
-        classes: 'govuk-!-margin-bottom-2'
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "address-county",
-      name: "address-county",
-      value: address.county,
-      errorMessage: {
-        text:  error['address-county'].text
-      } if error['address-county']
-    }) }}
+      {{ govukInput({
+        label: {
+          text: i18n.pages.enterAddress.inputs.county,
+          classes: 'govuk-!-margin-bottom-2'
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "address-county",
+        name: "address-county",
+        value: address.county,
+        errorMessage: {
+          text:  error['address-county'].text
+        } if error['address-county']
+      }) }}
 
-    {{ govukInput({
-      label: {
-        text: i18n.pages.enterAddress.inputs.postcode,
-        classes: 'govuk-!-margin-bottom-2'
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "address-postcode",
-      name: "address-postcode",
-      value: address.postcode,
-      errorMessage: {
-        text:  error['address-postcode'].text
-      } if error['address-postcode']
-    }) }}
-    {{ saveButtons() }}
+      {{ govukInput({
+        label: {
+          text: i18n.pages.enterAddress.inputs.postcode,
+          classes: 'govuk-!-margin-bottom-2'
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "address-postcode",
+        name: "address-postcode",
+        value: address.postcode,
+        errorMessage: {
+          text:  error['address-postcode'].text
+        } if error['address-postcode']
+      }) }}
+      {{ saveButtons() }}
+    {% endcall %}
   </form>
   {{ contactUs() }}
 {% endblock %}

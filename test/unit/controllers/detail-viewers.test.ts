@@ -60,10 +60,9 @@ describe('Detail viewer Controller', () => {
   describe('setupDetailViewersController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-
       setupDetailViewersController(documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.homeOfficeDocuments);
-      expect(routerGetStub).to.have.been.calledWith(paths.detailsViewers.document + '/:documentId');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.viewHomeOfficeDocuments);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.documentViewer + '/:documentId');
     });
   });
 
@@ -73,7 +72,7 @@ describe('Detail viewer Controller', () => {
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('detail-viewers/view-ho-details.njk', {
         documents: [],
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -95,7 +94,7 @@ describe('Detail viewer Controller', () => {
           dateUploaded: '21 February 2020',
           url: "<a class='govuk-link' target='_blank' rel=\"noopener noreferrer\" href='/view/document/someUUID'>evidence_file(PNG)</a>"
         } ],
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
 
@@ -159,7 +158,7 @@ describe('Detail viewer Controller', () => {
       getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/appeal-details-viewer.njk', {
         data: expectedSummaryRows,
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
   });
@@ -170,7 +169,7 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.history = expectedMultipleEventsData;
       req.session.appeal.documentMap = [ {
         id: '00000',
-        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
       }, {
         id: '00001',
         url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
@@ -181,12 +180,12 @@ describe('Detail viewer Controller', () => {
         'value': { 'html': 'HELLO' }
       }, {
         'key': { 'text': 'Providing supporting evidence' },
-        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00001'>500(PNG)</a>" }
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a>" }
       } ];
       getReasonsForAppealViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
         data: expectedSummaryRows,
-        previousPage: paths.overview
+        previousPage: paths.common.overview
       });
     });
   });

@@ -24,6 +24,9 @@ const { overviewPage } = require('../pages/overview-page/overview-page');
 const { error404 } = require('../pages/error-pages/404-error-page');
 const { guidancePages } = require('../pages/guidance-pages/guidance-pages');
 const { appealSent } = require('../pages/appeal-sent/appeal-sent');
+const { askForMoreTime } = require('../pages/ask-for-more-time/ask-for-more-time');
+const { caseProgression } = require('../service/case-progression-service');
+const { clarifyingQuestions } = require('../pages/clarifying-questions/clarifying-questions');
 
 const { I } = inject();
 
@@ -55,3 +58,6 @@ overviewPage(I);
 error404(I);
 guidancePages(I);
 appealSent(I);
+askForMoreTime(I);
+caseProgression(I);
+clarifyingQuestions(I);

@@ -5,12 +5,12 @@
 
 {% block content %}
     <h1 class="govuk-heading-xl">{{ i18n.pages.eligiblePage.heading }}</h1>
-    <p class="govuk-body">{{ i18n.pages.eligiblePage.basedOnAnswers  }}</p>
-    <p class="govuk-body">{{ i18n.pages.eligiblePage.askQuestions  }}</p>
+    <p>{{ i18n.pages.eligiblePage.basedOnAnswers  }}</p>
+    <p>{{ i18n.pages.eligiblePage.askQuestions  }}</p>
 
     {{ govukButton({
         text: i18n.common.buttons.continue,
-        href: "/login",
+        href: paths.common.login + "?register=true",
         isStartButton: false
     }) }}
 {% endblock  %}

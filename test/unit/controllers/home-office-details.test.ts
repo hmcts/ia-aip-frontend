@@ -66,12 +66,13 @@ describe('Home Office Details Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+      const middleware = [];
 
-      setupHomeOfficeDetailsController(updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.details);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.details);
-      expect(routerGetStub).to.have.been.calledWith(paths.homeOffice.letterSent);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.homeOffice.letterSent);
+      setupHomeOfficeDetailsController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.details);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.details);
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.letterSent);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.letterSent);
     });
   });
 
@@ -103,7 +104,7 @@ describe('Home Office Details Controller', function () {
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
-      expect(res.redirect).to.have.been.calledWith(paths.homeOffice.letterSent);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterSent);
     });
 
     it('when save for later should validate and redirect task-list.njk', async () => {
@@ -113,7 +114,7 @@ describe('Home Office Details Controller', function () {
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
-      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
@@ -124,7 +125,7 @@ describe('Home Office Details Controller', function () {
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
@@ -147,7 +148,7 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [ error ],
           homeOfficeRefNumber: 'notValid',
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         });
     });
 
@@ -170,7 +171,7 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [ error ],
           homeOfficeRefNumber: 'notValid',
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         });
     });
 
@@ -192,7 +193,7 @@ describe('Home Office Details Controller', function () {
           },
           errorList: [ error ],
           homeOfficeRefNumber: '',
-          previousPage: paths.taskList
+          previousPage: paths.appealStarted.taskList
         });
     });
 
@@ -202,7 +203,7 @@ describe('Home Office Details Controller', function () {
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.overview);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 
     it('should catch exception and call next with the error', async () => {
@@ -251,7 +252,7 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
     });
 
     it('should validate and redirect to CYA page and reset isEdit flag', async () => {
@@ -269,7 +270,7 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
@@ -287,7 +288,7 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
     });
 
     it('when save for later should validate and redirect to task list page', async () => {
@@ -304,7 +305,7 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
     });
 
     it('should redirect to task list when save for later and blank date', async () => {
@@ -316,7 +317,7 @@ describe('Home Office Details Controller', function () {
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
-      expect(res.redirect).to.have.been.calledWith(paths.overview + '?saved');
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should validate and redirect to Appeal Late page and isEdit flag is not updated', async () => {
@@ -334,7 +335,7 @@ describe('Home Office Details Controller', function () {
       expect(dateLetterSent.month).to.be.eql(date.format('MM'));
       expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
-      expect(res.redirect).to.have.been.calledWith(paths.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.have.eq(false);
 
     });
@@ -371,7 +372,7 @@ describe('Home Office Details Controller', function () {
           error,
           errorList,
           dateLetterSent: { ...req.body },
-          previousPage: paths.homeOffice.details
+          previousPage: paths.appealStarted.details
         }
       );
     });

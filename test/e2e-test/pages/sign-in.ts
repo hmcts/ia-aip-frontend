@@ -18,24 +18,32 @@ module.exports = {
       await I.seeInTitle('Sign in - HMCTS Access');
     });
 
+    Then('I should see the Create an account page', async () => {
+      await I.seeInTitle('Self Register - HMCTS Access');
+    });
+
+    When('I click Sign in to your account', async () => {
+      await I.click('Sign in to your account.');
+    });
+
     When('I enter creds and click sign in', async () => {
       await signInHelper();
     });
 
     Given('I am authenticated as a valid appellant', async () => {
-      I.amOnPage(testUrl + paths.login);
+      I.amOnPage(testUrl + paths.common.login);
       await signInHelper();
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given('I have logged in', async () => {
-      I.amOnPage(testUrl + paths.login);
+      I.amOnPage(testUrl + paths.common.login);
       signInForUser('setupcase@example.com');
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
     Given(/^I have logged in as an appellant in state "([^"]*)"$/, async (appealState) => {
-      I.amOnPage(testUrl + paths.login);
+      I.amOnPage(testUrl + paths.common.login);
 
       switch (appealState) {
         case 'appealStarted': {
@@ -58,6 +66,12 @@ module.exports = {
           signInForUser('partial-awaiting-reasons-for-appeal@example.com');
           break;
         }
+        case 'awaitingClarifyingQuestionsAnswers': {
+          signInForUser('clarifying-questions@example.com');
+          break;
+        }
+        default:
+          break;
       }
 
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);

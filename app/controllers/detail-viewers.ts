@@ -11,6 +11,7 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService
 } from '../service/document-management-service';
+import { dayMonthYearFormat } from '../utils/date-formats';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 
 /**
@@ -32,7 +33,7 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
 };
 
 const formatDateLongDate = (date: string) => {
-  return moment(date).format('DD MMMM YYYY');
+  return moment(date).format(dayMonthYearFormat);
 };
 
 function setupAppealDetails(req: Request): Array<any> {
@@ -74,7 +75,7 @@ function setupAppealDetails(req: Request): Array<any> {
     const evidence = data.applicationOutOfTimeDocument;
     const fileId = docStoreUrlToId(evidence.document_url, req.session.appeal.documentMap);
     const formattedFileName = fileNameFormatter(evidence.document_filename);
-    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
+    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${fileId}'>${formattedFileName}</a>`;
     array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ urlHtml ], null));
   }
   return array;
@@ -84,21 +85,21 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const array = [];
   const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
   const { data } = reasonsForAppeal[0];
-  if (_.has(data, 'respondentDocuments')) {
-    const listOfDocuments: string[] = data.respondentDocuments.map(evidence => {
-      const fileId = docStoreUrlToId(evidence.value.document.document_url, req.session.appeal.documentMap);
-      const formattedFileName = fileNameFormatter(evidence.value.document.document_filename);
-      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.detailsViewers.document}/${fileId}'>${formattedFileName}</a>`;
+  if (_.has(data, 'reasonsForAppealDocuments')) {
+    const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
+      const fileId = docStoreUrlToId(evidence.value.document_url, req.session.appeal.documentMap);
+      const formattedFileName = fileNameFormatter(evidence.value.document_filename);
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${fileId}'>${formattedFileName}</a>`;
     });
     array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
-    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
+    array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.providingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
   }
   return array;
 }
 
 function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.overview;
+    let previousPage: string = paths.common.overview;
     const data = setupAppealDetails(req);
     return res.render('detail-viewers/appeal-details-viewer.njk', {
       previousPage: previousPage,
@@ -111,7 +112,7 @@ function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction)
 
 function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.overview;
+    let previousPage: string = paths.common.overview;
     const data = setupAnswersReasonsForAppeal(req);
     return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
       previousPage: previousPage,
@@ -124,7 +125,7 @@ function getReasonsForAppealViewer(req: Request, res: Response, next: NextFuncti
 
 function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.overview;
+    let previousPage: string = paths.common.overview;
     let documents = [];
 
     if (_.has(req.session.appeal, 'respondentDocuments')) {
@@ -132,8 +133,8 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
 
       documents = respondentDocs.map(document => {
         const formattedFileName = fileNameFormatter(document.evidence.name);
-        const urlHtml = `<a class='govuk-link' target='_blank' rel="noopener noreferrer" href='${paths.detailsViewers.document}/${document.evidence.fileId}'>${formattedFileName}</a>`;
-        const formattedDate = moment(document.dateUploaded).format('DD MMMM YYYY');
+        const urlHtml = `<a class='govuk-link' target='_blank' rel="noopener noreferrer" href='${paths.common.documentViewer}/${document.evidence.fileId}'>${formattedFileName}</a>`;
+        const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
           url: urlHtml
@@ -172,10 +173,10 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
 
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
-  router.get(paths.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
-  router.get(paths.detailsViewers.appealDetails, getAppealDetailsViewer);
-  router.get(paths.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
+  router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
+  router.get(paths.common.viewHomeOfficeDocuments, getHoEvidenceDetailsViewer);
+  router.get(paths.common.viewAppealDetails, getAppealDetailsViewer);
+  router.get(paths.common.viewReasonsForAppeal, getReasonsForAppealViewer);
 
   return router;
 }

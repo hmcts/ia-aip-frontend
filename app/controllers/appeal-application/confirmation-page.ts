@@ -5,9 +5,10 @@ import moment from 'moment';
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 
 import { paths } from '../../paths';
+import { dayMonthYearFormat } from '../../utils/date-formats';
 
 export const daysToWaitUntilContact = (days: number) => {
-  const date = moment().add(days,'days').format('DD MMMM YYYY');
+  const date = moment().add(days,'days').format(dayMonthYearFormat);
   return date;
 };
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
@@ -24,9 +25,9 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function setConfirmationController(): Router {
+function setConfirmationController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.confirmation, getConfirmationPage);
+  router.get(paths.appealSubmitted.confirmation, middleware, getConfirmationPage);
   return router;
 }
 

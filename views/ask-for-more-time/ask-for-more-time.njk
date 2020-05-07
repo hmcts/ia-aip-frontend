@@ -1,0 +1,55 @@
+{% set pageTitleName = i18n.pages.askForMoreTimePage.header %}
+{% extends "layout.njk" %}
+{% import "helpers/text-helpers.njk" as text %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action="{{ paths.common.askForMoreTime.reason }}" method="post" >
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.askForMoreTimePage.title,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <p>{{  i18n.pages.askForMoreTimePage.howMuchTimeNeeded }}</p>
+      {{ govukInsetText({
+        text:  i18n.pages.askForMoreTimePage.youMayGetMoreTime
+      }) }}
+      {{ govukTextarea({
+        name: "askForMoreTime",
+        id: "askForMoreTime",
+        value: askForMoreTime,
+        label: {
+          text: i18n.pages.askForMoreTimePage.textAreaText
+        },
+        errorMessage: {
+              text: errors["askForMoreTime"].text
+          } if errors
+      }) }}
+
+      <div class="panel-background">
+        <h2 class='govuk-heading-s'>
+          {{  i18n.pages.askForMoreTimePage.supportingEvidence }}
+        </h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>{{  i18n.pages.askForMoreTimePage.addingSupportingEvidence }}</li>
+        </ul>
+      </div>
+      {{ continueButton() }}
+      <a class="cancel-button" href="{{ paths.common.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+
+{% endblock %}

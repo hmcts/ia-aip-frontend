@@ -64,10 +64,10 @@ describe('Contact details Controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupGuidancePagesController();
-      expect(routerGetStub).to.have.been.calledWith(paths.guidancePages.homeOfficeDocuments);
-      expect(routerGetStub).to.have.been.calledWith(paths.guidancePages.evidenceToSupportAppeal);
-      expect(routerGetStub).to.have.been.calledWith(paths.guidancePages.moreHelp);
-      expect(routerGetStub).to.have.been.calledWith(paths.guidancePages.tribunalCaseworker);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeDocuments);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.evidenceToSupportAppeal);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.moreHelp);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.tribunalCaseworker);
     });
   });
 

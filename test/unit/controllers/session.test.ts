@@ -36,7 +36,8 @@ describe('session controller', () => {
     res = {
       render: sandbox.stub(),
       send: sandbox.stub(),
-      redirect: sinon.spy()
+      redirect: sinon.spy(),
+      locals: {}
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
@@ -46,12 +47,12 @@ describe('session controller', () => {
     sandbox.restore();
   });
 
-  describe('setupDateOfBirthController', () => {
+  describe('setupSessionController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       setupSessionController();
-      expect(routerGetStub).to.have.been.calledWith(paths.session.extendSession);
-      expect(routerGetStub).to.have.been.calledWith(paths.session.sessionExpired);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.extendSession);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.sessionExpired);
     });
   });
 
@@ -59,7 +60,9 @@ describe('session controller', () => {
     it('should send a new timeout', () => {
       getExtendSession(req as Request, res as Response, next);
 
-      expect(res.send).to.have.been.calledWith({ timeout: config.get('session.cookie.maxAgeInMs') });
+      expect(res.send).to.have.been.calledWith({
+        timeout: sinon.match.typeOf('object')
+      });
     });
   });
 

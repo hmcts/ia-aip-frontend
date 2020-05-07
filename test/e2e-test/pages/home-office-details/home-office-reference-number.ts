@@ -6,7 +6,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   homeOfficeReferenceNumber(I) {
     Given('I am on the home office reference page', async () => {
-      I.amOnPage(testUrl + paths.homeOffice.details);
+      I.amOnPage(testUrl + paths.appealStarted.details);
     });
 
     When(/^I enter a home office reference "([^"]*)"/, async (refNumber) => {
@@ -14,11 +14,11 @@ module.exports = {
     });
 
     When(/^I click on Home office details$/, async () => {
-      await I.click('a[href*="' + paths.homeOffice.details + '"]');
+      await I.click('a[href*="' + paths.appealStarted.details + '"]');
     });
 
     Then(/^I should be taken to the home office ref number page$/, async () => {
-      await I.seeInCurrentUrl(paths.homeOffice.details);
+      await I.seeInCurrentUrl(paths.appealStarted.details);
     });
 
     When(/^I enter "([^"]*)" as the Office ref number and click Save and continue/, async (refNumber) => {

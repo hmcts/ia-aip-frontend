@@ -17,7 +17,8 @@ describe('application-state-utils', () => {
         appeal: {
           application: {},
           caseBuilding: {},
-          reasonsForAppeal: {}
+          reasonsForAppeal: {},
+          directions: {}
         }
       },
       idam: {
@@ -91,7 +92,7 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a href='{{ paths.guidancePages.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          url: "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
         },
         allowedAskForMoreTime: false
       });
@@ -100,6 +101,19 @@ describe('application-state-utils', () => {
     it('when application status is awaitingReasonsForAppeal should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
       req.session.lastModified = '2020-02-07T16:00:00.000';
+      req.session.appeal.directions = [
+        {
+          tag: 'requestReasonsForAppeal',
+          parties: 'appellant',
+          dueDate: '2020-04-21',
+          dateSent: '2020-03-24'
+        },
+        {
+          tag: 'respondentEvidence',
+          parties: 'respondent',
+          dueDate: '2020-04-07',
+          dateSent: '2020-03-24'
+        } ];
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
@@ -109,17 +123,17 @@ describe('application-state-utils', () => {
             respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
             url: '/case-building/home-office-decision-wrong'
           },
-          deadline: 'TBC',
+          deadline: '21 April 2020',
           descriptionParagraphs: [
             'Tell us why you think the Home Office decision to refuse your claim is wrong.'
           ],
           info: {
             title: 'Helpful Information',
-            url: "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+            url: "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
           },
           usefulDocuments: {
             title: 'Useful documents',
-            url: "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+            url: "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
           }
         }
       );
@@ -130,6 +144,19 @@ describe('application-state-utils', () => {
     req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
     req.session.lastModified = '2020-02-07T16:00:00.000';
     req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
+    req.session.appeal.directions = [
+      {
+        tag: 'requestReasonsForAppeal',
+        parties: 'appellant',
+        dueDate: '2020-04-21',
+        dateSent: '2020-03-24'
+      },
+      {
+        tag: 'respondentEvidence',
+        parties: 'respondent',
+        dueDate: '2020-04-07',
+        dateSent: '2020-03-24'
+      } ];
     const result = getAppealApplicationNextStep(req as Request);
 
     expect(result).to.eql(
@@ -138,17 +165,17 @@ describe('application-state-utils', () => {
           respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
           url: '/case-building/home-office-decision-wrong'
         },
-        deadline: 'TBC',
+        deadline: '21 April 2020',
         descriptionParagraphs: [
           'You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.'
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a href='{{ paths.guidancePages.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+          url: "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
         },
         usefulDocuments: {
           title: 'Useful documents',
-          url: "<a href='{{ paths.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+          url: "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
         },
         allowedAskForMoreTime: true
       }

@@ -5,14 +5,14 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <h1 class="govuk-headig-l">{{ i18n.pages.sessionEnded.title }}</h1>
+      <h1 class="govuk-headig-xl">{{ i18n.pages.sessionEnded.title }}</h1>
 
       <p>{{ i18n.pages.sessionEnded.description[0] }}</p>
       <p>{{ i18n.pages.sessionEnded.description[1] }}</p>
 
       {{ govukButton({
         text: i18n.pages.sessionEnded.cta,
-        href: paths.login,
+        href: paths.common.login,
         isStartButton: true
       }) }}
   </div>

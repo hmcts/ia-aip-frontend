@@ -1,6 +1,6 @@
 {% set pageTitleName = i18n.pages.name.title %}
 {% extends "layout.njk" %}
-{% set pageTitleName = i18n.pages.name.title %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% block content %}
   {% if errorList %}
@@ -9,37 +9,44 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <h1 class="govuk-heading-l">{{ i18n.pages.name.title }}</h1>
 
-  <form method="post" action="{{ paths.personalDetails.name }}" type="submit">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {{ govukInput({
-      label: {
-        text: i18n.pages.name.givenNames
-      },
-      classes: "govuk-input--width-20",
-      id: "givenNames",
-      name: "givenNames",
-      value: personalDetails.givenNames,
-      errorMessage: {
-        text: error["givenNames"].text
-      } if error["givenNames"]
-    }) }}
+  <form method="post" action="{{ paths.appealStarted.name }}" type="submit">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.name.title,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {{ govukInput({
+        label: {
+          text: i18n.pages.name.givenNames
+        },
+        classes: "govuk-input--width-20",
+        id: "givenNames",
+        name: "givenNames",
+        value: personalDetails.givenNames,
+        errorMessage: {
+          text: error["givenNames"].text
+        } if error["givenNames"]
+      }) }}
 
-    {{ govukInput({
-      label: {
-        text: i18n.pages.name.familyName
-      },
-      classes: "govuk-input--width-20",
-      id: "familyName",
-      name: "familyName",
-      value: personalDetails.familyName,
-      errorMessage: {
-        text: error["familyName"].text
-      } if error["familyName"]
-    }) }}
+      {{ govukInput({
+        label: {
+          text: i18n.pages.name.familyName
+        },
+        classes: "govuk-input--width-20",
+        id: "familyName",
+        name: "familyName",
+        value: personalDetails.familyName,
+        errorMessage: {
+          text: error["familyName"].text
+        } if error["familyName"]
+      }) }}
 
-    {{ saveButtons() }}
+      {{ saveButtons() }}
+    {% endcall %}
   </form>
   {{ contactUs() }}
 {% endblock %}

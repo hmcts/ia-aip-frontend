@@ -76,9 +76,9 @@ describe('Task List Controller', () => {
 
   it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-
-    setupTaskListController();
-    expect(routerGetStub).to.have.been.calledWith(paths.taskList);
+    const middleware = [];
+    setupTaskListController(middleware);
+    expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.taskList);
   });
 
   it('getTaskList should render task-list.njk', () => {

@@ -12,10 +12,14 @@ def component = "aip-frontend"
 def secrets = [
         'ia-${env}': [
                 secret('s2s-secret', 'S2S_SECRET'),
-                secret('idam-secret', 'IDAM_CLIENT_SECRET'),
+                secret('idam-secret', 'IDAM_SECRET'),
                 secret('saucelabs', 'SAUCELABS_SECRET'),
+                secret('dm-url', 'DOC_MANAGEMENT_URL'),
                 secret('addressLookupToken', 'ADDRESS_LOOKUP_TOKEN'),
-
+                secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),
+                secret('test-caseofficer-password', 'TEST_CASEOFFICER_PASSWORD'),
+                secret('test-homeoffice-generic-username', 'TEST_HOMEOFFICE_GENERIC_USERNAME'),
+                secret('test-homeoffice-generic-password', 'TEST_HOMEOFFICE_GENERIC_PASSWORD')
         ]
 ]
 
@@ -32,6 +36,7 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline("nodejs", product, component) {
     after('checkout') {sh 'yarn cache clean'}
     after('build') {sh 'yarn build'}
+
     loadVaultSecrets(secrets)
     installCharts()
     enableAksStagingDeployment()
@@ -39,12 +44,11 @@ withPipeline("nodejs", product, component) {
 
     before('securitychecks') { yarnBuilder.yarn('test:audit') }
 
+    env.S2S_MICROSERVICE_NAME =  'iac'
+    env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
+    env.CCD_API_URL =  'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+
     before("functionalTest") {
-        env.IDAM_API_URL = 'http://idam-api.aat.platform.hmcts.net'
-    }
-    before('buildinfra:prod') {
-        currentBuild.result = 'Success'
-        currentBuild.description = "Success"
-        error 'ia aip projects are not authorised to be in production environments yet.'
+        env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     }
 }

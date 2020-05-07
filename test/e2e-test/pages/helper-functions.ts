@@ -1,41 +1,5 @@
-const rp = require('request-promise');
-
-const idamApiUrl = require('config').get('idam.apiUrl');
+import { createUser } from '../service/idam-service';
 const { I } = inject();
-
-async function createUser() {
-  const randomNumber = parseInt(Math.random() * 10000000 + '', 10);
-  const email = `ia_citizen${randomNumber}@hmcts.net`;
-  const password = 'Apassword123';
-  const options = {
-    url: `${idamApiUrl}/testing-support/accounts`,
-    json: true,
-    body: {
-      email: email,
-      forename: 'ATestForename',
-      password: password,
-      surname: 'ATestSurname',
-      roles: [
-        {
-          code: 'citizen'
-        }
-      ]
-    },
-    insecure: true,
-    timeout: 10000,
-    resolveWithFullResponse: true
-  };
-  try {
-    const createUserResult = await rp.post(options);
-    // tslint:disable no-console
-    console.log(`Call returned ${JSON.stringify(createUserResult, null, 2)}`);
-
-    console.log(`Created idam user for ${email} with password ${password}`);
-    return { email: email, password };
-  } catch (error) {
-    console.log(`Error createUser ${error.message}`);
-  }
-}
 
 async function signInHelper() {
   const environment: string = process.env.NODE_ENV;
@@ -50,7 +14,7 @@ async function signInHelper() {
 
 function signInForUser(email: string) {
   I.fillField('#username', email);
-  I.click('.button');
+  I.click('Sign in');
 }
 
 function fillInDate(day, month, year) {

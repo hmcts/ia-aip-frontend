@@ -1,0 +1,12 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% set pageTitleName = i18n.pages.forbidden.title %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.forbidden.title }}</h1>
+
+  {{ govukButton({
+    text: i18n.common.buttons.seeProgress,
+    href: paths.common.overview
+  }) }}
+{% endblock %}

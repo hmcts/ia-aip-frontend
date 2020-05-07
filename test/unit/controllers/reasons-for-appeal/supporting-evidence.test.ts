@@ -1,3 +1,4 @@
+import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import {
   getAdditionalSupportingEvidenceQuestionPage,
@@ -66,9 +67,10 @@ describe('Supporting Evidence Upload Controller', () => {
         updateAppealService: updateAppealService as UpdateAppealService,
         documentManagementService: documentManagementService as DocumentManagementService
       };
-      setupReasonsForAppealController(deps);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
+      const middleware = [];
+      setupReasonsForAppealController(middleware, deps);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidence, middleware);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidence, middleware);
     });
   });
 
@@ -76,8 +78,8 @@ describe('Supporting Evidence Upload Controller', () => {
     it('should render reasons-for-appeal/supporting-evidence-page.njk', () => {
       getAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
-        previousPage: paths.reasonsForAppeal.decision,
-        askForMoreTimeFeatureEnabled: false
+        previousPage: paths.awaitingReasonsForAppeal.decision,
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
 
       });
     });
@@ -103,8 +105,8 @@ describe('Supporting Evidence Upload Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/supporting-evidence-page.njk', {
         error: { answer: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.reasonsForAppeal.supportingEvidence,
-        askForMoreTimeFeatureEnabled: false
+        previousPage: paths.awaitingReasonsForAppeal.supportingEvidence,
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 
@@ -112,14 +114,14 @@ describe('Supporting Evidence Upload Controller', () => {
       req.body = { 'answer': 'no' };
 
       postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.checkAndSend);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
     });
 
     it('when yes is selected should validate and redirect to the supporting-evidence-upload page', async () => {
       req.body = { 'answer': 'yes' };
 
       postAdditionalSupportingEvidenceQuestionPage(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.reasonsForAppeal.supportingEvidenceUpload);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingReasonsForAppeal.supportingEvidenceUpload);
     });
 
     it('postAdditionalSupportingEvidenceQuestionPage should catch exception and call next with the error', async () => {

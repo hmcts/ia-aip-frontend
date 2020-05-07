@@ -56,9 +56,9 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function setupTaskListController(): Router {
+function setupTaskListController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.taskList, applicationStatusUpdate, getTaskList);
+  router.get(paths.appealStarted.taskList, middleware, applicationStatusUpdate, getTaskList);
   return router;
 }
 

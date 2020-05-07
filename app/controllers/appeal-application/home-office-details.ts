@@ -15,7 +15,7 @@ function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
     const { homeOfficeRefNumber } = req.session.appeal.application || null;
     res.render('appeal-application/home-office/details.njk', {
       homeOfficeRefNumber,
-      previousPage: paths.taskList
+      previousPage: paths.appealStarted.taskList
     });
   } catch (e) {
     next(e);
@@ -26,7 +26,7 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'homeOfficeRefNumber')) {
-        return getConditionalRedirectUrl(req, res, paths.overview);
+        return getConditionalRedirectUrl(req, res, paths.common.overview);
       }
       const validation = homeOfficeNumberValidation(req.body);
       if (validation) {
@@ -35,13 +35,13 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
             errors: validation,
             errorList: Object.values(validation),
             homeOfficeRefNumber: req.body.homeOfficeRefNumber,
-            previousPage: paths.taskList
+            previousPage: paths.appealStarted.taskList
           }
         );
       }
       req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      const nextPage = getNextPage(req.body, paths.homeOffice.letterSent);
+      const nextPage = getNextPage(req.body, paths.appealStarted.letterSent);
       return getConditionalRedirectUrl(req, res, nextPage);
     } catch (e) {
       next(e);
@@ -56,7 +56,7 @@ function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
     const { dateLetterSent } = req.session.appeal.application;
     res.render('appeal-application/home-office/letter-sent.njk', {
       dateLetterSent,
-      previousPage: paths.homeOffice.details
+      previousPage: paths.appealStarted.details
     });
   } catch (e) {
     next(e);
@@ -67,7 +67,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.overview + '?saved');
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = dateLetterSentValidation(req.body);
       if (validation) {
@@ -77,7 +77,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
           dateLetterSent: {
             ...req.body
           },
-          previousPage: paths.homeOffice.details
+          previousPage: paths.appealStarted.details
         });
       }
       const { day, month, year } = req.body;
@@ -96,19 +96,19 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 
-      return getConditionalRedirectUrl(req, res, paths.taskList);
+      return getConditionalRedirectUrl(req, res, paths.appealStarted.taskList);
     } catch (e) {
       next(e);
     }
   };
 }
 
-function setupHomeOfficeDetailsController(updateAppealService: UpdateAppealService): Router {
+function setupHomeOfficeDetailsController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.homeOffice.details, getHomeOfficeDetails);
-  router.post(paths.homeOffice.details, postHomeOfficeDetails(updateAppealService));
-  router.get(paths.homeOffice.letterSent, getDateLetterSent);
-  router.post(paths.homeOffice.letterSent, postDateLetterSent(updateAppealService));
+  router.get(paths.appealStarted.details, middleware, getHomeOfficeDetails);
+  router.post(paths.appealStarted.details, middleware, postHomeOfficeDetails(updateAppealService));
+  router.get(paths.appealStarted.letterSent, middleware, getDateLetterSent);
+  router.post(paths.appealStarted.letterSent, middleware, postDateLetterSent(updateAppealService));
   return router;
 }
 

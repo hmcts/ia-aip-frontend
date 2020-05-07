@@ -1,0 +1,35 @@
+{% set pageTitleName = i18n.common.askForMoreTimeEvidenceYesNo.question %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+
+{% extends "layout.njk" %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action="{{ paths.common.askForMoreTime.evidenceYesNo }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.common.askForMoreTimeEvidenceYesNo.question,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading, errorMessage = errorList[0].text) }}
+      {{ continueButton() }}
+      <a class="cancel-button" href="{{ paths.common.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
+    {% endcall %}
+  </form>
+
+  {{ contactUs() }}
+{% endblock %}
+
+
+submitPath

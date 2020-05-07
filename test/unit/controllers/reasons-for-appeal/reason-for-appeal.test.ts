@@ -1,3 +1,4 @@
+import config from 'config';
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import {
@@ -58,10 +59,11 @@ describe('Reasons for Appeal Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupReasonsForAppealController({ updateAppealService });
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.decision);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.reasonsForAppeal.decision);
-      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppeal.confirmation);
+      const middleware = [];
+      setupReasonsForAppealController(middleware, { updateAppealService });
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.decision, middleware);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.awaitingReasonsForAppeal.decision, middleware);
+      expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppealSubmitted.confirmation, middleware);
     });
   });
 
@@ -69,9 +71,9 @@ describe('Reasons for Appeal Controller', function () {
     it('should render reasons-for-appeal/reason-for-appeal.njk', function () {
       getReasonForAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
-        previousPage: paths.overview,
+        previousPage: paths.common.overview,
         applicationReason: undefined,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
       });
     });
 
@@ -104,7 +106,7 @@ describe('Reasons for Appeal Controller', function () {
             key: 'applicationReason',
             text: 'Enter the reasons you think the Home Office decision is wrong'
           } ],
-          askForMoreTimeFeatureEnabled: false
+          askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
         }
       );
     });
@@ -112,14 +114,14 @@ describe('Reasons for Appeal Controller', function () {
     it('should pass validation and render reasons-for-appeal/reason-for-appeal.njk without error', async () => {
       req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.supportingEvidence);
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingReasonsForAppeal.supportingEvidence);
     });
 
     it('when in Edit mode should pass validation and redirect to check-and-send without error', async () => {
       req.session.appeal.reasonsForAppeal.isEdit = true;
       req.body.applicationReason = 'Text Word';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
     });
 
     it('when Save for later should pass validation and redirect to overview page without error', async () => {
@@ -155,7 +157,7 @@ describe('Reasons for Appeal Controller', function () {
         {
           error: [ { href: 'uploadFile', text: 'Select a file', value: '#uploadFile' } ],
           errorList: [ { 'href': 'uploadFile', 'text': 'Select a file', 'value': '#uploadFile' } ],
-          askForMoreTimeFeatureEnabled: false
+          askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
         }
       );
     });
@@ -163,7 +165,7 @@ describe('Reasons for Appeal Controller', function () {
     it('should pass validation and redirect to check-and-send without errors', async () => {
       req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
       await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
     });
 
     it('when in Edit mode should pass validation and redirect to check-and-send without error', async () => {
@@ -171,7 +173,7 @@ describe('Reasons for Appeal Controller', function () {
       req.session.appeal.reasonsForAppeal.evidences = evidenceMock;
 
       await postSupportingEvidenceSubmit(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppeal.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingReasonsForAppeal.checkAndSend);
     });
 
     it('when Save for later should pass validation and redirect to overview page without error', async () => {

@@ -49,7 +49,7 @@ function postClarifyingQuestionPage(updateAppealService: UpdateAppealService) {
       });
       req.session.appeal.draftClarifyingQuestionsAnswers = [ ...updatedQuestions ];
       await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      res.redirect(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      res.redirect(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id));
     } catch (error) {
       next(error);
     }

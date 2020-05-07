@@ -11,7 +11,7 @@ describe('Questions-list controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
-  const clarifyingQuestions: ClarifyingQuestion[] = [
+  const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
       id: 'id1',
       value: {
@@ -71,7 +71,7 @@ describe('Questions-list controller', () => {
     });
 
     it('should render questions-list.njk page with questionsCompleted flag to true', () => {
-      const questionsAnswered: ClarifyingQuestion[] = clarifyingQuestions.map(question => {
+      const questionsAnswered: ClarifyingQuestion<Evidence>[] = clarifyingQuestions.map(question => {
         return {
           ...question,
           value: {

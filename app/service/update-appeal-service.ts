@@ -18,10 +18,12 @@ enum YesOrNo {
 export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
+  private documentMap: DocumentMap[];
 
   constructor(ccdService: CcdService, authenticationService: AuthenticationService) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
+    this.documentMap = [];
   }
 
   getCcdService(): CcdService {
@@ -42,7 +44,6 @@ export default class UpdateAppealService {
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
-    let documentMap: DocumentMap[] = [];
     let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
 
     const appellantAddress = caseData.appellantAddress ? {
@@ -60,8 +61,6 @@ export default class UpdateAppealService {
     let timeExtensions: TimeExtension[] = null;
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
-    let requestClarifyingQuestionsDirection;
-    let draftClarifyingQuestionsAnswers: ClarifyingQuestion[];
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -83,7 +82,7 @@ export default class UpdateAppealService {
 
       if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
 
-        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, documentMap);
+        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, this.documentMap);
         outOfTimeAppeal = {
           ...outOfTimeAppeal,
           evidence: {
@@ -97,7 +96,7 @@ export default class UpdateAppealService {
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
 
         reasonsForAppealDocumentUploads.push(
           {
@@ -114,7 +113,7 @@ export default class UpdateAppealService {
       respondentDocuments = [];
 
       caseData.respondentDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
 
         let evidence = {
           dateUploaded: document.value.dateUploaded,
@@ -144,7 +143,7 @@ export default class UpdateAppealService {
 
           let evidences = [];
           timeExtension.value.evidence.forEach(evidence => {
-            const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, documentMap);
+            const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, this.documentMap);
             evidences.push({
               fileId: documentMapperId,
               name: evidence.value.document_filename
@@ -155,25 +154,38 @@ export default class UpdateAppealService {
         timeExtensions.push(timeExt);
 
       });
-
-      if (caseData.directions) {
-        directions = caseData.directions.map(d => {
+    }
+    let requestClarifyingQuestionsDirection;
+    let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+    if (caseData.directions) {
+      directions = caseData.directions.map(d => {
+        return {
+          id: d.id,
+          tag: d.value.tag,
+          parties: d.value.parties,
+          dateDue: d.value.dateDue,
+          dateSent: d.value.dateSent
+        } as Direction;
+      });
+      requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
+    }
+    if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
+      if (caseData.draftClarifyingQuestionsAnswers) {
+        draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map(answer => {
+          let evidencesList: Evidence[] = [];
+          if (answer.value.supportingEvidence) {
+            evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+          }
           return {
-            id: d.id,
-            tag: d.value.tag,
-            parties: d.value.parties,
-            dateDue: d.value.dateDue,
-            dateSent: d.value.dateSent
-          } as Direction;
+            id: answer.id,
+            value: {
+              question: answer.value.question,
+              answer: answer.value.answer || '',
+              supportingEvidence: evidencesList
+            }
+          };
         });
-        requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
-      }
-
-      if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
-        draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers
-          ? [ ...caseData.draftClarifyingQuestionsAnswers ]
-          : [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
-      }
+      } else draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
     }
 
     req.session.appeal = {
@@ -206,7 +218,7 @@ export default class UpdateAppealService {
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
-      documentMap: documentMap,
+      documentMap: [ ...this.documentMap],
       directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
@@ -242,7 +254,6 @@ export default class UpdateAppealService {
 
     const currentUserId = req.idam.userDetails.uid;
     const caseData = this.convertToCcdCaseData(req.session.appeal);
-
     const updatedCcdCase = {
       id: req.session.ccdCaseId,
       state: req.session.appeal.appealStatus,
@@ -353,7 +364,7 @@ export default class UpdateAppealService {
                 document_binary_url: `${documentLocationUrl}/binary`
               }
             } as DocumentWithMetaData
-          } as SupportingEvidenceCollection;
+          };
         });
       }
       if (appeal.reasonsForAppeal.uploadDate) {
@@ -376,7 +387,23 @@ export default class UpdateAppealService {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 
-    if (appeal.draftClarifyingQuestionsAnswers) caseData.draftClarifyingQuestionsAnswers = [ ...appeal.draftClarifyingQuestionsAnswers ];
+    if (appeal.draftClarifyingQuestionsAnswers) {
+      caseData.draftClarifyingQuestionsAnswers = appeal.draftClarifyingQuestionsAnswers.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
+        let question: ClarifyingQuestion<Collection<SupportingDocument>>;
+        let supportingEvidence: Collection<SupportingDocument>[];
+        if (answer.value.supportingEvidence) {
+          supportingEvidence = answer.value.supportingEvidence.map(evidence => this.mapEvidenceToSupportingDocument(evidence, appeal));
+        }
+        question = {
+          ...answer,
+          value: {
+            ...answer.value,
+            supportingEvidence
+          }
+        };
+        return question;
+      });
+    }
     return caseData;
   }
 
@@ -394,12 +421,38 @@ export default class UpdateAppealService {
       caseData.reviewTimeExtensionRequired = YesOrNo.YES;
     }
     if (askForMoreTime.evidence) {
-      currentTimeExtension.evidence = this.toSupportingDocument(askForMoreTime.evidence, appeal);
+      currentTimeExtension.evidence = this.mapToTimeExtensionEvidenceCollection(askForMoreTime.evidence, appeal);
     }
     caseData.timeExtensions.push({ value: currentTimeExtension });
   }
 
-  private toSupportingDocument(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {
+  private toIsoDate(appealDate: AppealDate) {
+    const date = new Date(`${appealDate.year}-${appealDate.month}-${appealDate.day}`);
+    const isoDate = date.toISOString().split('T')[0];
+    return isoDate;
+  }
+
+  private mapSupportingDocumentToEvidence(evidence: Collection<SupportingDocument>) {
+    const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, this.documentMap);
+    const documentToEvidence = {
+      fileId: documentMapperId,
+      name: evidence.value.document_filename
+    };
+    return documentToEvidence;
+  }
+
+  private mapEvidenceToSupportingDocument(evidence: Evidence, appeal: Appeal): Collection<SupportingDocument> {
+    const documentUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+    return {
+      value: {
+        document_filename: evidence.name,
+        document_url: documentUrl,
+        document_binary_url: `${documentUrl}/binary`
+      }
+    };
+  }
+
+  private mapToTimeExtensionEvidenceCollection(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {
     return evidences ? evidences.map((evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
       return {

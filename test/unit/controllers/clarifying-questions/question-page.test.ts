@@ -16,7 +16,7 @@ describe('Question-page controller', () => {
   let res: Partial<Response>;
   let next: NextFunction;
   let updateAppealService: Partial<UpdateAppealService>;
-  const clarifyingQuestions: ClarifyingQuestion[] = [
+  const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
       id: 'id1',
       value: {

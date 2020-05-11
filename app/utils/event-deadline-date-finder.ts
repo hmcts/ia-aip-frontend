@@ -54,7 +54,7 @@ function getDeadline(currentAppealStatus: string, history, req: Request) {
       break;
     }
     case 'awaitingClarifyingQuestionsAnswers': {
-      formattedDeadline = getFormattedDirectionDueDate(directions, 'requestClarifyingQuestions');
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestClarifyingQuestions');
       break;
     }
     default: {

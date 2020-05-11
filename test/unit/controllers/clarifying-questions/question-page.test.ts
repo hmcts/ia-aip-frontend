@@ -4,8 +4,8 @@ import {
   postClarifyingQuestionPage,
   setupClarifyingQuestionPageController
 } from '../../../../app/controllers/clarifying-questions/question-page';
+import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
-import { Events } from '../../../../app/service/ccd-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';

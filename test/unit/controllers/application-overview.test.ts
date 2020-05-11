@@ -126,41 +126,42 @@ describe('Confirmation Page Controller', () => {
       completed: false,
       title: 'Your appeal<br/> decision'
     } ];
-    const date = moment().format(dayMonthYearFormat);
 
-    const expectedHistory = [ {
-      'date': date,
-      'title': 'Your appeal details',
-      'text': 'You sent your appeal details to the Tribunal.',
-      'links': [
-        {
-          'title': 'What you sent',
-          'text': 'Your appeal details',
-          'href': '{{ paths.common.viewAppealDetails }}'
-        }, {
-          'href': '{{ paths.guidancePages.tribunalCaseworker }}',
-          'text': 'What is a Tribunal Caseworker?',
-          'title': 'Helpful information'
-        } ]
-    }, {
-      'date': date,
-      'title': 'Your appeal argument',
-      'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
-      'links': [
-        {
-          'title': 'What you sent',
-          'text': 'Why you think the Home Office is wrong',
-          'href': '{{ paths.common.viewReasonsForAppeal }}'
-        }, {
-          'title': 'Useful documents',
-          'text': 'Home Office documents about your case',
-          'href': '{{ paths.common.viewHomeOfficeDocuments }}'
-        }, {
-          'title': 'Helpful information',
-          'text': 'Understanding your Home Office documents',
-          'href': '{{ paths.guidancePages.homeOfficeDocuments }}'
-        } ]
-    } ];
+    const expectedHistory = {
+      appealArgumentSection: [ {
+        'date': '27 February 2020',
+        'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
+        'links': [
+          {
+            'title': 'What you sent',
+            'text': 'Why you think the Home Office is wrong',
+            'href': '{{ paths.common.detailsViewers.reasonsForAppeal }}'
+          }, {
+            'title': 'Useful documents',
+            'text': 'Home Office documents about your case',
+            'href': '{{ paths.common.detailsViewers.homeOfficeDocuments }}'
+          }, {
+            'title': 'Helpful information',
+            'text': 'Understanding your Home Office documents',
+            'href': '{{ paths.common.homeOfficeDocuments }}'
+          } ]
+      }
+      ],
+      appealDetailsSection: [ {
+        'date': '27 February 2020',
+        'text': 'You sent your appeal details to the Tribunal.',
+        'links': [
+          {
+            'title': 'What you sent',
+            'text': 'Your appeal details',
+            'href': '{{ paths.common.detailsViewers.appealDetails }}'
+          }, {
+            'title': 'Helpful information',
+            'text': 'What is a Tribunal Caseworker?',
+            'href': '{{ paths.common.tribunalCaseworker }}'
+          } ]
+      } ]
+    };
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
@@ -210,7 +211,7 @@ describe('Confirmation Page Controller', () => {
       allowedAskForMoreTime: false
     };
 
-    const expectedStages = [{
+    const expectedStages = [ {
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -230,13 +231,13 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    }];
+    } ];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: undefined,
       applicationNextStep: expectedNextStep,
-      history: [],
+      history: { appealArgumentSection: [], appealDetailsSection: [] },
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
@@ -268,7 +269,7 @@ describe('Confirmation Page Controller', () => {
       info: null
     };
 
-    const expectedStages = [{
+    const expectedStages = [ {
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -288,13 +289,13 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    }];
+    } ];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
-      history: [],
+      history: { appealArgumentSection: [], appealDetailsSection: [] },
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
@@ -327,7 +328,7 @@ describe('Confirmation Page Controller', () => {
       info: null
     };
 
-    const expectedStages = [{
+    const expectedStages = [ {
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -347,13 +348,13 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    }];
+    } ];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
-      history: [],
+      history: { appealArgumentSection: [], appealDetailsSection: [] },
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
@@ -388,7 +389,7 @@ describe('Confirmation Page Controller', () => {
       info: null
     };
 
-    const expectedStages = [{
+    const expectedStages = [ {
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -408,13 +409,13 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    }];
+    } ];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Appellant Name',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
-      history: [],
+      history: { appealArgumentSection: [], appealDetailsSection: [] },
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
@@ -446,7 +447,7 @@ describe('Confirmation Page Controller', () => {
     expect(result).to.equal(appealReferenceNumber);
   });
 
-  it('getAppealRefNumber with inital draft ',() => {
+  it('getAppealRefNumber with inital draft ', () => {
     const req = {
       session: {
         appeal: {

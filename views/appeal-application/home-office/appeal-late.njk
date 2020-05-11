@@ -2,6 +2,7 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% block content %}
   {% if errorList %}
@@ -10,58 +11,66 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficeAppealLate.title }}</h1>
-  <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>
 
   <form action="{{ paths.appealStarted.appealLate }}?_csrf={{ csrfToken }}" method="post" enctype="multipart/form-data">
-    {{ govukTextarea({
-      name: "appeal-late",
-      id: "appeal-late",
-      label: {
-        text: i18n.pages.homeOfficeAppealLate.appealLateLabel
-      },
-      value: appealLateReason,
-      attributes: {
-        maxlength: maxCharacters
-      },
-      errorMessage: {
-        text: error["appeal-late"].text
-      } if error["appeal-late"]
-    }) }}
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.homeOfficeAppealLate.title,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
 
-    <h2 class="govuk-heading-m">{{ i18n.pages.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
-    <ul>
-      {% for provideEvidenceDescription in i18n.pages.homeOfficeAppealLate.provideEvidenceDescription %}
-        <li>{{ provideEvidenceDescription | safe }}</li>
-      {% endfor %}
-    </ul>
-    <div class="govuk-inset-text">
-      {{ govukFileUpload({
-        id: "file-upload",
-        name: "file-upload",
+      <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>
+      {{ govukTextarea({
+        name: "appeal-late",
+        id: "appeal-late",
         label: {
-          text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
+          text: i18n.pages.homeOfficeAppealLate.appealLateLabel
+        },
+        value: appealLateReason,
+        attributes: {
+          maxlength: maxCharacters
         },
         errorMessage: {
-          text: error["uploadFile"].text
-        } if error["uploadFile"]
+          text: error["appeal-late"].text
+        } if error["appeal-late"]
       }) }}
-    </div>
 
-    {% if evidence %}
-      <div class="evidence">
-        <h3 class="govuk-heading-s">{{ i18n.pages.homeOfficeAppealLate.uploadedFileTitle }}</h3>
-        <hr class="govuk-section-break govuk-section-break--visible">
-        <ul class="govuk-list">
-          <li class="list__item">
-            <span>{{ evidence.name }}</span>
-            <input type="submit" class="evidence-list__link" value="{{ i18n.common.links.delete }}" formaction="{{ paths.appealStarted.deleteEvidence }}?_csrf={{ csrfToken }}"/>
-          </li>
-        </ul>
+      <h2 class="govuk-heading-m">{{ i18n.pages.homeOfficeAppealLate.provideEvidenceTitle }} </h2>
+      <ul>
+        {% for provideEvidenceDescription in i18n.pages.homeOfficeAppealLate.provideEvidenceDescription %}
+          <li>{{ provideEvidenceDescription | safe }}</li>
+        {% endfor %}
+      </ul>
+      <div class="govuk-inset-text">
+        {{ govukFileUpload({
+          id: "file-upload",
+          name: "file-upload",
+          label: {
+            text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
+          },
+          errorMessage: {
+            text: error["uploadFile"].text
+          } if error["uploadFile"]
+        }) }}
       </div>
-    {% endif %}
 
-    {{ saveButtons() }}
+      {% if evidence %}
+        <div class="evidence">
+          <h3 class="govuk-heading-s">{{ i18n.pages.homeOfficeAppealLate.uploadedFileTitle }}</h3>
+          <hr class="govuk-section-break govuk-section-break--visible">
+          <ul class="govuk-list">
+            <li class="list__item">
+              <span>{{ evidence.name }}</span>
+              <input type="submit" class="evidence-list__link" value="{{ i18n.common.links.delete }}" formaction="{{ paths.appealStarted.deleteEvidence }}?_csrf={{ csrfToken }}"/>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
+
+      {{ saveButtons() }}
+    {% endcall %}
   </form>
   {{ contactUs() }}
 

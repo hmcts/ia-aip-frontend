@@ -25,7 +25,7 @@ export default class SessionTimeout {
     this.init = this.init.bind(this);
     this.modalElement = document.querySelector('#timeout-modal');
     this.modalOverlayElement = document.querySelector('#modal-overlay');
-    this.modalCountdownElement = document.querySelector('#modal-countdown');
+    this.modalCountdownElement = document.querySelector('#dialog-description');
     this.extendSessionElement = document.querySelector('#extend-session');
     this.body = document.querySelector('body');
     this.focusableElements = this.modalElement.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');

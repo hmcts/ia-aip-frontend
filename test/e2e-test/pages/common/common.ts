@@ -284,5 +284,17 @@ module.exports = {
     Then(/^I see "([^"]*)" in title$/, async (title: string) => {
       await I.see(title, 'h1');
     });
+
+    Then(/^I see "([^"]*)" item in list$/, async (title: string) => {
+      await I.see(title, 'ul');
+    });
+
+    Then(/^I see "([^"]*)" link$/, async (title: string) => {
+      await I.see(title, 'a');
+    });
+
+    Then(/^I fill textarea with "([^"]*)"$/, async (title: string) => {
+      await I.fillField('textarea', title);
+    });
   }
 };

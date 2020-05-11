@@ -60,10 +60,9 @@ describe('Detail viewer Controller', () => {
   describe('setupDetailViewersController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-      const middleware = [];
-      setupDetailViewersController(middleware, documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.viewHomeOfficeDocuments, middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.documentViewer + '/:documentId', middleware);
+      setupDetailViewersController(documentManagementService as DocumentManagementService);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.viewHomeOfficeDocuments);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.documentViewer + '/:documentId');
     });
   });
 

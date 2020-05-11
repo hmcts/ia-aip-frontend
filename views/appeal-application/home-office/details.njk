@@ -2,6 +2,7 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% block content %}
   {% if errorList %}
@@ -10,32 +11,38 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <h1 class="govuk-heading-l">{{ i18n.pages.homeOfficePage.title }}</h1>
-
-  <p>{{ i18n.pages.homeOfficePage.description }}</p>
-
-  <img
-      src="/assets/images/home_office_ref_number.png"
-      class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
-      alt="{{ i18n.pages.homeOfficePage.refImageAltText }}"
-  />
-
   <form action="{{ paths.appealStarted.details }}" method="post">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {{ govukInput({
-      label: {
-        text: i18n.pages.homeOfficePage.homeOfficeReferenceNumberLabel
-      },
-      classes: "govuk-input--width-20",
-      id: "homeOfficeRefNumber",
-      name: "homeOfficeRefNumber",
-      value: homeOfficeRefNumber,
-      errorMessage: {
-        text:  errors['homeOfficeRefNumber'].text
-      } if errors['homeOfficeRefNumber']
-    }) }}
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.homeOfficePage.title,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <p>{{ i18n.pages.homeOfficePage.description }}</p>
 
-    {{ saveButtons() }}
+      <img
+          src="/assets/images/home_office_ref_number.png"
+          class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
+          alt="{{ i18n.pages.homeOfficePage.refImageAltText }}"
+      />
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      
+      {{ govukInput({
+        label: {
+          text: i18n.pages.homeOfficePage.homeOfficeReferenceNumberLabel
+        },
+        classes: "govuk-input--width-20",
+        id: "homeOfficeRefNumber",
+        name: "homeOfficeRefNumber",
+        value: homeOfficeRefNumber,
+        errorMessage: {
+          text:  errors['homeOfficeRefNumber'].text
+        } if errors['homeOfficeRefNumber']
+      }) }}
+
+      {{ saveButtons() }}
+    {% endcall %}
   </form>
   {{ contactUs() }}
 {% endblock %}

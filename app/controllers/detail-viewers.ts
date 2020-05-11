@@ -171,12 +171,12 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
   };
 }
 
-function setupDetailViewersController(middleware: Middleware[], documentManagementService: DocumentManagementService): Router {
+function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.common.documentViewer + '/:documentId', middleware, getDocumentViewer(documentManagementService));
-  router.get(paths.common.viewHomeOfficeDocuments, middleware, getHoEvidenceDetailsViewer);
-  router.get(paths.common.viewAppealDetails, middleware, getAppealDetailsViewer);
-  router.get(paths.common.viewReasonsForAppeal, middleware, getReasonsForAppealViewer);
+  router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
+  router.get(paths.common.viewHomeOfficeDocuments, getHoEvidenceDetailsViewer);
+  router.get(paths.common.viewAppealDetails, getAppealDetailsViewer);
+  router.get(paths.common.viewReasonsForAppeal, getReasonsForAppealViewer);
 
   return router;
 }

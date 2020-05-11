@@ -75,6 +75,7 @@ interface Appeal {
   history?: HistoryEvent[];
   askForMoreTime?: AskForMoreTime;
   previousAskForMoreTime?: TimeExtensionCollection[];
+  draftClarifyingQuestionsAnswers?: ClarifyingQuestion[]
 }
 
 interface AskForMoreTime {
@@ -178,6 +179,14 @@ interface IdamDetails {
   name: string;
   given_name: string;
   family_name: string;
+}
+
+interface ClarifyingQuestion {
+  id: string;
+  value: {
+    question: string;
+    answer?: string;
+  }
 }
 
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

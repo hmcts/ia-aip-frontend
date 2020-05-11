@@ -121,6 +121,8 @@ export default class UpdateAppealService {
         respondentDocuments.push(evidence);
       });
     }
+    let requestClarifyingQuestionsDirection;
+    let draftClarifyingQuestionsAnswers: ClarifyingQuestion[];
     if (caseData.directions) {
       directions = caseData.directions.map(d => {
         return {
@@ -130,6 +132,12 @@ export default class UpdateAppealService {
           dateSent: d.value.dateSent
         };
       });
+      requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
+    }
+
+    if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
+      if (caseData.draftClarifyingQuestionsAnswers) draftClarifyingQuestionsAnswers = [ ...caseData.draftClarifyingQuestionsAnswers ];
+      else draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
     }
 
     req.session.appeal = {
@@ -162,7 +170,8 @@ export default class UpdateAppealService {
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: documentMap,
-      directions: directions
+      directions: directions,
+      draftClarifyingQuestionsAnswers
     };
 
     req.session.appeal.askForMoreTime = {};
@@ -317,6 +326,7 @@ export default class UpdateAppealService {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 
+    if (appeal.draftClarifyingQuestionsAnswers) caseData.draftClarifyingQuestionsAnswers = [ ...appeal.draftClarifyingQuestionsAnswers ];
     return caseData;
   }
 

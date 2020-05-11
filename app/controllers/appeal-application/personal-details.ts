@@ -243,6 +243,9 @@ function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
 
 function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
   try {
+    if (!shouldValidateWhenSaveForLater(req.body, 'address')) {
+      return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+    }
     const validation = dropdownValidation(req.body.address, 'address');
     if (validation) {
       const addresses = buildAddressList(_.get(req.session.appeal.application, 'addressLookup.result'));

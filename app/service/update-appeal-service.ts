@@ -57,9 +57,11 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
-    let reasonsForAppealDocumentUploads: Evidence[] = null;
     let timeExtensions: TimeExtension[] = null;
     let directions: Direction[] = null;
+    let reasonsForAppealDocumentUploads: Evidence[] = null;
+    let requestClarifyingQuestionsDirection;
+    let draftClarifyingQuestionsAnswers: ClarifyingQuestion[];
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -164,6 +166,13 @@ export default class UpdateAppealService {
             dateSent: d.value.dateSent
           } as Direction;
         });
+        requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
+      }
+
+      if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
+        draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers
+          ? [ ...caseData.draftClarifyingQuestionsAnswers ]
+          : [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
       }
     }
 
@@ -199,7 +208,9 @@ export default class UpdateAppealService {
       documentMap: documentMap,
       directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
-      timeExtensions: timeExtensions
+      timeExtensions: timeExtensions,
+      draftClarifyingQuestionsAnswers
+
     };
 
     req.session.appeal.askForMoreTime = {};
@@ -361,6 +372,7 @@ export default class UpdateAppealService {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 
+    if (appeal.draftClarifyingQuestionsAnswers) caseData.draftClarifyingQuestionsAnswers = [ ...appeal.draftClarifyingQuestionsAnswers ];
     return caseData;
   }
 

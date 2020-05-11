@@ -33,5 +33,16 @@ export const Events = {
     id: 'editTimeExtension',
     summary: 'Edit time extension AIP',
     description: 'edits time extensions for case AIP'
+  },
+  EDIT_CLARIFYING_QUESTION_ANSWERS: {
+    id: 'editClarifyingQuestionAnswers',
+    summary: 'Edit clarifying question answers',
+    description: 'Edit clarifying question answers'
+  },
+  SUBMIT_CLARIFYING_QUESTION_ANSWERS: {
+    id: 'submitClarifyingQuestionAnswers',
+    summary: 'Submit clarifying question answers',
+    description: 'Submit clarifying question answers'
   }
+
 };

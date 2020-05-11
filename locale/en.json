@@ -345,6 +345,10 @@
         "reasonsForAppealSubmitted": {
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+        },
+        "clarifyingQuestions": {
+          "description": "You need to answer some questions about your appeal.",
+          "respondByText": "You need to respond by {{ applicationNextStep.deadline }}."
         }
       },
       "timeline": {
@@ -996,6 +1000,34 @@
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
       "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+    },
+    "clarifyingQuestionsList": {
+      "title": "Questions about your appeal",
+      "sections": {
+        "questions": {
+          "header": "Questions",
+          "itemTitle": "Answer question"
+        },
+        "otherInformation": {
+          "header": "Other information",
+          "itemTitle": "Do you want to tell us anything else about your case?"
+        },
+        "checkAndSend": {
+          "header": "Check and send",
+          "itemTitle": "Check and send your answers"
+        }
+      }
+    },
+    "clarifyingQuestionPage": {
+      "pageTitle": "Answer question {{ question.orderNo }} about your appeal",
+      "title": "Question {{ question.orderNo }}",
+      "textAreaLabel": "Answer question {{ question.orderNo }}",
+      "panel": {
+        "supportingEvidence": "Supporting evidence",
+        "ableToAddEvidence": "You will be able to add supporting evidence on the next page if you want to.",
+        "needMoreTime": "Need more time?",
+        "saveAndAskMoreTime": "Save your answer and ask for more time"
+      }
     }
   },
   "error": {
@@ -1083,7 +1115,10 @@
       "incorrectFormat": "The selected file must be a",
       "fileCannotBeUploaded": "The file cannot be uploaded"
     },
-    "askForMoreTime": "Enter how much time you need and why you need it"
+    "askForMoreTime": "Enter how much time you need and why you need it",
+    "clarifyingQuestions": {
+      "emptyAnswer": "Please enter an answer for the question"
+    }
   },
   "components": {
     "evidenceList": {

@@ -12,6 +12,7 @@ describe('isJourneyAllowedMiddleware', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
+      params: {},
       session: {
         appeal: {
           application: {}
@@ -43,6 +44,14 @@ describe('isJourneyAllowedMiddleware', () => {
   it('should allow access to page', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.path = paths.appealStarted.name;
+    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    expect(next).to.have.been.called;
+  });
+
+  it('should allow access to page with params', () => {
+    req.params.id = '3';
+    req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
+    req.path = paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', '3');
     isJourneyAllowedMiddleware(req as Request, res as Response, next);
     expect(next).to.have.been.called;
   });

@@ -96,6 +96,17 @@ const APPEAL_STATE = {
     ],
     cta: null,
     allowedAskForMoreTime: false
+  },
+  'awaitingClarifyingQuestionsAnswers': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description
+    ],
+    info: null,
+    cta: {
+      url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
+      respondByText: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText
+    },
+    allowedAskForMoreTime: true
   }
 };
 

@@ -76,6 +76,7 @@ interface Appeal {
   timeExtensions?: TimeExtension[];
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
+  draftClarifyingQuestionsAnswers?: ClarifyingQuestion[];
 
 }
 
@@ -199,6 +200,14 @@ interface Direction {
   parties: string;
   dateDue: string;
   dateSent: string;
+}
+
+interface ClarifyingQuestion {
+  id: string;
+  value: {
+    question: string;
+    answer?: string;
+  }
 }
 
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

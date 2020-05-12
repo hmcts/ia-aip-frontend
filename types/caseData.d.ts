@@ -41,6 +41,7 @@ interface CaseData {
   timeExtensions: TimeExtensionCollection[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: DirectionCollection[];
+  draftClarifyingQuestionsAnswers: ClarifyingQuestion[];
 }
 
 interface Nationality {
@@ -81,35 +82,47 @@ interface RespondentEvidenceCollection {
 
 interface TimeExtensionCollection {
   id?: number;
-  value: TimeExtension;
+  value: CcdTimeExtension;
 }
 
-interface DirectionValue {
+interface DirectionCollection {
+  id?: number;
+  value: CcdDirection;
+}
+
+interface PreviousDateCollection {
+  id?: number;
+  value: CcdPreviousDate;
+}
+
+interface CcdTimeExtension {
+  requestDate?: string;
+  reason: string;
+  evidence?: TimeExtensionEvidenceCollection[];
+  status: string;
+  state: string;
+  decision?: string;
+  decisionReason?: string;
+  decisionOutcomeDate?: string;
+}
+
+interface CcdDirection {
   tag: string;
   dateDue: string;
   parties: string;
   dateSent: string;
   explanation: string;
-  previousDates: string[];
+  previousDates?: PreviousDateCollection[];
 }
 
-interface DirectionCollection {
-  id?: number;
-  value: DirectionValue;
+interface CcdPreviousDate {
+  dateDue: string;
+  dateSent: string;
 }
-
 interface Subscription {
   subscriber: string;
   wantsEmail: 'Yes' | 'No';
   email: string;
   wantsSms: 'Yes' | 'No';
   mobileNumber: string;
-}
-
-interface TimeExtension {
-  reason: string;
-  evidence?: TimeExtensionEvidenceCollection[];
-  status: string;
-  state: string;
-  requestedDate?: string;
 }

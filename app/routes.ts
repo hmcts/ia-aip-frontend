@@ -12,6 +12,8 @@ import { setupTaskListController } from './controllers/appeal-application/task-l
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupClarifyingQuestionPageController } from './controllers/clarifying-questions/question-page';
+import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
@@ -52,7 +54,7 @@ const idamController = setupIdamController();
 
 const middleware = [ isJourneyAllowedMiddleware ];
 
-const applicationOverview = setupApplicationOverviewController(middleware, updateAppealService);
+const applicationOverview = setupApplicationOverviewController(updateAppealService);
 const taskListController = setupTaskListController(middleware);
 const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware, updateAppealService);
 const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
@@ -63,13 +65,15 @@ const confirmationController = setConfirmationController(middleware);
 const outOfTimeController = setupOutOfTimeController(middleware, { updateAppealService, documentManagementService });
 const reasonsForAppealController = setupReasonsForAppealController(middleware, { updateAppealService, documentManagementService });
 const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(middleware, updateAppealService);
-const detailViewersController = setupDetailViewersController(middleware, documentManagementService);
+const detailViewersController = setupDetailViewersController(documentManagementService);
 const eligibilityController = setupEligibilityController();
 const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
 const sessionController = setupSessionController();
 const forbiddenController = setupForbiddenController();
 const askForMoreTime = setupAskForMoreTimeController({ updateAppealService, documentManagementService });
+const clarifyingQuestionsListController = setupClarifyingQuestionsListController(middleware);
+const clarifyingQuestionPageController = setupClarifyingQuestionPageController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -101,6 +105,8 @@ router.use(applicationOverview);
 
 router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
+router.use(clarifyingQuestionsListController);
+router.use(clarifyingQuestionPageController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

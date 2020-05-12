@@ -6,7 +6,7 @@ import SessionTimeout from '../../../client/session-timeout';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Session Timeout @only', () => {
+describe('Session Timeout', () => {
   let sandbox: sinon.SinonSandbox;
   let sessionTimeout: SessionTimeout;
   let extendSessionStub: sinon.SinonStub;
@@ -33,13 +33,13 @@ describe('Session Timeout @only', () => {
   before(() => {
     document.body.innerHTML =
     `<div class="timeout-modal" id="timeout-modal">
-      <p id="modal-countdown">the countdown</p>
+      <p id="dialog-description">the countdown</p>
       <button id="extend-session">Extend</button>
     </div>
     <div class="modal-overlay" id="modal-overlay" tabindex="-1" aria-hidden="true"></div>`;
     modalElement = document.querySelector('#timeout-modal');
     modalOverlayElement = document.querySelector('#modal-overlay');
-    modalCountdownElement = document.querySelector('#modal-countdown');
+    modalCountdownElement = document.querySelector('#dialog-description');
     focusableElements = modalElement.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
     firstFocusableElement = focusableElements[0] as HTMLElement;
     lastFocusableElement = focusableElements[focusableElements.length - 1] as HTMLElement;

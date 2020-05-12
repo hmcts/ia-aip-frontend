@@ -223,7 +223,7 @@
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",
@@ -327,7 +327,7 @@
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
             }
           },
           "partial": {
@@ -338,62 +338,79 @@
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
             }
           }
         },
         "reasonsForAppealSubmitted": {
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+        },
+        "clarifyingQuestions": {
+          "description": "You need to answer some questions about your appeal.",
+          "respondByText": "You need to respond by {{ applicationNextStep.deadline }}."
         }
       },
       "timeline": {
         "completed": "Completed",
+        "sections": {
+          "appealArgumentSection": "Your appeal argument",
+          "appealDetailsSection": "Your appeal details"
+        },
         "submitAppeal": {
-          "title": "Your appeal details",
           "text": "You sent your appeal details to the Tribunal.",
           "links": [
             {
               "title": "What you sent",
               "text": "Your appeal details",
-              "href": "{{ paths.common.viewAppealDetails }}"
+              "href": "{{ paths.common.detailsViewers.appealDetails }}"
             },
             {
               "title": "Helpful information",
               "text": "What is a Tribunal Caseworker?",
-              "href": "{{ paths.guidancePages.tribunalCaseworker }}"
+              "href": "{{ paths.common.tribunalCaseworker }}"
             }
           ]
         },
         "submitReasonsForAppeal": {
-          "title": "Your appeal argument",
           "text": "You told us why you think the Home Office decision to refuse your claim is wrong.",
           "links": [
             {
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
-              "href": "{{ paths.common.viewReasonsForAppeal }}"
+              "href": "{{ paths.common.detailsViewers.reasonsForAppeal }}"
             },
             {
               "title": "Useful documents",
               "text": "Home Office documents about your case",
-              "href": "{{ paths.common.viewHomeOfficeDocuments }}"
+              "href": "{{ paths.common.detailsViewers.homeOfficeDocuments }}"
             },
             {
               "title": "Helpful information",
               "text": "Understanding your Home Office documents",
-              "href": "{{ paths.guidancePages.homeOfficeDocuments }}"
+              "href": "{{ paths.common.homeOfficeDocuments }}"
             }
           ]
         },
-        "reasonsForAppealCheckAnswersHistory": {
-          "title": "Why you think the Home Office is wrong",
-          "question": "Question",
-          "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?",
-          "providingEvidence": "Providing supporting evidence"
+        "submitTimeExtension": {
+          "text": "You asked for more time.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Reason you needed more time",
+              "href": "{{ paths.common.detailsViewers.timeExtension }}"
+            }
+          ]
         },
-        "appealApplicationCheckAnswersHistory": {
-          "title": "Your appeal details"
+        "reviewTimeExtension": {
+          "text": "Your request for more time was",
+          "links": [
+            {
+              "title": "What the Tribunal said ",
+              "text": "Reason for decision",
+              "href": "{{ paths.common.detailsViewers.timeExtensionDecision }}"
+            }
+          ]
         }
       }
     },
@@ -408,6 +425,21 @@
         "title": "Home Office documents about your case",
         "dateUploaded": "Date uploaded",
         "document": "Document"
+      },
+      "reasonsForAppealCheckAnswersHistory": {
+        "title": "Why you think the Home Office is wrong",
+        "question": "Question",
+        "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
+      },
+      "timeExtensionRequest": {
+        "title": "Reason you needed more time",
+        "question": "How much time to you need and why do you need it?",
+        "supportingEvidence": "Supporting evidence"
+      },
+      "timeExtensionReview": {
+        "title": "Reason for decision",
+        "reason": "Decision",
+        "decision": "How much time to you need and why do you need it?"
       }
     },
     "guidancePages": {
@@ -950,6 +982,9 @@
         }
       ]
     },
+    "forbidden": {
+      "title": "This page is unavailable"
+    },
     "askForMoreTimePage": {
       "title": "Ask for more time",
       "header": "Ask for more time",
@@ -966,15 +1001,35 @@
       ],
       "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
     },
-    "forbidden": {
-      "title": "This page is unavailable"
+    "clarifyingQuestionsList": {
+      "title": "Questions about your appeal",
+      "sections": {
+        "questions": {
+          "header": "Questions",
+          "itemTitle": "Answer question"
+        },
+        "otherInformation": {
+          "header": "Other information",
+          "itemTitle": "Do you want to tell us anything else about your case?"
+        },
+        "checkAndSend": {
+          "header": "Check and send",
+          "itemTitle": "Check and send your answers"
+        }
+      }
     },
-    "fileNotFoundPage": {
-      "title": "File not found",
-      "fileNoLongerAvailable": "This file is no longer available.",
-      "link": " Go back to the previous page"
-       }
-    },
+    "clarifyingQuestionPage": {
+      "pageTitle": "Answer question {{ question.orderNo }} about your appeal",
+      "title": "Question {{ question.orderNo }}",
+      "textAreaLabel": "Answer question {{ question.orderNo }}",
+      "panel": {
+        "supportingEvidence": "Supporting evidence",
+        "ableToAddEvidence": "You will be able to add supporting evidence on the next page if you want to.",
+        "needMoreTime": "Need more time?",
+        "saveAndAskMoreTime": "Save your answer and ask for more time"
+      }
+    }
+  },
   "error": {
     "summary": {
       "title": "There is a problem",
@@ -1060,7 +1115,10 @@
       "incorrectFormat": "The selected file must be a",
       "fileCannotBeUploaded": "The file cannot be uploaded"
     },
-    "askForMoreTime": "Enter how much time you need and why you need it"
+    "askForMoreTime": "Enter how much time you need and why you need it",
+    "clarifyingQuestions": {
+      "emptyAnswer": "Please enter an answer for the question"
+    }
   },
   "components": {
     "evidenceList": {

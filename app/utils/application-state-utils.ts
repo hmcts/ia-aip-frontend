@@ -1,11 +1,7 @@
 import { Request } from 'express';
 import _ from 'lodash';
-import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
-import { SecurityHeaders } from '../service/authentication-service';
-import UpdateAppealService from '../service/update-appeal-service';
-import { dayMonthYearFormat } from './date-formats';
 import { getDeadline } from './event-deadline-date-finder';
 
 const APPEAL_STATE = {
@@ -100,6 +96,17 @@ const APPEAL_STATE = {
     ],
     cta: null,
     allowedAskForMoreTime: false
+  },
+  'awaitingClarifyingQuestionsAnswers': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description
+    ],
+    info: null,
+    cta: {
+      url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
+      respondByText: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText
+    },
+    allowedAskForMoreTime: true
   }
 };
 
@@ -162,47 +169,11 @@ function getAppealApplicationNextStep(req: Request) {
     }
   };
 
-  const directions = req.session.appeal.directions;
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, directions, history);
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, history, req);
+
   return doThisNextSection;
 }
 
-function constructEventObject(event) {
-  const formattedDate = moment(event.date).format(dayMonthYearFormat);
-  return {
-    date: `${formattedDate}`,
-    title: i18n.pages.overviewPage.timeline[event.id].title,
-    text: i18n.pages.overviewPage.timeline[event.id].text,
-    links: i18n.pages.overviewPage.timeline[event.id].links
-  };
-}
-
-async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
-  const authenticationService = updateAppealService.getAuthenticationService();
-  const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
-  const ccdService = updateAppealService.getCcdService();
-  const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.ccdCaseId, headers);
-
-  req.session.appeal.history = history;
-  const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
-  const eventsCollected = [];
-  eventToLookFor.forEach((event: string,index: number) => {
-    const eventFound = history.find((e: HistoryEvent) => event === e.id);
-    if (eventFound) {
-      let eventObject = constructEventObject(eventFound);
-      // TODO - CLEAN UP CHECKING FOR TCW LINK
-      const { appealStatus } = req.session.appeal;
-      if ((['awaitingRespondentEvidence', 'appealSubmitted'].includes(appealStatus)) && event === 'submitAppeal') {
-        delete eventObject.links[1];
-      }
-      eventsCollected.push(eventObject);
-    }
-  });
-
-  return eventsCollected;
-}
-
 export {
-  getAppealApplicationNextStep,
-  getAppealApplicationHistory
+  getAppealApplicationNextStep
 };

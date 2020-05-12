@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
+import { Events } from '../../data/events';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
@@ -143,7 +143,7 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
       const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {
         const evidenceText = evidences.map((evidence) => {
-          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${evidence.fileId}'>${evidence.name}</a>`;
         });
 
         summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.common.askForMoreTime.supportingEvidenceUpload, Delimiter.BREAK_LINE));
@@ -164,7 +164,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       req.session.appeal.askForMoreTime.status = 'submitted';
-      req.session.appeal.askForMoreTime.requestedDate = nowIsoDate();
+      req.session.appeal.askForMoreTime.requestDate = nowIsoDate();
       req.session.appeal.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
       await updateAppealService.submitEvent(Events.SUBMIT_TIME_EXTENSION, req);
       req.session.appeal.askForMoreTime = {};

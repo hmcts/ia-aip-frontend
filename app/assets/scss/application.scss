@@ -8,6 +8,7 @@
 @import "_timeline-component.scss";
 @import "_header";
 @import "_timeout-modal";
+@import "save-buttons-component";
 
 body {
   @extend .govuk-body;
@@ -80,4 +81,7 @@ img {
   white-space: pre-line;
 }
 
+pre {
+  font-family: "GDS Transport", Arial, sans-serif;
+}
 

@@ -31,6 +31,12 @@ const paths = {
   reasonsForAppealSubmitted: {
     confirmation: '/case-building/answer-sent'
   },
+  awaitingClarifyingQuestionsAnswers: {
+    questionsList: '/questions-about-appeal',
+    question: '/question/:id',
+    anythingElse: '/anything-else',
+    checkAndSend: '/check-your-answers'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',
@@ -51,11 +57,15 @@ const paths = {
     questions: '/eligibility',
     eligible: '/eligible',
 
-    // Viewers endppoints
-    documentViewer: '/view/document',
-    viewHomeOfficeDocuments: '/view/home-office-documents',
-    viewAppealDetails: '/appeal-details',
-    viewReasonsForAppeal: '/appeal-reasons',
+    // Viewers endpoints
+    detailsViewers: {
+      document: '/view/document',
+      homeOfficeDocuments: '/view/home-office-documents',
+      appealDetails: '/appeal-details',
+      reasonsForAppeal: '/appeal-reasons',
+      timeExtension: '/view/time-extension',
+      timeExtensionDecision: '/view/time-extension-decision'
+    },
 
     // Ask for more time
     askForMoreTime: {

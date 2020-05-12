@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import { appealTypes } from '../../data/appeal-types';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -14,8 +14,7 @@ function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
 
     const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
     const types = appealTypes.map(type => {
-      if (appealType.includes(type.value)) type.checked = true;
-      else type.checked = false;
+      type.checked = appealType.includes(type.value);
       return type;
     });
 

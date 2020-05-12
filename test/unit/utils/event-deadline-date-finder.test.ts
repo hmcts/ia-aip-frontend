@@ -1,25 +1,64 @@
+import { Request } from 'express';
 import { getDeadline } from '../../../app/utils/event-deadline-date-finder';
-import { expect } from '../../utils/testUtils';
+import Logger from '../../../app/utils/logger';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('event-deadline-date-finder', () => {
-  const directions = [
-    {
-      tag: 'requestReasonsForAppeal',
-      parties: 'appellant',
-      dueDate: '2020-04-21',
-      dateSent: '2020-03-24'
-    },
-    {
-      tag: 'respondentEvidence',
-      parties: 'respondent',
-      dueDate: '2020-04-07',
-      dateSent: '2020-03-24'
-    } ];
+
+  let sandbox: sinon.SinonSandbox;
+  let req: Partial<Request>;
+  const logger: Logger = new Logger();
+
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    req = {
+      body: {},
+      cookies: {},
+      session: {
+        appeal: {
+          application: {},
+          caseBuilding: {},
+          reasonsForAppeal: {},
+          directions: [
+            {
+              'id': 2,
+              'tag': 'requestReasonsForAppeal',
+              'dateDue': '2020-09-01',
+              'dateSent': '2020-04-21'
+            },
+            {
+              'id': 1,
+              'tag': 'respondentEvidence',
+              'dateDue': '2020-04-28',
+              'dateSent': '2020-04-14'
+            }
+          ]
+        }
+      },
+      idam: {
+        userDetails: {
+          forename: 'forename',
+          surname: 'surname'
+        }
+      },
+      app: {
+        locals: {
+          logger
+        }
+      } as any
+    } as unknown as Partial<Request>;
+
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   describe('getDeadline', () => {
     it('appealStarted should return null', () => {
 
       const currentAppealStatus = 'appealStarted';
-      const result = getDeadline(currentAppealStatus, directions, []);
+      const result = getDeadline(currentAppealStatus, [], req as Request);
 
       expect(result).to.be.null;
     });
@@ -37,7 +76,7 @@ describe('event-deadline-date-finder', () => {
       };
 
       const currentAppealStatus = 'appealSubmitted';
-      const result = getDeadline(currentAppealStatus, directions, history);
+      const result = getDeadline(currentAppealStatus, history, req as Request);
 
       expect(result).to.be.equal('07 March 2020');
     });
@@ -55,7 +94,7 @@ describe('event-deadline-date-finder', () => {
       };
 
       const currentAppealStatus = 'appealSubmitted';
-      const result = getDeadline(currentAppealStatus, directions, history);
+      const result = getDeadline(currentAppealStatus, history, req as Request);
 
       expect(result).to.be.equal('07 March 2020');
     });
@@ -73,7 +112,7 @@ describe('event-deadline-date-finder', () => {
       };
 
       const currentAppealStatus = 'awaitingRespondentEvidence';
-      const result = getDeadline(currentAppealStatus, directions, history);
+      const result = getDeadline(currentAppealStatus, history, req as Request);
 
       expect(result).to.be.equal('07 March 2020');
     });
@@ -91,9 +130,9 @@ describe('event-deadline-date-finder', () => {
       };
 
       const currentAppealStatus = 'awaitingReasonsForAppeal';
-      const result = getDeadline(currentAppealStatus, directions, history);
+      const result = getDeadline(currentAppealStatus, history, req as Request);
 
-      expect(result).to.be.equal('21 April 2020');
+      expect(result).to.be.equal('01 September 2020');
     });
 
     it('reasonsForAppealSubmitted should return a formatted date with 14 days offset from the submitReasonsForAppeal event', () => {
@@ -113,7 +152,7 @@ describe('event-deadline-date-finder', () => {
       };
 
       const currentAppealStatus = 'reasonsForAppealSubmitted';
-      const result = getDeadline(currentAppealStatus, directions, history);
+      const result = getDeadline(currentAppealStatus, history, req as Request);
 
       expect(result).to.be.equal('03 March 2020');
     });

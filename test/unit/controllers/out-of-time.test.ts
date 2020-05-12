@@ -5,8 +5,8 @@ import {
   postAppealLateDeleteFile,
   setupOutOfTimeController
 } from '../../../app/controllers/appeal-application/out-of-time';
+import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-import { Events } from '../../../app/service/ccd-service';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import i18n from '../../../locale/en.json';

@@ -103,17 +103,20 @@ describe('application-state-utils', () => {
       req.session.lastModified = '2020-02-07T16:00:00.000';
       req.session.appeal.directions = [
         {
-          tag: 'requestReasonsForAppeal',
-          parties: 'appellant',
-          dueDate: '2020-04-21',
-          dateSent: '2020-03-24'
+          'id': 2,
+          'tag': 'requestReasonsForAppeal',
+          'parties': 'appellant',
+          'dateDue': '2020-09-01',
+          'dateSent': '2020-04-21'
         },
         {
-          tag: 'respondentEvidence',
-          parties: 'respondent',
-          dueDate: '2020-04-07',
-          dateSent: '2020-03-24'
-        } ];
+          'id': 1,
+          'tag': 'respondentEvidence',
+          'parties': 'respondent',
+          'dateDue': '2020-04-28',
+          'dateSent': '2020-04-14'
+        }
+      ];
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
@@ -123,7 +126,7 @@ describe('application-state-utils', () => {
             respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
             url: '/case-building/home-office-decision-wrong'
           },
-          deadline: '21 April 2020',
+          deadline: '01 September 2020',
           descriptionParagraphs: [
             'Tell us why you think the Home Office decision to refuse your claim is wrong.'
           ],
@@ -133,7 +136,7 @@ describe('application-state-utils', () => {
           },
           usefulDocuments: {
             title: 'Useful documents',
-            url: "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
+            url: "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
           }
         }
       );
@@ -146,15 +149,17 @@ describe('application-state-utils', () => {
     req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
     req.session.appeal.directions = [
       {
+        id: 2,
         tag: 'requestReasonsForAppeal',
         parties: 'appellant',
-        dueDate: '2020-04-21',
+        dateDue: '2020-04-21',
         dateSent: '2020-03-24'
       },
       {
+        id: 1,
         tag: 'respondentEvidence',
         parties: 'respondent',
-        dueDate: '2020-04-07',
+        dateDue: '2020-04-07',
         dateSent: '2020-03-24'
       } ];
     const result = getAppealApplicationNextStep(req as Request);
@@ -175,7 +180,7 @@ describe('application-state-utils', () => {
         },
         usefulDocuments: {
           title: 'Useful documents',
-          url: "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
+          url: "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
         },
         allowedAskForMoreTime: true
       }

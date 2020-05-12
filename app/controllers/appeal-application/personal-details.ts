@@ -3,8 +3,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { countryList } from '../../data/country-list';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 
 import { getAddress } from '../../utils/address-utils';
@@ -243,6 +243,9 @@ function getPostcodeLookupPage(osPlacesClient: OSPlacesClient) {
 
 function postPostcodeLookupPage(req: Request, res: Response, next: NextFunction) {
   try {
+    if (!shouldValidateWhenSaveForLater(req.body, 'address')) {
+      return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+    }
     const validation = dropdownValidation(req.body.address, 'address');
     if (validation) {
       const addresses = buildAddressList(_.get(req.session.appeal.application, 'addressLookup.result'));

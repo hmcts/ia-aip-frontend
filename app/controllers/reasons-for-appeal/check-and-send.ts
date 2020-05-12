@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
@@ -23,7 +23,7 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction): void 
       const evidenceNames: string[] = evidences.map((evidence) => evidence.name);
       if (evidenceNames.length) {
         const evidenceText = evidences.map((evidence) => {
-          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${evidence.fileId}'>${evidence.name}</a>`;
         });
 
         summaryRows.push(addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, evidenceText, paths.awaitingReasonsForAppeal.supportingEvidenceUpload + editParameter, Delimiter.BREAK_LINE));

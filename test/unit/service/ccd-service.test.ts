@@ -1,6 +1,7 @@
 import rp from 'request-promise';
+import { Events } from '../../../app/data/events';
 import { SecurityHeaders } from '../../../app/service/authentication-service';
-import { CcdService, Events } from '../../../app/service/ccd-service';
+import { CcdService } from '../../../app/service/ccd-service';
 import { expect, sinon } from '../../utils/testUtils';
 import { multipleEventsData, startAppealEventData } from '../mockData/events/data';
 import { expectedMultipleEventsData, expectedStartAppealEventData } from '../mockData/events/expectations';

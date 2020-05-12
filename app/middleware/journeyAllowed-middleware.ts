@@ -16,7 +16,8 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
     ...appealStatusPaths,
     ...Object.values(paths.common)
   ];
-  const allowed: boolean = allowedPaths.includes(currentPath);
+  const allowed: boolean = allowedPaths.includes(currentPath) ||
+    currentPath.startsWith(paths.common.detailsViewers.document);
   if (allowed) { return next(); }
   return res.redirect(paths.common.forbidden);
 };

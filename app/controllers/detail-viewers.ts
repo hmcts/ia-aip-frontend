@@ -1,35 +1,24 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import moment from 'moment';
-import * as path from 'path';
 import i18n from '../../locale/en.json';
 import { countryList } from '../data/country-list';
 import { serverErrorHandler } from '../handlers/error-handler';
 import { paths } from '../paths';
 import {
-  docStoreUrlToId,
+  docStoreUrlToHtmlLink,
   documentIdToDocStoreUrl,
-  DocumentManagementService
+  DocumentManagementService,
+  documentToHtmlLink,
+  toHtmlLink
 } from '../service/document-management-service';
 import { dayMonthYearFormat } from '../utils/date-formats';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
-
-/**
- * Takes in a fileName and converts it to the correct display format
- * @param fileName the file name e.g Some_file.pdf
- * @return the formatted name as a string e.g Some_File(PDF)
- */
-function fileNameFormatter(fileName: string): string {
-  const extension = path.extname(fileName);
-  const baseName = path.basename(fileName, extension);
-  const extName = extension.split('.').join('').toUpperCase();
-  return `${baseName}(${extName})`;
-}
+import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
-  const result = history.filter(h => h.id === eventId);
-  return result;
+  return history.filter(h => h.id === eventId);
 };
 
 const formatDateLongDate = (date: string) => {
@@ -73,9 +62,8 @@ function setupAppealDetails(req: Request): Array<any> {
   }
   if (_.has(data, 'applicationOutOfTimeDocument')) {
     const evidence = data.applicationOutOfTimeDocument;
-    const fileId = docStoreUrlToId(evidence.document_url, req.session.appeal.documentMap);
-    const formattedFileName = fileNameFormatter(evidence.document_filename);
-    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${fileId}'>${formattedFileName}</a>`;
+    const htmlLink = docStoreUrlToHtmlLink(paths.common.detailsViewers.document, evidence.document_filename, evidence.document_url, req);
+    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p>${htmlLink}`;
     array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ urlHtml ], null));
   }
   return array;
@@ -87,12 +75,37 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const { data } = reasonsForAppeal[0];
   if (_.has(data, 'reasonsForAppealDocuments')) {
     const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
-      const fileId = docStoreUrlToId(evidence.value.document_url, req.session.appeal.documentMap);
-      const formattedFileName = fileNameFormatter(evidence.value.document_filename);
-      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${fileId}'>${formattedFileName}</a>`;
+      return docStoreUrlToHtmlLink(paths.common.detailsViewers.document, evidence.value.document_filename, evidence.value.document_url, req);
     });
-    array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
-    array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.providingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
+    array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
+    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
+  }
+  return array;
+}
+
+function setupTimeExtensionDecision(req: Request, timeExtensionEvent: TimeExtensionCollection) {
+  const array = [];
+  const data = timeExtensionEvent.value;
+  if (_.has(data, 'decision')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.decision, [ data.decision ], null));
+  }
+  if (_.has(data, 'decisionReason')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.reason, [ data.decisionReason ], null));
+  }
+  return array;
+}
+
+function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionCollection) {
+  const array = [];
+  const data = timeExtensionEvent.value;
+  if (_.has(data, 'reason')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.question, [ data.reason ], null));
+  }
+  if (_.has(data, 'evidence')) {
+    const listOfDocuments: string[] = data.evidence.map(evidence => {
+      return documentToHtmlLink(paths.common.detailsViewers.document, evidence, req);
+    });
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.supportingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
   }
   return array;
 }
@@ -132,8 +145,8 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
       const respondentDocs = req.session.appeal.respondentDocuments;
 
       documents = respondentDocs.map(document => {
-        const formattedFileName = fileNameFormatter(document.evidence.name);
-        const urlHtml = `<a class='govuk-link' target='_blank' rel="noopener noreferrer" href='${paths.common.documentViewer}/${document.evidence.fileId}'>${formattedFileName}</a>`;
+
+        const urlHtml = toHtmlLink(document.evidence.fileId, document.evidence.name, paths.common.detailsViewers.document);
         const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
@@ -158,12 +171,12 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
       const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
       if (documentLocationUrl) {
         const response = await documentManagementService.fetchFile(req, documentLocationUrl);
-        if (response) {
+        if (response.statusCode === 200) {
           res.setHeader('content-type', response.headers['content-type']);
           return res.send(Buffer.from(response.body, 'binary'));
         }
       }
-      return serverErrorHandler;
+      return res.redirect(paths.common.fileNotFound);
 
     } catch (error) {
       next(error);
@@ -171,12 +184,52 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
   };
 }
 
+function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const timeExtensionId = req.params.id;
+    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+    if (timeExtensionData) {
+      let previousPage: string = paths.common.overview;
+      const data = setupTimeExtension(req, timeExtensionData);
+      return res.render('detail-viewers/time-extension-details-viewer.njk', {
+        previousPage: previousPage,
+        data: data
+      });
+    }
+    // SHOULD THROW NOT FOUND
+    return serverErrorHandler;
+  } catch (error) {
+    next(error);
+  }
+}
+
+function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const timeExtensionId = req.params.id;
+    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+    if (timeExtensionData) {
+      let previousPage: string = paths.common.overview;
+      const data = setupTimeExtensionDecision(req, timeExtensionData);
+      return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
+        previousPage: previousPage,
+        data: data
+      });
+    }
+    // SHOULD THROW NOT FOUND
+    return serverErrorHandler;
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
-  router.get(paths.common.viewHomeOfficeDocuments, getHoEvidenceDetailsViewer);
-  router.get(paths.common.viewAppealDetails, getAppealDetailsViewer);
-  router.get(paths.common.viewReasonsForAppeal, getReasonsForAppealViewer);
+  router.get(paths.common.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
+  router.get(paths.common.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
+  router.get(paths.common.detailsViewers.appealDetails, getAppealDetailsViewer);
+  router.get(paths.common.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
+  router.get(paths.common.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
+  router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
 
   return router;
 }
@@ -186,5 +239,7 @@ export {
   getReasonsForAppealViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
+  getTimeExtensionViewer,
+  getTimeExtensionDecisionViewer,
   setupDetailViewersController
 };

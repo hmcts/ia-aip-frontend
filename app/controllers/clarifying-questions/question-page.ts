@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 

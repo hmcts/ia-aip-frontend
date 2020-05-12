@@ -45,6 +45,7 @@ const paths = {
     redirectUrl: '/redirectUrl',
     start: '/start-appeal',
     overview: '/appeal-overview',
+    fileNotFound: '/file-not-found',
 
     // Health endpoints
     health: '/health',

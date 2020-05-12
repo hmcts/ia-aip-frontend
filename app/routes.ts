@@ -16,6 +16,7 @@ import { setupClarifyingQuestionPageController } from './controllers/clarifying-
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
+import { setupNotFoundController } from './controllers/file-not-found';
 import { setupFooterController } from './controllers/footer';
 import { setupForbiddenController } from './controllers/forbidden';
 import { setupGuidancePagesController } from './controllers/guidance-page';
@@ -48,6 +49,7 @@ const router = express.Router();
 const indexController = setupIndexController();
 const startController = setupStartController();
 const healthController = setupHealthController();
+const notFoundController = setupNotFoundController();
 const idamController = setupIdamController();
 
 const middleware = [ isJourneyAllowedMiddleware ];
@@ -81,6 +83,7 @@ router.use(eligibilityController);
 router.use(GuidancePages);
 router.use(footerController);
 router.use(sessionController);
+router.use(notFoundController);
 
 // protected by idam
 router.use(idamController);

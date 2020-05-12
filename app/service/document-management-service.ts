@@ -97,7 +97,7 @@ function documentToHtmlLink(hrefBase: string, evidence: TimeExtensionEvidenceCol
  */
 function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
   const target: DocumentMap = documentMap.find(e => e.id === id);
-  return target.url;
+  return target ? target.url : null;
 }
 
 /**

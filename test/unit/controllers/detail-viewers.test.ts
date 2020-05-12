@@ -122,6 +122,7 @@ describe('Detail viewer Controller', () => {
 
       const fetchResponse = {
         headers: { 'content-type': 'image/png' },
+        statusCode: 200,
         body: 'someBinaryContent'
       };
 

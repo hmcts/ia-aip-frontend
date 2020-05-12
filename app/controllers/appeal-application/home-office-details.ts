@@ -90,7 +90,11 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         year
       };
 
-      req.session.appeal.application.isAppealLate = diffInDays > 14;
+      if (diffInDays <= 14) {
+        req.session.appeal.application.isAppealLate = false;
+      } else {
+        req.session.appeal.application.isAppealLate = true;
+      }
 
       await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
 

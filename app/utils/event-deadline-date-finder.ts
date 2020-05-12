@@ -1,4 +1,5 @@
 import config from 'config';
+import { Request } from 'express';
 import moment from 'moment';
 import { dayMonthYearFormat } from './date-formats';
 
@@ -15,7 +16,7 @@ function getFormattedDirectionDueDate(directions: Direction[], directionTagToLoo
   if (directions) {
     const direction = directions.find(d => d.tag === directionTagToLookFor);
     if (direction) {
-      const dueDate = direction.dueDate;
+      const dueDate = direction.dateDue;
       formattedDeadline = moment(dueDate).format(dayMonthYearFormat);
     }
   }
@@ -25,9 +26,9 @@ function getFormattedDirectionDueDate(directions: Direction[], directionTagToLoo
 /**
  * Given the current case status it retrieves deadlines based on the business logic.
  * @param currentAppealStatus the appeal status
- * @param directions all the directions
+ * @param req the request containing  all the directions in session
  */
-function getDeadline(currentAppealStatus: string, directions: Direction[], history) {
+function getDeadline(currentAppealStatus: string, history, req: Request) {
 
   let formattedDeadline;
 
@@ -44,12 +45,16 @@ function getDeadline(currentAppealStatus: string, directions: Direction[], histo
     }
     case 'awaitingReasonsForAppeal':
     case 'awaitingReasonsForAppealPartial': {
-      formattedDeadline = getFormattedDirectionDueDate(directions, 'requestReasonsForAppeal');
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestReasonsForAppeal');
       break;
     }
     case 'reasonsForAppealSubmitted': {
       const triggeringDate = history['submitReasonsForAppeal'].date;
       formattedDeadline = moment(triggeringDate).add(daysToWaitAfterReasonsForAppeal, 'days').format(dayMonthYearFormat);
+      break;
+    }
+    case 'awaitingClarifyingQuestionsAnswers': {
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestClarifyingQuestions');
       break;
     }
     default: {

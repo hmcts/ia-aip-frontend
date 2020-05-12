@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@hapi/joi": "^17.1.0",
-    "@hmcts/ia-idam-express-middleware": "^6.7.3",
+    "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "1.0.6",
     "@hmcts/properties-volume": "^0.0.9",
     "applicationinsights": "^1.4.2",

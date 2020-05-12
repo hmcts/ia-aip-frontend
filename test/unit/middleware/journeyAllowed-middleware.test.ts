@@ -12,6 +12,7 @@ describe('isJourneyAllowedMiddleware', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
+      params: {},
       session: {
         appeal: {
           application: {}
@@ -47,6 +48,14 @@ describe('isJourneyAllowedMiddleware', () => {
     expect(next).to.have.been.called;
   });
 
+  it('should allow access to page with params', () => {
+    req.params.id = '3';
+    req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
+    req.path = paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', '3');
+    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    expect(next).to.have.been.called;
+  });
+
   it('should render forbidden page when page not available for that state', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.path = paths.appealSubmitted.confirmation;
@@ -56,7 +65,7 @@ describe('isJourneyAllowedMiddleware', () => {
 
   it('should allow access to document viewer', () => {
     req.session.appeal.appealStatus = 'appealStarted';
-    req.path = paths.common.documentViewer + 'someFileName';
+    req.path = paths.common.detailsViewers.document + 'someFileName';
     isJourneyAllowedMiddleware(req as Request, res as Response, next);
     expect(next).to.have.been.called;
   });

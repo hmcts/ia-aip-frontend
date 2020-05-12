@@ -14,7 +14,6 @@ module.exports = {
   cache: false,
   template: params => {
     if (caseIdToHistory[params.caseId]) {
-      console.info(caseIdToHistory[params.caseId]);
       return caseIdToHistory[params.caseId];
     } else {
       return caseIdToHistory['1'];

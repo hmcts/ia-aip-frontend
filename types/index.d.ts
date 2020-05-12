@@ -42,7 +42,14 @@ interface DocumentMap {
   url: string;
 }
 
+interface TimeExtensionEventMap {
+  id: string;
+  externalId: string;
+  historyData: HistoryEvent;
+}
+
 interface Evidence {
+  id?: string;
   fileId: string;
   name: string;
   dateUploaded?: AppealDate;
@@ -52,13 +59,6 @@ interface Evidence {
 interface DocumentUploadResponse {
   fileId: string;
   name: string;
-}
-
-interface Direction {
-  tag: string;
-  parties: string;
-  dueDate: string;
-  dateSent: string;
 }
 
 interface Appeal {
@@ -71,10 +71,13 @@ interface Appeal {
   hearingRequirements: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   documentMap?: DocumentMap[];
-  directions?: Direction[];
   history?: HistoryEvent[];
   askForMoreTime?: AskForMoreTime;
-  previousAskForMoreTime?: TimeExtensionCollection[];
+  timeExtensions?: TimeExtension[];
+  timeExtensionEventsMap?: TimeExtensionEventMap[];
+  directions?: Direction[];
+  draftClarifyingQuestionsAnswers?: ClarifyingQuestion[];
+
 }
 
 interface AskForMoreTime {
@@ -82,7 +85,7 @@ interface AskForMoreTime {
   status?: string;
   state?: string;
   evidence?: Evidence[];
-  requestedDate?: string;
+  requestDate?: string;
   reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
@@ -178,6 +181,33 @@ interface IdamDetails {
   name: string;
   given_name: string;
   family_name: string;
+}
+
+interface TimeExtension {
+  requestDate: string;
+  reason: string;
+  state: string;
+  status: string;
+  evidence?: Evidence[];
+  decision?: string;
+  decisionReason?: string;
+  decisionOutcomeDate?: string;
+}
+
+interface Direction {
+  id: number;
+  tag: string;
+  parties: string;
+  dateDue: string;
+  dateSent: string;
+}
+
+interface ClarifyingQuestion {
+  id: string;
+  value: {
+    question: string;
+    answer?: string;
+  }
 }
 
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

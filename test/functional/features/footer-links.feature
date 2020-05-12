@@ -3,7 +3,7 @@ Feature: Footer Links
   As a citizen
   I should be able to access information pages included on the Footer
 
-Scenario: I am able to navigate through info pages @only
+Scenario: I am able to navigate through info pages
   Given I am on home page
   And I click "Cookies" button
   Then I see "Cookies" in title

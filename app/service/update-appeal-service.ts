@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
+import { toIsoDate } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
@@ -42,6 +43,7 @@ export default class UpdateAppealService {
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
 
     let documentMap: DocumentMap[] = [];
+    let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
 
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
@@ -55,8 +57,11 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
+    let timeExtensions: TimeExtension[] = null;
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
+    let requestClarifyingQuestionsDirection;
+    let draftClarifyingQuestionsAnswers: ClarifyingQuestion[];
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -121,15 +126,54 @@ export default class UpdateAppealService {
         respondentDocuments.push(evidence);
       });
     }
-    if (caseData.directions) {
-      directions = caseData.directions.map(d => {
-        return {
-          tag: d.value.tag,
-          parties: d.value.parties,
-          dueDate: d.value.dateDue,
-          dateSent: d.value.dateSent
+
+    if (caseData.timeExtensions) {
+      timeExtensions = [];
+
+      caseData.timeExtensions.forEach(timeExtension => {
+        let timeExt: TimeExtension = {
+          requestDate: timeExtension.value.requestDate,
+          state: timeExtension.value.state,
+          status: timeExtension.value.status,
+          reason: timeExtension.value.reason,
+          decision: timeExtension.value.decision,
+          decisionReason: timeExtension.value.decisionReason
         };
+
+        if (timeExtension.value.evidence) {
+
+          let evidences = [];
+          timeExtension.value.evidence.forEach(evidence => {
+            const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, documentMap);
+            evidences.push({
+              fileId: documentMapperId,
+              name: evidence.value.document_filename
+            });
+          });
+          timeExt.evidence = evidences;
+        }
+        timeExtensions.push(timeExt);
+
       });
+
+      if (caseData.directions) {
+        directions = caseData.directions.map(d => {
+          return {
+            id: d.id,
+            tag: d.value.tag,
+            parties: d.value.parties,
+            dateDue: d.value.dateDue,
+            dateSent: d.value.dateSent
+          } as Direction;
+        });
+        requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
+      }
+
+      if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
+        draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers
+          ? [ ...caseData.draftClarifyingQuestionsAnswers ]
+          : [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
+      }
     }
 
     req.session.appeal = {
@@ -162,11 +206,14 @@ export default class UpdateAppealService {
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: documentMap,
-      directions: directions
+      directions: directions,
+      timeExtensionEventsMap: timeExtensionEventsMap,
+      timeExtensions: timeExtensions,
+      draftClarifyingQuestionsAnswers
+
     };
 
     req.session.appeal.askForMoreTime = {};
-    req.session.appeal.previousAskForMoreTime = caseData.timeExtensions || [];
   }
 
   private getDate(ccdDate): AppealDate {
@@ -215,7 +262,7 @@ export default class UpdateAppealService {
         caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
       }
       if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
-        caseData.homeOfficeDecisionDate = this.toIsoDate(appeal.application.dateLetterSent);
+        caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
       }
 
@@ -240,7 +287,7 @@ export default class UpdateAppealService {
         caseData.appellantFamilyName = appeal.application.personalDetails.familyName;
       }
       if (appeal.application.personalDetails.dob && appeal.application.personalDetails.dob.year) {
-        caseData.appellantDateOfBirth = this.toIsoDate(appeal.application.personalDetails.dob);
+        caseData.appellantDateOfBirth = toIsoDate(appeal.application.personalDetails.dob);
       }
       if (appeal.application.personalDetails && appeal.application.personalDetails.nationality) {
         caseData.appellantNationalities = [
@@ -297,7 +344,7 @@ export default class UpdateAppealService {
           const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
-              dateUploaded: this.toIsoDate(evidence.dateUploaded),
+              dateUploaded: toIsoDate(evidence.dateUploaded),
               description: evidence.description,
               document: {
                 document_filename: evidence.name,
@@ -310,13 +357,22 @@ export default class UpdateAppealService {
       }
     }
 
-    caseData.timeExtensions = appeal.previousAskForMoreTime || [];
+    caseData.timeExtensions = [];
+
+    const previousTimeExtensions = appeal.timeExtensions;
+
+    if (previousTimeExtensions && previousTimeExtensions.length) {
+      previousTimeExtensions.forEach(timeExt => {
+        this.addCcdTimeExtension(timeExt, appeal, caseData);
+      });
+    }
 
     const askForMoreTime = appeal.askForMoreTime;
-    if (askForMoreTime && askForMoreTime.status === 'submitted') {
+    if (askForMoreTime && askForMoreTime.reason && askForMoreTime.status !== 'inProgress') {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 
+    if (appeal.draftClarifyingQuestionsAnswers) caseData.draftClarifyingQuestionsAnswers = [ ...appeal.draftClarifyingQuestionsAnswers ];
     return caseData;
   }
 
@@ -325,26 +381,18 @@ export default class UpdateAppealService {
       reason: askForMoreTime.reason,
       state: askForMoreTime.state,
       status: askForMoreTime.status,
-      requestedDate: askForMoreTime.requestedDate
-    } as TimeExtension;
+      requestDate: askForMoreTime.requestDate,
+      decision: askForMoreTime.decision || null,
+      decisionReason: askForMoreTime.decisionReason || null
+    } as CcdTimeExtension;
 
-    if (askForMoreTime.reviewTimeExtensionRequired === 'Yes') {
-      caseData.reviewTimeExtensionRequired = 'Yes';
+    if (askForMoreTime.reviewTimeExtensionRequired === YesOrNo.YES) {
+      caseData.reviewTimeExtensionRequired = YesOrNo.YES;
     }
     if (askForMoreTime.evidence) {
       currentTimeExtension.evidence = this.toSupportingDocument(askForMoreTime.evidence, appeal);
     }
     caseData.timeExtensions.push({ value: currentTimeExtension });
-  }
-
-  private toIsoDate(appealDate: AppealDate) {
-    const date = new Date(`${appealDate.year}-${appealDate.month}-${appealDate.day}`);
-    const isoDate = date.toISOString().split('T')[0];
-    return isoDate;
-  }
-
-  private nowIsoDate() {
-    return new Date().toISOString().split('T')[0];
   }
 
   private toSupportingDocument(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {

@@ -4,7 +4,6 @@
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 {% from "components/evidence-list.njk" import evidenceList with context %}
 
-
 {% extends "layout.njk" %}
 
 {% block content %}
@@ -16,8 +15,7 @@
     }) }}
   {% endif %}
 
-  <form action="{{ pathToSubmitEvidence }}?_csrf={{ csrfToken }}" method="post"
-        enctype="multipart/form-data">
+  <form action="{{ formSubmitAction }}" method="post">
     {% call govukFieldset({
       legend: {
         text: i18n.pages.reasonsForAppealUpload.heading,
@@ -25,6 +23,7 @@
         isPageHeading: true
       }
     }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       <p>{{ i18n.pages.askForMoreTimePage.adviceHeader }}</p>
 
       <ul class="govuk-list govuk-list--bullet">
@@ -50,8 +49,8 @@
           name: 'uploadFile',
           classes: "govuk-button--secondary",
           attributes: {
-            formaction: pathToUploadEvidence + '?_csrf=' + csrfToken,
-            formEnctype: 'multipart/form-data'
+            formEnctype: 'multipart/form-data',
+            formaction: evidenceUploadAction + '?_csrf=' + csrfToken
           }
         }) }}
       </div>
@@ -67,14 +66,9 @@
           </ul>
         </div>
       {% endif %}
+      {{ saveButtons() }}
     {% endcall %}
   </form>
-  <form action="{{ pathToSubmitEvidence }}" method="post">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {{ continueButton() }}
-    <a class="cancel-button" href="{{ pathToCancel }}">{{ i18n.common.buttons.cancel }}</a>
-  </form>
-
   {{ contactUs() }}
 
 {% endblock %}

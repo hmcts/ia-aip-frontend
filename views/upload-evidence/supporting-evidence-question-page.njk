@@ -1,0 +1,39 @@
+{% set pageTitleName = i18n.pages.reasonsForAppealUploadQuestion.title %}
+{% from "components/radio-button-question.njk" import radioButtonQuestion %}
+
+{% extends "layout.njk" %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action="{{ formAction }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ radioButtonQuestion(
+        question.name,
+        question.options,
+        i18n.pages.reasonsForAppealUploadQuestion.provideSupportingEvidenceQuestion,
+        true,
+        i18n.pages.evidence.heading,
+        errorList[0].text
+      )
+    }}
+    {% if askForMoreTimeFeatureEnabled %}
+      <div class="panel-background">
+        <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>{{ i18n.common.askForMoreTime.wantToProvideEvidenceLater }}
+            <a href='{{ paths.common.askForMoreTime.reason }}'
+                class='govuk-link'>{{ i18n.common.askForMoreTime.saveAnswerAndAsk | lower }}</a>
+          </li>
+        </ul>
+      </div>
+    {% endif %}
+    {{ continueButton() }}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

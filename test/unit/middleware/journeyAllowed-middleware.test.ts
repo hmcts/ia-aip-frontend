@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { isJourneyAllowedMiddleware } from '../../../app/middleware/journeyAllowed-middleware';
+import {
+  isJourneyAllowedMiddleware,
+  isTimeExtensionsInProgress
+} from '../../../app/middleware/journeyAllowed-middleware';
 import { paths } from '../../../app/paths';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -67,6 +70,30 @@ describe('isJourneyAllowedMiddleware', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.path = paths.common.detailsViewers.document + 'someFileName';
     isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    expect(next).to.have.been.called;
+  });
+
+  it('should render forbidden if time extension in progress', () => {
+    req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+    req.session.appeal.timeExtensions = [ ({
+      state: 'awaitingReasonsForAppeal',
+      status: 'submitted',
+      requestDate: '2020-01-01',
+      reason: 'reason'
+    }) ];
+    isTimeExtensionsInProgress(req as Request, res as Response, next);
+    expect(res.redirect).to.have.been.called.calledWith(paths.common.forbidden);
+  });
+
+  it('should allow access to page if no time extension in progress', () => {
+    req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+    req.session.appeal.timeExtensions = [ ({
+      state: 'awaitingReasonsForAppeal',
+      status: 'rejected',
+      requestDate: '2020-01-01',
+      reason: 'reason'
+    }) ];
+    isTimeExtensionsInProgress(req as Request, res as Response, next);
     expect(next).to.have.been.called;
   });
 });

@@ -66,6 +66,10 @@ module.exports = {
           signInForUser('partial-awaiting-reasons-for-appeal@example.com');
           break;
         }
+        case 'awaitingReasonsForAppeal with time extensions': {
+          signInForUser('awaiting-reasons-for-appeal-with-time_extension@example.com');
+          break;
+        }
         case 'awaitingClarifyingQuestionsAnswers': {
           signInForUser('clarifying-questions@example.com');
           break;

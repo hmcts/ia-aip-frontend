@@ -33,3 +33,13 @@ export function nowAppealDate(): AppealDate {
     day: now.getDate()
   } as AppealDate;
 }
+
+export function hasInflightTimeExtension(appeal: Appeal) {
+  if (appeal.timeExtensions) {
+    return appeal.timeExtensions.filter(askForMoreTime => {
+      return askForMoreTime.status === 'submitted' &&
+        askForMoreTime.state === appeal.appealStatus;
+    }).length > 0;
+  }
+  return false;
+}

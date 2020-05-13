@@ -26,6 +26,8 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
+    Then I see Your request for more time has been sent screen
+    When I click "See your appeal progress" button
     Then I am on the overview page
 
   Scenario: AFMT without evidence
@@ -40,4 +42,6 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
+    Then I see Your request for more time has been sent screen
+    When I click "See your appeal progress" button
     Then I am on the overview page

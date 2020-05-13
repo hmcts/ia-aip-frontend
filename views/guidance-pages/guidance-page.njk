@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="govuk-width-container">
-    <h1 class="govuk-heading-xl">{{ page.title }}</h1>
+    <h1 class="govuk-heading-l">{{ page.title }}</h1>
     <h2 class="govuk-body-l">{{ page.titleText | safe if page.titleText}}</h2>
         {% for item in page.textAndBullets %}
         {% if item.smallTitle %}

@@ -76,8 +76,7 @@ interface Appeal {
   timeExtensions?: TimeExtension[];
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
-  draftClarifyingQuestionsAnswers?: ClarifyingQuestion[];
-
+  draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[]
 }
 
 interface AskForMoreTime {
@@ -203,11 +202,12 @@ interface Direction {
   dateSent: string;
 }
 
-interface ClarifyingQuestion {
+interface ClarifyingQuestion<T> {
   id: string;
   value: {
     question: string;
     answer?: string;
+    supportingEvidence?: T[];
   }
 }
 

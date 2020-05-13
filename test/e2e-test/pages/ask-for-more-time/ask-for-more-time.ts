@@ -24,6 +24,11 @@ module.exports = {
       I.seeInTitle('Check your answer');
     });
 
+    Then(/^I see Your request for more time has been sent screen$/, async () => {
+      I.amOnPage(testUrl + paths.common.askForMoreTime.confirmation);
+      I.seeInTitle('Your request for more time has been sent');
+    });
+
     Then(/^I should see the reasons for appeal$/, async () => {
       I.seeInSource('Reason for time extension');
     });

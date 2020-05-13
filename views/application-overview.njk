@@ -26,10 +26,22 @@
             <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>
           </div>
         {% endif %}
+        {% if askForMoreTimeInFlight %}
+          <div class="ask-for-more-time-banner">
+            <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.askedForMoreTime }}</p>
+          </div>
+        {% endif %}
         <div class="overview-banner govuk-!-margin-top-0">
-          {% for paragraph in applicationNextStep.descriptionParagraphs %}
+          {% if askForMoreTimeInFlight and applicationNextStep.descriptionParagraphsAskForMoreTime %}
+            {% set descriptionParagraphs = applicationNextStep.descriptionParagraphsAskForMoreTime %}
+          {% else %}
+            {% set descriptionParagraphs = applicationNextStep.descriptionParagraphs %}
+          {% endif %}
+
+          {% for paragraph in descriptionParagraphs %}
             <p>{{ paragraph | eval | safe }}</p>
           {% endfor %}
+
           {% if applicationNextStep.cta %}
             {% if applicationNextStep.cta.url %}
               {{ govukButton({
@@ -39,11 +51,16 @@
             {% endif %}
             {% if applicationNextStep.cta.respondByText %}
               <p>
-                {{ applicationNextStep.cta.respondByText | eval | safe }}
-                {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime %}
+                {% if askForMoreTimeInFlight and applicationNextStep.cta.respondByTextAskForMoreTime %}
+                  {{ applicationNextStep.cta.respondByTextAskForMoreTime | eval | safe }}
+                {% else %}
+                  {{ applicationNextStep.cta.respondByText | eval | safe }}
+                {% endif %}
+                {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
                   <a href='{{ paths.common.askForMoreTime.reason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
                 {% endif %}
-              </p>            {% endif %}
+              </p>
+            {% endif %}
           {% endif %}
           {% if applicationNextStep.usefulDocuments %}
             <p><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>

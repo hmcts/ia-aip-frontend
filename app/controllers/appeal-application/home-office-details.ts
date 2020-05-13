@@ -80,6 +80,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.details
         });
       }
+
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
 
@@ -88,6 +89,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         month,
         year
       };
+
       if (diffInDays <= 14) {
         req.session.appeal.application.isAppealLate = false;
       } else {

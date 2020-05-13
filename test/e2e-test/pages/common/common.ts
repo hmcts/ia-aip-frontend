@@ -5,6 +5,8 @@ import { paths } from '../../../../app/paths';
 
 const { fillInDate } = require('../helper-functions');
 
+const testUrl = require('config').get('testUrl');
+
 const caseData = {
   'id': 1573640323267110,
   'jurisdiction': 'IA',
@@ -263,7 +265,7 @@ module.exports = {
 
     When(/^I visit the "([^"]*)" page$/, async (key: string) => {
       await I.seeInCurrentUrl(`${PATHS[key]}`);
-      await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
+      await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
 
     Then(/^I click continue$/, async () => {
@@ -272,11 +274,11 @@ module.exports = {
 
     Given(/^I am on the "([^"]*)" page$/, async (key: string) => {
       await I.seeInCurrentUrl(`${PATHS[key]}`);
-      await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
+      await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
 
     Then(/^I am on the overview page$/, async () => {
-      await I.amOnPage(`https://localhost:3000/appeal-overview`);
+      await I.amOnPage(`${testUrl}/appeal-overview`);
     });
 
     Then(/^I see "([^"]*)" in title$/, async (title: string) => {

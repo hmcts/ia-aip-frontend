@@ -1,6 +1,6 @@
 {% macro timeline(history) %}
   <h2 class="govuk-heading-m govuk-!-padding-top-8">{{ i18n.pages.overviewPage.timeline.completed }}</h2>
-  {% if history.appealArgumentSection %}
+  {% if history.appealArgumentSection | length > 0  %}
     <div class="govuk-!-margin-bottom-3">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealArgumentSection }}</h3>
 

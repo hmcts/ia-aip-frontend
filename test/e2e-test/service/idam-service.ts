@@ -14,7 +14,6 @@ const redirectUrl = 'https://localhost:3000/redirectUrl';
 const httpProxyEnabled = asBooleanValue(config.get('httpProxy'));
 
 export let aipCurrentUser = { email: '', password: '', forename: '', surname: '' };
-
 // tslint:disable:no-console
 async function createUser() {
   console.info('======================');

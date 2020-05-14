@@ -43,6 +43,8 @@ interface CaseData {
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: DirectionCollection[];
   draftClarifyingQuestionsAnswers: ClarifyingQuestion[];
+  submitTimeExtensionReason?: string;
+  submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
 }
 
 interface Nationality {

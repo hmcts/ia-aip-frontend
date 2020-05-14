@@ -132,6 +132,7 @@ export default class UpdateAppealService {
 
       caseData.timeExtensions.forEach(timeExtension => {
         let timeExt: TimeExtension = {
+          id: timeExtension.id,
           requestDate: timeExtension.value.requestDate,
           state: timeExtension.value.state,
           status: timeExtension.value.status,
@@ -361,18 +362,8 @@ export default class UpdateAppealService {
       }
     }
 
-    caseData.timeExtensions = [];
-
-    const previousTimeExtensions = appeal.timeExtensions;
-
-    if (previousTimeExtensions && previousTimeExtensions.length) {
-      previousTimeExtensions.forEach(timeExt => {
-        this.addCcdTimeExtension(timeExt, appeal, caseData);
-      });
-    }
-
     const askForMoreTime = appeal.askForMoreTime;
-    if (askForMoreTime && askForMoreTime.reason && askForMoreTime.status !== 'inProgress') {
+    if (askForMoreTime && askForMoreTime.reason) {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 
@@ -381,22 +372,15 @@ export default class UpdateAppealService {
   }
 
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
-    const currentTimeExtension = {
-      reason: askForMoreTime.reason,
-      state: askForMoreTime.state,
-      status: askForMoreTime.status,
-      requestDate: askForMoreTime.requestDate,
-      decision: askForMoreTime.decision || null,
-      decisionReason: askForMoreTime.decisionReason || null
-    } as CcdTimeExtension;
+
+    caseData.submitTimeExtensionReason = askForMoreTime.reason;
 
     if (askForMoreTime.reviewTimeExtensionRequired === YesOrNo.YES) {
       caseData.reviewTimeExtensionRequired = YesOrNo.YES;
     }
     if (askForMoreTime.evidence) {
-      currentTimeExtension.evidence = this.toSupportingDocument(askForMoreTime.evidence, appeal);
+      caseData.submitTimeExtensionEvidence = this.toSupportingDocument(askForMoreTime.evidence, appeal);
     }
-    caseData.timeExtensions.push({ value: currentTimeExtension });
   }
 
   private toSupportingDocument(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {

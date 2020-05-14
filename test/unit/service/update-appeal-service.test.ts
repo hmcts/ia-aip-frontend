@@ -240,16 +240,6 @@ describe('update-appeal-service', () => {
         } ]
       };
     }
-
-    function checkAskForMoreTime(reason: string, evidenceName: string, status: string, state: string, askForMoreTime: AskForMoreTime) {
-      expect(askForMoreTime.reason).to.be.eq(reason);
-      expect(askForMoreTime.evidence.length).to.be.eq(1);
-      validateUuid(askForMoreTime.evidence[0].fileId);
-      expect(askForMoreTime.evidence[0].name).to.be.eq(evidenceName);
-      expect(askForMoreTime.state).to.be.eq(state);
-      expect(askForMoreTime.status).to.be.eq(status);
-      expect(askForMoreTime.requestDate).to.be.eq('2020-01-01T00:00:00.000');
-    }
   });
 
   describe('convert to ccd case', () => {
@@ -290,14 +280,14 @@ describe('update-appeal-service', () => {
     it('converts empty application', () => {
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [] });
+      expect(caseData).eql({ journeyType: 'aip' });
     });
 
     it('converts home office reference number', () => {
       emptyApplication.application.homeOfficeRefNumber = 'ref';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [], homeOfficeReferenceNumber: 'ref' });
+      expect(caseData).eql({ journeyType: 'aip', homeOfficeReferenceNumber: 'ref' });
     });
 
     describe('converts home office letter date', () => {
@@ -309,8 +299,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-12-11',
-          submissionOutOfTime: 'Yes',
-          timeExtensions: []
+          submissionOutOfTime: 'Yes'
         });
       });
 
@@ -322,8 +311,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-01',
-          submissionOutOfTime: 'Yes',
-          timeExtensions: []
+          submissionOutOfTime: 'Yes'
         });
       });
 
@@ -335,8 +323,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-03',
-          submissionOutOfTime: 'Yes',
-          timeExtensions: []
+          submissionOutOfTime: 'Yes'
         });
       });
     });
@@ -345,14 +332,14 @@ describe('update-appeal-service', () => {
       emptyApplication.application.personalDetails.givenNames = 'givenNames';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [], appellantGivenNames: 'givenNames' });
+      expect(caseData).eql({ journeyType: 'aip', appellantGivenNames: 'givenNames' });
     });
 
     it('converts family name', () => {
       emptyApplication.application.personalDetails.familyName = 'familyName';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [], appellantFamilyName: 'familyName' });
+      expect(caseData).eql({ journeyType: 'aip', appellantFamilyName: 'familyName' });
     });
 
     describe('converts date of birth', () => {
@@ -362,7 +349,7 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-12-11', timeExtensions: [] });
+        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-12-11' });
       });
 
       it('day and month leading 0', () => {
@@ -371,7 +358,7 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-01', timeExtensions: [] });
+        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-01' });
       });
 
       it('day and month no leading 0', () => {
@@ -380,14 +367,14 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-03', timeExtensions: [] });
+        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-03' });
       });
     });
     it('converts appealType', () => {
       emptyApplication.application.appealType = 'appealType';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [], appealType: 'appealType' });
+      expect(caseData).eql({ journeyType: 'aip', appealType: 'appealType' });
     });
     describe('converts contact details', () => {
       it('converts contactDetails for both email and phone', () => {
@@ -400,7 +387,6 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
-            timeExtensions: [],
             subscriptions: [
               {
                 value: {
@@ -424,7 +410,6 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
-            timeExtensions: [],
             subscriptions: [
               {
                 value: {
@@ -448,7 +433,6 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
-            timeExtensions: [],
             subscriptions: [
               {
                 value: {
@@ -472,33 +456,7 @@ describe('update-appeal-service', () => {
 
       expect(caseData).eql(
         {
-          journeyType: 'aip',
-          timeExtensions: []
-        }
-      );
-    });
-
-    it('converts time extension does not persist in progress', () => {
-      emptyApplication.askForMoreTime.requestDate = '2020-01-02';
-      emptyApplication.askForMoreTime.reason = 'more time reason';
-      emptyApplication.askForMoreTime.status = 'inProgress';
-      emptyApplication.askForMoreTime.state = 'awaitingReasonsForAppeal';
-      emptyApplication.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
-      emptyApplication.askForMoreTime.evidence = [
-        {
-          id: 'id',
-          fileId: 'fileId',
-          name: 'name'
-        }
-      ];
-      emptyApplication.documentMap = [ { id: 'fileId', url: 'someurl' } ] as DocumentMap[];
-
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
-
-      expect(caseData).to.deep.eq(
-        {
-          'journeyType': 'aip',
-          'timeExtensions': []
+          journeyType: 'aip'
         }
       );
     });
@@ -534,16 +492,15 @@ describe('update-appeal-service', () => {
       expect(caseData).to.deep.eq(
         {
           'journeyType': 'aip',
-          'timeExtensions': [
+          'reviewTimeExtensionRequired': 'Yes',
+          'submitTimeExtensionReason': 'more time reason',
+          'submitTimeExtensionEvidence': [
             {
               'value': {
-                'decision': 'granted',
-                'decisionReason': 'Request has been granted',
-                'evidence': [],
-                'reason': 'ask for more time reason',
-                'requestDate': '2020-04-21',
-                'state': 'awaitingReasonsForAppeal',
-                'status': 'granted'
+                'document_binary_url': 'someurl/binary',
+                'document_filename': 'name',
+                'document_url': 'someurl'
+
               }
             }
           ]
@@ -671,9 +628,6 @@ describe('update-appeal-service', () => {
             ],
             askForMoreTime: {
               reason: 'ask for more time reason',
-              status: 'submitted',
-              state: 'awaitingReasonsForAppeal',
-              requestDate: '2020-04-21',
               evidence: []
             }
           } as Appeal,
@@ -759,18 +713,8 @@ describe('update-appeal-service', () => {
             }
           }
         ],
-        timeExtensions: [ {
-          value: {
-            decision: null,
-            decisionReason: null,
-            evidence: [],
-            reason: 'ask for more time reason',
-            status: 'submitted',
-            state: 'awaitingReasonsForAppeal',
-            requestDate: '2020-04-21'
-          }
-        } ]
-
+        submitTimeExtensionEvidence: [],
+        submitTimeExtensionReason: 'ask for more time reason'
       };
     });
 

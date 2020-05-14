@@ -16,6 +16,9 @@ Feature: Clarifying questions
     Then I see "Question 1" in title
     Then I fill textarea with "my answer"
     Then I click "Save and continue" button
+    Then I see "Do you want to provide supporting evidence?" in title
+    Then I click "No" button
+    Then I click "Continue" button
     Then I see "Questions about your appeal" in title
     And I see clarifying question "1" saved
 
@@ -23,6 +26,9 @@ Feature: Clarifying questions
     Then I see "Question 2" in title
     Then I fill textarea with "my answer for question 2"
     Then I click "Save and continue" button
+    Then I see "Do you want to provide supporting evidence?" in title
+    Then I click "No" button
+    Then I click "Continue" button
     Then I see "Questions about your appeal" in title
     And I see clarifying question "2" saved
     And I see "Do you want to tell us anything else about your case?" link

@@ -34,6 +34,10 @@ const paths = {
   awaitingClarifyingQuestionsAnswers: {
     questionsList: '/questions-about-appeal',
     question: '/question/:id',
+    supportingEvidenceQuestion: '/clarifying-questions/supporting-evidence/:id',
+    supportingEvidenceUploadFile: '/clarifying-questions/upload-evidence/:id',
+    supportingEvidenceDeleteFile: '/clarifying-questions/delete-evidence/:id/',
+    supportingEvidenceSubmit: '/clarifying-questions/submit/:id',
     anythingElse: '/anything-else',
     checkAndSend: '/check-your-answers'
   },

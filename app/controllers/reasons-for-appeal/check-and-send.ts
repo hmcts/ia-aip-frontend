@@ -7,6 +7,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { nowIsoDate } from '../../utils/utils';
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
   try {
@@ -46,6 +47,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body)) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
+      req.session.appeal.reasonsForAppeal.uploadDate = nowIsoDate();
       const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req);
       req.session.appeal.appealStatus = updatedAppeal.state;
       return res.redirect(paths.reasonsForAppealSubmitted.confirmation);

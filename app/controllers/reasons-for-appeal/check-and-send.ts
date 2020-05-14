@@ -7,16 +7,18 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { nowIsoDate } from '../../utils/utils';
+import { formatTextForCYA, nowIsoDate } from '../../utils/utils';
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction): void {
   try {
     const editParameter: string = '?edit';
     let previousPage: string = paths.awaitingReasonsForAppeal.supportingEvidence;
 
+    const formattedReason = formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason);
+
     const summaryRows = [
       addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-      addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.awaitingReasonsForAppeal.decision + editParameter)
+      addSummaryRow(i18n.common.cya.answerRowTitle, [ formattedReason ], paths.awaitingReasonsForAppeal.decision + editParameter)
     ];
 
     if (_.has(req.session.appeal.reasonsForAppeal, 'evidences')) {

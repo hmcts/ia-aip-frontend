@@ -57,6 +57,13 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
         }
         return res.redirect(paths.common.overview + '?saved');
       }
+      if (req.body['saveAndAskForMoreTime']) {
+        if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
+          && req.session.appeal.reasonsForAppeal.isEdit === true) {
+          req.session.appeal.reasonsForAppeal.isEdit = false;
+        }
+        return res.redirect(paths.common.askForMoreTime.reason);
+      }
 
       return getConditionalRedirectUrl(req, res, paths.awaitingReasonsForAppeal.supportingEvidence);
     } catch (e) {

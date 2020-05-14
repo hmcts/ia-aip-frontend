@@ -138,6 +138,13 @@ describe('Reasons for Appeal Controller', function () {
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
     });
+
+    it('when Save and ask for more time should pass validation and redirect to more time page without error', async () => {
+      req.body.applicationReason = 'Text Word';
+      req.body.saveAndAskForMoreTime = 'saveAndAskForMoreTime';
+      await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.reason);
+    });
   });
 
   describe('postSupportingEvidenceSubmit.', function () {

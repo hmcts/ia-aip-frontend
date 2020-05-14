@@ -8,7 +8,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { nowIsoDate } from '../../utils/utils';
+import { formatTextForCYA, nowIsoDate } from '../../utils/utils';
 import { askForMoreTimeValidation } from '../../utils/validations/fields-validations';
 import {
   EvidenceUploadConfig,
@@ -131,7 +131,7 @@ function postSubmitEvidence(updateAppealService: UpdateAppealService) {
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const reasonFormattingPreserved = `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>`;
+    const reasonFormattingPreserved = formatTextForCYA(req.session.appeal.askForMoreTime.reason);
     const summaryRows = [
       addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.askForMoreTimePage.textAreaText], null),
       addSummaryRow(i18n.common.cya.answerRowTitle, [ reasonFormattingPreserved ], paths.common.askForMoreTime.reason)

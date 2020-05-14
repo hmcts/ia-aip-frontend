@@ -7,7 +7,8 @@ function updateResult(result, sessionId, config) {
   let credentials = username;
   credentials = credentials.concat(":");
   credentials = credentials.concat(config.key);
-
+  
+  console.log('SauceOnDemandSessionID=' + sessionId + ' job-name=ia-aip-frontend');
   return 'curl -X PUT -s -d \'{"passed": ' + result + '}\' -u ' + credentials + ' https://eu-central-1.saucelabs.com/rest/v1/' + username + '/jobs/' + sessionId;
 }
 

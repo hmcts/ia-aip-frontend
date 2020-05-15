@@ -1,10 +1,14 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import { Events } from '../../../app/data/events';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { asBooleanValue, hasInflightTimeExtension } from '../../utils/utils';
 import { yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
+
+const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
 function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: NextFunction) {
   try {
@@ -24,8 +28,9 @@ function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: Ne
         name: 'answer',
         options
       },
-      askForMoreTimeFeatureEnabled: true,
-      previousPage: paths.awaitingClarifyingQuestionsAnswers.question.replace(new RegExp(`:id`), `${req.params.id}`)
+      previousPage: paths.awaitingClarifyingQuestionsAnswers.question.replace(new RegExp(`:id`), `${req.params.id}`),
+      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
+      askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
     });
   } catch (error) {
     next(error);

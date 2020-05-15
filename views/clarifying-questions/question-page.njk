@@ -39,16 +39,18 @@
           {{ i18n.pages.clarifyingQuestionPage.panel.supportingEvidence }}
         </h2>
         <p>{{ i18n.pages.clarifyingQuestionPage.panel.ableToAddEvidence }}</p>
-        <h2 class="govuk-heading-s">
-          {{ i18n.pages.clarifyingQuestionPage.panel.needMoreTime }}
-        </h2>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>
-            <a href={{ paths.common.askForMoreTime }} class="govuk-link">
-              {{ i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime }}
-            </a>
-          </li>
-        </ul>
+        {% if askForMoreTimeFeatureEnabled and not askForMoreTimeInFlight %}
+          <h2 class="govuk-heading-s">
+            {{ i18n.pages.clarifyingQuestionPage.panel.needMoreTime }}
+          </h2>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>
+              <button value="saveAndAskForMoreTime" name="saveAndAskForMoreTime" class="evidence-list__link">
+                {{ i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime }}
+              </button>
+            </li>
+          </ul>
+        {% endif %}
       </div>
 
       {{ saveButtons() }}

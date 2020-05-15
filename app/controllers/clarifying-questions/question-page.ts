@@ -1,9 +1,13 @@
+import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { asBooleanValue, hasInflightTimeExtension } from '../../utils/utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
+
+const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
 function getClarifyingQuestionPage(req: Request, res: Response, next: NextFunction) {
   try {
@@ -13,7 +17,9 @@ function getClarifyingQuestionPage(req: Request, res: Response, next: NextFuncti
       question: {
         ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder],
         orderNo: req.params.id
-      }
+      },
+      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
+      askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
     });
   } catch (error) {
     next(error);
@@ -49,6 +55,10 @@ function postClarifyingQuestionPage(updateAppealService: UpdateAppealService) {
       });
       req.session.appeal.draftClarifyingQuestionsAnswers = [ ...updatedQuestions ];
       await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+
+      if (req.body['saveAndAskForMoreTime']) {
+        return res.redirect(paths.common.askForMoreTime.reason);
+      }
       res.redirect(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id));
     } catch (error) {
       next(error);

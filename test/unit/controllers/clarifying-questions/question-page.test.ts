@@ -1,3 +1,4 @@
+import config from 'config';
 import express, { NextFunction, Request, Response } from 'express';
 import {
   getClarifyingQuestionPage,
@@ -79,7 +80,9 @@ describe('Question-page controller', () => {
           question: {
             ...clarifyingQuestions[questionOrderNo],
             orderNo: req.params.id
-          }
+          },
+          askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime'),
+          askForMoreTimeInFlight: false
         }
       );
     });
@@ -128,6 +131,18 @@ describe('Question-page controller', () => {
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.be.eql(req.body.answer);
       expect(res.redirect).to.have.been.calledOnce;
+    });
+
+    it('should pass validation and save answer and redirect to ask for more time', async () => {
+      req.body.answer = 'A dummy answer';
+      req.body.saveAndAskForMoreTime = 'saveAndAskForMoreTime';
+      req.params.id = '1';
+      const questionOrderNo = parseInt(req.params.id, 10) - 1;
+
+      await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.be.eql(req.body.answer);
+      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.reason);
     });
 
     it('should call next with error', async () => {

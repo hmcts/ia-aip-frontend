@@ -39,7 +39,7 @@
           {{ i18n.pages.clarifyingQuestionPage.panel.supportingEvidence }}
         </h2>
         <p>{{ i18n.pages.clarifyingQuestionPage.panel.ableToAddEvidence }}</p>
-        {% if askForMoreTimeFeatureEnabled and not askForMoreTimeInFlight %}
+        {% if featuresEnabled.askForMoreTime and not askForMoreTimeInFlight %}
           <h2 class="govuk-heading-s">
             {{ i18n.pages.clarifyingQuestionPage.panel.needMoreTime }}
           </h2>

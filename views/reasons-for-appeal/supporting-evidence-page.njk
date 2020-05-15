@@ -23,7 +23,7 @@
       }
     }) %}
       {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading, errorMessage = errorList[0].text) }}
-      {% if askForMoreTimeFeatureEnabled %}
+      {% if featuresEnabled.askForMoreTime and not askForMoreTimeInFlight %}
         <div class="panel-background">
           <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
           <ul>

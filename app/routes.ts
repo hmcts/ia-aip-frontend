@@ -28,6 +28,7 @@ import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendControl
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
+import { featureFlagMiddleware } from './middleware/feature-flag-middleware';
 import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middleware/journeyAllowed-middleware';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -91,6 +92,7 @@ router.use(notFoundController);
 
 // protected by idam
 router.use(idamController);
+router.use(featureFlagMiddleware);
 router.use(askForMoreTime);
 // router.use(initSession);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {

@@ -94,16 +94,16 @@ Feature: Business rules
 #    When I click send
 #    Then I am on the overview page
 
-    Then I click continue
-    Then I should see the reasons for appeal decision page
-    When I visit reasons for appeal
-
-    Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
-    Then I should see the "supporting evidence question" page
-
-    When I select No and click continue
-    Then I should see the reasons for appeal CYA page
-
-    When I click "Send" button
-    Then I should see the reasons for appeal confirmation page
-    And I see the respond by date is 2 weeks in the future
+#    Then I click continue
+#    Then I should see the reasons for appeal decision page
+#    When I visit reasons for appeal
+#
+#    Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
+#    Then I should see the "supporting evidence question" page
+#
+#    When I select No and click continue
+#    Then I should see the reasons for appeal CYA page
+#
+#    When I click "Send" button
+#    Then I should see the reasons for appeal confirmation page
+#    And I see the respond by date is 2 weeks in the future

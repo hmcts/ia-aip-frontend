@@ -43,7 +43,7 @@
           <li>{{ i18n.pages.reasonForAppeal.bulletFive | safe }}</li>
           <br/>
         </ul>
-        {% if askForMoreTimeFeatureEnabled and not askForMoreTimeInFlight %}
+        {% if featuresEnabled.askForMoreTime and not askForMoreTimeInFlight %}
           <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
           <ul>
             <li><a href='{{ paths.common.askForMoreTime.reason }}'

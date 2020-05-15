@@ -7,7 +7,7 @@ import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue, nowAppealDate } from '../../utils/utils';
+import { asBooleanValue, hasInflightTimeExtension, nowAppealDate } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
@@ -23,7 +23,8 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
     return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
       previousPage: paths.common.overview,
       applicationReason: req.session.appeal.reasonsForAppeal.applicationReason,
-      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
+      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
+      askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
     });
   } catch (e) {
     next(e);

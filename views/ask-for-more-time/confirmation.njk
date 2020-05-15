@@ -1,0 +1,32 @@
+{% block beforeContent %}
+{% endblock %}
+{% set pageTitleName = i18n.pages.askForMoreTimeConfirmation.title %}
+
+{% extends "layout.njk" %}
+
+{% block content %}
+    {% from "govuk/components/panel/macro.njk" import govukPanel %}
+    {{ govukPanel({
+        titleText: i18n.pages.askForMoreTimeConfirmation.title,
+        classes: mainClasses
+    }) }}
+    <h2 class="govuk-heading-m">{{ i18n.pages.successPage.whatHappensNext }}</h2>
+    <div>
+        <ul class="govuk-list govuk-list--bullet govuk-!-padding-left-4">
+            <li>{{ i18n.pages.askForMoreTimeConfirmation.contactDate | safe }} </li>
+            <li>{{ i18n.pages.askForMoreTimeConfirmation.mightNotGetIt }}</li>
+        </ul>
+    </div>
+    <div class="panel-background">
+        <h3 class='govuk-heading-s'>{{ i18n.pages.askForMoreTimeConfirmation.thingsYouCanDoNow }}</h3>
+        <ul class="govuk-list govuk-list--bullet govuk-!-padding-left-4">
+            <li><a href="https://www.gov.uk/immigration-asylum-tribunal">{{ i18n.pages.askForMoreTimeConfirmation.readMore }}</a></li>
+            <li><a href="/appeal-help">{{ i18n.pages.askForMoreTimeConfirmation.organisationHelp }}</a></li>
+        </ul>
+    </div>
+    {{ govukButton({
+        text: i18n.pages.successPage.seeProgress,
+        href: paths.common.overview
+    }) }}
+    {{ contactUs() }}
+{% endblock %}

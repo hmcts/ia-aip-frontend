@@ -70,6 +70,7 @@ interface Appeal {
   reasonsForAppeal: ReasonsForAppeal;
   hearingRequirements: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
+  cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
   askForMoreTime?: AskForMoreTime;
@@ -151,6 +152,12 @@ interface AppealApplication {
     result?: any;
   };
   isEdit?: boolean;
+}
+
+interface CmaRequirements {
+  tasks?: {
+    [key: string]: Task;
+  };
 }
 
 interface ReasonsForAppeal {

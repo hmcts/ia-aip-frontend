@@ -24,12 +24,33 @@ function getFormattedDirectionDueDate(directions: Direction[], directionTagToLoo
 }
 
 /**
+ * Finds a targeted event in history, retrieves the date when the event was triggered date and
+ * returns it as a string with the correct date format and added days specified as daysToAdd
+ * @param history the events history
+ * @param eventTagToLookFor the event to look for
+ * @param daysToAdd days to add to the event triggering date
+ */
+function getFormattedEventHistoryDate(history: HistoryEvent[], eventTagToLookFor: string, daysToAdd: any) {
+  let formattedDeadline = null;
+  if (history) {
+    const historyEvent = history.find(h => h.id === eventTagToLookFor);
+    formattedDeadline = null;
+    if (historyEvent) {
+      const triggeringDate = historyEvent.createdDate;
+      formattedDeadline = moment(triggeringDate).add(daysToAdd, 'days').format(dayMonthYearFormat);
+    }
+  }
+  return formattedDeadline;
+}
+
+/**
  * Given the current case status it retrieves deadlines based on the business logic.
  * @param currentAppealStatus the appeal status
  * @param req the request containing  all the directions in session
  */
-function getDeadline(currentAppealStatus: string, history, req: Request) {
+function getDeadline(currentAppealStatus: string, req: Request) {
 
+  const history = req.session.appeal.history;
   let formattedDeadline;
 
   switch (currentAppealStatus) {
@@ -39,8 +60,7 @@ function getDeadline(currentAppealStatus: string, history, req: Request) {
     }
     case 'appealSubmitted':
     case 'awaitingRespondentEvidence': {
-      const triggeringDate = history['appealSubmitted'].date;
-      formattedDeadline = moment(triggeringDate).add(daysToWaitAfterSubmission, 'days').format(dayMonthYearFormat);
+      formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);
       break;
     }
     case 'awaitingReasonsForAppeal':
@@ -49,12 +69,15 @@ function getDeadline(currentAppealStatus: string, history, req: Request) {
       break;
     }
     case 'reasonsForAppealSubmitted': {
-      const triggeringDate = history['submitReasonsForAppeal'].date;
-      formattedDeadline = moment(triggeringDate).add(daysToWaitAfterReasonsForAppeal, 'days').format(dayMonthYearFormat);
+      formattedDeadline = getFormattedEventHistoryDate(history, 'submitReasonsForAppeal', daysToWaitAfterReasonsForAppeal);
       break;
     }
     case 'awaitingClarifyingQuestionsAnswers': {
       formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestClarifyingQuestions');
+      break;
+    }
+    case 'awaitingCmaRequirements': {
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestCmaRequirements');
       break;
     }
     default: {

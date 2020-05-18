@@ -1,25 +1,25 @@
-{% set pageTitleName = i18n.pages.taskList.title %}
+{% set pageTitleName = i18n.pages.cmaRequirements.taskList.title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
 {% block content %}
-  <h1 class="govuk-heading-xl">{{ i18n.pages.taskList.header }}</h1>
+  <h1 class="govuk-heading-xl">{{ i18n.pages.cmaRequirements.taskList.header }}</h1>
   <ol class="task-list">
   {% for section in data %}
     <li>
-      <h2 class="govuk-heading-m">{{ i18n.pages.taskList.sections[section.sectionId] }}</h2>
+      <h2 class="govuk-heading-m">{{ i18n.pages.cmaRequirements.taskList.sections[section.sectionId] }}</h2>
       <ul class="govuk-list">
         {% for task in section.tasks %}
           <li class="govuk-!-font-size-24 task-list__item">
             {% if task.active %}
-              <a class="govuk-link" id='{{ i18n.pages.taskList[task.id].id }}'
-                 href='{{ i18n.pages.taskList[task.id].path | path }}'
-                 title='{{ i18n.pages.taskList[task.id].title }}'>
-                {{ i18n.pages.taskList[task.id].title }}
+              <a class="govuk-link" id='{{ i18n.pages.cmaRequirements.taskList[task.id].id }}'
+                 href='{{ i18n.pages.cmaRequirements.taskList[task.id].path | path }}'
+                 title='{{ i18n.pages.cmaRequirements.taskList[task.id].title }}'>
+                {{ i18n.pages.cmaRequirements.taskList[task.id].title }}
               </a>
             {% else %}
-              {{ i18n.pages.taskList[task.id].title }}
+              {{ i18n.pages.cmaRequirements.taskList[task.id].title }}
             {% endif %}
             {% if task.saved or task.completed %}
               {{ govukTag({

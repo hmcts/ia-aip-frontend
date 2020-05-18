@@ -217,6 +217,7 @@ export default class UpdateAppealService {
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
       hearingRequirements: {},
+      cmaRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: [ ...this.documentMap],
       directions: directions,

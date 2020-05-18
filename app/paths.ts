@@ -41,6 +41,13 @@ const paths = {
     anythingElse: '/anything-else',
     checkAndSend: '/check-your-answers'
   },
+  cmaRequirements: {
+    taskList: '/cma-requirements/appointment-needs',
+    accessNeeds: 'TODO',
+    otherNeeds: 'TODO',
+    datesToAvoid: 'TODO',
+    checkAndSend: '/cma-requirements/check-your-answers'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',
@@ -95,6 +102,7 @@ const paths = {
     moreHelp: '/appeal-help',
     evidenceToSupportAppeal: '/supporting-evidence',
     homeOfficeDocuments: '/home-office-documents',
+    whatToExpectAtCMA: '/home-office-documents',
 
     // Footer links
     cookies: '/cookie-policy',

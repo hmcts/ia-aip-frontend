@@ -354,6 +354,16 @@
         "clarifyingQuestions": {
           "description": "You need to answer some questions about your appeal.",
           "respondByText": "You need to respond by {{ applicationNextStep.deadline }}."
+        },
+        "awaitingCmaRequirements": {
+          "description": "You need to attend a case management appointment.",
+          "description2": "First, tell us if you will need anything at the appointment, like an interpreter or step free access.",
+          "descriptionAskForMoreTime": "You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>What to expect at a case management appointment</a>"
+          }
         }
       },
       "timeline": {
@@ -1040,6 +1050,38 @@
         "ableToAddEvidence": "You will be able to add supporting evidence on the next page if you want to.",
         "needMoreTime": "Need more time?",
         "saveAndAskMoreTime": "Save your answer and ask for more time"
+      }
+    },
+    "cmaRequirements": {
+      "taskList": {
+        "title": "Tell us your appointment needs",
+        "header": "Tell us your appointment needs",
+        "sections": {
+          "accessNeeds": "Access needs",
+          "otherNeeds": "Other needs",
+          "datesToAvoid": "Dates to avoid",
+          "checkAndSend": "Check and send"
+        },
+        "accessNeeds": {
+          "id": "accessNeedsLink",
+          "title": "Will you need an interpreter, step-free access or a hearing loop at the appointment?",
+          "path": "cmaRequirements.accessNeeds"
+        },
+        "otherNeeds": {
+          "id": "otherNeedsLink",
+          "title": "Will you need anything else at the appointment?",
+          "path": "cmaRequirements.otherNeeds"
+        },
+        "datesToAvoid": {
+          "id": "datesToAvoidLink",
+          "title": "Are there any dates you cannot go to the appointment?",
+          "path": "cmaRequirements.datesToAvoid"
+        },
+        "checkAndSend": {
+          "id": "checkAndSendLink",
+          "title": "Check and send us your appointment needs",
+          "path": "cmaRequirements.checkAndSend"
+        }
       }
     }
   },

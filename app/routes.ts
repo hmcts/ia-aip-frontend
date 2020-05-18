@@ -30,7 +30,7 @@ import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
 import { featureFlagMiddleware } from './middleware/feature-flag-middleware';
 import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middleware/journeyAllowed-middleware';
-import { logSession } from './middleware/session-middleware';
+import { logSession, outOfTimeUpdate } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
 import { DocumentManagementService } from './service/document-management-service';
@@ -80,6 +80,9 @@ const clarifyingQuestionPageController = setupClarifyingQuestionPageController(m
 const clarifyingQuestionsSupportingEvidenceController = setupSupportingEvidenceQuestionController(middleware, { updateAppealService, documentManagementService });
 const clarifyingQuestionsSupportingEvidenceUploadController = setupClarifyingQuestionsSupportingEvidenceUploadController(middleware, { updateAppealService, documentManagementService });
 
+router.use(featureFlagMiddleware);
+router.use(outOfTimeUpdate);
+
 // not protected by idam
 router.use(indexController);
 router.use(healthController);
@@ -92,7 +95,6 @@ router.use(notFoundController);
 
 // protected by idam
 router.use(idamController);
-router.use(featureFlagMiddleware);
 router.use(askForMoreTime);
 // router.use(initSession);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {

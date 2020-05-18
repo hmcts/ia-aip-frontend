@@ -8,6 +8,7 @@ import S2SService from '../service/s2s-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import Logger from '../utils/logger';
 import { appealApplicationStatus } from '../utils/tasks-utils';
+import { hasInflightTimeExtension } from '../utils/utils';
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 
@@ -44,6 +45,16 @@ function applicationStatusUpdate(req: Request, res: Response, next: NextFunction
   }
 }
 
+// todo move this to the update appeal service when that is reloading the appeal at the correct times.
+function outOfTimeUpdate(req: Request, res: Response, next: NextFunction) {
+  try {
+    res.locals.askForMoreTimeInFlight = req.session.appeal && hasInflightTimeExtension(req.session.appeal);
+    next();
+  } catch (e) {
+    next(e);
+  }
+}
+
 /**
  * Used to ignore values from printing cleaning up noise
  */
@@ -71,5 +82,6 @@ export {
   applicationStatusUpdate,
   checkSession,
   initSession,
-  logSession
+  logSession,
+  outOfTimeUpdate
 };

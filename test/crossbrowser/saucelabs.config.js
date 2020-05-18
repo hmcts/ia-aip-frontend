@@ -34,7 +34,6 @@ const getBrowserConfig = browserGroup => {
 
 exports.config = {
   name: 'AIP Frontend Tests',
-  output: process.cwd() + '/functional-output',
   helpers: {
     WebDriverIO: {
       url: TEST_URL,

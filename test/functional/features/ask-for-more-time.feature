@@ -45,3 +45,19 @@ Feature: Ask for more time page
     Then I see Your request for more time has been sent screen
     When I click "See your appeal progress" button
     Then I am on the overview page
+
+  Scenario: AFMT clarifying questions
+    Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers"
+    When I visit the overview page
+    Then I click Ask for more time
+    Then I should see the ask-for-more-time page
+    When I enter a time extensions reason
+    And I click continue
+    Then I should see do you want to upload evidence page
+    When I select No and click continue
+    Then I should see the ask for more time check you answers page
+    And I should see the reasons for appeal
+    When I click send
+    Then I see Your request for more time has been sent screen
+    When I click "See your appeal progress" button
+    Then I am on the overview page

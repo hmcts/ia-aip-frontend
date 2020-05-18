@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+import { formatTextForCYA } from '../../../../app/utils/utils';
 
 const config = require('config');
 
@@ -30,7 +31,7 @@ module.exports = {
     });
 
     Then(/^I should see the reasons for appeal$/, async () => {
-      I.seeInSource('Reason for time extension');
+      I.seeInSource(formatTextForCYA('Reason for time extension'));
     });
 
     Then(/^I should see uploaded evidence$/, async () => {

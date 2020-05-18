@@ -13,6 +13,7 @@ import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import { formatTextForCYA } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Ask for more time Controller', function () {
@@ -154,7 +155,7 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
             key: { text: 'Answer' },
-            value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
+            value: { html: formatTextForCYA(req.session.appeal.askForMoreTime.reason) }
           }]
         });
     });
@@ -178,7 +179,7 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
             key: { text: 'Answer' },
-            value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
+            value: { html: formatTextForCYA(req.session.appeal.askForMoreTime.reason) }
           }, {
             actions: { items: [{ href: paths.common.askForMoreTime.supportingEvidenceUpload, text: 'Change' }] },
             key: { text: 'Supporting evidence' },

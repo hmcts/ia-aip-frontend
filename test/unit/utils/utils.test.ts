@@ -1,4 +1,4 @@
-import { asBooleanValue, hasInflightTimeExtension, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
+import { asBooleanValue, formatTextForCYA, hasInflightTimeExtension, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
 import { expect } from '../../utils/testUtils';
 
 describe('utils', () => {
@@ -116,6 +116,23 @@ describe('utils', () => {
         appealStatus: 'currentState'
       } as Appeal);
       expect(inflightTimeExtension).to.be.eq(true);
+    });
+  });
+
+  describe('formatTextForCYA', () => {
+    it('converts \n to <br/>', () => {
+      const actualText = formatTextForCYA('A_string\nwith_a_new_line');
+      expect(actualText).to.be.eq('A_string<br />\nwith_a_new_line');
+    });
+
+    it('converts spaces', () => {
+      const actualText = formatTextForCYA('A string');
+      expect(actualText).to.be.eq('A&nbsp;string');
+    });
+
+    it('converts indents', () => {
+      const actualText = formatTextForCYA('A string\n  with an indent');
+      expect(actualText).to.be.eq('A&nbsp;string<br />\n&nbsp;&nbsp;with&nbsp;an&nbsp;indent');
     });
   });
 });

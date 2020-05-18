@@ -1,3 +1,5 @@
+import nl2br from 'nl2br';
+
 /**
  * Translate primitive values to Boolean value
  * @param value the primitive value to be translated into a boolean
@@ -42,4 +44,8 @@ export function hasInflightTimeExtension(appeal: Appeal) {
     }).length > 0;
   }
   return false;
+}
+
+export function formatTextForCYA(text: string) {
+  return nl2br(text.replace(/ /g, '&nbsp;'));
 }

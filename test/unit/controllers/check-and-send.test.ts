@@ -9,6 +9,7 @@ import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
+import { formatTextForCYA } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
@@ -70,7 +71,7 @@ describe('createSummaryRowsFrom', () => {
     };
 
     const rows: any[] = createSummaryRowsFrom(appeal.application);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [ appeal.application.lateAppeal.reason ], paths.appealStarted.appealLate);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(appeal.application.lateAppeal.reason) ], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);

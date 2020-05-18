@@ -18,5 +18,9 @@ export const States = {
   REASONS_FOR_APPEAL_SUBMITTED: {
     id: 'reasonsForAppealSubmitted',
     name: 'Reasons for appeal submitted'
+  },
+  AWAITING_CLARIFYING_QUESTIONS_ANSWERS: {
+    id: 'awaitingClarifyingQuestionsAnswers',
+    name: 'Awaiting clarifying question answers'
   }
 };

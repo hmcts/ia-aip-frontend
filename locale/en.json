@@ -1216,7 +1216,7 @@
       "emptyAnswer": "Please enter an answer for the question",
       "anythingElseEmptyAnswer": "Enter any other information you want tell us about your case"
     },
-    "emptyAnswer": "Please enter an answer for the question"
+    "emptyAnswer": "Please enter an answer for the question",
     "selectInterpreter": "Select yes if anyone will need an interpreter",
     "addLanguage": "Select a language",
     "stepFreeAccess": "Select yes if you or anyone coming with will you need step-free access",

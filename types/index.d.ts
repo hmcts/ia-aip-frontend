@@ -76,15 +76,12 @@ interface Appeal {
   timeExtensions?: TimeExtension[];
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
-  draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[]
+  draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
 }
 
 interface AskForMoreTime {
   reason?: string;
-  status?: string;
-  state?: string;
   evidence?: Evidence[];
-  requestDate?: string;
   reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
@@ -184,6 +181,7 @@ interface IdamDetails {
 }
 
 interface TimeExtension {
+  id?: number | string;
   requestDate: string;
   reason: string;
   state: string;
@@ -208,7 +206,7 @@ interface ClarifyingQuestion<T> {
     question: string;
     answer?: string;
     supportingEvidence?: T[];
-  }
+  };
 }
 
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

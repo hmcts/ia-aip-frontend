@@ -8,7 +8,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { formatTextForCYA, nowIsoDate } from '../../utils/utils';
+import { formatTextForCYA } from '../../utils/utils';
 import { askForMoreTimeValidation } from '../../utils/validations/fields-validations';
 import {
   EvidenceUploadConfig,
@@ -79,9 +79,7 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
 
       req.session.appeal.askForMoreTime = {
         reason: req.body.askForMoreTime,
-        evidence: req.session.appeal.askForMoreTime.evidence,
-        status: 'inProgress',
-        state: req.session.appeal.appealStatus
+        evidence: req.session.appeal.askForMoreTime.evidence
       };
 
       await updateAppealService.submitEvent(Events.EDIT_TIME_EXTENSION, req);
@@ -163,17 +161,8 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      req.session.appeal.askForMoreTime.status = 'submitted';
-      req.session.appeal.askForMoreTime.requestDate = nowIsoDate();
       req.session.appeal.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
       await updateAppealService.submitEvent(Events.SUBMIT_TIME_EXTENSION, req);
-      req.session.appeal.timeExtensions.push({
-        status: req.session.appeal.askForMoreTime.status,
-        requestDate: req.session.appeal.askForMoreTime.requestDate,
-        reason: req.session.appeal.askForMoreTime.reason,
-        state: req.session.appeal.askForMoreTime.state,
-        evidence: req.session.appeal.askForMoreTime.evidence
-      });
       req.session.appeal.askForMoreTime = {};
 
       res.redirect(paths.common.askForMoreTime.confirmation);

@@ -42,7 +42,9 @@ interface CaseData {
   timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<DirectionValue>[];
-  draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[]
+  draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
+  submitTimeExtensionReason?: string;
+  submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
 }
 
 interface Collection<T> {

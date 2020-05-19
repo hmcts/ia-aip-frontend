@@ -163,13 +163,6 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
     try {
       req.session.appeal.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
       await updateAppealService.submitEvent(Events.SUBMIT_TIME_EXTENSION, req);
-      req.session.appeal.timeExtensions.push({
-        status: req.session.appeal.askForMoreTime.status,
-        requestDate: req.session.appeal.askForMoreTime.requestDate,
-        reason: req.session.appeal.askForMoreTime.reason,
-        state: req.session.appeal.askForMoreTime.state,
-        evidence: req.session.appeal.askForMoreTime.evidence
-      });
       req.session.appeal.askForMoreTime = {};
 
       res.redirect(paths.common.askForMoreTime.confirmation);

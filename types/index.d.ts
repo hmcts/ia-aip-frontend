@@ -80,6 +80,7 @@ interface Appeal {
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   cmaRequirements?: CMARequirements;
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+
 }
 
 interface AskForMoreTime {

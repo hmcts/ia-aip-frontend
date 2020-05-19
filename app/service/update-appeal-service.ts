@@ -248,7 +248,8 @@ export default class UpdateAppealService {
       directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
-      draftClarifyingQuestionsAnswers
+      draftClarifyingQuestionsAnswers,
+      cmaRequirements
 
     };
 

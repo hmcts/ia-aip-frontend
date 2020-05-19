@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { getAccessNeeds,getAdditionalLanguage,getHearingLoopPage, getNeedInterpreterPage, getStepFreeAccessPage, postAdditionalLanguage, postHearingLoopPage, postNeedInterpreterPage, postStepFreeAccessPage, setupAccessNeedsController
-} from '../../../../app/controllers/case-management-appointment/access-needs';
+import { getAccessNeeds,getAdditionalLanguage,getHearingLoopPage, getNeedInterpreterPage, getStepFreeAccessPage, postAdditionalLanguage, postHearingLoopPage, postNeedInterpreterPage, postStepFreeAccessPage, setupAccessNeedsController } from '../../../../app/controllers/case-management-appointment/access-needs';
+import { Events } from '../../../../app/data/events';
 import { isoLanguages } from '../../../../app/data/isoLanguages';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -82,7 +82,7 @@ describe('case management appointment controller', () => {
 
   describe('getHearingLoop', () => {
     it('getHearingLoop should render get-hearing-loop.njk with no option loaded', () => {
-      req.session.appeal.cmaRequirements.isInterpreterServicesNeeded = '';
+      req.session.appeal.isInterpreterServicesNeeded = '';
       getHearingLoopPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('case-management-appointment/hearing-loop.njk', {
         previousPage: paths.awaitingCmaRequirements.stepFreeAccess,

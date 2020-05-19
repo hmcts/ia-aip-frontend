@@ -124,11 +124,15 @@ describe('application-state-utils', () => {
           allowedAskForMoreTime: true,
           cta: {
             respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
+            respondByTextAskForMoreTime: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
             url: '/case-building/home-office-decision-wrong'
           },
           deadline: '01 September 2020',
           descriptionParagraphs: [
             'Tell us why you think the Home Office decision to refuse your claim is wrong.'
+          ],
+          descriptionParagraphsAskForMoreTime: [
+            'You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.'
           ],
           info: {
             title: 'Helpful Information',
@@ -168,11 +172,15 @@ describe('application-state-utils', () => {
       {
         cta: {
           respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
+          'respondByTextAskForMoreTime': 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
           url: '/case-building/home-office-decision-wrong'
         },
         deadline: '21 April 2020',
         descriptionParagraphs: [
           'You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.'
+        ],
+        'descriptionParagraphsAskForMoreTime': [
+          'You might not get more time. You need to finish telling us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.'
         ],
         info: {
           title: 'Helpful Information',

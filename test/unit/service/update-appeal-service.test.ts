@@ -16,7 +16,7 @@ describe('update-appeal-service', () => {
   let s2sService: Partial<S2SService>;
   let authenticationService: Partial<AuthenticationService>;
   let updateAppealService;
-  let expectedCaseData;
+  let expectedCaseData: Partial<CaseData>;
 
   const userId = 'userId';
   const userToken = 'userToken';
@@ -137,21 +137,11 @@ describe('update-appeal-service', () => {
                 'document_filename': 'expected_time_extension_evidence.png',
                 'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
               }
-            } ],
-            type: 'awaitingReasonsForAppeal'
-          }
-        }
+            }]
+          }}
       ]
     };
-    ccdServiceMock.expects('loadOrCreateCase')
-      .withArgs(userId, { userToken, serviceToken })
-      .resolves({
-        id: caseId,
-        state: 'awaitingReasonsForAppeal',
-        case_data: expectedCaseData
-      });
-  })
-  ;
+  });
 
   afterEach(() => {
     sandbox.restore();
@@ -159,6 +149,13 @@ describe('update-appeal-service', () => {
 
   describe('loadAppeal', () => {
     it('set case details', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
+      .withArgs(userId, { userToken, serviceToken })
+      .resolves({
+        id: caseId,
+        state: 'awaitingReasonsForAppeal',
+        case_data: expectedCaseData
+      });
       await updateAppealService.loadAppeal(req);
       expect(req.session.ccdCaseId).eq(caseId);
       expect(req.session.appeal.application.appealType).eq('protection');
@@ -201,6 +198,7 @@ describe('update-appeal-service', () => {
         .withArgs(userId, { userToken, serviceToken })
         .resolves({
           id: caseId,
+          state: 'awaitingReasonsForAppeal',
           case_data: expectedCaseData
         });
       await updateAppealService.loadAppeal(req as Request);
@@ -217,11 +215,56 @@ describe('update-appeal-service', () => {
         .withArgs(userId, { userToken, serviceToken })
         .resolves({
           id: caseId,
+          state: 'awaitingReasonsForAppeal',
           case_data: expectedCaseData
         });
       await updateAppealService.loadAppeal(req as Request);
 
       expect(req.session.appeal.askForMoreTime).to.be.eql({});
+    });
+
+    it('load draftClarifyingQuestion @only', async () => {
+      const draftClarifyingQuestion: ClarifyingQuestion<Collection<SupportingDocument>> = {
+        id: 'id',
+        value: {
+          question: 'the questions'
+        }
+      };
+
+      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        {
+          id: 'id',
+          value: {
+            question: 'the questions',
+            answer: '',
+            supportingEvidence: []
+          }
+        }
+      ];
+      expectedCaseData.draftClarifyingQuestionsAnswers = [{ ...draftClarifyingQuestion }];
+      expectedCaseData.directions = [
+        {
+          id: '3',
+          value: {
+            tag: 'requestClarifyingQuestions',
+            dateDue: '2020-05-07',
+            parties: 'appellant',
+            dateSent: '2020-04-23',
+            explanation: 'You need to answer some questions about your appeal.',
+            previousDates: []
+          }
+        }
+      ];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingClarifyingQuestionsAnswers',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
     });
 
     function aTimeExtension(reason: string, documentFileName: string, status: string, state: string = 'awaitingReasonsForAppeal') {

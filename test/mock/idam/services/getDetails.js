@@ -7,6 +7,7 @@ const emailToUserId = {
   'appeal-submitted@example.com': '3',
   'awaiting-reasons-for-appeal@example.com': '4',
   'partial-awaiting-reasons-for-appeal@example.com': '4',
+  'awaiting-reasons-for-appeal-with-time_extension@example.com': '7',
   'setupcase@example.com': '999'
 };
 

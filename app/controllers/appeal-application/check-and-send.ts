@@ -7,6 +7,7 @@ import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
 function createSummaryRowsFrom(appealApplication: AppealApplication) {
@@ -64,7 +65,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   ];
 
   if (appealApplication.isAppealLate) {
-    const lateAppealValue = [ appealApplication.lateAppeal.reason ];
+    const lateAppealValue = [ formatTextForCYA(appealApplication.lateAppeal.reason) ];
     if (appealApplication.lateAppeal.evidence) {
       const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(urlHtml);

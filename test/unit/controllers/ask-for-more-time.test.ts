@@ -4,6 +4,7 @@ import {
   getAskForMoreTimePage,
   getCancelAskForMoreTime,
   getCheckAndSend,
+  getConfirmation,
   postAskForMoreTimePage,
   postCheckAndSend,
   setupAskForMoreTimeController
@@ -12,6 +13,7 @@ import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import { formatTextForCYA } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Ask for more time Controller', function () {
@@ -28,7 +30,8 @@ describe('Ask for more time Controller', function () {
       session: {
         appeal: {
           reasonsForAppeal: {},
-          askForMoreTime: {}
+          askForMoreTime: {},
+          timeExtensions: []
         } as Partial<Appeal>
       } as Partial<Express.Session>,
       body: {},
@@ -64,7 +67,8 @@ describe('Ask for more time Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupAskForMoreTimeController({ updateAppealService });
+      const middleware = sandbox.stub();
+      setupAskForMoreTimeController([ middleware ], { updateAppealService });
       expect(routerPOSTStub).to.have.been.calledWith(paths.common.askForMoreTime.reason);
       expect(routerGetStub).to.have.been.calledWith(paths.common.askForMoreTime.reason);
     });
@@ -159,7 +163,7 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [ { href: '/ask-for-more-time', text: 'Change' } ] },
             key: { text: 'Answer' },
-            value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
+            value: { html: formatTextForCYA(req.session.appeal.askForMoreTime.reason) }
           } ]
         });
     });
@@ -183,7 +187,7 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [ { href: '/ask-for-more-time', text: 'Change' } ] },
             key: { text: 'Answer' },
-            value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
+            value: { html: formatTextForCYA(req.session.appeal.askForMoreTime.reason) }
           }, {
             actions: { items: [ { href: paths.common.askForMoreTime.supportingEvidenceUpload, text: 'Change' } ] },
             key: { text: 'Supporting evidence' },
@@ -194,14 +198,21 @@ describe('Ask for more time Controller', function () {
   });
 
   describe('postCheckAndSend', () => {
-    it('redirects user to overview page', async () => {
+    it('redirects user to confirmation page', async () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.confirmation);
     });
 
     it('submits ask for more time', async () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.SUBMIT_TIME_EXTENSION, req);
+    });
+  });
+
+  describe('getConfirmation', () => {
+    it('renders page', () => {
+      getConfirmation(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('./ask-for-more-time/confirmation.njk', {});
     });
   });
 });

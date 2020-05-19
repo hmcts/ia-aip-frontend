@@ -8,6 +8,7 @@ import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../../../app/utils/summary-list';
+import { formatTextForCYA } from '../../../../app/utils/utils';
 import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';
 
@@ -65,7 +66,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
     it('should render reasons-for-appeal/check-and-send-page.njk with supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.awaitingReasonsForAppeal.decision + editParameter),
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason) ], paths.awaitingReasonsForAppeal.decision + editParameter),
         addSummaryRow(i18n.common.cya.supportingEvidenceRowTitle, [
           '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/1234\'>File1.png</a>',
           '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/1234\'>File2.png</a>'
@@ -91,7 +92,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
     it('should render reasons-for-appeal/check-and-send-page.njk without supporting evidences', () => {
       const summaryRows = [
         addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.reasonForAppeal.heading ], null),
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ req.session.appeal.reasonsForAppeal.applicationReason ], paths.awaitingReasonsForAppeal.decision + editParameter)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ formatTextForCYA(req.session.appeal.reasonsForAppeal.applicationReason) ], paths.awaitingReasonsForAppeal.decision + editParameter)
       ];
 
       getCheckAndSend(req as Request, res as Response, next);

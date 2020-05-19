@@ -14,6 +14,8 @@ import { setupApplicationOverviewController } from './controllers/application-ov
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
 import { setupClarifyingQuestionPageController } from './controllers/clarifying-questions/question-page';
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
+import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
+import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
@@ -26,7 +28,7 @@ import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendControl
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
-import { isJourneyAllowedMiddleware } from './middleware/journeyAllowed-middleware';
+import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middleware/journeyAllowed-middleware';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
@@ -71,9 +73,11 @@ const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
 const sessionController = setupSessionController();
 const forbiddenController = setupForbiddenController();
-const askForMoreTime = setupAskForMoreTimeController({ updateAppealService, documentManagementService });
+const askForMoreTime = setupAskForMoreTimeController([ isTimeExtensionsInProgress ], { updateAppealService, documentManagementService });
 const clarifyingQuestionsListController = setupClarifyingQuestionsListController(middleware);
 const clarifyingQuestionPageController = setupClarifyingQuestionPageController(middleware, updateAppealService);
+const clarifyingQuestionsSupportingEvidenceController = setupSupportingEvidenceQuestionController(middleware, { updateAppealService, documentManagementService });
+const clarifyingQuestionsSupportingEvidenceUploadController = setupClarifyingQuestionsSupportingEvidenceUploadController(middleware, { updateAppealService, documentManagementService });
 
 // not protected by idam
 router.use(indexController);
@@ -107,7 +111,8 @@ router.use(reasonsForAppealController);
 router.use(reasonsForAppealCYAController);
 router.use(clarifyingQuestionsListController);
 router.use(clarifyingQuestionPageController);
-
+router.use(clarifyingQuestionsSupportingEvidenceController);
+router.use(clarifyingQuestionsSupportingEvidenceUploadController);
 router.use(detailViewersController);
 router.use(forbiddenController);
 

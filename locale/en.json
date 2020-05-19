@@ -293,6 +293,7 @@
       "newWindow": "(opens in a new window)",
       "appealRef": "Appeal reference:",
       "answersBeenSaved": "Your answers have been saved",
+      "askedForMoreTime": "You have asked for more time",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
@@ -321,6 +322,8 @@
         "awaitingReasonsForAppeal": {
           "new": {
             "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
+            "descriptionAskForMoreTime": "You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
             "info": {
               "title": "Helpful Information",
               "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
@@ -332,6 +335,8 @@
           },
           "partial": {
             "description": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
+            "descriptionAskForMoreTime": "You might not get more time. You need to finish telling us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
             "info": {
               "title": "Helpful Information",
               "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
@@ -1000,6 +1005,14 @@
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
       "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+    },
+    "askForMoreTimeConfirmation": {
+      "title": "Your request for more time has been sent",
+      "contactDate": "A Tribunal Caseworker should contact you within <b>five working days</b> to tell you if you have more time but it might take longer than that",
+      "mightNotGetIt": "You might not get more time. You should still respond to the Tribunal by the date you were given if you can",
+      "thingsYouCanDoNow": "Things you can do now",
+      "readMore": "Read more about appealing an immigration or asylum decision",
+      "organisationHelp": "Find organisations that can help you with your appeal"
     },
     "clarifyingQuestionsList": {
       "title": "Questions about your appeal",

@@ -37,14 +37,19 @@ interface CaseData {
   applicationOutOfTimeDocument: SupportingDocument;
   reasonsForAppealDecision: string;
   reasonsForAppealDateUploaded?: string;
-  reasonsForAppealDocuments: SupportingEvidenceCollection[];
-  respondentDocuments: RespondentEvidenceCollection[];
-  timeExtensions: TimeExtensionCollection[];
+  reasonsForAppealDocuments: Collection<DocumentWithMetaData>[];
+  respondentDocuments: Collection<RespondentEvidenceDocument>[];
+  timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
-  directions: DirectionCollection[];
-  draftClarifyingQuestionsAnswers: ClarifyingQuestion[];
+  directions: Collection<DirectionValue>[];
+  draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
   submitTimeExtensionReason?: string;
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
+}
+
+interface Collection<T> {
+  id?: string | number;
+  value: T;
 }
 
 interface Nationality {
@@ -64,7 +69,7 @@ interface CCDAddress {
 }
 
 interface SubscriptionCollection {
-  id?: number;
+  id?: number | string;
   value: Subscription;
 }
 
@@ -116,6 +121,7 @@ interface CcdDirection {
   dateSent: string;
   explanation: string;
   previousDates?: PreviousDateCollection[];
+  [key: string]: any;
 }
 
 interface CcdPreviousDate {

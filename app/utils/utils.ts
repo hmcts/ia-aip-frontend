@@ -1,3 +1,5 @@
+import nl2br from 'nl2br';
+
 /**
  * Translate primitive values to Boolean value
  * @param value the primitive value to be translated into a boolean
@@ -32,4 +34,18 @@ export function nowAppealDate(): AppealDate {
     month: now.getMonth() + 1,
     day: now.getDate()
   } as AppealDate;
+}
+
+export function hasInflightTimeExtension(appeal: Appeal) {
+  if (appeal.timeExtensions) {
+    return appeal.timeExtensions.filter(askForMoreTime => {
+      return askForMoreTime.status === 'submitted' &&
+        askForMoreTime.state === appeal.appealStatus;
+    }).length > 0;
+  }
+  return false;
+}
+
+export function formatTextForCYA(text: string) {
+  return nl2br(text.replace(/ /g, '&nbsp;'));
 }

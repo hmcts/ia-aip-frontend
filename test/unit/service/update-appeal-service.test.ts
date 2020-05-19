@@ -115,6 +115,7 @@ describe('update-appeal-service', () => {
       ],
       'timeExtensions': [
         {
+          id: '2',
           value: {
             decisionReason: 'Time extension has been granted',
             decision: 'granted',
@@ -126,6 +127,7 @@ describe('update-appeal-service', () => {
           }
         },
         {
+          id: '1',
           value: {
             requestDate: '2020-01-02',
             reason: 'some reason',
@@ -139,6 +141,16 @@ describe('update-appeal-service', () => {
               }
             }]
           }}
+      ],
+      draftClarifyingQuestionsAnswers: [
+        {
+          id: '1',
+          value: {
+            question: 'the questions',
+            answer: 'the answer',
+            supportingEvidence: []
+          }
+        }
       ]
     };
   });

@@ -8,7 +8,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { formatTextForCYA, nowIsoDate } from '../../utils/utils';
+import { formatTextForCYA } from '../../utils/utils';
 import { askForMoreTimeValidation } from '../../utils/validations/fields-validations';
 import {
   EvidenceUploadConfig,

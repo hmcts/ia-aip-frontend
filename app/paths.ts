@@ -43,6 +43,15 @@ const paths = {
     anythingElseAnswerPage: '/anything-else-answer',
     checkAndSend: '/check-your-answers'
   },
+
+  caseManagementAppointment: {
+    accessNeeds: '/appointment-access-needs',
+    needInterpreter: '/appointment-interpreter',
+    stepFreeAccess: '/appointment-step-free-access',
+    hearingLoop: '/appointment-hearing-loop',
+    additionalLanguage: '/appointment-add-language-details'
+  },
+
   clarifyingQuestionsAnswersSubmitted: {
     confirmation: '/clarifying-questions-sent'
   },

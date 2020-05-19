@@ -1,0 +1,53 @@
+{% set pageTitleName = i18n.pages.additionalLanguagePage.pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+    {% call govukFieldset({
+        legend: {
+            text: i18n.pages.additionalLanguagePage.title ,
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+        }
+    }) %}
+<form action="{{ paths.caseManagementAppointment.additionalLanguage }}?_csrf={{ csrfToken }}" method="post" enctype="multipart/form-data" >
+
+{{ govukSelect({
+            id: "language",
+            name: "language",
+            label: {
+                text: "Language"
+            },
+            items: items,
+            errorMessage: errorList[0].text
+        }) }}
+        {{ govukInput({
+            label: {
+                text: i18n.pages.additionalLanguagePage.hint
+            },
+            classes: "govuk-!-width-three-quarters",
+            id: "dialect",
+            name: "dialect",
+            hint: {
+            text: i18n.pages.additionalLanguagePage.text
+            }
+
+        }) }}
+
+        {{ saveButtons() }}
+</form>
+    {% endcall %}
+    {{ contactUs() }}
+{% endblock %}

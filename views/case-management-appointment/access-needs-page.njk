@@ -1,0 +1,25 @@
+{% set pageTitleName = i18n.pages.accessNeedsPage.pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% block content %}
+        {% call govukFieldset({
+            legend: {
+                text: i18n.pages.accessNeedsPage.title | eval,
+                classes: "govuk-fieldset__legend--l",
+                isPageHeading: true
+            }
+        }) %}
+
+            <p class="govuk-body-l">{{ i18n.pages.accessNeedsPage.text }}</p>
+
+            {{ govukButton({
+                text: i18n.common.buttons.continue,
+                href: paths.caseManagementAppointment.needInterpreter
+            }) }}
+        {% endcall %}
+    {{ contactUs() }}
+{% endblock %}

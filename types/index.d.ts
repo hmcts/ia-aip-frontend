@@ -78,6 +78,7 @@ interface Appeal {
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+  cmaRequirements?: CMARequirements;
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
 }
 
@@ -221,4 +222,15 @@ interface ClarifyingQuestion<T> {
   };
 }
 
+interface CMARequirements {
+  isInterpreterServicesNeeded?: string;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: string;
+  isHearingLoopNeeded?: string;
+}
+
+interface AdditionalLanguage {
+  language?: string;
+  dialect?: string;
+}
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

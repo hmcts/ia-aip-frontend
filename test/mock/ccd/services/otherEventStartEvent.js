@@ -14,6 +14,8 @@ function getCurrentState(params) {
       return 'awaitingReasonsForAppeal';
     case 'editClarifyingQuestionAnswers':
       return 'awaitingClarifyingQuestionsAnswers'
+    case 'submitClarifyingQuestionAnswers':
+      return 'clarifyingQuestionsAnswersSubmitted';
     default:
       throw `Event type ${params.eventType} no current state set`
   }

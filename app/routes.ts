@@ -12,6 +12,10 @@ import { setupTaskListController } from './controllers/appeal-application/task-l
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
+import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
+import { setupClarifyingQuestionsCheckSendController } from './controllers/clarifying-questions/check-and-send';
+import { setupClarifyingQuestionsConfirmationPage } from './controllers/clarifying-questions/confirmation-page';
 import { setupClarifyingQuestionPageController } from './controllers/clarifying-questions/question-page';
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
@@ -78,6 +82,10 @@ const clarifyingQuestionsListController = setupClarifyingQuestionsListController
 const clarifyingQuestionPageController = setupClarifyingQuestionPageController(middleware, updateAppealService);
 const clarifyingQuestionsSupportingEvidenceController = setupSupportingEvidenceQuestionController(middleware, { updateAppealService, documentManagementService });
 const clarifyingQuestionsSupportingEvidenceUploadController = setupClarifyingQuestionsSupportingEvidenceUploadController(middleware, { updateAppealService, documentManagementService });
+const clarifyingQuestionsAnythingElseQuestionController = setupCQAnythingElseQuestionController(middleware, updateAppealService, documentManagementService);
+const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswerController(middleware, updateAppealService);
+const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
+const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
 
 // not protected by idam
 router.use(indexController);
@@ -113,6 +121,10 @@ router.use(clarifyingQuestionsListController);
 router.use(clarifyingQuestionPageController);
 router.use(clarifyingQuestionsSupportingEvidenceController);
 router.use(clarifyingQuestionsSupportingEvidenceUploadController);
+router.use(clarifyingQuestionsAnythingElseQuestionController);
+router.use(clarifyingQuestionsAnythingElseAnswerController);
+router.use(clarifyingQuestionsCYAController);
+router.use(clarifyingQuestionsConfirmationPageController);
 router.use(detailViewersController);
 router.use(forbiddenController);
 

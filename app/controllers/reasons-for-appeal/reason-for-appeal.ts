@@ -6,6 +6,7 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { addDaysToDate } from '../../utils/date-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { asBooleanValue, hasInflightTimeExtension, nowAppealDate } from '../../utils/utils';
 import {
@@ -13,7 +14,6 @@ import {
   reasonForAppealDecisionValidation,
   yesOrNoRequiredValidation
 } from '../../utils/validations/fields-validations';
-import { daysToWaitUntilContact } from '../appeal-application/confirmation-page';
 
 const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
@@ -210,7 +210,7 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('reasons-for-appeal/confirmation-page.njk', {
-      date: daysToWaitUntilContact(14)
+      date: addDaysToDate(14)
     });
   } catch (e) {
     next(e);

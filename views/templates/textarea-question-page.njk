@@ -1,0 +1,73 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action={{ formAction }} method='post'>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% call govukFieldset({
+    legend: {
+      text: question.title,
+      classes: "govuk-fieldset__legend--l",
+      isPageHeading: true
+    }
+    }) %}
+
+      {{ govukTextarea({
+        name: question.name,
+        id: question.name,
+        label: {
+          text: question.description
+        } if (question.description),
+        hint: {
+          text: question.hint
+        } if (question.hint),
+        value: question.value,
+        errorMessage: {
+          text: errors[question.name].text
+        } if errors[question.name]
+      }) }}
+
+      {% set supportingEvidenceContent %}
+        <h2 class="govuk-heading-s">
+          {{ i18n.pages.clarifyingQuestionPage.panel.supportingEvidence }}
+        </h2>
+        <p>{{ i18n.pages.clarifyingQuestionPage.panel.ableToAddEvidence }}</p>
+      {% endset %}
+
+      {% set timeExtensionContent %}
+        <h2 class="govuk-heading-s">
+          {{ i18n.pages.clarifyingQuestionPage.panel.needMoreTime }}
+        </h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>
+            <a href={{ paths.common.askForMoreTime }} class="govuk-link">
+              {{ i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime }}
+            </a>
+          </li>
+        </ul>
+      {% endset %}
+
+      {% if supportingEvidence or timeExtensionAllowed %}
+        <div class="panel-background">
+          {% if supportingEvidence %}
+            {{ supportingEvidenceContent | safe }}
+          {% endif %}
+          {% if timeExtensionAllowed %}
+            {{ timeExtensionContent | safe }}
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {{ saveButtons() }}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

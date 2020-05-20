@@ -45,6 +45,7 @@ interface CaseData {
   draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
   submitTimeExtensionReason?: string;
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
+  clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
 }
 
 interface Collection<T> {

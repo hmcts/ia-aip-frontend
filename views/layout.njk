@@ -23,17 +23,17 @@
   {% endif %}
 {% endmacro %}
 
-{% macro saveButtons() %}
+{% macro saveButtons(button1, button2) %}
   <div class="save-buttons__container">
     {{ govukButton({
-      name: 'saveAndContinue',
-      text: i18n.common.buttons.saveAndContinue,
+      name: button1.name if button1.name else 'saveAndContinue',
+      text: button1.text if button1.text else i18n.common.buttons.saveAndContinue,
       classes: "govuk-!-margin-right-1"
     }) }}
 
     {{ govukButton({
-      text: i18n.common.buttons.saveForLater,
-      name: "saveForLater",
+      text: button2.text if button2.text else i18n.common.buttons.saveForLater,
+      name: button2.name if button2.name else "saveForLater",
       value: "saveForLater",
       classes: "govuk-button--secondary"
     }) }}

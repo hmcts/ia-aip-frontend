@@ -14,6 +14,8 @@ function getNextState(body) {
       return 'awaitingReasonsForAppeal';
     case 'editClarifyingQuestionAnswers':
       return 'awaitingClarifyingQuestionsAnswers'
+    case 'submitClarifyingQuestionAnswers':
+      return 'clarifyingQuestionsAnswersSubmitted';
     default:
       throw `Event type ${body.eventType} no next state set`
   }

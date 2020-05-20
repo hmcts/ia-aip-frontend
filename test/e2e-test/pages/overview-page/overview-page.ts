@@ -34,6 +34,13 @@ module.exports = {
       I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description}</p>`);
     });
 
+    Then(/^I should see the 'do this next section' for 'Awaiting reasons for appeal with time extensions' with respond by date '([^"]*)'$/, async (respondByDate) => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime}</p>`.replace('{{ applicationNextStep.deadline }}', respondByDate).trim());
+      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime}`);
+    });
+
     Then(/^I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'$/, () => {
       I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
       I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description}</p>`);

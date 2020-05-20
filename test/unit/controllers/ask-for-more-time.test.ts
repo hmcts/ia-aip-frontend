@@ -4,6 +4,7 @@ import {
   getAskForMoreTimePage,
   getCancelAskForMoreTime,
   getCheckAndSend,
+  getConfirmation,
   postAskForMoreTimePage,
   postCheckAndSend,
   setupAskForMoreTimeController
@@ -12,6 +13,7 @@ import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import { formatTextForCYA } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Ask for more time Controller', function () {
@@ -28,7 +30,8 @@ describe('Ask for more time Controller', function () {
       session: {
         appeal: {
           reasonsForAppeal: {},
-          askForMoreTime: {}
+          askForMoreTime: {},
+          timeExtensions: []
         } as Partial<Appeal>
       } as Partial<Express.Session>,
       body: {},
@@ -64,7 +67,8 @@ describe('Ask for more time Controller', function () {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupAskForMoreTimeController({ updateAppealService });
+      const middleware = sandbox.stub();
+      setupAskForMoreTimeController([ middleware ], { updateAppealService });
       expect(routerPOSTStub).to.have.been.calledWith(paths.common.askForMoreTime.reason);
       expect(routerGetStub).to.have.been.calledWith(paths.common.askForMoreTime.reason);
     });
@@ -90,7 +94,7 @@ describe('Ask for more time Controller', function () {
 
   });
 
-  describe('getCancelAskForMoreTime', function() {
+  describe('getCancelAskForMoreTime', function () {
     it('getAskForMoreTimePage redirects to overview and clear ask for more time iun session', () => {
       req.session.appeal.askForMoreTime = {
         reason: 'some reason'
@@ -110,10 +114,20 @@ describe('Ask for more time Controller', function () {
       req.body.askForMoreTime = '';
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith(
-        './ask-for-more-time/ask-for-more-time.njk',{
+        './ask-for-more-time/ask-for-more-time.njk', {
           askForMoreTime: '',
-          errorList: [{ 'key': 'askForMoreTime','text': 'Enter how much time you need and why you need it','href': '#askForMoreTime' }],
-          errors: { 'askForMoreTime': { 'key': 'askForMoreTime','text': 'Enter how much time you need and why you need it','href': '#askForMoreTime' } },
+          errorList: [ {
+            'key': 'askForMoreTime',
+            'text': 'Enter how much time you need and why you need it',
+            'href': '#askForMoreTime'
+          } ],
+          errors: {
+            'askForMoreTime': {
+              'key': 'askForMoreTime',
+              'text': 'Enter how much time you need and why you need it',
+              'href': '#askForMoreTime'
+            }
+          },
           previousPage: paths.common.overview
         });
     });
@@ -130,29 +144,27 @@ describe('Ask for more time Controller', function () {
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.askForMoreTime).to.be.eql({
         reason: 'Text Word',
-        evidence: undefined,
-        status: 'inProgress',
-        state: 'current State'
+        evidence: undefined
       });
     });
   });
 
-  describe('getCheckAndSend', function() {
+  describe('getCheckAndSend', function () {
     it('should render check and send page without evidence', () => {
       req.session.appeal.askForMoreTime.reason = 'some reasons';
       getCheckAndSend(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
-        './ask-for-more-time/check-and-send.njk',{
+        './ask-for-more-time/check-and-send.njk', {
           previousPage: paths.common.askForMoreTime.evidenceYesNo,
-          summaryRows: [{
+          summaryRows: [ {
             key: { text: 'Question' },
             value: { html: 'How much time do you need and why do you need it?' }
           }, {
-            actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
+            actions: { items: [ { href: '/ask-for-more-time', text: 'Change' } ] },
             key: { text: 'Answer' },
-            value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
-          }]
+            value: { html: formatTextForCYA(req.session.appeal.askForMoreTime.reason) }
+          } ]
         });
     });
 
@@ -167,33 +179,40 @@ describe('Ask for more time Controller', function () {
       getCheckAndSend(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
-        './ask-for-more-time/check-and-send.njk',{
+        './ask-for-more-time/check-and-send.njk', {
           previousPage: paths.common.askForMoreTime.evidenceYesNo,
-          summaryRows: [{
+          summaryRows: [ {
             key: { text: 'Question' },
             value: { html: 'How much time do you need and why do you need it?' }
           }, {
-            actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
+            actions: { items: [ { href: '/ask-for-more-time', text: 'Change' } ] },
             key: { text: 'Answer' },
-            value: { html: `<span class='answer'>${req.session.appeal.askForMoreTime.reason}</span>` }
+            value: { html: formatTextForCYA(req.session.appeal.askForMoreTime.reason) }
           }, {
-            actions: { items: [{ href: paths.common.askForMoreTime.supportingEvidenceUpload, text: 'Change' }] },
+            actions: { items: [ { href: paths.common.askForMoreTime.supportingEvidenceUpload, text: 'Change' } ] },
             key: { text: 'Supporting evidence' },
             value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/fileId\'>name.txt</a>' }
-          }]
+          } ]
         });
     });
   });
 
   describe('postCheckAndSend', () => {
-    it('redirects user to overview page', async () => {
+    it('redirects user to confirmation page', async () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.confirmation);
     });
 
     it('submits ask for more time', async () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.SUBMIT_TIME_EXTENSION, req);
+    });
+  });
+
+  describe('getConfirmation', () => {
+    it('renders page', () => {
+      getConfirmation(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('./ask-for-more-time/confirmation.njk', {});
     });
   });
 });

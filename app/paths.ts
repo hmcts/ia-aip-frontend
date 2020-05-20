@@ -79,7 +79,8 @@ const paths = {
       supportingEvidenceUpload: '/provide-supporting-evidence-more-time',
       supportingEvidenceSubmit: '/provide-supporting-evidence-more-time-submit',
       supportingEvidenceDelete: '/provide-supporting-evidence-more-time-delete',
-      checkAndSend: '/check-answer-more-time'
+      checkAndSend: '/check-answer-more-time',
+      confirmation: '/request-more-time-sent'
     },
 
     // Session extension

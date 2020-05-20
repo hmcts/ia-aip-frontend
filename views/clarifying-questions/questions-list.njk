@@ -26,9 +26,14 @@
       <ul class="govuk-list">
         <li class="govuk-!-font-size-24 task-list__item">
           {% if questionsCompleted %}
-            <a href={{ paths.awaitingClarifyingQuestionsAnswers.anythingElse }}>{{ i18n.pages.clarifyingQuestionsList.sections.otherInformation.itemTitle }}</a>
+            <a href="{{ paths.awaitingClarifyingQuestionsAnswers.anythingElseQuestionPage }}">{{ anythingElseQuestion.value.question }}</a>
+            {% if anythingElseQuestion.value.answer %}
+              {{ govukTag({
+                  text: "SAVED"
+              }) }}
+            {% endif %}
           {% else %}
-            {{ i18n.pages.clarifyingQuestionsList.sections.otherInformation.itemTitle }}
+            {{ anythingElseQuestion.value.question }}
           {% endif %}
         </li>
       </ul>
@@ -37,7 +42,7 @@
       <h2 class="govuk-heading-m">{{ i18n.pages.clarifyingQuestionsList.sections.checkAndSend.header }}</h2>
       <ul class="govuk-list">
         <li class="govuk-!-font-size-24 task-list__item">
-          {% if questionsCompleted and false %}
+          {% if questionsCompleted and anythingElseCompleted %}
             <a href={{ paths.awaitingClarifyingQuestionsAnswers.checkAndSend }}>{{ i18n.pages.clarifyingQuestionsList.sections.checkAndSend.itemTitle }}</a>
           {% else %}
             {{ i18n.pages.clarifyingQuestionsList.sections.checkAndSend.itemTitle }}

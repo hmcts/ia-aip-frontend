@@ -64,8 +64,10 @@ describe('Questions-list controller', () => {
         'clarifying-questions/questions-list.njk',
         {
           previousPage: paths.common.overview,
-          questions: [ ...clarifyingQuestions ],
-          questionsCompleted: false
+          questions: [ clarifyingQuestions[0] ],
+          questionsCompleted: false,
+          anythingElseQuestion: clarifyingQuestions[1],
+          anythingElseCompleted: false
         }
       );
     });
@@ -87,8 +89,10 @@ describe('Questions-list controller', () => {
         'clarifying-questions/questions-list.njk',
         {
           previousPage: paths.common.overview,
-          questions: [ ...questionsAnswered ],
-          questionsCompleted: true
+          questions: [ questionsAnswered[0] ],
+          questionsCompleted: true,
+          anythingElseQuestion: questionsAnswered[1],
+          anythingElseCompleted: true
         }
       );
     });

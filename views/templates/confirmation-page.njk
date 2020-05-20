@@ -1,0 +1,22 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% set pageTitleName = title %}
+
+{% block content %}
+  {{ govukPanel({
+    titleText: title,
+    classes: mainClasses
+  }) }}
+  <h2 class="govuk-heading-m">{{ i18n.pages.successPage.whatHappensNext }}</h2>
+  <div>
+    <ul class="govuk-list govuk-list--bullet">
+      {% for item in whatNextListItems %}
+        <li>{{ item | eval | safe }}</li>
+      {% endfor %}
+    </ul>
+  {{ govukButton({
+    text: i18n.pages.successPage.seeProgress,
+    href: paths.common.overview
+  }) }}
+  {{ contactUs() }}
+{% endblock %}

@@ -6,39 +6,21 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% block content %}
-    {% set options = [] %}
     {% if errorList %}
     {{ govukErrorSummary({
         titleText: i18n.validationErrors.errorSummary,
         errorList: errorList
     }) }}
     {% endif %}
-
-    {% for item in list %}
-        {% set options = (options.push(
-            {
-                value: item.value,
-                text: item.text,
-                checked: item.checked
-            }), options) %}
-    {% endfor %}
-
-    {% call govukFieldset({
-        legend: {
-            text: i18n.pages.needInterpreterPage.title,
-            classes: "govuk-fieldset__legend--l",
-            isPageHeading: true
-        }
-    }) %}
-<form action="{{ paths.caseManagementAppointment.needInterpreter }}?_csrf={{ csrfToken }}" method="post" enctype="multipart/form-data">
+<form action="{{ paths.awaitingCmaRequirements.needInterpreter }}?_csrf={{ csrfToken }}" method="post">
     {{ govukRadios({
         idPrefix: "answer",
         id: "answer",
         name: "answer",
         fieldset: {
             legend: {
-                text:  '',
-                isPageHeading: false,
+                text:   i18n.pages.needInterpreterPage.title,
+                isPageHeading: true,
                 classes: "govuk-fieldset__legend--xl"
             }
         },
@@ -48,11 +30,10 @@
         errorMessage: {
             text: errors['answer'].text
         } if errorList,
-        items: options
+        items: list
     }) }}
 
         {{ saveButtons() }}
 </form>
-    {% endcall %}
     {{ contactUs() }}
 {% endblock %}

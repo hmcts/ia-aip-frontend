@@ -14,6 +14,8 @@ function getCurrentState(params) {
       return 'awaitingReasonsForAppeal';
     case 'editClarifyingQuestionAnswers':
       return 'awaitingClarifyingQuestionsAnswers'
+    case 'awaitingCmaRequirements':
+      return  'awaitingCmaRequirements';
     case 'submitClarifyingQuestionAnswers':
       return 'clarifyingQuestionsAnswersSubmitted';
     default:

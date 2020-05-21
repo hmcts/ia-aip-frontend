@@ -79,6 +79,10 @@ module.exports = {
           signInForUser('clarifying-questions@example.com');
           break;
         }
+        case 'awaitingCmaRequirements': {
+          signInForUser('cma-requirements@example.com');
+          break;
+        }
         default:
           break;
       }

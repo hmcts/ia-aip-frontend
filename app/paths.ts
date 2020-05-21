@@ -44,7 +44,7 @@ const paths = {
     checkAndSend: '/check-your-answers'
   },
 
-  caseManagementAppointment: {
+  awaitingCmaRequirements: {
     accessNeeds: '/appointment-access-needs',
     needInterpreter: '/appointment-interpreter',
     stepFreeAccess: '/appointment-step-free-access',

@@ -6,20 +6,12 @@
 
 
 {% block content %}
-        {% call govukFieldset({
-            legend: {
-                text: i18n.pages.accessNeedsPage.title | eval,
-                classes: "govuk-fieldset__legend--l",
-                isPageHeading: true
-            }
-        }) %}
-
+            <h1  class="govuk-heading-m">{{  i18n.pages.accessNeedsPage.title | eval }}</h1>
             <p class="govuk-body-l">{{ i18n.pages.accessNeedsPage.text }}</p>
 
             {{ govukButton({
                 text: i18n.common.buttons.continue,
-                href: paths.caseManagementAppointment.needInterpreter
+                href: paths.awaitingCmaRequirements.needInterpreter
             }) }}
-        {% endcall %}
     {{ contactUs() }}
 {% endblock %}

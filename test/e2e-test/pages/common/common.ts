@@ -268,11 +268,6 @@ module.exports = {
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
 
-    When(/^I visit "([^"]*)" page$/, async (key: string) => {
-      await I.amOnPage(`https://localhost:3000/${key}`);
-      await I.seeInCurrentUrl(`${key}`);
-
-    });
     Then(/^I click continue$/, async () => {
       await I.click('Continue');
     });

@@ -18,6 +18,8 @@ function getCurrentState(params) {
       return  'awaitingCmaRequirements';
     case 'submitClarifyingQuestionAnswers':
       return 'clarifyingQuestionsAnswersSubmitted';
+    case 'awaitingCmaRequirements':
+      return  'awaitingCmaRequirements';
     default:
       throw `Event type ${params.eventType} no current state set`
   }

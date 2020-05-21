@@ -3,6 +3,7 @@ import _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { getDeadline } from './event-deadline-date-finder';
+import { hasInflightTimeExtension } from './utils';
 
 const APPEAL_STATE = {
   'appealStarted': {
@@ -151,6 +152,11 @@ function getAppealApplicationNextStep(req: Request) {
   }
 
   let doThisNextSection = APPEAL_STATE[currentAppealStatus];
+
+  // Override if the user is allowed to ask for more time if it has an in-flight time extension already
+  if (_.get(doThisNextSection, 'allowedAskForMoreTime', false)) {
+    doThisNextSection.allowedAskForMoreTime = !hasInflightTimeExtension(req.session.appeal);
+  }
 
   // Added the following to avoid app crashing on events that are to be implemented.
   if (doThisNextSection === undefined) {

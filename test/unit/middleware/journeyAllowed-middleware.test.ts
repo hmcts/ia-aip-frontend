@@ -75,24 +75,21 @@ describe('isJourneyAllowedMiddleware', () => {
 
   it('should render forbidden if time extension in progress', () => {
     req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-    req.session.appeal.timeExtensions = [ ({
-      state: 'awaitingReasonsForAppeal',
-      status: 'submitted',
-      requestDate: '2020-01-01',
-      reason: 'reason'
-    }) ];
+    req.session.appeal.askForMoreTime = { inFlight: true };
     isTimeExtensionsInProgress(req as Request, res as Response, next);
     expect(res.redirect).to.have.been.called.calledWith(paths.common.forbidden);
   });
 
+  it('should allow access to page if inFlight is not defined', () => {
+    req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
+    req.session.appeal.askForMoreTime = { };
+    isTimeExtensionsInProgress(req as Request, res as Response, next);
+    expect(next).to.have.been.called;
+  });
+
   it('should allow access to page if no time extension in progress', () => {
     req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-    req.session.appeal.timeExtensions = [ ({
-      state: 'awaitingReasonsForAppeal',
-      status: 'rejected',
-      requestDate: '2020-01-01',
-      reason: 'reason'
-    }) ];
+    req.session.appeal.askForMoreTime = { inFlight: false };
     isTimeExtensionsInProgress(req as Request, res as Response, next);
     expect(next).to.have.been.called;
   });

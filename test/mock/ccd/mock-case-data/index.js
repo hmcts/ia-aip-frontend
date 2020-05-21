@@ -4,13 +4,14 @@ const awaitingReasonsForAppealCaseDataWithTimeExtension = require('./data/awaiti
 const partialAppealStartedCaseData = require('./data/partial-appeal-started');
 const partialAwaitingReasonsForAppealCaseData = require('./data/partial-awaiting-reasons-for-appeal');
 const clarifyingQuestionsCaseData = require('./data/clarifying-questions');
+const clarifyingQuestionsCaseDataWithTimeExtensions = require('./data/clarifying-questions-with-time-extensions');
 
 module.exports = {
   appealSubmittedCaseData,
   partialAppealStartedCaseData,
   awaitingReasonsForAppealCaseData,
   partialAwaitingReasonsForAppealCaseData,
-  partialAwaitingReasonsForAppealCaseData,
   awaitingReasonsForAppealCaseDataWithTimeExtension,
-  clarifyingQuestionsCaseData
+  clarifyingQuestionsCaseData,
+  clarifyingQuestionsCaseDataWithTimeExtensions
 };

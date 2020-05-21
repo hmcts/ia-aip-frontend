@@ -163,7 +163,10 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
     try {
       req.session.appeal.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
       await updateAppealService.submitEvent(Events.SUBMIT_TIME_EXTENSION, req);
-      req.session.appeal.askForMoreTime = {};
+
+      req.session.appeal.askForMoreTime = {
+        inFlight: true
+      };
 
       res.redirect(paths.common.askForMoreTime.confirmation);
     } catch (e) {

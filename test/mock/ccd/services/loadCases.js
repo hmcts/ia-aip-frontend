@@ -8,7 +8,8 @@ const usersToCaseData = {
   '4': [ mockData.awaitingReasonsForAppealCaseData ],
   '5': [ mockData.partialAwaitingReasonsForAppealCaseData ],
   '6': [ mockData.clarifyingQuestionsCaseData],
-  '7': [ mockData.awaitingReasonsForAppealCaseDataWithTimeExtension ]
+  '7': [ mockData.awaitingReasonsForAppealCaseDataWithTimeExtension ],
+  '8': [ mockData.clarifyingQuestionsCaseDataWithTimeExtensions ]
 };
 
 module.exports = {

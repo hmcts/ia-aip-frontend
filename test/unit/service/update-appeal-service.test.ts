@@ -200,7 +200,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
       validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
       expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
-      expect(req.session.appeal.askForMoreTime).to.deep.eq({});
+      expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -215,24 +215,8 @@ describe('update-appeal-service', () => {
         });
       await updateAppealService.loadAppeal(req as Request);
 
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
-    });
-
-    it('load time extensions when no inProgress time extensions', async () => {
-      expectedCaseData.timeExtensions = [
-        { value: aTimeExtension('some reason', 'expected_time_extension_evidence.png', 'submitted') }
-      ];
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'awaitingReasonsForAppeal',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
+      expect(req.session.appeal.askForMoreTime).to.be.eql(
+        { inFlight: false });
     });
 
     it('load draftClarifyingQuestion @only', async () => {

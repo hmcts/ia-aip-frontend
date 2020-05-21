@@ -80,6 +80,7 @@ interface Appeal {
 }
 
 interface AskForMoreTime {
+  inFlight?: boolean;
   reason?: string;
   evidence?: Evidence[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';

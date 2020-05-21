@@ -57,4 +57,4 @@ Feature: Overview page
   Scenario: Awaiting Clarifying Questions appeal with time extension
     Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers with time extensions"
     When I visit the overview page
-    Then I should see the 'do this next section' for 'Awaiting clarifying questions with time extensions' with respond by date '01 May 2020'
+    Then I should see the 'do this next section' for 'Awaiting clarifying questions with time extensions' with respond by date '02 May 2020'

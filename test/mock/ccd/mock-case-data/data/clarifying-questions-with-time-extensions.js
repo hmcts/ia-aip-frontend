@@ -47,7 +47,7 @@ const clarifyingQuestionsCaseData = {
           "id": "3",
           "value": {
             "tag": "requestClarifyingQuestions",
-            "dateDue": "2020-05-01",
+            "dateDue": "2020-05-02",
             "parties": "appellant",
             "dateSent": "2020-04-23",
             "explanation": "You need to answer some questions about your appeal.",

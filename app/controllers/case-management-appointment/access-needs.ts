@@ -8,7 +8,7 @@ import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { selectedRequiredValidation, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
-const list = (answer: string) => [
+const yesOrNoOption = (answer: string) => [
   { text: 'No', value: 'no', checked: answer === 'no' },
   { text: 'Yes', value: 'yes', checked: answer === 'yes' }
 ];
@@ -28,8 +28,8 @@ function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction)
     const { cmaRequirements } = req.session.appeal;
     const answer = cmaRequirements && cmaRequirements.isInterpreterServicesNeeded || null;
     return res.render('case-management-appointment/need-interpreter.njk', {
-      list: list(answer),
-      previousPage: paths.caseManagementAppointment.accessNeeds
+      list: yesOrNoOption(answer),
+      previousPage: paths.awaitingCmaRequirements.accessNeeds
     });
   } catch (error) {
     next(error);
@@ -40,24 +40,25 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
     try {
       const { cmaRequirements } = req.session.appeal;
       const answer = cmaRequirements && cmaRequirements.isInterpreterServicesNeeded || null;
-      if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
       const validation = yesOrNoRequiredValidation(req.body,i18n.validationErrors.selectInterpreter);
       if (validation) {
         return res.render('case-management-appointment/need-interpreter.njk', {
-          list: list(answer),
+          list: yesOrNoOption(answer),
           errors: validation,
           errorList: Object.values(validation),
-          previousPage:  paths.caseManagementAppointment.accessNeeds
+          previousPage:  paths.awaitingCmaRequirements.accessNeeds
         });
       }
       req.session.appeal.cmaRequirements = {
         ...req.session.appeal.cmaRequirements,
         isInterpreterServicesNeeded: req.body.answer
       };
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      return getConditionalRedirectUrl(req, res, paths.caseManagementAppointment.additionalLanguage);
+      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      if (req.body.answer === 'no') {
+        return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.stepFreeAccess);
+      } else {
+        return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.additionalLanguage);
+      }
 
     } catch (error) {
       next(error);
@@ -68,7 +69,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
 function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('case-management-appointment/additional-language.njk', {
-      previousPage: paths.caseManagementAppointment.needInterpreter,
+      previousPage: paths.awaitingCmaRequirements.needInterpreter,
       items: isoLanguages
     });
   } catch (error) {
@@ -79,11 +80,6 @@ function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) 
 function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { cmaRequirements } = req.session.appeal;
-      const answer = cmaRequirements && cmaRequirements.isInterpreterServicesNeeded || null;
-      if (!shouldValidateWhenSaveForLater(req.body, ['language','dialect'])) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
       const validation = selectedRequiredValidation(req.body,i18n.validationErrors.addLanguage);
       if (validation) {
         return res.render('case-management-appointment/additional-language.njk', {
@@ -100,8 +96,8 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
           dialect: req.body.dialect
         }
       };
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      return getConditionalRedirectUrl(req, res, paths.caseManagementAppointment.stepFreeAccess);
+      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.stepFreeAccess);
 
     } catch (error) {
       next(error);
@@ -112,10 +108,11 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
 function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) {
   try {
     const { cmaRequirements } = req.session.appeal;
+    const backButton = cmaRequirements.isInterpreterServicesNeeded === 'yes' ? paths.awaitingCmaRequirements.additionalLanguage : paths.awaitingCmaRequirements.needInterpreter;
     const answer = cmaRequirements && cmaRequirements.isHearingRoomNeeded || null;
     return res.render('case-management-appointment/step-free-access.njk', {
-      previousPage: paths.appealStarted.taskList,
-      list: list(answer)
+      previousPage: backButton,
+      list: yesOrNoOption(answer)
 
     });
   } catch (error) {
@@ -127,17 +124,15 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { cmaRequirements } = req.session.appeal;
+      const backButton = cmaRequirements.isInterpreterServicesNeeded === 'yes' ? paths.awaitingCmaRequirements.additionalLanguage : paths.awaitingCmaRequirements.needInterpreter;
       const answer = cmaRequirements && cmaRequirements.isHearingRoomNeeded || null;
-      if (!shouldValidateWhenSaveForLater(req.body, 'stepFreeAccess')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
       const validation = yesOrNoRequiredValidation(req.body,i18n.validationErrors.stepFreeAccess);
       if (validation) {
         return res.render('case-management-appointment/step-free-access.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.caseManagementAppointment.additionalLanguage,
-          list: list(answer)
+          previousPage: backButton,
+          list: yesOrNoOption(answer)
 
         });
       }
@@ -146,8 +141,8 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal.cmaRequirements,
         isHearingRoomNeeded: req.body.answer
       };
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      return getConditionalRedirectUrl(req, res, paths.caseManagementAppointment.hearingLoop);
+      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.hearingLoop);
 
     } catch (error) {
       next(error);
@@ -160,8 +155,8 @@ function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
     const { cmaRequirements } = req.session.appeal;
     const answer = cmaRequirements && cmaRequirements.isHearingLoopNeeded || null;
     return res.render('case-management-appointment/hearing-loop.njk', {
-      previousPage: paths.caseManagementAppointment.stepFreeAccess,
-      list: list(answer)
+      previousPage: paths.awaitingCmaRequirements.stepFreeAccess,
+      list: yesOrNoOption(answer)
     });
   } catch (error) {
     next(error);
@@ -173,16 +168,13 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
     try {
       const { cmaRequirements } = req.session.appeal;
       const answer = cmaRequirements && cmaRequirements.isHearingLoopNeeded || null;
-      if (!shouldValidateWhenSaveForLater(req.body, 'hearingLoop')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
       const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingLoop);
       if (validation) {
         return res.render('case-management-appointment/hearing-loop.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.caseManagementAppointment.stepFreeAccess,
-          list: list(answer)
+          previousPage: paths.awaitingCmaRequirements.stepFreeAccess,
+          list: yesOrNoOption(answer)
 
         });
       }
@@ -190,9 +182,9 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal.cmaRequirements,
         isHearingLoopNeeded: req.body.answer
       };
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      await updateAppealService.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req);
-      return getConditionalRedirectUrl(req, res, paths.caseManagementAppointment.accessNeeds);
+      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      // await updateAppealService.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req);
+      return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeeds);
 
     } catch (error) {
       next(error);
@@ -202,15 +194,15 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
 
 function setupAccessNeedsController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.caseManagementAppointment.accessNeeds, getAccessNeeds);
-  router.get(paths.caseManagementAppointment.needInterpreter, getNeedInterpreterPage);
-  router.get(paths.caseManagementAppointment.stepFreeAccess , getStepFreeAccessPage);
-  router.get(paths.caseManagementAppointment.hearingLoop, getHearingLoopPage);
-  router.get(paths.caseManagementAppointment.additionalLanguage, getAdditionalLanguage);
-  router.post(paths.caseManagementAppointment.needInterpreter, postNeedInterpreterPage(updateAppealService));
-  router.post(paths.caseManagementAppointment.additionalLanguage, postAdditionalLanguage(updateAppealService));
-  router.post(paths.caseManagementAppointment.hearingLoop, postHearingLoopPage(updateAppealService));
-  router.post(paths.caseManagementAppointment.stepFreeAccess, postStepFreeAccessPage(updateAppealService));
+  router.get(paths.awaitingCmaRequirements.accessNeeds,middleware, getAccessNeeds);
+  router.get(paths.awaitingCmaRequirements.needInterpreter,middleware, getNeedInterpreterPage);
+  router.get(paths.awaitingCmaRequirements.stepFreeAccess ,middleware, getStepFreeAccessPage);
+  router.get(paths.awaitingCmaRequirements.hearingLoop,middleware, getHearingLoopPage);
+  router.get(paths.awaitingCmaRequirements.additionalLanguage,middleware, getAdditionalLanguage);
+  router.post(paths.awaitingCmaRequirements.needInterpreter,middleware, postNeedInterpreterPage(updateAppealService));
+  router.post(paths.awaitingCmaRequirements.additionalLanguage,middleware, postAdditionalLanguage(updateAppealService));
+  router.post(paths.awaitingCmaRequirements.hearingLoop,middleware, postHearingLoopPage(updateAppealService));
+  router.post(paths.awaitingCmaRequirements.stepFreeAccess,middleware, postStepFreeAccessPage(updateAppealService));
   return router;
 }
 

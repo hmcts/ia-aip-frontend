@@ -268,11 +268,6 @@ module.exports = {
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
 
-    When(/^I visit "([^"]*)" page$/, async (key: string) => {
-      await I.amOnPage(`https://localhost:3000/${key}`);
-      await I.seeInCurrentUrl(`${key}`);
-
-    });
     Then(/^I click continue$/, async () => {
       await I.click('Continue');
     });
@@ -300,6 +295,16 @@ module.exports = {
 
     Then(/^I fill textarea with "([^"]*)"$/, async (title: string) => {
       await I.fillField('textarea', title);
+    });
+
+    When('I select No and click save and continue', async () => {
+      await I.checkOption('#answer');
+      await I.click('Save and continue');
+    });
+
+    When('I select Yes and click save and continue', async () => {
+      await I.checkOption('#answer-2');
+      await I.click('Save and continue');
     });
   }
 };

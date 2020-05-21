@@ -12,21 +12,14 @@
             errorList: errorList
         }) }}
     {% endif %}
-    {% call govukFieldset({
-        legend: {
-            text: i18n.pages.hearingLoopPage.title,
-            classes: "govuk-fieldset__legend--l",
-            isPageHeading: true
-        }
-    }) %}
-<form action="{{ paths.caseManagementAppointment.hearingLoop }}?_csrf={{ csrfToken }}" method="post" enctype="multipart/form-data" >
+<form action="{{ paths.awaitingCmaRequirements.hearingLoop }}?_csrf={{ csrfToken }}" method="post">
     {{ govukRadios({
         idPrefix: "answer",
         id: "answer",
         name: "answer",
         fieldset: {
             legend: {
-                text:  '',
+                text: i18n.pages.hearingLoopPage.title,
                 isPageHeading: false,
                 classes: "govuk-fieldset__legend--xl"
             }
@@ -38,10 +31,9 @@
         errorMessage: {
             text: errors['answer'].text
         } if errorList,
-        items: options
+        items: list
     }) }}
         {{ saveButtons() }}
 </form>
-    {% endcall %}
     {{ contactUs() }}
 {% endblock %}

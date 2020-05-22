@@ -1,5 +1,5 @@
 const clarifyingQuestionsCaseData = {
-    'id': 6,
+    'id': 7,
     'jurisdiction': 'IA',
     'state': 'awaitingClarifyingQuestionsAnswers',
     'version': 12,

@@ -41,7 +41,7 @@ const appealSubmittedCaseData = {
         "lastName": "Citizen",
         "firstName": "Alex"
       },
-      "createdDate": "2020-03-11T12:45:29.309",
+      "createdDate": "2020-02-26T12:45:29.309",
       "caseTypeVersion": 1,
       "state": {
         "id": "appealSubmitted",

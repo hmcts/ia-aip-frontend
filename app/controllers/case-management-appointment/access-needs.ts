@@ -16,7 +16,7 @@ const yesOrNoOption = (answer: string) => [
 function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('case-management-appointment/access-needs-page.njk', {
-      previousPage: paths.appealStarted.taskList
+      previousPage: paths.common.overview
     });
   } catch (error) {
     next(error);
@@ -53,7 +53,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal.cmaRequirements,
         isInterpreterServicesNeeded: req.body.answer
       };
-      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       if (req.body.answer === 'no') {
         return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.stepFreeAccess);
       } else {
@@ -96,7 +96,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
           dialect: req.body.dialect
         }
       };
-      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.stepFreeAccess);
 
     } catch (error) {
@@ -141,7 +141,7 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal.cmaRequirements,
         isHearingRoomNeeded: req.body.answer
       };
-      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.hearingLoop);
 
     } catch (error) {
@@ -182,8 +182,8 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal.cmaRequirements,
         isHearingLoopNeeded: req.body.answer
       };
-      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      // await updateAppealService.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req);
+      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      await updateAppealService.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeeds);
 
     } catch (error) {

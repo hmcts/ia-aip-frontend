@@ -5,6 +5,7 @@ import { toIsoDate } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
+import S2SService from './s2s-service';
 
 enum Subscriber {
   APPELLANT = 'appellant',
@@ -19,11 +20,13 @@ enum YesOrNo {
 export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
+  private readonly _s2sService: S2SService;
   private documentMap: DocumentMap[];
 
-  constructor(ccdService: CcdService, authenticationService: AuthenticationService) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
+    this._s2sService = s2sService;
     this.documentMap = [];
   }
 
@@ -281,6 +284,23 @@ export default class UpdateAppealService {
 
     const currentUserId = req.idam.userDetails.uid;
     const caseData = this.convertToCcdCaseData(req.session.appeal);
+
+    const updatedCcdCase = {
+      id: req.session.ccdCaseId,
+      state: req.session.appeal.appealStatus,
+      case_data: caseData
+    };
+
+    const updatedAppeal = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
+    return updatedAppeal;
+  }
+
+  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string) {
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const caseData = this.convertToCcdCaseData(appeal);
 
     const updatedCcdCase = {
       id: req.session.ccdCaseId,

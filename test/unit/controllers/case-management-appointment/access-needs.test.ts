@@ -122,10 +122,10 @@ describe('case management appointment controller', () => {
   });
 
   describe('getAccessNeeds', () => {
-    it('getAccessNeeds should render type-of-appeal.njk', () => {
+    it('getAccessNeeds should render get access needs.njk', () => {
       getAccessNeeds(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('case-management-appointment/access-needs-page.njk', {
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.common.overview
       });
     });
   });

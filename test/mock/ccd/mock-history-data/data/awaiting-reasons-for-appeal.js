@@ -3,7 +3,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'submitAppeal',
     'event': { 'eventName': 'Submit your appeal', 'description': 'Submit appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:18:54.605',
+    'created_date': '2020-02-27T14:18:54.605',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealSubmitted', 'name': 'Appeal submitted' },
     'data': {
@@ -77,7 +77,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:18:16.636',
+    'created_date': '2020-02-27T14:18:16.636',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {
@@ -127,7 +127,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:06:28.211',
+    'created_date': '2020-02-27T14:06:28.211',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {
@@ -176,7 +176,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:05:50.398',
+    'created_date': '2020-02-27T14:05:50.398',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {
@@ -221,7 +221,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:05:42.524',
+    'created_date': '2020-02-27T14:05:42.524',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {
@@ -256,7 +256,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:05:39.067',
+    'created_date': '2020-02-27T14:05:39.067',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {
@@ -290,7 +290,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:05:30.652',
+    'created_date': '2020-02-27T14:05:30.652',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {
@@ -323,7 +323,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:05:23.387',
+    'created_date': '2020-02-27T14:05:23.387',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {
@@ -354,7 +354,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'editAppeal',
     'event': { 'eventName': 'Edit appeal', 'description': 'Update appeal case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:05:06.662',
+    'created_date': '2020-02-27T14:05:06.662',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {
@@ -383,7 +383,7 @@ const awaitingReasonsForAppealHistoryEvent = {
     'id': 'startAppeal',
     'event': { 'eventName': 'Start your appeal', 'description': 'Create case AIP' },
     'user': { 'id': 'ef12998f-e2fb-46de-ae1f-51f4033c929f', 'lastName': 'Citizen Admin', 'firstName': 'Alex' },
-    'createdDate': '2020-02-27T14:04:52.795',
+    'created_date': '2020-02-27T14:04:52.795',
     'caseTypeVersion': 5,
     'state': { 'id': 'appealStarted', 'name': 'Appeal started' },
     'data': {

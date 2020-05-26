@@ -2,7 +2,7 @@ const appealSubmittedCaseData = {
   'id': 3,
   'jurisdiction': 'IA',
   'state': 'appealSubmitted',
-  'version': 9,
+  'version': 5,
   'case_type_id': 'Asylum',
   'created_date': '2020-02-12T10:41:51.55',
   'last_modified': '2020-02-12T10:43:14.23',
@@ -29,26 +29,7 @@ const appealSubmittedCaseData = {
     'homeOfficeDecisionDate': '2020-02-10',
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',
-    'homeOfficeReferenceNumber': 'A1234567',
-    'history': [ {
-      "id": "submitAppeal",
-      "event": {
-        "eventName": "Submit your appeal",
-        "description": "Submit appeal case AIP"
-      },
-      "user": {
-        "id": "52b180a5-deaf-4bc3-b586-562b9f2e86f6",
-        "lastName": "Citizen",
-        "firstName": "Alex"
-      },
-      "createdDate": "2020-02-26T12:45:29.309",
-      "caseTypeVersion": 1,
-      "state": {
-        "id": "appealSubmitted",
-        "name": "Appeal submitted"
-      },
-      "data": {}
-    } ]
+    'homeOfficeReferenceNumber': 'A1234567'
   }
 };
 

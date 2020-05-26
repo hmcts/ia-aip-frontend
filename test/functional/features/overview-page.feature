@@ -1,3 +1,4 @@
+@overview
 Feature: Overview page
   In order complete my appeal
   As a citizen

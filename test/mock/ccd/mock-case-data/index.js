@@ -7,10 +7,9 @@ const clarifyingQuestionsCaseData = require('./data/clarifying-questions');
 
 module.exports = {
   appealSubmittedCaseData,
-  partialAppealStartedCaseData,
   awaitingReasonsForAppealCaseData,
-  partialAwaitingReasonsForAppealCaseData,
-  partialAwaitingReasonsForAppealCaseData,
   awaitingReasonsForAppealCaseDataWithTimeExtension,
+  partialAppealStartedCaseData,
+  partialAwaitingReasonsForAppealCaseData,
   clarifyingQuestionsCaseData
 };

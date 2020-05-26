@@ -21,7 +21,7 @@ Feature: Overview page
     Given I have logged in as an appellant in state "appealSubmitted"
     And I visit the overview page
     Then I should see the 'do this next section' for 'Appeal submitted'
-    And I see the respond by date is "11 March 2020"
+    And I see the respond by date is "26 March 2020"
     When I click "What is a Tribunal Caseworker?" link
     Then I should see the 'Tribunal Caseworker' guidance page
     When I click "Back" button

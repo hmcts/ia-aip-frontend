@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-function appealApplicationStatus(appeal: Appeal) {
+function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const homeOfficeRefNumber: boolean = !!_.get(appeal.application, 'homeOfficeRefNumber');
   const dateLetterSent: boolean = !!_.get(appeal.application, 'dateLetterSent');
 

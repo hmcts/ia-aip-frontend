@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import moment from 'moment';
 import {
   getDateLetterSent,
@@ -12,8 +12,6 @@ import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
-
-const express = require('express');
 
 describe('Home Office Details Controller', function () {
   let sandbox: sinon.SinonSandbox;
@@ -37,9 +35,13 @@ describe('Home Office Details Controller', function () {
           hearingRequirements: {}
         } as Appeal
       } as Partial<Express.Session>,
-      cookies: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
       idam: {
-        userDetails: {}
+        userDetails: {
+          uid: 'idamUID'
+        }
       },
       app: {
         locals: {
@@ -56,7 +58,14 @@ describe('Home Office Details Controller', function () {
 
     next = sandbox.stub() as NextFunction;
 
-    updateAppealService = { submitEvent: sandbox.stub() };
+    updateAppealService = {
+      submitEvent: sandbox.stub(),
+      submitEventRefactored: sandbox.stub().returns({
+        case_data: {
+          homeOfficeReferenceNumber: 'A1234567'
+        }
+      })
+    };
   });
 
   afterEach(() => {
@@ -65,8 +74,8 @@ describe('Home Office Details Controller', function () {
 
   describe('setupHomeOfficeDetailsController', () => {
     it('should setup the routes', () => {
-      const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-      const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+      const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
+      const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware = [];
 
       setupHomeOfficeDetailsController(middleware, updateAppealService as UpdateAppealService);
@@ -98,37 +107,72 @@ describe('Home Office Details Controller', function () {
     });
   });
 
-  describe('postHomeOfficeDetails', () => {
+  describe('postHomeOfficeDetails @only', () => {
     it('should validate and redirect home-office/details.njk', async () => {
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: 'A1234567'
+        }
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        application: {
+          homeOfficeRefNumber: 'A1234567'
+        }
+      } as Appeal);
       req.body['homeOfficeRefNumber'] = 'A1234567';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterSent);
     });
 
     it('when save for later should validate and redirect task-list.njk', async () => {
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: 'A1234567'
+        }
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        application: {
+          homeOfficeRefNumber: 'A1234567'
+        }
+      } as Appeal);
       req.body['homeOfficeRefNumber'] = 'A1234567';
       req.body['saveForLater'] = 'saveForLater';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('when in edit mode should validate and redirect check-and-send.njk and reset isEdit flag', async () => {
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: 'A1234567',
+          isEdit: true
+        }
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        application: {
+          homeOfficeRefNumber: 'A1234567'
+        }
+      } as Appeal);
       req.session.appeal.application.isEdit = true;
-
       req.body['homeOfficeRefNumber'] = 'A1234567';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
-
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('should fail validation and render home-office/details.njk with error', async () => {
@@ -140,7 +184,7 @@ describe('Home Office Details Controller', function () {
         key: 'homeOfficeRefNumber',
         text: 'Enter the Home Office reference number in the correct format'
       };
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
         {
@@ -163,7 +207,7 @@ describe('Home Office Details Controller', function () {
         key: 'homeOfficeRefNumber',
         text: 'Enter the Home Office reference number in the correct format'
       };
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
         {
@@ -185,7 +229,7 @@ describe('Home Office Details Controller', function () {
         key: 'homeOfficeRefNumber',
         text: 'Enter the Home Office reference number'
       };
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/home-office/details.njk',
         {
@@ -203,7 +247,7 @@ describe('Home Office Details Controller', function () {
       req.body['saveForLater'] = 'saveForLater';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 

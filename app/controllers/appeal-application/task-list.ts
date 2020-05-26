@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { applicationStatusUpdate } from '../../middleware/session-middleware';
 import { paths } from '../../paths';
+import { appealApplicationStatus } from '../../utils/tasks-utils';
 
 /**
  * Creates a new Section object and determines the current status of the step using the taskIds provided.
@@ -8,19 +8,19 @@ import { paths } from '../../paths';
  * @param taskIds the taskId under the section used to check for saved status and completion status
  * @param req the request Object containing the session
  */
-function buildSectionObject(sectionId: string, taskIds: string[], req: Request) {
+function buildSectionObject(sectionId: string, taskIds: string[], status: ApplicationStatus) {
   const tasks: Task[] = [];
 
   function isSaved(taskId: string) {
-    return req.session.appeal.application.tasks[taskId].saved;
+    return status[taskId].saved;
   }
 
   function isCompleted(taskId: string) {
-    return req.session.appeal.application.tasks[taskId].completed;
+    return status[taskId].completed;
   }
 
   function isActive(taskId: string) {
-    return req.session.appeal.application.tasks[taskId].active;
+    return status[taskId].active;
   }
 
   taskIds.forEach((taskId) => {
@@ -35,10 +35,10 @@ function buildSectionObject(sectionId: string, taskIds: string[], req: Request) 
   return section;
 }
 
-function getAppealStageStatus(session: Request) {
-  const yourDetails = buildSectionObject('yourDetails', [ 'homeOfficeDetails', 'personalDetails', 'contactDetails' ], session);
-  const appealDetails = buildSectionObject('appealDetails', [ 'typeOfAppeal' ], session);
-  const checkAndSend = buildSectionObject('checkAndSend', [ 'checkAndSend' ], session);
+function getAppealStageStatus(status: ApplicationStatus) {
+  const yourDetails = buildSectionObject('yourDetails', [ 'homeOfficeDetails', 'personalDetails', 'contactDetails' ], status);
+  const appealDetails = buildSectionObject('appealDetails', [ 'typeOfAppeal' ], status);
+  const checkAndSend = buildSectionObject('checkAndSend', [ 'checkAndSend' ], status);
 
   return [
     yourDetails,
@@ -49,7 +49,8 @@ function getAppealStageStatus(session: Request) {
 
 function getTaskList(req: Request, res: Response, next: NextFunction) {
   try {
-    const statusOverview = getAppealStageStatus(req);
+    const status = appealApplicationStatus(req.session.appeal);
+    const statusOverview = getAppealStageStatus(status);
     return res.render('appeal-application/task-list.njk', { data: statusOverview });
   } catch (e) {
     next(e);
@@ -58,7 +59,7 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
 
 function setupTaskListController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.appealStarted.taskList, middleware, applicationStatusUpdate, getTaskList);
+  router.get(paths.appealStarted.taskList, middleware, getTaskList);
   return router;
 }
 

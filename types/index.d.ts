@@ -62,6 +62,7 @@ interface DocumentUploadResponse {
 }
 
 interface Appeal {
+  ccdCaseId?: string;
   appealStatus?: string;
   appealCreatedDate?: string;
   appealLastModified?: string;
@@ -222,3 +223,7 @@ interface ClarifyingQuestion<T> {
 }
 
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;
+
+interface ApplicationStatus {
+  [key: string]: Task;
+}

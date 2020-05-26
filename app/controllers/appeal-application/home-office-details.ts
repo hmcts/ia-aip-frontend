@@ -39,10 +39,19 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
           }
         );
       }
-      req.session.appeal.application.homeOfficeRefNumber = req.body.homeOfficeRefNumber;
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          homeOfficeRefNumber: req.body.homeOfficeRefNumber
+        }
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = appealUpdated;
       const nextPage = getNextPage(req.body, paths.appealStarted.letterSent);
-      return getConditionalRedirectUrl(req, res, nextPage);
+      editingMode ? res.redirect(paths.appealStarted.checkAndSend) : res.redirect(nextPage);
     } catch (e) {
       next(e);
     }

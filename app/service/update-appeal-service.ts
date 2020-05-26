@@ -23,7 +23,7 @@ export default class UpdateAppealService {
   private readonly _s2sService: S2SService;
   private documentMap: DocumentMap[];
 
-  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
     this._s2sService = s2sService;
@@ -206,6 +206,7 @@ export default class UpdateAppealService {
     }
 
     req.session.appeal = {
+      ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
       appealLastModified: ccdCase.last_modified,
@@ -290,16 +291,197 @@ export default class UpdateAppealService {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
     };
-    const caseData = this.convertToCcdCaseData(appeal);
+    const caseData: CaseData = this.convertToCcdCaseData(appeal);
 
-    const updatedCcdCase = {
-      id: req.session.ccdCaseId,
-      state: req.session.appeal.appealStatus,
+    const updatedCcdCase: CcdCaseDetails = {
+      id: appeal.ccdCaseId,
+      state: appeal.appealStatus,
       case_data: caseData
     };
 
-    const updatedAppeal = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
+    const updatedAppeal = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
     return updatedAppeal;
+  }
+
+  mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
+    const caseData: CaseData = ccdCase.case_data;
+    const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
+    const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
+    let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
+
+    const appellantAddress = caseData.appellantAddress ? {
+      line1: caseData.appellantAddress.AddressLine1,
+      line2: caseData.appellantAddress.AddressLine2,
+      city: caseData.appellantAddress.PostTown,
+      county: caseData.appellantAddress.County,
+      postcode: caseData.appellantAddress.PostCode
+    } : null;
+
+    const subscriptions = caseData.subscriptions || [];
+    let outOfTimeAppeal: LateAppeal = null;
+    let respondentDocuments: RespondentDocument[] = null;
+    let timeExtensions: TimeExtension[] = null;
+    let directions: Direction[] = null;
+    let reasonsForAppealDocumentUploads: Evidence[] = null;
+    let requestClarifyingQuestionsDirection;
+    let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+
+    const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
+      const value = subscription.value;
+      if (Subscriber.APPELLANT === value.subscriber) {
+        return {
+          email: value.email || null,
+          wantsEmail: (YesOrNo.YES === value.wantsEmail),
+          phone: value.mobileNumber || null,
+          wantsSms: (YesOrNo.YES === value.wantsSms)
+        };
+      }
+    }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
+
+    if (this.yesNoToBool(caseData.submissionOutOfTime)) {
+
+      if (caseData.applicationOutOfTimeExplanation) {
+        outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
+      }
+
+      if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
+
+        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, this.documentMap);
+        outOfTimeAppeal = {
+          ...outOfTimeAppeal,
+          evidence: {
+            fileId: documentMapperId,
+            name: caseData.applicationOutOfTimeDocument.document_filename
+          }
+        };
+      }
+    }
+
+    if (caseData.reasonsForAppealDocuments) {
+      reasonsForAppealDocumentUploads = [];
+      caseData.reasonsForAppealDocuments.forEach(document => {
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
+
+        reasonsForAppealDocumentUploads.push(
+          {
+            fileId: documentMapperId,
+            name: document.value.document.document_filename,
+            dateUploaded: this.getDate(document.value.dateUploaded),
+            description: document.value.description
+          }
+        );
+      });
+    }
+
+    if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
+      respondentDocuments = [];
+      caseData.respondentDocuments.forEach(document => {
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
+
+        let evidence = {
+          dateUploaded: document.value.dateUploaded,
+          evidence: {
+            fileId: documentMapperId,
+            name: document.value.document.document_filename
+          }
+        };
+        respondentDocuments.push(evidence);
+      });
+    }
+
+    if (caseData.timeExtensions) {
+      timeExtensions = [];
+      caseData.timeExtensions.map((timeExtension: Collection<CcdTimeExtension>): TimeExtension => {
+        let evidencesList: Evidence[] = [];
+        if (timeExtension.value.evidence) {
+          evidencesList = timeExtension.value.evidence.map(e => this.mapSupportingDocumentToEvidence(e));
+        }
+        return {
+          id: timeExtension.id,
+          requestDate: timeExtension.value.requestDate,
+          state: timeExtension.value.state,
+          status: timeExtension.value.status,
+          reason: timeExtension.value.reason,
+          decision: timeExtension.value.decision,
+          decisionReason: timeExtension.value.decisionReason,
+          evidence: evidencesList
+        };
+      });
+    }
+
+    if (caseData.directions) {
+      directions = caseData.directions.map(d => {
+        return {
+          id: d.id,
+          tag: d.value.tag,
+          parties: d.value.parties,
+          dateDue: d.value.dateDue,
+          dateSent: d.value.dateSent
+        } as Direction;
+      });
+      requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
+    }
+
+    if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
+      if (caseData.draftClarifyingQuestionsAnswers) {
+        draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map(answer => {
+          let evidencesList: Evidence[] = [];
+          if (answer.value.supportingEvidence) {
+            evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+          }
+          return {
+            id: answer.id,
+            value: {
+              question: answer.value.question,
+              answer: answer.value.answer || '',
+              supportingEvidence: evidencesList
+            }
+          };
+        });
+      } else {
+        draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
+      }
+    }
+
+    const appeal: Appeal = {
+      ccdCaseId: ccdCase.id,
+      appealStatus: ccdCase.state,
+      appealCreatedDate: ccdCase.created_date,
+      appealLastModified: ccdCase.last_modified,
+      appealReferenceNumber: caseData.appealReferenceNumber,
+      application: {
+        homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
+        appealType: caseData.appealType || null,
+        contactDetails: {
+          ...appellantContactDetails
+        },
+        dateLetterSent,
+        isAppealLate: caseData.submissionOutOfTime ? this.yesNoToBool(caseData.submissionOutOfTime) : undefined,
+        lateAppeal: outOfTimeAppeal || undefined,
+        personalDetails: {
+          givenNames: caseData.appellantGivenNames,
+          familyName: caseData.appellantFamilyName,
+          dob: dateOfBirth,
+          nationality: caseData.appellantNationalities ? caseData.appellantNationalities[0].value.code : null,
+          address: appellantAddress
+        },
+        addressLookup: {}
+      },
+      reasonsForAppeal: {
+        applicationReason: caseData.reasonsForAppealDecision,
+        evidences: reasonsForAppealDocumentUploads,
+        uploadDate: caseData.reasonsForAppealDateUploaded
+      },
+      hearingRequirements: {},
+      respondentDocuments: respondentDocuments,
+      documentMap: [ ...this.documentMap ],
+      directions: directions,
+      timeExtensionEventsMap: timeExtensionEventsMap,
+      timeExtensions: timeExtensions ? [ ...timeExtensions ] : [],
+      draftClarifyingQuestionsAnswers: draftClarifyingQuestionsAnswers ? [ ...draftClarifyingQuestionsAnswers ] : [],
+      askForMoreTime: {}
+    };
+    return appeal;
   }
 
   convertToCcdCaseData(appeal: Appeal) {

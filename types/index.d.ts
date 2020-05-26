@@ -62,6 +62,7 @@ interface DocumentUploadResponse {
 }
 
 interface Appeal {
+  ccdCaseId?: string;
   appealStatus?: string;
   appealCreatedDate?: string;
   appealLastModified?: string;

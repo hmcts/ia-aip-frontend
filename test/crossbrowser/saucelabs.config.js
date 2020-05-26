@@ -47,9 +47,12 @@ exports.config = {
       key: SAUCE_ACCESS_KEY,
       desiredCapabilities: {},
 },
-    StatusUpdateHelper: {
-      require: "./helpers/status-update-helper"
+    SauceLabsReportingHelper: {
+      require: './helpers/SauceLabsReportingHelper.js'
     }
+    // StatusUpdateHelper: {
+    //   require: "./helpers/status-update-helper"
+    // }
   },
   multiple: {
     microsoftIE11: {

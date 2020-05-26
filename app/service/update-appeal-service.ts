@@ -58,7 +58,7 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
-    let timeExtensions: TimeExtension[] = null;
+    let timeExtensions: TimeExtension[] = [];
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;

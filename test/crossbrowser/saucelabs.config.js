@@ -1,8 +1,8 @@
 const browsers = require('./browsers.js');
 const config = require('config');
 
-const SAUCE_USERNAME = 'lewis.williams';
-const SAUCE_ACCESS_KEY = config.get('saucelabs.secret');
+const SAUCE_USERNAME = process.env.SAUCE_USERNAME;
+const SAUCE_ACCESS_KEY = process.env.SAUCE_ACCESS_KEY;
 const TEST_URL = config.get('testUrl');
 
 /**
@@ -47,9 +47,12 @@ exports.config = {
       key: SAUCE_ACCESS_KEY,
       desiredCapabilities: {},
 },
-    StatusUpdateHelper: {
-      require: "./helpers/status-update-helper"
+    SauceLabsReportingHelper: {
+      require: './helpers/SauceLabsReportingHelper.js'
     }
+    // StatusUpdateHelper: {
+    //   require: "./helpers/status-update-helper"
+    // }
   },
   multiple: {
     microsoftIE11: {

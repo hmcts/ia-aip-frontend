@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { paths } from '../../../../app/paths';
-import { dayMonthYearFormat } from '../../../../app/utils/date-formats';
+import { dayMonthYearFormat } from '../../../../app/utils/date-utils';
 const config = require('config');
 
 const testUrl = config.get('testUrl');

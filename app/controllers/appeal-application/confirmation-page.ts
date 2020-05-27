@@ -5,19 +5,15 @@ import moment from 'moment';
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 
 import { paths } from '../../paths';
-import { dayMonthYearFormat } from '../../utils/date-formats';
+import { addDaysToDate } from '../../utils/date-utils';
 
-export const daysToWaitUntilContact = (days: number) => {
-  const date = moment().add(days,'days').format(dayMonthYearFormat);
-  return date;
-};
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
     const { application } = req.session.appeal;
     const isLate = () => application.isAppealLate ;
 
     res.render('confirmation-page.njk', {
-      date: daysToWaitUntilContact(daysToWaitAfterSubmission),
+      date: addDaysToDate(daysToWaitAfterSubmission),
       late: isLate()
     });
   } catch (e) {

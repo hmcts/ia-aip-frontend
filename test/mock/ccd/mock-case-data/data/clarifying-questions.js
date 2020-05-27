@@ -46,7 +46,7 @@ const clarifyingQuestionsCaseData = {
               {
                 "id": "947398d5-bd81-4e7f-b3ed-1be73be5ba56",
                 "value": {
-                  "question": "Give us some more information about:\n- What are their ages?\n- What are their names?"
+                  "question": "Give us some more information about:\n- What are their ages?\n  - What are their names?"
                 }
               },
               {

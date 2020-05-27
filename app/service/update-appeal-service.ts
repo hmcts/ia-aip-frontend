@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
+import i18n from '../../locale/en.json';
 import { toIsoDate } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
@@ -195,6 +196,11 @@ export default class UpdateAppealService {
         });
       } else {
         draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
+        draftClarifyingQuestionsAnswers.push({
+          value: {
+            question: i18n.pages.clarifyingQuestionAnythingElseQuestion.question
+          }
+        });
       }
     }
 
@@ -233,11 +239,8 @@ export default class UpdateAppealService {
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers
-
     };
-
     req.session.appeal.askForMoreTime = {};
-    req.session.appeal.askForMoreTime.inFlight = hasInflightTimeExtension;
   }
 
   private getDate(ccdDate): AppealDate {
@@ -390,23 +393,29 @@ export default class UpdateAppealService {
     }
 
     if (appeal.draftClarifyingQuestionsAnswers) {
-      caseData.draftClarifyingQuestionsAnswers = appeal.draftClarifyingQuestionsAnswers.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
-        let question: ClarifyingQuestion<Collection<SupportingDocument>>;
-        let supportingEvidence: Collection<SupportingDocument>[];
-        if (answer.value.supportingEvidence) {
-          supportingEvidence = answer.value.supportingEvidence.map(evidence => this.mapEvidenceToSupportingDocument(evidence, appeal));
-        }
-        question = {
-          ...answer,
-          value: {
-            ...answer.value,
-            supportingEvidence
-          }
-        };
-        return question;
-      });
+      caseData.draftClarifyingQuestionsAnswers = this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap);
+    }
+
+    if (appeal.clarifyingQuestionsAnswers) {
+      caseData.clarifyingQuestionsAnswers = this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap);
     }
     return caseData;
+  }
+
+  private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
+    return clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
+      let supportingEvidence: Collection<SupportingDocument>[];
+      if (answer.value.supportingEvidence) {
+        supportingEvidence = answer.value.supportingEvidence.map(evidence => this.mapEvidenceToSupportingDocument(evidence, documentMap));
+      }
+      return {
+        ...answer,
+        value: {
+          ...answer.value,
+          supportingEvidence
+        }
+      };
+    });
   }
 
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
@@ -429,8 +438,8 @@ export default class UpdateAppealService {
     };
   }
 
-  private mapEvidenceToSupportingDocument(evidence: Evidence, appeal: Appeal): Collection<SupportingDocument> {
-    const documentUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+  private mapEvidenceToSupportingDocument(evidence: Evidence, documentMap: DocumentMap[]): Collection<SupportingDocument> {
+    const documentUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
     return {
       value: {
         document_filename: evidence.name,

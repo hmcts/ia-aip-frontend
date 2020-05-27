@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  daysToWaitUntilContact,
   getConfirmationPage,
   setConfirmationController
 } from '../../../app/controllers/appeal-application/confirmation-page';
 import { paths } from '../../../app/paths';
+import { addDaysToDate } from '../../../app/utils/date-utils';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -96,7 +96,7 @@ describe('Confirmation Page Controller', () => {
 
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
-      date: daysToWaitUntilContact(28),
+      date: addDaysToDate(28),
       late: true
     });
   });

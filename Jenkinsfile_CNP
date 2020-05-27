@@ -38,8 +38,8 @@ withPipeline("nodejs", product, component) {
   after('checkout') { sh 'yarn cache clean' }
   after('build') { sh 'yarn build' }
 
+  
   loadVaultSecrets(secrets)
-  installCharts()
   enableAksStagingDeployment()
   disableLegacyDeployment()
 

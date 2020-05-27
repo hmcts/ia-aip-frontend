@@ -1,7 +1,7 @@
 import config from 'config';
 import { Request } from 'express';
 import moment from 'moment';
-import { dayMonthYearFormat } from './date-formats';
+import { dayMonthYearFormat } from './date-utils';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');

@@ -46,8 +46,11 @@
         {% if askForMoreTimeFeatureEnabled and not askForMoreTimeInFlight %}
           <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
           <ul>
-            <li><a href='{{ paths.common.askForMoreTime.reason }}'
-                   class='govuk-link'>{{ i18n.common.askForMoreTime.saveAnswerAndAsk }}</a></li>
+            <li>
+              <button value="saveAndAskForMoreTime" name="saveAndAskForMoreTime" class="evidence-list__link">
+                {{ i18n.common.askForMoreTime.saveAnswerAndAsk }}
+              </button>
+            </li>
           </ul>
         {% endif %}
         <h2 class="govuk-heading-s">{{ i18n.pages.reasonForAppeal.needHelp }}</h2>

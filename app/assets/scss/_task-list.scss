@@ -16,13 +16,14 @@ ol.task-list {
       }
       > li.task-list__item {
         box-sizing: border-box;
-        height: 4rem;
+        min-height: 4rem;
         display: flex;
         justify-content: space-between;
         padding: 1rem 0;
         margin: 0;
         border-bottom: 1px solid $govuk-border-colour;
         .govuk-tag {
+          max-height: 0.9375rem;
           padding: .5rem 1rem;
           background-color: $govuk-secondary-text-colour;
         }

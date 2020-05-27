@@ -39,7 +39,12 @@ const paths = {
     supportingEvidenceDeleteFile: '/clarifying-questions/delete-evidence/:id/',
     supportingEvidenceSubmit: '/clarifying-questions/submit/:id',
     anythingElse: '/anything-else',
+    anythingElseQuestionPage: '/anything-else-question',
+    anythingElseAnswerPage: '/anything-else-answer',
     checkAndSend: '/check-your-answers'
+  },
+  clarifyingQuestionsAnswersSubmitted: {
+    confirmation: '/clarifying-questions-sent'
   },
   cmaRequirements: {
     taskList: '/cma-requirements/appointment-needs',

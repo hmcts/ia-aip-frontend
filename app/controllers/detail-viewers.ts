@@ -12,7 +12,7 @@ import {
   documentToHtmlLink,
   toHtmlLink
 } from '../service/document-management-service';
-import { dayMonthYearFormat } from '../utils/date-formats';
+import { dayMonthYearFormat } from '../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
 

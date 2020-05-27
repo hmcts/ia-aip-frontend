@@ -205,7 +205,10 @@ interface Direction {
 interface ClarifyingQuestion<T> {
   id?: string;
   value: {
+    dateSent: string;
+    dueDate: string;
     question: string;
+    dateResponded?: string;
     answer?: string;
     supportingEvidence?: T[];
   };

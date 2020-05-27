@@ -7,6 +7,7 @@ import {
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
+import { nowIsoDate } from '../../../../app/utils/utils';
 import { expect, sinon } from '../../../utils/testUtils';
 
 describe('Question-page controller', () => {
@@ -20,12 +21,16 @@ describe('Question-page controller', () => {
     {
       id: 'id1',
       value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
         question: 'Tell us more about your children'
       }
     },
     {
       id: 'id2',
       value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
         question: 'Tell us more about your health issues'
       }
     }
@@ -35,7 +40,10 @@ describe('Question-page controller', () => {
     {
       id: 'id1',
       value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
         question: 'Tell us more about your children',
+        dateResponded: nowIsoDate(),
         answer: 'the answer',
         supportingEvidence: [
           {

@@ -146,6 +146,8 @@ describe('update-appeal-service', () => {
         {
           id: '1',
           value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
             question: 'the questions',
             answer: 'the answer',
             supportingEvidence: []
@@ -219,10 +221,12 @@ describe('update-appeal-service', () => {
         { inFlight: false });
     });
 
-    it('load draftClarifyingQuestion @only', async () => {
+    it('load draftClarifyingQuestion', async () => {
       const draftClarifyingQuestion: ClarifyingQuestion<Collection<SupportingDocument>> = {
         id: 'id',
         value: {
+          dateSent: '2020-04-23',
+          dueDate: '2020-05-07',
           question: 'the questions'
         }
       };
@@ -231,6 +235,8 @@ describe('update-appeal-service', () => {
         {
           id: 'id',
           value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
             question: 'the questions',
             answer: '',
             supportingEvidence: []
@@ -260,6 +266,58 @@ describe('update-appeal-service', () => {
           case_data: expectedCaseData
         });
       await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
+    });
+
+    it('load clarifyingQuestion', async () => {
+      expectedCaseData.draftClarifyingQuestionsAnswers = null;
+      expectedCaseData.directions = [
+        {
+          id: '3',
+          value: {
+            tag: 'requestClarifyingQuestions',
+            dateDue: '2020-05-07',
+            parties: 'appellant',
+            dateSent: '2020-04-23',
+            explanation: 'You need to answer some questions about your appeal.',
+            clarifyingQuestions: [
+              {
+                value: {
+                  question: 'the questions'
+                }
+              }
+            ],
+            previousDates: []
+          }
+        }
+      ];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingClarifyingQuestionsAnswers',
+          case_data: expectedCaseData
+        });
+
+      await updateAppealService.loadAppeal(req as Request);
+
+      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'the questions'
+          }
+        },
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Do you want to tell us anything else about your case?'
+          }
+        }
+      ];
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
     });
 

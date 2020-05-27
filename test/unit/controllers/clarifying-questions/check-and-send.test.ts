@@ -8,10 +8,10 @@ import {
 import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
+import * as summaryListUtils from '../../../../app/utils/summary-list';
+import { nowIsoDate } from '../../../../app/utils/utils';
 import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';
-
-import * as summaryListUtils from '../../../../app/utils/summary-list';
 
 describe('Clarifying Questions Check and Send controller', () => {
   let sandbox: sinon.SinonSandbox;
@@ -24,12 +24,16 @@ describe('Clarifying Questions Check and Send controller', () => {
     {
       id: 'id1',
       value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
         question: 'Tell us more about your children'
       }
     },
     {
       id: 'id2',
       value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
         question: 'Tell us more about your health issues',
         answer: 'an answer to the question'
       }
@@ -43,7 +47,7 @@ describe('Clarifying Questions Check and Send controller', () => {
       params: {},
       session: {
         appeal: {
-          draftClarifyingQuestionsAnswers: [ ...clarifyingQuestions ],
+          draftClarifyingQuestionsAnswers: JSON.parse(JSON.stringify(clarifyingQuestions)),
           clarifyingQuestionsAnswers: null
         }
       }
@@ -118,6 +122,9 @@ describe('Clarifying Questions Check and Send controller', () => {
   describe('postCheckAndSendPage', () => {
     it('should submit CQ and redirect to confirmation page', async () => {
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      clarifyingQuestions[0].value.dateResponded = nowIsoDate();
+      clarifyingQuestions[1].value.dateResponded = nowIsoDate();
 
       expect(req.session.appeal.clarifyingQuestionsAnswers).to.eql(clarifyingQuestions);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.be.undefined;

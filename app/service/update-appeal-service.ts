@@ -188,6 +188,8 @@ export default class UpdateAppealService {
           return {
             id: answer.id,
             value: {
+              dateSent: answer.value.dateSent,
+              dueDate: answer.value.dueDate,
               question: answer.value.question,
               answer: answer.value.answer || '',
               supportingEvidence: evidencesList
@@ -195,9 +197,16 @@ export default class UpdateAppealService {
           };
         });
       } else {
-        draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
+        draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ].map((question) => {
+          question.value.dateSent = requestClarifyingQuestionsDirection.value.dateSent;
+          question.value.dueDate = requestClarifyingQuestionsDirection.value.dateDue;
+
+          return question;
+        });
         draftClarifyingQuestionsAnswers.push({
           value: {
+            dateSent: requestClarifyingQuestionsDirection.value.dateSent,
+            dueDate: requestClarifyingQuestionsDirection.value.dateDue,
             question: i18n.pages.clarifyingQuestionAnythingElseQuestion.question
           }
         });

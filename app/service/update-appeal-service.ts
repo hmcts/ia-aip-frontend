@@ -162,19 +162,19 @@ export default class UpdateAppealService {
         timeExtensions.push(timeExt);
 
       });
+    }
 
-      if (caseData.directions) {
-        directions = caseData.directions.map(d => {
-          return {
-            id: d.id,
-            tag: d.value.tag,
-            parties: d.value.parties,
-            dateDue: d.value.dateDue,
-            dateSent: d.value.dateSent
-          } as Direction;
-        });
-        requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
-      }
+    if (caseData.directions) {
+      directions = caseData.directions.map(d => {
+        return {
+          id: d.id,
+          tag: d.value.tag,
+          parties: d.value.parties,
+          dateDue: d.value.dateDue,
+          dateSent: d.value.dateSent
+        } as Direction;
+      });
+      requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
     }
 
     if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {

@@ -64,6 +64,7 @@ export default class UpdateAppealService {
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+    let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
@@ -177,25 +178,9 @@ export default class UpdateAppealService {
       });
       requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
     }
-
     if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
-      if (caseData.draftClarifyingQuestionsAnswers) {
-        draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map(answer => {
-          let evidencesList: Evidence[] = [];
-          if (answer.value.supportingEvidence) {
-            evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
-          }
-          return {
-            id: answer.id,
-            value: {
-              dateSent: answer.value.dateSent,
-              dueDate: answer.value.dueDate,
-              question: answer.value.question,
-              answer: answer.value.answer || '',
-              supportingEvidence: evidencesList
-            }
-          };
-        });
+      if (caseData.draftClarifyingQuestionsAnswers && caseData.draftClarifyingQuestionsAnswers.length > 0) {
+        draftClarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.draftClarifyingQuestionsAnswers);
       } else {
         draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ].map((question) => {
           question.value.dateSent = requestClarifyingQuestionsDirection.value.dateSent;
@@ -211,6 +196,10 @@ export default class UpdateAppealService {
           }
         });
       }
+    }
+
+    if (caseData.clarifyingQuestionsAnswers) {
+      clarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers);
     }
 
     req.session.appeal = {
@@ -248,7 +237,8 @@ export default class UpdateAppealService {
       directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
-      draftClarifyingQuestionsAnswers
+      draftClarifyingQuestionsAnswers,
+      clarifyingQuestionsAnswers
     };
 
     req.session.appeal.askForMoreTime = {
@@ -413,6 +403,25 @@ export default class UpdateAppealService {
       caseData.clarifyingQuestionsAnswers = this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap);
     }
     return caseData;
+  }
+
+  private mapCcdClarifyingQuestionsToAppeal(clarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[]): ClarifyingQuestion<Evidence>[] {
+    return clarifyingQuestions.map(answer => {
+      let evidencesList: Evidence[] = [];
+      if (answer.value.supportingEvidence) {
+        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+      }
+      return {
+        id: answer.id,
+        value: {
+          dateSent: answer.value.dateSent,
+          dueDate: answer.value.dueDate,
+          question: answer.value.question,
+          answer: answer.value.answer || '',
+          supportingEvidence: evidencesList
+        }
+      };
+    });
   }
 
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {

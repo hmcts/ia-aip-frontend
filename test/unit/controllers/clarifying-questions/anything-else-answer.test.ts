@@ -94,7 +94,7 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', `${clarifyingQuestions.length}`));
     });
 
     it('should catch error and call next with error', async () => {

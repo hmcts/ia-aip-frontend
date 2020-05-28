@@ -20,8 +20,7 @@ function buildSectionObject(sectionId: string, taskIds: string[], req: Request) 
   }
 
   function isActive(taskId: string) {
-    return true;
-    // return req.session.appeal.cmaRequirements.tasks[taskId].active;
+    return req.session.appeal.cmaRequirements.tasks[taskId].active;
   }
 
   taskIds.forEach((taskId) => {

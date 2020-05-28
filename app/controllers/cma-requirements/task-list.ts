@@ -20,7 +20,8 @@ function buildSectionObject(sectionId: string, taskIds: string[], req: Request) 
   }
 
   function isActive(taskId: string) {
-    return req.session.appeal.cmaRequirements.tasks[taskId].active;
+    return true;
+    // return req.session.appeal.cmaRequirements.tasks[taskId].active;
   }
 
   taskIds.forEach((taskId) => {
@@ -65,7 +66,7 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
 
 function setupCmaRequirementsTaskListController(middleware: Middleware[]) {
   const router = Router();
-  router.get(paths.cmaRequirements.taskList, middleware, cmaRequirementsStatusUpdate, getTaskList);
+  router.get(paths.awaitingCmaRequirements.taskList, middleware, cmaRequirementsStatusUpdate, getTaskList);
   return router;
 }
 

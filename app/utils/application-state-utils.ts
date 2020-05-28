@@ -129,7 +129,7 @@ const APPEAL_STATE = {
       url: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.url
     },
     cta: {
-      url: paths.cmaRequirements.taskList,
+      url: paths.awaitingCmaRequirements.taskList,
       respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
       respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime
     },

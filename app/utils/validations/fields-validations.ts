@@ -155,6 +155,7 @@ function DOBValidation(obj: any, errors): boolean | ValidationErrors {
 
   return validate(toValidate, schema, true);
 }
+
 function appellantNamesValidation(obj: object) {
   const schema = Joi.object({
     givenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.givenNames }),
@@ -300,6 +301,50 @@ function askForMoreTimeValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function isDateInRange(dateFrom: string, dateTo: string, obj: any): boolean | ValidationErrors {
+
+  const errorMessage = `Enter a date between ${dateFrom} and ${dateTo}`;
+  const { year, month, day } = obj;
+  const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
+    moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
+
+  const toValidate = {
+    ...obj,
+    date
+  };
+
+  const schema = Joi.object({
+    day: Joi.number().empty('').required().integer().min(1).max(31).messages({
+      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
+      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    year: Joi.number().empty('').required().integer().min(1900).required().messages({
+      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    date: Joi.date().required().min(dateFrom).max(dateTo).messages({
+      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'date.min': errorMessage,
+      'date.max': errorMessage,
+      'date.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    })
+  }).unknown(true);
+
+  return validate(toValidate, schema, true);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -319,5 +364,6 @@ export {
   reasonForAppealDecisionValidation,
   yesOrNoRequiredValidation,
   DOBValidation,
-  askForMoreTimeValidation
+  askForMoreTimeValidation,
+  isDateInRange
 };

@@ -78,7 +78,7 @@ interface Appeal {
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
-  clarifyingQuestionsAnswers?:  ClarifyingQuestion<Evidence>[];
+  clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
 }
 
 interface AskForMoreTime {
@@ -153,9 +153,16 @@ interface AppealApplication {
 }
 
 interface CmaRequirements {
+  isEdit?: boolean;
   tasks?: {
     [key: string]: Task;
   };
+  datesToAvoid?: DateToAvoid[];
+}
+
+interface DateToAvoid {
+  date: AppealDate;
+  reason?: string;
 }
 
 interface ReasonsForAppeal {

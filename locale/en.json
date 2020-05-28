@@ -1053,22 +1053,43 @@
         "accessNeeds": {
           "id": "accessNeedsLink",
           "title": "Will you need an interpreter, step-free access or a hearing loop at the appointment?",
-          "path": "cmaRequirements.accessNeeds"
+          "path": "awaitingCmaRequirements.accessNeeds"
         },
         "otherNeeds": {
           "id": "otherNeedsLink",
           "title": "Will you need anything else at the appointment?",
-          "path": "cmaRequirements.otherNeeds"
+          "path": "awaitingCmaRequirements.otherNeeds"
         },
         "datesToAvoid": {
           "id": "datesToAvoidLink",
           "title": "Are there any dates you cannot go to the appointment?",
-          "path": "cmaRequirements.datesToAvoid"
+          "path": "awaitingCmaRequirements.datesToAvoidQuestion"
         },
         "checkAndSend": {
           "id": "checkAndSendLink",
           "title": "Check and send us your appointment needs",
-          "path": "cmaRequirements.checkAndSend"
+          "path": "awaitingCmaRequirements.checkAndSend"
+        }
+      },
+      "datesToAvoidSection": {
+        "questionPage": {
+          "title": "Are there any dates you cannot go to the appointment?",
+          "question": "Are there any dates you cannot go to the appointment?",
+          "description": "You will need to tell us why you cannot go to the appointment on the dates you include."
+        },
+        "enterADatePage": {
+          "title": "Enter a date",
+          "heading": "Enter a date",
+          "description": "Only include dates from {{ availableDates.from }} to {{ availableDates.to }}",
+          "hint": "For example, 12 11 2020"
+        },
+        "reason": {
+          "title": "Why can you not go to the appointment on this date?",
+          "heading": "Why can you not go to the appointment on this date?"
+        },
+        "addAnotherDateQuestion": {
+          "title": "Do you want to add another date you cannot go to the appointment?",
+          "heading": "Do you want to add another date you cannot go to the appointment?"
         }
       }
     },
@@ -1188,6 +1209,18 @@
     "clarifyingQuestions": {
       "emptyAnswer": "Please enter an answer for the question",
       "anythingElseEmptyAnswer": "Enter any other information you want tell us about your case"
+    },
+    "cmaRequirements": {
+      "datesToAvoid":{
+        "datesToAvoidAnswerRequired": "Select yes if there are any dates you cannot go to the appointment",
+        "dateRequired":  "Enter a date you cannot go to the appointment",
+        "reasonRequired":  "Enter details of why you cannot go to the appointment on this date",
+        "addAnotherDateAnswerRequired":  "Select yes if you want to add another date you cannot go to the appointment",
+        "date": {
+          "missing": "Enter a date you cannot go to the appointment",
+          "incorrectFormat": "Enter the date in the correct format"
+        }
+      }
     }
   },
   "components": {

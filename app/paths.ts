@@ -46,12 +46,15 @@ const paths = {
   clarifyingQuestionsAnswersSubmitted: {
     confirmation: '/clarifying-questions-sent'
   },
-  cmaRequirements: {
-    taskList: '/cma-requirements/appointment-needs',
+  awaitingCmaRequirements: {
+    taskList: '/appointment-needs',
     accessNeeds: 'TODO',
     otherNeeds: 'TODO',
-    datesToAvoid: 'TODO',
-    checkAndSend: '/cma-requirements/check-your-answers'
+    datesToAvoidQuestion: '/appointment-dates-avoid',
+    datesToAvoidEnterDate: '/appointment-dates-avoid-enter',
+    datesToAvoidReason: '/appointment-dates-avoid-reasons',
+    datesToAvoidAddAnotherDate: '/appointment-dates-avoid-new',
+    checkAndSend: '/appointment-check-answers'
   },
   common: {
     // index, start, idam endpoints and overview

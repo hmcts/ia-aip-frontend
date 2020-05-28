@@ -246,7 +246,7 @@ describe('application-state-utils', () => {
         cta: {
           respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
           respondByTextAskForMoreTime: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
-          url: '/cma-requirements/appointment-needs'
+          url: '/appointment-needs'
         },
         deadline: '21 May 2020',
         descriptionParagraphs: [

@@ -104,6 +104,13 @@
   }) }}
 {% endmacro %}
 
+{% macro saveAndContinueButton() %}
+  {{ govukButton({
+    text: "Save and continue"
+  }) }}
+{% endmacro %}
+
+
 {% block pageTitle %}
   {% if error or errors %}{{ i18n.errorTitlePrefix }} {% endif %}{{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}
 {% endblock %}

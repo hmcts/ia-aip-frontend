@@ -20,6 +20,10 @@ import { setupClarifyingQuestionPageController } from './controllers/clarifying-
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupDatesToAvoidAddAnotherDateController } from './controllers/cma-requirements/dates-to-avoid/add-another-date';
+import { setupDatesToAvoidEnterADateController } from './controllers/cma-requirements/dates-to-avoid/enter-a-date';
+import { setupDatesToAvoidQuestionController } from './controllers/cma-requirements/dates-to-avoid/question';
+import { setupDatesToAvoidReasonController } from './controllers/cma-requirements/dates-to-avoid/reason';
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
@@ -88,6 +92,10 @@ const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswe
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
 const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
+const cmaRequirementsDatesToAvoidQuestionController = setupDatesToAvoidQuestionController(middleware);
+const cmaRequirementsDatesToAvoidEnterADateController = setupDatesToAvoidEnterADateController(middleware, updateAppealService);
+const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonController(middleware, updateAppealService);
+const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
 
 // not protected by idam
 router.use(indexController);
@@ -129,6 +137,10 @@ router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
 
 router.use(cmaRequirementsTaskListController);
+router.use(cmaRequirementsDatesToAvoidQuestionController);
+router.use(cmaRequirementsDatesToAvoidEnterADateController);
+router.use(cmaRequirementsDatesToAvoidReasonController);
+router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

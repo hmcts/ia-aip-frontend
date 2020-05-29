@@ -3,7 +3,6 @@ import _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { getDeadline } from './event-deadline-date-finder';
-import { hasInflightTimeExtension } from './utils';
 
 const APPEAL_STATE = {
   'appealStarted': {

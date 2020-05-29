@@ -240,7 +240,10 @@ export default class UpdateAppealService {
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers
     };
-    req.session.appeal.askForMoreTime = {};
+
+    req.session.appeal.askForMoreTime = {
+      inFlight: hasInflightTimeExtension
+    };
   }
 
   private getDate(ccdDate): AppealDate {

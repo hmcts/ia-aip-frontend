@@ -46,8 +46,8 @@ module.exports = {
 
       I.seeInSource(`${i18n.pages.overviewPage.askedForMoreTime }`);
 
-      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description}`);
-      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText}`.replace('{{ applicationNextStep.deadline }}', respondByDate).trim());
+      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime}`.replace('{{ applicationNextStep.deadline }}', respondByDate).trim());
+      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime}`);
     });
 
     Then(/^I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'$/, () => {

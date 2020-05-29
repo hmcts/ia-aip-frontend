@@ -733,7 +733,8 @@ describe('update-appeal-service', () => {
                     month: '1',
                     day: '1'
                   },
-                  'description': 'Some evidence 1'
+                  'description': 'Some evidence 1',
+                  'tag': 'additionalEvidence'
                 }
               },
               personalDetails: {
@@ -773,7 +774,8 @@ describe('update-appeal-service', () => {
                     month: 1,
                     day: 1
                   },
-                  description: 'Some evidence 1'
+                  description: 'Some evidence 1',
+                  tag: 'additionalEvidence'
                 },
                 {
                   fileId: '00000000-0000-0000-0000-000000000002',
@@ -783,7 +785,8 @@ describe('update-appeal-service', () => {
                     month: '2',
                     day: '2'
                   },
-                  description: 'Some evidence 2'
+                  description: 'Some evidence 2',
+                  tag: 'additionalEvidence'
                 }
               ] as Evidence[]
             },
@@ -878,6 +881,7 @@ describe('update-appeal-service', () => {
             value: {
               dateUploaded: '2020-01-01',
               description: 'Some evidence 1',
+              tag: 'additionalEvidence',
               document: {
                 document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
                 document_filename: 'File1.png',
@@ -889,6 +893,7 @@ describe('update-appeal-service', () => {
             value: {
               dateUploaded: '2020-02-02',
               description: 'Some evidence 2',
+              tag: 'additionalEvidence',
               document: {
                 document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
                 document_filename: 'File2.png',

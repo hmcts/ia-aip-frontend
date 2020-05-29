@@ -263,22 +263,36 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
     });
 
-    function aTimeExtension(reason: string, documentFileName: string, status: string, state: string = 'awaitingReasonsForAppeal') {
-      return {
-        dateRequested: null,
-        reason: reason,
-        status: status,
-        state: state,
-        requestDate: '2020-01-01T00:00:00.000',
-        evidence: [ {
-          value: {
-            'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
-            'document_filename': documentFileName,
-            'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
-          }
-        } ]
-      };
-    }
+    it('load time extensions when time extension in flight', async () => {
+      expectedCaseData.timeExtensions = [{
+        id: '1',
+        value: {
+          requestDate: '2020-01-02',
+          reason: 'some reason',
+          status: 'submitted',
+          state: 'awaitingReasonsForAppeal',
+          evidence: [ {
+            value: {
+              'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+              'document_filename': 'expected_time_extension_evidence.png',
+              'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+            }
+          }]
+        }}];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+
+      expect(req.session.appeal.askForMoreTime).to.be.eql(
+        { inFlight: true });
+    });
+
   });
 
   describe('convert to ccd case', () => {

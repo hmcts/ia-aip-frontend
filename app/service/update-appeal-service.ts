@@ -397,6 +397,7 @@ export default class UpdateAppealService {
             value: {
               dateUploaded: toIsoDate(evidence.dateUploaded),
               description: evidence.description,
+              tag: 'additionalEvidence',
               document: {
                 document_filename: evidence.name,
                 document_url: documentLocationUrl,

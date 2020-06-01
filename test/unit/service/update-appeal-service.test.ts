@@ -774,8 +774,7 @@ describe('update-appeal-service', () => {
                     month: 1,
                     day: 1
                   },
-                  description: 'Some evidence 1',
-                  tag: 'additionalEvidence'
+                  description: 'Some evidence 1'
                 },
                 {
                   fileId: '00000000-0000-0000-0000-000000000002',
@@ -785,8 +784,7 @@ describe('update-appeal-service', () => {
                     month: 2,
                     day: 2
                   },
-                  description: 'Some evidence 2',
-                  tag: 'additionalEvidence'
+                  description: 'Some evidence 2'
                 }
               ] as Evidence[]
             },

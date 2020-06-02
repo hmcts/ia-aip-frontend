@@ -5,6 +5,7 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { nowIsoDate } from '../../utils/utils';
 
 function buildEvidencesList(evidences: Evidence[]) {
   return evidences.map((evidence: Evidence) => {
@@ -77,7 +78,10 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
-      req.session.appeal.clarifyingQuestionsAnswers = [ ...clarifyingQuestions ];
+      req.session.appeal.clarifyingQuestionsAnswers = [ ...clarifyingQuestions ].map((question => {
+        question.value.dateResponded = nowIsoDate();
+        return question;
+      }));
       delete req.session.appeal.draftClarifyingQuestionsAnswers;
       const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, req);
       req.session.appeal.appealStatus = updatedAppeal.state;

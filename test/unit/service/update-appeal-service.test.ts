@@ -146,6 +146,8 @@ describe('update-appeal-service', () => {
         {
           id: '1',
           value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
             question: 'the questions',
             answer: 'the answer',
             supportingEvidence: []
@@ -200,7 +202,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
       validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
       expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
-      expect(req.session.appeal.askForMoreTime).to.deep.eq({});
+      expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -215,30 +217,16 @@ describe('update-appeal-service', () => {
         });
       await updateAppealService.loadAppeal(req as Request);
 
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
+      expect(req.session.appeal.askForMoreTime).to.be.eql(
+        { inFlight: false });
     });
 
-    it('load time extensions when no inProgress time extensions', async () => {
-      expectedCaseData.timeExtensions = [
-        { value: aTimeExtension('some reason', 'expected_time_extension_evidence.png', 'submitted') }
-      ];
-
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'awaitingReasonsForAppeal',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
-
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
-    });
-
-    it('load draftClarifyingQuestion @only', async () => {
+    it('load draftClarifyingQuestion', async () => {
       const draftClarifyingQuestion: ClarifyingQuestion<Collection<SupportingDocument>> = {
         id: 'id',
         value: {
+          dateSent: '2020-04-23',
+          dueDate: '2020-05-07',
           question: 'the questions'
         }
       };
@@ -247,6 +235,8 @@ describe('update-appeal-service', () => {
         {
           id: 'id',
           value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
             question: 'the questions',
             answer: '',
             supportingEvidence: []
@@ -279,22 +269,88 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
     });
 
-    function aTimeExtension(reason: string, documentFileName: string, status: string, state: string = 'awaitingReasonsForAppeal') {
-      return {
-        dateRequested: null,
-        reason: reason,
-        status: status,
-        state: state,
-        requestDate: '2020-01-01T00:00:00.000',
-        evidence: [ {
+    it('load clarifyingQuestion', async () => {
+      expectedCaseData.draftClarifyingQuestionsAnswers = null;
+      expectedCaseData.directions = [
+        {
+          id: '3',
           value: {
-            'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
-            'document_filename': documentFileName,
-            'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+            tag: 'requestClarifyingQuestions',
+            dateDue: '2020-05-07',
+            parties: 'appellant',
+            dateSent: '2020-04-23',
+            explanation: 'You need to answer some questions about your appeal.',
+            clarifyingQuestions: [
+              {
+                value: {
+                  question: 'the questions'
+                }
+              }
+            ],
+            previousDates: []
           }
-        } ]
-      };
-    }
+        }
+      ];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingClarifyingQuestionsAnswers',
+          case_data: expectedCaseData
+        });
+
+      await updateAppealService.loadAppeal(req as Request);
+
+      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'the questions'
+          }
+        },
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Do you want to tell us anything else about your case?'
+          }
+        }
+      ];
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
+    });
+
+    it('load time extensions when time extension in flight', async () => {
+      expectedCaseData.timeExtensions = [{
+        id: '1',
+        value: {
+          requestDate: '2020-01-02',
+          reason: 'some reason',
+          status: 'submitted',
+          state: 'awaitingReasonsForAppeal',
+          evidence: [ {
+            value: {
+              'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+              'document_filename': 'expected_time_extension_evidence.png',
+              'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+            }
+          }]
+        }}];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+
+      expect(req.session.appeal.askForMoreTime).to.be.eql(
+        { inFlight: true });
+    });
+
   });
 
   describe('convert to ccd case', () => {

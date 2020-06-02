@@ -77,3 +77,22 @@ Feature: Business rules
     Then I sign in as a Case Officer and request HO Bundle
     Then I sign in as a Home Office Generic and upload the HO Bundle
     Then I sign in as a Case Officer and request the reasons for appeal
+
+    # Appellant
+    Given I sign in as the Appellant
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
+
+    Then I click continue
+    Then I should see the reasons for appeal decision page
+    When I visit reasons for appeal
+
+    Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
+    Then I should see the "supporting evidence question" page
+
+    When I select No and click continue
+    Then I should see the reasons for appeal CYA page
+
+    When I click "Send" button
+    Then I should see the reasons for appeal confirmation page
+    And I see the respond by date is 2 weeks in the future

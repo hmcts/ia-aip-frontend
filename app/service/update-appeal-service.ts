@@ -64,6 +64,7 @@ export default class UpdateAppealService {
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+    let hasInflightTimeExtension = false;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -133,6 +134,10 @@ export default class UpdateAppealService {
       timeExtensions = [];
 
       caseData.timeExtensions.forEach(timeExtension => {
+        if (timeExtension.value.status === 'submitted' && timeExtension.value.state === ccdCase.state) {
+          hasInflightTimeExtension = true;
+        }
+
         let timeExt: TimeExtension = {
           id: timeExtension.id,
           requestDate: timeExtension.value.requestDate,
@@ -159,6 +164,7 @@ export default class UpdateAppealService {
 
       });
     }
+
     if (caseData.directions) {
       directions = caseData.directions.map(d => {
         return {
@@ -182,6 +188,8 @@ export default class UpdateAppealService {
           return {
             id: answer.id,
             value: {
+              dateSent: answer.value.dateSent,
+              dueDate: answer.value.dueDate,
               question: answer.value.question,
               answer: answer.value.answer || '',
               supportingEvidence: evidencesList
@@ -189,9 +197,16 @@ export default class UpdateAppealService {
           };
         });
       } else {
-        draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ];
+        draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ].map((question) => {
+          question.value.dateSent = requestClarifyingQuestionsDirection.value.dateSent;
+          question.value.dueDate = requestClarifyingQuestionsDirection.value.dateDue;
+
+          return question;
+        });
         draftClarifyingQuestionsAnswers.push({
           value: {
+            dateSent: requestClarifyingQuestionsDirection.value.dateSent,
+            dueDate: requestClarifyingQuestionsDirection.value.dateDue,
             question: i18n.pages.clarifyingQuestionAnythingElseQuestion.question
           }
         });
@@ -235,7 +250,10 @@ export default class UpdateAppealService {
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers
     };
-    req.session.appeal.askForMoreTime = {};
+
+    req.session.appeal.askForMoreTime = {
+      inFlight: hasInflightTimeExtension
+    };
   }
 
   private getDate(ccdDate): AppealDate {

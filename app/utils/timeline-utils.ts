@@ -94,7 +94,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
 
   return {
-    appealArgumentSection: constructSection(appealArgumentSection, history, [ States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL ], req),
+    appealArgumentSection: constructSection(appealArgumentSection, history, [ States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL, States.AWAITING_CLARIFYING_QUESTIONS ], req),
     appealDetailsSection: constructSection(appealDetailsSection, history, null, req)
   };
 }

@@ -31,9 +31,9 @@ export function nowIsoDate() {
 export function nowAppealDate(): AppealDate {
   const now = new Date();
   return {
-    year: now.getFullYear(),
-    month: now.getMonth() + 1,
-    day: now.getDate()
+    year: now.getFullYear().toString(10),
+    month: (now.getMonth() + 1).toString(10),
+    day: now.getDate().toString(10)
   } as AppealDate;
 }
 

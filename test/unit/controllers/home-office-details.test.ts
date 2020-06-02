@@ -28,11 +28,8 @@ describe('Home Office Details Controller', function () {
       session: {
         appeal: {
           application: {
-            isAppealLate: false,
-            lateAppeal: {}
-          },
-          reasonsForAppeal: {},
-          hearingRequirements: {}
+            isAppealLate: false
+          }
         } as Appeal
       } as Partial<Express.Session>,
       cookies: {
@@ -107,7 +104,7 @@ describe('Home Office Details Controller', function () {
     });
   });
 
-  describe('postHomeOfficeDetails @only', () => {
+  describe('postHomeOfficeDetails', () => {
     it('should validate and redirect home-office/details.njk', async () => {
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -284,114 +281,182 @@ describe('Home Office Details Controller', function () {
   });
 
   describe('postDateLetterSent', () => {
-    it('should validate and redirect to Task list page and set isAppealLate flag to false', async () => {
+    describe('appeal on time', () => {
       const date = moment().subtract(14, 'd');
-      req.body['day'] = date.format('DD');
-      req.body['month'] = date.format('MM');
-      req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      let appeal: Appeal;
+      let day: string;
+      let month: string;
+      let year: string;
+      beforeEach(() => {
+        day = date.format('DD');
+        month = date.format('MM');
+        year = date.format('YYYY');
+        req.body['day'] = day;
+        req.body['month'] = month;
+        req.body['year'] = year;
+        appeal = {
+          ...req.session.appeal,
+          application: {
+            ...req.session.appeal.application,
+            dateLetterSent: {
+              day,
+              month,
+              year
+            }
+          }
+        };
+        updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+          application: {
+            dateLetterSent: {
+              day,
+              month,
+              year
+            },
+            isAppealLate: false
+          }
+        } as Appeal);
+      });
 
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
-      expect(req.session.appeal.application.isAppealLate).to.be.eq(false);
+      afterEach(() => {
+        sandbox.restore();
+      });
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      it('should validate and redirect to Task list page and set isAppealLate flag to false', async () => {
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        const { dateLetterSent } = req.session.appeal.application;
+
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(dateLetterSent.day).to.be.eql(day);
+        expect(dateLetterSent.month).to.be.eql(month);
+        expect(dateLetterSent.year).to.be.eql(year);
+        expect(req.session.appeal.application.isAppealLate).to.be.eq(false);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      });
+
+      it('should validate and redirect to CYA page and reset isEdit flag, and set isAppealLate flag to false', async () => {
+        req.session.appeal.application.isEdit = true;
+        appeal.application.isEdit = true;
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        const { dateLetterSent } = req.session.appeal.application;
+
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(dateLetterSent.day).to.be.eql(day);
+        expect(dateLetterSent.month).to.be.eql(month);
+        expect(dateLetterSent.year).to.be.eql(year);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+        expect(req.session.appeal.application.isEdit).to.be.undefined;
+        expect(req.session.appeal.application.isAppealLate).to.be.eq(false);
+      });
     });
 
-    it('should validate and redirect to Task list page and set isAppealLate flag to true', async () => {
+    describe('appeal out of time', () => {
       const date = moment().subtract(15, 'd');
-      req.body['day'] = date.format('DD');
-      req.body['month'] = date.format('MM');
-      req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      let appeal: Appeal;
+      let day: string;
+      let month: string;
+      let year: string;
+      beforeEach(() => {
+        day = date.format('DD');
+        month = date.format('MM');
+        year = date.format('YYYY');
+        req.body['day'] = date.format('DD');
+        req.body['month'] = date.format('MM');
+        req.body['year'] = date.format('YYYY');
+        appeal = {
+          ...req.session.appeal,
+          application: {
+            ...req.session.appeal.application,
+            dateLetterSent: {
+              day,
+              month,
+              year
+            },
+            isAppealLate: true
+          }
+        };
+        updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+          application: {
+            dateLetterSent: {
+              day,
+              month,
+              year
+            },
+            isAppealLate: true
+          }
+        } as Appeal);
+      });
 
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
-      expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
+      afterEach(() => {
+        sandbox.restore();
+      });
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
-    });
+      it('should validate and redirect to Task list page and set isAppealLate flag to true', async () => {
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        const { dateLetterSent } = req.session.appeal.application;
 
-    it('should validate and redirect to CYA page and reset isEdit flag, and set isAppealLate flag to false', async () => {
-      req.session.appeal.application.isEdit = true;
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(dateLetterSent.day).to.be.eql(day);
+        expect(dateLetterSent.month).to.be.eql(month);
+        expect(dateLetterSent.year).to.be.eql(year);
+        expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+      });
 
-      const date = moment().subtract(14, 'd');
-      req.body['day'] = date.format('DD');
-      req.body['month'] = date.format('MM');
-      req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      it('should validate and redirect to CYA page and reset isEdit flag and set isAppealLate flag to true', async () => {
+        req.session.appeal.application.isEdit = true;
+        appeal.application.isEdit = true;
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        const { dateLetterSent } = req.session.appeal.application;
 
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(dateLetterSent.day).to.be.eql(day);
+        expect(dateLetterSent.month).to.be.eql(month);
+        expect(dateLetterSent.year).to.be.eql(year);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+        expect(req.session.appeal.application.isEdit).to.be.undefined;
+        expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
+      });
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
-      expect(req.session.appeal.application.isAppealLate).to.be.eq(false);
+      it('should validate and set isAppealLate to true and redirect to task list page', async () => {
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        const { dateLetterSent } = req.session.appeal.application;
 
-    });
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(dateLetterSent.day).to.be.eql(day);
+        expect(dateLetterSent.month).to.be.eql(month);
+        expect(dateLetterSent.year).to.be.eql(year);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+        expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
+      });
 
-    it('should validate and redirect to CYA page and reset isEdit flag and set isAppealLate flag to true', async () => {
-      req.session.appeal.application.isEdit = true;
+      it('when save for later should validate and set isAppealLate to true redirect to overview page', async () => {
+        req.body.saveForLater = 'saveForLater';
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        const { dateLetterSent } = req.session.appeal.application;
 
-      const date = moment().subtract(15, 'd');
-      req.body['day'] = date.format('DD');
-      req.body['month'] = date.format('MM');
-      req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(dateLetterSent.day).to.be.eql(day);
+        expect(dateLetterSent.month).to.be.eql(month);
+        expect(dateLetterSent.year).to.be.eql(year);
+        expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
+        expect(res.redirect).to.have.been.calledWith(`${paths.common.overview}?saved`);
+      });
 
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
+      it('should validate and redirect to Appeal Late page and isEdit flag is not updated', async () => {
+        req.session.appeal.application.isEdit = true;
+        appeal.application.isEdit = true;
+        await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        const { dateLetterSent } = req.session.appeal.application;
 
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
-      expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
+        expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+        expect(dateLetterSent.day).to.be.eql(day);
+        expect(dateLetterSent.month).to.be.eql(month);
+        expect(dateLetterSent.year).to.be.eql(year);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+        expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
+        expect(req.session.appeal.application.isEdit).to.be.undefined;
+      });
 
-    });
-
-    it('should validate and set isAppealLate to true and redirect to task list page', async () => {
-      const date = moment().subtract(15, 'd');
-      req.body['day'] = date.format('DD');
-      req.body['month'] = date.format('MM');
-      req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
-      expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
-    });
-
-    it('when save for later should validate and set isAppealLate to true redirect to task list page', async () => {
-      const date = moment().subtract(15, 'd');
-      req.body['day'] = date.format('DD');
-      req.body['month'] = date.format('MM');
-      req.body['year'] = date.format('YYYY');
-      req.body.saveForLater = 'saveForLater';
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
-      expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
-
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
     });
 
     it('should redirect to task list when save for later and blank date', async () => {
@@ -403,28 +468,6 @@ describe('Home Office Details Controller', function () {
 
       expect(updateAppealService.submitEvent).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
-    });
-
-    it('should validate and redirect to Appeal Late page and isEdit flag is not updated', async () => {
-      req.session.appeal.application.isEdit = true;
-
-      const date = moment().subtract(15, 'd');
-      req.body['day'] = date.format('DD');
-      req.body['month'] = date.format('MM');
-      req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
-
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-
-      expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
-
     });
 
     it('should fail validation if the date is in the future and render error', async () => {

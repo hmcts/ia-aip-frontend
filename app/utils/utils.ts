@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import nl2br from 'nl2br';
 
 /**
@@ -36,14 +37,8 @@ export function nowAppealDate(): AppealDate {
   } as AppealDate;
 }
 
-export function hasInflightTimeExtension(appeal: Appeal) {
-  if (appeal.timeExtensions) {
-    return appeal.timeExtensions.filter(askForMoreTime => {
-      return askForMoreTime.status === 'submitted' &&
-        askForMoreTime.state === appeal.appealStatus;
-    }).length > 0;
-  }
-  return false;
+export function hasInflightTimeExtension(appeal: Appeal): boolean {
+  return _.get(appeal, 'askForMoreTime.inFlight', false);
 }
 
 export function formatTextForCYA(text: string) {

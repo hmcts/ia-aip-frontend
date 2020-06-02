@@ -53,3 +53,8 @@ Feature: Overview page
     Given I have logged in as an appellant in state "awaitingReasonsForAppeal with time extensions"
     When I visit the overview page
     Then I should see the 'do this next section' for 'Awaiting reasons for appeal with time extensions' with respond by date '01 January 2020'
+
+  Scenario: Awaiting Clarifying Questions appeal with time extension
+    Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers with time extensions"
+    When I visit the overview page
+    Then I should see the 'do this next section' for 'Awaiting clarifying questions with time extensions' with respond by date '02 May 2020'

@@ -96,24 +96,26 @@ describe('utils', () => {
       expect(inflightTimeExtension).to.be.eq(false);
     });
 
-    it('does not have inflight appeals if previous time extension not submitted', () => {
-      const inflightTimeExtension = hasInflightTimeExtension({
-        timeExtensions: [{
-          status: 'rejected',
-          state: 'currentState'
-        }],
-        appealStatus: 'currentState'
-      } as Appeal);
+    it('should return default value if undefined', () => {
+      const inflightTimeExtension = hasInflightTimeExtension({} as Appeal);
+      expect(inflightTimeExtension).to.be.eq(false);
+    });
+
+    it('does not have inflight appeals', () => {
+      const inflightTimeExtension = hasInflightTimeExtension(
+        {
+          askForMoreTime: {
+            inFlight: false
+          }
+        } as Appeal);
       expect(inflightTimeExtension).to.be.eq(false);
     });
 
     it('has inflight appeal', () => {
       const inflightTimeExtension = hasInflightTimeExtension({
-        timeExtensions: [{
-          status: 'submitted',
-          state: 'currentState'
-        }],
-        appealStatus: 'currentState'
+        askForMoreTime: {
+          inFlight: true
+        }
       } as Appeal);
       expect(inflightTimeExtension).to.be.eq(true);
     });

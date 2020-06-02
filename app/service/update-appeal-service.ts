@@ -59,11 +59,12 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
-    let timeExtensions: TimeExtension[] = null;
+    let timeExtensions: TimeExtension[] = [];
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+    let hasInflightTimeExtension = false;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -133,6 +134,10 @@ export default class UpdateAppealService {
       timeExtensions = [];
 
       caseData.timeExtensions.forEach(timeExtension => {
+        if (timeExtension.value.status === 'submitted' && timeExtension.value.state === ccdCase.state) {
+          hasInflightTimeExtension = true;
+        }
+
         let timeExt: TimeExtension = {
           id: timeExtension.id,
           requestDate: timeExtension.value.requestDate,
@@ -159,6 +164,7 @@ export default class UpdateAppealService {
 
       });
     }
+
     if (caseData.directions) {
       directions = caseData.directions.map(d => {
         return {
@@ -234,7 +240,10 @@ export default class UpdateAppealService {
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers
     };
-    req.session.appeal.askForMoreTime = {};
+
+    req.session.appeal.askForMoreTime = {
+      inFlight: hasInflightTimeExtension
+    };
   }
 
   private getDate(ccdDate): AppealDate {

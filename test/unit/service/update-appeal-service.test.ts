@@ -141,8 +141,12 @@ describe('update-appeal-service', () => {
               }
             }]
           }}
-      ]
+      ],
+      isInterpreterServicesNeeded: 'false',
+      isHearingRoomNeeded: 'true',
+      isHearingLoopNeeded: 'true'
     };
+
   });
 
   afterEach(() => {
@@ -191,6 +195,9 @@ describe('update-appeal-service', () => {
       validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
       expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
       expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(undefined);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(undefined);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(undefined);
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -442,6 +449,11 @@ describe('update-appeal-service', () => {
         } as Partial<AppealApplication>,
         askForMoreTime: {
           reason: null
+        },
+        cmaRequirements: {
+          accessNeeds: {
+            isHearingRoomNeeded: null
+          }
         }
       } as Partial<Appeal>;
     });
@@ -456,7 +468,10 @@ describe('update-appeal-service', () => {
       emptyApplication.application.homeOfficeRefNumber = 'ref';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', homeOfficeReferenceNumber: 'ref' });
+      expect(caseData).eql({
+        journeyType: 'aip',
+        homeOfficeReferenceNumber: 'ref'
+      });
     });
 
     describe('converts home office letter date', () => {
@@ -709,16 +724,16 @@ describe('update-appeal-service', () => {
               },
               isAppealLate: true,
               lateAppeal: {
-                reason: 'a reason',
-                evidence: {
-                  name: 'somefile.png',
-                  fileId: '00000000-0000-0000-0000-000000000000',
-                  dateUploaded: {
-                    year: 2020,
-                    month: 1,
-                    day: 1
+                'reason': 'a reason',
+                'evidence': {
+                  'name': 'somefile.png',
+                  'fileId': '00000000-0000-0000-0000-000000000000',
+                  'dateUploaded': {
+                    'year': 2020,
+                    'month': 1,
+                    'day': 1
                   },
-                  description: 'Some evidence 1'
+                  'description': 'Some evidence 1'
                 }
               },
               personalDetails: {
@@ -798,12 +813,6 @@ describe('update-appeal-service', () => {
             askForMoreTime: {
               reason: 'ask for more time reason',
               evidence: []
-            },
-            cmaRequirements: {
-              isHearingLoopNeeded: 'yes',
-              interpreterLanguage: { language: 'Test', dialect: 'sample' },
-              isInterpreterServicesNeeded: 'yes',
-              isHearingRoomNeeded: 'no'
             }
           } as Appeal,
           ccdCaseId: caseId
@@ -889,13 +898,7 @@ describe('update-appeal-service', () => {
           }
         ],
         submitTimeExtensionEvidence: [],
-        submitTimeExtensionReason: 'ask for more time reason',
-        cmaRequirements: {
-          isHearingLoopNeeded: 'yes',
-          interpreterLanguage: { language: 'Test', dialect: 'sample' },
-          isInterpreterServicesNeeded: 'yes',
-          isHearingRoomNeeded: 'no'
-        }
+        submitTimeExtensionReason: 'ask for more time reason'
       };
     });
 

@@ -6,6 +6,7 @@ import {
   emailValidation,
   homeOfficeNumberValidation,
   reasonForAppealDecisionValidation,
+  selectedRequiredValidation,
   statementOfTruthValidation,
   textAreaValidation,
   yesOrNoRequiredValidation
@@ -466,6 +467,20 @@ describe('fields-validations', () => {
           href: '#askForMoreTime',
           key: 'askForMoreTime',
           text: 'Enter how much time you need and why you need it'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail validation and return "string.empty" ', () => {
+      const object = { 'language': '' };
+      const validationResult = selectedRequiredValidation(object, 'test');
+      const expectedResponse = {
+
+        language: {
+          href: '#language',
+          key: 'language',
+          text: 'test'
         }
       };
       expect(validationResult).to.deep.equal(expectedResponse);

@@ -78,7 +78,6 @@ interface Appeal {
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
-  cmaRequirements?: CMARequirements;
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
 
 }
@@ -156,9 +155,23 @@ interface AppealApplication {
 }
 
 interface CmaRequirements {
+  isEdit?: boolean;
   tasks?: {
     [key: string]: Task;
   };
+  accessNeeds?: AccessNeeds;
+}
+
+interface DateToAvoid {
+  date: AppealDate;
+  reason?: string;
+}
+
+interface AccessNeeds {
+  isInterpreterServicesNeeded?: boolean;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: boolean;
+  isHearingLoopNeeded?: boolean;
 }
 
 interface ReasonsForAppeal {
@@ -223,15 +236,8 @@ interface ClarifyingQuestion<T> {
   };
 }
 
-interface CMARequirements {
-  isInterpreterServicesNeeded?: string;
-  interpreterLanguage?: AdditionalLanguage;
-  isHearingRoomNeeded?: string;
-  isHearingLoopNeeded?: string;
-}
-
 interface AdditionalLanguage {
   language?: string;
-  dialect?: string;
+  languageDialect?: string;
 }
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

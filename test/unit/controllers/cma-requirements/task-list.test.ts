@@ -77,7 +77,7 @@ describe('Cma Requirements Task List Controller', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     const middleware = [];
     setupCmaRequirementsTaskListController(middleware);
-    expect(routerGetStub).to.have.been.calledWith(paths.cmaRequirements.taskList);
+    expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
   });
 
   it('getTaskList should render task-list.njk', () => {

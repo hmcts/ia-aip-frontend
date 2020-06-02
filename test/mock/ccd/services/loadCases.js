@@ -9,7 +9,9 @@ const usersToCaseData = {
   '5': [ mockData.partialAwaitingReasonsForAppealCaseData ],
   '6': [ mockData.clarifyingQuestionsCaseData],
   '7': [ mockData.awaitingReasonsForAppealCaseDataWithTimeExtension ],
-  '8': [ mockData.clarifyingQuestionsCaseDataWithTimeExtensions ]
+  '8': [ mockData.clarifyingQuestionsCaseDataWithTimeExtensions ],
+  '9': [ mockData.awaitingCmaRequirements ],
+
 };
 
 module.exports = {

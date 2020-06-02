@@ -1055,22 +1055,49 @@
         "accessNeeds": {
           "id": "accessNeedsLink",
           "title": "Will you need an interpreter, step-free access or a hearing loop at the appointment?",
-          "path": "cmaRequirements.accessNeeds"
+          "path": "awaitingCmaRequirements.accessNeeds"
         },
         "otherNeeds": {
           "id": "otherNeedsLink",
           "title": "Will you need anything else at the appointment?",
-          "path": "cmaRequirements.otherNeeds"
+          "path": "awaitingCmaRequirements.otherNeeds"
         },
         "datesToAvoid": {
           "id": "datesToAvoidLink",
           "title": "Are there any dates you cannot go to the appointment?",
-          "path": "cmaRequirements.datesToAvoid"
+          "path": "awaitingCmaRequirements.datesToAvoid"
         },
         "checkAndSend": {
           "id": "checkAndSendLink",
           "title": "Check and send us your appointment needs",
-          "path": "cmaRequirements.checkAndSend"
+          "path": "awaitingCmaRequirements.checkAndSend"
+        }
+      },
+      "accessNeedsSection": {
+        "accessNeedsPage": {
+          "pageTitle": "Your access needs",
+          "title": "Access needs",
+          "text": "If you need an interpreter or if you or anyone coming with you needs step-free access or a hearing loop, they will be provided at the appointment."
+        },
+        "additionalLanguagePage": {
+          "pageTitle": "Add language details",
+          "title": "Add language details",
+          "hint": "Dialect (Optional)",
+          "text": "A dialect is a form of a language spoken in a part of a country or by groups of people in a country."
+        },
+        "needInterpreterPage": {
+          "pageTitle": "Will you or anyone coming with you need an interpreter?",
+          "title": "Will you need an interpreter?"
+        },
+        "hearingLoopPage": {
+          "pageTitle": "Will you or anyone coming with you need a hearing loop?",
+          "title": "Will you or anyone coming with you need a hearing loop?",
+          "text": "A hearing loop is a sound system designed to help people who use hearing aids."
+        },
+        "stepFreeAccessPage": {
+          "pageTitle": "Will you or anyone coming with you need step-free access?",
+          "title": "Will you or anyone coming with you need step-free access?",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
         }
       }
     },
@@ -1084,31 +1111,6 @@
         "needMoreTime": "Need more time?",
         "saveAndAskMoreTime": "Save your answer and ask for more time"
       }
-    },
-    "accessNeedsPage": {
-      "pageTitle": "Your access needs",
-      "title": "Access needs",
-      "text": "If you need an interpreter or if you or anyone coming with you needs step-free access or a hearing loop. they will be provided at the appointment."
-    },
-    "additionalLanguagePage": {
-      "pageTitle": "Add language details",
-      "title": "Add language details",
-      "hint": "Dialect (Optional)",
-      "text": "A dialect is a form of a language spoken in a part of a country or by groups of people in a country"
-    },
-    "needInterpreterPage": {
-      "pageTitle": "Will you or anyone coming with you need an interpreter?",
-      "title": "Will you need an interpreter?"
-    },
-    "hearingLoopPage": {
-      "pageTitle": "Will you or anyone coming with you need a hearing loop?",
-      "title": "Will you or anyone coming with you need a hearing loop?",
-      "text": "A hearing loop is a sound system designed to help people who use hearing aids"
-    },
-    "stepFreeAccessPage": {
-      "pageTitle": "Will you or anyone coming with you need step-free access?",
-      "title": "Will you or anyone coming with you need step-free access?",
-      "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues"
     },
     "clarifyingQuestionAnythingElseQuestion": {
       "hint": "This could be something you haven't already told us or any new information that might affect your case.",
@@ -1216,11 +1218,15 @@
       "emptyAnswer": "Please enter an answer for the question",
       "anythingElseEmptyAnswer": "Enter any other information you want tell us about your case"
     },
-    "emptyAnswer": "Please enter an answer for the question",
-    "selectInterpreter": "Select yes if anyone will need an interpreter",
-    "addLanguage": "Select a language",
-    "stepFreeAccess": "Select yes if you or anyone coming with will you need step-free access",
-    "hearingLoop": "Select yes if you or anyone coming with you will need a hearing loop"
+    "cmaRequirements": {
+      "accessNeeds": {
+        "emptyAnswer": "Please enter an answer for the question",
+        "selectInterpreter": "Select yes if anyone will need an interpreter",
+        "addLanguage": "Select a language",
+        "stepFreeAccess": "Select yes if you or anyone coming with will you need step-free access",
+        "hearingLoop": "Select yes if you or anyone coming with you will need a hearing loop"
+      }
+    }
   },
   "components": {
     "evidenceList": {

@@ -1,5 +1,5 @@
 const awaitingCmaRequirements = {
-  'id': 3,
+  'id': 9,
   'jurisdiction': 'IA',
   'state': 'awaitingCmaRequirements',
   'version': 9,
@@ -30,7 +30,11 @@ const awaitingCmaRequirements = {
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',
     'homeOfficeReferenceNumber': 'A1234567',
-    'cmaRequirements': {}
+    'cmaRequirements': {},
+    "isHearingLoopNeeded": "",
+    "isHearingRoomNeeded": "",
+    "interpreterLanguage": {},
+    "isInterpreterServicesNeeded": "",
   }
 };
 

@@ -50,12 +50,19 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
       req.session.appeal = appealUpdated;
-      const nextPage = getNextPage(req.body, paths.appealStarted.letterSent);
-      editingMode ? res.redirect(paths.appealStarted.checkAndSend) : res.redirect(nextPage);
+
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterSent);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }
   };
+}
+
+function getRedirectPage(editingMode, editingModeRedirect, saveForLater, defaultRedirect) {
+  if (editingMode) return editingModeRedirect;
+  if (saveForLater) return `${paths.common.overview}?saved`;
+  return defaultRedirect;
 }
 
 function getDateLetterSent(req: Request, res: Response, next: NextFunction) {
@@ -92,22 +99,23 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
 
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
-
-      req.session.appeal.application['dateLetterSent'] = {
-        day,
-        month,
-        year
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          isAppealLate: diffInDays <= 14 ? false : true,
+          dateLetterSent: {
+            day,
+            month,
+            year
+          }
+        }
       };
-
-      if (diffInDays <= 14) {
-        req.session.appeal.application.isAppealLate = false;
-      } else {
-        req.session.appeal.application.isAppealLate = true;
-      }
-
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-
-      return getConditionalRedirectUrl(req, res, paths.appealStarted.taskList);
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }

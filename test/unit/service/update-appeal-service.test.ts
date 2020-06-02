@@ -163,7 +163,7 @@ describe('update-appeal-service', () => {
         case_data: expectedCaseData
       });
       await updateAppealService.loadAppeal(req);
-      expect(req.session.ccdCaseId).eq(caseId);
+      expect(req.session.appeal.ccdCaseId).eq(caseId);
       expect(req.session.appeal.application.appealType).eq('protection');
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
       expect(req.session.appeal.application.personalDetails.familyName).eq('Pedro');
@@ -718,20 +718,20 @@ describe('update-appeal-service', () => {
               homeOfficeRefNumber: 'newRef',
               appealType: 'appealType',
               dateLetterSent: {
-                year: 2019,
-                month: 12,
-                day: 11
+                year: '2019',
+                month: '12',
+                day: '11'
               },
               isAppealLate: true,
               lateAppeal: {
-                'reason': 'a reason',
-                'evidence': {
-                  'name': 'somefile.png',
-                  'fileId': '00000000-0000-0000-0000-000000000000',
-                  'dateUploaded': {
-                    'year': 2020,
-                    'month': 1,
-                    'day': 1
+                reason: 'a reason',
+                evidence: {
+                  name: 'somefile.png',
+                  fileId: '00000000-0000-0000-0000-000000000000',
+                  dateUploaded: {
+                    year: '2020',
+                    month: '1',
+                    day: '1'
                   },
                   'description': 'Some evidence 1'
                 }
@@ -740,9 +740,9 @@ describe('update-appeal-service', () => {
                 givenNames: 'givenNames',
                 familyName: 'familyName',
                 dob: {
-                  year: 1980,
-                  month: 1,
-                  day: 2
+                  year: '1980',
+                  month: '1',
+                  day: '2'
                 },
                 nationality: 'nationality',
                 address: {
@@ -779,9 +779,9 @@ describe('update-appeal-service', () => {
                   fileId: '00000000-0000-0000-0000-000000000002',
                   name: 'File2.png',
                   dateUploaded: {
-                    year: 2020,
-                    month: 2,
-                    day: 2
+                    year: '2020',
+                    month: '2',
+                    day: '2'
                   },
                   description: 'Some evidence 2'
                 }

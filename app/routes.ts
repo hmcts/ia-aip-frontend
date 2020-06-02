@@ -20,6 +20,7 @@ import { setupClarifyingQuestionPageController } from './controllers/clarifying-
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
@@ -86,6 +87,7 @@ const clarifyingQuestionsAnythingElseQuestionController = setupCQAnythingElseQue
 const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswerController(middleware, updateAppealService);
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
+const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
 
 // not protected by idam
 router.use(indexController);
@@ -125,6 +127,9 @@ router.use(clarifyingQuestionsAnythingElseQuestionController);
 router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
+
+router.use(cmaRequirementsTaskListController);
+
 router.use(detailViewersController);
 router.use(forbiddenController);
 

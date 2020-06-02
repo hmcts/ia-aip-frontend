@@ -53,6 +53,45 @@ function appealApplicationStatus(appeal: Appeal) {
   };
 }
 
+function cmaRequirementsStatus(appeal: Appeal) {
+  const accessNeeds: boolean = !!_.get(appeal, 'cmaRequirements.accessNeeds');
+
+  const accessNeedsTask: Task = {
+    saved: accessNeeds,
+    completed: accessNeeds,
+    active: true
+  };
+  const otherNeeds: boolean = !!_.get(appeal, 'cmaRequirements.otherNeeds');
+
+  const otherNeedsTask: Task = {
+    saved: otherNeeds,
+    completed: otherNeeds,
+    active: accessNeedsTask.completed
+  };
+
+  const datesToAvoid: boolean = !!_.get(appeal, 'cmaRequirements.datesToAvoid');
+
+  const datesToAvoidTask: Task = {
+    saved: datesToAvoid,
+    completed: datesToAvoid,
+    active: otherNeedsTask.completed
+  };
+
+  const checkAndSend: Task = {
+    saved: false,
+    completed: false,
+    active: datesToAvoidTask.completed
+  };
+
+  return {
+    accessNeeds: accessNeedsTask,
+    otherNeeds: otherNeedsTask,
+    datesToAvoid: datesToAvoidTask,
+    checkAndSend
+  };
+}
+
 export {
-  appealApplicationStatus
+  appealApplicationStatus,
+  cmaRequirementsStatus
 };

@@ -1,5 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { applicationStatusUpdate, checkSession, initSession, logSession } from '../../../app/middleware/session-middleware';
+import {
+  applicationStatusUpdate,
+  checkSession,
+  cmaRequirementsStatusUpdate,
+  initSession,
+  logSession
+} from '../../../app/middleware/session-middleware';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
@@ -57,10 +63,12 @@ describe('session-middleware', () => {
 
   it('initSession', async () => {
     const appealApplicationStatusStub = sandbox.stub(taskUtils, 'appealApplicationStatus');
+    const cmaRequirementsStatusStub = sandbox.stub(taskUtils, 'cmaRequirementsStatus');
     sandbox.stub(UpdateAppealService.prototype, 'loadAppeal');
     await initSession(req as Request, res as Response, next);
 
     expect(appealApplicationStatusStub).to.have.been.calledOnce;
+    expect(cmaRequirementsStatusStub).to.have.been.calledOnce;
     expect(next).to.have.been.calledOnce;
   });
 
@@ -69,6 +77,14 @@ describe('session-middleware', () => {
     applicationStatusUpdate(req as Request, res as Response, next);
 
     expect(appealApplicationStatusStub).to.have.been.calledOnce;
+    expect(next).to.have.been.calledOnce;
+  });
+
+  it('cmaRequirementsStatusUpdate', () => {
+    const cmaRequirementsStatusStub = sandbox.stub(taskUtils, 'cmaRequirementsStatus');
+    cmaRequirementsStatusUpdate(req as Request, res as Response, next);
+
+    expect(cmaRequirementsStatusStub).to.have.been.calledOnce;
     expect(next).to.have.been.calledOnce;
   });
 

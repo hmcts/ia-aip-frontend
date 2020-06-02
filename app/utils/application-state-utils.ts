@@ -119,6 +119,25 @@ const APPEAL_STATE = {
       respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime
     },
     allowedAskForMoreTime: true
+  },
+  'awaitingCmaRequirements': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description,
+      i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description2
+    ],
+    descriptionParagraphsAskForMoreTime: [
+      i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.url
+    },
+    cta: {
+      url: paths.cmaRequirements.taskList,
+      respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
+      respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime
+    },
+    allowedAskForMoreTime: true
   }
 };
 
@@ -165,23 +184,7 @@ function getAppealApplicationNextStep(req: Request) {
     };
   }
 
-  // TODO: Remove this, should get history from the session and loaded at login from events endpoint in ccd
-  const history = {
-    appealStarted: {
-      event: 'appealStarted',
-      date: req.session.appeal.appealCreatedDate
-    },
-    appealSubmitted: {
-      event: 'appealSubmitted',
-      date: req.session.appeal.appealLastModified
-    },
-    submitReasonsForAppeal: {
-      event: 'submitReasonsForAppeal',
-      date: req.session.appeal.appealLastModified
-    }
-  };
-
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, history, req);
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
 
   return doThisNextSection;
 }

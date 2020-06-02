@@ -19,12 +19,12 @@ import { setupClarifyingQuestionsConfirmationPage } from './controllers/clarifyi
 import { setupClarifyingQuestionPageController } from './controllers/clarifying-questions/question-page';
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
-import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
 import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
 import { setupMultimediaEquipmentReasonController } from './controllers/cma-requirements/other-needs/bring-equipment-reason';
 import { setupMultimediaEvidenceQuestionController } from './controllers/cma-requirements/other-needs/multimedia-evidence-question';
-import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
+import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
+import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';

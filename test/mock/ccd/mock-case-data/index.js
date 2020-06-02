@@ -10,6 +10,7 @@ module.exports = {
   appealSubmittedCaseData,
   partialAppealStartedCaseData,
   awaitingReasonsForAppealCaseData,
+  awaitingReasonsForAppealCaseDataWithTimeExtension,
   partialAwaitingReasonsForAppealCaseData,
   awaitingReasonsForAppealCaseDataWithTimeExtension,
   clarifyingQuestionsCaseData,

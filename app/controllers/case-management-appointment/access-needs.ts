@@ -4,13 +4,12 @@ import { Events } from '../../data/events';
 import { isoLanguages } from '../../data/isoLanguages';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { selectedRequiredValidation, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
 const yesOrNoOption = (answer: string) => [
-  { text: 'No', value: 'no', checked: answer === 'no' },
-  { text: 'Yes', value: 'yes', checked: answer === 'yes' }
+  { text: 'Yes', value: 'yes', checked: answer === 'yes' },
+  { text: 'No', value: 'no', checked: answer === 'no' }
 ];
 
 function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
@@ -25,11 +24,17 @@ function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
 
 function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const { cmaRequirements } = req.session.appeal;
-    const answer = cmaRequirements && cmaRequirements.isInterpreterServicesNeeded || null;
-    return res.render('case-management-appointment/need-interpreter.njk', {
-      list: yesOrNoOption(answer),
-      previousPage: paths.awaitingCmaRequirements.accessNeeds
+    const { isInterpreterServicesNeeded } = req.session.appeal;
+    const answer = isInterpreterServicesNeeded || null;
+    return res.render('templates/radio-question-page.njk', {
+      previousPage: paths.awaitingCmaRequirements.accessNeeds,
+      formAction: paths.awaitingCmaRequirements.needInterpreter,
+      pageTitle: i18n.pages.needInterpreterPage.pageTitle,
+      saveAndContinue: true,
+      question: {
+        options: yesOrNoOption(answer),
+        title: i18n.pages.needInterpreterPage.title
+      }
     });
   } catch (error) {
     next(error);
@@ -38,28 +43,31 @@ function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction)
 function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { cmaRequirements } = req.session.appeal;
-      const answer = cmaRequirements && cmaRequirements.isInterpreterServicesNeeded || null;
-      const validation = yesOrNoRequiredValidation(req.body,i18n.validationErrors.selectInterpreter);
+      const { isInterpreterServicesNeeded } = req.session.appeal;
+      const answer = isInterpreterServicesNeeded || null;
+      const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.selectInterpreter);
       if (validation) {
-        return res.render('case-management-appointment/need-interpreter.njk', {
-          list: yesOrNoOption(answer),
+        return res.render('templates/radio-question-page.njk', {
+          previousPage: paths.awaitingCmaRequirements.accessNeeds,
+          formAction: paths.awaitingCmaRequirements.needInterpreter,
+          pageTitle: i18n.pages.needInterpreterPage.pageTitle,
+          saveAndContinue: true,
+          question: {
+            options: yesOrNoOption(answer),
+            title: i18n.pages.needInterpreterPage.title,
+            name: 'answer'
+          },
           errors: validation,
-          errorList: Object.values(validation),
-          previousPage:  paths.awaitingCmaRequirements.accessNeeds
+          errorList: Object.values(validation)
         });
       }
-      req.session.appeal.cmaRequirements = {
-        ...req.session.appeal.cmaRequirements,
-        isInterpreterServicesNeeded: req.body.answer
-      };
+      req.session.appeal.isInterpreterServicesNeeded = req.body.answer;
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       if (req.body.answer === 'no') {
         return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.stepFreeAccess);
       } else {
         return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.additionalLanguage);
       }
-
     } catch (error) {
       next(error);
     }
@@ -89,12 +97,9 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.taskList
         });
       }
-      req.session.appeal.cmaRequirements = {
-        ...req.session.appeal.cmaRequirements,
-        interpreterLanguage: {
-          language: req.body.language,
-          dialect: req.body.dialect
-        }
+      req.session.appeal.interpreterLanguage = {
+        language: req.body.language,
+        dialect: req.body.dialect
       };
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.stepFreeAccess);
@@ -107,13 +112,20 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
 
 function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const { cmaRequirements } = req.session.appeal;
-    const backButton = cmaRequirements.isInterpreterServicesNeeded === 'yes' ? paths.awaitingCmaRequirements.additionalLanguage : paths.awaitingCmaRequirements.needInterpreter;
-    const answer = cmaRequirements && cmaRequirements.isHearingRoomNeeded || null;
-    return res.render('case-management-appointment/step-free-access.njk', {
+    const { isHearingRoomNeeded, isInterpreterServicesNeeded } = req.session.appeal;
+    const backButton = isInterpreterServicesNeeded === 'yes' ? paths.awaitingCmaRequirements.additionalLanguage : paths.awaitingCmaRequirements.needInterpreter;
+    const answer = isHearingRoomNeeded || null;
+    return res.render('templates/radio-question-page.njk', {
       previousPage: backButton,
-      list: yesOrNoOption(answer)
-
+      formAction:  paths.awaitingCmaRequirements.stepFreeAccess,
+      pageTitle: i18n.pages.stepFreeAccessPage.pageTitle,
+      saveAndContinue: true,
+      question: {
+        options: yesOrNoOption(answer),
+        title: i18n.pages.stepFreeAccessPage.title,
+        hint: i18n.pages.stepFreeAccessPage.text,
+        name: 'answer'
+      }
     });
   } catch (error) {
     next(error);
@@ -123,27 +135,29 @@ function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) 
 function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { cmaRequirements } = req.session.appeal;
-      const backButton = cmaRequirements.isInterpreterServicesNeeded === 'yes' ? paths.awaitingCmaRequirements.additionalLanguage : paths.awaitingCmaRequirements.needInterpreter;
-      const answer = cmaRequirements && cmaRequirements.isHearingRoomNeeded || null;
+      const { isHearingRoomNeeded, isInterpreterServicesNeeded } = req.session.appeal;
+      const backButton = isInterpreterServicesNeeded === 'yes' ? paths.awaitingCmaRequirements.additionalLanguage : paths.awaitingCmaRequirements.needInterpreter;
+      const answer = isHearingRoomNeeded || null;
       const validation = yesOrNoRequiredValidation(req.body,i18n.validationErrors.stepFreeAccess);
       if (validation) {
-        return res.render('case-management-appointment/step-free-access.njk', {
-          errors: validation,
-          errorList: Object.values(validation),
+        return res.render('templates/radio-question-page.njk', {
           previousPage: backButton,
-          list: yesOrNoOption(answer)
-
+          formAction:  paths.awaitingCmaRequirements.stepFreeAccess,
+          pageTitle: i18n.pages.stepFreeAccessPage.pageTitle,
+          saveAndContinue: true,
+          question: {
+            options: yesOrNoOption(answer),
+            title: i18n.pages.stepFreeAccessPage.title,
+            hint: i18n.pages.stepFreeAccessPage.text,
+            name: 'answer'
+          },
+          errors: validation,
+          errorList: Object.values(validation)
         });
       }
-
-      req.session.appeal.cmaRequirements = {
-        ...req.session.appeal.cmaRequirements,
-        isHearingRoomNeeded: req.body.answer
-      };
+      req.session.appeal.isHearingRoomNeeded = req.body.answer;
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.hearingLoop);
-
     } catch (error) {
       next(error);
     }
@@ -152,11 +166,19 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
 
 function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const { cmaRequirements } = req.session.appeal;
-    const answer = cmaRequirements && cmaRequirements.isHearingLoopNeeded || null;
-    return res.render('case-management-appointment/hearing-loop.njk', {
+    const { isHearingLoopNeeded } = req.session.appeal;
+    const answer = isHearingLoopNeeded || null;
+    return res.render('templates/radio-question-page.njk', {
       previousPage: paths.awaitingCmaRequirements.stepFreeAccess,
-      list: yesOrNoOption(answer)
+      formAction:  paths.awaitingCmaRequirements.hearingLoop,
+      pageTitle: i18n.pages.hearingLoopPage.pageTitle,
+      saveAndContinue: true,
+      question: {
+        options: yesOrNoOption(answer),
+        title: i18n.pages.hearingLoopPage.title,
+        hint: i18n.pages.hearingLoopPage.text,
+        name: 'answer'
+      }
     });
   } catch (error) {
     next(error);
@@ -166,24 +188,27 @@ function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
 function postHearingLoopPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { cmaRequirements } = req.session.appeal;
-      const answer = cmaRequirements && cmaRequirements.isHearingLoopNeeded || null;
+      const { isHearingLoopNeeded } = req.session.appeal;
+      const answer = isHearingLoopNeeded || null;
       const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.hearingLoop);
       if (validation) {
-        return res.render('case-management-appointment/hearing-loop.njk', {
-          errors: validation,
-          errorList: Object.values(validation),
+        return res.render('templates/radio-question-page.njk', {
           previousPage: paths.awaitingCmaRequirements.stepFreeAccess,
-          list: yesOrNoOption(answer)
-
+          formAction:  paths.awaitingCmaRequirements.hearingLoop,
+          pageTitle: i18n.pages.hearingLoopPage.pageTitle,
+          saveAndContinue: true,
+          question: {
+            options: yesOrNoOption(answer),
+            title: i18n.pages.hearingLoopPage.title,
+            hint: i18n.pages.hearingLoopPage.text,
+            name: 'answer'
+          },
+          errors: validation,
+          errorList: Object.values(validation)
         });
       }
-      req.session.appeal.cmaRequirements = {
-        ...req.session.appeal.cmaRequirements,
-        isHearingLoopNeeded: req.body.answer
-      };
+      req.session.appeal.isHearingLoopNeeded = req.body.answer;
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      await updateAppealService.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeeds);
 
     } catch (error) {

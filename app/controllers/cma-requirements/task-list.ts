@@ -65,7 +65,7 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
 
 function setupCmaRequirementsTaskListController(middleware: Middleware[]) {
   const router = Router();
-  router.get(paths.cmaRequirements.taskList, middleware, cmaRequirementsStatusUpdate, getTaskList);
+  router.get(paths.awaitingCmaRequirements.taskList, middleware, cmaRequirementsStatusUpdate, getTaskList);
   return router;
 }
 

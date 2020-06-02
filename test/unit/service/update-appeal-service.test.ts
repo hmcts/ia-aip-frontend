@@ -741,12 +741,11 @@ describe('update-appeal-service', () => {
               reason: 'ask for more time reason',
               evidence: []
             },
-            cmaRequirements: {
-              isHearingLoopNeeded: 'yes',
-              interpreterLanguage: { language: 'Test', dialect: 'sample' },
-              isInterpreterServicesNeeded: 'yes',
-              isHearingRoomNeeded: 'no'
-            }
+            isHearingLoopNeeded: 'yes',
+            interpreterLanguage: { language: 'Test', dialect: 'sample' },
+            isInterpreterServicesNeeded: 'yes',
+            isHearingRoomNeeded: 'no'
+
           } as Appeal,
           ccdCaseId: caseId
         } as Partial<Express.Session>
@@ -831,13 +830,7 @@ describe('update-appeal-service', () => {
           }
         ],
         submitTimeExtensionEvidence: [],
-        submitTimeExtensionReason: 'ask for more time reason',
-        cmaRequirements: {
-          isHearingLoopNeeded: 'yes',
-          interpreterLanguage: { language: 'Test', dialect: 'sample' },
-          isInterpreterServicesNeeded: 'yes',
-          isHearingRoomNeeded: 'no'
-        }
+        submitTimeExtensionReason: 'ask for more time reason'
       };
     });
 

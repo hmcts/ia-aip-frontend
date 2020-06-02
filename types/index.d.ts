@@ -78,7 +78,10 @@ interface Appeal {
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
-  cmaRequirements?: CMARequirements;
+  isInterpreterServicesNeeded?: string;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: string;
+  isHearingLoopNeeded?: string;
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
 
 }
@@ -221,13 +224,6 @@ interface ClarifyingQuestion<T> {
     answer?: string;
     supportingEvidence?: T[];
   };
-}
-
-interface CMARequirements {
-  isInterpreterServicesNeeded?: string;
-  interpreterLanguage?: AdditionalLanguage;
-  isHearingRoomNeeded?: string;
-  isHearingLoopNeeded?: string;
 }
 
 interface AdditionalLanguage {

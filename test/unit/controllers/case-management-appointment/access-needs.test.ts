@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { getAccessNeeds,getAdditionalLanguage,getHearingLoopPage, getNeedInterpreterPage, getStepFreeAccessPage, postAdditionalLanguage, postHearingLoopPage, postNeedInterpreterPage, postStepFreeAccessPage, setupAccessNeedsController } from '../../../../app/controllers/case-management-appointment/access-needs';
-import { Events } from '../../../../app/data/events';
 import { isoLanguages } from '../../../../app/data/isoLanguages';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -23,9 +22,7 @@ describe('case management appointment controller', () => {
     req = {
       session: {
         appeal: {
-          cmaRequirements: {
-            isInterpreterServicesNeeded: 'yes'
-          },
+          isInterpreterServicesNeeded: 'yes',
           application: {
             contactDetails: {}
           }
@@ -84,29 +81,49 @@ describe('case management appointment controller', () => {
     it('getHearingLoop should render get-hearing-loop.njk with no option loaded', () => {
       req.session.appeal.isInterpreterServicesNeeded = '';
       getHearingLoopPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-management-appointment/hearing-loop.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
         previousPage: paths.awaitingCmaRequirements.stepFreeAccess,
-        list
+        formAction: '/appointment-hearing-loop',
+        pageTitle: 'Will you or anyone coming with you need a hearing loop?',
+        question: {
+          hint: 'A hearing loop is a sound system designed to help people who use hearing aids',
+          name: 'answer',
+          options: [{ checked: false, text: 'No', value: 'no' }, { checked: false, text: 'Yes', value: 'yes' }],
+          title: 'Will you or anyone coming with you need a hearing loop?'
+        },
+        saveAndContinue: true
       });
     });
 
     it('getHearingLoop should render get-hearing-loop.njk', () => {
-      const expectedList = [{ checked:  false, text:  'No', value:  'no' }, { checked:  false, text:  'Yes', value:  'yes' }];
       getHearingLoopPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-management-appointment/hearing-loop.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
         previousPage: paths.awaitingCmaRequirements.stepFreeAccess,
-        list: expectedList
+        formAction: '/appointment-hearing-loop',
+        pageTitle: 'Will you or anyone coming with you need a hearing loop?',
+        question: {
+          hint: 'A hearing loop is a sound system designed to help people who use hearing aids',
+          name: 'answer',
+          options: [{ checked: false, text: 'No', value: 'no' },{ checked: false, text: 'Yes', value: 'yes' }],
+          title: 'Will you or anyone coming with you need a hearing loop?'
+        },
+        saveAndContinue: true
       });
     });
   });
 
   describe('getNeedInterpreterPage', () => {
     it('getNeedInterpreterPage should render getNeedInterpreterPage', () => {
-      const list = [ { checked: false, text: 'No', value: 'no' }, { checked: true, text: 'Yes', value: 'yes' }];
       getNeedInterpreterPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-management-appointment/need-interpreter.njk', {
-        list: list,
-        previousPage: paths.awaitingCmaRequirements.accessNeeds
+      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
+        formAction: '/appointment-interpreter',
+        pageTitle: 'Will you or anyone coming with you need an interpreter?',
+        previousPage: '/appointment-access-needs',
+        question: {
+          options: [{ checked: false, text: 'No', value: 'no' }, { checked: true, text: 'Yes', value: 'yes' }],
+          title: 'Will you need an interpreter?'
+        },
+        saveAndContinue: true
       });
     });
   });
@@ -114,9 +131,17 @@ describe('case management appointment controller', () => {
   describe('getStepFreeAccessPage', () => {
     it('getStepFreeAccessPage should render getStepFreeAccessPage', () => {
       getStepFreeAccessPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('case-management-appointment/step-free-access.njk', {
-        list: list,
-        previousPage: paths.awaitingCmaRequirements.additionalLanguage
+      expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
+        formAction: '/appointment-step-free-access',
+        previousPage: paths.awaitingCmaRequirements.additionalLanguage,
+        pageTitle: 'Will you or anyone coming with you need step-free access?',
+        question: {
+          hint: 'We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues',
+          name: 'answer',
+          options: [{ checked: false, text: 'No', value: 'no' }, { checked: false, text: 'Yes', value: 'yes' }],
+          title: 'Will you or anyone coming with you need step-free access?'
+        },
+        saveAndContinue: true
       });
     });
   });
@@ -137,23 +162,38 @@ describe('case management appointment controller', () => {
 
         await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(res.render).to.have.been.calledWith('case-management-appointment/step-free-access.njk', {
+        expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' }],
           errors: {  'answer': { href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' } },
           previousPage: paths.awaitingCmaRequirements.additionalLanguage,
-          list
+          formAction: '/appointment-step-free-access',
+          pageTitle: 'Will you or anyone coming with you need step-free access?',
+          question: {
+            hint: 'We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues',
+            name: 'answer',
+            options: [{ checked: false, text: 'No', value: 'no' }, { checked: false, text: 'Yes', value: 'yes' }],
+            title: 'Will you or anyone coming with you need step-free access?'
+          },
+          saveAndContinue: true
         });
       });
 
       it('should show validation error if no option is selected needsInterperter', async () => {
         req.body.answer = '';
-        req.session.appeal.cmaRequirements.isInterpreterServicesNeeded = '';
+        req.session.appeal.isInterpreterServicesNeeded = '';
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-        expect(res.render).to.have.been.calledWith('case-management-appointment/need-interpreter.njk', {
+        expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
           errors: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
+          formAction: '/appointment-interpreter',
+          pageTitle: 'Will you or anyone coming with you need an interpreter?',
           previousPage: paths.awaitingCmaRequirements.accessNeeds,
-          list
+          question: {
+            name: 'answer',
+            options: [{ checked: false, text: 'No', value: 'no' }, { checked: false, text: 'Yes', value: 'yes' }],
+            title: 'Will you need an interpreter?'
+          },
+          saveAndContinue: true
         });
       });
 
@@ -161,12 +201,19 @@ describe('case management appointment controller', () => {
         req.body.answer = '';
 
         await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-        expect(res.render).to.have.been.calledWith('case-management-appointment/hearing-loop.njk', {
+        expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' }],
           errors: { 'answer': { href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' } },
           previousPage: paths.awaitingCmaRequirements.stepFreeAccess,
-          list
+          formAction: '/appointment-hearing-loop',
+          pageTitle: 'Will you or anyone coming with you need a hearing loop?',
+          question: {
+            hint: 'A hearing loop is a sound system designed to help people who use hearing aids',
+            name: 'answer',
+            options: [{ checked: false, text: 'No', value: 'no' }, { checked: false, text: 'Yes', value: 'yes' }],
+            title: 'Will you or anyone coming with you need a hearing loop?'
+          },
+          saveAndContinue: true
         });
       });
 

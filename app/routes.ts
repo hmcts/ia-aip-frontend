@@ -17,7 +17,6 @@ import { setupCQAnythingElseAnswerController } from './controllers/clarifying-qu
 import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
 import { setupClarifyingQuestionsCheckSendController } from './controllers/clarifying-questions/check-and-send';
 import { setupClarifyingQuestionsConfirmationPage } from './controllers/clarifying-questions/confirmation-page';
-import { setupAccessNeedsController } from './controllers/case-management-appointment/access-needs';
 import { setupClarifyingQuestionPageController } from './controllers/clarifying-questions/question-page';
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
@@ -85,7 +84,6 @@ const clarifyingQuestionsListController = setupClarifyingQuestionsListController
 const clarifyingQuestionPageController = setupClarifyingQuestionPageController(middleware, updateAppealService);
 const clarifyingQuestionsSupportingEvidenceController = setupSupportingEvidenceQuestionController(middleware, { updateAppealService, documentManagementService });
 const clarifyingQuestionsSupportingEvidenceUploadController = setupClarifyingQuestionsSupportingEvidenceUploadController(middleware, { updateAppealService, documentManagementService });
-const caseManagementAppointment = setupAccessNeedsController(middleware, updateAppealService);
 const clarifyingQuestionsAnythingElseQuestionController = setupCQAnythingElseQuestionController(middleware, updateAppealService, documentManagementService);
 const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswerController(middleware, updateAppealService);
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);

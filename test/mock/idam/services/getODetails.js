@@ -10,6 +10,7 @@ const emailToUserId = {
   'clarifying-questions@example.com': '6',
   'awaitingReasonsForAppeal-with-time_extension@example.com': '7',
   'awaitingClarifyingQuestions-with-time_extension@example.com': '8',
+  'cma-requirements@example.com': '9',
   'setupcase@example.com': '999'
 };
 

@@ -62,8 +62,11 @@ export default class UpdateAppealService {
     let timeExtensions: TimeExtension[] = [];
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
-    const cmaRequirements = caseData.cmaRequirements || {};
     let requestClarifyingQuestionsDirection;
+    let isInterpreterServicesNeeded = caseData.isInterpreterServicesNeeded || '';
+    let interpreterLanguage = caseData.interpreterLanguage || {};
+    let isHearingRoomNeeded = caseData.isHearingRoomNeeded || '';
+    let isHearingLoopNeeded = caseData.isHearingLoopNeeded || '';
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
 
@@ -249,7 +252,10 @@ export default class UpdateAppealService {
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers,
-      cmaRequirements
+      isHearingLoopNeeded,
+      isHearingRoomNeeded,
+      interpreterLanguage,
+      isInterpreterServicesNeeded
 
     };
 
@@ -398,27 +404,20 @@ export default class UpdateAppealService {
         });
       }
 
-      caseData.cmaRequirements = {
-        interpreterLanguage: { dialect: '', language: '' },
-        isHearingLoopNeeded: '',
-        isHearingRoomNeeded: '',
-        isInterpreterServicesNeeded: ''
-      };
-
       if (appeal.reasonsForAppeal.uploadDate) {
         caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
       }
       if (_.has(appeal.cmaRequirements,'isHearingRoomNeeded')) {
-        caseData.cmaRequirements.isHearingRoomNeeded = appeal.cmaRequirements.isHearingRoomNeeded;
+        caseData.isHearingRoomNeeded = appeal.isHearingRoomNeeded;
       }
       if (_.has(appeal.cmaRequirements,'isHearingLoopNeeded')) {
-        caseData.cmaRequirements.isHearingLoopNeeded = appeal.cmaRequirements.isHearingLoopNeeded;
+        caseData.isHearingLoopNeeded = appeal.isHearingLoopNeeded;
       }
       if (_.has(appeal.cmaRequirements,'interpreterLanguage')) {
-        caseData.cmaRequirements.interpreterLanguage = appeal.cmaRequirements.interpreterLanguage;
+        caseData.interpreterLanguage = appeal.interpreterLanguage;
       }
       if (_.has(appeal.cmaRequirements,'isInterpreterServicesNeeded')) {
-        caseData.cmaRequirements.isInterpreterServicesNeeded = appeal.cmaRequirements.isInterpreterServicesNeeded;
+        caseData.isInterpreterServicesNeeded = appeal.isInterpreterServicesNeeded;
       }
     }
 

@@ -22,7 +22,11 @@
         error[question.name].text
       )
     }}
-    {{ continueButton() }}
+    {%  if saveAndContinue %}
+      {{ saveButtons() }}
+    {% else %}
+      {{ continueButton() }}
+    {% endif %}
   </form>
   {{ contactUs() }}
 {% endblock %}

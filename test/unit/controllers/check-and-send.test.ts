@@ -106,7 +106,7 @@ describe('Check and Send Controller', () => {
     } as Partial<Request>;
 
     updateAppealService = {
-      submitEvent: sandbox.stub().returns({
+      submitEventRefactored: sandbox.stub().returns({
         state: 'appealSubmitted',
         case_data: { appealReferenceNumber: 'PA/1234567' }
       })
@@ -167,6 +167,10 @@ describe('Check and Send Controller', () => {
   it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', async () => {
     req.session.appeal = createDummyAppealApplication();
     req.body = { statement: 'acceptance' };
+    updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      appealStatus: 'appealSubmitted',
+      appealReferenceNumber: 'PA/1234567'
+    } as Appeal);
     await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
@@ -187,6 +191,10 @@ describe('Check and Send Controller', () => {
     const error = new Error('an error');
     req.body = { statement: 'acceptance' };
     res.redirect = sandbox.stub().throws(error);
+    updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      appealStatus: 'appealSubmitted',
+      appealReferenceNumber: 'PA/1234567'
+    } as Appeal);
     await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
   });

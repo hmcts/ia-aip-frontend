@@ -9,7 +9,6 @@ import UpdateAppealService from '../service/update-appeal-service';
 import Logger from '../utils/logger';
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 
 async function initSession(req: Request, res: Response, next: NextFunction) {

@@ -48,24 +48,24 @@ describe('utils', () => {
 
   describe('nowAppealDate', () => {
     it('gets an appeal date for today', () => {
-      expect(nowAppealDate().year).to.be.eq(new Date().getFullYear());
-      expect(nowAppealDate().month).to.be.eq(new Date().getMonth() + 1);
-      expect(nowAppealDate().day).to.be.eq(new Date().getDate());
+      expect(nowAppealDate().year).to.be.eq(new Date().getFullYear().toString(10));
+      expect(nowAppealDate().month).to.be.eq((new Date().getMonth() + 1).toString(10));
+      expect(nowAppealDate().day).to.be.eq(new Date().getDate().toString(10));
     });
   });
 
   describe('toIsoDate', () => {
     it('converts date correctly', () => {
-      expect(toIsoDate({ year: 2020, month: 1, day: 1 })).to.be.eq('2020-01-01');
-      expect(toIsoDate({ year: 2020, month: 12, day: 30 })).to.be.eq('2020-12-30');
+      expect(toIsoDate({ year: '2020', month: '1', day: '1' })).to.be.eq('2020-01-01');
+      expect(toIsoDate({ year: '2020', month: '12', day: '30' })).to.be.eq('2020-12-30');
     });
 
     it('handles leap year', () => {
-      expect(toIsoDate({ year: 2020, month: 2, day: 29 })).to.be.eq('2020-02-29');
+      expect(toIsoDate({ year: '2020', month: '2', day: '29' })).to.be.eq('2020-02-29');
     });
 
     it('handles summer time year', () => {
-      expect(toIsoDate({ year: 2020, month: 3, day: 30 })).to.be.eq('2020-03-30');
+      expect(toIsoDate({ year: '2020', month: '3', day: '30' })).to.be.eq('2020-03-30');
     });
   });
 

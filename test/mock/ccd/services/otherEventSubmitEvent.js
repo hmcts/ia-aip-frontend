@@ -16,6 +16,10 @@ function getNextState(body) {
       return 'awaitingClarifyingQuestionsAnswers'
     case 'submitClarifyingQuestionAnswers':
       return 'clarifyingQuestionsAnswersSubmitted';
+    case 'submitCmaRequirements':
+      return 'awaitingCmaRequirements';
+    case 'editCmaRequirements':
+      return 'awaitingCmaRequirements';
     default:
       throw `Event type ${body.eventType} no next state set`
   }

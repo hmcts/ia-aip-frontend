@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.additionalLanguagePage.pageTitle | eval %}
+{% set pageTitleName = i18n.pages.cmaRequirements.accessNeedsSection.additionalLanguagePage.pageTitle | eval %}
 {% extends "layout.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
@@ -17,12 +17,12 @@
     {% endif %}
     {% call govukFieldset({
         legend: {
-            text: i18n.pages.additionalLanguagePage.title ,
+            text: i18n.pages.cmaRequirements.accessNeedsSection.additionalLanguagePage.title ,
             classes: "govuk-fieldset__legend--xl",
             isPageHeading: true
         }
     }) %}
-<form action="{{ paths.awaitingCmaRequirements.additionalLanguage }}?_csrf={{ csrfToken }}" method="post">
+<form action="{{ paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage }}?_csrf={{ csrfToken }}" method="post">
 
 {{ govukSelect({
             id: "language",
@@ -35,13 +35,13 @@
         }) }}
         {{ govukInput({
             label: {
-                text: i18n.pages.additionalLanguagePage.hint
+                text: i18n.pages.cmaRequirements.accessNeedsSection.additionalLanguagePage.hint
             },
             classes: "govuk-!-width-three-quarters",
             id: "dialect",
             name: "dialect",
             hint: {
-            text: i18n.pages.additionalLanguagePage.text
+            text: i18n.pages.cmaRequirements.accessNeedsSection.additionalLanguagePage.text
             }
 
         }) }}

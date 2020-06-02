@@ -709,16 +709,16 @@ describe('update-appeal-service', () => {
               },
               isAppealLate: true,
               lateAppeal: {
-                reason: 'a reason',
-                evidence: {
-                  name: 'somefile.png',
-                  fileId: '00000000-0000-0000-0000-000000000000',
-                  dateUploaded: {
-                    year: 2020,
-                    month: 1,
-                    day: 1
+                'reason': 'a reason',
+                'evidence': {
+                  'name': 'somefile.png',
+                  'fileId': '00000000-0000-0000-0000-000000000000',
+                  'dateUploaded': {
+                    'year': 2020,
+                    'month': 1,
+                    'day': 1
                   },
-                  description: 'Some evidence 1'
+                  'description': 'Some evidence 1'
                 }
               },
               personalDetails: {
@@ -798,12 +798,6 @@ describe('update-appeal-service', () => {
             askForMoreTime: {
               reason: 'ask for more time reason',
               evidence: []
-            },
-            cmaRequirements: {
-              isHearingLoopNeeded: 'yes',
-              interpreterLanguage: { language: 'Test', dialect: 'sample' },
-              isInterpreterServicesNeeded: 'yes',
-              isHearingRoomNeeded: 'no'
             }
           } as Appeal,
           ccdCaseId: caseId
@@ -889,13 +883,7 @@ describe('update-appeal-service', () => {
           }
         ],
         submitTimeExtensionEvidence: [],
-        submitTimeExtensionReason: 'ask for more time reason',
-        cmaRequirements: {
-          isHearingLoopNeeded: 'yes',
-          interpreterLanguage: { language: 'Test', dialect: 'sample' },
-          isInterpreterServicesNeeded: 'yes',
-          isHearingRoomNeeded: 'no'
-        }
+        submitTimeExtensionReason: 'ask for more time reason'
       };
     });
 

@@ -62,8 +62,11 @@ export default class UpdateAppealService {
     let timeExtensions: TimeExtension[] = [];
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
-    const cmaRequirements = caseData.cmaRequirements || {};
     let requestClarifyingQuestionsDirection;
+    let isInterpreterServicesNeeded: boolean = null;
+    let interpreterLanguage = null;
+    let isHearingRoomNeeded: boolean = null;
+    let isHearingLoopNeeded: boolean = null;
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
@@ -202,6 +205,21 @@ export default class UpdateAppealService {
       clarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers);
     }
 
+    if (caseData.isInterpreterServicesNeeded) {
+      isInterpreterServicesNeeded = this.yesNoToBool(caseData.isInterpreterServicesNeeded);
+    }
+
+    if (caseData.isHearingRoomNeeded) {
+      isHearingRoomNeeded = this.yesNoToBool(caseData.isHearingRoomNeeded);
+    }
+
+    if (caseData.isHearingLoopNeeded) {
+      isHearingLoopNeeded = this.yesNoToBool(caseData.isHearingLoopNeeded);
+    }
+    if (caseData.interpreterLanguage) {
+      interpreterLanguage = caseData.interpreterLanguage;
+    }
+
     req.session.appeal = {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
@@ -231,13 +249,20 @@ export default class UpdateAppealService {
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
       hearingRequirements: {},
-      cmaRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: [ ...this.documentMap ],
       directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers,
+      cmaRequirements: {
+        accessNeeds: {
+          isHearingLoopNeeded: isHearingLoopNeeded,
+          isHearingRoomNeeded: isHearingRoomNeeded,
+          interpreterLanguage: interpreterLanguage,
+          isInterpreterServicesNeeded: isInterpreterServicesNeeded
+        }
+      },
       clarifyingQuestionsAnswers
     };
 
@@ -386,27 +411,25 @@ export default class UpdateAppealService {
         });
       }
 
-      caseData.cmaRequirements = {
-        interpreterLanguage: { dialect: '', language: '' },
-        isHearingLoopNeeded: '',
-        isHearingRoomNeeded: '',
-        isInterpreterServicesNeeded: ''
-      };
-
       if (appeal.reasonsForAppeal.uploadDate) {
         caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
       }
-      if (_.has(appeal.cmaRequirements,'isHearingRoomNeeded')) {
-        caseData.cmaRequirements.isHearingRoomNeeded = appeal.cmaRequirements.isHearingRoomNeeded;
-      }
       if (_.has(appeal.cmaRequirements,'isHearingLoopNeeded')) {
-        caseData.cmaRequirements.isHearingLoopNeeded = appeal.cmaRequirements.isHearingLoopNeeded;
+        caseData.isHearingLoopNeeded = appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded === true ? 'Yes' : 'No';
+      }
+      if (_.has(appeal.cmaRequirements,'isHearingRoomNeeded')) {
+        caseData.isHearingRoomNeeded = appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded === true ? 'Yes' : 'No';
       }
       if (_.has(appeal.cmaRequirements,'interpreterLanguage')) {
-        caseData.cmaRequirements.interpreterLanguage = appeal.cmaRequirements.interpreterLanguage;
+        caseData.interpreterLanguage = [{
+          value: {
+            language: appeal.cmaRequirements.accessNeeds.interpreterLanguage.language,
+            languageDialect: appeal.cmaRequirements.accessNeeds.interpreterLanguage.languageDialect
+          }
+        }];
       }
       if (_.has(appeal.cmaRequirements,'isInterpreterServicesNeeded')) {
-        caseData.cmaRequirements.isInterpreterServicesNeeded = appeal.cmaRequirements.isInterpreterServicesNeeded;
+        caseData.isInterpreterServicesNeeded = appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded === true ? 'Yes' : 'No';
       }
     }
 

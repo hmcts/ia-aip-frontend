@@ -110,9 +110,9 @@ interface HistoryEvent {
 }
 
 interface AppealDate {
-  day: number;
-  month: number;
-  year: number;
+  day: string;
+  month: string;
+  year: string;
 }
 
 interface LateAppeal {
@@ -213,8 +213,8 @@ interface Direction {
 interface ClarifyingQuestion<T> {
   id?: string;
   value: {
-    dateSent: string;
-    dueDate: string;
+    dateSent?: string;
+    dueDate?: string;
     question: string;
     dateResponded?: string;
     answer?: string;

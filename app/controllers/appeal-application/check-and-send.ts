@@ -24,7 +24,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
-      [ appealApplication.dateLetterSent.day, moment.months(appealApplication.dateLetterSent.month - 1), appealApplication.dateLetterSent.year ],
+      [ appealApplication.dateLetterSent.day, moment.months(parseInt(appealApplication.dateLetterSent.month, 10) - 1), appealApplication.dateLetterSent.year ],
       paths.appealStarted.letterSent + editParameter,
       Delimiter.SPACE
     ),
@@ -36,7 +36,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.dob,
-      [ appealApplication.personalDetails.dob.day, moment.months(appealApplication.personalDetails.dob.month - 1), appealApplication.personalDetails.dob.year ],
+      [ appealApplication.personalDetails.dob.day, moment.months(parseInt(appealApplication.personalDetails.dob.month, 10) - 1), appealApplication.personalDetails.dob.year ],
       paths.appealStarted.dob + editParameter,
       Delimiter.SPACE
     ),
@@ -105,9 +105,10 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.taskList
         });
       }
-      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
-      req.session.appeal.appealStatus = updatedAppeal.state;
-      req.session.appeal.appealReferenceNumber = updatedAppeal.case_data.appealReferenceNumber;
+      const { appeal } = req.session;
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = appealUpdated;
       return res.redirect(paths.appealSubmitted.confirmation);
     } catch (error) {
       next(error);

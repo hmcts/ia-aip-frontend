@@ -86,7 +86,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
   const ccdService = updateAppealService.getCcdService();
-  const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.ccdCaseId, headers);
+  const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
   req.session.appeal.history = history;
 

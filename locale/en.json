@@ -1055,22 +1055,42 @@
         "accessNeeds": {
           "id": "accessNeedsLink",
           "title": "Will you need an interpreter, step-free access or a hearing loop at the appointment?",
-          "path": "cmaRequirements.accessNeeds"
+          "path": "awaitingCmaRequirements.accessNeeds"
         },
         "otherNeeds": {
           "id": "otherNeedsLink",
           "title": "Will you need anything else at the appointment?",
-          "path": "cmaRequirements.otherNeeds"
+          "path": "awaitingCmaRequirements.otherNeeds"
         },
         "datesToAvoid": {
           "id": "datesToAvoidLink",
           "title": "Are there any dates you cannot go to the appointment?",
-          "path": "cmaRequirements.datesToAvoid"
+          "path": "awaitingCmaRequirements.datesToAvoid"
         },
         "checkAndSend": {
           "id": "checkAndSendLink",
           "title": "Check and send us your appointment needs",
-          "path": "cmaRequirements.checkAndSend"
+          "path": "awaitingCmaRequirements.checkAndSend"
+        }
+      },
+      "otherNeedsSection": {
+        "startPage": {
+          "title": "Other needs",
+          "description": "If you have any other needs, they will be considered but it might not be possible to provide for them at the appointment."
+        },
+        "multimediaEvidence": {
+          "title": "Will you bring any multimedia evidence?",
+          "question": "Will you bring any multimedia evidence?",
+          "description": "For example, video or sound recordings."
+        },
+        "bringEquipment": {
+          "title": "Will you bring the equipment to play this evidence?",
+          "question": "Will you bring the equipment to play this evidence?",
+          "description": "For example, a laptop or DVD player."
+        },
+        "bringEquipmentReason": {
+          "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
+          "heading": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it"
         }
       }
     },
@@ -1190,6 +1210,13 @@
     "clarifyingQuestions": {
       "emptyAnswer": "Please enter an answer for the question",
       "anythingElseEmptyAnswer": "Enter any other information you want tell us about your case"
+    },
+    "cmaRequirements": {
+      "otherNeeds": {
+        "multimediaEvidenceAnswerRequired": "Select yes if you will bring any multimedia evidence",
+        "bringEquipmentAnswerRequired": "Select yes if you will bring the equipment to play this evidence",
+        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it"
+      }
     }
   },
   "components": {

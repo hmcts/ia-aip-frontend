@@ -46,6 +46,31 @@ const paths = {
   clarifyingQuestionsAnswersSubmitted: {
     confirmation: '/clarifying-questions-sent'
   },
+  awaitingCmaRequirements: {
+    taskList: '/appointment-needs',
+    accessNeeds: 'TODO',
+    otherNeeds: '/appointment-other-needs',
+    otherNeedsMultimediaEvidenceQuestion: '/appointment-multimedia-evidence',
+    otherNeedsMultimediaEquipmentQuestion: '/appointment-multimedia-evidence-equipment',
+    otherNeedsMultimediaEquipmentReason: '/appointment-multimedia-evidence-equipment-reasons',
+    otherNeedsSingleSexAppointment: '/appointment-single-sex',
+    otherNeedsSingleSexTypeAppointment: '/appointment-single-sex-type',
+    otherNeedsAllMaleAppointment: '/appointment-single-sex-type-male',
+    otherNeedsAllFemaleAppointment: '/appointment-single-sex-type-female',
+    otherNeedsPrivateAppointment: '/appointment-private',
+    otherNeedsPrivateAppointmentReason : '/appointment-private-reasons',
+    otherNeedsMentalHealth: '/appointment-physical-mental-health',
+    otherNeedsMentalHealthReason: '/appointment-physical-mental-health-reasons',
+    otherNeedsPastExperiences: '/appointment-past-experiences',
+    otherNeedsPastExperiencesReasons: '/appointment-past-experiences-reasons',
+    otherNeedsAnythingElse: '/appointment-anything-else',
+    otherNeedsAnythingElseReasons: '/appointment-anything-else-reasons',
+    datesToAvoidQuestion: '/appointment-dates-avoid',
+    datesToAvoidEnterDate: '/appointment-dates-avoid-enter',
+    datesToAvoidReason: '/appointment-dates-avoid-reasons',
+    datesToAvoidAddAnotherDate: '/appointment-dates-avoid-new',
+    checkAndSend: '/appointment-check-answers'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',
@@ -100,6 +125,7 @@ const paths = {
     moreHelp: '/appeal-help',
     evidenceToSupportAppeal: '/supporting-evidence',
     homeOfficeDocuments: '/home-office-documents',
+    whatToExpectAtCMA: '/home-office-documents',
 
     // Footer links
     cookies: '/cookie-policy',

@@ -20,6 +20,11 @@ import { setupClarifyingQuestionPageController } from './controllers/clarifying-
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
+import { setupMultimediaEquipmentReasonController } from './controllers/cma-requirements/other-needs/bring-equipment-reason';
+import { setupMultimediaEvidenceQuestionController } from './controllers/cma-requirements/other-needs/multimedia-evidence-question';
+import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
+import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
@@ -86,6 +91,11 @@ const clarifyingQuestionsAnythingElseQuestionController = setupCQAnythingElseQue
 const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswerController(middleware, updateAppealService);
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
+const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
+const cmaRequirementsStartPageController = setupCMARequirementsStartPageController(middleware);
+const cmaRequirementsMultimediaEvidenceQuestionController = setupMultimediaEvidenceQuestionController(middleware);
+const cmaRequirementsBringEquipmentQuestionController = setupBringMultimediaEquipmentQuestionController(middleware);
+const cmaRequirementsBringEquipmentReasonController = setupMultimediaEquipmentReasonController(middleware);
 
 // not protected by idam
 router.use(indexController);
@@ -125,6 +135,13 @@ router.use(clarifyingQuestionsAnythingElseQuestionController);
 router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
+
+router.use(cmaRequirementsTaskListController);
+router.use(cmaRequirementsStartPageController);
+router.use(cmaRequirementsMultimediaEvidenceQuestionController);
+router.use(cmaRequirementsBringEquipmentQuestionController);
+router.use(cmaRequirementsBringEquipmentReasonController);
+
 router.use(detailViewersController);
 router.use(forbiddenController);
 

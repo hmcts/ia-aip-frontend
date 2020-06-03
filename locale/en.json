@@ -1091,6 +1091,31 @@
         "bringEquipmentReason": {
           "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
           "heading": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it"
+        },
+        "singleSexAppointment": {
+          "title": "Will you need an all-female or all-male appointment?",
+          "question": "Will you need an all-female or all-male appointment?"
+        },
+        "singleSexTypeAppointment": {
+          "title": "What type of appointment will you need?",
+          "question": "What type of appointment will you need?"
+        },
+        "singleSexAppointmentAllMale": {
+          "title": "Tell us why you need an all-male appointment",
+          "heading": "Tell us why you need an all-male appointment"
+        },
+        "singleSexAppointmentAllFemale": {
+          "title": "Tell us why you need an all-female appointment",
+          "heading": "Tell us why you need an all-female appointment"
+        },
+        "privateAppointment": {
+          "title": "Will you need a private appointment?",
+          "question": "Will you need a private appointment?",
+          "description": "A private appointment means the public will not be allowed to attend."
+        },
+        "privateAppointmentReason": {
+          "title": "Tell us why you need a private appointment",
+          "heading": "Tell us why you need a private appointment"
         }
       }
     },
@@ -1215,7 +1240,12 @@
       "otherNeeds": {
         "multimediaEvidenceAnswerRequired": "Select yes if you will bring any multimedia evidence",
         "bringEquipmentAnswerRequired": "Select yes if you will bring the equipment to play this evidence",
-        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it"
+        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it",
+        "singleSexAppointmentRequired": "Select yes if you need an all-female or all-male appointment",
+        "singleSexTypeAppointmentRequired": "Select if you need an all-female or all-male appointment",
+        "singleSexAppointmentAllMaleReasonRequired": "Enter the reasons you need an all-male appointment",
+        "singleSexAppointmentAllFemaleReasonRequired": "Enter the reasons you need an all-female appointment",
+        "privateAppointmentAnswerRequired": "Select yes if you need a private appointment"
       }
     }
   },

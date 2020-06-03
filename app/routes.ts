@@ -22,6 +22,11 @@ import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './co
 import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
 import { setupMultimediaEquipmentReasonController } from './controllers/cma-requirements/other-needs/bring-equipment-reason';
 import { setupMultimediaEvidenceQuestionController } from './controllers/cma-requirements/other-needs/multimedia-evidence-question';
+import { setupPrivateAppointmentQuestionController } from './controllers/cma-requirements/other-needs/private-appointment-question';
+import { setupSingleSexAppointmentAllFemaleReasonController } from './controllers/cma-requirements/other-needs/single-sex-appointment-all-female-reason';
+import { setupSingleSexAppointmentAllMaleReasonController } from './controllers/cma-requirements/other-needs/single-sex-appointment-all-male-reason';
+import { setupSingleSexAppointmentQuestionController } from './controllers/cma-requirements/other-needs/single-sex-appointment-question';
+import { setupSingleSexTypeAppointmentQuestionController } from './controllers/cma-requirements/other-needs/single-sex-type-appointment-question';
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
@@ -93,6 +98,14 @@ const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendContro
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
 const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
 const cmaRequirementsStartPageController = setupCMARequirementsStartPageController(middleware);
+const cmaRequirementsMultimediaEvidenceQuestionController = setupMultimediaEvidenceQuestionController(middleware, updateAppealService);
+const cmaRequirementsBringEquipmentQuestionController = setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService);
+const cmaRequirementsBringEquipmentReasonController = setupMultimediaEquipmentReasonController(middleware, updateAppealService);
+const cmaRequirementsSingleSexAppointmentController = setupSingleSexAppointmentQuestionController(middleware, updateAppealService);
+const cmaRequirementsSingleSexTypeAppointmentController = setupSingleSexTypeAppointmentQuestionController(middleware, updateAppealService);
+const cmaRequirementsSingleSexReasonAllMaleAppointmentController = setupSingleSexAppointmentAllMaleReasonController(middleware, updateAppealService);
+const cmaRequirementsSingleSexReasonAllFemaleAppointmentController = setupSingleSexAppointmentAllFemaleReasonController(middleware, updateAppealService);
+const cmaRequirementsPrivateAppointmentController = setupPrivateAppointmentQuestionController(middleware, updateAppealService);
 const cmaRequirementsMultimediaEvidenceQuestionController = setupMultimediaEvidenceQuestionController(middleware);
 const cmaRequirementsBringEquipmentQuestionController = setupBringMultimediaEquipmentQuestionController(middleware);
 const cmaRequirementsBringEquipmentReasonController = setupMultimediaEquipmentReasonController(middleware);
@@ -141,6 +154,11 @@ router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsMultimediaEvidenceQuestionController);
 router.use(cmaRequirementsBringEquipmentQuestionController);
 router.use(cmaRequirementsBringEquipmentReasonController);
+router.use(cmaRequirementsSingleSexAppointmentController);
+router.use(cmaRequirementsSingleSexTypeAppointmentController);
+router.use(cmaRequirementsSingleSexReasonAllMaleAppointmentController);
+router.use(cmaRequirementsSingleSexReasonAllFemaleAppointmentController);
+router.use(cmaRequirementsPrivateAppointmentController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

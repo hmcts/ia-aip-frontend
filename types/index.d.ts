@@ -165,6 +165,12 @@ interface OtherNeeds {
   multimediaEvidence: boolean;
   bringOwnMultimediaEquipment: boolean;
   bringOwnMultimediaEquipmentReason: string;
+  singleSexAppointment: boolean;
+  singleSexTypeAppointment: string;
+  singleSexAppointmentReason: string;
+  privateAppointment: boolean;
+  singleSexAppointmentReason: boolean;
+
 }
 interface ReasonsForAppeal {
   applicationReason: string;

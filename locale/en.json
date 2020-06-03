@@ -1133,6 +1133,14 @@
         "pastExperiencesReasons": {
           "title": "Tell us how any past experiences that may affect you at the appointment",
           "heading": "Tell us how any past experiences that may affect you at the appointment"
+        },
+        "anythingElse": {
+          "title": "Will you need anything else at the appointment?",
+          "question": "Will you need anything else at the appointment?"
+        },
+        "anythingElseReasons": {
+          "title": "Tell us what you will need and why you need it",
+          "heading": "Tell us what you will need and why you need it"
         }
       }
     },
@@ -1267,7 +1275,9 @@
         "healthConditionsAnswerRequired": "Select yes if you have any physical or mental health conditions that may affect you at the appointment",
         "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the appointment",
         "pastExperiencesAnswerRequired": "Select yes if you have had any past experiences that may affect you at the appointment",
-        "pastExperiencesReasonRequired": "Enter details of how any past experiences that will affect you at the appointment"
+        "pastExperiencesReasonRequired": "Enter details of how any past experiences that will affect you at the appointment",
+        "anythingElseAnswerRequired": "Select yes if you need anything else at the appointment",
+        "anythingElseReasonRequired": "Enter details of what you will need and why you need it"
       }
     }
   },

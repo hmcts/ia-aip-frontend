@@ -174,7 +174,8 @@ interface OtherNeeds {
   healthConditionsReason: string;
   pastExperiences: boolean;
   pastExperiencesReason: string;
-
+  anythingElse: boolean;
+  anythingElseReason: string;
 }
 interface ReasonsForAppeal {
   applicationReason: string;

@@ -109,10 +109,14 @@ const APPEAL_STATE = {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description
     ],
+    descriptionParagraphsAskForMoreTime: [
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime
+    ],
     info: null,
     cta: {
       url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
-      respondByText: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText
+      respondByText: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText,
+      respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime
     },
     allowedAskForMoreTime: true
   },

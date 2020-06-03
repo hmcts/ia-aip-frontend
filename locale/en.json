@@ -353,11 +353,13 @@
         },
         "clarifyingQuestions": {
           "description": "You need to answer some questions about your appeal.",
+          "descriptionAskForMoreTime": "You might not get more time. You should still try to answer the Tribunal’s questions by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
           "respondByText": "You need to respond by {{ applicationNextStep.deadline }}."
         },
         "awaitingCmaRequirements": {
           "description": "You need to attend a case management appointment.",
-          "description2": "First, tell us if you will need anything at the appointment, like an interpreter or step free access.",
+          "description2": "First, tell us if you will need anything at the appointment, like an interpreter or step-free access.",
           "descriptionAskForMoreTime": "You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
           "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
           "info": {

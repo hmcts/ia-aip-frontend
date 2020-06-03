@@ -15,12 +15,16 @@ describe('Questions-list controller', () => {
     {
       id: 'id1',
       value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
         question: 'Tell us more about your children'
       }
     },
     {
       id: 'id2',
       value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
         question: 'Tell us more about your health issues'
       }
     }

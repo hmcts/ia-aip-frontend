@@ -251,7 +251,7 @@ describe('application-state-utils', () => {
         deadline: '21 May 2020',
         descriptionParagraphs: [
           'You need to attend a case management appointment.',
-          'First, tell us if you will need anything at the appointment, like an interpreter or step free access.'
+          'First, tell us if you will need anything at the appointment, like an interpreter or step-free access.'
         ],
         descriptionParagraphsAskForMoreTime: [
           'You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> if you can.'

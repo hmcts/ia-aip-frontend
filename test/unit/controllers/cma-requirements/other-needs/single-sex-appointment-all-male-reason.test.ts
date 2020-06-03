@@ -1,11 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
-
 import {
-  getMultimediaEquipmentReason, postMultimediaEquipmentReason,
-  setupMultimediaEquipmentReasonController
-} from '../../../../../app/controllers/cma-requirements/other-needs/bring-equipment-reason';
-import {
-  getSingleSexAppointmentAllMaleReason, postSingleSexAppointmentAllMaleReason,
+  getSingleSexAppointmentAllMaleReason,
+  postSingleSexAppointmentAllMaleReason,
   setupSingleSexAppointmentAllMaleReasonController
 } from '../../../../../app/controllers/cma-requirements/other-needs/single-sex-appointment-all-male-reason';
 import { paths } from '../../../../../app/paths';

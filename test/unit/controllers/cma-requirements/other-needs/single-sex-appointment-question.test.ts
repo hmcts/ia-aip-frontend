@@ -1,14 +1,14 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getBringMultimediaEquipmentQuestion,
-  postBringMultimediaEquipmentQuestion,
-  setupBringMultimediaEquipmentQuestionController
-} from '../../../../../app/controllers/cma-requirements/other-needs/bring-equipment-question';
+  getSingleSexAppointmentQuestion,
+  postSingleSexAppointmentQuestion,
+  setupSingleSexAppointmentQuestionController
+} from '../../../../../app/controllers/cma-requirements/other-needs/single-sex-appointment-question';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
-describe('CMA Requirements - Other Needs Section: Bring Equipment Question controller', () => {
+describe('CMA Requirements - Other Needs Section: Single sex appointment Question controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -40,31 +40,30 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
     sandbox.restore();
   });
 
-  describe('setupBringMultimediaEquipmentQuestionController', () => {
+  describe('setupSingleSexAppointmentQuestionController', () => {
     it('should setup routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
+      setupSingleSexAppointmentQuestionController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
+      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
     });
   });
 
-  describe('getBringMultimediaEquipmentQuestion', () => {
+  describe('getSingleSexAppointmentQuestion', () => {
     it('should render question page', () => {
 
-      getBringMultimediaEquipmentQuestion(req as Request, res as Response, next);
+      getSingleSexAppointmentQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        formAction: '/appointment-multimedia-evidence-equipment',
-        pageTitle: 'Will you bring the equipment to play this evidence?',
-        previousPage: '/appointment-other-needs',
+        formAction: '/appointment-single-sex',
+        pageTitle: 'Will you need an all-female or all-male appointment?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
-          description: 'For example, a laptop or DVD player.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you bring the equipment to play this evidence?'
+          title: 'Will you need an all-female or all-male appointment?'
         }
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
@@ -76,33 +75,32 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      getBringMultimediaEquipmentQuestion(req as Request, res as Response, next);
+      getSingleSexAppointmentQuestion(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postBringMultimediaEquipmentQuestion', () => {
+  describe('postSingleSexAppointmentQuestion', () => {
     it('should fail validation and render template with errors', async () => {
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postSingleSexAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         answer: {
           href: '#answer',
           key: 'answer',
-          text: 'Select yes if you will bring the equipment to play this evidence'
+          text: 'Select yes if you need an all-female or all-male appointment'
         }
       };
 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        formAction: '/appointment-multimedia-evidence-equipment',
-        pageTitle: 'Will you bring the equipment to play this evidence?',
-        previousPage: '/appointment-other-needs',
+        formAction: '/appointment-single-sex',
+        pageTitle: 'Will you need an all-female or all-male appointment?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you bring the equipment to play this evidence?',
-          description: 'For example, a laptop or DVD player.'
+          title: 'Will you need an all-female or all-male appointment?'
         }
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
@@ -110,25 +108,25 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postSingleSexAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.true;
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexAppointment).to.be.true;
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postSingleSexAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.false;
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexAppointment).to.be.false;
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postSingleSexAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

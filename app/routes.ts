@@ -24,6 +24,8 @@ import { setupMultimediaEquipmentReasonController } from './controllers/cma-requ
 import { setupHealthConditionsQuestionController } from './controllers/cma-requirements/other-needs/health-conditions-question';
 import { setupHealthConditionsReasonController } from './controllers/cma-requirements/other-needs/health-conditions-reason';
 import { setupMultimediaEvidenceQuestionController } from './controllers/cma-requirements/other-needs/multimedia-evidence-question';
+import { setupPastExperiencesQuestionController } from './controllers/cma-requirements/other-needs/past-experiences-question';
+import { setupPastExperiencesReasonController } from './controllers/cma-requirements/other-needs/past-experiences-reason';
 import { setupPrivateAppointmentQuestionController } from './controllers/cma-requirements/other-needs/private-appointment-question';
 import { setupPrivateAppointmentReasonController } from './controllers/cma-requirements/other-needs/private-appointment-reason';
 import { setupSingleSexAppointmentAllFemaleReasonController } from './controllers/cma-requirements/other-needs/single-sex-appointment-all-female-reason';
@@ -112,6 +114,8 @@ const cmaRequirementsPrivateAppointmentQuestionController = setupPrivateAppointm
 const cmaRequirementsPrivateReasonController = setupPrivateAppointmentReasonController(middleware, updateAppealService);
 const cmaRequirementsHealthConditionsQuestionController = setupHealthConditionsQuestionController(middleware, updateAppealService);
 const cmaRequirementsHealthConditionsReasonController = setupHealthConditionsReasonController(middleware, updateAppealService);
+const cmaRequirementsPastExperiencesQuestionController = setupPastExperiencesQuestionController(middleware, updateAppealService);
+const cmaRequirementsPastExperiencesReasonController = setupPastExperiencesReasonController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -165,6 +169,8 @@ router.use(cmaRequirementsPrivateAppointmentQuestionController);
 router.use(cmaRequirementsPrivateReasonController);
 router.use(cmaRequirementsHealthConditionsQuestionController);
 router.use(cmaRequirementsHealthConditionsReasonController);
+router.use(cmaRequirementsPastExperiencesQuestionController);
+router.use(cmaRequirementsPastExperiencesReasonController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

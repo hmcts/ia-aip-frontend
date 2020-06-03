@@ -1124,6 +1124,15 @@
         "healthConditionsReason": {
           "title": "Tell us how any physical or mental health conditions you have may affect you at the appointment",
           "heading": "Tell us how any physical or mental health conditions you have may affect you at the appointment"
+        },
+        "pastExperiences": {
+          "title": "Have you had any past experiences that may affect you at the appointment?",
+          "question": "Have you had any past experiences that may affect you at the appointment?",
+          "description": "This might be experience of physical or sexual abuse, trafficking or torture."
+        },
+        "pastExperiencesReasons": {
+          "title": "Tell us how any past experiences that may affect you at the appointment",
+          "heading": "Tell us how any past experiences that may affect you at the appointment"
         }
       }
     },
@@ -1256,7 +1265,9 @@
         "privateAppointmentAnswerRequired": "Select yes if you need a private appointment",
         "privateAppointmentReasonRequired": "Enter the reasons you need a private appointment",
         "healthConditionsAnswerRequired": "Select yes if you have any physical or mental health conditions that may affect you at the appointment",
-        "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the appointment"
+        "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the appointment",
+        "pastExperiencesAnswerRequired": "Select yes if you have had any past experiences that may affect you at the appointment",
+        "pastExperiencesReasonRequired": "Enter details of how any past experiences that will affect you at the appointment"
       }
     }
   },

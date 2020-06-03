@@ -66,8 +66,7 @@ function cmaRequirementsStatus(appeal: Appeal) {
   const otherNeedsTask: Task = {
     saved: otherNeeds,
     completed: otherNeeds,
-    // active: accessNeedsTask.completed
-    active: true
+    active: accessNeedsTask.completed
   };
 
   const datesToAvoid: boolean = !!_.get(appeal, 'cmaRequirements.datesToAvoid');

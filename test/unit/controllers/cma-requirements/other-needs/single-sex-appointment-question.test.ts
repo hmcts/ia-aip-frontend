@@ -99,7 +99,7 @@ describe('CMA Requirements - Other Needs Section: Single sex appointment Questio
         pageTitle: 'Will you need an all-female or all-male appointment?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
-          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
+          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you need an all-female or all-male appointment?'
         }
       };

@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getBringMultimediaEquipmentQuestion, postBringMultimediaEquipmentQuestion,
+  getBringMultimediaEquipmentQuestion,
+  postBringMultimediaEquipmentQuestion,
   setupBringMultimediaEquipmentQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/bring-equipment-question';
 import { paths } from '../../../../../app/paths';
@@ -99,7 +100,7 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
         pageTitle: 'Will you bring the equipment to play this evidence?',
         previousPage: '/appointment-other-needs',
         question: {
-          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
+          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring the equipment to play this evidence?',
           description: 'For example, a laptop or DVD player.'
         }

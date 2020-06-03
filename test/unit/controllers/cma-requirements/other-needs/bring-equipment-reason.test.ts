@@ -1,14 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express';
 
 import {
-  getMultimediaEquipmentReason, postMultimediaEquipmentReason,
+  getMultimediaEquipmentReason,
+  postMultimediaEquipmentReason,
   setupMultimediaEquipmentReasonController
 } from '../../../../../app/controllers/cma-requirements/other-needs/bring-equipment-reason';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
-describe('CMA Requirements - Bring Equipment Reason controller', () => {
+describe('CMA Requirements - Other Needs Section: Bring Equipment Reason controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

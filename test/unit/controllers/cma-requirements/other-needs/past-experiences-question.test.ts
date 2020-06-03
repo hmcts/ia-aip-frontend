@@ -1,14 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express';
+import { postHealthConditionsQuestion } from '../../../../../app/controllers/cma-requirements/other-needs/health-conditions-question';
 import {
-  getPrivateAppointmentQuestion,
-  postPrivateAppointmentQuestion,
-  setupPrivateAppointmentQuestionController
-} from '../../../../../app/controllers/cma-requirements/other-needs/private-appointment-question';
+  getPastExperiencesQuestion,
+  postPastExperiencesQuestion,
+  setupPastExperiencesQuestionController
+} from '../../../../../app/controllers/cma-requirements/other-needs/past-experiences-question';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
-describe('CMA Requirements - Other Needs Section: Private Appointment Question controller', () => {
+describe('CMA Requirements - Other Needs Section: Past Experiences Question controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -40,31 +41,31 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Question c
     sandbox.restore();
   });
 
-  describe('setupPrivateAppointmentQuestionController', () => {
+  describe('setupPastExperiencesQuestionController', () => {
     it('should setup routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupPrivateAppointmentQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
+      setupPastExperiencesQuestionController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
+      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
     });
   });
 
-  describe('getPrivateAppointmentQuestion', () => {
+  describe('getPastExperiencesQuestion', () => {
     it('should render question page', () => {
 
-      getPrivateAppointmentQuestion(req as Request, res as Response, next);
+      getPastExperiencesQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        formAction: '/appointment-private',
-        pageTitle: 'Will you need a private appointment?',
+        formAction: '/appointment-past-experiences',
+        pageTitle: 'Have you had any past experiences that may affect you at the appointment?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
-          description: 'A private appointment means the public will not be allowed to attend.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you need a private appointment?'
+          title: 'Have you had any past experiences that may affect you at the appointment?',
+          description: 'This might be experience of physical or sexual abuse, trafficking or torture.'
         }
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
@@ -76,60 +77,59 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Question c
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      getPrivateAppointmentQuestion(req as Request, res as Response, next);
+      getPastExperiencesQuestion(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postPrivateAppointmentQuestion', () => {
+  describe('postHealthConditionsQuestion', () => {
     it('should fail validation and render template with errors', async () => {
-      await postPrivateAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         answer: {
           href: '#answer',
           key: 'answer',
-          text: 'Select yes if you need a private appointment'
+          text: 'Select yes if you have had any past experiences that may affect you at the appointment'
         }
       };
 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        formAction: '/appointment-private',
-        pageTitle: 'Will you need a private appointment?',
+        formAction: '/appointment-past-experiences',
+        pageTitle: 'Have you had any past experiences that may affect you at the appointment?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
-          description: 'A private appointment means the public will not be allowed to attend.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you need a private appointment?'
+          title: 'Have you had any past experiences that may affect you at the appointment?',
+          description: 'This might be experience of physical or sexual abuse, trafficking or torture.'
         }
       };
-
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postPrivateAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.privateAppointment).to.be.true;
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiencesReasons);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.pastExperiences).to.be.true;
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postPrivateAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.privateAppointment).to.be.false;
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElse);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.pastExperiences).to.be.false;
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postPrivateAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

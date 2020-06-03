@@ -168,6 +168,8 @@ interface OtherNeeds {
   singleSexAppointment: boolean;
   singleSexTypeAppointment: string;
   singleSexAppointmentReason: string;
+  privateAppointment: boolean;
+  singleSexAppointmentReason: boolean;
 
 }
 interface ReasonsForAppeal {

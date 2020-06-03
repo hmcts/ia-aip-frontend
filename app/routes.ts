@@ -23,6 +23,7 @@ import { setupSupportingEvidenceQuestionController } from './controllers/clarify
 import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
 import { setupMultimediaEquipmentReasonController } from './controllers/cma-requirements/other-needs/bring-equipment-reason';
 import { setupMultimediaEvidenceQuestionController } from './controllers/cma-requirements/other-needs/multimedia-evidence-question';
+import { setupPrivateAppointmentQuestionController } from './controllers/cma-requirements/other-needs/private-appointment-question';
 import { setupSingleSexAppointmentAllFemaleReasonController } from './controllers/cma-requirements/other-needs/single-sex-appointment-all-female-reason';
 import { setupSingleSexAppointmentAllMaleReasonController } from './controllers/cma-requirements/other-needs/single-sex-appointment-all-male-reason';
 import { setupSingleSexAppointmentQuestionController } from './controllers/cma-requirements/other-needs/single-sex-appointment-question';
@@ -104,6 +105,7 @@ const cmaRequirementsSingleSexAppointmentController = setupSingleSexAppointmentQ
 const cmaRequirementsSingleSexTypeAppointmentController = setupSingleSexTypeAppointmentQuestionController(middleware, updateAppealService);
 const cmaRequirementsSingleSexReasonAllMaleAppointmentController = setupSingleSexAppointmentAllMaleReasonController(middleware, updateAppealService);
 const cmaRequirementsSingleSexReasonAllFemaleAppointmentController = setupSingleSexAppointmentAllFemaleReasonController(middleware, updateAppealService);
+const cmaRequirementsPrivateAppointmentController = setupPrivateAppointmentQuestionController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -153,6 +155,7 @@ router.use(cmaRequirementsSingleSexAppointmentController);
 router.use(cmaRequirementsSingleSexTypeAppointmentController);
 router.use(cmaRequirementsSingleSexReasonAllMaleAppointmentController);
 router.use(cmaRequirementsSingleSexReasonAllFemaleAppointmentController);
+router.use(cmaRequirementsPrivateAppointmentController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

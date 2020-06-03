@@ -132,7 +132,7 @@ describe('CMA Requirements - Bring Equipment Reason controller', () => {
 
     });
 
-    it('should validate and redirect to add another date page', async () => {
+    it('should validate and redirect to next page', async () => {
       req.body['reason'] = 'the answer here';
       await postMultimediaEquipmentReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

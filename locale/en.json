@@ -1107,6 +1107,15 @@
         "singleSexAppointmentAllFemale": {
           "title": "Tell us why you need an all-female appointment",
           "heading": "Tell us why you need an all-female appointment"
+        },
+        "privateAppointment": {
+          "title": "Will you need a private appointment?",
+          "question": "Will you need a private appointment?",
+          "description": "A private appointment means the public will not be allowed to attend."
+        },
+        "privateAppointmentReason": {
+          "title": "Tell us why you need a private appointment",
+          "heading": "Tell us why you need a private appointment"
         }
       }
     },
@@ -1235,7 +1244,8 @@
         "singleSexAppointmentRequired": "Select yes if you need an all-female or all-male appointment",
         "singleSexTypeAppointmentRequired": "Select if you need an all-female or all-male appointment",
         "singleSexAppointmentAllMaleReasonRequired": "Enter the reasons you need an all-male appointment",
-        "singleSexAppointmentAllFemaleReasonRequired": "Enter the reasons you need an all-female appointment"
+        "singleSexAppointmentAllFemaleReasonRequired": "Enter the reasons you need an all-female appointment",
+        "privateAppointmentAnswerRequired": "Select yes if you need a private appointment"
       }
     }
   },

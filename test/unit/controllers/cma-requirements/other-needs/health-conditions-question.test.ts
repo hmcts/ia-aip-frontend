@@ -1,13 +1,14 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getBringMultimediaEquipmentQuestion, postBringMultimediaEquipmentQuestion,
-  setupBringMultimediaEquipmentQuestionController
-} from '../../../../../app/controllers/cma-requirements/other-needs/bring-equipment-question';
+  getHealthConditionsQuestion,
+  postHealthConditionsQuestion,
+  setupHealthConditionsQuestionController
+} from '../../../../../app/controllers/cma-requirements/other-needs/health-conditions-question';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
-describe('CMA Requirements - Other Needs Section: Bring Equipment Question controller', () => {
+describe('CMA Requirements - Other Needs Section: Health Conditions Question controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -39,31 +40,30 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
     sandbox.restore();
   });
 
-  describe('setupBringMultimediaEquipmentQuestionController', () => {
+  describe('setupHealthConditionsQuestionController', () => {
     it('should setup routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
+      setupHealthConditionsQuestionController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
+      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
     });
   });
 
-  describe('getBringMultimediaEquipmentQuestion', () => {
+  describe('getHealthConditionsQuestion', () => {
     it('should render question page', () => {
 
-      getBringMultimediaEquipmentQuestion(req as Request, res as Response, next);
+      getHealthConditionsQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        formAction: '/appointment-multimedia-evidence-equipment',
-        pageTitle: 'Will you bring the equipment to play this evidence?',
-        previousPage: '/appointment-other-needs',
+        formAction: '/appointment-physical-mental-health',
+        pageTitle: 'Do you have any physical or mental health conditions that may affect you at the appointment?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
-          description: 'For example, a laptop or DVD player.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you bring the equipment to play this evidence?'
+          title: 'Do you have any physical or mental health conditions that may affect you at the appointment?'
         }
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
@@ -75,33 +75,32 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      getBringMultimediaEquipmentQuestion(req as Request, res as Response, next);
+      getHealthConditionsQuestion(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postBringMultimediaEquipmentQuestion', () => {
+  describe('postHealthConditionsQuestion', () => {
     it('should fail validation and render template with errors', async () => {
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         answer: {
           href: '#answer',
           key: 'answer',
-          text: 'Select yes if you will bring the equipment to play this evidence'
+          text: 'Select yes if you have any physical or mental health conditions that may affect you at the appointment'
         }
       };
 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        formAction: '/appointment-multimedia-evidence-equipment',
-        pageTitle: 'Will you bring the equipment to play this evidence?',
-        previousPage: '/appointment-other-needs',
+        formAction: '/appointment-physical-mental-health',
+        pageTitle: 'Do you have any physical or mental health conditions that may affect you at the appointment?',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
-          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
-          title: 'Will you bring the equipment to play this evidence?',
-          description: 'For example, a laptop or DVD player.'
+          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
+          title: 'Do you have any physical or mental health conditions that may affect you at the appointment?'
         }
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
@@ -109,25 +108,25 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.true;
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.healthConditions).to.be.true;
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.false;
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.healthConditions).to.be.false;
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

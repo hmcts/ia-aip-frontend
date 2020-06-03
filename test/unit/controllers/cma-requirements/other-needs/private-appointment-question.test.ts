@@ -108,6 +108,7 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Question c
           title: 'Will you need a private appointment?'
         }
       };
+
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
 
@@ -123,7 +124,7 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Question c
       req.body['answer'] = 'no';
       await postPrivateAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMentalHealth);
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
       expect(req.session.appeal.cmaRequirements.otherNeeds.privateAppointment).to.be.false;
     });
 

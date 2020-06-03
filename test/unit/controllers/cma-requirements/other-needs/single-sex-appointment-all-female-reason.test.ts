@@ -56,7 +56,7 @@ describe('CMA Requirements - Single sex all female Reason controller', () => {
     it('should render template', () => {
 
       const expectedArgs = {
-        formAction: '/appointment-single-sex-type-male',
+        formAction: '/appointment-single-sex-type-female',
         pageTitle: 'Tell us why you need an all-female appointment',
         previousPage: '/appointment-single-sex-type',
         question: {
@@ -77,7 +77,7 @@ describe('CMA Requirements - Single sex all female Reason controller', () => {
       req.session.appeal.cmaRequirements.otherNeeds.singleSexAppointmentReason = 'previously saved answer';
 
       const expectedArgs = {
-        formAction: '/appointment-single-sex-type-male',
+        formAction: '/appointment-single-sex-type-female',
         pageTitle: 'Tell us why you need an all-female appointment',
         previousPage: '/appointment-single-sex-type',
         question: {
@@ -117,7 +117,7 @@ describe('CMA Requirements - Single sex all female Reason controller', () => {
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        formAction: '/appointment-single-sex-type-male',
+        formAction: '/appointment-single-sex-type-female',
         pageTitle: 'Tell us why you need an all-female appointment',
         previousPage: '/appointment-single-sex-type',
         question: {

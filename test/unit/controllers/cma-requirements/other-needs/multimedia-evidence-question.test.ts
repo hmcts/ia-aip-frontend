@@ -100,10 +100,12 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
         pageTitle: 'Will you bring any multimedia evidence?',
         previousPage: '/appointment-other-needs',
         question: {
-          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
+          description: 'For example, video or sound recordings.',
+          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring any multimedia evidence?'
         }
       };
+
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
 

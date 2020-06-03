@@ -1,18 +1,14 @@
 import express, { NextFunction, Request, Response } from 'express';
-
 import {
-  getMultimediaEquipmentReason, postMultimediaEquipmentReason,
-  setupMultimediaEquipmentReasonController
-} from '../../../../../app/controllers/cma-requirements/other-needs/bring-equipment-reason';
-import {
-  getPrivateAppointmentReason,
-  postPrivateAppointmentReason, setupPrivateAppointmentReasonController
-} from '../../../../../app/controllers/cma-requirements/other-needs/private-appointment-reason';
+  getHealthConditionsReason,
+  postHealthConditionsReason,
+  setupHealthConditionsReasonController
+} from '../../../../../app/controllers/cma-requirements/other-needs/health-conditions-reason';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
-describe('CMA Requirements - Private Appointment Reason controller', () => {
+describe('CMA Requirements - Health Conditions Reason controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -44,56 +40,56 @@ describe('CMA Requirements - Private Appointment Reason controller', () => {
     sandbox.restore();
   });
 
-  describe('setupPrivateAppointmentReasonController', () => {
+  describe('setupHealthConditionsReasonController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupPrivateAppointmentReasonController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason);
+      setupHealthConditionsReasonController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason);
+      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason);
     });
   });
 
-  describe('getPrivateAppointmentReason', () => {
+  describe('getHealthConditionsReason', () => {
     it('should render template', () => {
 
       const expectedArgs = {
-        formAction: '/appointment-private-reasons',
-        pageTitle: 'Tell us why you need a private appointment',
-        previousPage: '/appointment-private',
+        formAction: '/appointment-physical-mental-health-reasons',
+        pageTitle: 'Tell us how any physical or mental health conditions you have may affect you at the appointment',
+        previousPage: '/appointment-physical-mental-health',
         question: {
           name: 'reason',
-          title: 'Tell us why you need a private appointment',
+          title: 'Tell us how any physical or mental health conditions you have may affect you at the appointment',
           value: ''
         },
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
 
-      getPrivateAppointmentReason(req as Request, res as Response, next);
+      getHealthConditionsReason(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
     });
 
     it('should render template with saved answer', () => {
 
-      req.session.appeal.cmaRequirements.otherNeeds.singleSexAppointmentReason = 'previously saved answer';
+      req.session.appeal.cmaRequirements.otherNeeds.healthConditionsReason = 'previously saved answer';
 
       const expectedArgs = {
-        formAction: '/appointment-private-reasons',
-        pageTitle: 'Tell us why you need a private appointment',
-        previousPage: '/appointment-private',
+        formAction: '/appointment-physical-mental-health-reasons',
+        pageTitle: 'Tell us how any physical or mental health conditions you have may affect you at the appointment',
+        previousPage: '/appointment-physical-mental-health',
         question: {
           name: 'reason',
-          title: 'Tell us why you need a private appointment',
+          title: 'Tell us how any physical or mental health conditions you have may affect you at the appointment',
           value: 'previously saved answer'
         },
         supportingEvidence: false,
         timeExtensionAllowed: false
       };
 
-      getPrivateAppointmentReason(req as Request, res as Response, next);
+      getHealthConditionsReason(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
     });
 
@@ -101,32 +97,32 @@ describe('CMA Requirements - Private Appointment Reason controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      getPrivateAppointmentReason(req as Request, res as Response, next);
+      getHealthConditionsReason(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postPrivateAppointmentReason', () => {
+  describe('postHealthConditionsReason', () => {
     it('should fail validation and render template with errors', async () => {
-      await postPrivateAppointmentReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHealthConditionsReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         reason: {
           href: '#reason',
           key: 'reason',
-          text: 'Enter the reasons you need a private appointment'
+          text: 'Enter details of how any physical or mental health conditions may affect you at the appointment'
         }
       };
 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        formAction: '/appointment-private-reasons',
-        pageTitle: 'Tell us why you need a private appointment',
-        previousPage: '/appointment-private',
+        formAction: '/appointment-physical-mental-health-reasons',
+        pageTitle: 'Tell us how any physical or mental health conditions you have may affect you at the appointment',
+        previousPage: '/appointment-physical-mental-health',
         question: {
           name: 'reason',
-          title: 'Tell us why you need a private appointment',
+          title: 'Tell us how any physical or mental health conditions you have may affect you at the appointment',
           value: ''
         },
         supportingEvidence: false,
@@ -138,17 +134,17 @@ describe('CMA Requirements - Private Appointment Reason controller', () => {
 
     it('should validate and redirect to next page', async () => {
       req.body['reason'] = 'the answer here';
-      await postPrivateAppointmentReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHealthConditionsReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       // expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postPrivateAppointmentReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHealthConditionsReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

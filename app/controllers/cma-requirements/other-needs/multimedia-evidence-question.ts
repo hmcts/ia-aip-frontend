@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../../locale/en.json';
 import { paths } from '../../../paths';
+import UpdateAppealService from '../../../service/update-appeal-service';
 import { postCmaRequirementsYesNoHandler } from '../common';
 
 const previousPage = paths.awaitingCmaRequirements.otherNeeds;
@@ -25,46 +26,48 @@ function getMultimediaEvidenceQuestion(req: Request, res: Response, next: NextFu
   }
 }
 
-function postMultimediaEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+function postMultimediaEvidenceQuestion(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
 
-  const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.multimediaEvidenceAnswerRequired;
+    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.multimediaEvidenceAnswerRequired;
 
-  const pageContent = {
-    previousPage,
-    pageTitle,
-    formAction,
-    question
+    const pageContent = {
+      previousPage,
+      pageTitle,
+      formAction,
+      question
+    };
+
+    const onSuccess = (answer: boolean) => {
+      if (answer) {
+        req.session.appeal.cmaRequirements.otherNeeds = {
+          ...req.session.appeal.cmaRequirements.otherNeeds,
+          multimediaEvidence: true
+        };
+
+        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+
+        return res.redirect(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
+      } else {
+        req.session.appeal.cmaRequirements.otherNeeds = {
+          ...req.session.appeal.cmaRequirements.otherNeeds,
+          multimediaEvidence: false
+        };
+
+        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+
+        return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
+      }
+    };
+
+    return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
   };
-
-  const onSuccess = (answer: boolean) => {
-    if (answer) {
-      req.session.appeal.cmaRequirements.otherNeeds = {
-        ...req.session.appeal.cmaRequirements.otherNeeds,
-        multimediaEvidence: true
-      };
-
-      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
-      return res.redirect(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
-    } else {
-      req.session.appeal.cmaRequirements.otherNeeds = {
-        ...req.session.appeal.cmaRequirements.otherNeeds,
-        multimediaEvidence: false
-      };
-
-      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
-      return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
-    }
-  };
-
-  return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
 }
 
-function setupMultimediaEvidenceQuestionController(middleware: Middleware[]): Router {
+function setupMultimediaEvidenceQuestionController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.awaitingCmaRequirements.otherNeedsMultimediaEvidenceQuestion, middleware, getMultimediaEvidenceQuestion);
-  router.post(paths.awaitingCmaRequirements.otherNeedsMultimediaEvidenceQuestion, middleware, postMultimediaEvidenceQuestion);
+  router.post(paths.awaitingCmaRequirements.otherNeedsMultimediaEvidenceQuestion, middleware, postMultimediaEvidenceQuestion(updateAppealService));
 
   return router;
 }

@@ -359,7 +359,7 @@
         },
         "awaitingCmaRequirements": {
           "description": "You need to attend a case management appointment.",
-          "description2": "First, tell us if you will need anything at the appointment, like an interpreter or step free access.",
+          "description2": "First, tell us if you will need anything at the appointment, like an interpreter or step-free access.",
           "descriptionAskForMoreTime": "You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
           "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
           "info": {
@@ -1091,6 +1091,22 @@
         "bringEquipmentReason": {
           "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
           "heading": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it"
+        },
+        "singleSexAppointment": {
+          "title": "Will you need an all-female or all-male appointment?",
+          "question": "Will you need an all-female or all-male appointment?"
+        },
+        "singleSexTypeAppointment": {
+          "title": "What type of appointment will you need?",
+          "question": "What type of appointment will you need?"
+        },
+        "singleSexAppointmentAllMale": {
+          "title": "Tell us why you need an all-male appointment",
+          "heading": "Tell us why you need an all-male appointment"
+        },
+        "singleSexAppointmentAllFemale": {
+          "title": "Tell us why you need an all-female appointment",
+          "heading": "Tell us why you need an all-female appointment"
         }
       }
     },
@@ -1215,7 +1231,11 @@
       "otherNeeds": {
         "multimediaEvidenceAnswerRequired": "Select yes if you will bring any multimedia evidence",
         "bringEquipmentAnswerRequired": "Select yes if you will bring the equipment to play this evidence",
-        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it"
+        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it",
+        "singleSexAppointmentRequired": "Select yes if you need an all-female or all-male appointment",
+        "singleSexTypeAppointmentRequired": "Select if you need an all-female or all-male appointment",
+        "singleSexAppointmentAllMaleReasonRequired": "Enter the reasons you need an all-male appointment",
+        "singleSexAppointmentAllFemaleReasonRequired": "Enter the reasons you need an all-female appointment"
       }
     }
   },

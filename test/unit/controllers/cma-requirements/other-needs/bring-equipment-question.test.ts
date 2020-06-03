@@ -54,7 +54,7 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
       getBringMultimediaEquipmentQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        formAction: '/appointment-multimedia-evidence',
+        formAction: '/appointment-multimedia-evidence-equipment',
         pageTitle: 'Will you bring the equipment to play this evidence?',
         previousPage: '/appointment-other-needs',
         question: {

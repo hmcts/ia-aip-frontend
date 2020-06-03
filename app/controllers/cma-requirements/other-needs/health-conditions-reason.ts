@@ -6,18 +6,18 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { textAreaValidation } from '../../../utils/validations/fields-validations';
 
-function getPrivateAppointmentReason(req: Request, res: Response, next: NextFunction) {
+function getHealthConditionsReason(req: Request, res: Response, next: NextFunction) {
   try {
     const { otherNeeds } = req.session.appeal.cmaRequirements;
-    const savedReason: string = otherNeeds.singleSexAppointmentReason;
+    const savedReason: string = otherNeeds.healthConditionsReason;
 
     return res.render('templates/textarea-question-page.njk', {
-      previousPage: paths.awaitingCmaRequirements.otherNeedsPrivateAppointment,
-      formAction: paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason,
-      pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.privateAppointmentReason.title,
+      previousPage: paths.awaitingCmaRequirements.otherNeedsHealthConditions,
+      formAction: paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason,
+      pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.healthConditionsReason.title,
       question: {
         name: 'reason',
-        title: i18n.pages.cmaRequirements.otherNeedsSection.privateAppointmentReason.heading,
+        title: i18n.pages.cmaRequirements.otherNeedsSection.healthConditionsReason.heading,
         value: savedReason ? savedReason : ''
       },
       supportingEvidence: false,
@@ -28,22 +28,22 @@ function getPrivateAppointmentReason(req: Request, res: Response, next: NextFunc
   }
 }
 
-function postPrivateAppointmentReason(updateAppealService: UpdateAppealService) {
+function postHealthConditionsReason(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { otherNeeds } = req.session.appeal.cmaRequirements;
-      const savedReason: string = otherNeeds.singleSexAppointmentReason;
+      const savedReason: string = otherNeeds.healthConditionsReason;
 
-      const validationErrors = textAreaValidation(req.body['reason'], 'reason', i18n.validationErrors.cmaRequirements.otherNeeds.privateAppointmentReasonRequired);
+      const validationErrors = textAreaValidation(req.body['reason'], 'reason', i18n.validationErrors.cmaRequirements.otherNeeds.healthConditionsReasonRequired);
 
       if (validationErrors) {
         return res.render('templates/textarea-question-page.njk', {
-          previousPage: paths.awaitingCmaRequirements.otherNeedsPrivateAppointment,
-          formAction: paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason,
-          pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.privateAppointmentReason.title,
+          previousPage: paths.awaitingCmaRequirements.otherNeedsHealthConditions,
+          formAction: paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason,
+          pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.healthConditionsReason.title,
           question: {
             name: 'reason',
-            title: i18n.pages.cmaRequirements.otherNeedsSection.privateAppointmentReason.heading,
+            title: i18n.pages.cmaRequirements.otherNeedsSection.healthConditionsReason.heading,
             value: savedReason ? savedReason : ''
           },
           supportingEvidence: false,
@@ -55,7 +55,7 @@ function postPrivateAppointmentReason(updateAppealService: UpdateAppealService) 
 
       req.session.appeal.cmaRequirements.otherNeeds = {
         ...req.session.appeal.cmaRequirements.otherNeeds,
-        singleSexAppointmentReason: req.body['reason']
+        healthConditionsReason: req.body['reason']
       };
 
       // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
@@ -68,23 +68,23 @@ function postPrivateAppointmentReason(updateAppealService: UpdateAppealService) 
         return res.redirect(paths.common.overview + '?saved');
       }
 
-      return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.otherNeedsHealthConditions);
+      return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.otherNeedsPastExperiences);
     } catch (e) {
       next(e);
     }
   };
 }
 
-function setupPrivateAppointmentReasonController(middleware: Middleware[], updateAppealService?: UpdateAppealService): Router {
+function setupHealthConditionsReasonController(middleware: Middleware[], updateAppealService?: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason, middleware, getPrivateAppointmentReason);
-  router.post(paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason, middleware, postPrivateAppointmentReason(updateAppealService));
+  router.get(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason, middleware, getHealthConditionsReason);
+  router.post(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason, middleware, postHealthConditionsReason(updateAppealService));
 
   return router;
 }
 
 export {
-  setupPrivateAppointmentReasonController,
-  getPrivateAppointmentReason,
-  postPrivateAppointmentReason
+  setupHealthConditionsReasonController,
+  getHealthConditionsReason,
+  postHealthConditionsReason
 };

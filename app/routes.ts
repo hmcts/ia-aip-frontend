@@ -21,8 +21,11 @@ import { setupClarifyingQuestionsListController } from './controllers/clarifying
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
 import { setupMultimediaEquipmentReasonController } from './controllers/cma-requirements/other-needs/bring-equipment-reason';
+import { setupHealthConditionsQuestionController } from './controllers/cma-requirements/other-needs/health-conditions-question';
+import { setupHealthConditionsReasonController } from './controllers/cma-requirements/other-needs/health-conditions-reason';
 import { setupMultimediaEvidenceQuestionController } from './controllers/cma-requirements/other-needs/multimedia-evidence-question';
 import { setupPrivateAppointmentQuestionController } from './controllers/cma-requirements/other-needs/private-appointment-question';
+import { setupPrivateAppointmentReasonController } from './controllers/cma-requirements/other-needs/private-appointment-reason';
 import { setupSingleSexAppointmentAllFemaleReasonController } from './controllers/cma-requirements/other-needs/single-sex-appointment-all-female-reason';
 import { setupSingleSexAppointmentAllMaleReasonController } from './controllers/cma-requirements/other-needs/single-sex-appointment-all-male-reason';
 import { setupSingleSexAppointmentQuestionController } from './controllers/cma-requirements/other-needs/single-sex-appointment-question';
@@ -101,14 +104,14 @@ const cmaRequirementsStartPageController = setupCMARequirementsStartPageControll
 const cmaRequirementsMultimediaEvidenceQuestionController = setupMultimediaEvidenceQuestionController(middleware, updateAppealService);
 const cmaRequirementsBringEquipmentQuestionController = setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService);
 const cmaRequirementsBringEquipmentReasonController = setupMultimediaEquipmentReasonController(middleware, updateAppealService);
-const cmaRequirementsSingleSexAppointmentController = setupSingleSexAppointmentQuestionController(middleware, updateAppealService);
-const cmaRequirementsSingleSexTypeAppointmentController = setupSingleSexTypeAppointmentQuestionController(middleware, updateAppealService);
-const cmaRequirementsSingleSexReasonAllMaleAppointmentController = setupSingleSexAppointmentAllMaleReasonController(middleware, updateAppealService);
-const cmaRequirementsSingleSexReasonAllFemaleAppointmentController = setupSingleSexAppointmentAllFemaleReasonController(middleware, updateAppealService);
-const cmaRequirementsPrivateAppointmentController = setupPrivateAppointmentQuestionController(middleware, updateAppealService);
-const cmaRequirementsMultimediaEvidenceQuestionController = setupMultimediaEvidenceQuestionController(middleware);
-const cmaRequirementsBringEquipmentQuestionController = setupBringMultimediaEquipmentQuestionController(middleware);
-const cmaRequirementsBringEquipmentReasonController = setupMultimediaEquipmentReasonController(middleware);
+const cmaRequirementsSingleSexAppointmentQuestionController = setupSingleSexAppointmentQuestionController(middleware, updateAppealService);
+const cmaRequirementsSingleSexTypeAppointmentQuestionController = setupSingleSexTypeAppointmentQuestionController(middleware, updateAppealService);
+const cmaRequirementsSingleSexAllMaleReasonAppointmentController = setupSingleSexAppointmentAllMaleReasonController(middleware, updateAppealService);
+const cmaRequirementsSingleSexAllFemaleReasonAppointmentController = setupSingleSexAppointmentAllFemaleReasonController(middleware, updateAppealService);
+const cmaRequirementsPrivateAppointmentQuestionController = setupPrivateAppointmentQuestionController(middleware, updateAppealService);
+const cmaRequirementsPrivateReasonController = setupPrivateAppointmentReasonController(middleware, updateAppealService);
+const cmaRequirementsHealthConditionsQuestionController = setupHealthConditionsQuestionController(middleware, updateAppealService);
+const cmaRequirementsHealthConditionsReasonController = setupHealthConditionsReasonController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -154,11 +157,14 @@ router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsMultimediaEvidenceQuestionController);
 router.use(cmaRequirementsBringEquipmentQuestionController);
 router.use(cmaRequirementsBringEquipmentReasonController);
-router.use(cmaRequirementsSingleSexAppointmentController);
-router.use(cmaRequirementsSingleSexTypeAppointmentController);
-router.use(cmaRequirementsSingleSexReasonAllMaleAppointmentController);
-router.use(cmaRequirementsSingleSexReasonAllFemaleAppointmentController);
-router.use(cmaRequirementsPrivateAppointmentController);
+router.use(cmaRequirementsSingleSexAppointmentQuestionController);
+router.use(cmaRequirementsSingleSexTypeAppointmentQuestionController);
+router.use(cmaRequirementsSingleSexAllMaleReasonAppointmentController);
+router.use(cmaRequirementsSingleSexAllFemaleReasonAppointmentController);
+router.use(cmaRequirementsPrivateAppointmentQuestionController);
+router.use(cmaRequirementsPrivateReasonController);
+router.use(cmaRequirementsHealthConditionsQuestionController);
+router.use(cmaRequirementsHealthConditionsReasonController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

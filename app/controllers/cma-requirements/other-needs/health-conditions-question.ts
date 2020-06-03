@@ -5,15 +5,14 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { postCmaRequirementsYesNoHandler } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-const pageTitle = i18n.pages.cmaRequirements.otherNeedsSection.privateAppointment.title;
-const formAction = paths.awaitingCmaRequirements.otherNeedsPrivateAppointment;
+const pageTitle = i18n.pages.cmaRequirements.otherNeedsSection.healthConditions.title;
+const formAction = paths.awaitingCmaRequirements.otherNeedsHealthConditions;
 const question = {
-  title: i18n.pages.cmaRequirements.otherNeedsSection.privateAppointment.question,
-  description: i18n.pages.cmaRequirements.otherNeedsSection.privateAppointment.description,
+  title: i18n.pages.cmaRequirements.otherNeedsSection.healthConditions.question,
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
 };
 
-function getPrivateAppointmentQuestion(req: Request, res: Response, next: NextFunction) {
+function getHealthConditionsQuestion(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
@@ -26,9 +25,9 @@ function getPrivateAppointmentQuestion(req: Request, res: Response, next: NextFu
   }
 }
 
-function postPrivateAppointmentQuestion(updateAppealService: UpdateAppealService) {
+function postHealthConditionsQuestion(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.privateAppointmentAnswerRequired;
+    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.healthConditionsAnswerRequired;
 
     const pageContent = {
       previousPage,
@@ -41,37 +40,37 @@ function postPrivateAppointmentQuestion(updateAppealService: UpdateAppealService
       if (answer) {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
-          privateAppointment: true
+          healthConditions: true
         };
 
         // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
 
-        return res.redirect(paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason);
+        return res.redirect(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
-          privateAppointment: false
+          healthConditions: false
         };
 
         // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
 
-        return res.redirect(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
+        return res.redirect(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
       }
     };
 
     return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
   };
 }
-function setupPrivateAppointmentQuestionController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupHealthConditionsQuestionController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment, middleware, getPrivateAppointmentQuestion);
-  router.post(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment, middleware, postPrivateAppointmentQuestion(updateAppealService));
+  router.get(paths.awaitingCmaRequirements.otherNeedsHealthConditions, middleware, getHealthConditionsQuestion);
+  router.post(paths.awaitingCmaRequirements.otherNeedsHealthConditions, middleware, postHealthConditionsQuestion(updateAppealService));
 
   return router;
 }
 
 export {
-  setupPrivateAppointmentQuestionController,
-  getPrivateAppointmentQuestion,
-  postPrivateAppointmentQuestion
+  setupHealthConditionsQuestionController,
+  getHealthConditionsQuestion,
+  postHealthConditionsQuestion
 };

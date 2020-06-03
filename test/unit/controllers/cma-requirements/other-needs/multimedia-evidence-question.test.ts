@@ -82,7 +82,28 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
     it('should fail validation and render template with errors', async () => {
       await postMultimediaEvidenceQuestion(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk');
+      const expectedError = {
+        answer: {
+          href: '#answer',
+          key: 'answer',
+          text: 'Select yes if you will bring any multimedia evidence'
+        }
+      };
+
+      const expectedArgs = {
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        formAction: '/appointment-multimedia-evidence',
+        pageTitle: 'Will you bring any multimedia evidence?',
+        previousPage: '/appointment-other-needs',
+        question: {
+          description: 'For example, video or sound recordings.',
+          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
+          title: 'Will you bring any multimedia evidence?'
+        }
+      };
+
+      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {

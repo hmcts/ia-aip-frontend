@@ -15,7 +15,7 @@ function handleCmaRequirementsYesNo(onValidationError, onValidationErrorMessage:
   }
 }
 
-export function postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage: string, req: Request, res: Response, next: NextFunction) {
+export function postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
   const onValidationError = (validations) => res.render('templates/radio-question-page.njk', {
     previousPage: pageContent.previousPage,
     pageTitle: pageContent.pageTitle,
@@ -24,15 +24,6 @@ export function postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMe
     errorList: Object.values(validations),
     error: validations
   });
-
-  const onSuccess = (answer: boolean) => {
-    if (answer) {
-      return res.redirect(paths.awaitingCmaRequirements.datesToAvoidEnterDate);
-    } else {
-      // Mark section as completed
-      return res.redirect(paths.awaitingCmaRequirements.taskList);
-    }
-  };
 
   return handleCmaRequirementsYesNo(
     onValidationError,

@@ -35,7 +35,15 @@ function postAddAnotherDateQuestionPage(req: Request, res: Response, next: NextF
     question
   };
 
-  return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, req, res, next);
+  const onSuccess = (answer: boolean) => {
+    if (answer) {
+      return res.redirect(paths.awaitingCmaRequirements.datesToAvoidEnterDate);
+    } else {
+      return res.redirect(paths.awaitingCmaRequirements.taskList);
+    }
+  };
+
+  return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
 }
 
 function setupDatesToAvoidAddAnotherDateController(middleware: Middleware[]): Router {

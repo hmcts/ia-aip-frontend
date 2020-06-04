@@ -36,7 +36,15 @@ function postDatesToAvoidQuestion(req: Request, res: Response, next: NextFunctio
     question
   };
 
-  return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, req, res, next);
+  const onSuccess = (answer: boolean) => {
+    if (answer) {
+      return res.redirect(paths.awaitingCmaRequirements.datesToAvoidEnterDate);
+    } else {
+      return res.redirect(paths.awaitingCmaRequirements.taskList);
+    }
+  };
+
+  return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
 }
 
 function setupDatesToAvoidQuestionController(middleware: Middleware[]): Router {

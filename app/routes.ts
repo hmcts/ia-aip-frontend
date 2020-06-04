@@ -12,6 +12,7 @@ import { setupTaskListController } from './controllers/appeal-application/task-l
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupAccessNeedsController } from './controllers/case-management-appointment/access-needs';
 import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
 import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
 import { setupClarifyingQuestionsCheckSendController } from './controllers/clarifying-questions/check-and-send';
@@ -106,6 +107,7 @@ const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswe
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
 const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
+const cmaRequirementsAppointment = setupAccessNeedsController(middleware, updateAppealService);
 const cmaRequirementsStartPageController = setupCMARequirementsStartPageController(middleware);
 const cmaRequirementsMultimediaEvidenceQuestionController = setupMultimediaEvidenceQuestionController(middleware, updateAppealService);
 const cmaRequirementsBringEquipmentQuestionController = setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService);
@@ -165,6 +167,7 @@ router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
 
 router.use(cmaRequirementsTaskListController);
+router.use(cmaRequirementsAppointment);
 router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsMultimediaEvidenceQuestionController);
 router.use(cmaRequirementsBringEquipmentQuestionController);

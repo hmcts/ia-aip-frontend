@@ -740,7 +740,12 @@ describe('update-appeal-service', () => {
             askForMoreTime: {
               reason: 'ask for more time reason',
               evidence: []
-            }
+            },
+            isHearingLoopNeeded: 'yes',
+            interpreterLanguage: { language: 'Test', dialect: 'sample' },
+            isInterpreterServicesNeeded: 'yes',
+            isHearingRoomNeeded: 'no'
+
           } as Appeal,
           ccdCaseId: caseId
         } as Partial<Express.Session>

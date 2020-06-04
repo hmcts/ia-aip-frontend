@@ -296,5 +296,15 @@ module.exports = {
     Then(/^I fill textarea with "([^"]*)"$/, async (title: string) => {
       await I.fillField('textarea', title);
     });
+
+    When('I select No and click save and continue', async () => {
+      await I.checkOption('#answer');
+      await I.click('Save and continue');
+    });
+
+    When('I select Yes and click save and continue', async () => {
+      await I.checkOption('#answer-2');
+      await I.click('Save and continue');
+    });
   }
 };

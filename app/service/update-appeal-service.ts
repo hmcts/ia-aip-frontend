@@ -63,6 +63,10 @@ export default class UpdateAppealService {
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
+    let isInterpreterServicesNeeded = caseData.isInterpreterServicesNeeded || '';
+    let interpreterLanguage = caseData.interpreterLanguage || {};
+    let isHearingRoomNeeded = caseData.isHearingRoomNeeded || '';
+    let isHearingLoopNeeded = caseData.isHearingLoopNeeded || '';
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
 
@@ -83,7 +87,6 @@ export default class UpdateAppealService {
       if (caseData.applicationOutOfTimeExplanation) {
         outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
       }
-
       if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
 
         const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, this.documentMap);
@@ -248,7 +251,12 @@ export default class UpdateAppealService {
       directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
-      draftClarifyingQuestionsAnswers
+      draftClarifyingQuestionsAnswers,
+      isHearingLoopNeeded,
+      isHearingRoomNeeded,
+      interpreterLanguage,
+      isInterpreterServicesNeeded
+
     };
 
     req.session.appeal.askForMoreTime = {
@@ -395,8 +403,21 @@ export default class UpdateAppealService {
           };
         });
       }
+
       if (appeal.reasonsForAppeal.uploadDate) {
         caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
+      }
+      if (_.has(appeal.cmaRequirements,'isHearingRoomNeeded')) {
+        caseData.isHearingRoomNeeded = appeal.isHearingRoomNeeded;
+      }
+      if (_.has(appeal.cmaRequirements,'isHearingLoopNeeded')) {
+        caseData.isHearingLoopNeeded = appeal.isHearingLoopNeeded;
+      }
+      if (_.has(appeal.cmaRequirements,'interpreterLanguage')) {
+        caseData.interpreterLanguage = appeal.interpreterLanguage;
+      }
+      if (_.has(appeal.cmaRequirements,'isInterpreterServicesNeeded')) {
+        caseData.isInterpreterServicesNeeded = appeal.isInterpreterServicesNeeded;
       }
     }
 

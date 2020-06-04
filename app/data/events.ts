@@ -45,8 +45,14 @@ export const Events = {
     description: 'Submit clarifying question answers'
   },
   EDIT_CMA_REQUIREMENTS: {
-    id: 'editCmaRequirements answers',
-    summary: 'Edit CMA Requirements',
-    description: 'Edit CMA Requirements'
+    id: 'editCmaRequirements',
+    summary: 'Edit CMA requirements',
+    description: 'Edit CMA requirements'
+  },
+  SUBMIT_CMA_REQUIREMENTS: {
+    id: 'submitCmaRequirements',
+    summary: 'Submit CMA requirements',
+    description: 'Submit CMA requirements'
   }
+
 };

@@ -78,7 +78,12 @@ interface Appeal {
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+  isInterpreterServicesNeeded?: string;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: string;
+  isHearingLoopNeeded?: string;
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+
 }
 
 interface AskForMoreTime {
@@ -245,4 +250,8 @@ interface ClarifyingQuestion<T> {
   };
 }
 
+interface AdditionalLanguage {
+  language?: string;
+  dialect?: string;
+}
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

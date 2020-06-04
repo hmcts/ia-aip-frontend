@@ -43,16 +43,12 @@ function postSingleSexAppointmentQuestion(updateAppealService: UpdateAppealServi
           singleSexAppointment: true
         };
 
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           singleSexAppointment: false
         };
-
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
 
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
       }

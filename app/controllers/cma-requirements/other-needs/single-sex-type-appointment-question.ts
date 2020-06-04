@@ -48,16 +48,12 @@ function postSingleSexTypeAppointmentQuestion(updateAppealService: UpdateAppealS
           singleSexTypeAppointment: SexType.ALL_MALE
         };
 
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           singleSexTypeAppointment: SexType.ALL_FEMALE
         };
-
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
 
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsAllFemaleAppointment);
       }

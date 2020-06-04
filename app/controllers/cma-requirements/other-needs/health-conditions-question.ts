@@ -43,16 +43,12 @@ function postHealthConditionsQuestion(updateAppealService: UpdateAppealService) 
           healthConditions: true
         };
 
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           healthConditions: false
         };
-
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
 
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
       }

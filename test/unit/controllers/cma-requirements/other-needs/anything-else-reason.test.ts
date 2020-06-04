@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getAnythingElseReason, postAnythingElseReason,
+  getAnythingElseReason,
+  postAnythingElseReason,
   setupAnythingElseReasonController
 } from '../../../../../app/controllers/cma-requirements/other-needs/anything-else-reason';
 import { paths } from '../../../../../app/paths';
@@ -135,7 +136,6 @@ describe('CMA Requirements - Other Needs Section: Anything Else Reason controlle
       req.body['reason'] = 'the answer here';
       await postAnythingElseReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      // expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
     });
 

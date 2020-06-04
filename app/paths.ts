@@ -49,7 +49,6 @@ const paths = {
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',
     accessNeeds: '/appointment-access-needs',
-    accessNeedsOtherNeeds: '/appointment-other-needs',
     accessNeedsInterpreter: '/appointment-interpreter',
     accessNeedsStepFreeAccess: '/appointment-step-free-access',
     accessNeedsHearingLoop: '/appointment-hearing-loop',

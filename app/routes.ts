@@ -25,6 +25,8 @@ import { setupDatesToAvoidAddAnotherDateController } from './controllers/cma-req
 import { setupDatesToAvoidEnterADateController } from './controllers/cma-requirements/dates-to-avoid/enter-a-date';
 import { setupDatesToAvoidQuestionController } from './controllers/cma-requirements/dates-to-avoid/question';
 import { setupDatesToAvoidReasonController } from './controllers/cma-requirements/dates-to-avoid/reason';
+import { setupAnythingElseQuestionController } from './controllers/cma-requirements/other-needs/anything-else-question';
+import { setupAnythingElseReasonController } from './controllers/cma-requirements/other-needs/anything-else-reason';
 import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
 import { setupMultimediaEquipmentReasonController } from './controllers/cma-requirements/other-needs/bring-equipment-reason';
 import { setupHealthConditionsQuestionController } from './controllers/cma-requirements/other-needs/health-conditions-question';
@@ -126,6 +128,8 @@ const cmaRequirementsDatesToAvoidQuestionController = setupDatesToAvoidQuestionC
 const cmaRequirementsDatesToAvoidEnterADateController = setupDatesToAvoidEnterADateController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
+const cmaRequirementsAnythingElseQuestionController = setupAnythingElseQuestionController(middleware, updateAppealService);
+const cmaRequirementsAnythingElseReasonController = setupAnythingElseReasonController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -186,6 +190,8 @@ router.use(cmaRequirementsDatesToAvoidQuestionController);
 router.use(cmaRequirementsDatesToAvoidEnterADateController);
 router.use(cmaRequirementsDatesToAvoidReasonController);
 router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
+router.use(cmaRequirementsAnythingElseQuestionController);
+router.use(cmaRequirementsAnythingElseReasonController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

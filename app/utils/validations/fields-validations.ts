@@ -301,7 +301,7 @@ function askForMoreTimeValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function isDateInRange(dateFrom: string, dateTo: string, obj: any): boolean | ValidationErrors {
+function isDateInRange(dateFrom: string, dateTo: string, obj: AppealDate): boolean | ValidationErrors {
 
   const errorMessage = `Enter a date between ${dateFrom} and ${dateTo}`;
   const { year, month, day } = obj;

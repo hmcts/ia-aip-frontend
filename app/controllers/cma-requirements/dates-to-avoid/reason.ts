@@ -6,24 +6,29 @@ import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { textAreaValidation } from '../../../utils/validations/fields-validations';
+import { getCmaRequirementsReasonHandler, handleCmaRequirementsSaveForLater } from '../common';
+
+let pageContent = {
+  previousPage: paths.awaitingCmaRequirements.datesToAvoidEnterDate,
+  formAction: paths.awaitingCmaRequirements.datesToAvoidReason,
+  pageTitle: i18n.pages.cmaRequirements.datesToAvoidSection.reason.title,
+  question: {
+    name: 'reason',
+    title: i18n.pages.cmaRequirements.datesToAvoidSection.reason.heading,
+    value: ''
+  },
+  supportingEvidence: false,
+  timeExtensionAllowed: false
+};
 
 function getDatesToAvoidReason(req: Request, res: Response, next: NextFunction) {
   try {
     const { datesToAvoid } = req.session.appeal.cmaRequirements;
     const last: DateToAvoid = datesToAvoid[datesToAvoid.length - 1];
 
-    return res.render('templates/textarea-question-page.njk', {
-      previousPage: paths.awaitingCmaRequirements.datesToAvoidEnterDate,
-      formAction: paths.awaitingCmaRequirements.datesToAvoidReason,
-      pageTitle: i18n.pages.cmaRequirements.datesToAvoidSection.reason.title,
-      question: {
-        name: 'reason',
-        title: i18n.pages.cmaRequirements.datesToAvoidSection.reason.heading,
-        value: last.reason ? last.reason : ''
-      },
-      supportingEvidence: false,
-      timeExtensionAllowed: false
-    });
+    pageContent.question.value = last.reason ? last.reason : '';
+
+    return res.render('templates/textarea-question-page.njk', pageContent);
   } catch (e) {
     next(e);
   }
@@ -32,41 +37,21 @@ function getDatesToAvoidReason(req: Request, res: Response, next: NextFunction) 
 function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      const { datesToAvoid } = req.session.appeal.cmaRequirements;
-      const last: DateToAvoid = datesToAvoid[datesToAvoid.length - 1];
 
-      const validationErrors = textAreaValidation(req.body['reason'], 'reason', i18n.validationErrors.cmaRequirements.datesToAvoid.reasonRequired);
+      const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.datesToAvoid.reasonRequired;
 
-      if (validationErrors) {
-        return res.render('templates/textarea-question-page.njk', {
-          previousPage: paths.awaitingCmaRequirements.datesToAvoidEnterDate,
-          formAction: paths.awaitingCmaRequirements.datesToAvoidReason,
-          pageTitle: i18n.pages.cmaRequirements.datesToAvoidSection.reason.title,
-          question: {
-            name: 'reason',
-            title: i18n.pages.cmaRequirements.datesToAvoidSection.reason.heading,
-            value: last.reason ? last.reason : ''
-          },
-          supportingEvidence: false,
-          timeExtensionAllowed: false,
-          errorList: Object.values(validationErrors),
-          errors: validationErrors
-        });
-      }
+      const onSuccess = () => {
+        const { datesToAvoid } = req.session.appeal.cmaRequirements;
+        const last: DateToAvoid = datesToAvoid[datesToAvoid.length - 1];
+        last.reason = req.body['reason'];
 
-      last.reason = req.body['reason'];
+        return req.body['saveForLater']
+          ? handleCmaRequirementsSaveForLater(req, res)
+          : getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.datesToAvoidAddAnotherDate);
+      };
 
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+      return getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
 
-      if (req.body['saveForLater']) {
-        if (_.has(req.session, 'appeal.cmaRequirements.isEdit')
-          && req.session.appeal.cmaRequirements.isEdit === true) {
-          req.session.appeal.cmaRequirements.isEdit = false;
-        }
-        return res.redirect(paths.common.overview + '?saved');
-      }
-
-      return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.datesToAvoidAddAnotherDate);
     } catch (e) {
       next(e);
     }

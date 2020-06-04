@@ -44,16 +44,12 @@ function postPrivateAppointmentQuestion(updateAppealService: UpdateAppealService
           privateAppointment: true
         };
 
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsPrivateAppointmentReason);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           privateAppointment: false
         };
-
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
 
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsHealthConditions);
       }

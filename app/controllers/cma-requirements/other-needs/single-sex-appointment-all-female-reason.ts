@@ -58,8 +58,6 @@ function postSingleSexAppointmentAllFemaleReason(updateAppealService: UpdateAppe
         singleSexAppointmentReason: req.body['reason']
       };
 
-      // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
       if (req.body['saveForLater']) {
         if (_.has(req.session, 'appeal.cmaRequirements.isEdit')
           && req.session.appeal.cmaRequirements.isEdit === true) {

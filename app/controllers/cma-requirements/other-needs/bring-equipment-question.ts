@@ -44,16 +44,12 @@ function postBringMultimediaEquipmentQuestion(updateAppealService: UpdateAppealS
           bringOwnMultimediaEquipment: true
         };
 
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           bringOwnMultimediaEquipment: false
         };
-
-        // await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
 
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason);
       }

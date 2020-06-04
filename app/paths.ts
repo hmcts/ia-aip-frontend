@@ -54,6 +54,7 @@ const paths = {
     accessNeedsStepFreeAccess: '/appointment-step-free-access',
     accessNeedsHearingLoop: '/appointment-hearing-loop',
     accessNeedsAdditionalLanguage: '/appointment-add-language-details',
+    otherNeeds: '/appointment-other-needs',
     otherNeedsMultimediaEvidenceQuestion: '/appointment-multimedia-evidence',
     otherNeedsMultimediaEquipmentQuestion: '/appointment-multimedia-evidence-equipment',
     otherNeedsMultimediaEquipmentReason: '/appointment-multimedia-evidence-equipment-reasons',

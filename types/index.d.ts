@@ -78,10 +78,6 @@ interface Appeal {
   timeExtensionEventsMap?: TimeExtensionEventMap[];
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
-  isInterpreterServicesNeeded?: string;
-  interpreterLanguage?: AdditionalLanguage;
-  isHearingRoomNeeded?: string;
-  isHearingLoopNeeded?: string;
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
 
 }
@@ -163,15 +159,22 @@ interface CmaRequirements {
   tasks?: {
     [key: string]: Task;
   };
+  accessNeeds?: AccessNeeds;
+  otherNeeds?: OtherNeeds;
   datesToAvoid?: DateToAvoid[];
 }
 
 interface DateToAvoid {
   date: AppealDate;
   reason?: string;
-  otherNeeds?: OtherNeeds;
 }
 
+interface AccessNeeds {
+  isInterpreterServicesNeeded?: string;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: string;
+  isHearingLoopNeeded?: string;
+}
 interface OtherNeeds {
   multimediaEvidence: boolean;
   bringOwnMultimediaEquipment: boolean;

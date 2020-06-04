@@ -6,18 +6,18 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { textAreaValidation } from '../../../utils/validations/fields-validations';
 
-function getMultimediaEquipmentReason(req: Request, res: Response, next: NextFunction) {
+function getSingleSexAppointmentAllMaleReason(req: Request, res: Response, next: NextFunction) {
   try {
     const { otherNeeds } = req.session.appeal.cmaRequirements;
-    const savedReason: string = otherNeeds.bringOwnMultimediaEquipmentReason;
+    const savedReason: string = otherNeeds.singleSexAppointmentReason;
 
     return res.render('templates/textarea-question-page.njk', {
-      previousPage: paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion,
-      formAction: paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason,
-      pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.bringEquipmentReason.title,
+      previousPage: paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment,
+      formAction: paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment,
+      pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.singleSexAppointmentAllMale.title,
       question: {
         name: 'reason',
-        title: i18n.pages.cmaRequirements.otherNeedsSection.bringEquipmentReason.heading,
+        title: i18n.pages.cmaRequirements.otherNeedsSection.singleSexAppointmentAllMale.heading,
         value: savedReason ? savedReason : ''
       },
       supportingEvidence: false,
@@ -28,34 +28,34 @@ function getMultimediaEquipmentReason(req: Request, res: Response, next: NextFun
   }
 }
 
-function postMultimediaEquipmentReason(updateAppealService: UpdateAppealService) {
+function postSingleSexAppointmentAllMaleReason(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { otherNeeds } = req.session.appeal.cmaRequirements;
-      const savedReason: string = otherNeeds.bringOwnMultimediaEquipmentReason;
+      const savedReason: string = otherNeeds.singleSexAppointmentReason;
 
-      const validationErrors = textAreaValidation(req.body['reason'], 'reason', i18n.validationErrors.cmaRequirements.otherNeeds.bringEquipmentReasonRequired);
+      const validationErrors = textAreaValidation(req.body['reason'], 'reason', i18n.validationErrors.cmaRequirements.otherNeeds.singleSexAppointmentAllMaleReasonRequired);
 
       if (validationErrors) {
         return res.render('templates/textarea-question-page.njk', {
-          previousPage: paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion,
-          formAction: paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason,
-          pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.bringEquipmentReason.title,
+          previousPage: paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment,
+          formAction: paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment,
+          pageTitle: i18n.pages.cmaRequirements.otherNeedsSection.singleSexAppointmentAllMale.title,
           question: {
             name: 'reason',
-            title: i18n.pages.cmaRequirements.otherNeedsSection.bringEquipmentReason.heading,
+            title: i18n.pages.cmaRequirements.otherNeedsSection.singleSexAppointmentAllMale.heading,
             value: savedReason ? savedReason : ''
           },
           supportingEvidence: false,
           timeExtensionAllowed: false,
           errorList: Object.values(validationErrors),
-          errors: validationErrors
+          error: validationErrors
         });
       }
 
       req.session.appeal.cmaRequirements.otherNeeds = {
         ...req.session.appeal.cmaRequirements.otherNeeds,
-        bringOwnMultimediaEquipmentReason: req.body['reason']
+        singleSexAppointmentReason: req.body['reason']
       };
 
       if (req.body['saveForLater']) {
@@ -73,16 +73,16 @@ function postMultimediaEquipmentReason(updateAppealService: UpdateAppealService)
   };
 }
 
-function setupMultimediaEquipmentReasonController(middleware: Middleware[], updateAppealService?: UpdateAppealService): Router {
+function setupSingleSexAppointmentAllMaleReasonController(middleware: Middleware[], updateAppealService?: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason, middleware, getMultimediaEquipmentReason);
-  router.post(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason, middleware, postMultimediaEquipmentReason(updateAppealService));
+  router.get(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment, middleware, getSingleSexAppointmentAllMaleReason);
+  router.post(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment, middleware, postSingleSexAppointmentAllMaleReason(updateAppealService));
 
   return router;
 }
 
 export {
-  setupMultimediaEquipmentReasonController,
-  getMultimediaEquipmentReason,
-  postMultimediaEquipmentReason
+  setupSingleSexAppointmentAllMaleReasonController,
+  getSingleSexAppointmentAllMaleReason,
+  postSingleSexAppointmentAllMaleReason
 };

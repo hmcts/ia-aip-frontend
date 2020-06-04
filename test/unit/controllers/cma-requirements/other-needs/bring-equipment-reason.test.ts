@@ -114,7 +114,6 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Reason control
       req.body['reason'] = 'the answer here';
       await postMultimediaEquipmentReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      // expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
     });
 

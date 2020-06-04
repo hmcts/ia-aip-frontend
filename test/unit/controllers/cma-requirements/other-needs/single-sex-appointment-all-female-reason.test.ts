@@ -136,7 +136,6 @@ describe('CMA Requirements - Single sex all female Reason controller', () => {
       req.body['reason'] = 'the answer here';
       await postSingleSexAppointmentAllFemaleReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      // expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
     });
 

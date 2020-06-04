@@ -135,7 +135,6 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Reason contro
       req.body['reason'] = 'the answer here';
       await postPastExperiencesReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      // expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElse);
     });
 

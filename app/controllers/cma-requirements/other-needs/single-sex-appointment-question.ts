@@ -5,14 +5,14 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { postCmaRequirementsYesNoHandler } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-const pageTitle = i18n.pages.cmaRequirements.otherNeedsSection.anythingElse.title;
-const formAction = paths.awaitingCmaRequirements.otherNeedsAnythingElse;
+const pageTitle = i18n.pages.cmaRequirements.otherNeedsSection.singleSexAppointment.title;
+const formAction = paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment;
 const question = {
-  title: i18n.pages.cmaRequirements.otherNeedsSection.anythingElse.question,
+  title: i18n.pages.cmaRequirements.otherNeedsSection.singleSexAppointment.question,
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
 };
 
-function getAnythingElseQuestion(req: Request, res: Response, next: NextFunction) {
+function getSingleSexAppointmentQuestion(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('templates/radio-question-page.njk', {
       previousPage,
@@ -25,9 +25,9 @@ function getAnythingElseQuestion(req: Request, res: Response, next: NextFunction
   }
 }
 
-function postAnythingElseQuestion(updateAppealService: UpdateAppealService) {
+function postSingleSexAppointmentQuestion(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.anythingElseAnswerRequired;
+    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.singleSexAppointmentRequired;
 
     const pageContent = {
       previousPage,
@@ -40,33 +40,33 @@ function postAnythingElseQuestion(updateAppealService: UpdateAppealService) {
       if (answer) {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
-          anythingElse: true
+          singleSexAppointment: true
         };
 
-        return res.redirect(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons);
+        return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
-          anythingElse: false
+          singleSexAppointment: false
         };
 
-        return res.redirect(paths.awaitingCmaRequirements.taskList);
+        return res.redirect(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
       }
     };
 
     return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
   };
 }
-function setupAnythingElseQuestionController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupSingleSexAppointmentQuestionController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.awaitingCmaRequirements.otherNeedsAnythingElse, middleware, getAnythingElseQuestion);
-  router.post(paths.awaitingCmaRequirements.otherNeedsAnythingElse, middleware, postAnythingElseQuestion(updateAppealService));
+  router.get(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment, middleware, getSingleSexAppointmentQuestion);
+  router.post(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment, middleware, postSingleSexAppointmentQuestion(updateAppealService));
 
   return router;
 }
 
 export {
-  setupAnythingElseQuestionController,
-  getAnythingElseQuestion,
-  postAnythingElseQuestion
+  setupSingleSexAppointmentQuestionController,
+  getSingleSexAppointmentQuestion,
+  postSingleSexAppointmentQuestion
 };

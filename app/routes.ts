@@ -19,6 +19,9 @@ import { setupClarifyingQuestionsConfirmationPage } from './controllers/clarifyi
 import { setupClarifyingQuestionPageController } from './controllers/clarifying-questions/question-page';
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
+import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupAnythingElseQuestionController } from './controllers/cma-requirements/other-needs/anything-else-question';
+import { setupAnythingElseReasonController } from './controllers/cma-requirements/other-needs/anything-else-reason';
 import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
 import { setupMultimediaEquipmentReasonController } from './controllers/cma-requirements/other-needs/bring-equipment-reason';
 import { setupHealthConditionsQuestionController } from './controllers/cma-requirements/other-needs/health-conditions-question';
@@ -116,6 +119,8 @@ const cmaRequirementsHealthConditionsQuestionController = setupHealthConditionsQ
 const cmaRequirementsHealthConditionsReasonController = setupHealthConditionsReasonController(middleware, updateAppealService);
 const cmaRequirementsPastExperiencesQuestionController = setupPastExperiencesQuestionController(middleware, updateAppealService);
 const cmaRequirementsPastExperiencesReasonController = setupPastExperiencesReasonController(middleware, updateAppealService);
+const cmaRequirementsAnythingElseQuestionController = setupAnythingElseQuestionController(middleware, updateAppealService);
+const cmaRequirementsAnythingElseReasonController = setupAnythingElseReasonController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -171,6 +176,8 @@ router.use(cmaRequirementsHealthConditionsQuestionController);
 router.use(cmaRequirementsHealthConditionsReasonController);
 router.use(cmaRequirementsPastExperiencesQuestionController);
 router.use(cmaRequirementsPastExperiencesReasonController);
+router.use(cmaRequirementsAnythingElseQuestionController);
+router.use(cmaRequirementsAnythingElseReasonController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

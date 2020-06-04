@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import * as _ from 'lodash';
 import i18n from '../../../../locale/en.json';
-import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
-import { textAreaValidation } from '../../../utils/validations/fields-validations';
 import { getCmaRequirementsReasonHandler, handleCmaRequirementsSaveForLater } from '../common';
 
 let pageContent = {

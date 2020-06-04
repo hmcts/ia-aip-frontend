@@ -164,8 +164,25 @@ interface CmaRequirements {
 interface DateToAvoid {
   date: AppealDate;
   reason?: string;
+  otherNeeds?: OtherNeeds;
 }
 
+interface OtherNeeds {
+  multimediaEvidence: boolean;
+  bringOwnMultimediaEquipment: boolean;
+  bringOwnMultimediaEquipmentReason: string;
+  singleSexAppointment: boolean;
+  singleSexTypeAppointment: string;
+  singleSexAppointmentReason: string;
+  privateAppointment: boolean;
+  singleSexAppointmentReason: string;
+  healthConditions: boolean;
+  healthConditionsReason: string;
+  pastExperiences: boolean;
+  pastExperiencesReason: string;
+  anythingElse: boolean;
+  anythingElseReason: string;
+}
 interface ReasonsForAppeal {
   applicationReason: string;
   uploadDate?: string;

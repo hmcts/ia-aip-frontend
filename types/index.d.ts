@@ -169,7 +169,7 @@ interface OtherNeeds {
   singleSexTypeAppointment: string;
   singleSexAppointmentReason: string;
   privateAppointment: boolean;
-  singleSexAppointmentReason: string;
+  privateAppointmentReason: string;
   healthConditions: boolean;
   healthConditionsReason: string;
   pastExperiences: boolean;

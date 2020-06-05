@@ -21,7 +21,7 @@ let pageContent = {
 function getPrivateAppointmentReason(req: Request, res: Response, next: NextFunction) {
   try {
     const { otherNeeds } = req.session.appeal.cmaRequirements;
-    const savedReason: string = otherNeeds.singleSexAppointmentReason;
+    const savedReason: string = otherNeeds.privateAppointmentReason;
 
     pageContent.question.value = savedReason ? savedReason : '';
 
@@ -40,7 +40,7 @@ function postPrivateAppointmentReason(updateAppealService: UpdateAppealService) 
       const onSuccess = () => {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
-          anythingElseReason: req.body['reason']
+          privateAppointmentReason: req.body['reason']
         };
 
         return req.body['saveForLater']

@@ -44,3 +44,13 @@ export function hasInflightTimeExtension(appeal: Appeal): boolean {
 export function formatTextForCYA(text: string) {
   return nl2br(text.replace(/ /g, '&nbsp;'));
 }
+
+export function boolToYesNo(value: boolean) {
+  return value === true ? 'Yes' : 'No';
+}
+
+export function yesNoToBool(answer: string): boolean {
+  if (answer === 'Yes') {
+    return true;
+  } else if (answer === 'No') return false;
+}

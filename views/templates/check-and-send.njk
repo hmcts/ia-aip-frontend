@@ -12,14 +12,31 @@
 
   <h1 class="govuk-heading-xl">{{ pageTitle }}</h1>
 
-  {% for summaryList in summaryLists %}
-    {% if summaryList.title %}
-      <h2 class="govuk-heading-l">{{ summaryList.title }}</h2>
-    {% endif %}
-    {{ govukSummaryList({
-      rows: summaryList.summaryRows
-    }) }}
-  {% endfor %}
+  {% if summarySections %}
+    {% for summarySection in summarySections %}
+      <h2 class="govuk-heading-l">{{ summarySection.title }}</h2>
+      {% for summaryList in summarySection.summaryLists %}
+        {% if summaryList.title %}
+          <h3 class="govuk-heading-m">{{ summaryList.title }}</h3>
+        {% endif %}
+        {{ govukSummaryList({
+          rows: summaryList.summaryRows
+        }) }}
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+
+  {% if summaryLists %}
+    {% for summaryList in summaryLists %}
+      {% if summaryList.title %}
+        <h2 class="govuk-heading-l">{{ summaryList.title }}</h2>
+      {% endif %}
+      {{ govukSummaryList({
+        rows: summaryList.summaryRows
+      }) }}
+    {% endfor %}
+  {% endif %}
+
 
   {% if formAction %}
     <form method="post" action="{{ formAction }}">

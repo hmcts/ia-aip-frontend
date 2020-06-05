@@ -58,7 +58,7 @@ function cmaRequirementsStatus(appeal: Appeal) {
 
   const accessNeedsTask: Task = {
     saved: accessNeeds,
-    completed: accessNeeds,
+    completed: _.get(appeal, 'cmaRequirements.accessNeeds.interpreterLanguage.language', false),
     active: true
   };
   const otherNeeds: boolean = !!_.get(appeal, 'cmaRequirements.otherNeeds');
@@ -80,7 +80,8 @@ function cmaRequirementsStatus(appeal: Appeal) {
   const checkAndSend: Task = {
     saved: false,
     completed: false,
-    active: datesToAvoidTask.completed
+    // active: datesToAvoidTask.completed
+    active: true
   };
 
   return {

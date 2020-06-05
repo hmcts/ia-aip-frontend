@@ -3,6 +3,16 @@ interface Href {
   text: string;
 }
 
+interface SummarySection {
+  title: string;
+  summaryLists: SummaryList[];
+}
+
+interface SummaryList {
+  title: string;
+  summaryRows: SummaryRow[];
+}
+
 interface SummaryRow {
   key: {
     text: string
@@ -178,6 +188,7 @@ interface OtherNeeds {
   singleSexTypeAppointment: string;
   singleSexAppointmentReason: string;
   privateAppointment: boolean;
+  privateAppointmentReason: string;
   singleSexAppointmentReason: string;
   healthConditions: boolean;
   healthConditionsReason: string;

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
-import { toIsoDate } from '../utils/utils';
+import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
@@ -83,7 +83,7 @@ export default class UpdateAppealService {
       }
     }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
 
-    if (this.yesNoToBool(caseData.submissionOutOfTime)) {
+    if (yesNoToBool(caseData.submissionOutOfTime)) {
 
       if (caseData.applicationOutOfTimeExplanation) {
         outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
@@ -208,15 +208,15 @@ export default class UpdateAppealService {
     }
 
     if (caseData.isInterpreterServicesNeeded) {
-      isInterpreterServicesNeeded = this.yesNoToBool(caseData.isInterpreterServicesNeeded);
+      isInterpreterServicesNeeded = yesNoToBool(caseData.isInterpreterServicesNeeded);
     }
 
     if (caseData.isHearingRoomNeeded) {
-      isHearingRoomNeeded = this.yesNoToBool(caseData.isHearingRoomNeeded);
+      isHearingRoomNeeded = yesNoToBool(caseData.isHearingRoomNeeded);
     }
 
     if (caseData.isHearingLoopNeeded) {
-      isHearingLoopNeeded = this.yesNoToBool(caseData.isHearingLoopNeeded);
+      isHearingLoopNeeded = yesNoToBool(caseData.isHearingLoopNeeded);
     }
     if (caseData.interpreterLanguage) {
       interpreterLanguage = caseData.interpreterLanguage;
@@ -234,7 +234,7 @@ export default class UpdateAppealService {
           ...appellantContactDetails
         },
         dateLetterSent,
-        isAppealLate: caseData.submissionOutOfTime ? this.yesNoToBool(caseData.submissionOutOfTime) : undefined,
+        isAppealLate: caseData.submissionOutOfTime ? yesNoToBool(caseData.submissionOutOfTime) : undefined,
         lateAppeal: outOfTimeAppeal || undefined,
         personalDetails: {
           givenNames: caseData.appellantGivenNames,
@@ -285,12 +285,6 @@ export default class UpdateAppealService {
       return dateLetterSent;
     }
     return null;
-  }
-
-  yesNoToBool(answer: string): boolean {
-    if (answer === 'Yes') {
-      return true;
-    } else if (answer === 'No') return false;
   }
 
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
@@ -417,10 +411,10 @@ export default class UpdateAppealService {
         caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
       }
       if (_.has(appeal.cmaRequirements,'isHearingLoopNeeded')) {
-        caseData.isHearingLoopNeeded = appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded === true ? 'Yes' : 'No';
+        caseData.isHearingLoopNeeded = boolToYesNo(appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded);
       }
       if (_.has(appeal.cmaRequirements,'isHearingRoomNeeded')) {
-        caseData.isHearingRoomNeeded = appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded === true ? 'Yes' : 'No';
+        caseData.isHearingRoomNeeded = boolToYesNo(appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded);
       }
       if (_.has(appeal.cmaRequirements,'interpreterLanguage')) {
         caseData.interpreterLanguage = [{
@@ -431,7 +425,7 @@ export default class UpdateAppealService {
         }];
       }
       if (_.has(appeal.cmaRequirements,'isInterpreterServicesNeeded')) {
-        caseData.isInterpreterServicesNeeded = appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded === true ? 'Yes' : 'No';
+        caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded);
       }
     }
 

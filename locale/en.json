@@ -36,7 +36,9 @@
     "cya": {
       "questionRowTitle": "Question",
       "answerRowTitle": "Answer",
-      "supportingEvidenceRowTitle": "Supporting evidence"
+      "supportingEvidenceRowTitle": "Supporting evidence",
+      "date": "Date",
+      "reason": "Reason"
     },
     "askForMoreTime": {
       "text": "Ask for more time",
@@ -1190,6 +1192,28 @@
           "title": "Do you want to add another date you cannot go to the appointment?",
           "heading": "Do you want to add another date you cannot go to the appointment?"
         }
+      }
+    },
+    "cmaRequirementsCYA": {
+      "title": "Check your answers",
+      "sections": {
+        "accessNeeds": "Access needs",
+        "otherNeeds": "Other needs",
+        "datesToAvoid": "Dates to avoid"
+      },
+      "rows":{
+        "interpreterTitle": "Interpreter",
+        "language": "Language",
+        "dialect": "Dialect",
+        "stepFreeTitle": "Step-free access",
+        "hearingLoopTitle": "Hearing loop",
+        "multimediaEvidence": "Multimedia evidence",
+        "singleSexAppointment": "All-female or all-male appointment",
+        "privateAppointment": "Private appointment",
+        "healthConditions": "Physical or mental health conditions",
+        "pastExperiences": "Past experiences",
+        "anythingElse": "Anything else",
+        "datesToAvoid": "Dates to avoid"
       }
     },
     "clarifyingQuestionPage": {

@@ -21,6 +21,7 @@ import { setupClarifyingQuestionsListController } from './controllers/clarifying
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
 import { setupAccessNeedsController } from './controllers/cma-requirements/access-needs/access-needs';
+import { setupCmaRequirementsCYAController } from './controllers/cma-requirements/check-and-send/check-and-send';
 import { setupDatesToAvoidAddAnotherDateController } from './controllers/cma-requirements/dates-to-avoid/add-another-date';
 import { setupDatesToAvoidEnterADateController } from './controllers/cma-requirements/dates-to-avoid/enter-a-date';
 import { setupDatesToAvoidQuestionController } from './controllers/cma-requirements/dates-to-avoid/question';
@@ -130,6 +131,7 @@ const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonContr
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
 const cmaRequirementsAnythingElseQuestionController = setupAnythingElseQuestionController(middleware, updateAppealService);
 const cmaRequirementsAnythingElseReasonController = setupAnythingElseReasonController(middleware, updateAppealService);
+const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -192,6 +194,7 @@ router.use(cmaRequirementsDatesToAvoidReasonController);
 router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
 router.use(cmaRequirementsAnythingElseQuestionController);
 router.use(cmaRequirementsAnythingElseReasonController);
+router.use(cmaRequirementsCYAController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

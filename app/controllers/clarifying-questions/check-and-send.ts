@@ -19,7 +19,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
     const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
     const anythingElseQuestion: ClarifyingQuestion<Evidence> = clarifyingQuestions.pop();
 
-    const summaryLists: any[] = clarifyingQuestions.map((question: ClarifyingQuestion<Evidence>, index: number) => {
+    const summaryLists: SummaryList[] = clarifyingQuestions.map((question: ClarifyingQuestion<Evidence>, index: number) => {
       const summaryRows: SummaryRow[] = [];
       summaryRows.push(
         addSummaryRow(i18n.common.cya.questionRowTitle, [ `<pre>${question.value.question}</pre>` ])

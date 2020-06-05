@@ -74,7 +74,7 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Reason con
 
     it('should render template with saved answer', () => {
 
-      req.session.appeal.cmaRequirements.otherNeeds.singleSexAppointmentReason = 'previously saved answer';
+      req.session.appeal.cmaRequirements.otherNeeds.privateAppointmentReason = 'previously saved answer';
 
       const expectedArgs = {
         formAction: '/appointment-private-reasons',

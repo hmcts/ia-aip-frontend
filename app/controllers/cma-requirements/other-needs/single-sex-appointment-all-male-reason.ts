@@ -43,7 +43,7 @@ function postSingleSexAppointmentAllMaleReason(updateAppealService: UpdateAppeal
 
       return req.body['saveForLater']
         ? handleCmaRequirementsSaveForLater(req, res)
-        : getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
+        : getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
     };
 
     return getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);

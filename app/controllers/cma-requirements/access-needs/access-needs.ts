@@ -7,9 +7,9 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { selectedRequiredValidation, yesOrNoRequiredValidation } from '../../../utils/validations/fields-validations';
 
-const yesOrNoOption = (answer: string) => [
-  { text: 'Yes', value: 'yes', checked: answer === 'yes' },
-  { text: 'No', value: 'no', checked: answer === 'no' }
+const yesOrNoOption = (answer: boolean) => [
+  { text: 'Yes', value: 'yes', checked: answer === true },
+  { text: 'No', value: 'no', checked: answer === false }
 ];
 
 function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
@@ -99,7 +99,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
       }
       req.session.appeal.cmaRequirements.accessNeeds.interpreterLanguage = {
         language: req.body.language,
-        dialect: req.body.dialect
+        languageDialect: req.body.dialect
       };
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
@@ -113,7 +113,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
 function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) {
   try {
     const { isHearingRoomNeeded, isInterpreterServicesNeeded } = req.session.appeal.cmaRequirements.accessNeeds;
-    const backButton = isInterpreterServicesNeeded === 'yes' ? paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage : paths.awaitingCmaRequirements.accessNeedsInterpreter;
+    const backButton = isInterpreterServicesNeeded === true ? paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage : paths.awaitingCmaRequirements.accessNeedsInterpreter;
     const answer = isHearingRoomNeeded || null;
     return res.render('templates/radio-question-page.njk', {
       previousPage: backButton,
@@ -136,7 +136,7 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { isHearingRoomNeeded, isInterpreterServicesNeeded } = req.session.appeal.cmaRequirements.accessNeeds;
-      const backButton = isInterpreterServicesNeeded === 'yes' ? paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage : paths.awaitingCmaRequirements.accessNeedsInterpreter;
+      const backButton = isInterpreterServicesNeeded === true ? paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage : paths.awaitingCmaRequirements.accessNeedsInterpreter;
       const answer = isHearingRoomNeeded || null;
       const validation = yesOrNoRequiredValidation(req.body,i18n.validationErrors.cmaRequirements.accessNeeds.stepFreeAccess);
       if (validation) {
@@ -209,7 +209,7 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
       }
       req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded = req.body.answer;
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeeds);
+      return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.taskList);
 
     } catch (error) {
       next(error);

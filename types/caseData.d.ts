@@ -43,7 +43,7 @@ interface CaseData {
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<DirectionValue>[];
   draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
-  interpreterLanguage?: AdditionalLanguage;
+  interpreterLanguage?: Collection<AdditionalLanguage>[];
   isInterpreterServicesNeeded?: string;
   isHearingRoomNeeded?: string;
   isHearingLoopNeeded?: string;

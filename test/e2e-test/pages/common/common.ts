@@ -306,5 +306,8 @@ module.exports = {
       await I.checkOption('#answer-2');
       await I.click('Save and continue');
     });
+    When('I select from the drop-down', async () => {
+      await I.selectOption('#language','Afar');
+    });
   }
 };

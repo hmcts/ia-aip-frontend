@@ -55,7 +55,7 @@ function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
       }
       anythingElseQuestion.value.answer = req.body['anything-else'];
       await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      res.redirect(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      res.redirect(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', `${draftClarifyingQuestionsAnswers.length}`));
     } catch (e) {
       next(e);
     }

@@ -371,6 +371,6 @@ export {
   yesOrNoRequiredValidation,
   DOBValidation,
   askForMoreTimeValidation,
-  isDateInRange,
-  selectedRequiredValidation
+  selectedRequiredValidation,
+  isDateInRange
 };

@@ -30,7 +30,11 @@ const awaitingCmaRequirements = {
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',
     'homeOfficeReferenceNumber': 'A1234567',
-    'cmaRequirements': {}
+    'cmaRequirements': {},
+    "isHearingLoopNeeded": "",
+    "isHearingRoomNeeded": "",
+    "interpreterLanguage": {},
+    "isInterpreterServicesNeeded": "",
   }
 };
 

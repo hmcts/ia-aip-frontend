@@ -141,18 +141,6 @@ describe('update-appeal-service', () => {
               }
             }]
           }}
-      ],
-      draftClarifyingQuestionsAnswers: [
-        {
-          id: '1',
-          value: {
-            dateSent: '2020-04-23',
-            dueDate: '2020-05-07',
-            question: 'the questions',
-            answer: 'the answer',
-            supportingEvidence: []
-          }
-        }
       ]
     };
   });
@@ -221,6 +209,62 @@ describe('update-appeal-service', () => {
         { inFlight: false });
     });
 
+    it('load CQ from directions object', async () => {
+
+      const directionsClarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[] = [
+        {
+          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+          }
+        }
+      ];
+
+      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        {
+          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+          }
+        },
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Do you want to tell us anything else about your case?'
+          }
+        }
+      ];
+      expectedCaseData.directions = [
+        {
+          id: '3',
+          value: {
+            tag: 'requestClarifyingQuestions',
+            dateDue: '2020-05-07',
+            parties: 'appellant',
+            dateSent: '2020-04-23',
+            explanation: 'You need to answer some questions about your appeal.',
+            previousDates: [],
+            clarifyingQuestions: directionsClarifyingQuestions
+          }
+        }
+      ];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingClarifyingQuestionsAnswers',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
+    });
+
     it('load draftClarifyingQuestion', async () => {
       const draftClarifyingQuestion: ClarifyingQuestion<Collection<SupportingDocument>> = {
         id: 'id',
@@ -253,7 +297,21 @@ describe('update-appeal-service', () => {
             parties: 'appellant',
             dateSent: '2020-04-23',
             explanation: 'You need to answer some questions about your appeal.',
-            previousDates: []
+            previousDates: [],
+            clarifyingQuestions: [
+              {
+                id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+                value: {
+                  question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+                }
+              },
+              {
+                id: 'ddc8a194-30b3-40d9-883e-d034a7451170',
+                value: {
+                  question: 'Tell us more about your health issues\n- How long have you suffered from this problem?\n- How does it affect your daily life?'
+                }
+              }
+            ]
           }
         }
       ];
@@ -651,16 +709,16 @@ describe('update-appeal-service', () => {
               },
               isAppealLate: true,
               lateAppeal: {
-                reason: 'a reason',
-                evidence: {
-                  name: 'somefile.png',
-                  fileId: '00000000-0000-0000-0000-000000000000',
-                  dateUploaded: {
-                    year: 2020,
-                    month: 1,
-                    day: 1
+                'reason': 'a reason',
+                'evidence': {
+                  'name': 'somefile.png',
+                  'fileId': '00000000-0000-0000-0000-000000000000',
+                  'dateUploaded': {
+                    'year': 2020,
+                    'month': 1,
+                    'day': 1
                   },
-                  description: 'Some evidence 1'
+                  'description': 'Some evidence 1'
                 }
               },
               personalDetails: {

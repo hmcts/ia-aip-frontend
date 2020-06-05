@@ -79,7 +79,6 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
-
 }
 
 interface AskForMoreTime {
@@ -164,17 +163,13 @@ interface CmaRequirements {
   datesToAvoid?: DateToAvoid[];
 }
 
-interface DateToAvoid {
-  date: AppealDate;
-  reason?: string;
+interface AccessNeeds {
+  isInterpreterServicesNeeded?: boolean;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: boolean;
+  isHearingLoopNeeded?: boolean;
 }
 
-interface AccessNeeds {
-  isInterpreterServicesNeeded?: string;
-  interpreterLanguage?: AdditionalLanguage;
-  isHearingRoomNeeded?: string;
-  isHearingLoopNeeded?: string;
-}
 interface OtherNeeds {
   multimediaEvidence: boolean;
   bringOwnMultimediaEquipment: boolean;
@@ -191,6 +186,12 @@ interface OtherNeeds {
   anythingElse: boolean;
   anythingElseReason: string;
 }
+
+interface DateToAvoid {
+  date: AppealDate;
+  reason?: string;
+}
+
 interface ReasonsForAppeal {
   applicationReason: string;
   uploadDate?: string;
@@ -255,6 +256,6 @@ interface ClarifyingQuestion<T> {
 
 interface AdditionalLanguage {
   language?: string;
-  dialect?: string;
+  languageDialect?: string;
 }
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

@@ -23,7 +23,7 @@ describe('case management appointment controller', () => {
         appeal: {
           cmaRequirements: {
             accessNeeds: {
-              isInterpreterServicesNeeded: 'yes'
+              isInterpreterServicesNeeded: true
             }
           }
         }
@@ -79,7 +79,7 @@ describe('case management appointment controller', () => {
 
   describe('getHearingLoop', () => {
     it('getHearingLoop should render get-hearing-loop.njk with no option loaded', () => {
-      req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = '';
+      req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
       getHearingLoopPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
         previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
@@ -180,7 +180,7 @@ describe('case management appointment controller', () => {
 
       it('should show validation error if no option is selected needsInterperter', async () => {
         req.body.answer = '';
-        req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = '';
+        req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
@@ -238,7 +238,7 @@ describe('case management appointment controller', () => {
 
       await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeeds);
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
     });
 
     it('should show validation error if no option is selected post additional answer', async () => {

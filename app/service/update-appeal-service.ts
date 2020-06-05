@@ -63,12 +63,13 @@ export default class UpdateAppealService {
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
-    let isInterpreterServicesNeeded = caseData.isInterpreterServicesNeeded || '';
-    let interpreterLanguage = caseData.interpreterLanguage || {};
-    let isHearingRoomNeeded = caseData.isHearingRoomNeeded || '';
-    let isHearingLoopNeeded = caseData.isHearingLoopNeeded || '';
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+    let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
+    let isInterpreterServicesNeeded: boolean = null;
+    let interpreterLanguage = null;
+    let isHearingRoomNeeded: boolean = null;
+    let isHearingLoopNeeded: boolean = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -87,6 +88,7 @@ export default class UpdateAppealService {
       if (caseData.applicationOutOfTimeExplanation) {
         outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
       }
+
       if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
 
         const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, this.documentMap);
@@ -182,23 +184,8 @@ export default class UpdateAppealService {
     }
 
     if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
-      if (caseData.draftClarifyingQuestionsAnswers) {
-        draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map(answer => {
-          let evidencesList: Evidence[] = [];
-          if (answer.value.supportingEvidence) {
-            evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
-          }
-          return {
-            id: answer.id,
-            value: {
-              dateSent: answer.value.dateSent,
-              dueDate: answer.value.dueDate,
-              question: answer.value.question,
-              answer: answer.value.answer || '',
-              supportingEvidence: evidencesList
-            }
-          };
-        });
+      if (caseData.draftClarifyingQuestionsAnswers && caseData.draftClarifyingQuestionsAnswers.length > 0) {
+        draftClarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.draftClarifyingQuestionsAnswers);
       } else {
         draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ].map((question) => {
           question.value.dateSent = requestClarifyingQuestionsDirection.value.dateSent;
@@ -214,6 +201,25 @@ export default class UpdateAppealService {
           }
         });
       }
+    }
+
+    if (caseData.clarifyingQuestionsAnswers) {
+      clarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers);
+    }
+
+    if (caseData.isInterpreterServicesNeeded) {
+      isInterpreterServicesNeeded = this.yesNoToBool(caseData.isInterpreterServicesNeeded);
+    }
+
+    if (caseData.isHearingRoomNeeded) {
+      isHearingRoomNeeded = this.yesNoToBool(caseData.isHearingRoomNeeded);
+    }
+
+    if (caseData.isHearingLoopNeeded) {
+      isHearingLoopNeeded = this.yesNoToBool(caseData.isHearingLoopNeeded);
+    }
+    if (caseData.interpreterLanguage) {
+      interpreterLanguage = caseData.interpreterLanguage;
     }
 
     req.session.appeal = {
@@ -245,18 +251,21 @@ export default class UpdateAppealService {
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
       hearingRequirements: {},
-      cmaRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: [ ...this.documentMap ],
       directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers,
-      isHearingLoopNeeded,
-      isHearingRoomNeeded,
-      interpreterLanguage,
-      isInterpreterServicesNeeded
-
+      cmaRequirements: {
+        accessNeeds: {
+          isHearingLoopNeeded: isHearingLoopNeeded,
+          isHearingRoomNeeded: isHearingRoomNeeded,
+          interpreterLanguage: interpreterLanguage,
+          isInterpreterServicesNeeded: isInterpreterServicesNeeded
+        }
+      },
+      clarifyingQuestionsAnswers
     };
 
     req.session.appeal.askForMoreTime = {
@@ -407,17 +416,22 @@ export default class UpdateAppealService {
       if (appeal.reasonsForAppeal.uploadDate) {
         caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
       }
-      if (_.has(appeal.cmaRequirements,'isHearingRoomNeeded')) {
-        caseData.isHearingRoomNeeded = appeal.isHearingRoomNeeded;
-      }
       if (_.has(appeal.cmaRequirements,'isHearingLoopNeeded')) {
-        caseData.isHearingLoopNeeded = appeal.isHearingLoopNeeded;
+        caseData.isHearingLoopNeeded = appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded === true ? 'Yes' : 'No';
+      }
+      if (_.has(appeal.cmaRequirements,'isHearingRoomNeeded')) {
+        caseData.isHearingRoomNeeded = appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded === true ? 'Yes' : 'No';
       }
       if (_.has(appeal.cmaRequirements,'interpreterLanguage')) {
-        caseData.interpreterLanguage = appeal.interpreterLanguage;
+        caseData.interpreterLanguage = [{
+          value: {
+            language: appeal.cmaRequirements.accessNeeds.interpreterLanguage.language,
+            languageDialect: appeal.cmaRequirements.accessNeeds.interpreterLanguage.languageDialect
+          }
+        }];
       }
       if (_.has(appeal.cmaRequirements,'isInterpreterServicesNeeded')) {
-        caseData.isInterpreterServicesNeeded = appeal.isInterpreterServicesNeeded;
+        caseData.isInterpreterServicesNeeded = appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded === true ? 'Yes' : 'No';
       }
     }
 
@@ -434,6 +448,25 @@ export default class UpdateAppealService {
       caseData.clarifyingQuestionsAnswers = this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap);
     }
     return caseData;
+  }
+
+  private mapCcdClarifyingQuestionsToAppeal(clarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[]): ClarifyingQuestion<Evidence>[] {
+    return clarifyingQuestions.map(answer => {
+      let evidencesList: Evidence[] = [];
+      if (answer.value.supportingEvidence) {
+        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+      }
+      return {
+        id: answer.id,
+        value: {
+          dateSent: answer.value.dateSent,
+          dueDate: answer.value.dueDate,
+          question: answer.value.question,
+          answer: answer.value.answer || '',
+          supportingEvidence: evidencesList
+        }
+      };
+    });
   }
 
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {

@@ -4,6 +4,7 @@ import {
   postSingleSexTypeAppointmentQuestion,
   setupSingleSexTypeAppointmentQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/single-sex-type-appointment-question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -110,16 +111,18 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
       req.body['answer'] = 'yes';
       await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All male');
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All-male');
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAllFemaleAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All female');
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All-female');
     });
 
     it('should catch error and call next with error', async () => {

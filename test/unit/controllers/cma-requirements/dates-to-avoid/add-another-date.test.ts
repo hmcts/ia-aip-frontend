@@ -3,6 +3,7 @@ import {
   getAddAnotherDateQuestionPage, postAddAnotherDateQuestionPage,
   setupDatesToAvoidAddAnotherDateController
 } from '../../../../../app/controllers/cma-requirements/dates-to-avoid/add-another-date';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import { expect, sinon } from '../../../../utils/testUtils';
 
@@ -74,7 +75,7 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
     });
   });
 
-  describe('postDatesToAvoidQuestion', () => {
+  describe('postAddAnotherDateQuestionPage', () => {
     it('should fail validation and render template with errors', async () => {
       await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 

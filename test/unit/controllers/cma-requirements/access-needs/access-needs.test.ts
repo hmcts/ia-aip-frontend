@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { getAccessNeeds,getAdditionalLanguage,getHearingLoopPage, getNeedInterpreterPage, getStepFreeAccessPage, postAdditionalLanguage, postHearingLoopPage, postNeedInterpreterPage, postStepFreeAccessPage, setupAccessNeedsController } from '../../../../../app/controllers/cma-requirements/access-needs/access-needs';
+import { Events } from '../../../../../app/data/events';
 import { isoLanguages } from '../../../../../app/data/isoLanguages';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
@@ -176,6 +177,7 @@ describe('case management appointment controller', () => {
           },
           saveAndContinue: true
         });
+
       });
 
       it('should show validation error if no option is selected needsInterperter', async () => {
@@ -237,6 +239,7 @@ describe('case management appointment controller', () => {
       req.body.answer = 'no';
 
       await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
 
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
     });
@@ -244,12 +247,17 @@ describe('case management appointment controller', () => {
     it('should show validation error if no option is selected post additional answer', async () => {
       req.body.answer = 'yes';
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
+
     });
 
     it('should show validation error if no option is selected post additional answer', async () => {
       req.body.answer = 'no';
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
     });
 
@@ -258,6 +266,7 @@ describe('case management appointment controller', () => {
 
       await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsHearingLoop);
     });
 
@@ -266,6 +275,7 @@ describe('case management appointment controller', () => {
 
       await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
     });
 

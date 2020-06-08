@@ -71,7 +71,9 @@ const paths = {
     otherNeedsAnythingElseReasons: '/appointment-anything-else-reasons',
     datesToAvoidQuestion: '/appointment-dates-avoid',
     datesToAvoidEnterDate: '/appointment-dates-avoid-enter',
+    datesToAvoidEnterDateWithId: '/appointment-dates-avoid-enter/:id',
     datesToAvoidReason: '/appointment-dates-avoid-reasons',
+    datesToAvoidReasonWithId: '/appointment-dates-avoid-reasons/:id',
     datesToAvoidAddAnotherDate: '/appointment-dates-avoid-new',
     checkAndSend: '/appointment-check-answers'
   },

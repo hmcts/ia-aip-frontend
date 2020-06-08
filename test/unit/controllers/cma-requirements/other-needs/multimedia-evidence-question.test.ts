@@ -4,6 +4,7 @@ import {
   postMultimediaEvidenceQuestion,
   setupMultimediaEvidenceQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/multimedia-evidence-question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -113,6 +114,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
       req.body['answer'] = 'yes';
       await postMultimediaEvidenceQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
       expect(req.session.appeal.cmaRequirements.otherNeeds.multimediaEvidence).to.be.true;
     });
@@ -121,6 +123,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
       req.body['answer'] = 'no';
       await postMultimediaEvidenceQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
       expect(req.session.appeal.cmaRequirements.otherNeeds.multimediaEvidence).to.be.false;
     });

@@ -4,6 +4,7 @@ import {
   postAnythingElseReason,
   setupAnythingElseReasonController
 } from '../../../../../app/controllers/cma-requirements/other-needs/anything-else-reason';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -135,7 +136,7 @@ describe('CMA Requirements - Other Needs Section: Anything Else Reason controlle
     it('should validate and redirect to next page', async () => {
       req.body['reason'] = 'the answer here';
       await postAnythingElseReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
     });
 

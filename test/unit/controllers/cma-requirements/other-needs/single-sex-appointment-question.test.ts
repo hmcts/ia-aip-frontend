@@ -4,6 +4,7 @@ import {
   postSingleSexAppointmentQuestion,
   setupSingleSexAppointmentQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/single-sex-appointment-question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -110,6 +111,7 @@ describe('CMA Requirements - Other Needs Section: Single sex appointment Questio
       req.body['answer'] = 'yes';
       await postSingleSexAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
       expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexAppointment).to.be.true;
     });
@@ -118,6 +120,7 @@ describe('CMA Requirements - Other Needs Section: Single sex appointment Questio
       req.body['answer'] = 'no';
       await postSingleSexAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
       expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexAppointment).to.be.false;
     });

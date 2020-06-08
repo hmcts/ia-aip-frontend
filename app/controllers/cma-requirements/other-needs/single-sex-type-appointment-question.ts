@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../../locale/en.json';
+import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { postCmaRequirementsYesNoHandler } from '../common';
@@ -13,8 +14,8 @@ const question = {
 };
 
 enum SexType {
-  ALL_MALE = 'All male',
-  ALL_FEMALE = 'All female'
+  ALL_MALE = 'All-male',
+  ALL_FEMALE = 'All-female'
 }
 
 function getSingleSexTypeAppointmentQuestion(req: Request, res: Response, next: NextFunction) {
@@ -41,20 +42,21 @@ function postSingleSexTypeAppointmentQuestion(updateAppealService: UpdateAppealS
       question
     };
 
-    const onSuccess = (answer: boolean) => {
+    const onSuccess = async (answer: boolean) => {
       if (answer) {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           singleSexTypeAppointment: SexType.ALL_MALE
         };
 
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           singleSexTypeAppointment: SexType.ALL_FEMALE
         };
-
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsAllFemaleAppointment);
       }
     };

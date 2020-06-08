@@ -1067,7 +1067,7 @@
         "datesToAvoid": {
           "id": "datesToAvoidLink",
           "title": "Are there any dates you cannot go to the appointment?",
-          "path": "awaitingCmaRequirements.datesToAvoid"
+          "path": "awaitingCmaRequirements.datesToAvoidQuestion"
         },
         "checkAndSend": {
           "id": "checkAndSendLink",
@@ -1207,13 +1207,13 @@
         "dialect": "Dialect",
         "stepFreeTitle": "Step-free access",
         "hearingLoopTitle": "Hearing loop",
-        "multimediaEvidence": "Multimedia evidence",
-        "singleSexAppointment": "All-female or all-male appointment",
-        "privateAppointment": "Private appointment",
-        "healthConditions": "Physical or mental health conditions",
-        "pastExperiences": "Past experiences",
-        "anythingElse": "Anything else",
-        "datesToAvoid": "Dates to avoid"
+        "multimediaEvidenceTitle": "Multimedia evidence",
+        "singleSexAppointmentTitle": "All-female or all-male appointment",
+        "privateAppointmentTitle": "Private appointment",
+        "healthConditionsTitle": "Physical or mental health conditions",
+        "pastExperiencesTitle": "Past experiences",
+        "anythingElseTitle": "Anything else",
+        "datesToAvoidTitle": "Dates to avoid"
       }
     },
     "clarifyingQuestionPage": {

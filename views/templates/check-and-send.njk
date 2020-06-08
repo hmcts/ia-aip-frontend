@@ -17,7 +17,7 @@
       <h2 class="govuk-heading-l">{{ summarySection.title }}</h2>
       {% for summaryList in summarySection.summaryLists %}
         {% if summaryList.title %}
-          <h3 class="govuk-heading-m">{{ summaryList.title }}</h3>
+          <h3 class="govuk-heading-m govuk-!-margin-top-8">{{ summaryList.title }}</h3>
         {% endif %}
         {{ govukSummaryList({
           rows: summaryList.summaryRows

@@ -9,7 +9,7 @@ interface SummarySection {
 }
 
 interface SummaryList {
-  title: string;
+  title?: string;
   summaryRows: SummaryRow[];
 }
 
@@ -170,7 +170,7 @@ interface CmaRequirements {
   };
   accessNeeds?: AccessNeeds;
   otherNeeds?: OtherNeeds;
-  datesToAvoid?: DateToAvoid[];
+  datesToAvoid?: DatesToAvoid;
 }
 
 interface AccessNeeds {
@@ -195,6 +195,11 @@ interface OtherNeeds {
   pastExperiencesReason: string;
   anythingElse: boolean;
   anythingElseReason: string;
+}
+
+interface DatesToAvoid {
+  isDateCannotAttend: boolean;
+  dates?: DateToAvoid[];
 }
 
 interface DateToAvoid {

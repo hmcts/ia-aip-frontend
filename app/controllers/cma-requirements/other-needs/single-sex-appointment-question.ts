@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../../locale/en.json';
+import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { postCmaRequirementsYesNoHandler } from '../common';
@@ -36,13 +37,14 @@ function postSingleSexAppointmentQuestion(updateAppealService: UpdateAppealServi
       question
     };
 
-    const onSuccess = (answer: boolean) => {
+    const onSuccess = async (answer: boolean) => {
       if (answer) {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           singleSexAppointment: true
         };
 
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
@@ -50,6 +52,7 @@ function postSingleSexAppointmentQuestion(updateAppealService: UpdateAppealServi
           singleSexAppointment: false
         };
 
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
       }
     };

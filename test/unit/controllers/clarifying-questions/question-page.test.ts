@@ -132,6 +132,22 @@ describe('Question-page controller', () => {
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.be.eql(req.body.answer);
       expect(res.redirect).to.have.been.calledOnce;
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id));
+
+    });
+
+    it('should validate and redirect to saveforLater', async () => {
+      req.body.answer = 'yes';
+      req.params.id = '1';
+      req.body.saveForLater = 'saveForLater';
+      const questionOrderNo = parseInt(req.params.id, 10) - 1;
+
+      await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.be.eql(req.body.answer);
+      expect(res.redirect).to.have.been.calledOnce;
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview + '?saved');
+
     });
 
     it('should call next with error', async () => {

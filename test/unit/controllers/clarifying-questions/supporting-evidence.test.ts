@@ -6,6 +6,10 @@ import {
   postSupportingEvidenceUpload,
   setupClarifyingQuestionsSupportingEvidenceUploadController
 } from '../../../../app/controllers/clarifying-questions/supporting-evidence';
+import {
+  EvidenceUploadConfig,
+  postSupportingEvidence
+} from '../../../../app/controllers/upload-evidence/upload-evidence-controller';
 import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
@@ -19,6 +23,7 @@ describe('Question-page controller', () => {
   let next: NextFunction;
   let updateAppealService: Partial<UpdateAppealService>;
   let documentManagementService: Partial<DocumentManagementService>;
+  let evidenceUploadConfig: Partial<EvidenceUploadConfig>;
 
   const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
     {
@@ -60,6 +65,7 @@ describe('Question-page controller', () => {
       updateAppealService: sandbox.stub()
     } as Partial<UpdateAppealService>;
     documentManagementService = { deleteFile: sandbox.stub() };
+    evidenceUploadConfig = { };
   });
 
   afterEach(() => {
@@ -104,6 +110,23 @@ describe('Question-page controller', () => {
       await postSupportingEvidenceUpload(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('upload-evidence/supporting-evidence-upload-page.njk');
+    });
+
+    it('should save for later with  file', async () => {
+      req.params.id = '1';
+      req.file = file as Express.Multer.File;
+      const documentUploadResponse: Evidence = {
+        fileId: 'someUUID',
+        name: 'file.png'
+      };
+      req.body.saveForLater = 'saveForLater';
+      const documentMap: DocumentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
+      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
+      req.session.appeal.documentMap = [ { ...documentMap } ];
+      await postSupportingEvidenceUpload(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should upload file', async () => {

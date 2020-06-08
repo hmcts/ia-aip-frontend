@@ -4,8 +4,9 @@ import moment from 'moment';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { getRedirectPage } from '../../utils/utils';
 import { dateLetterSentValidation, homeOfficeNumberValidation } from '../../utils/validations/fields-validations';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
@@ -50,19 +51,12 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
       req.session.appeal = appealUpdated;
-
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterSent);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }
   };
-}
-
-function getRedirectPage(editingMode, editingModeRedirect, saveForLater, defaultRedirect) {
-  if (editingMode) return editingModeRedirect;
-  if (saveForLater) return `${paths.common.overview}?saved`;
-  return defaultRedirect;
 }
 
 function getDateLetterSent(req: Request, res: Response, next: NextFunction) {

@@ -20,6 +20,7 @@ import { setupClarifyingQuestionPageController } from './controllers/clarifying-
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupAccessNeedsController } from './controllers/cma-requirements/access-needs/access-needs';
 import { setupAnythingElseQuestionController } from './controllers/cma-requirements/other-needs/anything-else-question';
 import { setupAnythingElseReasonController } from './controllers/cma-requirements/other-needs/anything-else-reason';
 import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
@@ -121,6 +122,7 @@ const cmaRequirementsPastExperiencesQuestionController = setupPastExperiencesQue
 const cmaRequirementsPastExperiencesReasonController = setupPastExperiencesReasonController(middleware, updateAppealService);
 const cmaRequirementsAnythingElseQuestionController = setupAnythingElseQuestionController(middleware, updateAppealService);
 const cmaRequirementsAnythingElseReasonController = setupAnythingElseReasonController(middleware, updateAppealService);
+const caseManagementAppointment = setupAccessNeedsController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -181,5 +183,6 @@ router.use(cmaRequirementsAnythingElseReasonController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);
+router.use(caseManagementAppointment);
 
 export { router };

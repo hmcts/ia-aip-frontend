@@ -79,6 +79,7 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+
 }
 
 interface AskForMoreTime {
@@ -158,7 +159,21 @@ interface CmaRequirements {
   tasks?: {
     [key: string]: Task;
   };
+  accessNeeds?: AccessNeeds;
   otherNeeds?: OtherNeeds;
+
+}
+
+interface DateToAvoid {
+  date: AppealDate;
+  reason?: string;
+}
+
+interface AccessNeeds {
+  isInterpreterServicesNeeded?: boolean;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: boolean;
+  isHearingLoopNeeded?: boolean;
 }
 
 interface OtherNeeds {

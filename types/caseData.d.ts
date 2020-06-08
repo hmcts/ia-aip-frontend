@@ -43,6 +43,10 @@ interface CaseData {
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<DirectionValue>[];
   draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
+  interpreterLanguage?: Collection<AdditionalLanguage>[];
+  isInterpreterServicesNeeded?: string;
+  isHearingRoomNeeded?: string;
+  isHearingLoopNeeded?: string;
   submitTimeExtensionReason?: string;
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
   clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];

@@ -63,6 +63,7 @@ export default class UpdateAppealService {
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
+    let cmaRequirements: CmaRequirements = {};
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
@@ -84,7 +85,6 @@ export default class UpdateAppealService {
       if (caseData.applicationOutOfTimeExplanation) {
         outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
       }
-
       if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
 
         const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, this.documentMap);
@@ -202,6 +202,27 @@ export default class UpdateAppealService {
       clarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers);
     }
 
+    if (caseData.isInterpreterServicesNeeded) {
+      let isInterpreterServicesNeeded: boolean = this.yesNoToBool(caseData.isInterpreterServicesNeeded);
+      let interpreterLanguage = {};
+      let isHearingRoomNeeded: boolean = null;
+      let isHearingLoopNeeded: boolean = null;
+      if (caseData.isHearingRoomNeeded) {
+        isHearingRoomNeeded = this.yesNoToBool(caseData.isHearingRoomNeeded);
+      }
+      if (caseData.isHearingLoopNeeded) {
+        isHearingLoopNeeded = this.yesNoToBool(caseData.isHearingLoopNeeded);
+      }
+      if (caseData.interpreterLanguage) {
+        interpreterLanguage = caseData.interpreterLanguage;
+      }
+      cmaRequirements.accessNeeds = {
+        isInterpreterServicesNeeded,
+        isHearingRoomNeeded,
+        isHearingLoopNeeded,
+        interpreterLanguage
+      };
+    }
     req.session.appeal = {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,
@@ -231,13 +252,13 @@ export default class UpdateAppealService {
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
       hearingRequirements: {},
-      cmaRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: [ ...this.documentMap ],
       directions: directions,
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers,
+      cmaRequirements: cmaRequirements,
       clarifyingQuestionsAnswers
     };
 
@@ -385,8 +406,26 @@ export default class UpdateAppealService {
           };
         });
       }
+
       if (appeal.reasonsForAppeal.uploadDate) {
         caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
+      }
+      if (_.has(appeal.cmaRequirements,'isHearingLoopNeeded')) {
+        caseData.isHearingLoopNeeded = appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded === true ? 'Yes' : 'No';
+      }
+      if (_.has(appeal.cmaRequirements,'isHearingRoomNeeded')) {
+        caseData.isHearingRoomNeeded = appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded === true ? 'Yes' : 'No';
+      }
+      if (_.has(appeal.cmaRequirements,'interpreterLanguage')) {
+        caseData.interpreterLanguage = [{
+          value: {
+            language: appeal.cmaRequirements.accessNeeds.interpreterLanguage.language,
+            languageDialect: appeal.cmaRequirements.accessNeeds.interpreterLanguage.languageDialect
+          }
+        }];
+      }
+      if (_.has(appeal.cmaRequirements,'isInterpreterServicesNeeded')) {
+        caseData.isInterpreterServicesNeeded = appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded === true ? 'Yes' : 'No';
       }
     }
 

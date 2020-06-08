@@ -1073,6 +1073,34 @@
           "path": "awaitingCmaRequirements.checkAndSend"
         }
       },
+      "accessNeedsSection": {
+        "accessNeedsPage": {
+          "pageTitle": "Your access needs",
+          "title": "Access needs",
+          "text": "If you need an interpreter or if you or anyone coming with you needs step-free access or a hearing loop, they will be provided at the appointment."
+        },
+        "additionalLanguagePage": {
+          "pageTitle": "Add language details",
+          "title": "Add language details",
+          "hint": "Dialect (Optional)",
+          "text": "A dialect is a form of a language spoken in a part of a country or by groups of people in a country."
+        },
+        "needInterpreterPage": {
+          "pageTitle": "Will you or anyone coming with you need an interpreter?",
+          "title": "Will you need an interpreter?"
+        },
+        "hearingLoopPage": {
+          "pageTitle": "Will you or anyone coming with you need a hearing loop?",
+          "title": "Will you or anyone coming with you need a hearing loop?",
+          "text": "A hearing loop is a sound system designed to help people who use hearing aids."
+        },
+        "stepFreeAccessPage": {
+          "pageTitle": "Will you or anyone coming with you need step-free access?",
+          "title": "Will you or anyone coming with you need step-free access?",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
+          "path": "awaitingCmaRequirements.checkAndSend"
+        }
+      },
       "otherNeedsSection": {
         "startPage": {
           "title": "Other needs",
@@ -1260,6 +1288,15 @@
     "clarifyingQuestions": {
       "emptyAnswer": "Please enter an answer for the question",
       "anythingElseEmptyAnswer": "Enter any other information you want tell us about your case"
+    },
+    "cmaRequirements": {
+      "accessNeeds": {
+        "emptyAnswer": "Please enter an answer for the question",
+        "selectInterpreter": "Select yes if anyone will need an interpreter",
+        "addLanguage": "Select a language",
+        "stepFreeAccess": "Select yes if you or anyone coming with will you need step-free access",
+        "hearingLoop": "Select yes if you or anyone coming with you will need a hearing loop"
+      }
     },
     "cmaRequirements": {
       "otherNeeds": {

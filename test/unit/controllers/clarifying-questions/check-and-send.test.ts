@@ -133,6 +133,14 @@ describe('Clarifying Questions Check and Send controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.clarifyingQuestionsAnswersSubmitted.confirmation);
     });
 
+    it('should validate and redirect to saveforLater', async () => {
+      req.body.saveForLater = 'saveForLater';
+      clarifyingQuestions[0].value.dateResponded = nowIsoDate();
+      clarifyingQuestions[1].value.dateResponded = nowIsoDate();
+      await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+    });
+
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.redirect = sandbox.stub().throws(error);

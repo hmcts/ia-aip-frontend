@@ -4,7 +4,9 @@ import { CQ_NOTHING_ELSE } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { getNextPage } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { nowIsoDate } from '../../utils/utils';
 
 function buildEvidencesList(evidences: Evidence[]) {
@@ -77,6 +79,9 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.body['saveForLater']) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
       const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
       req.session.appeal.clarifyingQuestionsAnswers = [ ...clarifyingQuestions ].map((question => {
         question.value.dateResponded = nowIsoDate();
@@ -85,7 +90,7 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
       delete req.session.appeal.draftClarifyingQuestionsAnswers;
       const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, req);
       req.session.appeal.appealStatus = updatedAppeal.state;
-      res.redirect(paths.clarifyingQuestionsAnswersSubmitted.confirmation);
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.clarifyingQuestionsAnswersSubmitted.confirmation));
     } catch (e) {
       next(e);
     }

@@ -46,9 +46,13 @@ const paths = {
   clarifyingQuestionsAnswersSubmitted: {
     confirmation: '/clarifying-questions-sent'
   },
-  cmaRequirements: {
-    taskList: '/cma-requirements/appointment-needs',
-    accessNeeds: 'TODO',
+  awaitingCmaRequirements: {
+    taskList: '/appointment-needs',
+    accessNeeds: '/appointment-access-needs',
+    accessNeedsInterpreter: '/appointment-interpreter',
+    accessNeedsStepFreeAccess: '/appointment-step-free-access',
+    accessNeedsHearingLoop: '/appointment-hearing-loop',
+    accessNeedsAdditionalLanguage: '/appointment-add-language-details',
     otherNeeds: 'TODO',
     datesToAvoid: 'TODO',
     checkAndSend: '/cma-requirements/check-your-answers'

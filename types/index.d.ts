@@ -79,6 +79,7 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+
 }
 
 interface AskForMoreTime {
@@ -154,9 +155,23 @@ interface AppealApplication {
 }
 
 interface CmaRequirements {
+  isEdit?: boolean;
   tasks?: {
     [key: string]: Task;
   };
+  accessNeeds?: AccessNeeds;
+}
+
+interface DateToAvoid {
+  date: AppealDate;
+  reason?: string;
+}
+
+interface AccessNeeds {
+  isInterpreterServicesNeeded?: boolean;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: boolean;
+  isHearingLoopNeeded?: boolean;
 }
 
 interface ReasonsForAppeal {
@@ -221,4 +236,8 @@ interface ClarifyingQuestion<T> {
   };
 }
 
+interface AdditionalLanguage {
+  language?: string;
+  languageDialect?: string;
+}
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;

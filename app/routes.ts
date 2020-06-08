@@ -20,6 +20,7 @@ import { setupClarifyingQuestionPageController } from './controllers/clarifying-
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupAccessNeedsController } from './controllers/cma-requirements/access-needs/access-needs';
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
@@ -88,6 +89,7 @@ const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswe
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
 const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
+const caseManagementAppointment = setupAccessNeedsController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -132,5 +134,6 @@ router.use(cmaRequirementsTaskListController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);
+router.use(caseManagementAppointment);
 
 export { router };

@@ -68,7 +68,7 @@
     {{ i18n.components.contactUsErrorPages.callCharges |safe }}</p>
 {% endmacro %}
 
-{% macro radioButtons(legendText, hintText, errorMessage) %}
+{% macro radioButtons(legendText, hintText, errorMessage, answer) %}
   {{ govukRadios({
     classes: "govuk-radios--inline",
     name: "answer",
@@ -94,7 +94,8 @@
         value: "no",
         text: "No"
       }
-    ]
+    ],
+    value: answer
   }) }}
 {% endmacro %}
 

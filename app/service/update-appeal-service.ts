@@ -119,7 +119,9 @@ export default class UpdateAppealService {
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
+    let cmaRequirements: CmaRequirements = {};
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+    let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
@@ -254,6 +256,32 @@ export default class UpdateAppealService {
       }
     }
 
+    if (caseData.clarifyingQuestionsAnswers) {
+      clarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers);
+    }
+
+    if (caseData.isInterpreterServicesNeeded) {
+      let isInterpreterServicesNeeded: boolean = this.yesNoToBool(caseData.isInterpreterServicesNeeded);
+      let interpreterLanguage = {};
+      let isHearingRoomNeeded: boolean = null;
+      let isHearingLoopNeeded: boolean = null;
+      if (caseData.isHearingRoomNeeded) {
+        isHearingRoomNeeded = this.yesNoToBool(caseData.isHearingRoomNeeded);
+      }
+      if (caseData.isHearingLoopNeeded) {
+        isHearingLoopNeeded = this.yesNoToBool(caseData.isHearingLoopNeeded);
+      }
+      if (caseData.interpreterLanguage) {
+        interpreterLanguage = caseData.interpreterLanguage;
+      }
+      cmaRequirements.accessNeeds = {
+        isInterpreterServicesNeeded,
+        isHearingRoomNeeded,
+        isHearingLoopNeeded,
+        interpreterLanguage
+      };
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -290,6 +318,8 @@ export default class UpdateAppealService {
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions ? [ ...timeExtensions ] : [],
       draftClarifyingQuestionsAnswers: draftClarifyingQuestionsAnswers ? [ ...draftClarifyingQuestionsAnswers ] : [],
+      clarifyingQuestionsAnswers,
+      cmaRequirements,
       askForMoreTime: {
         inFlight: hasInflightTimeExtension
       }

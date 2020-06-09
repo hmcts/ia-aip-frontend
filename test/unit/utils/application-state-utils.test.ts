@@ -78,7 +78,7 @@ describe('application-state-utils', () => {
         {
           deadline: 'TBC',
           descriptionParagraphs: [
-            'Description for event <b>unknown</b> not found'
+            'Description for appeal status <b>unknown</b> not found'
           ]
         }
       );

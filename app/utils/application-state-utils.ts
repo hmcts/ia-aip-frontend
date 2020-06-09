@@ -138,6 +138,14 @@ const APPEAL_STATE = {
       respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime
     },
     allowedAskForMoreTime: true
+  },
+  'clarifyingQuestionsAnswersSubmitted': {
+    descriptionParagraphs: [
+      'A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.',
+      'This should be by [five working days from submission date] but it might take longer than that.'
+    ],
+    cta: null,
+    allowedAskForMoreTime: false
   }
 };
 
@@ -179,7 +187,7 @@ function getAppealApplicationNextStep(req: Request) {
   if (doThisNextSection === undefined) {
     doThisNextSection = {
       descriptionParagraphs: [
-        `Description for event <b>${currentAppealStatus}</b> not found`
+        `Description for appeal status <b>${currentAppealStatus}</b> not found`
       ]
     };
   }

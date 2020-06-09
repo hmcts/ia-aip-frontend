@@ -26,5 +26,9 @@ export const States = {
   AWAITING_CMA_REQUIREMENTS: {
     id: 'awaitingCmaRequirements',
     name: 'Awaiting CMA Requirements'
+  },
+  CLARIFYING_QUESTIONS_SUBMITTED: {
+    id: 'clarifyingQuestionsAnswersSubmitted',
+    name: 'Clarifying Questions submitted'
   }
 };

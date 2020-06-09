@@ -418,6 +418,102 @@ describe('update-appeal-service', () => {
         { inFlight: true });
     });
 
+    it('load cmaRequirements', async () => {
+
+      expectedCaseData = {
+        ...expectedCaseData,
+        datesToAvoid: [ {
+          value: {
+            dateToAvoid: '2020-06-23',
+            dateToAvoidReason: 'I have an important appointment on this day'
+          }
+        }, {
+          value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
+        } ],
+        datesToAvoidYesNo: 'Yes',
+        inCameraCourt: 'Yes',
+        inCameraCourtDescription: 'The reason why I would need a private appointment',
+        interpreterLanguage: [ { value: { language: 'Afar', languageDialect: 'A dialect' } } ],
+        isHearingLoopNeeded: 'Yes',
+        isHearingRoomNeeded: 'Yes',
+        isInterpreterServicesNeeded: 'Yes',
+        multimediaEvidence: 'Yes',
+        multimediaEvidenceDescription: 'I do not own the equipment',
+        pastExperiences: 'Yes',
+        pastExperiencesDescription: 'Past experiences description',
+        physicalOrMentalHealthIssues: 'Yes',
+        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
+        singleSexCourt: 'Yes',
+        singleSexCourtType: 'All female',
+        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
+        additionalRequests: 'Yes',
+        additionalRequestsDescription: 'Anything else description'
+      };
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingCmaRequirements',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+
+      const expectedCmaRequirements = {
+        'accessNeeds': {
+          'interpreterLanguage': [
+            {
+              'value': {
+                'language': 'Afar',
+                'languageDialect': 'A dialect'
+              }
+            }
+          ],
+          'isHearingLoopNeeded': true,
+          'isHearingRoomNeeded': true,
+          'isInterpreterServicesNeeded': true
+        },
+        'otherNeeds': {
+          'anythingElse': true,
+          'anythingElseReason': 'Anything else description',
+          'bringOwnMultimediaEquipment': false,
+          'bringOwnMultimediaEquipmentReason': 'I do not own the equipment',
+          'healthConditions': true,
+          'healthConditionsReason': 'Reason for mental health conditions',
+          'multimediaEvidence': true,
+          'pastExperiences': true,
+          'pastExperiencesReason': 'Past experiences description',
+          'privateAppointment': true,
+          'privateAppointmentReason': 'The reason why I would need a private appointment',
+          'singleSexAppointment': true,
+          'singleSexAppointmentReason': 'The reason why I will need an all-female',
+          'singleSexTypeAppointment': 'All female'
+        },
+        'datesToAvoid': {
+          'isDateCannotAttend': true,
+          'dates': [
+            {
+              'date': {
+                'day': '23',
+                'month': '6',
+                'year': '2020'
+              },
+              'reason': 'I have an important appointment on this day'
+            },
+            {
+              'date': {
+                'day': '24',
+                'month': '6',
+                'year': '2020'
+              },
+              'reason': 'I need this day off'
+            }
+          ]
+        }
+      };
+      expect(req.session.appeal.cmaRequirements).to.be.eql(expectedCmaRequirements);
+    });
+
   });
 
   describe('convert to ccd case', () => {
@@ -994,18 +1090,18 @@ describe('update-appeal-service', () => {
 
       expectedCaseData = {
         ...expectedCaseData,
-        datesToAvoid: [{
+        datesToAvoid: [ {
           value: {
             dateToAvoid: '2020-06-23',
             dateToAvoidReason: 'I have an important appointment on this day'
           }
         }, {
           value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
-        }],
+        } ],
         datesToAvoidYesNo: 'Yes',
         inCameraCourt: 'Yes',
         inCameraCourtDescription: 'The reason why I would need a private appointment',
-        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
+        interpreterLanguage: [ { value: { language: 'Afar', languageDialect: 'A dialect' } } ],
         isHearingLoopNeeded: 'Yes',
         isHearingRoomNeeded: 'Yes',
         isInterpreterServicesNeeded: 'Yes',

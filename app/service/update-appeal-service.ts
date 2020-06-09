@@ -229,6 +229,91 @@ export default class UpdateAppealService {
       };
     }
 
+    // Other Needs section
+    if (caseData.multimediaEvidence) {
+
+      let multimediaEvidence: boolean = yesNoToBool(caseData.multimediaEvidence);
+      let bringOwnMultimediaEquipment: boolean = null;
+      let bringOwnMultimediaEquipmentReason: string = null;
+      let singleSexAppointment: boolean = yesNoToBool(caseData.singleSexCourt);
+      let singleSexTypeAppointment: 'All female' | 'All male' = null;
+      let singleSexAppointmentReason: string = null;
+      let privateAppointment: boolean = yesNoToBool(caseData.inCameraCourt);
+      let privateAppointmentReason: string = null;
+      let healthConditions: boolean = yesNoToBool(caseData.physicalOrMentalHealthIssues);
+      let healthConditionsReason: string = null;
+      let pastExperiences: boolean = yesNoToBool(caseData.pastExperiences);
+      let pastExperiencesReason: string = null;
+      let anythingElse: boolean = yesNoToBool(caseData.additionalRequests);
+      let anythingElseReason: string = null;
+
+      if (multimediaEvidence) {
+        if (caseData.multimediaEvidenceDescription) {
+          bringOwnMultimediaEquipment = false;
+          bringOwnMultimediaEquipmentReason = caseData.multimediaEvidenceDescription;
+        }
+      }
+
+      if (singleSexAppointment) {
+        singleSexTypeAppointment = caseData.singleSexCourtType;
+        singleSexAppointmentReason = caseData.singleSexCourtTypeDescription;
+      }
+
+      if (privateAppointment) {
+        privateAppointmentReason = caseData.inCameraCourtDescription;
+      }
+
+      if (healthConditions) {
+        healthConditionsReason = caseData.physicalOrMentalHealthIssuesDescription;
+      }
+
+      if (pastExperiences) {
+        pastExperiencesReason = caseData.pastExperiencesDescription;
+      }
+
+      if (anythingElse) {
+        anythingElseReason = caseData.additionalRequestsDescription;
+      }
+
+      cmaRequirements.otherNeeds = {
+        multimediaEvidence,
+        bringOwnMultimediaEquipment,
+        bringOwnMultimediaEquipmentReason,
+        singleSexAppointment,
+        singleSexTypeAppointment,
+        singleSexAppointmentReason,
+        privateAppointment,
+        privateAppointmentReason,
+        healthConditions,
+        healthConditionsReason,
+        pastExperiences,
+        pastExperiencesReason,
+        anythingElse,
+        anythingElseReason
+      };
+    }
+
+    // Other Needs section
+    if (caseData.datesToAvoid) {
+      let isDateCannotAttend: boolean = null;
+      let dates: CmaDateToAvoid[] = null;
+      if (caseData.datesToAvoid.length) {
+        isDateCannotAttend = true;
+        dates = caseData.datesToAvoid.map((d) => {
+          return {
+            date: this.getDate(d.value.dateToAvoid),
+            reason: d.value.dateToAvoidReason
+          };
+        }
+        );
+
+      }
+
+      cmaRequirements.datesToAvoid = {
+        isDateCannotAttend,
+        dates
+      };
+    }
     req.session.appeal = {
       appealStatus: ccdCase.state,
       appealCreatedDate: ccdCase.created_date,

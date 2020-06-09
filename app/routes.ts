@@ -22,6 +22,7 @@ import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './co
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
 import { setupAccessNeedsController } from './controllers/cma-requirements/access-needs/access-needs';
 import { setupCmaRequirementsCYAController } from './controllers/cma-requirements/check-and-send/check-and-send';
+import { setupCmaRequirementsConfirmationPage } from './controllers/cma-requirements/confirmation-page';
 import { setupDatesToAvoidAddAnotherDateController } from './controllers/cma-requirements/dates-to-avoid/add-another-date';
 import { setupDatesToAvoidEnterADateController } from './controllers/cma-requirements/dates-to-avoid/enter-a-date';
 import { setupDatesToAvoidQuestionController } from './controllers/cma-requirements/dates-to-avoid/question';
@@ -132,6 +133,7 @@ const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAdd
 const cmaRequirementsAnythingElseQuestionController = setupAnythingElseQuestionController(middleware, updateAppealService);
 const cmaRequirementsAnythingElseReasonController = setupAnythingElseReasonController(middleware, updateAppealService);
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
+const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
 
 // not protected by idam
 router.use(indexController);
@@ -195,6 +197,7 @@ router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
 router.use(cmaRequirementsAnythingElseQuestionController);
 router.use(cmaRequirementsAnythingElseReasonController);
 router.use(cmaRequirementsCYAController);
+router.use(cmaRequirementsConfirmationController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

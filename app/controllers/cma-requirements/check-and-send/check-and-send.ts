@@ -384,7 +384,7 @@ function buildDatesToAvoidSummaryList(datesToAvoid: DatesToAvoid) {
           Delimiter.BREAK_LINE,
           `<b>${i18n.common.cya.reason}</b>`,
           Delimiter.BREAK_LINE,
-          `<pre>${dateEntry.reason}</pre>` ],
+          `<pre>${dateEntry.reason || ''}</pre>` ],
         `${paths.awaitingCmaRequirements.datesToAvoidEnterDate}/${i}${editParameter}`
       ));
     });
@@ -452,14 +452,9 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
-      req.session.appeal.clarifyingQuestionsAnswers = [ ...clarifyingQuestions ].map((question => {
-        question.value.dateResponded = nowIsoDate();
-        return question;
-      }));
-      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, req);
+      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req);
       req.session.appeal.appealStatus = updatedAppeal.state;
-      res.redirect(paths.clarifyingQuestionsAnswersSubmitted.confirmation);
+      res.redirect(paths.cmaRequirementsSubmitted.confirmation);
     } catch (e) {
       next(e);
     }

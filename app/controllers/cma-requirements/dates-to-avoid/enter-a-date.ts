@@ -12,7 +12,7 @@ import { isDateInRange } from '../../../utils/validations/fields-validations';
 const formAction = paths.awaitingCmaRequirements.datesToAvoidEnterDate;
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
-function handlePostEnterADatePage(formAction: string, req: Request, res: Response) {
+function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: Request, res: Response) {
   if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
     return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
   }
@@ -22,7 +22,25 @@ function handlePostEnterADatePage(formAction: string, req: Request, res: Respons
     to: moment().add(12, 'week').format(dayMonthYearFormat)
   };
 
-  const validation = isDateInRange(availableDates.from, availableDates.to, req.body);
+  let validation = isDateInRange(availableDates.from, availableDates.to, req.body);
+
+  const savedDates = req.session.appeal.cmaRequirements.datesToAvoid.dates || [];
+
+  const find = savedDates.find((saved) =>
+    saved.date.day === req.body.day &&
+    saved.date.month === req.body.month &&
+    saved.date.year === req.body.year
+  );
+
+  if (find) {
+    validation = {
+      date: {
+        href: '#date',
+        key: 'date',
+        text: 'You have already entered this date'
+      }
+    };
+  }
 
   if (validation != null) {
     return res.render('cma-requirements/dates-to-avoid/enter-a-date.njk', {
@@ -35,6 +53,7 @@ function handlePostEnterADatePage(formAction: string, req: Request, res: Respons
     });
   }
 
+  return onSuccess();
 }
 
 function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction) {
@@ -92,25 +111,27 @@ function postEnterADatePage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
 
-      handlePostEnterADatePage(formAction, req, res);
+      const onSuccess = async () => {
+        const datesToAvoid: DateToAvoid[] = [ ...(_.get(req.session.appeal.cmaRequirements, 'datesToAvoid.dates', [])) ];
 
-      const datesToAvoid: DateToAvoid[] = [ ...(_.get(req.session.appeal.cmaRequirements, 'datesToAvoid.dates', [])) ];
+        datesToAvoid.push({
+          date: {
+            day: req.body.day,
+            month: req.body.month,
+            year: req.body.year
+          }
+        });
 
-      datesToAvoid.push({
-        date: {
-          day: req.body.day,
-          month: req.body.month,
-          year: req.body.year
-        }
-      });
+        req.session.appeal.cmaRequirements.datesToAvoid = {
+          ...req.session.appeal.cmaRequirements.datesToAvoid,
+          dates: [ ...datesToAvoid ]
+        };
 
-      req.session.appeal.cmaRequirements.datesToAvoid = {
-        ...req.session.appeal.cmaRequirements.datesToAvoid,
-        dates: [ ...datesToAvoid ]
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+        return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.awaitingCmaRequirements.datesToAvoidReason));
       };
 
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.awaitingCmaRequirements.datesToAvoidReason));
+      return handlePostEnterADatePage(formAction, onSuccess, req, res);
     } catch (e) {
       next(e);
     }
@@ -123,19 +144,21 @@ function postEnterADatePageWithId(updateAppealService: UpdateAppealService) {
       const dateId = req.params.id;
       const formActionWithId = `${formAction}/${dateId}`;
 
-      handlePostEnterADatePage(formActionWithId, req, res);
+      const onSuccess = async () => {
+        const { datesToAvoid } = req.session.appeal.cmaRequirements;
+        if (datesToAvoid && datesToAvoid.dates) {
+          datesToAvoid.dates[dateId].date = {
+            day: req.body.day,
+            month: req.body.month,
+            year: req.body.year
+          };
+        }
 
-      const { datesToAvoid } = req.session.appeal.cmaRequirements;
-      if (datesToAvoid && datesToAvoid.dates) {
-        datesToAvoid.dates[dateId].date = {
-          day: req.body.day,
-          month: req.body.month,
-          year: req.body.year
-        };
-      }
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+        return getConditionalRedirectUrl(req, res, getNextPage(req.body, `${paths.awaitingCmaRequirements.datesToAvoidReason}/${dateId}`));
+      };
 
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, `${paths.awaitingCmaRequirements.datesToAvoidReason}/${dateId}`));
+      return handlePostEnterADatePage(formActionWithId, onSuccess, req, res);
     } catch (e) {
       next(e);
     }

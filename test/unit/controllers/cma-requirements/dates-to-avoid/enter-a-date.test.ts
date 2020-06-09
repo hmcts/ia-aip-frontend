@@ -87,8 +87,13 @@ describe('CMA Requirements - Enter A date controller', () => {
         }
       } ];
 
+      const availableDates = {
+        from: moment().add(2, 'week').format(dayMonthYearFormat),
+        to: moment().add(12, 'week').format(dayMonthYearFormat)
+      };
+
       const expectedArgs = {
-        availableDates: { from: '22 June 2020', to: '31 August 2020' },
+        availableDates: { from: availableDates.from, to: availableDates.to },
         date: { day: 20, month: 6, year: 2020 },
         formAction: '/appointment-dates-avoid-enter/0',
         previousPage: {

@@ -258,7 +258,7 @@ describe('application-state-utils', () => {
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a href='{{ paths.common.homeOfficeDocuments }}'>What to expect at a case management appointment</a>"
+          url: "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
         }
       }
     );

@@ -63,13 +63,10 @@ export default class UpdateAppealService {
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
+    let cmaRequirements: CmaRequirements = {};
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
-    let isInterpreterServicesNeeded: boolean = null;
-    let interpreterLanguage = null;
-    let isHearingRoomNeeded: boolean = null;
-    let isHearingLoopNeeded: boolean = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -182,7 +179,6 @@ export default class UpdateAppealService {
       });
       requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
     }
-
     if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
       if (caseData.draftClarifyingQuestionsAnswers && caseData.draftClarifyingQuestionsAnswers.length > 0) {
         draftClarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.draftClarifyingQuestionsAnswers);
@@ -208,18 +204,25 @@ export default class UpdateAppealService {
     }
 
     if (caseData.isInterpreterServicesNeeded) {
-      isInterpreterServicesNeeded = yesNoToBool(caseData.isInterpreterServicesNeeded);
-    }
-
-    if (caseData.isHearingRoomNeeded) {
-      isHearingRoomNeeded = yesNoToBool(caseData.isHearingRoomNeeded);
-    }
-
-    if (caseData.isHearingLoopNeeded) {
-      isHearingLoopNeeded = yesNoToBool(caseData.isHearingLoopNeeded);
-    }
-    if (caseData.interpreterLanguage) {
-      interpreterLanguage = caseData.interpreterLanguage;
+      let isInterpreterServicesNeeded: boolean = yesNoToBool(caseData.isInterpreterServicesNeeded);
+      let interpreterLanguage = {};
+      let isHearingRoomNeeded: boolean = null;
+      let isHearingLoopNeeded: boolean = null;
+      if (caseData.isHearingRoomNeeded) {
+        isHearingRoomNeeded = yesNoToBool(caseData.isHearingRoomNeeded);
+      }
+      if (caseData.isHearingLoopNeeded) {
+        isHearingLoopNeeded = yesNoToBool(caseData.isHearingLoopNeeded);
+      }
+      if (caseData.interpreterLanguage) {
+        interpreterLanguage = caseData.interpreterLanguage;
+      }
+      cmaRequirements.accessNeeds = {
+        isInterpreterServicesNeeded,
+        isHearingRoomNeeded,
+        isHearingLoopNeeded,
+        interpreterLanguage
+      };
     }
 
     req.session.appeal = {
@@ -257,14 +260,7 @@ export default class UpdateAppealService {
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions,
       draftClarifyingQuestionsAnswers,
-      cmaRequirements: {
-        accessNeeds: {
-          isHearingLoopNeeded: isHearingLoopNeeded,
-          isHearingRoomNeeded: isHearingRoomNeeded,
-          interpreterLanguage: interpreterLanguage,
-          isInterpreterServicesNeeded: isInterpreterServicesNeeded
-        }
-      },
+      cmaRequirements: cmaRequirements,
       clarifyingQuestionsAnswers
     };
 

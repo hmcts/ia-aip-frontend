@@ -244,16 +244,15 @@ describe('case management appointment controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
     });
 
-    it('should show validation error if no option is selected post additional answer', async () => {
+    it('should validate when yes is selected', async () => {
       req.body.answer = 'yes';
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage);
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
 
     });
 
-    it('should show validation error if no option is selected post additional answer', async () => {
+    it('should validate when no is selected', async () => {
       req.body.answer = 'no';
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -262,19 +261,33 @@ describe('case management appointment controller', () => {
     });
 
     it('should show validation error if no option is selected post additional answer', async () => {
-      req.body.answer = 'Test';
-
+      req.body.answer = 'true';
       await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsHearingLoop);
+    });
+
+    it('should show validation error if no option is selected post additional answer', async () => {
+      req.body.answer = 'yes';
+      req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = false;
+      getStepFreeAccessPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
+        formAction: '/appointment-step-free-access',
+        pageTitle: 'Will you or anyone coming with you need step-free access?',
+        previousPage: '/appointment-interpreter',
+        question: {
+          hint: 'We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues.',
+          name: 'answer',
+          options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: false, text: 'No', value: 'no' }],
+          title: 'Will you or anyone coming with you need step-free access?'
+        },
+        saveAndContinue: true
+      });
     });
 
     it('should show validation error if no option is selected post additional language', async () => {
       req.body.language = 'Test';
 
       await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
     });
@@ -286,5 +299,53 @@ describe('case management appointment controller', () => {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
+    it('getAccessNeeds should catch an exception and call next()', () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      getStepFreeAccessPage(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('getAccessNeeds should catch an exception and call next()', () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      getNeedInterpreterPage(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('getAccessNeeds should catch an exception and call next()', () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      getAdditionalLanguage(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('getAccessNeeds should catch an exception and call next()', async () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('getAccessNeeds should catch an exception and call next()', async () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('getAccessNeeds should catch an exception and call next()', async () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('getAccessNeeds should catch an exception and call next()', async () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
   });
 });

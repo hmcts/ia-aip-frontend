@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { getAnythingElseAnswerPage, postAnythingElseAnswerPage, setupCQAnythingElseAnswerController } from '../../../../app/controllers/clarifying-questions/anything-else-answer';
+import { postClarifyingQuestionPage } from '../../../../app/controllers/clarifying-questions/question-page';
 import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
-import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';
 
 describe('Clarifying Questions: Anything else answer controller', () => {
@@ -90,11 +90,44 @@ describe('Clarifying Questions: Anything else answer controller', () => {
     });
 
     it('should validate and redirect to questions list', async () => {
+      req.body['answer'] = 'true';
+      await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(res.redirect).to.have.been.calledWith('/anything-else-answer');
+    });
+
+    it('should validate and redirect to questions list', async () => {
+      req.body['answer'] = 'false';
+      await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(res.redirect).to.have.been.calledWith('/questions-about-appeal');
+    });
+
+    it('should validate and redirect to saveforLater postAnythingElseAnswerPage', async () => {
+      req.body.saveForLater = 'saveForLater';
       req.body['anything-else'] = 'the answer here';
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', `${clarifyingQuestions.length}`));
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+    });
+
+    it('should validate and redirect to saveforLater postAnythingElseAnswerPage', async () => {
+      req.body.saveForLater = 'saveForLater';
+      req.body['anything-else'] = 'yes';
+      await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+    });
+
+    it('should validate and redirect to saveforLater postClarifyingQuestionPage', async () => {
+      req.body.saveForLater = 'saveForLater';
+      req.body['answer'] = 'yes';
+      await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should catch error and call next with error', async () => {

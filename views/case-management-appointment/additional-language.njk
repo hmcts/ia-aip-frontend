@@ -27,6 +27,7 @@
 {{ govukSelect({
             id: "language",
             name: "language",
+            value: language,
             label: {
                 text: "Language"
             },
@@ -40,6 +41,7 @@
             classes: "govuk-!-width-three-quarters",
             id: "dialect",
             name: "dialect",
+            value: languageDialect,
             hint: {
             text: i18n.pages.cmaRequirements.accessNeedsSection.additionalLanguagePage.text
             }

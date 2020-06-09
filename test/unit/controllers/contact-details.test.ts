@@ -13,7 +13,7 @@ import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 
-describe('Contact details Controller', () => {
+describe('Contact details Controller @only', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -31,9 +31,13 @@ describe('Contact details Controller', () => {
           }
         }
       } as Partial<Appeal>,
-      cookies: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
       idam: {
-        userDetails: {}
+        userDetails: {
+          uid: 'idamUID'
+        }
       },
       app: {
         locals: {
@@ -43,7 +47,10 @@ describe('Contact details Controller', () => {
       body: {}
     } as Partial<Request>;
 
-    updateAppealService = { submitEvent: sandbox.stub() };
+    updateAppealService = {
+      submitEvent: sandbox.stub(),
+      submitEventRefactored: sandbox.stub()
+    };
 
     res = {
       render: sandbox.stub(),
@@ -131,8 +138,8 @@ describe('Contact details Controller', () => {
         const contactDetailsExpectation = {
           email: '',
           phone: '',
-          wantsEmail: false,
-          wantsSms: false
+          wantsEmail: true,
+          wantsSms: true
         };
 
         const emailError: ValidationError = {
@@ -184,7 +191,7 @@ describe('Contact details Controller', () => {
         const contactDetailsExpectation = {
           email: '',
           phone: null,
-          wantsEmail: false, // wantsEmail expectation is false because flag doesn't update if email value isn't accepted
+          wantsEmail: true,
           wantsSms: false
         };
 
@@ -239,50 +246,65 @@ describe('Contact details Controller', () => {
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
 
-      it('should validate email and redirect to task-list.njk', async () => {
-        req.body = {
-          selections: 'email',
-          'email-value': 'valid@example.net'
-        };
+      describe('should validate', () => {
+        let appeal: Appeal;
+        let contactDetails;
+        beforeEach(() => {
+          contactDetails = {
+            email: 'valid@example.net',
+            phone: null,
+            wantsEmail: true,
+            wantsSms: false
+          };
+          appeal = {
+            ...req.session.appeal,
+            application: {
+              ...req.session.appeal.application,
+              contactDetails: contactDetails
+            }
+          };
 
-        const contactDetailsExpectation = {
-          email: 'valid@example.net',
-          phone: null,
-          wantsEmail: true,
-          wantsSms: false
-        };
+          updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+            application: {
+              contactDetails
+            }
+          } as Appeal);
+        });
 
-        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        afterEach(() => {
+          sandbox.restore();
+        });
 
-        expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-        expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
-      });
-      it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
-        req.session.appeal.application.isEdit = true;
+        it('should validate email and redirect to task-list.njk', async () => {
+          req.body = {
+            selections: 'email',
+            'email-value': 'valid@example.net'
+          };
+          await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        req.body = {
-          selections: 'email',
-          'email-value': 'valid@example.net'
-        };
+          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
+          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+        });
 
-        const contactDetailsExpectation = {
-          email: 'valid@example.net',
-          phone: null,
-          wantsEmail: true,
-          wantsSms: false
-        };
+        it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
+          req.session.appeal.application.isEdit = true;
+          appeal.application.isEdit = true;
+          req.body = {
+            selections: 'email',
+            'email-value': 'valid@example.net'
+          };
+          await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-        expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-        expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-        expect(req.session.appeal.application.isEdit).to.have.eq(false);
+          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
+          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+          expect(req.session.appeal.application.isEdit).to.be.undefined;
+        });
       });
     });
 
-    describe('text message cases', () => {
+    describe('Text message cases', () => {
       it('should show phone empty validation error if phone number is selected but left blank', async () => {
         req.body = {
           selections: 'text-message',
@@ -293,7 +315,7 @@ describe('Contact details Controller', () => {
           email: null,
           phone: '',
           wantsEmail: false,
-          wantsSms: false // wantsSms expectation is false because flag doesn't update if phone value isn't accepted
+          wantsSms: true
         };
 
         const error: ValidationError = {
@@ -347,48 +369,57 @@ describe('Contact details Controller', () => {
         expect(res.render).to.have.been.calledWith('appeal-application/contact-details.njk', expectedData);
       });
 
-      it('should validate phone number and redirect to task-list.njk', async () => {
-        req.body = {
-          selections: 'text-message',
-          'text-message-value': '07123456789'
-        };
+      describe('Should Validate', () => {
+        let contactDetails;
+        let appeal: Appeal;
+        beforeEach(() => {
+          req.body = {
+            selections: 'text-message',
+            'text-message-value': '07123456789'
+          };
+          contactDetails = {
+            email: null,
+            phone: '07123456789',
+            wantsEmail: false,
+            wantsSms: true
+          };
+          appeal = {
+            ...req.session.appeal,
+            application: {
+              ...req.session.appeal.application,
+              contactDetails
+            }
+          };
+          updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+            application: {
+              contactDetails
+            }
+          } as Appeal);
+        });
 
-        const contactDetailsExpectation = {
-          email: null,
-          phone: '07123456789',
-          wantsEmail: false,
-          wantsSms: true
-        };
+        afterEach(() => {
+          sandbox.restore();
+        });
 
-        await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+        it('should validate phone number and redirect to task-list.njk', async () => {
+          await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-        expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-        expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
+          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+        });
+
+        it('should validate phone number and redirect to check-and-send.njk and reset isEdit', async () => {
+          req.session.appeal.application.isEdit = true;
+          appeal.application.isEdit = true;
+          await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+          expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+          expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
+          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+          expect(req.session.appeal.application.isEdit).to.be.undefined;
+        });
       });
-    });
-
-    it('when in edit mode should validate phone number and redirect to check-and-send.njk and reset isEdit', async () => {
-      req.session.appeal.application.isEdit = true;
-
-      req.body = {
-        selections: 'text-message',
-        'text-message-value': '07123456789'
-      };
-
-      const contactDetailsExpectation = {
-        email: null,
-        phone: '07123456789',
-        wantsEmail: false,
-        wantsSms: true
-      };
-
-      await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetailsExpectation);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
     });
   });
 });

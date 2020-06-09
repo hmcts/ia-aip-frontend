@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import {
   buildEvidencesList,
   getCheckAndSendPage,
+  getYourAnswersPage,
   postCheckAndSendPage,
   setupClarifyingQuestionsCheckSendController
 } from '../../../../app/controllers/clarifying-questions/check-and-send';
@@ -146,6 +147,52 @@ describe('Clarifying Questions Check and Send controller', () => {
       res.redirect = sandbox.stub().throws(error);
 
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getYourAnswersPage', () => {
+    beforeEach(() => {
+      req.session.appeal.draftClarifyingQuestionsAnswers = null;
+      req.session.appeal.clarifyingQuestionsAnswers = clarifyingQuestions;
+    });
+    it('should render CYA template page', () => {
+      getYourAnswersPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+    });
+
+    it('should render CYA template page with evidences', () => {
+      const evidences: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName'
+        }
+      ];
+      req.session.appeal.clarifyingQuestionsAnswers[0].value.supportingEvidence = [ ...evidences ];
+      req.session.appeal.clarifyingQuestionsAnswers[1].value.supportingEvidence = [ ...evidences ];
+      const evidenceList = buildEvidencesList(evidences);
+      getYourAnswersPage(req as Request, res as Response, next);
+
+      expect(addSummaryRowStub.thirdCall).to.have.been.calledWith(
+        i18n.common.cya.supportingEvidenceRowTitle,
+        evidenceList,
+        null,
+        '<br>'
+      );
+      expect(addSummaryRowStub.getCall(4)).to.have.been.calledWith(
+        i18n.common.cya.supportingEvidenceRowTitle,
+        evidenceList,
+        '',
+        '<br>'
+      );
+      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
+    });
+
+    it('should call next with error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+
+      getYourAnswersPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

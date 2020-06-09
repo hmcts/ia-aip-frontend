@@ -428,6 +428,16 @@
               "href": "{{ paths.common.detailsViewers.timeExtensionDecision }}"
             }
           ]
+        },
+        "submitClarifyingQuestionAnswers": {
+          "text": "You answered some questions about your appeal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your answers",
+              "href": "{{ paths.common.yourCQanswers }}"
+            }
+          ]
         }
       }
     },

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
-import { toIsoDate, yesNoToBool } from '../utils/utils';
+import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
@@ -514,27 +514,109 @@ export default class UpdateAppealService {
             } as DocumentWithMetaData
           };
         });
+
+        if (appeal.reasonsForAppeal.uploadDate) {
+          caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
+        }
+      }
+    }
+
+    if (_.has(appeal, 'cmaRequirements')) {
+
+      // Access Needs Section
+      if (_.has(appeal, 'cmaRequirements.accessNeeds')) {
+        const { accessNeeds } = appeal.cmaRequirements;
+        if (_.has(accessNeeds, 'isHearingLoopNeeded')) {
+          caseData.isHearingLoopNeeded = boolToYesNo(accessNeeds.isHearingLoopNeeded);
+        }
+        if (_.has(accessNeeds, 'isHearingRoomNeeded')) {
+          caseData.isHearingRoomNeeded = boolToYesNo(accessNeeds.isHearingRoomNeeded);
+        }
+        if (_.has(accessNeeds, 'interpreterLanguage')) {
+          caseData.interpreterLanguage = [ {
+            value: {
+              language: accessNeeds.interpreterLanguage.language,
+              languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
+            }
+          } ];
+        }
+        if (_.has(accessNeeds, 'isInterpreterServicesNeeded')) {
+          caseData.isInterpreterServicesNeeded = boolToYesNo(accessNeeds.isInterpreterServicesNeeded);
+        }
       }
 
-      if (appeal.reasonsForAppeal.uploadDate) {
-        caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
-      }
-      if (_.has(appeal.cmaRequirements, 'isHearingLoopNeeded')) {
-        caseData.isHearingLoopNeeded = appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded === true ? 'Yes' : 'No';
-      }
-      if (_.has(appeal.cmaRequirements, 'isHearingRoomNeeded')) {
-        caseData.isHearingRoomNeeded = appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded === true ? 'Yes' : 'No';
-      }
-      if (_.has(appeal.cmaRequirements, 'interpreterLanguage')) {
-        caseData.interpreterLanguage = [ {
-          value: {
-            language: appeal.cmaRequirements.accessNeeds.interpreterLanguage.language,
-            languageDialect: appeal.cmaRequirements.accessNeeds.interpreterLanguage.languageDialect
+      // Other Needs Section
+      if (_.has(appeal, 'cmaRequirements.otherNeeds')) {
+        const { otherNeeds } = appeal.cmaRequirements;
+
+        if (_.has(otherNeeds, 'multimediaEvidence')) {
+          caseData.multimediaEvidence = boolToYesNo(otherNeeds.multimediaEvidence);
+
+          if (!otherNeeds.bringOwnMultimediaEquipment && !isEmpty(otherNeeds.bringOwnMultimediaEquipmentReason)) {
+            caseData.multimediaEvidenceDescription = otherNeeds.bringOwnMultimediaEquipmentReason;
           }
-        } ];
+        }
+        if (_.has(otherNeeds, 'singleSexAppointment')) {
+          caseData.singleSexCourt = boolToYesNo(otherNeeds.singleSexAppointment);
+
+          if (otherNeeds.singleSexAppointment && otherNeeds.singleSexTypeAppointment) {
+            caseData.singleSexCourtType = otherNeeds.singleSexTypeAppointment;
+            if (!isEmpty(otherNeeds.singleSexAppointmentReason)) {
+              caseData.singleSexCourtTypeDescription = otherNeeds.singleSexAppointmentReason;
+            }
+          }
+        }
+
+        if (_.has(otherNeeds, 'privateAppointment')) {
+          caseData.inCameraCourt = boolToYesNo(otherNeeds.privateAppointment);
+
+          if (otherNeeds.privateAppointment && !isEmpty(otherNeeds.privateAppointmentReason)) {
+            caseData.inCameraCourtDescription = otherNeeds.privateAppointmentReason;
+          }
+        }
+        if (_.has(otherNeeds, 'healthConditions')) {
+          caseData.physicalOrMentalHealthIssues = boolToYesNo(otherNeeds.healthConditions);
+
+          if (otherNeeds.healthConditions && !isEmpty(otherNeeds.healthConditionsReason)) {
+            caseData.physicalOrMentalHealthIssuesDescription = otherNeeds.healthConditionsReason;
+          }
+        }
+        if (_.has(otherNeeds, 'pastExperiences')) {
+          caseData.pastExperiences = boolToYesNo(otherNeeds.pastExperiences);
+
+          if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.pastExperiencesReason)) {
+            caseData.pastExperiencesDescription = otherNeeds.pastExperiencesReason;
+          }
+        }
+
+        if (_.has(otherNeeds, 'anythingElse')) {
+          caseData.additionalRequests = boolToYesNo(otherNeeds.anythingElse);
+
+          if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.anythingElseReason)) {
+            caseData.additionalRequestsDescription = otherNeeds.anythingElseReason;
+          }
+        }
       }
-      if (_.has(appeal.cmaRequirements, 'isInterpreterServicesNeeded')) {
-        caseData.isInterpreterServicesNeeded = appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded === true ? 'Yes' : 'No';
+      // Dates To avoid Section
+      if (_.has(appeal, 'cmaRequirements.datesToAvoid')) {
+        const { datesToAvoid } = appeal.cmaRequirements;
+
+        if (_.has(datesToAvoid, 'isDateCannotAttend')) {
+          caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
+
+          if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
+            caseData.datesToAvoid = datesToAvoid.dates.map(date => {
+
+              return {
+                value: {
+                  dateToAvoid: toIsoDate(date.date),
+                  dateToAvoidReason: date.reason
+                } as DateToAvoid
+              } as Collection<DateToAvoid>;
+            }
+            );
+          }
+        }
       }
     }
 

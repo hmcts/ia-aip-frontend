@@ -80,8 +80,7 @@ function cmaRequirementsStatus(appeal: Appeal) {
   const checkAndSend: Task = {
     saved: false,
     completed: false,
-    // active: datesToAvoidTask.completed
-    active: true
+    active: datesToAvoidTask.completed
   };
 
   return {

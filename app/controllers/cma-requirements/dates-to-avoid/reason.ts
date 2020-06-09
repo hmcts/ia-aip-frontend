@@ -30,7 +30,7 @@ function getDatesToAvoidReasonWithId(req: Request, res: Response, next: NextFunc
     pageContent.formAction = `${formAction}/${dateId}`;
 
     const { datesToAvoid } = req.session.appeal.cmaRequirements;
-    const dateToAvoid: DateToAvoid = datesToAvoid.dates[dateId];
+    const dateToAvoid: CmaDateToAvoid = datesToAvoid.dates[dateId];
 
     pageContent.question.value = dateToAvoid.reason ? dateToAvoid.reason : '';
 
@@ -43,7 +43,7 @@ function getDatesToAvoidReasonWithId(req: Request, res: Response, next: NextFunc
 function getDatesToAvoidReason(req: Request, res: Response, next: NextFunction) {
   try {
     const { datesToAvoid } = req.session.appeal.cmaRequirements;
-    const last: DateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
+    const last: CmaDateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
 
     pageContent.question.value = last.reason ? last.reason : '';
 
@@ -64,7 +64,7 @@ function postDatesToAvoidReasonWithId(updateAppealService: UpdateAppealService) 
       const onSuccess = async () => {
 
         const { datesToAvoid } = req.session.appeal.cmaRequirements;
-        let dateToAvoid: DateToAvoid = datesToAvoid.dates[dateId];
+        let dateToAvoid: CmaDateToAvoid = datesToAvoid.dates[dateId];
         dateToAvoid.reason = req.body['reason'];
 
         await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
@@ -90,7 +90,7 @@ function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
 
       const onSuccess = async () => {
         const { datesToAvoid } = req.session.appeal.cmaRequirements;
-        let dateToEdit: DateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
+        let dateToEdit: CmaDateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
         dateToEdit.reason = req.body['reason'];
 
         await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);

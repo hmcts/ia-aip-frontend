@@ -180,7 +180,7 @@ describe('case management appointment controller', () => {
 
       });
 
-      it('should show validation error if no option is selected needsInterperter', async () => {
+      it('should show validation error if no option is selected needs Interperter', async () => {
         req.body.answer = '';
         req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -192,7 +192,7 @@ describe('case management appointment controller', () => {
           previousPage: paths.awaitingCmaRequirements.accessNeeds,
           question: {
             name: 'answer',
-            options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: false, text: 'No', value: 'no' }],
+            options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: true, text: 'No', value: 'no' }],
             title: 'Will you need an interpreter?'
           },
           saveAndContinue: true

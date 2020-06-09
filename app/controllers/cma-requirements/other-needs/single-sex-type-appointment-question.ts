@@ -14,8 +14,8 @@ const question = {
 };
 
 enum SexType {
-  ALL_MALE = 'All-male',
-  ALL_FEMALE = 'All-female'
+  ALL_MALE = 'All male',
+  ALL_FEMALE = 'All female'
 }
 
 function getSingleSexTypeAppointmentQuestion(req: Request, res: Response, next: NextFunction) {

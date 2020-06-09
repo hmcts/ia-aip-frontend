@@ -78,7 +78,7 @@ interface Appeal {
   appealReferenceNumber?: string;
   application: AppealApplication;
   reasonsForAppeal: ReasonsForAppeal;
-  hearingRequirements: HearingRequirements;
+  hearingRequirements?: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
@@ -185,7 +185,7 @@ interface OtherNeeds {
   bringOwnMultimediaEquipment: boolean;
   bringOwnMultimediaEquipmentReason: string;
   singleSexAppointment: boolean;
-  singleSexTypeAppointment: string;
+  singleSexTypeAppointment: 'All female' | 'All male';
   singleSexAppointmentReason: string;
   privateAppointment: boolean;
   privateAppointmentReason: string;
@@ -199,10 +199,10 @@ interface OtherNeeds {
 
 interface DatesToAvoid {
   isDateCannotAttend: boolean;
-  dates?: DateToAvoid[];
+  dates?: CmaDateToAvoid[];
 }
 
-interface DateToAvoid {
+interface CmaDateToAvoid {
   date: AppealDate;
   reason?: string;
 }

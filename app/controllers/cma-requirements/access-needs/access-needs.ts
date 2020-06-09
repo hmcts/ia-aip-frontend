@@ -62,11 +62,13 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation)
         });
       }
+
       req.session.appeal.cmaRequirements = {
         accessNeeds: {
           isInterpreterServicesNeeded: yesNoToBool(req.body.answer)
         }
       };
+
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       if (req.body.answer === 'no') {
         return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);

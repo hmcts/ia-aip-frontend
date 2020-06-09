@@ -43,13 +43,34 @@ interface CaseData {
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<DirectionValue>[];
   draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
-  interpreterLanguage?: Collection<AdditionalLanguage>[];
-  isInterpreterServicesNeeded?: string;
-  isHearingRoomNeeded?: string;
-  isHearingLoopNeeded?: string;
   submitTimeExtensionReason?: string;
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
   clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
+  isInterpreterServicesNeeded?: string;
+  interpreterLanguage?: Collection<AdditionalLanguage>[];
+  isHearingRoomNeeded?: string;
+  isHearingLoopNeeded?: string;
+  multimediaEvidence: 'Yes' | 'No';
+  multimediaEvidenceDescription: string;
+  singleSexCourt: 'Yes' | 'No';
+  singleSexCourtType: 'All male' | 'All female';
+  singleSexCourtTypeDescription: string;
+  inCameraCourt: 'Yes' | 'No';
+  inCameraCourtDescription: string;
+  physicalOrMentalHealthIssues: 'Yes' | 'No';
+  physicalOrMentalHealthIssuesDescription: string;
+  pastExperiences: 'Yes' | 'No';
+  pastExperiencesDescription: string;
+  additionalRequests: 'Yes' | 'No';
+  additionalRequestsDescription: string;
+  datesToAvoidYesNo: 'Yes' | 'No';
+  datesToAvoid: Collection<DateToAvoid>[];
+
+}
+
+interface DateToAvoid {
+  dateToAvoid: string;
+  dateToAvoidReason: string;
 }
 
 interface Collection<T> {

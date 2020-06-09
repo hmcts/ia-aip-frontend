@@ -112,14 +112,14 @@ function postEnterADatePage(updateAppealService: UpdateAppealService) {
     try {
 
       const onSuccess = async () => {
-        const datesToAvoid: DateToAvoid[] = [ ...(_.get(req.session.appeal.cmaRequirements, 'datesToAvoid.dates', [])) ];
+        const datesToAvoid: CmaDateToAvoid[] = [ ...(_.get(req.session.appeal.cmaRequirements, 'datesToAvoid.dates', [])) ];
 
         datesToAvoid.push({
           date: {
             day: req.body.day,
             month: req.body.month,
             year: req.body.year
-          }
+          } as AppealDate
         });
 
         req.session.appeal.cmaRequirements.datesToAvoid = {

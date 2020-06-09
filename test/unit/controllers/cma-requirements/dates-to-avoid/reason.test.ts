@@ -14,7 +14,7 @@ describe('CMA Requirements - Reason controller', () => {
   let res: Partial<Response>;
   let next: NextFunction;
   let updateAppealService: Partial<UpdateAppealService>;
-  const datesToAvoid: DateToAvoid[] = [
+  const datesToAvoid: CmaDateToAvoid[] = [
     {
       date: {
         day: 20,

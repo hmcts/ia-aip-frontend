@@ -139,8 +139,9 @@ describe('update-appeal-service', () => {
                 'document_filename': 'expected_time_extension_evidence.png',
                 'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
               }
-            }]
-          }}
+            } ]
+          }
+        }
       ],
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
@@ -156,12 +157,12 @@ describe('update-appeal-service', () => {
   describe('loadAppeal', () => {
     it('set case details', async () => {
       ccdServiceMock.expects('loadOrCreateCase')
-      .withArgs(userId, { userToken, serviceToken })
-      .resolves({
-        id: caseId,
-        state: 'awaitingReasonsForAppeal',
-        case_data: expectedCaseData
-      });
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
+          case_data: expectedCaseData
+        });
       await updateAppealService.loadAppeal(req);
       expect(req.session.ccdCaseId).eq(caseId);
       expect(req.session.appeal.application.appealType).eq('protection');
@@ -195,9 +196,9 @@ describe('update-appeal-service', () => {
       validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
       expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
       expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
-      expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(undefined);
-      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(undefined);
-      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(undefined);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(false);
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -294,7 +295,7 @@ describe('update-appeal-service', () => {
           }
         }
       ];
-      expectedCaseData.draftClarifyingQuestionsAnswers = [{ ...draftClarifyingQuestion }];
+      expectedCaseData.draftClarifyingQuestionsAnswers = [ { ...draftClarifyingQuestion } ];
       expectedCaseData.directions = [
         {
           id: '3',
@@ -387,7 +388,7 @@ describe('update-appeal-service', () => {
     });
 
     it('load time extensions when time extension in flight', async () => {
-      expectedCaseData.timeExtensions = [{
+      expectedCaseData.timeExtensions = [ {
         id: '1',
         value: {
           requestDate: '2020-01-02',
@@ -400,8 +401,9 @@ describe('update-appeal-service', () => {
               'document_filename': 'expected_time_extension_evidence.png',
               'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
             }
-          }]
-        }}];
+          } ]
+        }
+      } ];
 
       ccdServiceMock.expects('loadOrCreateCase')
         .withArgs(userId, { userToken, serviceToken })
@@ -449,11 +451,6 @@ describe('update-appeal-service', () => {
         } as Partial<AppealApplication>,
         askForMoreTime: {
           reason: null
-        },
-        cmaRequirements: {
-          accessNeeds: {
-            isHearingRoomNeeded: null
-          }
         }
       } as Partial<Appeal>;
     });
@@ -813,12 +810,7 @@ describe('update-appeal-service', () => {
             askForMoreTime: {
               reason: 'ask for more time reason',
               evidence: []
-            },
-            isHearingLoopNeeded: 'yes',
-            interpreterLanguage: { language: 'Test', dialect: 'sample' },
-            isInterpreterServicesNeeded: 'yes',
-            isHearingRoomNeeded: 'no'
-
+            }
           } as Appeal,
           ccdCaseId: caseId
         } as Partial<Express.Session>
@@ -941,6 +933,100 @@ describe('update-appeal-service', () => {
         {
           id: caseId,
           state: 'appealStarted',
+          case_data: expectedCaseData
+        },
+        headers);
+    });
+
+    it('submits cmaRequirements with ccd', async () => {
+
+      req.session.appeal.appealStatus = 'awaitingCmaRequirements';
+      req.session.appeal.cmaRequirements = {
+        accessNeeds: {
+          isInterpreterServicesNeeded: true,
+          interpreterLanguage: {
+            language: 'Afar',
+            languageDialect: 'A dialect'
+          },
+          isHearingRoomNeeded: true,
+          isHearingLoopNeeded: true
+        },
+        otherNeeds: {
+          multimediaEvidence: true,
+          bringOwnMultimediaEquipment: false,
+          bringOwnMultimediaEquipmentReason: 'I do not own the equipment',
+          singleSexAppointment: true,
+          singleSexTypeAppointment: 'All female',
+          singleSexAppointmentReason: 'The reason why I will need an all-female',
+          privateAppointment: true,
+          privateAppointmentReason: 'The reason why I would need a private appointment',
+          healthConditions: true,
+          healthConditionsReason: 'Reason for mental health conditions',
+          pastExperiences: true,
+          pastExperiencesReason: 'Past experiences description',
+          anythingElse: true,
+          anythingElseReason: 'Anything else description'
+        },
+        datesToAvoid: {
+          isDateCannotAttend: true,
+          dates: [
+            {
+              date: {
+                day: 23,
+                month: 6,
+                year: 2020
+              },
+              reason: 'I have an important appointment on this day'
+            },
+            {
+              date: {
+                day: 24,
+                month: 6,
+                year: 2020
+              },
+              reason: 'I need this day off'
+            }
+          ]
+        }
+
+      } as CmaRequirements;
+      await updateAppealServiceBis.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req as Request);
+
+      expectedCaseData = {
+        ...expectedCaseData,
+        datesToAvoid: [{
+          value: {
+            dateToAvoid: '2020-06-23',
+            dateToAvoidReason: 'I have an important appointment on this day'
+          }
+        }, {
+          value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
+        }],
+        datesToAvoidYesNo: 'Yes',
+        inCameraCourt: 'Yes',
+        inCameraCourtDescription: 'The reason why I would need a private appointment',
+        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
+        isHearingLoopNeeded: 'Yes',
+        isHearingRoomNeeded: 'Yes',
+        isInterpreterServicesNeeded: 'Yes',
+        multimediaEvidence: 'Yes',
+        multimediaEvidenceDescription: 'I do not own the equipment',
+        pastExperiences: 'Yes',
+        pastExperiencesDescription: 'Past experiences description',
+        physicalOrMentalHealthIssues: 'Yes',
+        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
+        singleSexCourt: 'Yes',
+        singleSexCourtType: 'All female',
+        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
+        additionalRequests: 'Yes',
+        additionalRequestsDescription: 'Anything else description'
+      };
+      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
+        Events.SUBMIT_CMA_REQUIREMENTS,
+        userId,
+        {
+          id: caseId,
+          state: 'awaitingCmaRequirements',
           case_data: expectedCaseData
         },
         headers);

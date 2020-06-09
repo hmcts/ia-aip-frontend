@@ -113,7 +113,7 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All-male');
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All male');
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
@@ -122,7 +122,7 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAllFemaleAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All-female');
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All female');
     });
 
     it('should catch error and call next with error', async () => {

@@ -50,7 +50,5 @@ export function boolToYesNo(value: boolean) {
 }
 
 export function yesNoToBool(answer: string): boolean {
-  if (answer === 'Yes') {
-    return true;
-  } else if (answer === 'No') return false;
+  return answer ? answer.toLowerCase() === 'yes' : false;
 }

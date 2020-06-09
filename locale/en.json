@@ -364,7 +364,7 @@
           "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>What to expect at a case management appointment</a>"
+            "url": "<a href='{{ paths.common.whatToExpect }}'>What to expect at a case management appointment</a>"
           }
         },
         "clarifyingQuestionsAnswersSubmitted": {
@@ -1233,6 +1233,57 @@
         "A tribunal Caseworker will look at your answers and contact you to tell you what to do next",
         "This should be by <b>{{ date }}</b> but it might take longer than that"
       ]
+    },
+    "whatToExpectPage": {
+      "pageTitle": "What to expect at a case management appointment",
+      "title": "What to expect at a case management appointment",
+      "whatIsCMA": "A case management appointment is a meeting with a Tribunal Caseworker to talk about your appeal. A Home Office representative may also be at the appointment. It is <strong>not</strong> a final hearing and a final decision will not be made about your appeal at the appointment. ",
+      "whenYouArrive": {
+        "title": "When you arrive",
+        "text": "You must arrive at least 15 minutes before your appointment is due to start. First go to reception and tell them why you are there. They will check you in and show you where the waiting area is."
+      },
+      "theHearingRoom": {
+        "title": "The hearing room",
+        "text": "The Tribunal clerk will take you into the hearing room. The Tribunal Caseworker sits behind a table. You’ll be invited to sit opposite them. If you have someone to support you, they may sit next to you."
+      },
+      "peopleAtAppointment": {
+        "title": "The people at your appointment",
+        "titleOne": "The following people will be at the appointment:",
+        "bulletOne": ["A Tribunal Caseworker", "You"],
+        "titleTwo": "The following people may also be at the appointment:",
+        "bulletTwo": [
+          	"Anyone you bring to support you, like a friend or family member",
+        	"A Home Office representative",
+        	"Any interpreters you have asked for",
+        	"Tribunal staff",
+        	"Members of the public"
+
+      ]
+      },
+      "DuringAppointment": {
+        "title": "During the appointment",
+        "introduction": "The Tribunal Caseworker will introduce everyone in the room and explain how the case management appointment will work. The Tribunal Caseworker may ask you some questions about your appeal. ",
+        "questions": "If a Home Office representative is at the meeting, the Tribunal Caseworker may ask them questions.",
+        "endOfAppointment": "At the end of the appointment, the Tribunal Caseworker will summarise what was talked about and agree what will happen next with you and the Home Office representative. "
+      },
+      "AfterAppointment": {
+        "title": "After the appointment",
+        "notification": "The Tribunal Caseworker will send you a notification confirming what you need to do next. For example, you might need to provide more information to the Tribunal.",
+        "onlineSummary": "You will also be able to view the Case Management Appointment Summary on the online service soon after the appointment. This is a record of what was talked about and agreed at the appointment."
+      },
+      "AdviceForPreparation": {
+        "title": "Advice on preparing for an appointment",
+        "bullets": [
+          "If you can, visit the hearing centre before the day of your appointment",
+          "Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <a href='#' class=\"govuk-link\">See the full list of items you’re not allowed to take in</a>",
+          "Children are not always allowed into the hearing room. If you need to bring children with you, you should bring a responsible adult to take care of them while you’re at the appointment",
+          "Bring food and drink and any medication you might need",
+          "Bring family and friends along for support if you want to"
+
+
+
+        ]
+      }
     }
   },
   "error": {

@@ -42,6 +42,7 @@ import { setupSingleSexAppointmentQuestionController } from './controllers/cma-r
 import { setupSingleSexTypeAppointmentQuestionController } from './controllers/cma-requirements/other-needs/single-sex-type-appointment-question';
 import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
+import { setupcmaGuidancePageController } from './controllers/cma-requirements/what-to-expect';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
@@ -130,7 +131,7 @@ const cmaRequirementsDatesToAvoidQuestionController = setupDatesToAvoidQuestionC
 const cmaRequirementsDatesToAvoidEnterADateController = setupDatesToAvoidEnterADateController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
-
+const whatToExpectNextController = setupcmaGuidancePageController(middleware);
 // not protected by idam
 router.use(indexController);
 router.use(healthController);
@@ -187,8 +188,6 @@ router.use(cmaRequirementsPastExperiencesQuestionController);
 router.use(cmaRequirementsPastExperiencesReasonController);
 router.use(cmaRequirementsAnythingElseQuestionController);
 router.use(cmaRequirementsAnythingElseReasonController);
-router.use(cmaRequirementsTaskListController);
-router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsDatesToAvoidQuestionController);
 router.use(cmaRequirementsDatesToAvoidEnterADateController);
 router.use(cmaRequirementsDatesToAvoidReasonController);
@@ -196,5 +195,6 @@ router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);
+router.use(whatToExpectNextController);
 
 export { router };

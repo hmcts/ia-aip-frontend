@@ -137,7 +137,9 @@ const paths = {
     // Footer links
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
-    privacyPolicy: '/privacy-policy'
+    privacyPolicy: '/privacy-policy',
+    whatToExpect: '/expect-case-management-appointment'
+
   }
 };
 export {

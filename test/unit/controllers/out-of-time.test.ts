@@ -39,9 +39,13 @@ describe('Out of time controller', () => {
           hearingRequirements: {}
         } as Appeal
       } as Partial<Express.Session>,
-      cookies: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
       idam: {
-        userDetails: {}
+        userDetails: {
+          uid: 'idamUID'
+        }
       },
       app: {
         locals: {}
@@ -56,7 +60,7 @@ describe('Out of time controller', () => {
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
-    updateAppealService = { submitEvent: sandbox.stub() };
+    updateAppealService = { submitEventRefactored: sandbox.stub() };
     documentManagementService = { uploadFile: sandbox.stub(), deleteFile: sandbox.stub() };
   });
 
@@ -95,6 +99,7 @@ describe('Out of time controller', () => {
   });
 
   describe('postAppealLate', () => {
+    const whyAmLate = 'My explanation why am late';
     const file = {
       originalname: 'file.png',
       mimetype: 'type'
@@ -116,7 +121,6 @@ describe('Out of time controller', () => {
     });
 
     it('should validate and upload a file and redirect to check and send page', async () => {
-      const whyAmLate = 'My explanation why am late';
       req.body['appeal-late'] = whyAmLate;
       req.file = file as Express.Multer.File;
 
@@ -124,19 +128,33 @@ describe('Out of time controller', () => {
         fileId: 'someUUID',
         name: 'file.png'
       };
+      const lateAppeal: LateAppeal = {
+        reason: whyAmLate,
+        evidence: documentUploadResponse
+      };
+      const appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          lateAppeal
+        }
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        application: {
+          lateAppeal
+        }
+      } as Appeal);
 
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
-
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should validate, delete previous evidence, upload new evidence and redirect to check and send page', async () => {
-      const whyAmLate = 'My explanation why am late';
-
       req.body['appeal-late'] = whyAmLate;
       req.file = file as Express.Multer.File;
       req.session.appeal.application.lateAppeal.evidence = evidenceExample;
@@ -146,16 +164,30 @@ describe('Out of time controller', () => {
         fileId: 'someUUID',
         name: 'file.png'
       };
-
+      const lateAppeal: LateAppeal = {
+        reason: whyAmLate,
+        evidence: documentUploadResponse
+      };
+      const appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          lateAppeal
+        }
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        application: {
+          lateAppeal
+        }
+      } as Appeal);
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
-
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(documentManagementService.deleteFile).to.have.been.calledWith(req, documentMap.url);
       expect(documentManagementService.uploadFile).to.have.been.calledWith(req);
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
@@ -163,19 +195,32 @@ describe('Out of time controller', () => {
       req.session.appeal.application.isEdit = true;
       req.body['appeal-late'] = 'My explanation why am late';
       req.file = file as Express.Multer.File;
-
       const documentUploadResponse: DocumentUploadResponse = {
         fileId: 'someUUID',
         name: 'file.png'
       };
-
+      const lateAppeal: LateAppeal = {
+        reason: whyAmLate,
+        evidence: documentUploadResponse
+      };
+      const appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          lateAppeal
+        }
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        application: {
+          lateAppeal
+        }
+      } as Appeal);
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
-
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
-
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
     it('Should display validation error LIMIT_FILE_SIZE and render appeal-application/home-office/appeal-late.njk', async () => {
       // Because the file size is being overriden on the development config for testing purposes
@@ -251,15 +296,30 @@ describe('Out of time controller', () => {
     });
 
     it('Should delete successfully when click on delete link, pass validation and redirect to appeal late page', async () => {
+      const whyAmLate = 'a reason for being late';
       req.session.appeal.application.lateAppeal.evidence = evidenceExample;
-
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
-
-      req.body['appeal-late'] = 'a reason for being late';
+      req.body['appeal-late'] = whyAmLate;
+      const lateAppeal: LateAppeal = {
+        reason: whyAmLate
+      };
+      const appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          lateAppeal
+        }
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        application: {
+          lateAppeal
+        }
+      } as Appeal);
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
       expect(documentManagementService.deleteFile).to.have.been.calledWith(req, documentMap.url);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
       expect(res.redirect).to.have.been.called;
     });

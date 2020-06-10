@@ -66,7 +66,8 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
           description: 'For example, video or sound recordings.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring any multimedia evidence?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -104,7 +105,8 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
           description: 'For example, video or sound recordings.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring any multimedia evidence?'
-        }
+        },
+        saveAndContinue: true
       };
 
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);

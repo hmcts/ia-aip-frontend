@@ -65,7 +65,8 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
         question: {
           options: [ { text: 'All male', value: 'yes' }, { text: 'All female', value: 'no' } ],
           title: 'What type of appointment will you need?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -102,7 +103,8 @@ describe('CMA Requirements - Other Needs Section: Single sex type appointment Qu
         question: {
           options: [ { text: 'All male', value: 'yes' }, { text: 'All female', value: 'no' } ],
           title: 'What type of appointment will you need?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });

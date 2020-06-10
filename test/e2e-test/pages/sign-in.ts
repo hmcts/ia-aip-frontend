@@ -74,13 +74,16 @@ module.exports = {
           signInForUser('awaitingClarifyingQuestions-with-time_extension@example.com');
           break;
         }
-
         case 'awaitingClarifyingQuestionsAnswers': {
           signInForUser('clarifying-questions@example.com');
           break;
         }
         case 'awaitingCmaRequirements': {
-          signInForUser('cma-requirements@example.com');
+          signInForUser('awaitingCmaRequirements@example.com');
+          break;
+        }
+        case 'awaitingCmaRequirements with time extensions': {
+          signInForUser('awaitingCmaRequirements-with-time_extension@example.com');
           break;
         }
         default:

@@ -65,7 +65,8 @@ describe('CMA Requirements - Other Needs Section: Single sex appointment Questio
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you need an all-female or all-male appointment?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -102,7 +103,8 @@ describe('CMA Requirements - Other Needs Section: Single sex appointment Questio
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you need an all-female or all-male appointment?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });

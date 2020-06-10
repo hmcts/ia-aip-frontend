@@ -55,6 +55,20 @@ module.exports = {
       I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description}</p>`);
     });
 
+    Then(/^I should see the 'do this next section' for 'awaitingCmaRequirements'$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+      I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description}</p>`);
+    });
+
+    Then(/^I should see the 'do this next section' for 'awaitingCmaRequirements with time extensions' with respond by date '([^"]*)'$/, async (respondByDate) => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+
+      I.seeInSource(`${i18n.pages.overviewPage.askedForMoreTime }`);
+
+      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime}`.replace('{{ applicationNextStep.deadline }}', respondByDate).trim());
+      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime}`);
+    });
+
     Then(/^I should see the 'ask for more time' link$/, () => {
       I.seeElement('//a[contains(., "Ask for more time")]');
     });

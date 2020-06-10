@@ -65,7 +65,8 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Do you have any physical or mental health conditions that may affect you at the appointment?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -102,7 +103,9 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Do you have any physical or mental health conditions that may affect you at the appointment?'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });

@@ -67,7 +67,9 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Question cont
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Have you had any past experiences that may affect you at the appointment?',
           description: 'This might be experience of physical or sexual abuse, trafficking or torture.'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -105,7 +107,9 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Question cont
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Have you had any past experiences that may affect you at the appointment?',
           description: 'This might be experience of physical or sexual abuse, trafficking or torture.'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });

@@ -19,7 +19,8 @@ function getHealthConditionsQuestion(req: Request, res: Response, next: NextFunc
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     });
   } catch (e) {
     next(e);
@@ -34,7 +35,8 @@ function postHealthConditionsQuestion(updateAppealService: UpdateAppealService) 
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     };
 
     const onSuccess = async (answer: boolean) => {

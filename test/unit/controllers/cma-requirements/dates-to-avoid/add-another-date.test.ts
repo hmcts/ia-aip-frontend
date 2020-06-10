@@ -59,7 +59,8 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
         question: {
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Do you want to add another date you cannot go to the appointment?'
-        }
+        },
+        saveAndContinueOnly: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs

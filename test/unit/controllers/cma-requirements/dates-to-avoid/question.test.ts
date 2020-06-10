@@ -68,7 +68,8 @@ describe('CMA Requirements - Question controller', () => {
           description: 'You will need to tell us why you cannot go to the appointment on the dates you include.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Are there any dates you cannot go to the appointment?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -106,7 +107,9 @@ describe('CMA Requirements - Question controller', () => {
           description: 'You will need to tell us why you cannot go to the appointment on the dates you include.',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Are there any dates you cannot go to the appointment?'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });

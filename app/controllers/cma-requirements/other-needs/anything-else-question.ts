@@ -19,7 +19,8 @@ function getAnythingElseQuestion(req: Request, res: Response, next: NextFunction
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     });
   } catch (e) {
     next(e);
@@ -34,7 +35,8 @@ function postAnythingElseQuestion(updateAppealService: UpdateAppealService) {
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     };
 
     const onSuccess = async (answer: boolean) => {

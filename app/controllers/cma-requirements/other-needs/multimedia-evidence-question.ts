@@ -20,7 +20,8 @@ function getMultimediaEvidenceQuestion(req: Request, res: Response, next: NextFu
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     });
   } catch (e) {
     next(e);
@@ -36,7 +37,8 @@ function postMultimediaEvidenceQuestion(updateAppealService: UpdateAppealService
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     };
 
     const onSuccess = async (answer: boolean) => {

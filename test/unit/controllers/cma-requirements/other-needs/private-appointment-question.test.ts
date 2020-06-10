@@ -66,7 +66,9 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Question c
           description: 'A private appointment means the public will not be allowed to attend.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you need a private appointment?'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -104,7 +106,8 @@ describe('CMA Requirements - Other Needs Section: Private Appointment Question c
           description: 'A private appointment means the public will not be allowed to attend.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you need a private appointment?'
-        }
+        },
+        saveAndContinue: true
       };
 
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);

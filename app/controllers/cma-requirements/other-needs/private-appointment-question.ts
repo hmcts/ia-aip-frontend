@@ -20,7 +20,8 @@ function getPrivateAppointmentQuestion(req: Request, res: Response, next: NextFu
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     });
   } catch (e) {
     next(e);
@@ -35,7 +36,8 @@ function postPrivateAppointmentQuestion(updateAppealService: UpdateAppealService
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     };
 
     const onSuccess = async (answer: boolean) => {

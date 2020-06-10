@@ -17,9 +17,9 @@ describe('CMA Requirements - Reason controller', () => {
   const datesToAvoid: CmaDateToAvoid[] = [
     {
       date: {
-        day: 20,
-        month: 6,
-        year: 2020
+        day: '20',
+        month: '6',
+        year: '2020'
       }
     }
   ];

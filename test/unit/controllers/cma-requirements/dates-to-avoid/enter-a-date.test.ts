@@ -81,9 +81,9 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       req.session.appeal.cmaRequirements.datesToAvoid.dates = [ {
         date: {
-          day: 20,
-          month: 6,
-          year: 2020
+          day: '20',
+          month: '6',
+          year: '2020'
         }
       } ];
 
@@ -94,7 +94,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       const expectedArgs = {
         availableDates: { from: availableDates.from, to: availableDates.to },
-        date: { day: 20, month: 6, year: 2020 },
+        date: { day: '20', month: '6', year: '2020' },
         formAction: '/appointment-dates-avoid-enter/0',
         previousPage: {
           attributes: { onclick: 'history.go(-1); return false;' }
@@ -110,9 +110,9 @@ describe('CMA Requirements - Enter A date controller', () => {
       req.params.id = '0';
       req.session.appeal.cmaRequirements.datesToAvoid.dates = [ {
         date: {
-          day: 20,
-          month: 6,
-          year: 2020
+          day: '20',
+          month: '6',
+          year: '2020'
         }
       } ];
       const error = new Error('an error');

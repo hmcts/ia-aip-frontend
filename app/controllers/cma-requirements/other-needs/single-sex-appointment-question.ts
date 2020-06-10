@@ -19,7 +19,8 @@ function getSingleSexAppointmentQuestion(req: Request, res: Response, next: Next
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     });
   } catch (e) {
     next(e);
@@ -34,7 +35,8 @@ function postSingleSexAppointmentQuestion(updateAppealService: UpdateAppealServi
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     };
 
     const onSuccess = async (answer: boolean) => {

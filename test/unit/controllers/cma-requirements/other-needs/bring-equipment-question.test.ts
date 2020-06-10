@@ -66,7 +66,8 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
           description: 'For example, a laptop or DVD player.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring the equipment to play this evidence?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -104,7 +105,9 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring the equipment to play this evidence?',
           description: 'For example, a laptop or DVD player.'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });

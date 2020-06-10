@@ -13,11 +13,11 @@ function getNextState(body) {
     case 'submitTimeExtension':
       return 'awaitingReasonsForAppeal';
     case 'editClarifyingQuestionAnswers':
-      return 'awaitingClarifyingQuestionsAnswers'
+      return 'awaitingClarifyingQuestionsAnswers';
     case 'submitClarifyingQuestionAnswers':
       return 'clarifyingQuestionsAnswersSubmitted';
     case 'submitCmaRequirements':
-      return 'awaitingCmaRequirements';
+      return 'cmaRequirementsSubmitted';
     case 'editCmaRequirements':
       return 'awaitingCmaRequirements';
     default:

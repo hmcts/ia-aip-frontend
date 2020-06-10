@@ -20,7 +20,8 @@ function getPastExperiencesQuestion(req: Request, res: Response, next: NextFunct
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     });
   } catch (e) {
     next(e);
@@ -35,7 +36,8 @@ function postPastExperiencesQuestion(updateAppealService: UpdateAppealService) {
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     };
 
     const onSuccess = async (answer: boolean) => {

@@ -20,7 +20,8 @@ function getBringMultimediaEquipmentQuestion(req: Request, res: Response, next: 
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     });
   } catch (e) {
     next(e);
@@ -35,7 +36,8 @@ function postBringMultimediaEquipmentQuestion(updateAppealService: UpdateAppealS
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     };
 
     const onSuccess = async (answer: boolean) => {

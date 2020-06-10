@@ -6,6 +6,7 @@ import { documentIdToDocStoreUrl, DocumentManagementService } from '../../servic
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { getRedirectPage } from '../../utils/utils';
 import { createStructuredError, textAreaValidation } from '../../utils/validations/fields-validations';
 
 function getAppealLate(req: Request, res: Response, next: NextFunction) {
@@ -55,27 +56,37 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
           previousPage: paths.appealStarted.taskList
         });
       }
-
+      let lateAppeal: LateAppeal;
       if (req.file) {
         if (_.has(application.lateAppeal, 'evidence.fileId')) {
           const documentLocationUrl: string = documentIdToDocStoreUrl(application.lateAppeal.evidence.fileId, req.session.appeal.documentMap);
           await documentManagementService.deleteFile(req, documentLocationUrl);
         }
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-        application.lateAppeal = {
-          ...application.lateAppeal,
+        lateAppeal = {
+          ...req.session.appeal.application.lateAppeal,
           evidence: {
             fileId: evidenceStored.fileId,
             name: evidenceStored.name
           }
         };
       }
-      application.lateAppeal = {
-        ...application.lateAppeal,
-        reason: req.body['appeal-late']
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          lateAppeal: {
+            ...lateAppeal,
+            reason: req.body['appeal-late']
+          }
+        }
       };
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.appealStarted.checkAndSend));
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = appealUpdated;
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.checkAndSend);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }
@@ -99,9 +110,22 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
           previousPage: paths.appealStarted.taskList
         });
       }
-      req.session.appeal.application.lateAppeal.reason = req.body['appeal-late'];
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return res.redirect(paths.appealStarted.appealLate);
+      const lateAppeal: LateAppeal = {
+        reason: req.body['appeal-late']
+      };
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          lateAppeal
+        }
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = appealUpdated;
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.appealLate);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }
@@ -109,7 +133,6 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
 }
 
 function setupOutOfTimeController(middleware: Middleware[], deps?: any): Router {
-
   const router = Router();
   router.get(paths.appealStarted.appealLate, middleware, getAppealLate);
   router.post(paths.appealStarted.appealLate, middleware, postAppealLate(deps.documentManagementService, deps.updateAppealService));

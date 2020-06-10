@@ -342,7 +342,7 @@ function buildOtherNeedsSummaryList(otherNeeds: OtherNeeds) {
 
     anythingElseRows.push(
       addSummaryRow(i18n.common.cya.answerRowTitle,
-        [ `<pre>${otherNeeds.pastExperiencesReason}</pre>` ],
+        [ `<pre>${otherNeeds.anythingElseReason}</pre>` ],
         paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons + editParameter)
     );
   }

@@ -176,6 +176,8 @@ Feature: Cma Requirements
 
     When I click "Check and send us your appointment needs" link
     Then I see "Check your answers" in title
+    And I see cma requirements answers and content
+
 
     When I click "Send" button
     Then I should see the cma requirements confirmation page

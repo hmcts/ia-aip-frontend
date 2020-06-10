@@ -245,5 +245,4 @@ describe('CMA Requirements - Enter A date controller', () => {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
-
 });

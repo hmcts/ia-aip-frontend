@@ -63,9 +63,9 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.application = {
       homeOfficeRefNumber: 'A1234567',
       dateLetterSent: {
-        day: 1,
-        month: 7,
-        year: 2019
+        day: '1',
+        month: '7',
+        year: '2019'
       },
       appealType: 'Protection',
       isAppealLate: true,
@@ -73,9 +73,9 @@ describe('Confirmation Page Controller', () => {
         givenNames: 'Pedro',
         familyName: 'Jimenez',
         dob: {
-          day: 10,
-          month: 10,
-          year: 1980
+          day: '10',
+          month: '10',
+          year: '1980'
         },
         nationality: 'Panamanian',
         address: {

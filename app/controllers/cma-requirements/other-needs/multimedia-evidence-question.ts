@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../../locale/en.json';
+import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { postCmaRequirementsYesNoHandler } from '../common';
@@ -19,7 +20,8 @@ function getMultimediaEvidenceQuestion(req: Request, res: Response, next: NextFu
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     });
   } catch (e) {
     next(e);
@@ -35,16 +37,18 @@ function postMultimediaEvidenceQuestion(updateAppealService: UpdateAppealService
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinue: true
     };
 
-    const onSuccess = (answer: boolean) => {
+    const onSuccess = async (answer: boolean) => {
       if (answer) {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           multimediaEvidence: true
         };
 
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
       } else {
         req.session.appeal.cmaRequirements.otherNeeds = {
@@ -52,6 +56,7 @@ function postMultimediaEvidenceQuestion(updateAppealService: UpdateAppealService
           multimediaEvidence: false
         };
 
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
         return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
       }
     };

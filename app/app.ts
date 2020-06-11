@@ -44,7 +44,8 @@ function createApp() {
   app.locals.paths = paths;
   if (environment !== 'test') app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.use(csurf());
   app.post('*', uploadConfiguration, handleFileUploadErrors);

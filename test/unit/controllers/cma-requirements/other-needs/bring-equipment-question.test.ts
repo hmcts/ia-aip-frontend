@@ -4,6 +4,7 @@ import {
   postBringMultimediaEquipmentQuestion,
   setupBringMultimediaEquipmentQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/bring-equipment-question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -65,7 +66,8 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
           description: 'For example, a laptop or DVD player.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring the equipment to play this evidence?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -103,7 +105,9 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring the equipment to play this evidence?',
           description: 'For example, a laptop or DVD player.'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
@@ -112,6 +116,7 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
       req.body['answer'] = 'yes';
       await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
       expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.true;
     });
@@ -120,6 +125,7 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
       req.body['answer'] = 'no';
       await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason);
       expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.false;
     });

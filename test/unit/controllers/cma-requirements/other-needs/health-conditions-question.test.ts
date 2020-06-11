@@ -4,6 +4,7 @@ import {
   postHealthConditionsQuestion,
   setupHealthConditionsQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/health-conditions-question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -64,7 +65,8 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Do you have any physical or mental health conditions that may affect you at the appointment?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -101,7 +103,9 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Do you have any physical or mental health conditions that may affect you at the appointment?'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
@@ -110,6 +114,7 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
       req.body['answer'] = 'yes';
       await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsHealthConditionsReason);
       expect(req.session.appeal.cmaRequirements.otherNeeds.healthConditions).to.be.true;
     });
@@ -118,6 +123,7 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Question con
       req.body['answer'] = 'no';
       await postHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
       expect(req.session.appeal.cmaRequirements.otherNeeds.healthConditions).to.be.false;
     });

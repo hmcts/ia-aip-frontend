@@ -17,7 +17,9 @@ function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFu
       previousPage,
       pageTitle,
       formAction,
-      question
+      question,
+      saveAndContinueOnly: true
+
     });
   } catch (e) {
     next(e);
@@ -32,7 +34,8 @@ function postAddAnotherDateQuestionPage(req: Request, res: Response, next: NextF
     previousPage,
     pageTitle,
     formAction,
-    question
+    question,
+    saveAndContinueOnly: true
   };
 
   const onSuccess = (answer: boolean) => {

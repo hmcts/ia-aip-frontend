@@ -68,7 +68,7 @@ interface Appeal {
   appealReferenceNumber?: string;
   application: AppealApplication;
   reasonsForAppeal: ReasonsForAppeal;
-  hearingRequirements: HearingRequirements;
+  hearingRequirements?: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
@@ -109,9 +109,9 @@ interface HistoryEvent {
 }
 
 interface AppealDate {
-  day: number;
-  month: number;
-  year: number;
+  day: string;
+  month: string;
+  year: string;
 }
 
 interface LateAppeal {
@@ -158,10 +158,15 @@ interface CmaRequirements {
   tasks?: {
     [key: string]: Task;
   };
-  datesToAvoid?: DateToAvoid[];
+  datesToAvoid?: DatesToAvoid;
 }
 
-interface DateToAvoid {
+interface DatesToAvoid {
+  isDateCannotAttend: boolean;
+  dates?: CmaDateToAvoid[];
+}
+
+interface CmaDateToAvoid {
   date: AppealDate;
   reason?: string;
 }
@@ -219,8 +224,8 @@ interface Direction {
 interface ClarifyingQuestion<T> {
   id?: string;
   value: {
-    dateSent: string;
-    dueDate: string;
+    dateSent?: string;
+    dueDate?: string;
     question: string;
     dateResponded?: string;
     answer?: string;

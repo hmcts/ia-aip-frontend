@@ -3,6 +3,7 @@ import {
   getAddAnotherDateQuestionPage, postAddAnotherDateQuestionPage,
   setupDatesToAvoidAddAnotherDateController
 } from '../../../../../app/controllers/cma-requirements/dates-to-avoid/add-another-date';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import { expect, sinon } from '../../../../utils/testUtils';
 
@@ -58,7 +59,8 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
         question: {
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Do you want to add another date you cannot go to the appointment?'
-        }
+        },
+        saveAndContinueOnly: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -74,7 +76,7 @@ describe('CMA Requirements - Add Another Date Question controller', () => {
     });
   });
 
-  describe('postDatesToAvoidQuestion', () => {
+  describe('postAddAnotherDateQuestionPage', () => {
     it('should fail validation and render template with errors', async () => {
       await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 

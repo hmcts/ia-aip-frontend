@@ -4,10 +4,12 @@ import {
   postAddAnotherDateQuestionPage
 } from '../../../../../app/controllers/cma-requirements/dates-to-avoid/add-another-date';
 import {
-  getDatesToAvoidQuestion,
+  getDatesToAvoidQuestion, postDatesToAvoidQuestion,
   setupDatesToAvoidQuestionController
 } from '../../../../../app/controllers/cma-requirements/dates-to-avoid/question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
+import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('CMA Requirements - Question controller', () => {
@@ -15,6 +17,7 @@ describe('CMA Requirements - Question controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
+  let updateAppealService: Partial<UpdateAppealService>;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -32,6 +35,8 @@ describe('CMA Requirements - Question controller', () => {
       redirect: sandbox.spy()
     } as Partial<Response>;
     next = sandbox.stub() as NextFunction;
+    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+
   });
 
   afterEach(() => {
@@ -44,7 +49,7 @@ describe('CMA Requirements - Question controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupDatesToAvoidQuestionController(middleware);
+      setupDatesToAvoidQuestionController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidQuestion);
       expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidQuestion);
     });
@@ -56,14 +61,15 @@ describe('CMA Requirements - Question controller', () => {
       getDatesToAvoidQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        formAction: '/appointment-dates-avoid-new',
+        formAction: '/appointment-dates-avoid',
         pageTitle: 'Are there any dates you cannot go to the appointment?',
         previousPage: '/appointment-needs',
         question: {
           description: 'You will need to tell us why you cannot go to the appointment on the dates you include.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Are there any dates you cannot go to the appointment?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -74,29 +80,50 @@ describe('CMA Requirements - Question controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      getAddAnotherDateQuestionPage(req as Request, res as Response, next);
+      getDatesToAvoidQuestion(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postAddAnotherDateQuestionPage', () => {
+  describe('postDatesToAvoidQuestion', () => {
     it('should fail validation and render template with errors', async () => {
-      await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
+      await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk');
+      const expectedError = {
+        answer: {
+          href: '#answer',
+          key: 'answer',
+          text: 'Select yes if there are any dates you cannot go to the appointment'
+        }
+      };
+
+      const expectedArgs = {
+        error: expectedError ,
+        errorList: Object.values(expectedError),
+        formAction: '/appointment-dates-avoid',
+        pageTitle: 'Are there any dates you cannot go to the appointment?',
+        previousPage: '/appointment-needs',
+        question: {
+          description: 'You will need to tell us why you cannot go to the appointment on the dates you include.',
+          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
+          title: 'Are there any dates you cannot go to the appointment?'
+        },
+        saveAndContinue: true
+      };
+      expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
-
+      await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.cmaRequirements.datesToAvoid.isDateCannotAttend).to.be.true;
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidEnterDate);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
-
+      await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.cmaRequirements.datesToAvoid.isDateCannotAttend).to.be.false;
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
     });
 
@@ -104,7 +131,7 @@ describe('CMA Requirements - Question controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
+      await postDatesToAvoidQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

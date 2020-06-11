@@ -19,10 +19,7 @@ function handleCmaRequirementsYesNo(onValidationError, onValidationErrorMessage:
 export function postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
 
   const onValidationError = (validations) => res.render('templates/radio-question-page.njk', {
-    previousPage: pageContent.previousPage,
-    pageTitle: pageContent.pageTitle,
-    formAction: pageContent.formAction,
-    question: pageContent.question,
+    ...pageContent,
     errorList: Object.values(validations),
     error: validations
   });
@@ -51,12 +48,7 @@ function handleCmaRequirementsReason(onValidationError, onValidationErrorMessage
 
 export function getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
   const onValidationError = (validations) => res.render('templates/textarea-question-page.njk', {
-    previousPage: pageContent.previousPage,
-    pageTitle: pageContent.pageTitle,
-    formAction: pageContent.formAction,
-    question: pageContent.question,
-    supportingEvidence: pageContent.supportingEvidence,
-    timeExtensionAllowed: pageContent.timeExtensionAllowed,
+    ...pageContent,
     errorList: Object.values(validations),
     error: validations
   });

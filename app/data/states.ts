@@ -22,5 +22,9 @@ export const States = {
   AWAITING_CLARIFYING_QUESTIONS: {
     id: 'awaitingClarifyingQuestionsAnswers',
     name: 'Awaiting Clarifying Questions'
+  },
+  AWAITING_CMA_REQUIREMENTS: {
+    id: 'awaitingCmaRequirements',
+    name: 'Awaiting CMA Requirements'
   }
 };

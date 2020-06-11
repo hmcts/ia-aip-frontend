@@ -20,6 +20,7 @@ import { setupClarifyingQuestionPageController } from './controllers/clarifying-
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupAccessNeedsController } from './controllers/cma-requirements/access-needs/access-needs';
 import { setupAnythingElseQuestionController } from './controllers/cma-requirements/other-needs/anything-else-question';
 import { setupAnythingElseReasonController } from './controllers/cma-requirements/other-needs/anything-else-reason';
 import { setupBringMultimediaEquipmentQuestionController } from './controllers/cma-requirements/other-needs/bring-equipment-question';
@@ -63,7 +64,7 @@ const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 
@@ -104,6 +105,7 @@ const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswe
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
 const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
+const cmaRequirementsAccessNeedsController = setupAccessNeedsController(middleware, updateAppealService);
 const cmaRequirementsStartPageController = setupCMARequirementsStartPageController(middleware);
 const cmaRequirementsMultimediaEvidenceQuestionController = setupMultimediaEvidenceQuestionController(middleware, updateAppealService);
 const cmaRequirementsBringEquipmentQuestionController = setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService);
@@ -161,6 +163,7 @@ router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
 
 router.use(cmaRequirementsTaskListController);
+router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsMultimediaEvidenceQuestionController);
 router.use(cmaRequirementsBringEquipmentQuestionController);

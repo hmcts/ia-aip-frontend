@@ -16,6 +16,10 @@ function getNextState(body) {
       return 'awaitingClarifyingQuestionsAnswers'
     case 'submitClarifyingQuestionAnswers':
       return 'clarifyingQuestionsAnswersSubmitted';
+    case 'submitCmaRequirements':
+      return 'awaitingCmaRequirements';
+    case 'editCmaRequirements':
+      return 'awaitingCmaRequirements';
     default:
       throw `Event type ${body.eventType} no next state set`
   }
@@ -36,7 +40,7 @@ module.exports = {
     "last_modified": "2019-11-15T11:28:36.109",
     "security_classification": "PUBLIC",
     "case_data": (params, query, body) => {
-      return body
+      return { ...body.data }
     },
     "data_classification": {
       "journeyType": "PUBLIC",

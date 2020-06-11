@@ -62,6 +62,7 @@ interface DocumentUploadResponse {
 }
 
 interface Appeal {
+  ccdCaseId?: string;
   appealStatus?: string;
   appealCreatedDate?: string;
   appealLastModified?: string;
@@ -158,7 +159,21 @@ interface CmaRequirements {
   tasks?: {
     [key: string]: Task;
   };
+  accessNeeds?: AccessNeeds;
   otherNeeds?: OtherNeeds;
+
+}
+
+interface DateToAvoid {
+  date: AppealDate;
+  reason?: string;
+}
+
+interface AccessNeeds {
+  isInterpreterServicesNeeded?: boolean;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: boolean;
+  isHearingLoopNeeded?: boolean;
 }
 
 interface OtherNeeds {
@@ -177,6 +192,7 @@ interface OtherNeeds {
   anythingElse: boolean;
   anythingElseReason: string;
 }
+
 interface ReasonsForAppeal {
   applicationReason: string;
   uploadDate?: string;
@@ -239,6 +255,10 @@ interface ClarifyingQuestion<T> {
   };
 }
 
+interface AdditionalLanguage {
+  language?: string;
+  languageDialect?: string;
+}
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;
 
 interface ApplicationStatus {

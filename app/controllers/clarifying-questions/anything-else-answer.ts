@@ -4,6 +4,8 @@ import { CQ_NOTHING_ELSE } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 
 function getAnythingElseAnswerPage(req: Request, res: Response, next: NextFunction) {
@@ -32,6 +34,9 @@ function getAnythingElseAnswerPage(req: Request, res: Response, next: NextFuncti
 function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'anything-else','saveForLater')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
       const { draftClarifyingQuestionsAnswers } = req.session.appeal;
       const anythingElseQuestion: ClarifyingQuestion<Evidence> = draftClarifyingQuestionsAnswers[draftClarifyingQuestionsAnswers.length - 1];
       const validationErrors = textAreaValidation(req.body['anything-else'], 'anything-else', i18n.validationErrors.clarifyingQuestions.anythingElseEmptyAnswer);
@@ -55,7 +60,12 @@ function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
       }
       anythingElseQuestion.value.answer = req.body['anything-else'];
       await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      res.redirect(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+      const anythingElse = req.body['answer'];
+      if (anythingElse === 'true') {
+        return getConditionalRedirectUrl(req,res , getNextPage(req.body,paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage));
+      } else {
+        return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.awaitingClarifyingQuestionsAnswers.questionsList));
+      }
     } catch (e) {
       next(e);
     }

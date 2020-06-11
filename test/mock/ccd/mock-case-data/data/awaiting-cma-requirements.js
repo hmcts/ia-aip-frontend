@@ -1,8 +1,8 @@
-const appealSubmittedCaseData = {
-  'id': 3,
+const awaitingCmaRequirements = {
+  'id': 9,
   'jurisdiction': 'IA',
-  'state': 'appealSubmitted',
-  'version': 5,
+  'state': 'awaitingCmaRequirements',
+  'version': 9,
   'case_type_id': 'Asylum',
   'created_date': '2020-02-12T10:41:51.55',
   'last_modified': '2020-02-12T10:43:14.23',
@@ -30,8 +30,12 @@ const appealSubmittedCaseData = {
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',
     'homeOfficeReferenceNumber': 'A1234567',
-    'cmaRequirements': {}
+    'cmaRequirements': {},
+    "isHearingLoopNeeded": "",
+    "isHearingRoomNeeded": "",
+    "interpreterLanguage": {},
+    "isInterpreterServicesNeeded": "",
   }
 };
 
-module.exports = { ...appealSubmittedCaseData };
+module.exports = { ...awaitingCmaRequirements };

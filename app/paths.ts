@@ -48,7 +48,11 @@ const paths = {
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',
-    accessNeeds: 'TODO',
+    accessNeeds: '/appointment-access-needs',
+    accessNeedsInterpreter: '/appointment-interpreter',
+    accessNeedsStepFreeAccess: '/appointment-step-free-access',
+    accessNeedsHearingLoop: '/appointment-hearing-loop',
+    accessNeedsAdditionalLanguage: '/appointment-add-language-details',
     otherNeeds: '/appointment-other-needs',
     otherNeedsMultimediaEvidenceQuestion: '/appointment-multimedia-evidence',
     otherNeedsMultimediaEquipmentQuestion: '/appointment-multimedia-evidence-equipment',
@@ -69,6 +73,7 @@ const paths = {
     datesToAvoidEnterDate: '/appointment-dates-avoid-enter',
     datesToAvoidReason: '/appointment-dates-avoid-reasons',
     datesToAvoidAddAnotherDate: '/appointment-dates-avoid-new',
+    datesToAvoid: 'TODO',
     checkAndSend: '/appointment-check-answers'
   },
   common: {

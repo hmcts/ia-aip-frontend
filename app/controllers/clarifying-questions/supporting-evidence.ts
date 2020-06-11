@@ -66,7 +66,7 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
     try {
       if (req.query.id) {
         const questionOrder = parseInt(req.params.id, 10) - 1;
-        const fileId = req.query.id;
+        const fileId: string = req.query.id;
         const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
         const supportingEvidences: Evidence[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence ];

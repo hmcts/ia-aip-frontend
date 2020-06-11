@@ -193,8 +193,8 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
 function getSupportingEvidenceDeleteFile(documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (req.query['id']) {
-        const fileId = req.query['id'];
+      const fileId: string = req.query.id as string;
+      if (fileId) {
         const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
         const evidences: Evidence[] = [ ...req.session.appeal.reasonsForAppeal.evidences ];

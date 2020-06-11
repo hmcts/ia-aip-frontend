@@ -4,6 +4,8 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
 function getSupportingEvidenceUploadPage(req: Request, res: Response, next: NextFunction) {
@@ -39,7 +41,7 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
         }
         req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder] = { ...cq };
         await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-        res.redirect(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id));
+        return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id)));
       } else {
         const questionOrder = parseInt(req.params.id, 10) - 1;
         const evidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence || [];
@@ -83,6 +85,9 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
 
 function postSupportingEvidenceSubmit(req: Request, res: Response, next: NextFunction) {
   try {
+    if (req.body.saveForLater) {
+      return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+    }
     res.redirect(paths.awaitingClarifyingQuestionsAnswers.questionsList);
   } catch (e) {
     next(e);

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import nl2br from 'nl2br';
+import { paths } from '../paths';
 
 /**
  * Translate primitive values to Boolean value
@@ -31,9 +32,9 @@ export function nowIsoDate() {
 export function nowAppealDate(): AppealDate {
   const now = new Date();
   return {
-    year: now.getFullYear(),
-    month: now.getMonth() + 1,
-    day: now.getDate()
+    year: now.getFullYear().toString(10),
+    month: (now.getMonth() + 1).toString(10),
+    day: now.getDate().toString(10)
   } as AppealDate;
 }
 
@@ -43,4 +44,10 @@ export function hasInflightTimeExtension(appeal: Appeal): boolean {
 
 export function formatTextForCYA(text: string) {
   return nl2br(text.replace(/ /g, '&nbsp;'));
+}
+
+export function getRedirectPage(editingMode, editingModeRedirect, saveForLater, defaultRedirect) {
+  if (saveForLater) return `${paths.common.overview}?saved`;
+  if (editingMode) return editingModeRedirect;
+  return defaultRedirect;
 }

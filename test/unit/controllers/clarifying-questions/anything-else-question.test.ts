@@ -115,7 +115,7 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
     });
   });
 
-  describe('postAnythingElseQuestionPage @only', () => {
+  describe('postAnythingElseQuestionPage', () => {
     it('should fail validation and render template with errors', async () => {
       await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 

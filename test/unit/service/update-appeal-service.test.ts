@@ -142,19 +142,11 @@ describe('update-appeal-service', () => {
             }]
           }}
       ],
-      draftClarifyingQuestionsAnswers: [
-        {
-          id: '1',
-          value: {
-            dateSent: '2020-04-23',
-            dueDate: '2020-05-07',
-            question: 'the questions',
-            answer: 'the answer',
-            supportingEvidence: []
-          }
-        }
-      ]
+      isInterpreterServicesNeeded: 'false',
+      isHearingRoomNeeded: 'true',
+      isHearingLoopNeeded: 'true'
     };
+
   });
 
   afterEach(() => {
@@ -171,7 +163,7 @@ describe('update-appeal-service', () => {
         case_data: expectedCaseData
       });
       await updateAppealService.loadAppeal(req);
-      expect(req.session.ccdCaseId).eq(caseId);
+      expect(req.session.appeal.ccdCaseId).eq(caseId);
       expect(req.session.appeal.application.appealType).eq('protection');
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
       expect(req.session.appeal.application.personalDetails.familyName).eq('Pedro');
@@ -203,6 +195,9 @@ describe('update-appeal-service', () => {
       validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
       expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
       expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(undefined);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(undefined);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(undefined);
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -219,6 +214,62 @@ describe('update-appeal-service', () => {
 
       expect(req.session.appeal.askForMoreTime).to.be.eql(
         { inFlight: false });
+    });
+
+    it('load CQ from directions object', async () => {
+
+      const directionsClarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[] = [
+        {
+          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+          }
+        }
+      ];
+
+      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        {
+          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+          }
+        },
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Do you want to tell us anything else about your case?'
+          }
+        }
+      ];
+      expectedCaseData.directions = [
+        {
+          id: '3',
+          value: {
+            tag: 'requestClarifyingQuestions',
+            dateDue: '2020-05-07',
+            parties: 'appellant',
+            dateSent: '2020-04-23',
+            explanation: 'You need to answer some questions about your appeal.',
+            previousDates: [],
+            clarifyingQuestions: directionsClarifyingQuestions
+          }
+        }
+      ];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingClarifyingQuestionsAnswers',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
     });
 
     it('load draftClarifyingQuestion', async () => {
@@ -253,7 +304,21 @@ describe('update-appeal-service', () => {
             parties: 'appellant',
             dateSent: '2020-04-23',
             explanation: 'You need to answer some questions about your appeal.',
-            previousDates: []
+            previousDates: [],
+            clarifyingQuestions: [
+              {
+                id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+                value: {
+                  question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+                }
+              },
+              {
+                id: 'ddc8a194-30b3-40d9-883e-d034a7451170',
+                value: {
+                  question: 'Tell us more about your health issues\n- How long have you suffered from this problem?\n- How does it affect your daily life?'
+                }
+              }
+            ]
           }
         }
       ];
@@ -384,6 +449,11 @@ describe('update-appeal-service', () => {
         } as Partial<AppealApplication>,
         askForMoreTime: {
           reason: null
+        },
+        cmaRequirements: {
+          accessNeeds: {
+            isHearingRoomNeeded: null
+          }
         }
       } as Partial<Appeal>;
     });
@@ -398,7 +468,10 @@ describe('update-appeal-service', () => {
       emptyApplication.application.homeOfficeRefNumber = 'ref';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', homeOfficeReferenceNumber: 'ref' });
+      expect(caseData).eql({
+        journeyType: 'aip',
+        homeOfficeReferenceNumber: 'ref'
+      });
     });
 
     describe('converts home office letter date', () => {
@@ -645,9 +718,9 @@ describe('update-appeal-service', () => {
               homeOfficeRefNumber: 'newRef',
               appealType: 'appealType',
               dateLetterSent: {
-                year: 2019,
-                month: 12,
-                day: 11
+                year: '2019',
+                month: '12',
+                day: '11'
               },
               isAppealLate: true,
               lateAppeal: {
@@ -656,20 +729,21 @@ describe('update-appeal-service', () => {
                   name: 'somefile.png',
                   fileId: '00000000-0000-0000-0000-000000000000',
                   dateUploaded: {
-                    year: 2020,
-                    month: 1,
-                    day: 1
+                    year: '2020',
+                    month: '1',
+                    day: '1'
                   },
-                  description: 'Some evidence 1'
+                  'description': 'Some evidence 1',
+                  'tag': 'additionalEvidence'
                 }
               },
               personalDetails: {
                 givenNames: 'givenNames',
                 familyName: 'familyName',
                 dob: {
-                  year: 1980,
-                  month: 1,
-                  day: 2
+                  year: '1980',
+                  month: '1',
+                  day: '2'
                 },
                 nationality: 'nationality',
                 address: {
@@ -706,9 +780,9 @@ describe('update-appeal-service', () => {
                   fileId: '00000000-0000-0000-0000-000000000002',
                   name: 'File2.png',
                   dateUploaded: {
-                    year: 2020,
-                    month: 2,
-                    day: 2
+                    year: '2020',
+                    month: '2',
+                    day: '2'
                   },
                   description: 'Some evidence 2'
                 }
@@ -805,6 +879,7 @@ describe('update-appeal-service', () => {
             value: {
               dateUploaded: '2020-01-01',
               description: 'Some evidence 1',
+              tag: 'additionalEvidence',
               document: {
                 document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
                 document_filename: 'File1.png',
@@ -816,6 +891,7 @@ describe('update-appeal-service', () => {
             value: {
               dateUploaded: '2020-02-02',
               description: 'Some evidence 2',
+              tag: 'additionalEvidence',
               document: {
                 document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
                 document_filename: 'File2.png',

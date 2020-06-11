@@ -20,6 +20,7 @@ import { setupClarifyingQuestionPageController } from './controllers/clarifying-
 import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupAccessNeedsController } from './controllers/cma-requirements/access-needs/access-needs';
 import { setupDatesToAvoidAddAnotherDateController } from './controllers/cma-requirements/dates-to-avoid/add-another-date';
 import { setupDatesToAvoidEnterADateController } from './controllers/cma-requirements/dates-to-avoid/enter-a-date';
 import { setupDatesToAvoidQuestionController } from './controllers/cma-requirements/dates-to-avoid/question';
@@ -51,7 +52,7 @@ const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 
@@ -92,7 +93,8 @@ const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswe
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
 const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
-const cmaRequirementsDatesToAvoidQuestionController = setupDatesToAvoidQuestionController(middleware);
+const cmaRequirementsAccessNeedsController = setupAccessNeedsController(middleware, updateAppealService);
+const cmaRequirementsDatesToAvoidQuestionController = setupDatesToAvoidQuestionController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidEnterADateController = setupDatesToAvoidEnterADateController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
@@ -137,6 +139,7 @@ router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
 
 router.use(cmaRequirementsTaskListController);
+router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsDatesToAvoidQuestionController);
 router.use(cmaRequirementsDatesToAvoidEnterADateController);
 router.use(cmaRequirementsDatesToAvoidReasonController);

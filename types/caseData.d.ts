@@ -8,6 +8,7 @@ interface DocumentWithMetaData {
   suppliedBy?: string;
   description?: string;
   dateUploaded?: string;
+  tag?: string;
   document: SupportingDocument;
 }
 
@@ -43,6 +44,10 @@ interface CaseData {
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<DirectionValue>[];
   draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
+  interpreterLanguage?: Collection<AdditionalLanguage>[];
+  isInterpreterServicesNeeded?: string;
+  isHearingRoomNeeded?: string;
+  isHearingLoopNeeded?: string;
   submitTimeExtensionReason?: string;
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
   clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];

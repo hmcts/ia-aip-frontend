@@ -7,17 +7,13 @@ import IdamService from '../service/idam-service';
 import S2SService from '../service/s2s-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import Logger from '../utils/logger';
-import { appealApplicationStatus, cmaRequirementsStatus } from '../utils/tasks-utils';
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
     await updateAppealService.loadAppeal(req);
-    req.session.appeal.application.tasks = appealApplicationStatus(req.session.appeal);
-    req.session.appeal.cmaRequirements.tasks = cmaRequirementsStatus(req.session.appeal);
     next();
   } catch (e) {
     next(e);
@@ -34,24 +30,6 @@ function checkSession(args: any = {}) {
       next();
     }
   };
-}
-
-function applicationStatusUpdate(req: Request, res: Response, next: NextFunction) {
-  try {
-    req.session.appeal.application.tasks = appealApplicationStatus(req.session.appeal);
-    next();
-  } catch (e) {
-    next(e);
-  }
-}
-
-function cmaRequirementsStatusUpdate(req: Request, res: Response, next: NextFunction) {
-  try {
-    req.session.appeal.cmaRequirements.tasks = cmaRequirementsStatus(req.session.appeal);
-    next();
-  } catch (e) {
-    next(e);
-  }
 }
 
 /**
@@ -78,8 +56,6 @@ function logSession(req: Request, res: Response, next: NextFunction) {
 }
 
 export {
-  applicationStatusUpdate,
-  cmaRequirementsStatusUpdate,
   checkSession,
   initSession,
   logSession

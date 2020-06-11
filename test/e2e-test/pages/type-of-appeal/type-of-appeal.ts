@@ -20,6 +20,10 @@ module.exports = {
       I.amOnPage(testUrl + paths.appealStarted.typeOfAppeal);
     });
 
+    Given('I am on the access needs page', async () => {
+      I.amOnPage(testUrl + paths.awaitingCmaRequirements.accessNeeds);
+    });
+
     When('I select appeal type Protection', async () => {
       I.checkOption('#appealType');
     });

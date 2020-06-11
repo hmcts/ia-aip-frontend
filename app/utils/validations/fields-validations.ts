@@ -155,7 +155,6 @@ function DOBValidation(obj: any, errors): boolean | ValidationErrors {
 
   return validate(toValidate, schema, true);
 }
-
 function appellantNamesValidation(obj: object) {
   const schema = Joi.object({
     givenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.givenNames }),
@@ -292,6 +291,13 @@ function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
   return validate(obj, schema);
 }
 
+function selectedRequiredValidation(obj: object, errorMessage: string) {
+  const schema = Joi.object({
+    language: Joi.string().required().messages({ 'string.empty': errorMessage })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function askForMoreTimeValidation(obj: object) {
   const schema = Joi.object({
     askForMoreTime: Joi.string().required().messages({
@@ -365,5 +371,6 @@ export {
   yesOrNoRequiredValidation,
   DOBValidation,
   askForMoreTimeValidation,
+  selectedRequiredValidation,
   isDateInRange
 };

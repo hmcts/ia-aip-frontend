@@ -4,6 +4,7 @@ import {
   postHealthConditionsReason,
   setupHealthConditionsReasonController
 } from '../../../../../app/controllers/cma-requirements/other-needs/health-conditions-reason';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -136,6 +137,7 @@ describe('CMA Requirements - Other Needs Section: Health Conditions Reason contr
       req.body['reason'] = 'the answer here';
       await postHealthConditionsReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiences);
     });
 

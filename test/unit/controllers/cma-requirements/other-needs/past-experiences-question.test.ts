@@ -5,6 +5,7 @@ import {
   postPastExperiencesQuestion,
   setupPastExperiencesQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/past-experiences-question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -66,7 +67,9 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Question cont
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Have you had any past experiences that may affect you at the appointment?',
           description: 'This might be experience of physical or sexual abuse, trafficking or torture.'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -104,7 +107,9 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Question cont
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Have you had any past experiences that may affect you at the appointment?',
           description: 'This might be experience of physical or sexual abuse, trafficking or torture.'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
@@ -113,6 +118,7 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Question cont
       req.body['answer'] = 'yes';
       await postPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsPastExperiencesReasons);
       expect(req.session.appeal.cmaRequirements.otherNeeds.pastExperiences).to.be.true;
     });
@@ -121,6 +127,7 @@ describe('CMA Requirements - Other Needs Section: Past Experiences Question cont
       req.body['answer'] = 'no';
       await postPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElse);
       expect(req.session.appeal.cmaRequirements.otherNeeds.pastExperiences).to.be.false;
     });

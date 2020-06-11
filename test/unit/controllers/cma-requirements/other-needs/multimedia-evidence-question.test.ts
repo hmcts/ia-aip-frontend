@@ -4,6 +4,7 @@ import {
   postMultimediaEvidenceQuestion,
   setupMultimediaEvidenceQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/multimedia-evidence-question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import { expect, sinon } from '../../../../utils/testUtils';
 
@@ -62,7 +63,8 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
           description: 'For example, video or sound recordings.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring any multimedia evidence?'
-        }
+        },
+        saveAndContinue: true
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -100,7 +102,8 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
           description: 'For example, video or sound recordings.',
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you bring any multimedia evidence?'
-        }
+        },
+        saveAndContinue: true
       };
 
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
@@ -110,6 +113,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
       req.body['answer'] = 'yes';
       await postMultimediaEvidenceQuestion(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
       expect(req.session.appeal.cmaRequirements.otherNeeds.multimediaEvidence).to.be.true;
     });
@@ -118,6 +122,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
       req.body['answer'] = 'no';
       await postMultimediaEvidenceQuestion(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
       expect(req.session.appeal.cmaRequirements.otherNeeds.multimediaEvidence).to.be.false;
     });

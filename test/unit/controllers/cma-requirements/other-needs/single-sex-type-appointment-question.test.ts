@@ -1,15 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getBringMultimediaEquipmentQuestion,
-  postBringMultimediaEquipmentQuestion,
-  setupBringMultimediaEquipmentQuestionController
-} from '../../../../../app/controllers/cma-requirements/other-needs/bring-equipment-question';
+  getSingleSexTypeAppointmentQuestion,
+  postSingleSexTypeAppointmentQuestion,
+  setupSingleSexTypeAppointmentQuestionController
+} from '../../../../../app/controllers/cma-requirements/other-needs/single-sex-type-appointment-question';
 import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
-describe('CMA Requirements - Other Needs Section: Bring Equipment Question controller', () => {
+describe('CMA Requirements - Other Needs Section: Single sex type appointment Question controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -41,31 +41,30 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
     sandbox.restore();
   });
 
-  describe('setupBringMultimediaEquipmentQuestionController', () => {
+  describe('setupSingleSexTypeAppointmentQuestionController', () => {
     it('should setup routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
-      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
+      setupSingleSexTypeAppointmentQuestionController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
+      expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexTypeAppointment);
     });
   });
 
-  describe('getBringMultimediaEquipmentQuestion', () => {
+  describe('getSingleSexTypeAppointmentQuestion', () => {
     it('should render question page', () => {
 
-      getBringMultimediaEquipmentQuestion(req as Request, res as Response, next);
+      getSingleSexTypeAppointmentQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        formAction: '/appointment-multimedia-evidence-equipment',
-        pageTitle: 'Will you bring the equipment to play this evidence?',
-        previousPage: '/appointment-other-needs',
+        formAction: '/appointment-single-sex-type',
+        pageTitle: 'What type of appointment will you need?',
+        previousPage: '/appointment-single-sex-type',
         question: {
-          description: 'For example, a laptop or DVD player.',
-          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you bring the equipment to play this evidence?'
+          options: [ { text: 'All male', value: 'yes' }, { text: 'All female', value: 'no' } ],
+          title: 'What type of appointment will you need?'
         },
         saveAndContinue: true
       };
@@ -78,63 +77,61 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Question contr
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      getBringMultimediaEquipmentQuestion(req as Request, res as Response, next);
+      getSingleSexTypeAppointmentQuestion(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postBringMultimediaEquipmentQuestion', () => {
+  describe('postSingleSexTypeAppointmentQuestion', () => {
     it('should fail validation and render template with errors', async () => {
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         answer: {
           href: '#answer',
           key: 'answer',
-          text: 'Select yes if you will bring the equipment to play this evidence'
+          text: 'Select if you need an all-female or all-male appointment'
         }
       };
 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        formAction: '/appointment-multimedia-evidence-equipment',
-        pageTitle: 'Will you bring the equipment to play this evidence?',
-        previousPage: '/appointment-other-needs',
+        formAction: '/appointment-single-sex-type',
+        pageTitle: 'What type of appointment will you need?',
+        previousPage: '/appointment-single-sex-type',
         question: {
-          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you bring the equipment to play this evidence?',
-          description: 'For example, a laptop or DVD player.'
+          options: [ { text: 'All male', value: 'yes' }, { text: 'All female', value: 'no' } ],
+          title: 'What type of appointment will you need?'
         },
         saveAndContinue: true
-
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.true;
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAllMaleAppointment);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All male');
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason);
-      expect(req.session.appeal.cmaRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.false;
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAllFemaleAppointment);
+      expect(req.session.appeal.cmaRequirements.otherNeeds.singleSexTypeAppointment).to.be.eq('All female');
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postBringMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postSingleSexTypeAppointmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

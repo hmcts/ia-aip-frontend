@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../../locale/en.json';
+import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
@@ -37,12 +38,13 @@ function postPrivateAppointmentReason(updateAppealService: UpdateAppealService) 
 
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.privateAppointmentReasonRequired;
 
-      const onSuccess = () => {
+      const onSuccess = async () => {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,
           privateAppointmentReason: req.body['reason']
         };
 
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
         return req.body['saveForLater']
           ? handleCmaRequirementsSaveForLater(req, res)
           : getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.otherNeedsHealthConditions);

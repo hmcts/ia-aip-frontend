@@ -4,6 +4,7 @@ import {
   setupAnythingElseQuestionController
 } from '../../../../../app/controllers/cma-requirements/other-needs/anything-else-question';
 import { postHealthConditionsQuestion } from '../../../../../app/controllers/cma-requirements/other-needs/health-conditions-question';
+import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -64,7 +65,9 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you need anything else at the appointment?'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk',
         expectedArgs
@@ -101,7 +104,9 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Will you need anything else at the appointment?'
-        }
+        },
+        saveAndContinue: true
+
       };
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
@@ -112,12 +117,15 @@ describe('CMA Requirements - Other Needs Section: Anything Else Question control
 
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons);
       expect(req.session.appeal.cmaRequirements.otherNeeds.anythingElse).to.be.true;
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
+
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
       await postAnythingElseQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.taskList);
       expect(req.session.appeal.cmaRequirements.otherNeeds.anythingElse).to.be.false;
     });

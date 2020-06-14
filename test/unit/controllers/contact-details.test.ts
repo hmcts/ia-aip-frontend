@@ -13,7 +13,7 @@ import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 
-describe('Contact details Controller @only', () => {
+describe('Contact details Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

@@ -8,7 +8,7 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getAddress } from '../../utils/address-utils';
 import { getNationalitiesOptions } from '../../utils/nationalities';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import {

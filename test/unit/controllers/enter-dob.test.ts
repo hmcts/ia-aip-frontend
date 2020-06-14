@@ -55,7 +55,6 @@ describe('Personal Details Controller', function () {
     next = sandbox.stub() as NextFunction;
 
     updateAppealService = {
-      submitEvent: sandbox.stub(),
       submitEventRefactored: sandbox.stub()
     } as Partial<UpdateAppealService>;
   });
@@ -92,7 +91,7 @@ describe('Personal Details Controller', function () {
     });
   });
 
-  describe('postDateOfBirth @only', () => {
+  describe('postDateOfBirth', () => {
     let appeal: Appeal;
     beforeEach(() => {
       req.body.day = 1;
@@ -149,7 +148,7 @@ describe('Personal Details Controller', function () {
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
@@ -161,7 +160,7 @@ describe('Personal Details Controller', function () {
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
   });
@@ -188,7 +187,7 @@ describe('Personal Details Controller', function () {
 
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
@@ -208,7 +207,7 @@ describe('Personal Details Controller', function () {
       const errorMonth = createError('month', i18n.validationErrors.dateOfBirth.incorrectFormat);
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
@@ -229,7 +228,7 @@ describe('Personal Details Controller', function () {
       const errorYear = createError('year', i18n.validationErrors.dateOfBirth.incorrectFormat);
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {
@@ -250,7 +249,7 @@ describe('Personal Details Controller', function () {
       const errorDate = createError('date', i18n.validationErrors.dateOfBirth.inPast);
       await postDateOfBirth(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith(
         'appeal-application/personal-details/date-of-birth.njk',
         {

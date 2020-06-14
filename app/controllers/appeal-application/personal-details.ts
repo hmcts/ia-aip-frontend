@@ -6,11 +6,11 @@ import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
-
 import { getAddress } from '../../utils/address-utils';
 import { getNationalitiesOptions } from '../../utils/nationalities';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { getRedirectPage } from '../../utils/utils';
 import {
   addressValidation,
   appellantNamesValidation,
@@ -51,17 +51,26 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         });
       }
 
-      req.session.appeal.application.personalDetails = {
-        ...req.session.appeal.application.personalDetails,
-        dob: {
-          day: req.body.day,
-          month: req.body.month,
-          year: req.body.year
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            dob: {
+              day: req.body.day,
+              month: req.body.month,
+              year: req.body.year
+            }
+          }
         }
       };
-
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.appealStarted.nationality));
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = appealUpdated;
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.nationality);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }

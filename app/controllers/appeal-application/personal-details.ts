@@ -108,16 +108,25 @@ function postNamePage(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.taskList
         });
       }
-      const { application } = req.session.appeal;
-      application.personalDetails = {
-        ...application.personalDetails,
-        familyName: req.body.familyName,
-        givenNames: req.body.givenNames
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            familyName: req.body.familyName,
+            givenNames: req.body.givenNames
+          }
+        }
       };
 
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.appealStarted.dob));
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = appealUpdated;
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.dob);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }

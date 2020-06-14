@@ -168,16 +168,28 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
         });
       }
       const { application } = req.session.appeal;
-      application.personalDetails = {
-        ...application.personalDetails,
-        nationality: req.body.nationality
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            nationality: req.body.nationality
+          }
+        }
       };
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      if (_.has(application, 'personalDetails.address.line1')) {
-        return getConditionalRedirectUrl(req, res, paths.appealStarted.enterAddress);
-      }
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.appealStarted.enterPostcode));
 
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = appealUpdated;
+      let redirectPage = getRedirectPage(
+        editingMode,
+        paths.appealStarted.checkAndSend,
+        req.body.saveForLater,
+        _.has(application, 'personalDetails.address.line1') ? paths.appealStarted.enterAddress : paths.appealStarted.enterPostcode
+      );
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }
@@ -327,18 +339,28 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
         });
       }
 
-      req.session.appeal.application.personalDetails = {
-        ...req.session.appeal.application.personalDetails,
-        address: {
-          line1: req.body['address-line-1'],
-          line2: req.body['address-line-2'],
-          city: req.body['address-town'],
-          county: req.body['address-county'],
-          postcode: req.body['address-postcode']
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            address: {
+              line1: req.body['address-line-1'],
+              line2: req.body['address-line-2'],
+              city: req.body['address-town'],
+              county: req.body['address-county'],
+              postcode: req.body['address-postcode']
+            }
+          }
         }
       };
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, paths.appealStarted.taskList);
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = appealUpdated;
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }

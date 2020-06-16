@@ -88,7 +88,6 @@ export default class UpdateAppealService {
       serviceToken: await this._s2sService.getServiceToken()
     };
     const caseData: CaseData = this.convertToCcdCaseData(appeal);
-
     const updatedCcdCase: CcdCaseDetails = {
       id: appeal.ccdCaseId,
       state: appeal.appealStatus,
@@ -321,6 +320,7 @@ export default class UpdateAppealService {
       clarifyingQuestionsAnswers,
       cmaRequirements,
       askForMoreTime: {
+        ...(_.has(caseData, 'submitTimeExtensionReason')) && { reason: caseData.submitTimeExtensionReason },
         inFlight: hasInflightTimeExtension
       }
     };

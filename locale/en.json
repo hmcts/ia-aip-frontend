@@ -366,6 +366,10 @@
             "title": "Helpful Information",
             "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>What to expect at a case management appointment</a>"
           }
+        },
+        "clarifyingQuestionsAnswersSubmitted": {
+          "description": "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.",
+          "dueDate": "This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that."
         }
       },
       "timeline": {

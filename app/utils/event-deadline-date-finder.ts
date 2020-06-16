@@ -5,6 +5,7 @@ import { dayMonthYearFormat } from './date-utils';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');
+const daysToWaitAfterCQSubmission = config.get('daysToWait.afterCQSubmission');
 
 /**
  * Finds a targeted direction, retrieves it's due date and returns it as a string with the correct date format
@@ -74,6 +75,10 @@ function getDeadline(currentAppealStatus: string, req: Request) {
     }
     case 'awaitingClarifyingQuestionsAnswers': {
       formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestClarifyingQuestions');
+      break;
+    }
+    case 'clarifyingQuestionsAnswersSubmitted': {
+      formattedDeadline = getFormattedEventHistoryDate(history, 'submitClarifyingQuestionAnswers', daysToWaitAfterCQSubmission);
       break;
     }
     case 'awaitingCmaRequirements': {

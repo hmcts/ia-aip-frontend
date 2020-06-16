@@ -141,8 +141,8 @@ const APPEAL_STATE = {
   },
   'clarifyingQuestionsAnswersSubmitted': {
     descriptionParagraphs: [
-      'A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.',
-      'This should be by [five working days from submission date] but it might take longer than that.'
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.description,
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.dueDate
     ],
     cta: null,
     allowedAskForMoreTime: false

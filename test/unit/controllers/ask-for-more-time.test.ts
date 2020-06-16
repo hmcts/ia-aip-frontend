@@ -31,13 +31,20 @@ describe('Ask for more time Controller', function () {
         appeal: {
           reasonsForAppeal: {},
           askForMoreTime: {},
-          timeExtensions: []
+          timeExtensions: [],
+          application: {
+            personalDetails: {}
+          }
         } as Partial<Appeal>
       } as Partial<Express.Session>,
       body: {},
-      cookies: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
       idam: {
-        userDetails: {}
+        userDetails: {
+          uid: 'idamUID'
+        }
       },
       app: {
         locals: {
@@ -55,7 +62,7 @@ describe('Ask for more time Controller', function () {
     next = sandbox.stub() as NextFunction;
 
     updateAppealService = {
-      submitEvent: sandbox.stub()
+      submitEventRefactored: sandbox.stub()
     } as Partial<UpdateAppealService>;
   });
 
@@ -109,7 +116,18 @@ describe('Ask for more time Controller', function () {
     });
   });
 
-  describe('postAskForMoreTimePage.', function () {
+  describe('postAskForMoreTimePage', function () {
+    let askForMoreReason = 'The reason';
+    beforeEach(() => {
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        askForMoreTime: {
+          reason: askForMoreReason
+        }
+      } as Appeal);
+    });
+    afterEach(() => {
+      sandbox.restore();
+    });
     it('should fail validation and render reasons-for-appeal/reason-for-appeal-page.njk with error', async () => {
       req.body.askForMoreTime = '';
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -133,18 +151,17 @@ describe('Ask for more time Controller', function () {
     });
 
     it('should pass validation and render reasons-for-appeal/reason-for-appeal-page.njk without error', async () => {
-      req.body.askForMoreTime = 'Text Word';
+      req.body.askForMoreTime = askForMoreReason;
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.evidenceYesNo);
     });
 
     it('should setup ask for more time in session', async () => {
       req.session.appeal.appealStatus = 'current State';
-      req.body.askForMoreTime = 'Text Word';
+      req.body.askForMoreTime = askForMoreReason;
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.askForMoreTime).to.be.eql({
-        reason: 'Text Word',
-        evidence: undefined
+        reason: askForMoreReason
       });
     });
   });
@@ -198,14 +215,35 @@ describe('Ask for more time Controller', function () {
   });
 
   describe('postCheckAndSend', () => {
+    let askForMoreReason = 'The reason';
+    let appeal: Appeal;
+    beforeEach(() => {
+      appeal = { ...req.session.appeal };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        askForMoreTime: {
+          reason: askForMoreReason
+        }
+      } as Appeal);
+    });
+    afterEach(() => {
+      sandbox.restore();
+    });
     it('redirects user to confirmation page', async () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.confirmation);
     });
 
     it('submits ask for more time', async () => {
+      appeal.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        askForMoreTime: {
+          inFlight: true
+        }
+      } as Appeal);
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.SUBMIT_TIME_EXTENSION, req);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.SUBMIT_TIME_EXTENSION, appeal, 'idamUID', 'atoken');
+      expect(req.session.appeal.askForMoreTime.inFlight).to.be.true;
     });
   });
 

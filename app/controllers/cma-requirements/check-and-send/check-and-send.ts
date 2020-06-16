@@ -5,7 +5,7 @@ import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { formatDate } from '../../../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../../../utils/summary-list';
-import { boolToYesNo, nowIsoDate } from '../../../utils/utils';
+import { boolToYesNo } from '../../../utils/utils';
 import { SexType } from '../other-needs/single-sex-type-appointment-question';
 
 const editParameter: string = '?edit';
@@ -112,31 +112,33 @@ function buildOtherNeedsSummaryList(otherNeeds: OtherNeeds) {
       paths.awaitingCmaRequirements.otherNeedsMultimediaEvidenceQuestion + editParameter)
   );
 
-  multimediaEvidenceRows.push(
-    addSummaryRow(
-      i18n.common.cya.questionRowTitle,
-      [ i18n.pages.cmaRequirements.otherNeedsSection.bringEquipment.question ]
-    )
-  );
-
-  multimediaEvidenceRows.push(
-    addSummaryRow(i18n.common.cya.answerRowTitle,
-      [ boolToYesNo(otherNeeds.bringOwnMultimediaEquipment) ],
-      paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion + editParameter)
-  );
-
-  if (!otherNeeds.bringOwnMultimediaEquipment) {
+  if (otherNeeds.multimediaEvidence) {
     multimediaEvidenceRows.push(
       addSummaryRow(
         i18n.common.cya.questionRowTitle,
-        [ i18n.pages.cmaRequirements.otherNeedsSection.bringEquipmentReason.title ]
+        [ i18n.pages.cmaRequirements.otherNeedsSection.bringEquipment.question ]
       )
     );
+
     multimediaEvidenceRows.push(
       addSummaryRow(i18n.common.cya.answerRowTitle,
-        [ `<pre>${otherNeeds.bringOwnMultimediaEquipmentReason}</pre>` ],
-        paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason + editParameter)
+        [ boolToYesNo(otherNeeds.bringOwnMultimediaEquipment) ],
+        paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion + editParameter)
     );
+
+    if (!otherNeeds.bringOwnMultimediaEquipment) {
+      multimediaEvidenceRows.push(
+        addSummaryRow(
+          i18n.common.cya.questionRowTitle,
+          [ i18n.pages.cmaRequirements.otherNeedsSection.bringEquipmentReason.title ]
+        )
+      );
+      multimediaEvidenceRows.push(
+        addSummaryRow(i18n.common.cya.answerRowTitle,
+          [ `<pre>${otherNeeds.bringOwnMultimediaEquipmentReason}</pre>` ],
+          paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason + editParameter)
+      );
+    }
   }
 
   accessOtherNeedsSummaryLists.push({

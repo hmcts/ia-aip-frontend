@@ -1,4 +1,5 @@
-Feature: Clarifying questions @only
+@clarifyingQuestions
+Feature: Clarifying questions
   In order to complete my appeal
   As a citizen
   I want to be able to answer clarifying questions
@@ -53,6 +54,7 @@ Feature: Clarifying questions @only
     And I see "You have answered the Tribunal's questions" in title
     Then I click "See your appeal progress" button
     And I see "Pablo Jimenez" in title
+    And I see "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next" description in overview banner
 
   Scenario: Answering Clarifying questions save for later
     Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers"

@@ -293,6 +293,10 @@ module.exports = {
       await I.see(title, 'a');
     });
 
+    Then(/^I see "([^"]*)" description in overview banner$/, async (title: string) => {
+      await I.see(title, '.overview-banner');
+    });
+
     Then(/^I fill textarea with "([^"]*)"$/, async (title: string) => {
       await I.fillField('textarea', title);
     });

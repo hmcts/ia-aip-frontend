@@ -1,3 +1,4 @@
+import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import { CcdService } from '../../../app/service/ccd-service';
 import { AuthenticationService } from './authentication-service';
@@ -147,6 +148,35 @@ module.exports = {
       };
 
       await updateAppeal(requestRespondentEvidence, userId, caseDetails[0], securityHeaders);
+    });
+
+    Then(/^I sign in as a Case Officer and send directions with Clarifying Questions$/, async () => {
+      let caseDetails: any = await fetchAipUserCaseData();
+      const userToken = await authenticationService.signInAsCaseOfficer();
+      const userId = await getUserId(userToken);
+      const serviceToken = await getS2sToken();
+      const securityHeaders = { userToken, serviceToken };
+      caseDetails[0].case_data = {
+        'sendDirectionExplanation': 'You must now tell us why you think the Home Office decision to refuse your claim is wrong.',
+        'sendDirectionDateDue': '2021-03-26',
+        'sendDirectionParties': 'appellant',
+        'sendDirectionQuestions': [
+          {
+            'id': '1',
+            'value': {
+              'question': 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+            }
+          },
+          {
+            'id': '2',
+            'value': {
+              'question': 'Tell us more about your health issues\n- How long have you suffered from this problem?\n- How does it affect your daily life?'
+            }
+          }
+        ],
+        ...caseDetails[0].case_data
+      };
+      await updateAppeal(Events.SEND_DIRECTION_WITH_QUESTIONS, userId, caseDetails[0], securityHeaders);
     });
   }
 };

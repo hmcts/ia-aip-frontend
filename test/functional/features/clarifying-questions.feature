@@ -1,4 +1,4 @@
-Feature: Clarifying questions @only
+Feature: Clarifying questions
   In order to complete my appeal
   As a citizen
   I want to be able to answer clarifying questions

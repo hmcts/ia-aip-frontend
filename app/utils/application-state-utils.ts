@@ -138,6 +138,14 @@ const APPEAL_STATE = {
       respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime
     },
     allowedAskForMoreTime: true
+  },
+  'clarifyingQuestionsAnswersSubmitted': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.description,
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.dueDate
+    ],
+    cta: null,
+    allowedAskForMoreTime: false
   }
 };
 
@@ -179,7 +187,7 @@ function getAppealApplicationNextStep(req: Request) {
   if (doThisNextSection === undefined) {
     doThisNextSection = {
       descriptionParagraphs: [
-        `Description for event <b>${currentAppealStatus}</b> not found`
+        `Description for appeal status <b>${currentAppealStatus}</b> not found`
       ]
     };
   }

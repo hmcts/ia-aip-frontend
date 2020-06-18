@@ -34,5 +34,9 @@ export const States = {
   CMA_REQUIREMENTS_SUBMITTED: {
     id: 'cmaRequirementsSubmitted',
     name: 'CMA Requirements submitted'
+  },
+  CLARIFYING_QUESTIONS_SUBMITTED: {
+    id: 'clarifyingQuestionsAnswersSubmitted',
+    name: 'Clarifying Questions submitted'
   }
 };

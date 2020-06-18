@@ -8,6 +8,7 @@ interface DocumentWithMetaData {
   suppliedBy?: string;
   description?: string;
   dateUploaded?: string;
+  tag?: string;
   document: SupportingDocument;
 }
 

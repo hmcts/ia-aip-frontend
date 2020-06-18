@@ -221,7 +221,7 @@ export default class UpdateAppealService {
       requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
     }
     if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
-      if (caseData.draftClarifyingQuestionsAnswers) {
+      if (caseData.draftClarifyingQuestionsAnswers && caseData.draftClarifyingQuestionsAnswers.length > 0) {
         draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map((answer): ClarifyingQuestion<Evidence> => {
           let evidencesList: Evidence[] = [];
           if (answer.value.supportingEvidence) {

@@ -368,6 +368,10 @@
             "title": "Helpful Information",
             "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
           }
+        },
+        "clarifyingQuestionsAnswersSubmitted": {
+          "description": "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.",
+          "dueDate": "This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that."
         }
       },
       "timeline": {
@@ -428,6 +432,16 @@
               "title": "What the Tribunal said ",
               "text": "Reason for decision",
               "href": "{{ paths.common.detailsViewers.timeExtensionDecision }}"
+            }
+          ]
+        },
+        "submitClarifyingQuestionAnswers": {
+          "text": "You answered some questions about your appeal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your answers",
+              "href": "{{ paths.common.yourCQanswers }}"
             }
           ]
         }

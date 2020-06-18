@@ -66,7 +66,6 @@ async function updateAppeal(event, userId: string, caseDetails: CcdCaseDetails, 
   } else {
     submitUpdateAppealResponse = await rp.post(submitUpdateAppealOptions);
   }
-
   return submitUpdateAppealResponse;
 }
 

@@ -9,7 +9,7 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { nowIsoDate } from '../../utils/utils';
 
-function buildEvidencesList(evidences: Evidence[]) {
+function buildEvidencesList(evidences: Evidence[]): string[] {
   return evidences.map((evidence: Evidence) => {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${evidence.fileId}'>${evidence.name}</a>`;
   });
@@ -27,7 +27,11 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
         addSummaryRow(i18n.common.cya.questionRowTitle, [ `<pre>${question.value.question}</pre>` ])
       );
       summaryRows.push(
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ `<pre>${question.value.answer}</pre>` ], paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', `${index + 1}`))
+        addSummaryRow(
+          i18n.common.cya.answerRowTitle,
+          [ `<pre>${question.value.answer}</pre>` ],
+          paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', `${index + 1}`)
+        )
       );
       if (question.value.supportingEvidence && question.value.supportingEvidence.length) {
         const evidencesList = buildEvidencesList(question.value.supportingEvidence);
@@ -97,16 +101,80 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
   };
 }
 
+function getYourAnswersPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const previousPage: string = paths.common.overview;
+    const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.clarifyingQuestionsAnswers ];
+    const anythingElseQuestion: ClarifyingQuestion<Evidence> = clarifyingQuestions.pop();
+    const summaryLists: any[] = clarifyingQuestions.map((question: ClarifyingQuestion<Evidence>, index: number) => {
+      const summaryRows: SummaryRow[] = [];
+      summaryRows.push(
+        addSummaryRow(i18n.common.cya.questionRowTitle, [ `<pre>${question.value.question}</pre>` ])
+      );
+      summaryRows.push(
+        addSummaryRow(
+          i18n.common.cya.answerRowTitle,
+          [ `<pre>${question.value.answer}</pre>` ]
+        )
+      );
+      if (question.value.supportingEvidence && question.value.supportingEvidence.length) {
+        const evidencesList = buildEvidencesList(question.value.supportingEvidence);
+        summaryRows.push(
+          addSummaryRow(
+            i18n.common.cya.supportingEvidenceRowTitle,
+            evidencesList,
+            null,
+            Delimiter.BREAK_LINE
+          )
+        );
+      }
+      return {
+        title: `${i18n.common.cya.questionRowTitle} ${index + 1}`,
+        summaryRows
+      };
+    });
+    if (anythingElseQuestion.value.answer && anythingElseQuestion.value.answer !== CQ_NOTHING_ELSE) {
+      const summaryRows: SummaryRow[] = [
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ `<pre>${anythingElseQuestion.value.answer}</pre>` ])
+      ];
+      if (anythingElseQuestion.value.supportingEvidence && anythingElseQuestion.value.supportingEvidence.length) {
+        const evidencesList = buildEvidencesList(anythingElseQuestion.value.supportingEvidence);
+        summaryRows.push(
+          addSummaryRow(
+            i18n.common.cya.supportingEvidenceRowTitle,
+            evidencesList,
+            '',
+            Delimiter.BREAK_LINE
+          )
+        );
+      }
+      summaryLists.push({
+        title: anythingElseQuestion.value.question,
+        summaryRows
+      });
+    }
+    res.render('templates/check-and-send.njk', {
+      pageTitle: i18n.pages.clarifyingQuestionsCYA.title,
+      previousPage,
+      summaryLists
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
 function setupClarifyingQuestionsCheckSendController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router: Router = Router();
   router.get(paths.awaitingClarifyingQuestionsAnswers.checkAndSend, middleware, getCheckAndSendPage);
   router.post(paths.awaitingClarifyingQuestionsAnswers.checkAndSend, middleware, postCheckAndSendPage(updateAppealService));
+  router.get(paths.common.yourCQanswers, middleware, getYourAnswersPage);
   return router;
 }
 
 export {
   buildEvidencesList,
   getCheckAndSendPage,
+  getYourAnswersPage,
   postCheckAndSendPage,
   setupClarifyingQuestionsCheckSendController
 };

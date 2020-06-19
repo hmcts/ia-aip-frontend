@@ -84,9 +84,12 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
         }
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.common.askForMoreTime.evidenceYesNo);
       return res.redirect(redirectPage);
     } catch (e) {
@@ -171,9 +174,12 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           reviewTimeExtensionRequired: 'Yes'
         }
       };
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.SUBMIT_TIME_EXTENSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_TIME_EXTENSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       return res.redirect(paths.common.askForMoreTime.confirmation);
     } catch (e) {
       next(e);

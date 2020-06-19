@@ -169,7 +169,7 @@ describe('Personal Details Controller', function () {
           }
         }
       };
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           personalDetails: {
             address: {

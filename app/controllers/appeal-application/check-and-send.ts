@@ -106,9 +106,12 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
         });
       }
       const { appeal } = req.session;
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       return res.redirect(paths.appealSubmitted.confirmation);
     } catch (error) {
       next(error);

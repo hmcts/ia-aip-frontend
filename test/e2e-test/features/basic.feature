@@ -151,6 +151,9 @@ Feature: Business rules
     Then I see "Do you want to tell us anything else about your case?" in title
     Then I fill textarea with "my answer for anything else question"
     Then I click "Save and continue" button
+    Then I see "Do you want to provide supporting evidence?" in title
+    Then I click "No" button
+    Then I click "Continue" button
     Then I see "Questions about your appeal" in title
     Then I see anything else clarifying question saved
     And I see "Check and send your answers" link

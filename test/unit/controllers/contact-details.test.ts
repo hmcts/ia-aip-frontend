@@ -264,7 +264,7 @@ describe('Contact details Controller', () => {
             }
           };
 
-          updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+          updateAppealService.submitEventRefactored = sandbox.stub().returns({
             application: {
               contactDetails
             }
@@ -390,7 +390,7 @@ describe('Contact details Controller', () => {
               contactDetails
             }
           };
-          updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+          updateAppealService.submitEventRefactored = sandbox.stub().returns({
             application: {
               contactDetails
             }

@@ -4,7 +4,7 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { createStructuredError, textAreaValidation } from '../../utils/validations/fields-validations';
@@ -82,9 +82,12 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
         }
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.checkAndSend);
       return res.redirect(redirectPage);
     } catch (e) {
@@ -121,9 +124,12 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
         }
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.appealLate);
       return res.redirect(redirectPage);
     } catch (e) {

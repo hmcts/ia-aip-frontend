@@ -167,7 +167,7 @@ describe('Check and Send Controller', () => {
   it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', async () => {
     req.session.appeal = createDummyAppealApplication();
     req.body = { statement: 'acceptance' };
-    updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+    updateAppealService.submitEventRefactored = sandbox.stub().returns({
       appealStatus: 'appealSubmitted',
       appealReferenceNumber: 'PA/1234567'
     } as Appeal);

@@ -112,7 +112,7 @@ describe('Type of appeal Controller', () => {
         }
       };
 
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           appealType: 'human-rights'
         }
@@ -137,7 +137,7 @@ describe('Type of appeal Controller', () => {
       });
     });
 
-    it('should not validate when nothing selected and save for later clicked @only', async () => {
+    it('should not validate when nothing selected and save for later clicked', async () => {
       req.body = { 'saveForLater': 'saveForLater' };
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

@@ -41,6 +41,14 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
       params: {},
       session: {
         appeal: {
@@ -57,7 +65,7 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       redirect: sandbox.spy()
     } as Partial<Response>;
     next = sandbox.stub() as NextFunction;
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
     documentManagementService = { deleteFile: sandbox.stub() } as Partial<DocumentManagementService>;
   });
 
@@ -137,11 +145,22 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
         }
       ];
       req.session.appeal.draftClarifyingQuestionsAnswers[1].value.supportingEvidence = [ ...evidences ];
+      const draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
+      const anythingElseQuestion: ClarifyingQuestion<Evidence> = draftClarifyingQuestionsAnswers.pop();
+      anythingElseQuestion.value.supportingEvidence = [ ...evidences ];
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        draftClarifyingQuestionsAnswers: [
+          ...draftClarifyingQuestionsAnswers,
+          anythingElseQuestion
+        ]
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub();
       req.body['answer'] = 'false';
       await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
       expect(documentManagementService.deleteFile).to.have.been.calledOnce;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
     });
 

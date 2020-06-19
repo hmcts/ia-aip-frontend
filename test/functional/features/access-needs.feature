@@ -1,4 +1,4 @@
-Feature: CMA Access needs @only
+Feature: CMA Access needs
   In order complete my access needs
   As a citizen
   I want to be able to fill in access needs

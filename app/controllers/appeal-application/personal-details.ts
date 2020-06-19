@@ -66,9 +66,12 @@ function postDateOfBirth(updateAppealService: UpdateAppealService) {
         }
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.nationality);
       return res.redirect(redirectPage);
     } catch (e) {
@@ -122,9 +125,12 @@ function postNamePage(updateAppealService: UpdateAppealService) {
       };
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.dob);
       return res.redirect(redirectPage);
     } catch (e) {
@@ -180,9 +186,12 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
       };
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       let redirectPage = getRedirectPage(
         editingMode,
         paths.appealStarted.checkAndSend,
@@ -355,10 +364,14 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
           }
         }
       };
-      const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const updatedCase: CcdCaseDetails = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
-      req.session.appeal = appealUpdated;
+      let editingMode: boolean;
+      editingMode = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
       return res.redirect(redirectPage);
     } catch (e) {

@@ -82,7 +82,7 @@ export default class UpdateAppealService {
     return updatedAppeal;
   }
 
-  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string) {
+  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string): Promise<Appeal> {
     const securityHeaders: SecurityHeaders = {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
@@ -93,8 +93,8 @@ export default class UpdateAppealService {
       state: appeal.appealStatus,
       case_data: caseData
     };
-
-    return this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
+    const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
+    return this.mapCcdCaseToAppeal(ccdCase);
   }
 
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
@@ -209,50 +209,50 @@ export default class UpdateAppealService {
     }
 
     if (caseData.directions) {
-      directions = caseData.directions.map(d => {
-        return {
-          id: d.id,
-          tag: d.value.tag,
-          parties: d.value.parties,
-          dateDue: d.value.dateDue,
-          dateSent: d.value.dateSent
-        } as Direction;
+      directions = caseData.directions.map((ccdDirection: Collection<CcdDirection>): Direction => {
+        const direction: Direction = {
+          id: ccdDirection.id as string,
+          tag: ccdDirection.value.tag,
+          parties: ccdDirection.value.parties,
+          dateDue: ccdDirection.value.dateDue,
+          dateSent: ccdDirection.value.dateSent,
+          explanation: ccdDirection.value.explanation
+        };
+        return direction;
       });
       requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
     }
 
-    if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
-      if (caseData.draftClarifyingQuestionsAnswers && caseData.draftClarifyingQuestionsAnswers.length > 0) {
-        draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map((answer): ClarifyingQuestion<Evidence> => {
-          let evidencesList: Evidence[] = [];
-          if (answer.value.supportingEvidence) {
-            evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
-          }
-          return {
-            id: answer.id,
-            value: {
-              dateSent: answer.value.dateSent,
-              dueDate: answer.value.dueDate,
-              question: answer.value.question,
-              answer: answer.value.answer || '',
-              supportingEvidence: evidencesList
-            }
-          };
-        });
-      } else {
-        draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ].map((question) => {
-          question.value.dateSent = requestClarifyingQuestionsDirection.value.dateSent;
-          question.value.dueDate = requestClarifyingQuestionsDirection.value.dateDue;
-          return question;
-        });
-        draftClarifyingQuestionsAnswers.push({
+    if (caseData.draftClarifyingQuestionsAnswers && caseData.draftClarifyingQuestionsAnswers.length > 0) {
+      draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map((answer): ClarifyingQuestion<Evidence> => {
+        let evidencesList: Evidence[] = [];
+        if (answer.value.supportingEvidence) {
+          evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+        }
+        return {
+          id: answer.id,
           value: {
-            dateSent: requestClarifyingQuestionsDirection.value.dateSent,
-            dueDate: requestClarifyingQuestionsDirection.value.dateDue,
-            question: i18n.pages.clarifyingQuestionAnythingElseQuestion.question
+            dateSent: answer.value.dateSent,
+            dueDate: answer.value.dueDate,
+            question: answer.value.question,
+            answer: answer.value.answer || '',
+            supportingEvidence: evidencesList
           }
-        });
-      }
+        };
+      });
+    } else if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
+      draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ].map((question) => {
+        question.value.dateSent = requestClarifyingQuestionsDirection.value.dateSent;
+        question.value.dueDate = requestClarifyingQuestionsDirection.value.dateDue;
+        return question;
+      });
+      draftClarifyingQuestionsAnswers.push({
+        value: {
+          dateSent: requestClarifyingQuestionsDirection.value.dateSent,
+          dueDate: requestClarifyingQuestionsDirection.value.dateDue,
+          question: i18n.pages.clarifyingQuestionAnythingElseQuestion.question
+        }
+      });
     }
 
     if (caseData.clarifyingQuestionsAnswers) {
@@ -313,7 +313,7 @@ export default class UpdateAppealService {
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
       documentMap: [ ...this.documentMap ],
-      directions: directions,
+      ...(_.has(caseData, 'directions')) && { directions },
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions ? [ ...timeExtensions ] : [],
       draftClarifyingQuestionsAnswers: draftClarifyingQuestionsAnswers ? [ ...draftClarifyingQuestionsAnswers ] : [],

@@ -119,7 +119,7 @@ describe('Ask for more time Controller', function () {
   describe('postAskForMoreTimePage', function () {
     let askForMoreReason = 'The reason';
     beforeEach(() => {
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         askForMoreTime: {
           reason: askForMoreReason
         }
@@ -235,7 +235,7 @@ describe('Ask for more time Controller', function () {
 
     it('submits ask for more time', async () => {
       appeal.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         askForMoreTime: {
           inFlight: true
         }

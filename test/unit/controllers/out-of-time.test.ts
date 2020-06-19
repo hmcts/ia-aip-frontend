@@ -139,7 +139,7 @@ describe('Out of time controller', () => {
           lateAppeal
         }
       };
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           lateAppeal
         }
@@ -175,7 +175,7 @@ describe('Out of time controller', () => {
           lateAppeal
         }
       };
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           lateAppeal
         }
@@ -210,7 +210,7 @@ describe('Out of time controller', () => {
           lateAppeal
         }
       };
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           lateAppeal
         }

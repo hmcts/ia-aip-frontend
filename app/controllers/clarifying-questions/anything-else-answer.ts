@@ -4,8 +4,9 @@ import { CQ_NOTHING_ELSE } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { getRedirectPage } from '../../utils/utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 
 function getAnythingElseAnswerPage(req: Request, res: Response, next: NextFunction) {
@@ -37,11 +38,11 @@ function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'anything-else','saveForLater')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
-      const { draftClarifyingQuestionsAnswers } = req.session.appeal;
-      const anythingElseQuestion: ClarifyingQuestion<Evidence> = draftClarifyingQuestionsAnswers[draftClarifyingQuestionsAnswers.length - 1];
+      const draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
+      const anythingElseQuestion: ClarifyingQuestion<Evidence> = draftClarifyingQuestionsAnswers.pop();
       const validationErrors = textAreaValidation(req.body['anything-else'], 'anything-else', i18n.validationErrors.clarifyingQuestions.anythingElseEmptyAnswer);
       if (validationErrors) {
-        res.render('templates/textarea-question-page.njk', {
+        return res.render('templates/textarea-question-page.njk', {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
           formAction: paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage,
           pageTitle: anythingElseQuestion.value.question,
@@ -59,13 +60,27 @@ function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
         });
       }
       anythingElseQuestion.value.answer = req.body['anything-else'];
-      await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      const anythingElse = req.body['answer'];
-      if (anythingElse === 'true') {
-        return getConditionalRedirectUrl(req,res , getNextPage(req.body,paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage));
-      } else {
-        return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.awaitingClarifyingQuestionsAnswers.questionsList));
-      }
+      draftClarifyingQuestionsAnswers.push(anythingElseQuestion);
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        draftClarifyingQuestionsAnswers: [
+          ...draftClarifyingQuestionsAnswers
+        ]
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      let redirectPage = getRedirectPage(
+        editingMode,
+        paths.appealStarted.checkAndSend,
+        req.body.saveForLater,
+        paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', `${draftClarifyingQuestionsAnswers.length}`)
+      );
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }
@@ -74,8 +89,8 @@ function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
 
 function setupCQAnythingElseAnswerController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router: Router = Router();
-  router.get(paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage, getAnythingElseAnswerPage);
-  router.post(paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage, postAnythingElseAnswerPage(updateAppealService));
+  router.get(paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage, middleware, getAnythingElseAnswerPage);
+  router.post(paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage, middleware, postAnythingElseAnswerPage(updateAppealService));
   return router;
 }
 

@@ -49,7 +49,6 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      // const appealUpdated: Appeal = updateAppealService.mapCcdCaseToAppeal(updatedCase);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

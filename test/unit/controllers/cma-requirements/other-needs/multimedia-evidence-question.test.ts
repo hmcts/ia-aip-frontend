@@ -6,6 +6,7 @@ import {
 } from '../../../../../app/controllers/cma-requirements/other-needs/multimedia-evidence-question';
 import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
+import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question controller', () => {
@@ -13,6 +14,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
+  let updateAppealService: Partial<UpdateAppealService>;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -32,6 +34,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
       redirect: sandbox.spy()
     } as Partial<Response>;
     next = sandbox.stub() as NextFunction;
+    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -44,7 +47,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupMultimediaEvidenceQuestionController(middleware);
+      setupMultimediaEvidenceQuestionController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEvidenceQuestion);
       expect(routerPostStub).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEvidenceQuestion);
     });
@@ -82,7 +85,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
 
   describe('postMultimediaEvidenceQuestion', () => {
     it('should fail validation and render template with errors', async () => {
-      await postMultimediaEvidenceQuestion(req as Request, res as Response, next);
+      await postMultimediaEvidenceQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         answer: {
@@ -111,7 +114,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postMultimediaEvidenceQuestion(req as Request, res as Response, next);
+      await postMultimediaEvidenceQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentQuestion);
@@ -120,7 +123,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postMultimediaEvidenceQuestion(req as Request, res as Response, next);
+      await postMultimediaEvidenceQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
@@ -131,7 +134,7 @@ describe('CMA Requirements - Other Needs Section: Multimedia Evidence Question c
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postMultimediaEvidenceQuestion(req as Request, res as Response, next);
+      await postMultimediaEvidenceQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

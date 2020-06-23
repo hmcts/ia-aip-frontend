@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
 import expectCt from 'expect-ct';

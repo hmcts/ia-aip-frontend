@@ -36,9 +36,8 @@ import { setupSingleSexAppointmentAllFemaleReasonController } from './controller
 import { setupSingleSexAppointmentAllMaleReasonController } from './controllers/cma-requirements/other-needs/single-sex-appointment-all-male-reason';
 import { setupSingleSexAppointmentQuestionController } from './controllers/cma-requirements/other-needs/single-sex-appointment-question';
 import { setupSingleSexTypeAppointmentQuestionController } from './controllers/cma-requirements/other-needs/single-sex-type-appointment-question';
-import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
-import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
+import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
@@ -122,7 +121,7 @@ const cmaRequirementsPastExperiencesQuestionController = setupPastExperiencesQue
 const cmaRequirementsPastExperiencesReasonController = setupPastExperiencesReasonController(middleware, updateAppealService);
 const cmaRequirementsAnythingElseQuestionController = setupAnythingElseQuestionController(middleware, updateAppealService);
 const cmaRequirementsAnythingElseReasonController = setupAnythingElseReasonController(middleware, updateAppealService);
-const caseManagementAppointment = setupAccessNeedsController(middleware, updateAppealService);
+const cmaRequirementsAccessNeedsController = setupAccessNeedsController(middleware, updateAppealService);
 
 // not protected by idam
 router.use(indexController);
@@ -163,6 +162,7 @@ router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
 
+router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsTaskListController);
 router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsMultimediaEvidenceQuestionController);
@@ -183,6 +183,5 @@ router.use(cmaRequirementsAnythingElseReasonController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);
-router.use(caseManagementAppointment);
 
 export { router };

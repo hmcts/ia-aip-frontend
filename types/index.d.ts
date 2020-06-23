@@ -69,7 +69,7 @@ interface Appeal {
   appealReferenceNumber?: string;
   application: AppealApplication;
   reasonsForAppeal: ReasonsForAppeal;
-  hearingRequirements: HearingRequirements;
+  hearingRequirements?: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
@@ -161,6 +161,7 @@ interface CmaRequirements {
     [key: string]: Task;
   };
   accessNeeds?: AccessNeeds;
+  otherNeeds?: OtherNeeds;
 }
 
 interface DateToAvoid {
@@ -173,6 +174,23 @@ interface AccessNeeds {
   interpreterLanguage?: AdditionalLanguage;
   isHearingRoomNeeded?: boolean;
   isHearingLoopNeeded?: boolean;
+}
+
+interface OtherNeeds {
+  multimediaEvidence: boolean;
+  bringOwnMultimediaEquipment: boolean;
+  bringOwnMultimediaEquipmentReason: string;
+  singleSexAppointment: boolean;
+  singleSexTypeAppointment: 'All female' | 'All male';
+  singleSexAppointmentReason: string;
+  privateAppointment: boolean;
+  privateAppointmentReason: string;
+  healthConditions: boolean;
+  healthConditionsReason: string;
+  pastExperiences: boolean;
+  pastExperiencesReason: string;
+  anythingElse: boolean;
+  anythingElseReason: string;
 }
 
 interface ReasonsForAppeal {

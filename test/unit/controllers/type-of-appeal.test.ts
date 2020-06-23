@@ -24,14 +24,19 @@ describe('Type of appeal Controller', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
+      body: {},
       session: {
         appeal: {
           application: {}
         }
       } as Partial<Express.Session>,
-      cookies: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
       idam: {
-        userDetails: {}
+        userDetails: {
+          uid: 'idamUID'
+        }
       },
       app: {
         locals: {
@@ -40,7 +45,7 @@ describe('Type of appeal Controller', () => {
       } as any
     } as Partial<Request>;
 
-    updateAppealService = { submitEvent: sandbox.stub() };
+    updateAppealService = { submitEventRefactored: sandbox.stub() };
 
     res = {
       render: sandbox.stub(),
@@ -97,6 +102,22 @@ describe('Type of appeal Controller', () => {
   });
 
   describe('postTypeOfAppeal', () => {
+    let appeal: Appeal;
+    beforeEach(() => {
+      appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          appealType: 'human-rights'
+        }
+      };
+
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          appealType: 'human-rights'
+        }
+      } as Appeal);
+    });
     it('should fail validation and render type-of-appeal.njk with a validation error', async () => {
       req.body = { 'button': 'save-and-continue' };
       const expectedError: ValidationError = {
@@ -107,7 +128,7 @@ describe('Type of appeal Controller', () => {
 
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
         errors: { appealType: expectedError },
@@ -118,70 +139,66 @@ describe('Type of appeal Controller', () => {
 
     it('should not validate when nothing selected and save for later clicked', async () => {
       req.body = { 'saveForLater': 'saveForLater' };
-
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
+      appeal.application.isEdit = true;
       req.body = {
         'saveForLater': 'saveForLater'
       };
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should validate and redirect to the task-list page', async () => {
-      req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
-
+      req.body['appealType'] = 'human-rights';
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
     it('when in edit mode should validate and redirect to the CYA page and reset isEdit flag', async () => {
+      req.body['appealType'] = 'human-rights';
       req.session.appeal.application.isEdit = true;
-
-      req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
-
+      appeal.application.isEdit = true;
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('postTypeOfAppeal when clicked on save-and-continue with multiple selections should redirect to the next page', async () => {
-      req.body = { 'button': 'save-and-continue', 'appealType': 'protection' };
-
+      req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
     it('postTypeOfAppeal when in edit mode when clicked on save-and-continue with multiple selections should redirect to CYA page and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
-
-      req.body = { 'button': 'save-and-continue', 'appealType': 'protection' };
-
+      appeal.application.isEdit = true;
+      req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
 
     });
 
     it('postTypeOfAppeal should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      req.body = { 'button': 'save-for-later', 'appealType': 'protection' };
+      req.body = { 'button': 'save-for-later', 'appealType': 'human-rights' };
       res.redirect = sandbox.stub().throws(error);
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);

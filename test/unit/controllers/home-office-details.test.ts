@@ -113,7 +113,7 @@ describe('Home Office Details Controller', function () {
           homeOfficeRefNumber: 'A1234567'
         }
       };
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           homeOfficeRefNumber: 'A1234567'
         }
@@ -134,7 +134,7 @@ describe('Home Office Details Controller', function () {
           homeOfficeRefNumber: 'A1234567'
         }
       };
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           homeOfficeRefNumber: 'A1234567'
         }
@@ -157,7 +157,7 @@ describe('Home Office Details Controller', function () {
           isEdit: true
         }
       };
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           homeOfficeRefNumber: 'A1234567'
         }
@@ -305,7 +305,7 @@ describe('Home Office Details Controller', function () {
             }
           }
         };
-        updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        updateAppealService.submitEventRefactored = sandbox.stub().returns({
           application: {
             dateLetterSent: {
               day,
@@ -374,7 +374,7 @@ describe('Home Office Details Controller', function () {
             isAppealLate: true
           }
         };
-        updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        updateAppealService.submitEventRefactored = sandbox.stub().returns({
           application: {
             dateLetterSent: {
               day,

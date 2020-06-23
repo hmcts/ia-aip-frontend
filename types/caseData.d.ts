@@ -42,7 +42,7 @@ interface CaseData {
   respondentDocuments: Collection<RespondentEvidenceDocument>[];
   timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
-  directions: Collection<DirectionValue>[];
+  directions: Collection<CcdDirection>[];
   draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
   interpreterLanguage?: Collection<AdditionalLanguage>[];
   isInterpreterServicesNeeded?: string;

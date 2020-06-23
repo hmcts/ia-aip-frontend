@@ -13,7 +13,7 @@ import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 
-describe('Contact details Controller @only', () => {
+describe('Contact details Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -264,7 +264,7 @@ describe('Contact details Controller @only', () => {
             }
           };
 
-          updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+          updateAppealService.submitEventRefactored = sandbox.stub().returns({
             application: {
               contactDetails
             }
@@ -390,7 +390,7 @@ describe('Contact details Controller @only', () => {
               contactDetails
             }
           };
-          updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+          updateAppealService.submitEventRefactored = sandbox.stub().returns({
             application: {
               contactDetails
             }

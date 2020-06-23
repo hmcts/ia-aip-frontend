@@ -236,11 +236,12 @@ interface TimeExtension {
 }
 
 interface Direction {
-  id: number;
+  id: string;
   tag: string;
   parties: string;
   dateDue: string;
   dateSent: string;
+  explanation: string;
 }
 
 interface ClarifyingQuestion<T> {

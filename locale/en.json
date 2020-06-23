@@ -1182,7 +1182,8 @@
         },
         "anythingElseReasons": {
           "title": "Tell us what you will need and why you need it",
-          "heading": "Tell us what you will need and why you need it"
+          "heading": "Tell us what you will need and why you need it",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
         }
       }
     },

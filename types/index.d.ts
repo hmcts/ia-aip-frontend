@@ -162,7 +162,6 @@ interface CmaRequirements {
   };
   accessNeeds?: AccessNeeds;
   otherNeeds?: OtherNeeds;
-
 }
 
 interface DateToAvoid {
@@ -193,6 +192,7 @@ interface OtherNeeds {
   anythingElse: boolean;
   anythingElseReason: string;
 }
+
 interface ReasonsForAppeal {
   applicationReason: string;
   uploadDate?: string;
@@ -255,6 +255,10 @@ interface ClarifyingQuestion<T> {
   };
 }
 
+interface AdditionalLanguage {
+  language?: string;
+  languageDialect?: string;
+}
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;
 
 interface ApplicationStatus {

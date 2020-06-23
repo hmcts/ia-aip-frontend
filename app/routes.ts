@@ -161,7 +161,6 @@ router.use(clarifyingQuestionsAnythingElseQuestionController);
 router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
-
 router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsTaskListController);
 router.use(cmaRequirementsStartPageController);
@@ -180,6 +179,8 @@ router.use(cmaRequirementsPastExperiencesQuestionController);
 router.use(cmaRequirementsPastExperiencesReasonController);
 router.use(cmaRequirementsAnythingElseQuestionController);
 router.use(cmaRequirementsAnythingElseReasonController);
+router.use(cmaRequirementsTaskListController);
+
 router.use(detailViewersController);
 router.use(forbiddenController);
 

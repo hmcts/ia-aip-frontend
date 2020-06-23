@@ -1,5 +1,5 @@
 @cmaRequirements
-Feature: Cma Requirements @only
+Feature: Cma Requirements
   In order to complete my appeal
   As a citizen
   I want to be able to answer cma requirements

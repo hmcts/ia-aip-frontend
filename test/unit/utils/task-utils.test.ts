@@ -1,5 +1,5 @@
 import { appealApplicationStatus } from '../../../app/utils/tasks-utils';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect } from '../../utils/testUtils';
 
 describe('getStatus', () => {
 

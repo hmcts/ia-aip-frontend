@@ -1111,6 +1111,78 @@
         "stepFreeAccessPage": {
           "pageTitle": "Will you or anyone coming with you need step-free access?",
           "title": "Will you or anyone coming with you need step-free access?",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues.",
+          "path": "awaitingCmaRequirements.checkAndSend"
+        }
+      },
+      "otherNeedsSection": {
+        "startPage": {
+          "title": "Other needs",
+          "description": "If you have any other needs, they will be considered but it might not be possible to provide for them at the appointment."
+        },
+        "multimediaEvidence": {
+          "title": "Will you bring any multimedia evidence?",
+          "question": "Will you bring any multimedia evidence?",
+          "description": "For example, video or sound recordings."
+        },
+        "bringEquipment": {
+          "title": "Will you bring the equipment to play this evidence?",
+          "question": "Will you bring the equipment to play this evidence?",
+          "description": "For example, a laptop or DVD player."
+        },
+        "bringEquipmentReason": {
+          "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
+          "heading": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it"
+        },
+        "singleSexAppointment": {
+          "title": "Will you need an all-female or all-male appointment?",
+          "question": "Will you need an all-female or all-male appointment?"
+        },
+        "singleSexTypeAppointment": {
+          "title": "What type of appointment will you need?",
+          "question": "What type of appointment will you need?"
+        },
+        "singleSexAppointmentAllMale": {
+          "title": "Tell us why you need an all-male appointment",
+          "heading": "Tell us why you need an all-male appointment"
+        },
+        "singleSexAppointmentAllFemale": {
+          "title": "Tell us why you need an all-female appointment",
+          "heading": "Tell us why you need an all-female appointment"
+        },
+        "privateAppointment": {
+          "title": "Will you need a private appointment?",
+          "question": "Will you need a private appointment?",
+          "description": "A private appointment means the public will not be allowed to attend."
+        },
+        "privateAppointmentReason": {
+          "title": "Tell us why you need a private appointment",
+          "heading": "Tell us why you need a private appointment"
+        },
+        "healthConditions": {
+          "title": "Do you have any physical or mental health conditions that may affect you at the appointment?",
+          "question": "Do you have any physical or mental health conditions that may affect you at the appointment?"
+        },
+        "healthConditionsReason": {
+          "title": "Tell us how any physical or mental health conditions you have may affect you at the appointment",
+          "heading": "Tell us how any physical or mental health conditions you have may affect you at the appointment"
+        },
+        "pastExperiences": {
+          "title": "Have you had any past experiences that may affect you at the appointment?",
+          "question": "Have you had any past experiences that may affect you at the appointment?",
+          "description": "This might be experience of physical or sexual abuse, trafficking or torture."
+        },
+        "pastExperiencesReasons": {
+          "title": "Tell us how any past experiences that may affect you at the appointment",
+          "heading": "Tell us how any past experiences that may affect you at the appointment"
+        },
+        "anythingElse": {
+          "title": "Will you need anything else at the appointment?",
+          "question": "Will you need anything else at the appointment?"
+        },
+        "anythingElseReasons": {
+          "title": "Tell us what you will need and why you need it",
+          "heading": "Tell us what you will need and why you need it",
           "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
         }
       }
@@ -1233,6 +1305,23 @@
       "anythingElseEmptyAnswer": "Enter any other information you want tell us about your case"
     },
     "cmaRequirements": {
+      "otherNeeds": {
+        "multimediaEvidenceAnswerRequired": "Select yes if you will bring any multimedia evidence",
+        "bringEquipmentAnswerRequired": "Select yes if you will bring the equipment to play this evidence",
+        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it",
+        "singleSexAppointmentRequired": "Select yes if you need an all-female or all-male appointment",
+        "singleSexTypeAppointmentRequired": "Select if you need an all-female or all-male appointment",
+        "singleSexAppointmentAllMaleReasonRequired": "Enter the reasons you need an all-male appointment",
+        "singleSexAppointmentAllFemaleReasonRequired": "Enter the reasons you need an all-female appointment",
+        "privateAppointmentAnswerRequired": "Select yes if you need a private appointment",
+        "privateAppointmentReasonRequired": "Enter the reasons you need a private appointment",
+        "healthConditionsAnswerRequired": "Select yes if you have any physical or mental health conditions that may affect you at the appointment",
+        "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the appointment",
+        "pastExperiencesAnswerRequired": "Select yes if you have had any past experiences that may affect you at the appointment",
+        "pastExperiencesReasonRequired": "Enter details of how any past experiences that will affect you at the appointment",
+        "anythingElseAnswerRequired": "Select yes if you need anything else at the appointment",
+        "anythingElseReasonRequired": "Enter details of what you will need and why you need it"
+      },
       "accessNeeds": {
         "emptyAnswer": "Please enter an answer for the question",
         "selectInterpreter": "Select yes if anyone will need an interpreter",

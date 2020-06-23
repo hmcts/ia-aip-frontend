@@ -58,14 +58,14 @@ function cmaRequirementsStatus(appeal: Appeal) {
 
   const accessNeedsTask: Task = {
     saved: accessNeeds,
-    completed: accessNeeds,
+    completed: _.has(appeal, 'cmaRequirements.accessNeeds.isHearingLoopNeeded'),
     active: true
   };
   const otherNeeds: boolean = !!_.get(appeal, 'cmaRequirements.otherNeeds');
 
   const otherNeedsTask: Task = {
     saved: otherNeeds,
-    completed: otherNeeds,
+    completed: _.has(appeal, 'cmaRequirements.otherNeeds.anythingElse'),
     active: accessNeedsTask.completed
   };
 

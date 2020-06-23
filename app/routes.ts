@@ -132,7 +132,6 @@ const cmaRequirementsDatesToAvoidEnterADateController = setupDatesToAvoidEnterAD
 const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
 const whatToExpectNextController = setupcmaGuidancePageController(middleware);
-const whatToExpectNextController = setupcmaGuidancePageController(middleware);
 // not protected by idam
 router.use(indexController);
 router.use(healthController);

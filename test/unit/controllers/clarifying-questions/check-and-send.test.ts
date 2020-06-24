@@ -129,7 +129,7 @@ describe('Clarifying Questions Check and Send controller', () => {
     });
   });
 
-  describe('postCheckAndSendPage @only', () => {
+  describe('postCheckAndSendPage', () => {
     let appeal: Partial<Appeal>;
     beforeEach(() => {
       appeal = {

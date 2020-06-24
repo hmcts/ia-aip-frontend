@@ -54,8 +54,15 @@ function postClarifyingQuestionPage(updateAppealService: UpdateAppealService) {
           }
         };
       });
-      req.session.appeal.draftClarifyingQuestionsAnswers = [ ...updatedQuestions ];
-      await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        draftClarifyingQuestionsAnswers: updatedQuestions
+      };
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       return getConditionalRedirectUrl(req, res, getNextPage(req.body,paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id)));
     } catch (error) {
       next(error);

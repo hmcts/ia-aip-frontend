@@ -64,8 +64,10 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
       }
 
       req.session.appeal.cmaRequirements = {
+        ...req.session.appeal.cmaRequirements,
         accessNeeds: {
-          isInterpreterServicesNeeded: yesNoToBool(req.body.answer)
+          ...req.session.appeal.cmaRequirements.accessNeeds,
+          isInterpreterServicesNeeded: answer
         }
       };
 
@@ -104,9 +106,15 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.taskList
         });
       }
-      req.session.appeal.cmaRequirements.accessNeeds.interpreterLanguage = {
-        language: req.body.language,
-        languageDialect: req.body.dialect
+      req.session.appeal.cmaRequirements = {
+        ...req.session.appeal.cmaRequirements,
+        accessNeeds: {
+          ...req.session.appeal.cmaRequirements.accessNeeds,
+          interpreterLanguage: {
+            language: req.body.language,
+            languageDialect: req.body.dialect
+          }
+        }
       };
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
@@ -162,7 +170,13 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation)
         });
       }
-      req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded = yesNoToBool(req.body.answer);
+
+      req.session.appeal.cmaRequirements = {
+        ...req.session.appeal.cmaRequirements,
+        accessNeeds: {
+          ...req.session.appeal.cmaRequirements.accessNeeds,
+          isHearingRoomNeeded : yesNoToBool(req.body.answer)
+        }};
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeedsHearingLoop);
     } catch (error) {
@@ -214,7 +228,14 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation)
         });
       }
-      req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded = yesNoToBool(req.body.answer);
+
+      req.session.appeal.cmaRequirements = {
+        ...req.session.appeal.cmaRequirements,
+        accessNeeds: {
+          ...req.session.appeal.cmaRequirements.accessNeeds,
+          isHearingLoopNeeded : yesNoToBool(req.body.answer)
+        }};
+
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.taskList);
 

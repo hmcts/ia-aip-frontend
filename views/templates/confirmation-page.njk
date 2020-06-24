@@ -17,7 +17,9 @@
   {% if info %}
     <div class="panel-background">
       <p><span class='govuk-!-font-weight-bold'>{{ info.title }}</span></p>
-      <p>{{ info.url | eval | safe }}</p>
+      <ul class="govuk-list govuk-list--bullet">
+      <li>{{ info.url | eval | safe }}</li>
+      </ul>
     </div>
   {% endif %}
   {{ govukButton({

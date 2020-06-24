@@ -48,7 +48,11 @@ describe('Cma Requirements Confirmation Controller', () => {
         whatNextListItems: [
           'A Tribunal Caseworker will look at your appointment needs. If you have asked for an interpreter, step-free access or a hearing loop, these will be provided. If you have asked for anything else, it will be considered but may not be provided',
           'A Tribunal Caseworker will then contact you to tell you where and when the appointment will take place and what will be provided',
-          'This should be by <b>{{ date }}</b> but may take longer than that']
+          'This should be by <b>{{ date }}</b> but may take longer than that' ],
+        info: {
+          title: 'Helpful Information',
+          url: "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        }
       };
       getConfirmationPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/confirmation-page.njk', expectedArgs);

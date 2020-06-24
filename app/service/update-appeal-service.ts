@@ -526,22 +526,27 @@ export default class UpdateAppealService {
       // Access Needs Section
       if (_.has(appeal, 'cmaRequirements.accessNeeds')) {
         const { accessNeeds } = appeal.cmaRequirements;
+        if (_.has(accessNeeds, 'isInterpreterServicesNeeded')) {
+          caseData.isInterpreterServicesNeeded = boolToYesNo(accessNeeds.isInterpreterServicesNeeded);
+        }
+
+        if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
+          if (_.has(accessNeeds, 'interpreterLanguage')) {
+            caseData.interpreterLanguage = [ {
+              value: {
+                language: accessNeeds.interpreterLanguage.language,
+                languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
+              }
+            } ];
+          }
+        }
+
         if (_.has(accessNeeds, 'isHearingLoopNeeded')) {
           caseData.isHearingLoopNeeded = boolToYesNo(accessNeeds.isHearingLoopNeeded);
         }
+
         if (_.has(accessNeeds, 'isHearingRoomNeeded')) {
           caseData.isHearingRoomNeeded = boolToYesNo(accessNeeds.isHearingRoomNeeded);
-        }
-        if (_.has(accessNeeds, 'interpreterLanguage')) {
-          caseData.interpreterLanguage = [ {
-            value: {
-              language: accessNeeds.interpreterLanguage.language,
-              languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
-            }
-          } ];
-        }
-        if (_.has(accessNeeds, 'isInterpreterServicesNeeded')) {
-          caseData.isInterpreterServicesNeeded = boolToYesNo(accessNeeds.isInterpreterServicesNeeded);
         }
       }
 

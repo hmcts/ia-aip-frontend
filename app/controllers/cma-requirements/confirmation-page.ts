@@ -8,6 +8,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     res.render('templates/confirmation-page.njk', {
       title: i18n.pages.cmaRequirementsConfirmation.title,
       whatNextListItems: i18n.pages.cmaRequirementsConfirmation.whatNextListItems,
+      info: i18n.pages.cmaRequirementsConfirmation.info,
       date: addDaysToDate(14)
     });
   } catch (e) {

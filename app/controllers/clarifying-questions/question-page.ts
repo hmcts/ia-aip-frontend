@@ -5,6 +5,7 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { nowIsoDate } from '../../utils/utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 
 function getClarifyingQuestionPage(req: Request, res: Response, next: NextFunction) {
@@ -48,7 +49,8 @@ function postClarifyingQuestionPage(updateAppealService: UpdateAppealService) {
           ...question,
           value: {
             ...question.value,
-            answer: req.body['answer']
+            answer: req.body['answer'],
+            dateResponded: nowIsoDate()
           }
         };
       });

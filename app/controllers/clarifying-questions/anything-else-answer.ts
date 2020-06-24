@@ -6,7 +6,7 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage } from '../../utils/utils';
+import { getRedirectPage, nowIsoDate } from '../../utils/utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 
 function getAnythingElseAnswerPage(req: Request, res: Response, next: NextFunction) {
@@ -60,6 +60,7 @@ function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
         });
       }
       anythingElseQuestion.value.answer = req.body['anything-else'];
+      anythingElseQuestion.value.dateResponded = nowIsoDate();
       draftClarifyingQuestionsAnswers.push(anythingElseQuestion);
       const appeal: Appeal = {
         ...req.session.appeal,

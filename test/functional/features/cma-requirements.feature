@@ -1,5 +1,5 @@
 @cmaRequirements
-Feature: Cma Requirements
+Feature: Cma Requirements @only
   In order to complete my appeal
   As a citizen
   I want to be able to answer cma requirements
@@ -177,7 +177,6 @@ Feature: Cma Requirements
     When I click "Check and send us your appointment needs" link
     Then I see "Check your answers" in title
     And I see cma requirements answers and content
-
 
     When I click "Send" button
     Then I should see the cma requirements confirmation page

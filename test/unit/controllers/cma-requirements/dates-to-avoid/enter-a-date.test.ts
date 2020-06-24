@@ -166,7 +166,7 @@ describe('CMA Requirements - Enter A date controller', () => {
       const validDate = moment().add(5, 'week');
 
       req.body['day'] = validDate.day();
-      req.body['month'] = validDate.month() + 1;
+      req.body['month'] = validDate.month() + 2;
       req.body['year'] = validDate.year();
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -227,7 +227,7 @@ describe('CMA Requirements - Enter A date controller', () => {
       const validDate = moment().add(5, 'week');
 
       req.body['day'] = validDate.day();
-      req.body['month'] = validDate.month() + 1;
+      req.body['month'] = validDate.month() + 2;
       req.body['year'] = validDate.year();
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

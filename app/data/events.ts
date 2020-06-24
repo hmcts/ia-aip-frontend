@@ -53,6 +53,10 @@ export const Events = {
     id: 'submitCmaRequirements',
     summary: 'Submit CMA requirements',
     description: 'Submit CMA requirements'
+  },
+  SEND_DIRECTION_WITH_QUESTIONS: {
+    id: 'sendDirectionWithQuestions',
+    summary: 'Direct the appellant to answer clarifying questions',
+    description: 'Direct the appellant to answer clarifying questions'
   }
-
 };

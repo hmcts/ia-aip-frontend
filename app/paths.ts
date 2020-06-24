@@ -89,6 +89,7 @@ const paths = {
     start: '/start-appeal',
     overview: '/appeal-overview',
     fileNotFound: '/file-not-found',
+    yourCQanswers: '/your-answers',
 
     // Health endpoints
     health: '/health',

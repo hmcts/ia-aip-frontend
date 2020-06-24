@@ -35,9 +35,13 @@ describe('Personal Details Controller', function () {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
-      cookies: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
       idam: {
-        userDetails: {}
+        userDetails: {
+          uid: 'idamUID'
+        }
       },
       session: {
         appeal: {
@@ -60,8 +64,7 @@ describe('Personal Details Controller', function () {
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
-
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -143,52 +146,72 @@ describe('Personal Details Controller', function () {
   });
 
   describe('postManualEnterAddress', () => {
-    it('should fail validation and render appeal-application/personal-details/enter-address.njk', async () => {
-      req.body['address-line-1'] = '60 GPS';
-      req.body['address-town'] = 'London';
-      req.body['address-county'] = 'London';
-      req.body['address-line-2'] = '';
-      req.body['address-postcode'] = 'W';
-
-      await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEvent).not.to.have.been.called;
-      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
-    });
-
-    it('should validate and redirect to task list page', async () => {
+    let appeal: Appeal;
+    beforeEach(() => {
       req.body['address-line-1'] = '60 GPS';
       req.body['address-town'] = 'London';
       req.body['address-county'] = 'London';
       req.body['address-line-2'] = '';
       req.body['address-postcode'] = 'W1W 7RT';
-
+      appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            address: {
+              line1: req.body['address-line-1'],
+              line2: req.body['address-line-2'],
+              city: req.body['address-town'],
+              county: req.body['address-county'],
+              postcode: req.body['address-postcode']
+            }
+          }
+        }
+      };
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          personalDetails: {
+            address: {
+              line1: req.body['address-line-1'],
+              line2: req.body['address-line-2'],
+              city: req.body['address-town'],
+              county: req.body['address-county'],
+              postcode: req.body['address-postcode']
+            }
+          }
+        }
+      } as Appeal);
+    });
+    it('should fail validation and render appeal-application/personal-details/enter-address.njk', async () => {
+      req.body['address-postcode'] = 'W';
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).not.to.have.been.called;
+      expect(res.render).to.have.been.calledWith('appeal-application/personal-details/enter-address.njk');
+    });
+
+    it('should validate and redirect to task list page', async () => {
+      await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
     });
 
     it('should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.redirect = sandbox.stub().throws(error);
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset the isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
-
-      req.body['address-line-1'] = '60 GPS';
-      req.body['address-town'] = 'London';
-      req.body['address-county'] = 'London';
-      req.body['address-line-2'] = '';
-      req.body['address-postcode'] = 'W1W 7RT';
-
+      appeal.application.isEdit = true;
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
@@ -198,24 +221,25 @@ describe('Personal Details Controller', function () {
       };
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
+      appeal.application.isEdit = true;
       req.body = {
         'saveForLater': 'saveForLater'
       };
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should catch an exception and call next()', async () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.redirect = sandbox.stub().throws(error);
       await postManualEnterAddressPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

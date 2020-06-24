@@ -111,7 +111,6 @@ const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswe
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);
 const clarifyingQuestionsConfirmationPageController = setupClarifyingQuestionsConfirmationPage(middleware);
 const cmaRequirementsTaskListController = setupCmaRequirementsTaskListController(middleware);
-const cmaRequirementsAccessNeedsController = setupAccessNeedsController(middleware, updateAppealService);
 const cmaRequirementsStartPageController = setupCMARequirementsStartPageController(middleware);
 const cmaRequirementsMultimediaEvidenceQuestionController = setupMultimediaEvidenceQuestionController(middleware, updateAppealService);
 const cmaRequirementsBringEquipmentQuestionController = setupBringMultimediaEquipmentQuestionController(middleware, updateAppealService);
@@ -126,12 +125,13 @@ const cmaRequirementsHealthConditionsQuestionController = setupHealthConditionsQ
 const cmaRequirementsHealthConditionsReasonController = setupHealthConditionsReasonController(middleware, updateAppealService);
 const cmaRequirementsPastExperiencesQuestionController = setupPastExperiencesQuestionController(middleware, updateAppealService);
 const cmaRequirementsPastExperiencesReasonController = setupPastExperiencesReasonController(middleware, updateAppealService);
+const cmaRequirementsAnythingElseQuestionController = setupAnythingElseQuestionController(middleware, updateAppealService);
+const cmaRequirementsAnythingElseReasonController = setupAnythingElseReasonController(middleware, updateAppealService);
+const cmaRequirementsAccessNeedsController = setupAccessNeedsController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidQuestionController = setupDatesToAvoidQuestionController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidEnterADateController = setupDatesToAvoidEnterADateController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
-const cmaRequirementsAnythingElseQuestionController = setupAnythingElseQuestionController(middleware, updateAppealService);
-const cmaRequirementsAnythingElseReasonController = setupAnythingElseReasonController(middleware, updateAppealService);
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
 
@@ -173,10 +173,9 @@ router.use(clarifyingQuestionsAnythingElseQuestionController);
 router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
-
 router.use(cmaRequirementsTaskListController);
-router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsStartPageController);
+router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsMultimediaEvidenceQuestionController);
 router.use(cmaRequirementsBringEquipmentQuestionController);
 router.use(cmaRequirementsBringEquipmentReasonController);
@@ -190,12 +189,12 @@ router.use(cmaRequirementsHealthConditionsQuestionController);
 router.use(cmaRequirementsHealthConditionsReasonController);
 router.use(cmaRequirementsPastExperiencesQuestionController);
 router.use(cmaRequirementsPastExperiencesReasonController);
+router.use(cmaRequirementsAnythingElseQuestionController);
+router.use(cmaRequirementsAnythingElseReasonController);
 router.use(cmaRequirementsDatesToAvoidQuestionController);
 router.use(cmaRequirementsDatesToAvoidEnterADateController);
 router.use(cmaRequirementsDatesToAvoidReasonController);
 router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
-router.use(cmaRequirementsAnythingElseQuestionController);
-router.use(cmaRequirementsAnythingElseReasonController);
 router.use(cmaRequirementsCYAController);
 router.use(cmaRequirementsConfirmationController);
 

@@ -39,8 +39,8 @@ function getAnythingElseQuestionPage(req: Request, res: Response, next: NextFunc
 function postAnythingElseQuestionPage(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const questionsLength: number = req.session.appeal.draftClarifyingQuestionsAnswers.length;
-      const anythingElseQuestion: ClarifyingQuestion<Evidence> = { ...req.session.appeal.draftClarifyingQuestionsAnswers[questionsLength - 1] };
+      const draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
+      const anythingElseQuestion: ClarifyingQuestion<Evidence> = draftClarifyingQuestionsAnswers.pop();
       const validationError = yesOrNoRequiredValidation(req.body, 'Select Yes if you want to tell us anything else about your case');
       if (validationError) {
         const options = [
@@ -81,10 +81,18 @@ function postAnythingElseQuestionPage(updateAppealService: UpdateAppealService, 
             answer: CQ_NOTHING_ELSE,
             supportingEvidence: []
           };
-          req.session.appeal.draftClarifyingQuestionsAnswers[questionsLength - 1] = {
-            ...anythingElseQuestion
+          const appeal: Appeal = {
+            ...req.session.appeal,
+            draftClarifyingQuestionsAnswers: [
+              ...draftClarifyingQuestionsAnswers,
+              anythingElseQuestion
+            ]
           };
-          await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+          const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+          req.session.appeal = {
+            ...req.session.appeal,
+            ...appealUpdated
+          };
           res.redirect(paths.awaitingClarifyingQuestionsAnswers.questionsList);
         }
       }

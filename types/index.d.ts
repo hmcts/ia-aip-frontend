@@ -90,6 +90,7 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+
 }
 
 interface AskForMoreTime {
@@ -251,11 +252,12 @@ interface TimeExtension {
 }
 
 interface Direction {
-  id: number;
+  id: string;
   tag: string;
   parties: string;
   dateDue: string;
   dateSent: string;
+  explanation: string;
 }
 
 interface ClarifyingQuestion<T> {

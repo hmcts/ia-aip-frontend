@@ -9,7 +9,7 @@ import { getNextPage, shouldValidateWhenSaveForLater } from '../../../utils/save
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { isDateInRange } from '../../../utils/validations/fields-validations';
 
-const formAction = paths.awaitingCmaRequirements.datesToAvoidEnterDate;
+const formActionUrl = paths.awaitingCmaRequirements.datesToAvoidEnterDate;
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
 function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: Request, res: Response) {
@@ -59,7 +59,7 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
 function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction) {
   try {
     const dateId = req.params.id;
-    const formActionWithId = `${formAction}/${dateId}`;
+    const formActionWithId = `${formActionUrl}/${dateId}`;
 
     const { datesToAvoid } = req.session.appeal.cmaRequirements;
     if (datesToAvoid && datesToAvoid.dates) {
@@ -97,7 +97,7 @@ function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
     };
 
     return res.render('cma-requirements/dates-to-avoid/enter-a-date.njk', {
-      formAction,
+      formActionUrl,
       date: lastDate,
       availableDates,
       previousPage: previousPage
@@ -131,7 +131,7 @@ function postEnterADatePage(updateAppealService: UpdateAppealService) {
         return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.awaitingCmaRequirements.datesToAvoidReason));
       };
 
-      return handlePostEnterADatePage(formAction, onSuccess, req, res);
+      return handlePostEnterADatePage(formActionUrl, onSuccess, req, res);
     } catch (e) {
       next(e);
     }
@@ -142,7 +142,7 @@ function postEnterADatePageWithId(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const dateId = req.params.id;
-      const formActionWithId = `${formAction}/${dateId}`;
+      const formActionWithId = `${formActionUrl}/${dateId}`;
 
       const onSuccess = async () => {
         const { datesToAvoid } = req.session.appeal.cmaRequirements;

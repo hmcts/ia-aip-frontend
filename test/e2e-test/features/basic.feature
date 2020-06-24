@@ -84,9 +84,9 @@ Feature: Business rules
     Given I sign in as the Appellant
     When I visit the overview page
     Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
+#    Reenable when ask for more time flag is on by default
 #    Then I should see the 'ask for more time' link
 
-#    Reenable when ask for more time flag is on by default
 #    When I click 'ask for more time'
 #    Then I should see the ask-for-more-time page
 #    When I enter a time extensions reason
@@ -110,3 +110,57 @@ Feature: Business rules
     When I click "Send" button
     Then I should see the reasons for appeal confirmation page
     And I see the respond by date is 2 weeks in the future
+
+    # Case Progression
+    Then I sign in as a Case Officer and send directions with Clarifying Questions
+
+    # Appellant
+    Given I sign in as the Appellant
+    When I visit the overview page
+    Then I see "You need to answer some questions about your appeal." description in overview banner
+    Then I click "Continue" button
+    Then I see "Questions about your appeal" in title
+    Then I see "Answer question 1" item in list
+    Then I see "Answer question 2" item in list
+
+    When I click "Answer question 1" link
+    Then I see "Question 1" in title
+    Then I fill textarea with "my answer for question 1"
+    Then I click "Save and continue" button
+    Then I see "Do you want to provide supporting evidence?" in title
+    Then I click "No" button
+    Then I click "Continue" button
+    Then I see "Questions about your appeal" in title
+    And I see clarifying question "1" saved
+
+    When I click "Answer question 2" link
+    Then I see "Question 2" in title
+    Then I fill textarea with "my answer for question 2"
+    Then I click "Save and continue" button
+    Then I see "Do you want to provide supporting evidence?" in title
+    Then I click "No" button
+    Then I click "Continue" button
+    Then I see "Questions about your appeal" in title
+    Then I see clarifying question "2" saved
+    And I see "Do you want to tell us anything else about your case?" link
+
+    When I click "Do you want to tell us anything else about your case?" link
+    Then I see "Do you want to tell us anything else about your case?" in title
+    Then I click "Yes" button
+    Then I click "Continue" button
+    Then I see "Do you want to tell us anything else about your case?" in title
+    Then I fill textarea with "my answer for anything else question"
+    Then I click "Save and continue" button
+    Then I see "Do you want to provide supporting evidence?" in title
+    Then I click "No" button
+    Then I click "Continue" button
+    Then I see "Questions about your appeal" in title
+    Then I see anything else clarifying question saved
+    And I see "Check and send your answers" link
+
+    When I click "Check and send your answers" link
+    Then I see "You have answered the Tribunal's questions" in title
+    Then I click "Send" button
+    And I see "You have answered the Tribunal's questions" in title
+    Then I click "See your appeal progress" button
+    And I see "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next" description in overview banner

@@ -29,6 +29,14 @@ describe('Clarifying Questions: Anything else answer controller', () => {
         question: 'Tell us more about your health issues',
         answer: 'an answer to the question'
       }
+    },
+    {
+      id: 'id3',
+      value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
+        question: 'Anything else question'
+      }
     }
   ];
 
@@ -36,9 +44,18 @@ describe('Clarifying Questions: Anything else answer controller', () => {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
       params: {},
       session: {
         appeal: {
+          application: {},
           draftClarifyingQuestionsAnswers: [ ...clarifyingQuestions ]
         }
       }
@@ -48,7 +65,7 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       redirect: sandbox.spy()
     } as Partial<Response>;
     next = sandbox.stub() as NextFunction;
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -83,51 +100,57 @@ describe('Clarifying Questions: Anything else answer controller', () => {
   });
 
   describe('postAnythingElseAnswerPage', () => {
+    let appeal: Appeal;
+    const anythingElseAnswer: string = 'The answer to anything else question';
+    beforeEach(() => {
+      appeal = {
+        ...req.session.appeal
+      };
+    });
+    afterEach(() => {
+      sandbox.restore();
+    });
     it('should fail validation and render template with errors', async () => {
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk');
     });
 
-    it('should validate and redirect to questions list', async () => {
-      req.body['answer'] = 'true';
+    it('should validate and redirect to supporting evidence question page', async () => {
+      req.body['anything-else'] = anythingElseAnswer;
+      appeal.draftClarifyingQuestionsAnswers[2].value.answer = anythingElseAnswer;
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        ...appeal,
+        draftClarifyingQuestionsAnswers: [
+          ...appeal.draftClarifyingQuestionsAnswers
+        ]
+      } as Appeal);
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      expect(res.redirect).to.have.been.calledWith('/anything-else-answer');
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', `3`));
     });
 
-    it('should validate and redirect to questions list', async () => {
-      req.body['answer'] = 'false';
-      await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      expect(res.redirect).to.have.been.calledWith('/questions-about-appeal');
-    });
-
-    it('should validate and redirect to saveforLater postAnythingElseAnswerPage', async () => {
+    it('should validate and redirect to overview page', async () => {
       req.body.saveForLater = 'saveForLater';
-      req.body['anything-else'] = 'the answer here';
+      req.body['anything-else'] = anythingElseAnswer;
+      appeal.draftClarifyingQuestionsAnswers[2].value.answer = anythingElseAnswer;
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        ...appeal,
+        draftClarifyingQuestionsAnswers: [
+          ...appeal.draftClarifyingQuestionsAnswers
+        ]
+      } as Appeal);
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
-    it('should validate and redirect to saveforLater postAnythingElseAnswerPage', async () => {
-      req.body.saveForLater = 'saveForLater';
-      req.body['anything-else'] = 'yes';
+    it('should not validate and render with errors', async () => {
       await postAnythingElseAnswerPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
-    });
-
-    it('should validate and redirect to saveforLater postClarifyingQuestionPage', async () => {
-      req.body.saveForLater = 'saveForLater';
-      req.body['answer'] = 'yes';
-      await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      expect(res.render).to.have.been.called;
     });
 
     it('should catch error and call next with error', async () => {

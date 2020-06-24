@@ -78,7 +78,7 @@ describe('application-state-utils', () => {
         {
           deadline: 'TBC',
           descriptionParagraphs: [
-            'Description for event <b>unknown</b> not found'
+            'Description for appeal status <b>unknown</b> not found'
           ]
         }
       );
@@ -128,18 +128,20 @@ describe('application-state-utils', () => {
       req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
       req.session.appeal.directions = [
         {
-          'id': 2,
+          'id': '2',
           'tag': 'requestReasonsForAppeal',
           'parties': 'appellant',
           'dateDue': '2020-09-01',
-          'dateSent': '2020-04-21'
+          'dateSent': '2020-04-21',
+          'explanation': 'direction explanation'
         },
         {
-          'id': 1,
+          'id': '1',
           'tag': 'respondentEvidence',
           'parties': 'respondent',
           'dateDue': '2020-04-28',
-          'dateSent': '2020-04-14'
+          'dateSent': '2020-04-14',
+          'explanation': 'direction explanation'
         }
       ];
       const result = getAppealApplicationNextStep(req as Request);
@@ -177,18 +179,20 @@ describe('application-state-utils', () => {
     req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
     req.session.appeal.directions = [
       {
-        id: 2,
+        id: '2',
         tag: 'requestReasonsForAppeal',
         parties: 'appellant',
         dateDue: '2020-04-21',
-        dateSent: '2020-03-24'
+        dateSent: '2020-03-24',
+        explanation: 'direction explanation'
       },
       {
-        id: 1,
+        id: '1',
         tag: 'respondentEvidence',
         parties: 'respondent',
         dateDue: '2020-04-07',
-        dateSent: '2020-03-24'
+        dateSent: '2020-03-24',
+        explanation: 'direction explanation'
       } ];
     const result = getAppealApplicationNextStep(req as Request);
 

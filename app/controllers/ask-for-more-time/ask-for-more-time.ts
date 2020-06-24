@@ -8,7 +8,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { formatTextForCYA } from '../../utils/utils';
+import { formatTextForCYA, getRedirectPage } from '../../utils/utils';
 import { askForMoreTimeValidation } from '../../utils/validations/fields-validations';
 import {
   EvidenceUploadConfig,
@@ -74,18 +74,23 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
             askForMoreTime: askForMoreTime,
             previousPage: paths.common.overview
           }
-      );
+        );
       }
-
-      req.session.appeal.askForMoreTime = {
-        reason: req.body.askForMoreTime,
-        evidence: req.session.appeal.askForMoreTime.evidence
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        askForMoreTime: {
+          ...req.session.appeal.askForMoreTime,
+          reason: req.body.askForMoreTime
+        }
       };
-
-      await updateAppealService.submitEvent(Events.EDIT_TIME_EXTENSION, req);
-
-      const nextPage = getNextPage(req.body, paths.common.askForMoreTime.evidenceYesNo);
-      return getConditionalRedirectUrl(req, res, nextPage);
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.common.askForMoreTime.evidenceYesNo);
+      return res.redirect(redirectPage);
     } catch (e) {
       next(e);
     }
@@ -161,14 +166,19 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      req.session.appeal.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
-      await updateAppealService.submitEvent(Events.SUBMIT_TIME_EXTENSION, req);
-
-      req.session.appeal.askForMoreTime = {
-        inFlight: true
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        askForMoreTime: {
+          ...req.session.appeal.askForMoreTime,
+          reviewTimeExtensionRequired: 'Yes'
+        }
       };
-
-      res.redirect(paths.common.askForMoreTime.confirmation);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_TIME_EXTENSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      return res.redirect(paths.common.askForMoreTime.confirmation);
     } catch (e) {
       next(e);
     }

@@ -1,0 +1,18 @@
+{% set pageTitleName = i18n.pages.cmaRequirements.datesToAvoidSection.enterADatePage.title %}
+{% extends 'layout.njk' %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+
+  <h1 class="govuk-fieldset__legend--xl govuk-!-margin-top-0">{{ i18n.pages.cmaRequirements.otherNeedsSection.startPage.title }}</h1>
+
+  <p>{{ i18n.pages.cmaRequirements.otherNeedsSection.startPage.description }}</p>
+
+  {{ govukButton({
+    text: i18n.common.buttons.continue,
+    href: paths.awaitingCmaRequirements.otherNeedsMultimediaEvidenceQuestion
+  }) }}
+
+  {{ contactUs() }}
+{% endblock %}

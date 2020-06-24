@@ -80,6 +80,7 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+
 }
 
 interface AskForMoreTime {
@@ -160,6 +161,7 @@ interface CmaRequirements {
     [key: string]: Task;
   };
   accessNeeds?: AccessNeeds;
+  otherNeeds?: OtherNeeds;
   datesToAvoid?: DatesToAvoid;
 
 }
@@ -179,6 +181,23 @@ interface AccessNeeds {
   interpreterLanguage?: AdditionalLanguage;
   isHearingRoomNeeded?: boolean;
   isHearingLoopNeeded?: boolean;
+}
+
+interface OtherNeeds {
+  multimediaEvidence: boolean;
+  bringOwnMultimediaEquipment: boolean;
+  bringOwnMultimediaEquipmentReason: string;
+  singleSexAppointment: boolean;
+  singleSexTypeAppointment: 'All female' | 'All male';
+  singleSexAppointmentReason: string;
+  privateAppointment: boolean;
+  privateAppointmentReason: string;
+  healthConditions: boolean;
+  healthConditionsReason: string;
+  pastExperiences: boolean;
+  pastExperiencesReason: string;
+  anythingElse: boolean;
+  anythingElseReason: string;
 }
 
 interface ReasonsForAppeal {
@@ -224,11 +243,12 @@ interface TimeExtension {
 }
 
 interface Direction {
-  id: number;
+  id: string;
   tag: string;
   parties: string;
   dateDue: string;
   dateSent: string;
+  explanation: string;
 }
 
 interface ClarifyingQuestion<T> {

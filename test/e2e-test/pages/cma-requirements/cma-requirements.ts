@@ -15,8 +15,8 @@ module.exports = {
     });
 
     When(/^I enter a valid in-range date$/, async () => {
-      const validDate = moment().add(3, 'week');
-      fillInDate(validDate.day(), (validDate.month() + 1), validDate.year());
+      const validDate = moment().add(4, 'week');
+      fillInDate(validDate.date(), (validDate.month() + 1), validDate.year());
     });
 
     Then(/^I should see the cma requirements confirmation page$/, async () => {

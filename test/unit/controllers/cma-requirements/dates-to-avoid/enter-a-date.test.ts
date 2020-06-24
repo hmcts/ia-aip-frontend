@@ -127,7 +127,7 @@ describe('CMA Requirements - Enter A date controller', () => {
     it('should fail validation and render template with errors', async () => {
       const invalidDate = moment().add(1, 'week');
 
-      req.body['day'] = invalidDate.day();
+      req.body['day'] = invalidDate.date();
       req.body['month'] = invalidDate.month();
       req.body['year'] = invalidDate.year();
 
@@ -165,7 +165,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       const validDate = moment().add(5, 'week');
 
-      req.body['day'] = validDate.day();
+      req.body['day'] = validDate.date();
       req.body['month'] = validDate.month() + 2;
       req.body['year'] = validDate.year();
 
@@ -189,7 +189,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       const invalidDate = moment().add(1, 'week');
 
-      req.body['day'] = invalidDate.day();
+      req.body['day'] = invalidDate.date();
       req.body['month'] = invalidDate.month();
       req.body['year'] = invalidDate.year();
 
@@ -226,7 +226,7 @@ describe('CMA Requirements - Enter A date controller', () => {
 
       const validDate = moment().add(5, 'week');
 
-      req.body['day'] = validDate.day();
+      req.body['day'] = validDate.date();
       req.body['month'] = validDate.month() + 2;
       req.body['year'] = validDate.year();
 

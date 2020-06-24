@@ -26,9 +26,7 @@ describe('creates url', () => {
 
   it('getIdamLoginUrl for login', () => {
     const req = {
-      query: {
-        register: true
-      }
+      query: { register: true } as any
     } as Partial<Request>;
 
     const loginUrl = getIdamLoginUrl(req as Request);

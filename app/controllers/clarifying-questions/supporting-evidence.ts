@@ -64,9 +64,10 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
 function getSupportingEvidenceDelete(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (req.query.id) {
+      const fileId: string = req.query.id as string;
+
+      if (fileId) {
         const questionOrder = parseInt(req.params.id, 10) - 1;
-        const fileId = req.query.id;
         const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
         const supportingEvidences: Evidence[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence ];

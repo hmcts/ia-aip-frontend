@@ -14,19 +14,24 @@
   <form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ radioButtonQuestion(
-        question.name or 'answer',
-        question.options,
-        question.title,
-        question.titleIsheading or true,
-        question.hint,
-        error[question.name].text
-      )
-    }}
-    {%  if saveAndContinue %}
-      {{ saveButtons() }}
+      question.name or 'answer',
+      question.options,
+      question.title,
+      question.titleIsheading or true,
+      question.hint,
+      error[question.name].text
+    ) }}
+
+    {% if saveAndContinueOnly %}
+      {{ saveAndContinueButton() }}
     {% else %}
-      {{ continueButton() }}
+      {% if saveAndContinue %}
+        {{ saveButtons() }}
+      {% else %}
+        {{ continueButton() }}
+      {% endif %}
     {% endif %}
+
   </form>
   {{ contactUs() }}
 {% endblock %}

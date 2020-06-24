@@ -139,3 +139,37 @@ Feature: Cma Requirements @only
     When I fill textarea with "Reason for 'Tell us what you will need and why you need it'"
     And I click "Save and continue" button
     Then I see "Tell us your appointment needs" in title
+
+    When I click "Are there any dates you cannot go to the appointment?" link
+    Then I see "Are there any dates you cannot go to the appointment?" in title
+
+    When I click "Save and continue" button
+    Then I should see error summary
+
+    When I choose Yes and click save and continue
+    Then I see "Enter a date" in title
+
+    When I click "Save and continue" button
+    Then I should see error summary
+
+    When I enter a day "1" month "1" year "1"
+    And I click "Save and continue" button
+    Then I should see error summary
+
+    When I enter a valid in-range date
+    And I click "Save and continue" button
+
+    Then I see "Why can you not go to the appointment on this date?" in title
+    When I click "Save and continue" button
+    Then I should see error summary
+
+    When I fill textarea with "Reason for 'Why can you not go to the appointment on this date?'"
+    And I click "Save and continue" button
+    Then I see "Do you want to add another date you cannot go to the appointment?" in title
+
+    When I click "Save and continue" button
+    Then I should see error summary
+
+    When I choose No and click save and continue
+    Then I see "Tell us your appointment needs" in title
+    And I see "Check and send us your appointment needs" link

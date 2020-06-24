@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import i18n from '../../../locale/en.json';
-import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { createStructuredError, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
@@ -127,8 +125,8 @@ export function postUploadFile(documentManagementService: DocumentManagementServ
 export function getSupportingEvidenceDeleteFile(documentManagementService: DocumentManagementService, evidenceUploadConfig: EvidenceUploadConfig) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (req.query['id']) {
-        const fileId = req.query['id'];
+      const fileId: string = req.query.id as string;
+      if (fileId) {
         const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
         evidenceUploadConfig.removeEvidenceFromSessionFunction(fileId, req);

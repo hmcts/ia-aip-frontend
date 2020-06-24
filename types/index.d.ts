@@ -162,9 +162,16 @@ interface CmaRequirements {
   };
   accessNeeds?: AccessNeeds;
   otherNeeds?: OtherNeeds;
+  datesToAvoid?: DatesToAvoid;
+
 }
 
-interface DateToAvoid {
+interface DatesToAvoid {
+  isDateCannotAttend: boolean;
+  dates?: CmaDateToAvoid[];
+}
+
+interface CmaDateToAvoid {
   date: AppealDate;
   reason?: string;
 }

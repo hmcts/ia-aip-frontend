@@ -40,5 +40,10 @@ export function getConditionalRedirectUrl(req: Request, res: Response, redirectU
     req.session.appeal.reasonsForAppeal.isEdit = false;
     return res.redirect(paths.awaitingReasonsForAppeal.checkAndSend);
   }
+  if (_.has(req.session, 'appeal.cmaRequirements.isEdit')
+    && req.session.appeal.cmaRequirements.isEdit === true) {
+    req.session.appeal.cmaRequirements.isEdit = false;
+    return res.redirect(paths.awaitingCmaRequirements.checkAndSend);
+  }
   return res.redirect(redirectUrl);
 }

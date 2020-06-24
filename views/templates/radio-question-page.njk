@@ -24,12 +24,14 @@
 
     {% if saveAndContinueOnly %}
       {{ saveAndContinueButton() }}
-    {% endif %}
-    {% if saveAndContinue %}
-      {{ saveButtons() }}
     {% else %}
-      {{ continueButton() }}
+      {% if saveAndContinue %}
+        {{ saveButtons() }}
+      {% else %}
+        {{ continueButton() }}
+      {% endif %}
     {% endif %}
+
   </form>
   {{ contactUs() }}
 {% endblock %}

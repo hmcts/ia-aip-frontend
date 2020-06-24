@@ -4,7 +4,7 @@ export const States = {
     name: 'Appeal started'
   },
   APPEAL_SUBMITTED: {
-    id: 'submitAppeal',
+    id: 'appealSubmitted',
     name: 'Appeal submitted'
   },
   AWAITING_RESPONDENT_EVIDENCE: {
@@ -23,12 +23,16 @@ export const States = {
     id: 'awaitingClarifyingQuestionsAnswers',
     name: 'Awaiting Clarifying Questions'
   },
+  CLARIFYING_QUESTIONS_SUBMITTED: {
+    id: 'clarifyingQuestionsAnswersSubmitted',
+    name: 'Clarifying Questions submitted'
+  },
   AWAITING_CMA_REQUIREMENTS: {
     id: 'awaitingCmaRequirements',
     name: 'Awaiting CMA Requirements'
   },
-  CLARIFYING_QUESTIONS_SUBMITTED: {
-    id: 'clarifyingQuestionsAnswersSubmitted',
-    name: 'Clarifying Questions submitted'
+  CMA_REQUIREMENTS_SUBMITTED: {
+    id: 'cmaRequirementsSubmitted',
+    name: 'CMA Requirements submitted'
   }
 };

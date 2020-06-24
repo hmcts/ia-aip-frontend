@@ -1,12 +1,23 @@
 import i18n from '../../locale/en.json';
+import { States } from '../data/states';
 
 function buildProgressBarStages(state: string) {
   const stages = {
     yourAppealDetails: {
-      activeStatus: [ 'appealStarted', 'appealSubmitted', 'awaitingRespondentEvidence' ]
+      activeStatus: [
+        States.APPEAL_STARTED.id,
+        States.APPEAL_SUBMITTED.id,
+        States.AWAITING_RESPONDENT_EVIDENCE.id
+      ]
     },
     yourAppealArgument: {
-      activeStatus: [ 'awaitingReasonsForAppeal', 'reasonsForAppealSubmitted', 'awaitingClarifyingQuestionsAnswers', 'clarifyingQuestionsAnswersSubmitted' ]
+      activeStatus: [
+        States.AWAITING_REASONS_FOR_APPEAL.id,
+        States.REASONS_FOR_APPEAL_SUBMITTED.id,
+        States.AWAITING_CLARIFYING_QUESTIONS.id,
+        States.CLARIFYING_QUESTIONS_SUBMITTED.id,
+        States.AWAITING_CMA_REQUIREMENTS.id
+      ]
     },
     yourHearingDetails: {
       activeStatus: []

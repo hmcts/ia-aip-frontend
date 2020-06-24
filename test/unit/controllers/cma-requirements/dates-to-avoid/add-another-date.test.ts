@@ -3,7 +3,6 @@ import {
   getAddAnotherDateQuestionPage, postAddAnotherDateQuestionPage,
   setupDatesToAvoidAddAnotherDateController
 } from '../../../../../app/controllers/cma-requirements/dates-to-avoid/add-another-date';
-import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import { expect, sinon } from '../../../../utils/testUtils';
 

@@ -334,7 +334,7 @@ function buildOtherNeedsSummaryList(otherNeeds: OtherNeeds) {
       paths.awaitingCmaRequirements.otherNeedsAnythingElse + editParameter)
   );
 
-  if (otherNeeds.anythingElseReason) {
+  if (otherNeeds.anythingElse) {
     anythingElseRows.push(
       addSummaryRow(
         i18n.common.cya.questionRowTitle,

@@ -1,13 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getAddAnotherDateQuestionPage,
-  postAddAnotherDateQuestionPage
-} from '../../../../../app/controllers/cma-requirements/dates-to-avoid/add-another-date';
-import {
-  getDatesToAvoidQuestion, postDatesToAvoidQuestion,
+  getDatesToAvoidQuestion,
+  postDatesToAvoidQuestion,
   setupDatesToAvoidQuestionController
 } from '../../../../../app/controllers/cma-requirements/dates-to-avoid/question';
-import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -98,14 +94,14 @@ describe('CMA Requirements - Question controller', () => {
       };
 
       const expectedArgs = {
-        error: expectedError ,
+        error: expectedError,
         errorList: Object.values(expectedError),
         formAction: '/appointment-dates-avoid',
         pageTitle: 'Are there any dates you cannot go to the appointment?',
         previousPage: '/appointment-needs',
         question: {
           description: 'You will need to tell us why you cannot go to the appointment on the dates you include.',
-          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
+          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
           title: 'Are there any dates you cannot go to the appointment?'
         },
         saveAndContinue: true

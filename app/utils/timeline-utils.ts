@@ -90,7 +90,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   req.session.appeal.history = history;
 
-  const appealArgumentSection = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION ];
+  const appealArgumentSection = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION, Events.SUBMIT_CMA_REQUIREMENTS ];
   const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
 
   return {

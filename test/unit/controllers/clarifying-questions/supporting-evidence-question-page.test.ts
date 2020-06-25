@@ -4,6 +4,7 @@ import {
   postSupportingEvidenceQuestionPage,
   setupSupportingEvidenceQuestionController
 } from '../../../../app/controllers/clarifying-questions/supporting-evidence-question-page';
+import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
@@ -23,7 +24,9 @@ describe('Question-page controller', () => {
       value: {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
-        question: 'Tell us more about your children'
+        question: 'Tell us more about your children',
+        dateResponded: nowIsoDate(),
+        answer: 'the answer'
       }
     },
     {
@@ -52,6 +55,14 @@ describe('Question-page controller', () => {
           }
         ]
       }
+    },
+    {
+      id: 'id2',
+      value: {
+        dateSent: '2020-04-23',
+        dueDate: '2020-05-07',
+        question: 'Tell us more about your health issues'
+      }
     }
   ];
 
@@ -59,6 +70,14 @@ describe('Question-page controller', () => {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
       params: {},
       session: {
         appeal: {
@@ -108,6 +127,19 @@ describe('Question-page controller', () => {
   });
 
   describe('postSupportingEvidenceQuestionPage', () => {
+    const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
+    let appeal: Partial<Appeal>;
+    beforeEach(() => {
+      appeal = {
+        draftClarifyingQuestionsAnswers: [ ...clarifyingQuestionsWithEvidence ],
+        documentMap: [ documentMap ]
+      };
+      appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence = [];
+      updateAppealService = { submitEventRefactored: sandbox.stub().returns({ appeal }) } as Partial<UpdateAppealService>;
+    });
+    afterEach(() => {
+      sandbox.restore();
+    });
     it('should fail validation and show errors', async () => {
       await postSupportingEvidenceQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
@@ -127,20 +159,20 @@ describe('Question-page controller', () => {
       req.body.answer = 'false';
       await postSupportingEvidenceQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEventRefactored).not.to.have.been.called;
       expect(res.redirect).to.have.been.called.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
     });
 
     it('should delete evidences if there was any and appellant select No to upload evidences', async () => {
-      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
       req.session.appeal.draftClarifyingQuestionsAnswers = [ ...clarifyingQuestionsWithEvidence ];
       req.params.id = '1';
       req.body.answer = 'false';
       await postSupportingEvidenceQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.draftClarifyingQuestionsAnswers[0].value.supportingEvidence).to.be.empty;
       expect(res.redirect).to.have.been.called.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
-
     });
   });
 

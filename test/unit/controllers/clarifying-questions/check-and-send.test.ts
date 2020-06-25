@@ -27,7 +27,9 @@ describe('Clarifying Questions Check and Send controller', () => {
       value: {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
-        question: 'Tell us more about your children'
+        question: 'Tell us more about your children',
+        answer: 'an answer to the question',
+        dateResponded: nowIsoDate()
       }
     },
     {
@@ -36,7 +38,8 @@ describe('Clarifying Questions Check and Send controller', () => {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
         question: 'Tell us more about your health issues',
-        answer: 'an answer to the question'
+        answer: 'an answer to the question',
+        dateResponded: nowIsoDate()
       }
     }
   ];
@@ -45,11 +48,18 @@ describe('Clarifying Questions Check and Send controller', () => {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
       params: {},
       session: {
         appeal: {
-          draftClarifyingQuestionsAnswers: JSON.parse(JSON.stringify(clarifyingQuestions)),
-          clarifyingQuestionsAnswers: null
+          draftClarifyingQuestionsAnswers: clarifyingQuestions
         }
       }
     } as Partial<Request>;
@@ -58,7 +68,6 @@ describe('Clarifying Questions Check and Send controller', () => {
       redirect: sandbox.spy()
     } as Partial<Response>;
     next = sandbox.stub() as NextFunction;
-    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'newState' }) } as Partial<UpdateAppealService>;
     addSummaryRowStub = sandbox.stub(summaryListUtils, 'addSummaryRow');
   });
 
@@ -121,15 +130,27 @@ describe('Clarifying Questions Check and Send controller', () => {
   });
 
   describe('postCheckAndSendPage', () => {
+    let appeal: Partial<Appeal>;
+    beforeEach(() => {
+      appeal = {
+        clarifyingQuestionsAnswers: clarifyingQuestions
+      };
+      updateAppealService = {
+        submitEventRefactored: sandbox.stub().returns({
+          clarifyingQuestionsAnswers: clarifyingQuestions,
+          appealStatus: 'newState'
+        } as Appeal)
+      } as Partial<UpdateAppealService>;
+    });
+    afterEach(() => {
+      sandbox.restore();
+    });
     it('should submit CQ and redirect to confirmation page', async () => {
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      clarifyingQuestions[0].value.dateResponded = nowIsoDate();
-      clarifyingQuestions[1].value.dateResponded = nowIsoDate();
-
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.clarifyingQuestionsAnswers).to.eql(clarifyingQuestions);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.be.undefined;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, req);
       expect(req.session.appeal.appealStatus).to.be.equal('newState');
       expect(res.redirect).to.have.been.calledWith(paths.clarifyingQuestionsAnswersSubmitted.confirmation);
     });

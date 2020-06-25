@@ -5,6 +5,7 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { nowIsoDate } from '../../utils/utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 
 function getClarifyingQuestionPage(req: Request, res: Response, next: NextFunction) {
@@ -48,12 +49,20 @@ function postClarifyingQuestionPage(updateAppealService: UpdateAppealService) {
           ...question,
           value: {
             ...question.value,
-            answer: req.body['answer']
+            answer: req.body['answer'],
+            dateResponded: nowIsoDate()
           }
         };
       });
-      req.session.appeal.draftClarifyingQuestionsAnswers = [ ...updatedQuestions ];
-      await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        draftClarifyingQuestionsAnswers: updatedQuestions
+      };
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       return getConditionalRedirectUrl(req, res, getNextPage(req.body,paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id)));
     } catch (error) {
       next(error);

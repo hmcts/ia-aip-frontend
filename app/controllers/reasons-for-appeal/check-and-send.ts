@@ -49,9 +49,18 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body)) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
-      req.session.appeal.reasonsForAppeal.uploadDate = nowIsoDate();
-      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req);
-      req.session.appeal.appealStatus = updatedAppeal.state;
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        reasonsForAppeal: {
+          ...req.session.appeal.reasonsForAppeal,
+          uploadDate: nowIsoDate()
+        }
+      };
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       return res.redirect(paths.reasonsForAppealSubmitted.confirmation);
     } catch (error) {
       next(error);

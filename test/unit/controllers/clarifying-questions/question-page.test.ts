@@ -7,6 +7,7 @@ import {
 import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
+import { nowIsoDate } from '../../../../app/utils/utils';
 import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';
 
@@ -39,6 +40,14 @@ describe('Question-page controller', () => {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
       params: {},
       session: {
         appeal: {
@@ -51,7 +60,6 @@ describe('Question-page controller', () => {
       redirect: sandbox.spy()
     } as Partial<Response>;
     next = sandbox.stub() as NextFunction;
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -98,6 +106,22 @@ describe('Question-page controller', () => {
   });
 
   describe('postClarifyingQuestionPage', () => {
+    const dummyAnswer: string = 'A dummy answer';
+    let appeal: Partial<Appeal>;
+    beforeEach(() => {
+      appeal = {
+        ...req.session.appeal
+      };
+      updateAppealService = {
+        submitEventRefactored: sandbox.stub().returns({
+          clarifyingQuestionsAnswers: clarifyingQuestions,
+          appealStatus: 'newState'
+        } as Appeal)
+      } as Partial<UpdateAppealService>;
+    });
+    afterEach(() => {
+      sandbox.restore();
+    });
     it('should fail validation and render question-page.njk page with errors', async () => {
       req.body.answer = '';
       req.params.id = '1';
@@ -124,12 +148,14 @@ describe('Question-page controller', () => {
     });
 
     it('should pass validation and save answer and redirect to questions-list', async () => {
-      req.body.answer = 'A dummy answer';
+      req.body.answer = dummyAnswer;
+      appeal.draftClarifyingQuestionsAnswers[0].value.answer = dummyAnswer;
+      appeal.draftClarifyingQuestionsAnswers[0].value.dateResponded = nowIsoDate();
       req.params.id = '1';
       const questionOrderNo = parseInt(req.params.id, 10) - 1;
-
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.be.eql(req.body.answer);
       expect(res.redirect).to.have.been.calledOnce;
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id));
@@ -137,17 +163,18 @@ describe('Question-page controller', () => {
     });
 
     it('should validate and redirect to saveforLater', async () => {
-      req.body.answer = 'yes';
+      req.body.answer = dummyAnswer;
       req.params.id = '1';
       req.body.saveForLater = 'saveForLater';
+      appeal.draftClarifyingQuestionsAnswers[0].value.answer = dummyAnswer;
+      appeal.draftClarifyingQuestionsAnswers[0].value.dateResponded = nowIsoDate();
       const questionOrderNo = parseInt(req.params.id, 10) - 1;
-
       await postClarifyingQuestionPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.answer).to.be.eql(req.body.answer);
       expect(res.redirect).to.have.been.calledOnce;
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview + '?saved');
-
     });
 
     it('should call next with error', async () => {

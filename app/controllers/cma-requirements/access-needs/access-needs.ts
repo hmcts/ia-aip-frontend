@@ -6,6 +6,7 @@ import { isoLanguages } from '../../../data/isoLanguages';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
+import { yesNoToBool } from '../../../utils/utils';
 import { selectedRequiredValidation, yesOrNoRequiredValidation } from '../../../utils/validations/fields-validations';
 
 const yesOrNoOption = (answer: boolean) => [
@@ -45,7 +46,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const validation = yesOrNoRequiredValidation(req.body, i18n.validationErrors.cmaRequirements.accessNeeds.selectInterpreter);
-      const answer = req.body.answer === 'yes' ? true : false;
+      const answer = yesNoToBool(req.body.answer);
       if (validation) {
         return res.render('templates/radio-question-page.njk', {
           previousPage: paths.awaitingCmaRequirements.accessNeeds,
@@ -61,11 +62,15 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation)
         });
       }
+
       req.session.appeal.cmaRequirements = {
+        ...req.session.appeal.cmaRequirements,
         accessNeeds: {
-          isInterpreterServicesNeeded: req.body.answer === 'yes' ? true : false
+          ...req.session.appeal.cmaRequirements.accessNeeds,
+          isInterpreterServicesNeeded: answer
         }
       };
+
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       if (req.body.answer === 'no') {
         return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
@@ -101,9 +106,15 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.taskList
         });
       }
-      req.session.appeal.cmaRequirements.accessNeeds.interpreterLanguage = {
-        language: req.body.language,
-        languageDialect: req.body.dialect
+      req.session.appeal.cmaRequirements = {
+        ...req.session.appeal.cmaRequirements,
+        accessNeeds: {
+          ...req.session.appeal.cmaRequirements.accessNeeds,
+          interpreterLanguage: {
+            language: req.body.language,
+            languageDialect: req.body.dialect
+          }
+        }
       };
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
@@ -159,7 +170,13 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation)
         });
       }
-      req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded = req.body.answer === 'yes' ? true : false;
+
+      req.session.appeal.cmaRequirements = {
+        ...req.session.appeal.cmaRequirements,
+        accessNeeds: {
+          ...req.session.appeal.cmaRequirements.accessNeeds,
+          isHearingRoomNeeded : yesNoToBool(req.body.answer)
+        }};
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.accessNeedsHearingLoop);
     } catch (error) {
@@ -211,7 +228,14 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validation)
         });
       }
-      req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded = req.body.answer === 'yes' ? true : false;
+
+      req.session.appeal.cmaRequirements = {
+        ...req.session.appeal.cmaRequirements,
+        accessNeeds: {
+          ...req.session.appeal.cmaRequirements.accessNeeds,
+          isHearingLoopNeeded : yesNoToBool(req.body.answer)
+        }};
+
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
       return getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.taskList);
 

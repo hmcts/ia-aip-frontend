@@ -4,7 +4,7 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getNextPage } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 

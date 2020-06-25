@@ -1,5 +1,5 @@
-const awaitingCmaRequirements = {
-  'id': 9,
+const awaitingCmaRequirementsWithTimeExtensions = {
+  'id': 10,
   'jurisdiction': 'IA',
   'state': 'awaitingCmaRequirements',
   'version': 9,
@@ -46,8 +46,19 @@ const awaitingCmaRequirements = {
         }
       }
     ],
-    "directions": [
+    "timeExtensions": [
       {
+        "id": "88adad33-061a-4c86-83d8-2defd1e935d1",
+        "value": {
+          "state": "awaitingCmaRequirements",
+          "reason": "sdw",
+          "status": "submitted",
+          "requestDate": "2020-05-01"
+        }
+      }
+    ],
+    "directions": [
+    {
         "id": "3",
         "value": {
           "tag": "requestCmaRequirements",
@@ -85,4 +96,4 @@ const awaitingCmaRequirements = {
   }
 };
 
-module.exports = { ...awaitingCmaRequirements };
+module.exports = { ...awaitingCmaRequirementsWithTimeExtensions };

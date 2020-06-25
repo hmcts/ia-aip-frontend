@@ -3,6 +3,16 @@ interface Href {
   text: string;
 }
 
+interface SummarySection {
+  title: string;
+  summaryLists: SummaryList[];
+}
+
+interface SummaryList {
+  title?: string;
+  summaryRows: SummaryRow[];
+}
+
 interface SummaryRow {
   key: {
     text: string
@@ -163,17 +173,6 @@ interface CmaRequirements {
   accessNeeds?: AccessNeeds;
   otherNeeds?: OtherNeeds;
   datesToAvoid?: DatesToAvoid;
-
-}
-
-interface DatesToAvoid {
-  isDateCannotAttend: boolean;
-  dates?: CmaDateToAvoid[];
-}
-
-interface CmaDateToAvoid {
-  date: AppealDate;
-  reason?: string;
 }
 
 interface AccessNeeds {
@@ -198,6 +197,16 @@ interface OtherNeeds {
   pastExperiencesReason: string;
   anythingElse: boolean;
   anythingElseReason: string;
+}
+
+interface DatesToAvoid {
+  isDateCannotAttend: boolean;
+  dates?: CmaDateToAvoid[];
+}
+
+interface CmaDateToAvoid {
+  date: AppealDate;
+  reason?: string;
 }
 
 interface ReasonsForAppeal {

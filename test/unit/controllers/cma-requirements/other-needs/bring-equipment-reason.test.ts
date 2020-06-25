@@ -108,7 +108,30 @@ describe('CMA Requirements - Other Needs Section: Bring Equipment Reason control
     it('should fail validation and render template with errors', async () => {
       await postMultimediaEquipmentReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk');
+      const expectedError = {
+        reason: {
+          href: '#reason',
+          key: 'reason',
+          text: 'Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it'
+        }
+      };
+
+      const expectedArgs = {
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        formAction: '/appointment-multimedia-evidence-equipment-reasons',
+        pageTitle: 'Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it',
+        previousPage: '/appointment-multimedia-evidence-equipment',
+        question: {
+          name: 'reason',
+          title: 'Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it',
+          value: ''
+        },
+        supportingEvidence: false,
+        timeExtensionAllowed: false
+      };
+      expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
+
     });
 
     it('should validate and redirect to next page', async () => {

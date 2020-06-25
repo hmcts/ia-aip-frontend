@@ -77,6 +77,9 @@ const paths = {
     datesToAvoidAddAnotherDate: '/appointment-dates-avoid-new',
     checkAndSend: '/appointment-check-answers'
   },
+  cmaRequirementsSubmitted: {
+    confirmation: '/appointment-success'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',

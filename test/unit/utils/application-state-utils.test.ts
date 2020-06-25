@@ -258,11 +258,11 @@ describe('application-state-utils', () => {
           'First, tell us if you will need anything at the appointment, like an interpreter or step-free access.'
         ],
         descriptionParagraphsAskForMoreTime: [
-          'You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> if you can.'
+          'You might not get more time. You should still try and provide the requirements by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> if you can.'
         ],
         info: {
           title: 'Helpful Information',
-          url: "<a href='{{ paths.common.homeOfficeDocuments }}'>What to expect at a case management appointment</a>"
+          url: "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
         }
       }
     );

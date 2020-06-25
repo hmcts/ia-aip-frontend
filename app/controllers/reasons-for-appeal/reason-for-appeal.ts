@@ -43,13 +43,19 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
           askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
         });
       }
-      req.session.appeal.reasonsForAppeal = {
-        ...req.session.appeal.reasonsForAppeal,
-        applicationReason: req.body.applicationReason
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        reasonsForAppeal: {
+          ...req.session.appeal.reasonsForAppeal,
+          applicationReason: req.body.applicationReason
+        }
       };
-
-      await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
-
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       if (req.body['saveForLater']) {
         if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
@@ -145,7 +151,12 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
             askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
           });
         }
-        await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
+        const appeal: Appeal = { ...req.session.appeal };
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.appeal = {
+          ...req.session.appeal,
+          ...appealUpdated
+        };
         return getConditionalRedirectUrl(req, res, paths.awaitingReasonsForAppeal.checkAndSend);
       }
     } catch (e) {

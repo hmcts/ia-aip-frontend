@@ -48,7 +48,7 @@ describe('Reasons for Appeal Controller', function () {
 
     next = sandbox.stub() as NextFunction;
 
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {

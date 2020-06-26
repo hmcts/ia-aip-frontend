@@ -1,0 +1,44 @@
+{% set pageTitleName = i18n.pages.whatToExpectPage.pageTitle | eval %}
+{% extends "layout.njk" %}
+
+
+
+{% block content %}
+            <h1 class='govuk-heading-l'>{{  i18n.pages.whatToExpectPage.title | eval | safe}}</h1>
+            <p class="govuk-!-font-size-24">{{ i18n.pages.whatToExpectPage.whatIsCMA | eval | safe }}</p>
+            <h2 class='govuk-heading-s'>{{ i18n.pages.whatToExpectPage.whenYouArrive.title }}</h2>
+            <p>{{  i18n.pages.whatToExpectPage.whenYouArrive.text }}</p>
+
+            <h2 class='govuk-heading-s'>{{ i18n.pages.whatToExpectPage.theHearingRoom.title }}</h2>
+            <p>{{  i18n.pages.whatToExpectPage.theHearingRoom.text }}</p>
+
+            <h2 class='govuk-heading-s'>{{ i18n.pages.whatToExpectPage.peopleAtAppointment.title }}</h2>
+            <p>{{  i18n.pages.whatToExpectPage.peopleAtAppointment.titleOne }}</p>
+            <ul class="govuk-list govuk-list--bullet">
+             {% for text in i18n.pages.whatToExpectPage.peopleAtAppointment.bulletOne %}
+                     <li>{{  text }}</li>
+             {% endfor %}
+            </ul>
+            <p>{{  i18n.pages.whatToExpectPage.peopleAtAppointment.titleTwo }}</p>
+            <ul class="govuk-list govuk-list--bullet">
+            {% for text in i18n.pages.whatToExpectPage.peopleAtAppointment.bulletTwo %}
+                         <li>{{  text }}</li>
+            {% endfor %}
+            </ul>
+            <h2 class='govuk-heading-s'>{{ i18n.pages.whatToExpectPage.DuringAppointment.title }}</h2>
+            <p>{{ i18n.pages.whatToExpectPage.DuringAppointment.introduction }}</p>
+            <p>{{ i18n.pages.whatToExpectPage.DuringAppointment.questions }}</p>
+            <p>{{  i18n.pages.whatToExpectPage.DuringAppointment.endOfAppointment }}</p>
+
+            <h2 class='govuk-heading-s'>{{ i18n.pages.whatToExpectPage.AfterAppointment.title }}</h2>
+            <p>{{  i18n.pages.whatToExpectPage.AfterAppointment.notification }}</p>
+            <p>{{  i18n.pages.whatToExpectPage.AfterAppointment.onlineSummary }}</p>
+
+            <h2 class='govuk-heading-s'>{{ i18n.pages.whatToExpectPage.AdviceForPreparation.title }}</h2>
+            <ul class="govuk-list govuk-list--bullet">
+                {% for text in i18n.pages.whatToExpectPage.AdviceForPreparation.bullets %}
+                    <li>{{  text | safe }}</li>
+                {% endfor %}
+            </ul>
+    {{ contactUs() }}
+{% endblock %}

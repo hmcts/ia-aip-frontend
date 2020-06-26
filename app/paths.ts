@@ -135,12 +135,13 @@ const paths = {
     moreHelp: '/appeal-help',
     evidenceToSupportAppeal: '/supporting-evidence',
     homeOfficeDocuments: '/home-office-documents',
-    whatToExpectAtCMA: '/home-office-documents',
+    whatToExpectAtCMA: '/expect-case-management-appointment',
 
     // Footer links
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy'
+
   }
 };
 export {

@@ -44,6 +44,7 @@ import { setupSingleSexAppointmentQuestionController } from './controllers/cma-r
 import { setupSingleSexTypeAppointmentQuestionController } from './controllers/cma-requirements/other-needs/single-sex-type-appointment-question';
 import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
 import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
+import { setupcmaGuidancePageController } from './controllers/cma-requirements/what-to-expect';
 import { setupDetailViewersController } from './controllers/detail-viewers';
 import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
@@ -135,6 +136,8 @@ const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAdd
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
 
+const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
+
 // not protected by idam
 router.use(indexController);
 router.use(healthController);
@@ -197,6 +200,7 @@ router.use(cmaRequirementsDatesToAvoidReasonController);
 router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
 router.use(cmaRequirementsCYAController);
 router.use(cmaRequirementsConfirmationController);
+router.use(whatToExpectAtCmaNextController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

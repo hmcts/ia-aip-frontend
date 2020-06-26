@@ -4,7 +4,7 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getNextPage, shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getNextPage } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
@@ -30,17 +30,24 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
       if (req.file) {
         const questionOrder = parseInt(req.params.id, 10) - 1;
         const evidenceStored: Evidence = await documentManagementService.uploadFile(req);
-        const cq: ClarifyingQuestion<Evidence> = { ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder] };
-        if (!cq.value.supportingEvidence) {
-          cq.value.supportingEvidence = [ { ...evidenceStored } ];
+        const draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
+        if (!draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence) {
+          draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [ { ...evidenceStored } ];
         } else {
-          cq.value.supportingEvidence = [
-            ...cq.value.supportingEvidence,
+          draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [
+            ...draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence,
             { ...evidenceStored }
           ];
         }
-        req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder] = { ...cq };
-        await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+        const appeal: Appeal = {
+          ...req.session.appeal,
+          draftClarifyingQuestionsAnswers
+        };
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.appeal = {
+          ...req.session.appeal,
+          ...appealUpdated
+        };
         return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id)));
       } else {
         const questionOrder = parseInt(req.params.id, 10) - 1;
@@ -71,11 +78,20 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
         const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
         const supportingEvidences: Evidence[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence ];
-
-        req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [
+        const draftClarifyingQuestionsAnswers = { ...req.session.appeal.draftClarifyingQuestionsAnswers };
+        draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [
           ...supportingEvidences.filter((evidence: Evidence) => evidence.fileId !== req.query['id'])
         ];
-        await updateAppealService.submitEvent(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, req);
+
+        const appeal: Appeal = {
+          ...req.session.appeal,
+          draftClarifyingQuestionsAnswers
+        };
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.appeal = {
+          ...req.session.appeal,
+          ...appealUpdated
+        };
         res.redirect(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id));
       }
     } catch (e) {

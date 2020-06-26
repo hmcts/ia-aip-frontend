@@ -9,6 +9,11 @@ export const addDaysToDate = (days: number) => {
   return moment().add(days,'days').format(dayMonthYearFormat);
 };
 
+const formatDate = (date: string) => {
+  return moment(date).format(dayMonthYearFormat);
+};
+
 export {
-  dayMonthYearFormat
+  dayMonthYearFormat,
+  formatDate
 };

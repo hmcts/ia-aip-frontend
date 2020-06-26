@@ -21,6 +21,8 @@ import { setupClarifyingQuestionsListController } from './controllers/clarifying
 import { setupClarifyingQuestionsSupportingEvidenceUploadController } from './controllers/clarifying-questions/supporting-evidence';
 import { setupSupportingEvidenceQuestionController } from './controllers/clarifying-questions/supporting-evidence-question-page';
 import { setupAccessNeedsController } from './controllers/cma-requirements/access-needs/access-needs';
+import { setupCmaRequirementsCYAController } from './controllers/cma-requirements/check-and-send/check-and-send';
+import { setupCmaRequirementsConfirmationPage } from './controllers/cma-requirements/confirmation-page';
 import { setupDatesToAvoidAddAnotherDateController } from './controllers/cma-requirements/dates-to-avoid/add-another-date';
 import { setupDatesToAvoidEnterADateController } from './controllers/cma-requirements/dates-to-avoid/enter-a-date';
 import { setupDatesToAvoidQuestionController } from './controllers/cma-requirements/dates-to-avoid/question';
@@ -131,7 +133,11 @@ const cmaRequirementsDatesToAvoidQuestionController = setupDatesToAvoidQuestionC
 const cmaRequirementsDatesToAvoidEnterADateController = setupDatesToAvoidEnterADateController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonController(middleware, updateAppealService);
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
-const whatToExpectNextController = setupcmaGuidancePageController(middleware);
+const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
+const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
+
+const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
+
 // not protected by idam
 router.use(indexController);
 router.use(healthController);
@@ -170,9 +176,9 @@ router.use(clarifyingQuestionsAnythingElseQuestionController);
 router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
-router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsTaskListController);
 router.use(cmaRequirementsStartPageController);
+router.use(cmaRequirementsAccessNeedsController);
 router.use(cmaRequirementsMultimediaEvidenceQuestionController);
 router.use(cmaRequirementsBringEquipmentQuestionController);
 router.use(cmaRequirementsBringEquipmentReasonController);
@@ -192,8 +198,11 @@ router.use(cmaRequirementsDatesToAvoidQuestionController);
 router.use(cmaRequirementsDatesToAvoidEnterADateController);
 router.use(cmaRequirementsDatesToAvoidReasonController);
 router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
+router.use(cmaRequirementsCYAController);
+router.use(cmaRequirementsConfirmationController);
+router.use(whatToExpectAtCmaNextController);
+
 router.use(detailViewersController);
 router.use(forbiddenController);
-router.use(whatToExpectNextController);
 
 export { router };

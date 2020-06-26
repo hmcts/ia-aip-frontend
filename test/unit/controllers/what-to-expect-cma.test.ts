@@ -72,7 +72,7 @@ describe('CMA Guidance Controller', function() {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const middleware = [];
       setupcmaGuidancePageController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.whatToExpect);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.whatToExpectAtCMA);
     });
   });
 });

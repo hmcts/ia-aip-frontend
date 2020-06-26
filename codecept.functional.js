@@ -9,8 +9,12 @@ exports.config = {
     Puppeteer: {
       url: config.get('testUrl'),
       show: config.get('showTests'),
-      "chrome": {
-        "ignoreHTTPSErrors": true
+      chrome: {
+        ignoreHTTPSErrors: true,
+        defaultViewport: {
+          width: 1280,
+          height: 720
+        }
       }
     }
   },

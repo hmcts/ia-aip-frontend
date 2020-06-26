@@ -8,7 +8,7 @@ import { Events } from '../../../../app/data/events';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../../../app/utils/summary-list';
-import { formatTextForCYA } from '../../../../app/utils/utils';
+import { formatTextForCYA, nowIsoDate } from '../../../../app/utils/utils';
 import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';
 
@@ -26,6 +26,15 @@ describe('Reasons For Appeal - Check and send Controller', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
+      body: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
       session: {
         appeal: {
           application: {},
@@ -46,7 +55,7 @@ describe('Reasons For Appeal - Check and send Controller', () => {
     routerGetStub = sandbox.stub(express.Router as never, 'get');
     routerPostStub = sandbox.stub(express.Router as never, 'post');
     next = sandbox.stub() as NextFunction;
-    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'reasonsForAppealSubmitted' }) } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEventRefactored: sandbox.stub().returns({ state: 'reasonsForAppealSubmitted' }) } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -113,15 +122,17 @@ describe('Reasons For Appeal - Check and send Controller', () => {
   describe('postCheckAndSend', () => {
     it('should redirect to confirmation page when click save and continue', async () => {
       req.body = {};
+      const appeal: Appeal = { ...req.session.appeal };
+      appeal.reasonsForAppeal.uploadDate = nowIsoDate();
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledOnceWith(Events.SUBMIT_REASONS_FOR_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledOnceWith(Events.SUBMIT_REASONS_FOR_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.reasonsForAppealSubmitted.confirmation);
     });
 
     it('should redirect to timeline page when click save for later', async () => {
       req.body = { saveForLater: 'saveForLater' };
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 

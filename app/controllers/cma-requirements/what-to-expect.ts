@@ -13,7 +13,7 @@ function getCmaGuidancePage(req: Request, res: Response, next: NextFunction) {
 
 function setupcmaGuidancePageController(middleware: Middleware[]): Router {
   const router = Router();
-  router.get(paths.common.whatToExpect, getCmaGuidancePage, middleware);
+  router.get(paths.common.whatToExpectAtCMA, getCmaGuidancePage, middleware);
   return router;
 }
 

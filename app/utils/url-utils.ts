@@ -30,17 +30,17 @@ export function getIdamLoginUrl(req: Request) {
  */
 export function getConditionalRedirectUrl(req: Request, res: Response, redirectUrl: string) {
 
-  if (_.has(req.session, 'appeal.application.isEdit')
+  if (_.get(req.session, 'appeal.application.isEdit', false)
     && req.session.appeal.application.isEdit === true) {
     req.session.appeal.application.isEdit = false;
     return res.redirect(paths.appealStarted.checkAndSend);
   }
-  if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
+  if (_.get(req.session, 'appeal.reasonsForAppeal.isEdit', false)
     && req.session.appeal.reasonsForAppeal.isEdit === true) {
     req.session.appeal.reasonsForAppeal.isEdit = false;
     return res.redirect(paths.awaitingReasonsForAppeal.checkAndSend);
   }
-  if (_.has(req.session, 'appeal.cmaRequirements.isEdit')
+  if (_.get(req.session, 'appeal.cmaRequirements.isEdit', false)
     && req.session.appeal.cmaRequirements.isEdit === true) {
     req.session.appeal.cmaRequirements.isEdit = false;
     return res.redirect(paths.awaitingCmaRequirements.checkAndSend);

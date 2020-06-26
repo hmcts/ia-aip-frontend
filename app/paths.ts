@@ -77,6 +77,9 @@ const paths = {
     datesToAvoidAddAnotherDate: '/appointment-dates-avoid-new',
     checkAndSend: '/appointment-check-answers'
   },
+  cmaRequirementsSubmitted: {
+    confirmation: '/appointment-success'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',
@@ -132,13 +135,12 @@ const paths = {
     moreHelp: '/appeal-help',
     evidenceToSupportAppeal: '/supporting-evidence',
     homeOfficeDocuments: '/home-office-documents',
-    whatToExpectAtCMA: '/home-office-documents',
+    whatToExpectAtCMA: '/expect-case-management-appointment',
 
     // Footer links
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
-    privacyPolicy: '/privacy-policy',
-    whatToExpect: '/expect-case-management-appointment'
+    privacyPolicy: '/privacy-policy'
 
   }
 };

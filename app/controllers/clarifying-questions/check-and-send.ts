@@ -7,7 +7,6 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { nowIsoDate } from '../../utils/utils';
 
 function buildEvidencesList(evidences: Evidence[]): string[] {
   return evidences.map((evidence: Evidence) => {
@@ -21,7 +20,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
     const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
     const anythingElseQuestion: ClarifyingQuestion<Evidence> = clarifyingQuestions.pop();
 
-    const summaryLists: any[] = clarifyingQuestions.map((question: ClarifyingQuestion<Evidence>, index: number) => {
+    const summaryLists: SummaryList[] = clarifyingQuestions.map((question: ClarifyingQuestion<Evidence>, index: number) => {
       const summaryRows: SummaryRow[] = [];
       summaryRows.push(
         addSummaryRow(i18n.common.cya.questionRowTitle, [ `<pre>${question.value.question}</pre>` ])
@@ -87,13 +86,14 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
-      req.session.appeal.clarifyingQuestionsAnswers = [ ...clarifyingQuestions ].map((question => {
-        question.value.dateResponded = nowIsoDate();
-        return question;
-      }));
+      const { draftClarifyingQuestionsAnswers, ...appeal } = req.session.appeal;
+      appeal.clarifyingQuestionsAnswers = clarifyingQuestions;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       delete req.session.appeal.draftClarifyingQuestionsAnswers;
-      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, req);
-      req.session.appeal.appealStatus = updatedAppeal.state;
       return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.clarifyingQuestionsAnswersSubmitted.confirmation));
     } catch (e) {
       next(e);

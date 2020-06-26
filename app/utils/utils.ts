@@ -51,3 +51,11 @@ export function getRedirectPage(editingMode, editingModeRedirect, saveForLater, 
   if (editingMode) return editingModeRedirect;
   return defaultRedirect;
 }
+
+export function boolToYesNo(value: boolean) {
+  return value === true ? 'Yes' : 'No';
+}
+
+export function yesNoToBool(answer: string): boolean {
+  return answer ? answer.toLowerCase() === 'yes' : false;
+}

@@ -173,3 +173,11 @@ Feature: Cma Requirements
     When I choose No and click save and continue
     Then I see "Tell us your appointment needs" in title
     And I see "Check and send us your appointment needs" link
+
+    When I click "Check and send us your appointment needs" link
+    Then I see "Check your answers" in title
+    And I see cma requirements answers and content
+
+    When I click "Send" button
+    Then I should see the cma requirements confirmation page
+    And I see the respond by date is 2 weeks in the future

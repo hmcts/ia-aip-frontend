@@ -11,6 +11,7 @@ const usersToCaseData = {
   '7': [ mockData.awaitingReasonsForAppealCaseDataWithTimeExtension ],
   '8': [ mockData.clarifyingQuestionsCaseDataWithTimeExtensions ],
   '9': [ mockData.awaitingCmaRequirements ],
+  '10': [ mockData.awaitingCmaRequirementsWithTimeExtensions ],
 
 };
 

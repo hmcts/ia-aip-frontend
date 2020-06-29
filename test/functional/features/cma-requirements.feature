@@ -182,12 +182,6 @@ Feature: Cma Requirements @only
     Then I should see the cma requirements confirmation page
     And I see the respond by date is 2 weeks in the future
 
-    Scenario: checking cma details viewer
-      Given I have logged in as an appellant in state "cmaRequirementsSubmitted"
-      Then I am on the overview page
-      When I click "Your appointment needs" link
-      Then I should see the cma requirements detail viewer page
-
 
   Scenario: Answering Cma Requirements
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
@@ -257,4 +251,9 @@ Feature: Cma Requirements @only
     When I click "Continue" button
 
     Then I should see the cma requirements task-list page
+
+  Scenario: checking cma details viewer
+    Given I have logged in as an appellant in state "cmaRequirementsSubmitted"
+    Then I am on the overview page
+    When I click "Your appointment needs" link
 

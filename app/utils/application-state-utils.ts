@@ -146,6 +146,18 @@ const APPEAL_STATE = {
     ],
     cta: null,
     allowedAskForMoreTime: false
+  },
+  'cmaRequirementsSubmitted': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description,
+      i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description2
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.title,
+      url: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.url
+    },
+    cta: null,
+    allowedAskForMoreTime: false
   }
 };
 

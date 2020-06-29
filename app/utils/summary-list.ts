@@ -6,10 +6,9 @@ export enum Delimiter {
   BREAK_LINE = '<br>'
 }
 
-export function addSummaryRow(key?: string, values?: (number | string | string[] | any)[], href?: string, delimiter?: Delimiter, classes: string = '') {
+export function addSummaryRow(key?: string, values?: (number | string | string[] | any)[], href?: string, delimiter?: Delimiter) {
   const separator = delimiter || '';
   let row: SummaryRow = {
-    classes: classes,
     key: {
       text: key
     },

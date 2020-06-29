@@ -313,6 +313,14 @@
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
+        "cmaRequirementsSubmitted": {
+          "description": "A Tribunal Caseworker is looking at your answers and will contact you with details of your case management appointment and tell you what to do next.",
+          "description2": "This should be by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> but may be longer than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          }
+        },
         "awaitingRespondentEvidence": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
           "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",

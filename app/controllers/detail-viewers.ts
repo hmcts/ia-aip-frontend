@@ -15,6 +15,7 @@ import {
 import { dayMonthYearFormat } from '../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
+import { boolToYesNo } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
@@ -123,11 +124,13 @@ function setupCmaRequirementsViewer(req: Request) {
   const dateToAvoid = [];
   const submitCmaRequirements = getAppealApplicationData('submitCmaRequirements', req);
   const { data } = submitCmaRequirements[0];
+  const cmaRequirements: CmaRequirements = req.session.appeal.cmaRequirements;
   if (_.has(data,'isInterpreterServicesNeeded')) {
     interpreter.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.interpreterTitle], null));
     interpreter.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isInterpreterServicesNeeded], null));
     if (data.isInterpreterServicesNeeded === 'Yes') {
-      interpreter.push(addSummaryRow(i18n.pages.detailViewers.cmaRequirements.language, [
+      const interpreterTitle = i18n.pages.detailViewers.cmaRequirements.language + ' ' + i18n.pages.detailViewers.cmaRequirements.dialect;
+      interpreter.push(addSummaryRow(interpreterTitle, [
         `${data.interpreterLanguage[0].value.language}`,
         Delimiter.BREAK_LINE,
         `<pre>${data.interpreterLanguage[0].value.languageDialect || ''}</pre>`,
@@ -151,10 +154,10 @@ function setupCmaRequirementsViewer(req: Request) {
   }
   if (_.has(data,'multimediaEvidence')) {
     multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceBringEquip ], null));
-    multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
-    if (data.multimediaEvidence === 'No') {
+    multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [boolToYesNo(cmaRequirements.otherNeeds.bringOwnMultimediaEquipment)], null));
+    if ((data.multimediaEvidenceDescription && !_.isEmpty(data.multimediaEvidenceDescription))) {
       multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceCantBringEquip], null));
-      multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
+      multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidenceDescription], null));
     }
   }
   // // SAME SEX
@@ -164,54 +167,54 @@ function setupCmaRequirementsViewer(req: Request) {
   }
   if (_.has(data,'singleSexCourt')) {
     sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMQuestion], null));
-    sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
+    sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourtType], null));
     if (data.singleSexCourt === 'Yes') {
       sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMWhy], null));
       sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourtTypeDescription], null));
     }
   }
   // // PRIVATE APPOINTMENT NEEDED
-  if (_.has(data,'singleSexCourt')) {
+  if (_.has(data,'inCameraCourt')) {
     privateAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.privateAppointmentTitle], null));
-    privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
-    if (data.singleSexCourt === 'Yes') {
+    privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.inCameraCourt], null));
+    if (data.inCameraCourt === 'Yes') {
       privateAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.privateAppointmentQuestion], null));
-      privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourtTypeDescription], null));
+      privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.inCameraCourtDescription], null));
     }
   }
   // // PHYSICAL EVIDENCE
   if (_.has(data,'physicalOrMentalHealthIssues')) {
-    physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperiencesTitle], null));
+    physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalTitle], null));
     physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle,[data.physicalOrMentalHealthIssues], null));
 
     if (data.physicalOrMentalHealthIssues === 'Yes') {
-      physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperienceQuestion], null));
-      physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssues], null));
+      physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalQuestion], null));
+      physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssuesDescription], null));
     }
   }
-  // // PRIVATE EXPERIENCE
+  // // PRIVATE pastExperiencesTitle
   if (_.has(data,'pastExperiences')) {
-    pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalTitle], null));
+    pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperiencesTitle], null));
     pastExperiences.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.pastExperiences], null));
 
     if (data.pastExperiences === 'Yes') {
-      pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalQuestion], null));
+      pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperienceQuestion], null));
       pastExperiences.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.pastExperiencesDescription], null));
     }
   }
   // // ANYTHING ELSE
-  if (_.has(data,'anythingElse')) {
+  if (_.has(data,'additionalRequests')) {
     anythingElse.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseTitle], null));
-    anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssues], null));
+    anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.additionalRequests], null));
 
-    if (data.physicalOrMentalHealthIssues === 'Yes') {
+    if (data.additionalRequests === 'Yes') {
       anythingElse.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseQuestion], null));
-      anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssues], null));
+      anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.additionalRequestsDescription], null));
     }
   }
 
   // // dates to avoid
-  if (_.has(data,'datesToAvoid')) {
+  if (_.has(data,'datesToAvoidYesNo')) {
     dateToAvoid.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.cmaRequirements.taskList.datesToAvoid.title], null));
     dateToAvoid.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.datesToAvoidYesNo], null));
     // Loop dates

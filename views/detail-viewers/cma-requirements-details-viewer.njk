@@ -1,12 +1,53 @@
 {% extends '../layout.njk' %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% set pageTitleName = i18n.pages.overviewPage.timeline.appealApplicationCheckAnswersHistory.title %}
+{% set pageTitleName = i18n.pages.detailViewers.cmaRequirements.title  %}
 
 {% block content %}
-  <h1 class="govuk-heading-xl">{{ i18n.pages.overviewPage.timeline.appealApplicationCheckAnswersHistory.title }}</h1>
+  <h1 class="govuk-heading-xl">{{ i18n.pages.detailViewers.cmaRequirements.title }}</h1>
+  <h2 class="govuk-heading-l">1. Access needs</h2>
+  <h2 class="govuk-heading-l">Interpreter</h2>
   {{ govukSummaryList({
-    rows: data
+    rows: interpreter
   }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.stepFreeAccessTitle }}</h2>
+  {{ govukSummaryList({
+    rows: stepFree
+  }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle }}</h2>
+  {{ govukSummaryList({
+    rows: hearingLoop
+  }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.otherNeedsTitle }}</h2>
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.multiMediaViewTitle }}</h2>
+  {{ govukSummaryList({
+    rows: multiEvidence
+  }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.sexAppointmentViewerTitle }}</h2>
+  {{ govukSummaryList({
+    rows: sexAppointment
+  }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.privateAppointmentViewerTitle }}</h2>
+  {{ govukSummaryList({
+    rows: privateAppointment
+  }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.HealthViewerTitle }}</h2>
+  {{ govukSummaryList({
+    rows: physicalOrMental
+  }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.pastExpViewerTitle }}</h2>
+  {{ govukSummaryList({
+    rows: pastExperiences
+  }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.anythingElseViewerTitle }}</h2>
+  {{ govukSummaryList({
+    rows: anythingElse
+  }) }}
+  <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.cmaRequirements.datesToAvoidTitle }}</h2>
+  {{ govukSummaryList({
+    rows: dateToAvoid
+  }) }}
+
+
 {% endblock %}
 
 

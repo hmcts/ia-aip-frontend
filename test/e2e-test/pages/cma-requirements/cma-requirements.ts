@@ -14,6 +14,11 @@ module.exports = {
       await I.see('Tell us your appointment needs', 'h1');
     });
 
+    Then(/^I should see the cma requirements detail viewer page$/, async () => {
+      await I.seeInCurrentUrl(paths.common.detailsViewers.cmaRequirementsAnswer);
+      await I.see('Your appointment needs', 'h1');
+    });
+
     When(/^I enter a valid in-range date$/, async () => {
       const validDate = moment().add(4, 'week');
       fillInDate(validDate.date(), (validDate.month() + 1), validDate.year());

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   getAppealDetailsViewer,
+  getCmaRequirementsViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getReasonsForAppealViewer,
@@ -13,6 +14,7 @@ import { DocumentManagementService } from '../../../app/service/document-managem
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
+import { expectedEventsWithCmaRequirements } from '../mockData/events/expectation/expected-history-cma-requirements';
 import { expectedMultipleEventsData } from '../mockData/events/expectation/expected-multiple-events';
 import { expectedTimeExtensionMap } from '../mockData/events/expectation/timeExtensionMap/expected-time-extension-map';
 
@@ -72,6 +74,7 @@ describe('Detail viewer Controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.reasonsForAppeal);
       expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.timeExtension + '/:id');
       expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.timeExtensionDecision + '/:id');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.cmaRequirementsAnswer + '/:id');
     });
   });
 
@@ -358,6 +361,96 @@ describe('Detail viewer Controller', () => {
       res.render = sandbox.stub().throws(error);
       getTimeExtensionDecisionViewer(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+  describe('getCmaDetailsViewer', () => {
+    it('should render detail-viewers/cma-requirements-viewer.njk with no evidences', () => {
+      req.session.appeal.history = expectedEventsWithCmaRequirements;
+
+      getCmaRequirementsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/cma-requirements-details-viewer.njk', {
+        previousPage: paths.common.overview,
+        interpreter: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'Will you need an interpreter at the appointment?' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          classes: '',
+          key: { text: 'Language' },
+          value: { html: 'Albanian<br><pre></pre><br>' }
+        }],
+        stepFree: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'Step free access' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'Yes' } }],
+        hearingLoop: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'Hearing loop' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }],
+        multiEvidence: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'Will you bring any multimedia evidence' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }, {
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'Will you bring the equipment to play this evidence' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }, {
+          classes: '',
+          key: { text: 'Question' },
+          value: {
+            html: 'Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it.'
+          }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }],
+        sexAppointment: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'Will you need an all-female or all-male appointment' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }, {
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'What type of appointment will you need?' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }],
+        privateAppointment: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'Will you need a private appointment?' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }],
+        physicalOrMental: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: {
+            html: 'Have you had any past experiences that may affect you at the appointment?'
+          }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }],
+        pastExperiences: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: {
+            html: 'Do you have any physical or mental health conditions that may affect you at the hearing?'
+          }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'No' } }],
+        anythingElse: [],
+        dateToAvoid: [{
+          classes: '',
+          key: { text: 'Question' },
+          value: { html: 'Are there any dates you cannot go to the appointment?' }
+        }, { classes: '', key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          classes: '',
+          key: { text: 'Dates to avoid' },
+          value: {
+            html: '<b>Date</b><br><pre>2020-09-05</pre><br><b>Reason</b><br><pre>Away</pre>'
+          }
+        }, {
+          classes: '',
+          key: { text: null },
+          value: {
+            html: '<b>Date</b><br><pre>2020-09-06</pre><br><b>Reason</b><br><pre>Also Away</pre>'
+          }
+        }]
+      });
     });
   });
 });

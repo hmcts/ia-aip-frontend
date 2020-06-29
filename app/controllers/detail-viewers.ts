@@ -110,121 +110,141 @@ function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionColle
   return array;
 }
 
-function setupCmaRequirementsViewer(req: Request): Array<any> {
-  const array = [];
+function setupCmaRequirementsViewer(req: Request) {
+  const interpreter = [];
+  const stepFree = [];
+  const hearingLoop = [];
+  const multiEvidence = [];
+  const sexAppointment = [];
+  const privateAppointment = [];
+  const physicalOrMental = [];
+  const pastExperiences = [];
+  const anythingElse = [];
+  const dateToAvoid = [];
   const submitCmaRequirements = getAppealApplicationData('submitCmaRequirements', req);
   const { data } = submitCmaRequirements[0];
   if (_.has(data,'isInterpreterServicesNeeded')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.interpreterTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.isInterpreterServicesNeeded, null));
+    interpreter.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.interpreterTitle], null));
+    interpreter.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isInterpreterServicesNeeded], null));
     if (data.isInterpreterServicesNeeded === 'Yes') {
-      array.push(addSummaryRow(i18n.pages.detailViewers.cmaRequirements.language, [
-        `<b>${data.interpreterLanguage[0].value.language}</b>`,
+      interpreter.push(addSummaryRow(i18n.pages.detailViewers.cmaRequirements.language, [
+        `${data.interpreterLanguage[0].value.language}`,
         Delimiter.BREAK_LINE,
-        `<pre>${data.interpreterLanguage[0].value.languageDialect}</pre>`,
+        `<pre>${data.interpreterLanguage[0].value.languageDialect || ''}</pre>`,
         Delimiter.BREAK_LINE
       ], null));
     }
   }
   if (_.has(data,'isHearingRoomNeeded')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.stepFreeAccessTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.isHearingRoomNeeded, null));
+    stepFree.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.stepFreeAccessTitle], null));
+    stepFree.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isHearingRoomNeeded], null));
   }
   if (_.has(data,'isHearingLoopNeeded')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.isHearingLoopNeeded, null));
+    hearingLoop.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
+    hearingLoop.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isHearingLoopNeeded], null));
   }
-  // Other NEEDS
-  // MULTIMEDIA
+  // // Other NEEDS
+  // // MULTIMEDIA
   if (_.has(data,'multimediaEvidence')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.multimediaEvidence, null));
+    multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceTitle], null));
+    multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
   }
   if (_.has(data,'multimediaEvidence')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.multimediaEvidence, null));
+    multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceBringEquip ], null));
+    multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
     if (data.multimediaEvidence === 'No') {
-      array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-      array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.multimediaEvidence, null));
+      multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceCantBringEquip], null));
+      multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
     }
   }
-  // SAME SEX
+  // // SAME SEX
   if (_.has(data,'singleSexCourt')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.singleSexCourt, null));
+    sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMTitle], null));
+    sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourt], null));
   }
   if (_.has(data,'singleSexCourt')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.multimediaEvidence, null));
+    sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMQuestion], null));
+    sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
     if (data.singleSexCourt === 'Yes') {
-      array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-      array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.singleSexCourtTypeDescription, null));
+      sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMWhy], null));
+      sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourtTypeDescription], null));
     }
   }
-  // PRIVATE APPOINTMENT NEEDED
+  // // PRIVATE APPOINTMENT NEEDED
   if (_.has(data,'singleSexCourt')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.multimediaEvidence, null));
+    privateAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.privateAppointmentTitle], null));
+    privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
     if (data.singleSexCourt === 'Yes') {
-      array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-      array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.singleSexCourtTypeDescription, null));
+      privateAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.privateAppointmentQuestion], null));
+      privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourtTypeDescription], null));
     }
   }
-  // PHYSICAL EVIDENCE
+  // // PHYSICAL EVIDENCE
   if (_.has(data,'physicalOrMentalHealthIssues')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.physicalOrMentalHealthIssues, null));
+    physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperiencesTitle], null));
+    physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle,[data.physicalOrMentalHealthIssues], null));
 
     if (data.physicalOrMentalHealthIssues === 'Yes') {
-      array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
-      array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.physicalOrMentalHealthIssues, null));
+      physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperienceQuestion], null));
+      physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssues], null));
     }
   }
-  // PRIVATE EXPERIENCE
+  // // PRIVATE EXPERIENCE
   if (_.has(data,'pastExperiences')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperiencesTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.pastExperiences, null));
+    pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalTitle], null));
+    pastExperiences.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.pastExperiences], null));
 
     if (data.pastExperiences === 'Yes') {
-      array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperienceQuestion], null));
-      array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.pastExperiencesDescription, null));
+      pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalQuestion], null));
+      pastExperiences.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.pastExperiencesDescription], null));
     }
   }
-  // ANYTHING ELSE
+  // // ANYTHING ELSE
   if (_.has(data,'anythingElse')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseTitle], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.physicalOrMentalHealthIssues, null));
+    anythingElse.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseTitle], null));
+    anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssues], null));
 
     if (data.physicalOrMentalHealthIssues === 'Yes') {
-      array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseQuestion], null));
-      array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.physicalOrMentalHealthIssues, null));
+      anythingElse.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseQuestion], null));
+      anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssues], null));
     }
   }
 
-  // dates to avoid
+  // // dates to avoid
   if (_.has(data,'datesToAvoid')) {
-    array.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.cmaRequirements.taskList.datesToAvoid.title], null));
-    array.push(addSummaryRow(i18n.common.cya.answerRowTitle, data.datesToAvoidYesNo, null));
+    dateToAvoid.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.cmaRequirements.taskList.datesToAvoid.title], null));
+    dateToAvoid.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.datesToAvoidYesNo], null));
     // Loop dates
     if (data.datesToAvoidYesNo === 'Yes') {
       data.datesToAvoid.map((date: any, i: number) => {
-        array.push(
+        dateToAvoid.push(
         addSummaryRow(
           i === 0 ? i18n.pages.cmaRequirements.taskList.sections.datesToAvoid : null,
           [
             `<b>${i18n.common.cya.date}</b>`,
             Delimiter.BREAK_LINE,
-            `<pre>${data.dateToAvoid}</pre>`,
+            `<pre>${date.value.dateToAvoid}</pre>`,
             Delimiter.BREAK_LINE,
             `<b>${i18n.common.cya.reason}</b>`,
             Delimiter.BREAK_LINE,
-            `<pre>${data.dateToAvoidReason || ''}</pre>`
+            `<pre>${date.value.dateToAvoidReason || ''}</pre>`
           ],
           null));
       });
     }
   }
-  return array;
+  return {
+    interpreter,
+    stepFree,
+    hearingLoop,
+    multiEvidence,
+    sexAppointment,
+    privateAppointment,
+    physicalOrMental,
+    pastExperiences,
+    anythingElse,
+    dateToAvoid
+  };
 }
 
 function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
@@ -342,10 +362,19 @@ function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextF
 function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    const data = setupCmaRequirementsViewer(req);
+    const { interpreter, stepFree, hearingLoop, multiEvidence, sexAppointment, privateAppointment, physicalOrMental, pastExperiences, anythingElse, dateToAvoid } = setupCmaRequirementsViewer(req);
     return res.render('detail-viewers/cma-requirements-details-viewer.njk', {
       previousPage: previousPage,
-      data: data
+      interpreter: interpreter,
+      stepFree,
+      hearingLoop,
+      multiEvidence,
+      sexAppointment,
+      privateAppointment,
+      physicalOrMental,
+      pastExperiences,
+      anythingElse,
+      dateToAvoid
     });
   } catch (error) {
     next(error);
@@ -372,5 +401,7 @@ export {
   getHoEvidenceDetailsViewer,
   getTimeExtensionViewer,
   getTimeExtensionDecisionViewer,
-  setupDetailViewersController
+  setupDetailViewersController,
+  setupCmaRequirementsViewer,
+  getCmaRequirementsViewer
 };

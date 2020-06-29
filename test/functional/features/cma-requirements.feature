@@ -1,5 +1,5 @@
 @cmaRequirements
-Feature: Cma Requirements
+Feature: Cma Requirements @only
   In order to complete my appeal
   As a citizen
   I want to be able to answer cma requirements
@@ -181,6 +181,13 @@ Feature: Cma Requirements
     When I click "Send" button
     Then I should see the cma requirements confirmation page
     And I see the respond by date is 2 weeks in the future
+
+    Scenario: checking cma details viewer
+      Given I have logged in as an appellant in state "cmaRequirementsSubmitted"
+      Then I am on the overview page
+      When I click "Your appointment needs" link
+      Then I should see the cma requirements detail viewer page
+
 
   Scenario: Answering Cma Requirements
     Given I have logged in as an appellant in state "awaitingCmaRequirements"

@@ -451,7 +451,7 @@
             {
               "title": "What you sent",
               "text": "Your appointment needs",
-              "href": "{{ paths.common.yourCmaAnswers }}"
+              "href": "{{ paths.common.detailsViewers.cmaRequirementsAnswer }}"
             }
           ]
         }
@@ -486,26 +486,39 @@
       },
       "cmaRequirements": {
         "interpreterTitle": "Will you need an interpreter at the appointment?",
-        "language": "Language Dialect",
+        "language": "Language",
+        "dialect": "Dialect",
         "stepFreeAccessTitle": "Will you or anyone coming with you need step-free access?",
         "hearingLoopTitle": "Will you or anyone coming with you need a hearing loop?",
         "anythingElseTitle": "Will you need anything else at the appointment?",
         "anythingElseQuestion": "Tell us what you will need and why you need it",
         "pastExperiencesTitle": "Have you had any past experiences that may affect you at the appointment?",
         "pastExperienceQuestion": "Tell us how any past experiences may affect you at the appointment",
-        "physicalTitle": "Do you have any physical or mental health conditioins that may affect you at the hearing?",
+        "physicalTitle": "Do you have any physical or mental health conditions that may affect you at the hearing?",
         "physicalQuestion": "Tell us how any physical or mental health conditions you have that may affect you at the appointment",
         "privateAppointmentTitle": "Will you need a private appointment?",
         "privateAppointmentQuestion": "Tell us why you need a private appointment",
         "AllFOrMTitle": "Will you need an all-female or all-male appointment",
-        "AllFOrMQuestion": "What type of appointment",
-        "AllFOrMWhy": "Tell us why you need an {{ type }} appointment",
+        "AllFOrMQuestion": "What type of appointment will you need?",
+        "AllFOrMWhy": "Tell us why you need an {{ appointmentType }} appointment",
         "MultimediaEvidenceTitle":  "Will you bring any multimedia evidence",
         "MultimediaEvidenceBringEquip": "Will you bring the equipment to play this evidence",
         "MultimediaEvidenceCantBringEquip": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it.",
-
+        "title": "Your appointment needs",
+        "accessNeedsTitle": "1. Access needs",
+        "InterpreterTitle": "Interpreter",
+        "stepFreeAccessTitle": "Step free access",
+        "hearingLoopTitle": "Hearing loop",
+        "datesToAvoidTitle": "3. Dates to avoid",
+        "otherNeedsTitle": "2. Other needs",
+        "multiMediaViewTitle": "Multimedia evidence",
+        "sexAppointmentViewerTitle": "All-female or all-male appointment",
+        "privateAppointmentViewerTitle": "Private appointment",
+        "HealthViewerTitle": "Physical or mental health conditions",
+        "pastExpViewerTitle": "Past experiences",
+        "anythingElseViewerTitle": "Anything else"
       }
-    },
+},
     "guidancePages": {
       "caseWorker": {
         "title": "What is a Tribunal Caseworker?",

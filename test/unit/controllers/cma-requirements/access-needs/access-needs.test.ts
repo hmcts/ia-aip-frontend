@@ -180,6 +180,13 @@ describe('case management appointment controller', () => {
 
       });
 
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.saveForLater = 'saveForLater';
+        await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      });
+
       it('should show validation error if no option is selected needs Interperter', async () => {
         req.body.answer = '';
         req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
@@ -197,6 +204,20 @@ describe('case management appointment controller', () => {
           },
           saveAndContinue: true
         });
+      });
+
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.saveForLater = 'saveForLater';
+        await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      });
+
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.saveForLater = 'saveForLater';
+        await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
       });
 
       it('should show validation error if no option is selected post hearing loop', async () => {
@@ -230,6 +251,22 @@ describe('case management appointment controller', () => {
           previousPage: paths.appealStarted.taskList,
           items: isoLanguages
         });
+      });
+
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.language = '';
+        req.body.saveForLater = 'saveForLater';
+        await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      });
+
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.answer = '';
+        req.body.saveForLater = 'saveForLater';
+        await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
       });
     });
   });
@@ -345,6 +382,13 @@ describe('case management appointment controller', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
       await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('getHearingLoopPage should catch an exception and call next()', () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      getHearingLoopPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

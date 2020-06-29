@@ -104,6 +104,13 @@ describe('CMA Requirements - Single sex all female Reason controller', () => {
   });
 
   describe('postSingleSexAppointmentAllFemaleReason', () => {
+    it('should redirect to overview page if save for later and not validation required', async () => {
+      req.body.saveForLater = 'saveForLater';
+      await postSingleSexAppointmentAllFemaleReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+    });
+
     it('should fail validation and render template with errors', async () => {
       await postSingleSexAppointmentAllFemaleReason(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

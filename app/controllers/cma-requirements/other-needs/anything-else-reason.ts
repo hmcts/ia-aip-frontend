@@ -34,23 +34,25 @@ function getAnythingElseReason(req: Request, res: Response, next: NextFunction) 
 
 function postAnythingElseReason(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
-    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.anythingElseReasonRequired;
+    try {
+      const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.anythingElseReasonRequired;
 
-    const onSuccess = async () => {
-      req.session.appeal.cmaRequirements.otherNeeds = {
-        ...req.session.appeal.cmaRequirements.otherNeeds,
-        anythingElseReason: req.body['reason']
+      const onSuccess = async () => {
+        req.session.appeal.cmaRequirements.otherNeeds = {
+          ...req.session.appeal.cmaRequirements.otherNeeds,
+          anythingElseReason: req.body['reason']
+        };
+
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+
+        return req.body['saveForLater']
+          ? handleCmaRequirementsSaveForLater(req, res)
+          : getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.taskList);
       };
-
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-
-      return req.body['saveForLater']
-        ? handleCmaRequirementsSaveForLater(req, res)
-        : getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.taskList);
-    };
-
-    return getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
-
+      return getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
+    } catch (e) {
+      next(e);
+    }
   };
 }
 

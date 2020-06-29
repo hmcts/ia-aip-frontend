@@ -1,10 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import * as _ from 'lodash';
 import { paths } from '../../paths';
+import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { textAreaValidation, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
-function handleCmaRequirementsYesNo(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, next: NextFunction) {
+function handleCmaRequirementsYesNo(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, res: Response, next: NextFunction) {
   try {
+    if (!shouldValidateWhenSaveForLater(req.body, 'reason')) {
+      return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+    }
     const { answer } = req.body;
     const validations = yesOrNoRequiredValidation(req.body, onValidationErrorMessage);
     if (validations) {
@@ -29,6 +34,7 @@ export function postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMe
     onValidationErrorMessage,
     onSuccess,
     req,
+    res,
     next
   );
 }

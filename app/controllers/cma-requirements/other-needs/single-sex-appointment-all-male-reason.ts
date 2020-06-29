@@ -3,6 +3,7 @@ import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
+import { shouldValidateWhenSaveForLater } from '../../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { getCmaRequirementsReasonHandler, handleCmaRequirementsSaveForLater } from '../common';
 
@@ -34,21 +35,28 @@ function getSingleSexAppointmentAllMaleReason(req: Request, res: Response, next:
 
 function postSingleSexAppointmentAllMaleReason(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
-    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.singleSexAppointmentAllMaleReasonRequired;
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'reason')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.singleSexAppointmentAllMaleReasonRequired;
 
-    const onSuccess = async () => {
-      req.session.appeal.cmaRequirements.otherNeeds = {
-        ...req.session.appeal.cmaRequirements.otherNeeds,
-        singleSexAppointmentReason: req.body['reason']
+      const onSuccess = async () => {
+        req.session.appeal.cmaRequirements.otherNeeds = {
+          ...req.session.appeal.cmaRequirements.otherNeeds,
+          singleSexAppointmentReason: req.body['reason']
+        };
+
+        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+        return req.body['saveForLater']
+          ? handleCmaRequirementsSaveForLater(req, res)
+          : getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
       };
 
-      await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-      return req.body['saveForLater']
-        ? handleCmaRequirementsSaveForLater(req, res)
-        : getConditionalRedirectUrl(req, res, paths.awaitingCmaRequirements.otherNeedsPrivateAppointment);
-    };
-
-    return getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
+      return getCmaRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
+    } catch (e) {
+      next(e);
+    }
   };
 }
 

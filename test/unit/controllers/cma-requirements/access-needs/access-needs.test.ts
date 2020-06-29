@@ -192,7 +192,7 @@ describe('case management appointment controller', () => {
           previousPage: paths.awaitingCmaRequirements.accessNeeds,
           question: {
             name: 'answer',
-            options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: true, text: 'No', value: 'no' }],
+            options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: false, text: 'No', value: 'no' }],
             title: 'Will you need an interpreter?'
           },
           saveAndContinue: true

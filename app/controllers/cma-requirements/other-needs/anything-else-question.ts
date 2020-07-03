@@ -3,8 +3,6 @@ import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { postCmaRequirementsYesNoHandler } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };

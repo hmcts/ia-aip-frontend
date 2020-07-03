@@ -165,8 +165,8 @@ describe('case management appointment controller', () => {
 
         expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
-          errors: { answer: { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
-          previousPage: paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage,
+          error: { answer: { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
+          previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
           formAction: '/appointment-step-free-access',
           pageTitle: 'Will you or anyone coming with you need step-free access?',
           question: {
@@ -193,7 +193,7 @@ describe('case management appointment controller', () => {
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
-          errors: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
+          error: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
           formAction: '/appointment-interpreter',
           pageTitle: 'Will you or anyone coming with you need an interpreter?',
           previousPage: paths.awaitingCmaRequirements.accessNeeds,
@@ -226,7 +226,7 @@ describe('case management appointment controller', () => {
         await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' }],
-          errors: { 'answer': { href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' } },
+          error: { 'answer': { href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' } },
           previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
           formAction: '/appointment-hearing-loop',
           pageTitle: 'Will you or anyone coming with you need a hearing loop?',

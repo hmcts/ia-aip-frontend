@@ -30,37 +30,40 @@ function getBringMultimediaEquipmentQuestion(req: Request, res: Response, next: 
 
 function postBringMultimediaEquipmentQuestion(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.bringEquipmentAnswerRequired;
+    try {
+      const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.bringEquipmentAnswerRequired;
 
-    const pageContent = {
-      previousPage,
-      pageTitle,
-      formAction,
-      question,
-      saveAndContinue: true
-    };
+      const pageContent = {
+        previousPage,
+        pageTitle,
+        formAction,
+        question,
+        saveAndContinue: true
+      };
 
-    const onSuccess = async (answer: boolean) => {
-      if (answer) {
-        req.session.appeal.cmaRequirements.otherNeeds = {
-          ...req.session.appeal.cmaRequirements.otherNeeds,
-          bringOwnMultimediaEquipment: true
-        };
+      const onSuccess = async (answer: boolean) => {
+        if (answer) {
+          req.session.appeal.cmaRequirements.otherNeeds = {
+            ...req.session.appeal.cmaRequirements.otherNeeds,
+            bringOwnMultimediaEquipment: true
+          };
 
-        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-        return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
-      } else {
-        req.session.appeal.cmaRequirements.otherNeeds = {
-          ...req.session.appeal.cmaRequirements.otherNeeds,
-          bringOwnMultimediaEquipment: false
-        };
+          await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+          return res.redirect(paths.awaitingCmaRequirements.otherNeedsSingleSexAppointment);
+        } else {
+          req.session.appeal.cmaRequirements.otherNeeds = {
+            ...req.session.appeal.cmaRequirements.otherNeeds,
+            bringOwnMultimediaEquipment: false
+          };
 
-        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-        return res.redirect(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason);
-      }
-    };
-
-    return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
+          await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+          return res.redirect(paths.awaitingCmaRequirements.otherNeedsMultimediaEquipmentReason);
+        }
+      };
+      return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
+    } catch (e) {
+      next(e);
+    }
   };
 }
 

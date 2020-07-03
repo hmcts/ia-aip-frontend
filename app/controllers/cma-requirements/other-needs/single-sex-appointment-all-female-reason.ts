@@ -3,6 +3,7 @@ import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
+import { shouldValidateWhenSaveForLater } from '../../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { getCmaRequirementsReasonHandler, handleCmaRequirementsSaveForLater } from '../common';
 
@@ -35,8 +36,10 @@ function getSingleSexAppointmentAllFemaleReason(req: Request, res: Response, nex
 function postSingleSexAppointmentAllFemaleReason(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'reason')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.singleSexAppointmentAllFemaleReasonRequired;
-
       const onSuccess = async () => {
         req.session.appeal.cmaRequirements.otherNeeds = {
           ...req.session.appeal.cmaRequirements.otherNeeds,

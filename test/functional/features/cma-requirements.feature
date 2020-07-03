@@ -181,3 +181,73 @@ Feature: Cma Requirements
     When I click "Send" button
     Then I should see the cma requirements confirmation page
     And I see the respond by date is 2 weeks in the future
+
+  Scenario: Answering Cma Requirements
+    Given I have logged in as an appellant in state "awaitingCmaRequirements"
+
+    Then I am on the overview page
+    When I click "Continue" button
+
+    Then I should see the cma requirements task-list page
+
+    When I click "Will you need an interpreter, step-free access or a hearing loop at the appointment?" link
+    Then I see "Access needs" in title
+
+    When I click "Continue" button
+    Then I see "Will you need an interpreter?" in title
+    When I click "Save for later" button
+    Then I should see the appeal overview page
+
+
+
+  Scenario: Answering Cma Requirements
+    Given I have logged in as an appellant in state "awaitingCmaRequirements"
+
+    Then I am on the overview page
+    When I click "Continue" button
+
+    Then I should see the cma requirements task-list page
+
+    When I click "Will you need an interpreter, step-free access or a hearing loop at the appointment?" link
+    Then I see "Access needs" in title
+
+    When I click "Continue" button
+    When I choose Yes and click save and continue
+
+
+    Then I see "Add language details" in title
+    When I select from the drop-down
+    And I click "Save for later" button
+    Then I should see the appeal overview page
+
+  Scenario: Answering Cma Requirements save for later
+    Given I have logged in as an appellant in state "awaitingCmaRequirements"
+
+    Then I am on the overview page
+    When I click "Continue" button
+
+    Then I should see the cma requirements task-list page
+
+    When I click "Will you need an interpreter, step-free access or a hearing loop at the appointment?" link
+    Then I see "Access needs" in title
+
+    When I click "Continue" button
+    Then I see "Will you need an interpreter?" in title
+
+    When I choose Yes and click save and continue
+    Then I see "Add language details" in title
+
+    When I select from the drop-down
+    And I click "Save and continue" button
+    Then I see "Will you or anyone coming with you need step-free access?" in title
+
+    When I choose Yes and click save and continue
+    Then I see "Will you or anyone coming with you need a hearing loop?" in title
+
+    When I click "Save for later" button
+    Then I should see the appeal overview page
+
+    When I click "Continue" button
+
+    Then I should see the cma requirements task-list page
+

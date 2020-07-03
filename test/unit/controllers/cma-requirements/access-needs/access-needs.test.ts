@@ -165,8 +165,8 @@ describe('case management appointment controller', () => {
 
         expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
-          errors: { answer: { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
-          previousPage: paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage,
+          error: { answer: { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
+          previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
           formAction: '/appointment-step-free-access',
           pageTitle: 'Will you or anyone coming with you need step-free access?',
           question: {
@@ -180,23 +180,44 @@ describe('case management appointment controller', () => {
 
       });
 
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.saveForLater = 'saveForLater';
+        await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      });
+
       it('should show validation error if no option is selected needs Interperter', async () => {
         req.body.answer = '';
         req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded = null;
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
-          errors: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
+          error: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
           formAction: '/appointment-interpreter',
           pageTitle: 'Will you or anyone coming with you need an interpreter?',
           previousPage: paths.awaitingCmaRequirements.accessNeeds,
           question: {
             name: 'answer',
-            options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: true, text: 'No', value: 'no' }],
+            options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: false, text: 'No', value: 'no' }],
             title: 'Will you need an interpreter?'
           },
           saveAndContinue: true
         });
+      });
+
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.saveForLater = 'saveForLater';
+        await postStepFreeAccessPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      });
+
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.saveForLater = 'saveForLater';
+        await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
       });
 
       it('should show validation error if no option is selected post hearing loop', async () => {
@@ -205,7 +226,7 @@ describe('case management appointment controller', () => {
         await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' }],
-          errors: { 'answer': { href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' } },
+          error: { 'answer': { href: '#answer', key: 'answer', text: '\"answer\" is not allowed to be empty' } },
           previousPage: paths.awaitingCmaRequirements.accessNeedsStepFreeAccess,
           formAction: '/appointment-hearing-loop',
           pageTitle: 'Will you or anyone coming with you need a hearing loop?',
@@ -230,6 +251,22 @@ describe('case management appointment controller', () => {
           previousPage: paths.appealStarted.taskList,
           items: isoLanguages
         });
+      });
+
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.language = '';
+        req.body.saveForLater = 'saveForLater';
+        await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
+      });
+
+      it('should redirect to overview page if save for later and not validation required', async () => {
+        req.body.answer = '';
+        req.body.saveForLater = 'saveForLater';
+        await postHearingLoopPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+        expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
       });
     });
   });
@@ -345,6 +382,13 @@ describe('case management appointment controller', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
       await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('getHearingLoopPage should catch an exception and call next()', () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      getHearingLoopPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

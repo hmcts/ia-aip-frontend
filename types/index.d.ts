@@ -14,6 +14,7 @@ interface SummaryList {
 }
 
 interface SummaryRow {
+  classes?: string;
   key: {
     text: string
   };

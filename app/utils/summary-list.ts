@@ -1,3 +1,4 @@
+import exp from 'constants';
 import i18n from '../../locale/en.json';
 
 export enum Delimiter {
@@ -5,7 +6,7 @@ export enum Delimiter {
   BREAK_LINE = '<br>'
 }
 
-export function addSummaryRow(key: string, values: (number | string | string[] | any)[], href?: string, delimiter?: Delimiter) {
+export function addSummaryRow(key?: string, values?: (number | string | string[] | any)[], href?: string, delimiter?: Delimiter) {
   const separator = delimiter || '';
   let row: SummaryRow = {
     key: {

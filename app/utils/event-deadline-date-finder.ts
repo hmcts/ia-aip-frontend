@@ -85,6 +85,10 @@ function getDeadline(currentAppealStatus: string, req: Request) {
       formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestCmaRequirements');
       break;
     }
+    case 'cmaRequirementsSubmitted': {
+      formattedDeadline = getFormattedEventHistoryDate(history, 'submitCmaRequirements', 14);
+      break;
+    }
     default: {
       formattedDeadline = 'TBC';
       break;

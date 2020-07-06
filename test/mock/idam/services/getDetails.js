@@ -11,6 +11,7 @@ const emailToUserId = {
   'awaitingClarifyingQuestions-with-time_extension@example.com': '8',
   'awaitingCmaRequirements@example.com': '9',
   'awaitingCmaRequirements-with-time_extension@example.com': '10',
+  'cmaRequirementsSubmitted@example.com': '11',
   'setupcase@example.com': '999'
 };
 

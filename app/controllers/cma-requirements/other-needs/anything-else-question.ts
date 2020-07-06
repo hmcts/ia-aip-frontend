@@ -29,35 +29,38 @@ function getAnythingElseQuestion(req: Request, res: Response, next: NextFunction
 
 function postAnythingElseQuestion(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.anythingElseAnswerRequired;
+    try {
+      const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.otherNeeds.anythingElseAnswerRequired;
+      const pageContent = {
+        previousPage,
+        pageTitle,
+        formAction,
+        question,
+        saveAndContinue: true
+      };
 
-    const pageContent = {
-      previousPage,
-      pageTitle,
-      formAction,
-      question,
-      saveAndContinue: true
-    };
+      const onSuccess = async (answer: boolean) => {
+        if (answer) {
+          req.session.appeal.cmaRequirements.otherNeeds = {
+            ...req.session.appeal.cmaRequirements.otherNeeds,
+            anythingElse: true
+          };
+          await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+          return res.redirect(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons);
+        } else {
+          req.session.appeal.cmaRequirements.otherNeeds = {
+            ...req.session.appeal.cmaRequirements.otherNeeds,
+            anythingElse: false
+          };
+          await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
+          return res.redirect(paths.awaitingCmaRequirements.taskList);
+        }
+      };
 
-    const onSuccess = async (answer: boolean) => {
-      if (answer) {
-        req.session.appeal.cmaRequirements.otherNeeds = {
-          ...req.session.appeal.cmaRequirements.otherNeeds,
-          anythingElse: true
-        };
-        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-        return res.redirect(paths.awaitingCmaRequirements.otherNeedsAnythingElseReasons);
-      } else {
-        req.session.appeal.cmaRequirements.otherNeeds = {
-          ...req.session.appeal.cmaRequirements.otherNeeds,
-          anythingElse: false
-        };
-        await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);
-        return res.redirect(paths.awaitingCmaRequirements.taskList);
-      }
-    };
-
-    return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
+      return postCmaRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
+    } catch (e) {
+      next(e);
+    }
   };
 }
 

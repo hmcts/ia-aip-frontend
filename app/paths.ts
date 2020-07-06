@@ -108,7 +108,8 @@ const paths = {
       appealDetails: '/appeal-details',
       reasonsForAppeal: '/appeal-reasons',
       timeExtension: '/view/time-extension',
-      timeExtensionDecision: '/view/time-extension-decision'
+      timeExtensionDecision: '/view/time-extension-decision',
+      cmaRequirementsAnswer: '/your-appointment-needs'
     },
 
     // Ask for more time

@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   getAppealDetailsViewer,
+  getCmaRequirementsViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getReasonsForAppealViewer,
   getTimeExtensionDecisionViewer,
-  getTimeExtensionViewer,
+  getTimeExtensionViewer, setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
 import { paths } from '../../../app/paths';
@@ -13,6 +14,7 @@ import { DocumentManagementService } from '../../../app/service/document-managem
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
+import { expectedEventsWithCmaRequirements } from '../mockData/events/expectation/expected-history-cma-requirements';
 import { expectedMultipleEventsData } from '../mockData/events/expectation/expected-multiple-events';
 import { expectedTimeExtensionMap } from '../mockData/events/expectation/timeExtensionMap/expected-time-extension-map';
 
@@ -32,7 +34,13 @@ describe('Detail viewer Controller', () => {
       params: {},
       session: {
         appeal: {
-          application: {}
+          cmaRequirements:  {
+            otherNeeds: {
+              bringOwnMultimediaEquipment: false
+            }
+          },
+          application: {
+          }
         }
       } as Partial<Express.Session>,
       cookies: {},
@@ -72,6 +80,7 @@ describe('Detail viewer Controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.reasonsForAppeal);
       expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.timeExtension + '/:id');
       expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.timeExtensionDecision + '/:id');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.cmaRequirementsAnswer);
     });
   });
 
@@ -358,6 +367,381 @@ describe('Detail viewer Controller', () => {
       res.render = sandbox.stub().throws(error);
       getTimeExtensionDecisionViewer(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+  describe('getCmaDetailsViewer', () => {
+    it('should render detail-viewers/cma-requirements-viewer.njk with no evidences', () => {
+      req.session.appeal.history = expectedEventsWithCmaRequirements;
+
+      getCmaRequirementsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/cma-requirements-details-viewer.njk', {
+        anythingElse: [{
+          key: { text: 'Question' },
+          value: { html: 'Will you need anything else at the appointment?' }
+        }, { key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          key: { text: 'Question' },
+          value: { html: 'Tell us what you will need and why you need it' }
+        }, { key: { text: 'Answer' }, value: { html: '' } }],
+        dateToAvoid: [{
+          key: { text: 'Question' },
+          value: { html: 'Are there any dates you cannot go to the appointment?' }
+        }, { key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          key: { text: 'Dates to avoid' },
+          value: {
+            html: '<b>Date</b><br><pre>2020-09-05</pre><br><b>Reason</b><br><pre>Away</pre>'
+          }
+        }, {
+          key: { text: null },
+          value: {
+            html: '<b>Date</b><br><pre>2020-09-06</pre><br><b>Reason</b><br><pre>Also Away</pre>'
+          }
+        }],
+        hearingLoop: [{ key: { text: 'Question' }, value: { html: 'Hearing loop' } }, { key: { text: 'Answer' }, value: { html: 'Yes' } }],
+        interpreter: [{
+          key: { text: 'Question' },
+          value: { html: 'Will you need an interpreter at the appointment?' }
+        }, { key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          key: { text: 'Language Dialect' },
+          value: { html: 'Albanian<br><pre></pre><br>' }
+        }],
+        multiEvidence: [{
+          key: { text: 'Question' },
+          value: { html: 'Will you bring any multimedia evidence' }
+        }, { key: { text: 'Answer' }, value: { html: 'No' } }, {
+          key: { text: 'Question' },
+          value: { html: 'Will you bring the equipment to play this evidence' }
+        }, { key: { text: 'Answer' }, value: { html: 'No' } }],
+        pastExperiences: [{
+          key: { text: 'Question' },
+          value: {
+            html: 'Have you had any past experiences that may affect you at the appointment?'
+          }
+        }, { key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          key: { text: 'Question' },
+          value: {
+            html: 'Tell us how any past experiences may affect you at the appointment'
+          }
+        }, { key: { text: 'Answer' }, value: { html: '' } }],
+        physicalOrMental: [{
+          key: { text: 'Question' },
+          value: {
+            html: 'Do you have any physical or mental health conditions that may affect you at the hearing?'
+          }
+        }, { key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          key: { text: 'Question' },
+          value: { html: 'Tell us how any physical or mental health conditions you have that may affect you at the appointment' }
+        }, { key: { text: 'Answer' }, value: { html: '' } }],
+        previousPage: '/appeal-overview',
+        privateAppointment: [{
+          key: { text: 'Question' },
+          value: { html: 'Will you need a private appointment?' }
+        }, { key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          key: { text: 'Question' },
+          value: { html: 'Tell us why you need a private appointment' }
+        }, { key: { text: 'Answer' }, value: { html: 'Test Reason' } }],
+        sexAppointment: [{
+          key: { text: 'Question' },
+          value: { html: 'Will you need an all-female or all-male appointment' }
+        }, { key: { text: 'Answer' }, value: { html: 'Yes' } }, {
+          key: { text: 'Question' },
+          value: { html: 'What type of appointment will you need?' }
+        }, { key: { text: 'Answer' }, value: { html: '' } }, {
+          key: { text: 'Question' },
+          value: { html: 'Tell us why you need an {{ appointmentType }} appointment' }
+        }, { key: { text: 'Answer' }, value: { html: '' } }],
+        stepFree: [{ key: { text: 'Question' }, value: { html: 'Step free access' } }, { key: { text: 'Answer' }, value: { html: 'Yes' } }]
+      });
+    });
+
+    it('should test setupCmaRequirements', () => {
+      req.session.appeal.history = expectedEventsWithCmaRequirements;
+
+      const object: object = setupCmaRequirementsViewer(req as Request);
+      expect(object).to.have.property('hearingLoop');
+      expect(object).to.deep.include({
+        'anythingElse': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Will you need anything else at the appointment?'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Yes'
+            }
+          },
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Tell us what you will need and why you need it'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': ''
+            }
+          }
+        ],
+        'hearingLoop': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Hearing loop'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Yes'
+            }
+          }
+        ],
+        'interpreter': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Will you need an interpreter at the appointment?'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Yes'
+            }
+          },
+          {
+            'key': {
+              'text': 'Language Dialect'
+            },
+            'value': {
+              'html': 'Albanian<br><pre></pre><br>'
+            }
+          }
+        ],
+        'multiEvidence': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Will you bring any multimedia evidence'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'No'
+            }
+          },
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Will you bring the equipment to play this evidence'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'No'
+            }
+          }
+        ],
+        'pastExperiences': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Have you had any past experiences that may affect you at the appointment?'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Yes'
+            }
+          },
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Tell us how any past experiences may affect you at the appointment'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': ''
+            }
+          }
+        ],
+        'physicalOrMental': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Do you have any physical or mental health conditions that may affect you at the hearing?'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Yes'
+            }
+          },
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Tell us how any physical or mental health conditions you have that may affect you at the appointment'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': ''
+            }
+          }
+        ],
+        'privateAppointment': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Will you need a private appointment?'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Yes'
+            }
+          },
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Tell us why you need a private appointment'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Test Reason'
+            }
+          }
+        ],
+        'sexAppointment': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Will you need an all-female or all-male appointment'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Yes'
+            }
+          },
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'What type of appointment will you need?'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': ''
+            }
+          },
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Tell us why you need an {{ appointmentType }} appointment'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': ''
+            }
+          }
+        ],
+        'stepFree': [
+          {
+            'key': {
+              'text': 'Question'
+            },
+            'value': {
+              'html': 'Step free access'
+            }
+          },
+          {
+            'key': {
+              'text': 'Answer'
+            },
+            'value': {
+              'html': 'Yes'
+            }
+          }
+        ]
+      });
     });
   });
 });

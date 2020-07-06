@@ -86,6 +86,10 @@ module.exports = {
           signInForUser('awaitingCmaRequirements-with-time_extension@example.com');
           break;
         }
+        case 'cmaRequirementsSubmitted': {
+          signInForUser('cmaRequirementsSubmitted@example.com');
+          break;
+        }
         default:
           break;
       }

@@ -90,11 +90,11 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   req.session.appeal.history = history;
 
-  const appealArgumentSection = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION ];
+  const appealArgumentSection = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION, Events.SUBMIT_CMA_REQUIREMENTS ];
   const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
 
   return {
-    appealArgumentSection: constructSection(appealArgumentSection, history, [ States.CLARIFYING_QUESTIONS_SUBMITTED, States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL, States.AWAITING_CLARIFYING_QUESTIONS ], req),
+    appealArgumentSection: constructSection(appealArgumentSection, history, [ States.CLARIFYING_QUESTIONS_SUBMITTED, States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL, States.AWAITING_CLARIFYING_QUESTIONS, States.CMA_REQUIREMENTS_SUBMITTED ], req),
     appealDetailsSection: constructSection(appealDetailsSection, history, null, req)
   };
 }

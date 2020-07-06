@@ -66,7 +66,9 @@ interface CaseData {
   additionalRequestsDescription: string;
   datesToAvoidYesNo: 'Yes' | 'No';
   datesToAvoid: Collection<DateToAvoid>[];
-
+  listCmaHearingCentre: string;
+  listCmaHearingLength: string;
+  listCmaHearingDate: string;
 }
 
 interface DateToAvoid {

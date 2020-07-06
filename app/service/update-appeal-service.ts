@@ -99,7 +99,9 @@ export default class UpdateAppealService {
     const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
-
+    const listCmaHearingCentre = caseData.listCmaHearingCentre || '';
+    const listCmaHearingLength = caseData.listCmaHearingLength || '';
+    const listCmaHearingDate = caseData.listCmaHearingDate || '';
     let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
 
     const appellantAddress = caseData.appellantAddress ? {
@@ -406,6 +408,11 @@ export default class UpdateAppealService {
       askForMoreTime: {
         ...(_.has(caseData, 'submitTimeExtensionReason')) && { reason: caseData.submitTimeExtensionReason },
         inFlight: hasInflightTimeExtension
+      },
+      hearing: {
+        hearingCentre: listCmaHearingCentre,
+        time: listCmaHearingLength,
+        date: listCmaHearingDate
       }
     };
     return appeal;

@@ -8,6 +8,7 @@ const clarifyingQuestionsCaseDataWithTimeExtensions = require('./data/clarifying
 const awaitingCmaRequirements = require('./data/awaiting-cma-requirements');
 const awaitingCmaRequirementsWithTimeExtensions = require('./data/awaiting-cma-requirements-with-time-extensions');
 const submittedCmaRequirements = require('./data/submitted-cma-requirements');
+const cmaListed = require('./data/cmaListed');
 
 module.exports = {
   partialAppealStartedCaseData,
@@ -19,5 +20,6 @@ module.exports = {
   clarifyingQuestionsCaseDataWithTimeExtensions,
   awaitingCmaRequirements,
   awaitingCmaRequirementsWithTimeExtensions,
-  submittedCmaRequirements
+  submittedCmaRequirements,
+  cmaListed
 };

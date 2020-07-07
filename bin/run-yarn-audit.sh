@@ -13,7 +13,7 @@ if [ "$result" != 0 ]; then
 
     if diff -q yarn-audit-known-issues yarn-audit-issues > /dev/null 2>&1; then
       echo
-      echo Ignorning known vulnerabilities
+      echo Ignoring known vulnerabilities
       exit 0
     fi
   fi

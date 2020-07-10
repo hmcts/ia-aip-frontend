@@ -91,7 +91,14 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+  hearing: Hearing;
 
+}
+
+interface Hearing {
+  hearingCentre: string;
+  time: string;
+  date: string;
 }
 
 interface AskForMoreTime {

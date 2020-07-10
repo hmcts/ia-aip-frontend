@@ -380,6 +380,21 @@
         "clarifyingQuestionsAnswersSubmitted": {
           "description": "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.",
           "dueDate": "This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that."
+        },
+        "cmaListed": {
+          "description": "The Tribunal has set a date for your case management appointment. Here are the details:",
+          "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
+          "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
+          "hearingCentre": "<span class=\"govuk-!-font-weight-bold\">Hearing Centre:</span> {{ applicationNextStep.hearingCentre }}",
+          "respondByTextAskForMoreTime": "You should read your Notice of Case Management Appointment carefully. It has important information about your appointment.",
+          "usefulDocuments": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          },
+          "usefulDoc": {
+            "title": "Useful documents",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+          }
         }
       },
       "timeline": {
@@ -462,6 +477,9 @@
               "href": "{{ paths.common.detailsViewers.cmaRequirementsAnswer }}"
             }
           ]
+        },
+        "listCma": {
+          "text": "Your case management appointment was listed."
         }
       }
     },

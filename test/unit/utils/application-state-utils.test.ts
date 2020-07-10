@@ -15,6 +15,11 @@ describe('application-state-utils', () => {
       cookies: {},
       session: {
         appeal: {
+          hearing: {
+            'hearingCentre': 'taylorHouse',
+            'time': '90',
+            'date': '2020-08-11T10:00:01.000'
+          },
           application: {},
           caseBuilding: {},
           reasonsForAppeal: {},
@@ -263,6 +268,36 @@ describe('application-state-utils', () => {
         info: {
           title: 'Helpful Information',
           url: "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        }
+      }
+    );
+  });
+  it('when application status is awaitingCmaRequirements should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'cmaListed';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.deep.include(
+      {
+        'allowedAskForMoreTime': false,
+        'date': '11 August 2020',
+        'deadline': 'TBC',
+        descriptionParagraphs: [
+          'The Tribunal has set a date for your case management appointment. Here are the details:',
+          '<span class="govuk-!-font-weight-bold">Date:</span> {{ applicationNextStep.date }}',
+          '<span class="govuk-!-font-weight-bold">Time:</span> {{ applicationNextStep.time }}',
+          '<span class="govuk-!-font-weight-bold">Hearing Centre:</span> {{ applicationNextStep.hearingCentre }}',
+          'You should read your Notice of Case Management Appointment carefully. It has important information about your appointment.'
+        ],
+        'hearingCentre': 'Taylor House',
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        },
+        'time': '10:00 am',
+        'usefulDocuments': {
+          'title': 'Useful documents',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
         }
       }
     );

@@ -1,7 +1,9 @@
 import { Request } from 'express';
 import _ from 'lodash';
 import i18n from '../../locale/en.json';
+import { States } from '../data/states';
 import { paths } from '../paths';
+import { getHearingCentre, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
 
 const APPEAL_STATE = {
@@ -158,6 +160,37 @@ const APPEAL_STATE = {
     },
     cta: null,
     allowedAskForMoreTime: false
+  },
+  'cmaListed': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.cmaListed.description,
+      i18n.pages.overviewPage.doThisNext.cmaListed.date,
+      i18n.pages.overviewPage.doThisNext.cmaListed.time,
+      i18n.pages.overviewPage.doThisNext.cmaListed.hearingCentre,
+      i18n.pages.overviewPage.doThisNext.cmaListed.respondByTextAskForMoreTime
+    ],
+    usefulDocuments: {
+      title: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDoc.title,
+      url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDoc.url
+    },
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.title,
+      url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.url
+    },
+    cta: null,
+    allowedAskForMoreTime: false
+  },
+  'cmaAdjustmentsAgreed': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description,
+      i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description2
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.title,
+      url: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.url
+    },
+    cta: null,
+    allowedAskForMoreTime: false
   }
 };
 
@@ -205,7 +238,11 @@ function getAppealApplicationNextStep(req: Request) {
   }
 
   doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
-
+  if (currentAppealStatus === States.CMA_LISTED.id) {
+    doThisNextSection.date = getHearingDate(req);
+    doThisNextSection.time = getHearingTime(req);
+    doThisNextSection.hearingCentre = getHearingCentre(req);
+  }
   return doThisNextSection;
 }
 

@@ -133,6 +133,27 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '07 March 2020',
+        'descriptionParagraphs': [
+          'Your appeal details have been sent to the Tribunal.',
+          "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next."
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+        }
+      });
+
+    });
+
     it('when application status is awaitingReasonsForAppeal should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
       req.session.appeal.directions = [
@@ -245,6 +266,45 @@ describe('application-state-utils', () => {
         'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
       ],
       allowedAskForMoreTime: false
+    });
+  });
+
+  it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      'allowedAskForMoreTime': true,
+      'cta': {
+        'respondByText': 'You need to respond by {{ applicationNextStep.deadline }}.',
+        'respondByTextAskForMoreTime': 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+        'url': '/questions-about-appeal'
+      },
+      'deadline': null,
+      'descriptionParagraphs': [
+        'You need to answer some questions about your appeal.'
+      ],
+      'descriptionParagraphsAskForMoreTime': [
+        'You might not get more time. You should still try to answer the Tribunal’s questions by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> if you can.'
+      ],
+      'info': null
+    });
+  });
+
+  it('when application status is clarifyingQuestionsAnswersSubmitted should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'clarifyingQuestionsAnswersSubmitted';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      'allowedAskForMoreTime': false,
+      'cta': null,
+      'deadline': null,
+      'descriptionParagraphs': [
+        'A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.',
+        'This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that.'
+      ]
     });
   });
 

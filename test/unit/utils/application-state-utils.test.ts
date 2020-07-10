@@ -51,6 +51,10 @@ describe('application-state-utils', () => {
             {
               'id': 'submitReasonsForAppeal',
               'createdDate': '2020-02-18T16:00:00.000'
+            },
+            {
+              'id': 'submitCmaRequirements',
+              'createdDate': '2020-02-23T16:00:00.000'
             }
           ]
         }
@@ -272,6 +276,51 @@ describe('application-state-utils', () => {
       }
     );
   });
+
+  it('when application status is cmaRequirementsSubmitted should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'cmaRequirementsSubmitted';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql(
+      {
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '08 March 2020',
+        'descriptionParagraphs': [
+          'A Tribunal Caseworker is looking at your answers and will contact you with details of your case management appointment and tell you what to do next.',
+          'This should be by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> but may be longer than that.'
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        }
+      }
+    );
+  });
+
+  it('when application status is cmaAdjustmentsAgreed should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'cmaAdjustmentsAgreed';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql(
+      {
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '08 March 2020',
+        'descriptionParagraphs': [
+          'A Tribunal Caseworker is looking at your answers and will contact you with details of your case management appointment and tell you what to do next.',
+          'This should be by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> but may be longer than that.'
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        }
+      }
+    );
+  });
+
   it('when application status is awaitingCmaRequirements should get correct Do this next section.', () => {
     req.session.appeal.appealStatus = 'cmaListed';
 

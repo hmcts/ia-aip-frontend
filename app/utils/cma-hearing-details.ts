@@ -2,7 +2,7 @@ import { Request } from 'express';
 import moment from 'moment';
 import { dayMonthYearFormat, timeFormat } from './date-utils';
 
-function getHearingDate(req: Request) {
+function getHearingDate(req: Request): string {
   let formattedDeadline;
 
   const dueDate = req.session.appeal.hearing.date;
@@ -10,7 +10,7 @@ function getHearingDate(req: Request) {
   return formattedDeadline;
 }
 
-function getHearingTime(req: Request) {
+function getHearingTime(req: Request): string {
   let hearingTime;
 
   const dueDate = req.session.appeal.hearing.date;
@@ -18,7 +18,7 @@ function getHearingTime(req: Request) {
   return hearingTime;
 }
 
-function getHearingCentre(req: Request) {
+function getHearingCentre(req: Request): string {
   const HearingCentre = req.session.appeal.hearing.hearingCentre;
   switch (HearingCentre) {
     case 'taylorHouse':

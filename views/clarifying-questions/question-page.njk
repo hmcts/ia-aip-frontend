@@ -1,0 +1,58 @@
+{% set pageTitleName = i18n.pages.clarifyingQuestionPage.pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action='{{ paths.awaitingClarifyingQuestionsAnswers.question | replace(":id", question.orderNo) }}' method='post'>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% call govukFieldset({
+    legend: {
+      text: i18n.pages.clarifyingQuestionPage.title | eval,
+      classes: "govuk-fieldset__legend--l",
+      isPageHeading: true
+    }
+    }) %}
+
+      <pre>{{ question.value.question }}</pre>
+
+      {{ govukTextarea({
+        name: "answer",
+        id: "answer",
+        label: {
+          text: i18n.pages.clarifyingQuestionPage.textAreaLabel | eval
+        },
+        value: question.value.answer,
+        errorMessage: {
+          text: errors["answer"].text
+        } if errors["answer"]
+      }) }}
+
+      <div class="panel-background">
+        <h2 class="govuk-heading-s">
+          {{ i18n.pages.clarifyingQuestionPage.panel.supportingEvidence }}
+        </h2>
+        <p>{{ i18n.pages.clarifyingQuestionPage.panel.ableToAddEvidence }}</p>
+        <h2 class="govuk-heading-s">
+          {{ i18n.pages.clarifyingQuestionPage.panel.needMoreTime }}
+        </h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>
+            <a href={{ paths.common.askForMoreTime.reason }} class="govuk-link">
+              {{ i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {{ saveButtons() }}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

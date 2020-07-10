@@ -1,6 +1,7 @@
 import { Request } from 'express';
+import { Events } from '../../../app/data/events';
 import { AuthenticationService } from '../../../app/service/authentication-service';
-import { CcdService, Events } from '../../../app/service/ccd-service';
+import { CcdService } from '../../../app/service/ccd-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -15,7 +16,7 @@ describe('update-appeal-service', () => {
   let s2sService: Partial<S2SService>;
   let authenticationService: Partial<AuthenticationService>;
   let updateAppealService;
-  let expectedCaseData;
+  let expectedCaseData: Partial<CaseData>;
 
   const userId = 'userId';
   const userToken = 'userToken';
@@ -85,6 +86,7 @@ describe('update-appeal-service', () => {
         }
       } ],
       'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
+      'reasonsForAppealDateUploaded': '2020-01-02',
       'reasonsForAppealDocuments': [ {
         'id': 'f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
         'value': {
@@ -113,39 +115,40 @@ describe('update-appeal-service', () => {
       ],
       'timeExtensions': [
         {
+          id: '2',
           value: {
-            requestedDate: '2020-01-01',
+            decisionReason: 'Time extension has been granted',
+            decision: 'granted',
+            requestDate: '2020-01-01',
             reason: 'first reason',
             status: 'completed',
             evidence: [],
             state: 'awaitingReasonsForAppeal'
-          }},
+          }
+        },
         {
+          id: '1',
           value: {
+            requestDate: '2020-01-02',
             reason: 'some reason',
             status: 'inProgress',
             state: 'awaitingReasonsForAppeal',
-            evidence: [{
+            evidence: [ {
               value: {
                 'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
                 'document_filename': 'expected_time_extension_evidence.png',
                 'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
               }
-            }],
-            type: 'awaitingReasonsForAppeal'
-          }}
-      ]
+            } ]
+          }
+        }
+      ],
+      isInterpreterServicesNeeded: 'false',
+      isHearingRoomNeeded: 'true',
+      isHearingLoopNeeded: 'true'
     };
 
-    ccdServiceMock.expects('loadOrCreateCase')
-      .withArgs(userId, { userToken, serviceToken })
-      .resolves({
-        id: caseId,
-        state: 'awaitingReasonsForAppeal',
-        case_data: expectedCaseData
-      });
-  })
-  ;
+  });
 
   afterEach(() => {
     sandbox.restore();
@@ -153,8 +156,15 @@ describe('update-appeal-service', () => {
 
   describe('loadAppeal', () => {
     it('set case details', async () => {
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
+          case_data: expectedCaseData
+        });
       await updateAppealService.loadAppeal(req);
-      expect(req.session.ccdCaseId).eq(caseId);
+      expect(req.session.appeal.ccdCaseId).eq(caseId);
       expect(req.session.appeal.application.appealType).eq('protection');
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
       expect(req.session.appeal.application.personalDetails.familyName).eq('Pedro');
@@ -177,6 +187,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.contactDetails.wantsEmail).eq(true);
       expect(req.session.appeal.application.contactDetails.wantsSms).eq(true);
       expect(req.session.appeal.reasonsForAppeal.applicationReason).eq('I\'ve decided to appeal because ...');
+      expect(req.session.appeal.reasonsForAppeal.uploadDate).eq('2020-01-02');
       expect(req.session.appeal.reasonsForAppeal.evidences).to.exist;
       expect(req.session.appeal.documentMap).to.exist;
       expect(req.session.appeal.respondentDocuments).to.exist;
@@ -184,10 +195,10 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
       validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
       expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
-
-      expect(req.session.appeal.previousAskForMoreTime.length).to.be.eq(2);
-      expect(req.session.appeal.previousAskForMoreTime).to.be.eq(expectedCaseData.timeExtensions);
+      expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
+      expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(false);
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -197,59 +208,312 @@ describe('update-appeal-service', () => {
         .withArgs(userId, { userToken, serviceToken })
         .resolves({
           id: caseId,
+          state: 'awaitingReasonsForAppeal',
           case_data: expectedCaseData
         });
       await updateAppealService.loadAppeal(req as Request);
 
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
-      expect(req.session.appeal.previousAskForMoreTime).to.be.eql([]);
+      expect(req.session.appeal.askForMoreTime).to.be.eql(
+        { inFlight: false });
     });
 
-    it('load time extensions when no inProgress time extensions', async () => {
-      expectedCaseData.timeExtensions = [
-        { value: aTimeExtension('some reason', 'expected_time_extension_evidence.png', 'submitted') }
+    it('load CQ from directions object', async () => {
+
+      const directionsClarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[] = [
+        {
+          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+          }
+        }
+      ];
+
+      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        {
+          id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+          }
+        },
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Do you want to tell us anything else about your case?'
+          }
+        }
+      ];
+      expectedCaseData.directions = [
+        {
+          id: '3',
+          value: {
+            tag: 'requestClarifyingQuestions',
+            dateDue: '2020-05-07',
+            parties: 'appellant',
+            dateSent: '2020-04-23',
+            explanation: 'You need to answer some questions about your appeal.',
+            previousDates: [],
+            clarifyingQuestions: directionsClarifyingQuestions
+          }
+        }
       ];
 
       ccdServiceMock.expects('loadOrCreateCase')
         .withArgs(userId, { userToken, serviceToken })
         .resolves({
           id: caseId,
+          state: 'awaitingClarifyingQuestionsAnswers',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
+    });
+
+    it('load draftClarifyingQuestion', async () => {
+      const draftClarifyingQuestion: ClarifyingQuestion<Collection<SupportingDocument>> = {
+        id: 'id',
+        value: {
+          dateSent: '2020-04-23',
+          dueDate: '2020-05-07',
+          question: 'the questions'
+        }
+      };
+
+      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        {
+          id: 'id',
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'the questions',
+            answer: '',
+            supportingEvidence: []
+          }
+        }
+      ];
+      expectedCaseData.draftClarifyingQuestionsAnswers = [ { ...draftClarifyingQuestion } ];
+      expectedCaseData.directions = [
+        {
+          id: '3',
+          value: {
+            tag: 'requestClarifyingQuestions',
+            dateDue: '2020-05-07',
+            parties: 'appellant',
+            dateSent: '2020-04-23',
+            explanation: 'You need to answer some questions about your appeal.',
+            previousDates: [],
+            clarifyingQuestions: [
+              {
+                id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
+                value: {
+                  question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+                }
+              },
+              {
+                id: 'ddc8a194-30b3-40d9-883e-d034a7451170',
+                value: {
+                  question: 'Tell us more about your health issues\n- How long have you suffered from this problem?\n- How does it affect your daily life?'
+                }
+              }
+            ]
+          }
+        }
+      ];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingClarifyingQuestionsAnswers',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
+    });
+
+    it('load clarifyingQuestion', async () => {
+      expectedCaseData.draftClarifyingQuestionsAnswers = null;
+      expectedCaseData.directions = [
+        {
+          id: '3',
+          value: {
+            tag: 'requestClarifyingQuestions',
+            dateDue: '2020-05-07',
+            parties: 'appellant',
+            dateSent: '2020-04-23',
+            explanation: 'You need to answer some questions about your appeal.',
+            clarifyingQuestions: [
+              {
+                value: {
+                  question: 'the questions'
+                }
+              }
+            ],
+            previousDates: []
+          }
+        }
+      ];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingClarifyingQuestionsAnswers',
+          case_data: expectedCaseData
+        });
+
+      await updateAppealService.loadAppeal(req as Request);
+
+      const appealClarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'the questions'
+          }
+        },
+        {
+          value: {
+            dateSent: '2020-04-23',
+            dueDate: '2020-05-07',
+            question: 'Do you want to tell us anything else about your case?'
+          }
+        }
+      ];
+      expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
+    });
+
+    it('load time extensions when time extension in flight', async () => {
+      expectedCaseData.timeExtensions = [ {
+        id: '1',
+        value: {
+          requestDate: '2020-01-02',
+          reason: 'some reason',
+          status: 'submitted',
+          state: 'awaitingReasonsForAppeal',
+          evidence: [ {
+            value: {
+              'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+              'document_filename': 'expected_time_extension_evidence.png',
+              'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+            }
+          } ]
+        }
+      } ];
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingReasonsForAppeal',
           case_data: expectedCaseData
         });
       await updateAppealService.loadAppeal(req as Request);
 
-      expect(req.session.appeal.askForMoreTime).to.be.eql({});
-      expect(req.session.appeal.previousAskForMoreTime.length).to.be.eq(1);
-
-      expect(req.session.appeal.previousAskForMoreTime).to.be.eql(expectedCaseData.timeExtensions);
+      expect(req.session.appeal.askForMoreTime).to.be.eql(
+        { inFlight: true });
     });
 
-    function aTimeExtension(reason: string, documentFileName: string, status: string, state: string = 'awaitingReasonsForAppeal') {
-      return {
-        dateRequested: null,
-        reason: reason,
-        status: status,
-        state: state,
-        requestedDate: '2020-01-01T00:00:00.000',
-        evidence: [{
-          value: {
-            'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
-            'document_filename': documentFileName,
-            'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
-          }
-        }]
-      };
-    }
+    it('load cmaRequirements', async () => {
 
-    function checkAskForMoreTime(reason: string, evidenceName: string, status: string, state: string, askForMoreTime: AskForMoreTime) {
-      expect(askForMoreTime.reason).to.be.eq(reason);
-      expect(askForMoreTime.evidence.length).to.be.eq(1);
-      validateUuid(askForMoreTime.evidence[0].fileId);
-      expect(askForMoreTime.evidence[0].name).to.be.eq(evidenceName);
-      expect(askForMoreTime.state).to.be.eq(state);
-      expect(askForMoreTime.status).to.be.eq(status);
-      expect(askForMoreTime.requestedDate).to.be.eq('2020-01-01T00:00:00.000');
-    }
+      expectedCaseData = {
+        ...expectedCaseData,
+        datesToAvoid: [ {
+          value: {
+            dateToAvoid: '2020-06-23',
+            dateToAvoidReason: 'I have an important appointment on this day'
+          }
+        }, {
+          value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
+        } ],
+        datesToAvoidYesNo: 'Yes',
+        inCameraCourt: 'Yes',
+        inCameraCourtDescription: 'The reason why I would need a private appointment',
+        interpreterLanguage: [ { value: { language: 'Afar', languageDialect: 'A dialect' } } ],
+        isHearingLoopNeeded: 'Yes',
+        isHearingRoomNeeded: 'Yes',
+        isInterpreterServicesNeeded: 'Yes',
+        multimediaEvidence: 'Yes',
+        multimediaEvidenceDescription: 'I do not own the equipment',
+        pastExperiences: 'Yes',
+        pastExperiencesDescription: 'Past experiences description',
+        physicalOrMentalHealthIssues: 'Yes',
+        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
+        singleSexCourt: 'Yes',
+        singleSexCourtType: 'All female',
+        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
+        additionalRequests: 'Yes',
+        additionalRequestsDescription: 'Anything else description'
+      };
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'awaitingCmaRequirements',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+
+      const expectedCmaRequirements = {
+        'accessNeeds': {
+          'interpreterLanguage': [
+            {
+              'value': {
+                'language': 'Afar',
+                'languageDialect': 'A dialect'
+              }
+            }
+          ],
+          'isHearingLoopNeeded': true,
+          'isHearingRoomNeeded': true,
+          'isInterpreterServicesNeeded': true
+        },
+        'otherNeeds': {
+          'anythingElse': true,
+          'anythingElseReason': 'Anything else description',
+          'bringOwnMultimediaEquipment': false,
+          'bringOwnMultimediaEquipmentReason': 'I do not own the equipment',
+          'healthConditions': true,
+          'healthConditionsReason': 'Reason for mental health conditions',
+          'multimediaEvidence': true,
+          'pastExperiences': true,
+          'pastExperiencesReason': 'Past experiences description',
+          'privateAppointment': true,
+          'privateAppointmentReason': 'The reason why I would need a private appointment',
+          'singleSexAppointment': true,
+          'singleSexAppointmentReason': 'The reason why I will need an all-female',
+          'singleSexTypeAppointment': 'All female'
+        },
+        'datesToAvoid': {
+          'isDateCannotAttend': true,
+          'dates': [
+            {
+              'date': {
+                'day': '23',
+                'month': '6',
+                'year': '2020'
+              },
+              'reason': 'I have an important appointment on this day'
+            },
+            {
+              'date': {
+                'day': '24',
+                'month': '6',
+                'year': '2020'
+              },
+              'reason': 'I need this day off'
+            }
+          ]
+        }
+      };
+      expect(req.session.appeal.cmaRequirements).to.be.eql(expectedCmaRequirements);
+    });
+
   });
 
   describe('convert to ccd case', () => {
@@ -290,14 +554,17 @@ describe('update-appeal-service', () => {
     it('converts empty application', () => {
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [] });
+      expect(caseData).eql({ journeyType: 'aip' });
     });
 
     it('converts home office reference number', () => {
       emptyApplication.application.homeOfficeRefNumber = 'ref';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [], homeOfficeReferenceNumber: 'ref' });
+      expect(caseData).eql({
+        journeyType: 'aip',
+        homeOfficeReferenceNumber: 'ref'
+      });
     });
 
     describe('converts home office letter date', () => {
@@ -309,8 +576,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-12-11',
-          submissionOutOfTime: 'Yes',
-          timeExtensions: []
+          submissionOutOfTime: 'Yes'
         });
       });
 
@@ -322,8 +588,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-01',
-          submissionOutOfTime: 'Yes',
-          timeExtensions: []
+          submissionOutOfTime: 'Yes'
         });
       });
 
@@ -335,8 +600,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-03',
-          submissionOutOfTime: 'Yes',
-          timeExtensions: []
+          submissionOutOfTime: 'Yes'
         });
       });
     });
@@ -345,14 +609,14 @@ describe('update-appeal-service', () => {
       emptyApplication.application.personalDetails.givenNames = 'givenNames';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [], appellantGivenNames: 'givenNames' });
+      expect(caseData).eql({ journeyType: 'aip', appellantGivenNames: 'givenNames' });
     });
 
     it('converts family name', () => {
       emptyApplication.application.personalDetails.familyName = 'familyName';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [], appellantFamilyName: 'familyName' });
+      expect(caseData).eql({ journeyType: 'aip', appellantFamilyName: 'familyName' });
     });
 
     describe('converts date of birth', () => {
@@ -362,7 +626,7 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-12-11', timeExtensions: [] });
+        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-12-11' });
       });
 
       it('day and month leading 0', () => {
@@ -371,7 +635,7 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-01', timeExtensions: [] });
+        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-01' });
       });
 
       it('day and month no leading 0', () => {
@@ -380,14 +644,14 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-03', timeExtensions: [] });
+        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-03' });
       });
     });
     it('converts appealType', () => {
       emptyApplication.application.appealType = 'appealType';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', timeExtensions: [], appealType: 'appealType' });
+      expect(caseData).eql({ journeyType: 'aip', appealType: 'appealType' });
     });
     describe('converts contact details', () => {
       it('converts contactDetails for both email and phone', () => {
@@ -400,7 +664,6 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
-            timeExtensions: [],
             subscriptions: [
               {
                 value: {
@@ -424,7 +687,6 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
-            timeExtensions: [],
             subscriptions: [
               {
                 value: {
@@ -448,7 +710,6 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
-            timeExtensions: [],
             subscriptions: [
               {
                 value: {
@@ -467,19 +728,18 @@ describe('update-appeal-service', () => {
 
     it('converts time extension when no previous time extensions or current time extensions', () => {
       emptyApplication.askForMoreTime = {};
-      emptyApplication.previousAskForMoreTime = [];
 
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
       expect(caseData).eql(
         {
-          journeyType: 'aip',
-          timeExtensions: []
+          journeyType: 'aip'
         }
       );
     });
 
-    it('converts time extension does not persist in progress', () => {
+    it('converts time extension and previous timeExtensions', () => {
+      emptyApplication.askForMoreTime.requestDate = '2020-01-02';
       emptyApplication.askForMoreTime.reason = 'more time reason';
       emptyApplication.askForMoreTime.status = 'inProgress';
       emptyApplication.askForMoreTime.state = 'awaitingReasonsForAppeal';
@@ -491,135 +751,36 @@ describe('update-appeal-service', () => {
           name: 'name'
         }
       ];
-      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
-      emptyApplication.previousAskForMoreTime = [];
 
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
-
-      expect(caseData).eql(
-        {
-          journeyType: 'aip',
-          timeExtensions: []
-        }
-      );
-    });
-
-    it('converts time extension when no current time extensions but previous ones', () => {
-      emptyApplication.askForMoreTime = {};
-
-      emptyApplication.previousAskForMoreTime = [{
-        value: {
-          reason: 'more time reason',
-          status: 'submitted',
-          state: 'awaitingReasonsForAppeal',
-          requestedDate: '2020-01-01T00:00:00.000',
-          evidence: [{
-            value: {
-              document_binary_url: 'someurl/binary',
-              document_filename: 'name',
-              document_url: 'someurl'
-            }
-          }]
-        }
-      }];
-      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
-
-      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
-
-      expect(caseData).eql(
-        {
-          journeyType: 'aip',
-          timeExtensions: [{
-            value: {
-              reason: 'more time reason',
-              status: 'submitted',
-              state: 'awaitingReasonsForAppeal',
-              requestedDate: '2020-01-01T00:00:00.000',
-              evidence: [{
-                value: {
-                  document_binary_url: 'someurl/binary',
-                  document_filename: 'name',
-                  document_url: 'someurl'
-                }
-              }]
-            }
-          }]
-        }
-      );
-    });
-
-    it('converts time extension when current time extensions and previous ones', () => {
-      emptyApplication.askForMoreTime = {
-        reason: 'more time reason in progress',
-        status: 'submitted',
+      emptyApplication.timeExtensions = [ {
+        evidence: [],
+        decision: 'granted',
+        decisionReason: 'Request has been granted',
+        reason: 'ask for more time reason',
+        status: 'granted',
         state: 'awaitingReasonsForAppeal',
-        reviewTimeExtensionRequired: 'yes',
-        requestedDate: '2020-02-02T00:00:00.000',
-        evidence: [
-          {
-            id: 'id1',
-            fileId: 'fileId1',
-            name: 'name1'
-          }
-        ]
-      };
+        requestDate: '2020-04-21'
+      } ];
 
-      emptyApplication.previousAskForMoreTime = [{
-        value: {
-          reason: 'more time reason',
-          status: 'submitted',
-          state: 'awaitingReasonsForAppeal',
-          requestedDate: '2020-01-01T00:00:00.000',
-          evidence: [{
-            value: {
-              document_binary_url: 'someurl2/binary',
-              document_filename: 'name2',
-              document_url: 'someurl2'
-            }
-          }]
-        }
-      }];
-      emptyApplication.documentMap = [
-        { id: 'fileId1', url: 'someurl1' },
-        { id: 'fileId2', url: 'someurl2' }
-      ] as DocumentMap[];
+      emptyApplication.documentMap = [ { id: 'fileId', url: 'someurl' } ] as DocumentMap[];
 
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql(
+      expect(caseData).to.deep.eq(
         {
-          journeyType: 'aip',
-          timeExtensions: [{
-            value: {
-              reason: 'more time reason',
-              status: 'submitted',
-              state: 'awaitingReasonsForAppeal',
-              requestedDate: '2020-01-01T00:00:00.000',
-              evidence: [{
-                value: {
-                  document_binary_url: 'someurl2/binary',
-                  document_filename: 'name2',
-                  document_url: 'someurl2'
-                }
-              }]
+          'journeyType': 'aip',
+          'reviewTimeExtensionRequired': 'Yes',
+          'submitTimeExtensionReason': 'more time reason',
+          'submitTimeExtensionEvidence': [
+            {
+              'value': {
+                'document_binary_url': 'someurl/binary',
+                'document_filename': 'name',
+                'document_url': 'someurl'
+
+              }
             }
-          },{
-            value: {
-              evidence: [
-                {
-                  value: {
-                    document_binary_url: 'someurl1/binary',
-                    document_filename: 'name1',
-                    document_url: 'someurl1'
-                  }
-                }
-              ],
-              reason: 'more time reason in progress',
-              state: 'awaitingReasonsForAppeal',
-              status: 'submitted',
-              requestedDate: '2020-02-02T00:00:00.000'
-            }
-          }]
+          ]
         }
       );
     });
@@ -650,9 +811,9 @@ describe('update-appeal-service', () => {
               homeOfficeRefNumber: 'newRef',
               appealType: 'appealType',
               dateLetterSent: {
-                year: 2019,
-                month: 12,
-                day: 11
+                year: '2019',
+                month: '12',
+                day: '11'
               },
               isAppealLate: true,
               lateAppeal: {
@@ -660,21 +821,22 @@ describe('update-appeal-service', () => {
                 evidence: {
                   name: 'somefile.png',
                   fileId: '00000000-0000-0000-0000-000000000000',
-                  dateUploaded:  {
-                    year: 2020,
-                    month: 1,
-                    day: 1
+                  dateUploaded: {
+                    year: '2020',
+                    month: '1',
+                    day: '1'
                   },
-                  description: 'Some evidence 1'
+                  'description': 'Some evidence 1',
+                  'tag': 'additionalEvidence'
                 }
               },
               personalDetails: {
                 givenNames: 'givenNames',
                 familyName: 'familyName',
                 dob: {
-                  year: 1980,
-                  month: 1,
-                  day: 2
+                  year: '1980',
+                  month: '1',
+                  day: '2'
                 },
                 nationality: 'nationality',
                 address: {
@@ -695,11 +857,12 @@ describe('update-appeal-service', () => {
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
+              uploadDate: '2020-01-02',
               evidences: [
                 {
                   fileId: '00000000-0000-0000-0000-000000000001',
                   name: 'File1.png',
-                  dateUploaded:  {
+                  dateUploaded: {
                     year: 2020,
                     month: 1,
                     day: 1
@@ -709,10 +872,10 @@ describe('update-appeal-service', () => {
                 {
                   fileId: '00000000-0000-0000-0000-000000000002',
                   name: 'File2.png',
-                  dateUploaded:  {
-                    year: 2020,
-                    month: 2,
-                    day: 2
+                  dateUploaded: {
+                    year: '2020',
+                    month: '2',
+                    day: '2'
                   },
                   description: 'Some evidence 2'
                 }
@@ -743,9 +906,6 @@ describe('update-appeal-service', () => {
             ],
             askForMoreTime: {
               reason: 'ask for more time reason',
-              status: 'submitted',
-              state: 'awaitingReasonsForAppeal',
-              requestedDate: undefined,
               evidence: []
             }
           } as Appeal,
@@ -806,11 +966,13 @@ describe('update-appeal-service', () => {
           }
         ],
         reasonsForAppealDecision: 'I\'ve decided to appeal because ...',
+        reasonsForAppealDateUploaded: '2020-01-02',
         reasonsForAppealDocuments: [
           {
             value: {
               dateUploaded: '2020-01-01',
               description: 'Some evidence 1',
+              tag: 'additionalEvidence',
               document: {
                 document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
                 document_filename: 'File1.png',
@@ -822,6 +984,7 @@ describe('update-appeal-service', () => {
             value: {
               dateUploaded: '2020-02-02',
               description: 'Some evidence 2',
+              tag: 'additionalEvidence',
               document: {
                 document_url: 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000002',
                 document_filename: 'File2.png',
@@ -830,16 +993,8 @@ describe('update-appeal-service', () => {
             }
           }
         ],
-        timeExtensions: [{
-          value: {
-            evidence: [],
-            reason: 'ask for more time reason',
-            status: 'submitted',
-            state: 'awaitingReasonsForAppeal',
-            requestedDate: undefined
-          }
-        }]
-
+        submitTimeExtensionEvidence: [],
+        submitTimeExtensionReason: 'ask for more time reason'
       };
     });
 
@@ -877,6 +1032,100 @@ describe('update-appeal-service', () => {
         {
           id: caseId,
           state: 'appealStarted',
+          case_data: expectedCaseData
+        },
+        headers);
+    });
+
+    it('submits cmaRequirements with ccd', async () => {
+
+      req.session.appeal.appealStatus = 'awaitingCmaRequirements';
+      req.session.appeal.cmaRequirements = {
+        accessNeeds: {
+          isInterpreterServicesNeeded: true,
+          interpreterLanguage: {
+            language: 'Afar',
+            languageDialect: 'A dialect'
+          },
+          isHearingRoomNeeded: true,
+          isHearingLoopNeeded: true
+        },
+        otherNeeds: {
+          multimediaEvidence: true,
+          bringOwnMultimediaEquipment: false,
+          bringOwnMultimediaEquipmentReason: 'I do not own the equipment',
+          singleSexAppointment: true,
+          singleSexTypeAppointment: 'All female',
+          singleSexAppointmentReason: 'The reason why I will need an all-female',
+          privateAppointment: true,
+          privateAppointmentReason: 'The reason why I would need a private appointment',
+          healthConditions: true,
+          healthConditionsReason: 'Reason for mental health conditions',
+          pastExperiences: true,
+          pastExperiencesReason: 'Past experiences description',
+          anythingElse: true,
+          anythingElseReason: 'Anything else description'
+        },
+        datesToAvoid: {
+          isDateCannotAttend: true,
+          dates: [
+            {
+              date: {
+                day: '23',
+                month: '06',
+                year: '2020'
+              },
+              reason: 'I have an important appointment on this day'
+            },
+            {
+              date: {
+                day: '24',
+                month: '06',
+                year: '2020'
+              },
+              reason: 'I need this day off'
+            }
+          ]
+        }
+
+      } as CmaRequirements;
+      await updateAppealServiceBis.submitEvent(Events.SUBMIT_CMA_REQUIREMENTS, req as Request);
+
+      expectedCaseData = {
+        ...expectedCaseData,
+        datesToAvoid: [ {
+          value: {
+            dateToAvoid: '2020-06-23',
+            dateToAvoidReason: 'I have an important appointment on this day'
+          }
+        }, {
+          value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
+        } ],
+        datesToAvoidYesNo: 'Yes',
+        inCameraCourt: 'Yes',
+        inCameraCourtDescription: 'The reason why I would need a private appointment',
+        interpreterLanguage: [ { value: { language: 'Afar', languageDialect: 'A dialect' } } ],
+        isHearingLoopNeeded: 'Yes',
+        isHearingRoomNeeded: 'Yes',
+        isInterpreterServicesNeeded: 'Yes',
+        multimediaEvidence: 'Yes',
+        multimediaEvidenceDescription: 'I do not own the equipment',
+        pastExperiences: 'Yes',
+        pastExperiencesDescription: 'Past experiences description',
+        physicalOrMentalHealthIssues: 'Yes',
+        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
+        singleSexCourt: 'Yes',
+        singleSexCourtType: 'All female',
+        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
+        additionalRequests: 'Yes',
+        additionalRequestsDescription: 'Anything else description'
+      };
+      expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
+        Events.SUBMIT_CMA_REQUIREMENTS,
+        userId,
+        {
+          id: caseId,
+          state: 'awaitingCmaRequirements',
           case_data: expectedCaseData
         },
         headers);

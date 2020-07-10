@@ -13,7 +13,7 @@
   {% endif %}
 
   <form action="{{ paths.appealStarted.enterPostcode }}" method="post">
-      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
         text: i18n.pages.enterPostcode.heading,
@@ -36,7 +36,7 @@
       <div class="govuk-form-group">
         <a href="{{ paths.appealStarted.enterAddress }}">{{ i18n.pages.enterPostcode.manualAddressLink }}</a>
       </div>
-      <div class="buttons__container">
+      <div class="save-buttons__container">
           {{ govukButton({
               text: i18n.pages.enterPostcode.findAddress,
               name: "findAddress",

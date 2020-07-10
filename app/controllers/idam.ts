@@ -37,7 +37,6 @@ function authenticateMiddleware(req: Request, res: Response, next: NextFunction)
 
 function setupIdamController(): Router {
   const router = Router();
-  router.use(idamExpressMiddleware.userDetails(idamConfig));
   router.get(paths.common.login, authenticateMiddleware, getLogin);
   router.get(paths.common.redirectUrl, idamExpressMiddleware.landingPage(idamConfig), initSession, getRedirectUrl);
   router.use(idamExpressMiddleware.protect(idamConfig), checkSession(idamConfig));

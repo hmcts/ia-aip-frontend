@@ -12,6 +12,16 @@ function getCurrentState(params) {
       return 'awaitingReasonsForAppeal';
     case 'submitTimeExtension':
       return 'awaitingReasonsForAppeal';
+    case 'editClarifyingQuestionAnswers':
+      return 'awaitingClarifyingQuestionsAnswers';
+    case 'editCmaRequirements':
+      return  'awaitingCmaRequirements';
+    case 'submitClarifyingQuestionAnswers':
+      return 'clarifyingQuestionsAnswersSubmitted';
+    case 'submitCmaRequirements':
+      return  'cmaRequirementsSubmitted';
+    case 'listCma':
+      return 'cmaListed';
     default:
       throw `Event type ${params.eventType} no current state set`
   }

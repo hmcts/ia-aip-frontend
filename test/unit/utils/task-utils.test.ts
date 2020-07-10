@@ -1,18 +1,23 @@
 import { appealApplicationStatus } from '../../../app/utils/tasks-utils';
-import { expect, sinon } from '../../utils/testUtils';
+import { expect } from '../../utils/testUtils';
 
 describe('getStatus', () => {
 
   const appeal: Appeal = {
     appealStatus: 'appealStarted',
+    hearing: {
+      hearingCentre: 'Taylor House',
+      date: '21 April 2019',
+      time: '10am'
+    },
     application: {
       homeOfficeRefNumber: 'reference no',
       appealType: null,
       contactDetails: null,
       dateLetterSent: {
-        day: 1,
-        month: 1,
-        year: 1980
+        day: '1',
+        month: '1',
+        year: '1980'
       },
       isAppealLate: true,
       lateAppeal: null,
@@ -98,9 +103,9 @@ describe('getStatus', () => {
 
   it('should update status personalDetails as completed and mark active next task', () => {
     appeal.application.personalDetails.dob = {
-      day: 1,
-      month: 1,
-      year: 1980
+      day: '1',
+      month: '1',
+      year: '1980'
     };
     appeal.application.personalDetails = {
       ...appeal.application.personalDetails,

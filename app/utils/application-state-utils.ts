@@ -1,11 +1,9 @@
 import { Request } from 'express';
 import _ from 'lodash';
-import moment from 'moment';
 import i18n from '../../locale/en.json';
+import { States } from '../data/states';
 import { paths } from '../paths';
-import { SecurityHeaders } from '../service/authentication-service';
-import UpdateAppealService from '../service/update-appeal-service';
-import { dayMonthYearFormat } from './date-formats';
+import { getHearingCentre, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
 
 const APPEAL_STATE = {
@@ -61,6 +59,9 @@ const APPEAL_STATE = {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description
     ],
+    descriptionParagraphsAskForMoreTime: [
+      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime
+    ],
     info: {
       title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
       url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
@@ -71,13 +72,17 @@ const APPEAL_STATE = {
     },
     cta: {
       url: paths.awaitingReasonsForAppeal.decision,
-      respondByText: i18n.pages.overviewPage.doThisNext.respondByText
+      respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
+      respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime
     },
     allowedAskForMoreTime: true
   },
   'awaitingReasonsForAppealPartial': {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description
+    ],
+    descriptionParagraphsAskForMoreTime: [
+      i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime
     ],
     info: {
       title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.title,
@@ -89,7 +94,8 @@ const APPEAL_STATE = {
     },
     cta: {
       url: paths.awaitingReasonsForAppeal.decision,
-      respondByText: i18n.pages.overviewPage.doThisNext.respondByText
+      respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
+      respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime
     },
     allowedAskForMoreTime: true
   },
@@ -98,6 +104,91 @@ const APPEAL_STATE = {
       i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
       i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
     ],
+    cta: null,
+    allowedAskForMoreTime: false
+  },
+  'awaitingClarifyingQuestionsAnswers': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description
+    ],
+    descriptionParagraphsAskForMoreTime: [
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime
+    ],
+    info: null,
+    cta: {
+      url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
+      respondByText: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText,
+      respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime
+    },
+    allowedAskForMoreTime: true
+  },
+  'awaitingCmaRequirements': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description,
+      i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description2
+    ],
+    descriptionParagraphsAskForMoreTime: [
+      i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.title,
+      url: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.url
+    },
+    cta: {
+      url: paths.awaitingCmaRequirements.taskList,
+      respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
+      respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime
+    },
+    allowedAskForMoreTime: true
+  },
+  'clarifyingQuestionsAnswersSubmitted': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.description,
+      i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.dueDate
+    ],
+    cta: null,
+    allowedAskForMoreTime: false
+  },
+  'cmaRequirementsSubmitted': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description,
+      i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description2
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.title,
+      url: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.url
+    },
+    cta: null,
+    allowedAskForMoreTime: false
+  },
+  'cmaListed': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.cmaListed.description,
+      i18n.pages.overviewPage.doThisNext.cmaListed.date,
+      i18n.pages.overviewPage.doThisNext.cmaListed.time,
+      i18n.pages.overviewPage.doThisNext.cmaListed.hearingCentre,
+      i18n.pages.overviewPage.doThisNext.cmaListed.respondByTextAskForMoreTime
+    ],
+    usefulDocuments: {
+      title: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDoc.title,
+      url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDoc.url
+    },
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.title,
+      url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.url
+    },
+    cta: null,
+    allowedAskForMoreTime: false
+  },
+  'cmaAdjustmentsAgreed': {
+    descriptionParagraphs: [
+      i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description,
+      i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description2
+    ],
+    info: {
+      title: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.title,
+      url: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.url
+    },
     cta: null,
     allowedAskForMoreTime: false
   }
@@ -141,68 +232,20 @@ function getAppealApplicationNextStep(req: Request) {
   if (doThisNextSection === undefined) {
     doThisNextSection = {
       descriptionParagraphs: [
-        `Description for event <b>${currentAppealStatus}</b> not found`
+        `Description for appeal status <b>${currentAppealStatus}</b> not found`
       ]
     };
   }
 
-  // TODO: Remove this, should get history from the session and loaded at login from events endpoint in ccd
-  const history = {
-    appealStarted: {
-      event: 'appealStarted',
-      date: req.session.appeal.appealCreatedDate
-    },
-    appealSubmitted: {
-      event: 'appealSubmitted',
-      date: req.session.appeal.appealLastModified
-    },
-    submitReasonsForAppeal: {
-      event: 'submitReasonsForAppeal',
-      date: req.session.appeal.appealLastModified
-    }
-  };
-
-  const directions = req.session.appeal.directions;
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, directions, history);
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
+  if (currentAppealStatus === States.CMA_LISTED.id) {
+    doThisNextSection.date = getHearingDate(req);
+    doThisNextSection.time = getHearingTime(req);
+    doThisNextSection.hearingCentre = getHearingCentre(req);
+  }
   return doThisNextSection;
 }
 
-function constructEventObject(event) {
-  const formattedDate = moment(event.date).format(dayMonthYearFormat);
-  return {
-    date: `${formattedDate}`,
-    title: i18n.pages.overviewPage.timeline[event.id].title,
-    text: i18n.pages.overviewPage.timeline[event.id].text,
-    links: i18n.pages.overviewPage.timeline[event.id].links
-  };
-}
-
-async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
-  const authenticationService = updateAppealService.getAuthenticationService();
-  const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
-  const ccdService = updateAppealService.getCcdService();
-  const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.ccdCaseId, headers);
-
-  req.session.appeal.history = history;
-  const eventToLookFor = [ 'submitAppeal', 'submitReasonsForAppeal' ];
-  const eventsCollected = [];
-  eventToLookFor.forEach((event: string,index: number) => {
-    const eventFound = history.find((e: HistoryEvent) => event === e.id);
-    if (eventFound) {
-      let eventObject = constructEventObject(eventFound);
-      // TODO - CLEAN UP CHECKING FOR TCW LINK
-      const { appealStatus } = req.session.appeal;
-      if ((['awaitingRespondentEvidence', 'appealSubmitted'].includes(appealStatus)) && event === 'submitAppeal') {
-        delete eventObject.links[1];
-      }
-      eventsCollected.push(eventObject);
-    }
-  });
-
-  return eventsCollected;
-}
-
 export {
-  getAppealApplicationNextStep,
-  getAppealApplicationHistory
+  getAppealApplicationNextStep
 };

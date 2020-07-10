@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { applicationStatusUpdate, checkSession, initSession, logSession } from '../../../app/middleware/session-middleware';
+import { checkSession, initSession, logSession } from '../../../app/middleware/session-middleware';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
-import * as taskUtils from '../../../app/utils/tasks-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('session-middleware', () => {
@@ -56,19 +55,10 @@ describe('session-middleware', () => {
   });
 
   it('initSession', async () => {
-    const appealApplicationStatusStub = sandbox.stub(taskUtils, 'appealApplicationStatus');
-    sandbox.stub(UpdateAppealService.prototype, 'loadAppeal');
+    const loadAppealStub = sandbox.stub(UpdateAppealService.prototype, 'loadAppeal');
     await initSession(req as Request, res as Response, next);
 
-    expect(appealApplicationStatusStub).to.have.been.calledOnce;
-    expect(next).to.have.been.calledOnce;
-  });
-
-  it('applicationStatusUpdate', () => {
-    const appealApplicationStatusStub = sandbox.stub(taskUtils, 'appealApplicationStatus');
-    applicationStatusUpdate(req as Request, res as Response, next);
-
-    expect(appealApplicationStatusStub).to.have.been.calledOnce;
+    expect(loadAppealStub).to.have.been.calledOnce;
     expect(next).to.have.been.calledOnce;
   });
 

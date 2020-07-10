@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-function appealApplicationStatus(appeal: Appeal) {
+function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const homeOfficeRefNumber: boolean = !!_.get(appeal.application, 'homeOfficeRefNumber');
   const dateLetterSent: boolean = !!_.get(appeal.application, 'dateLetterSent');
 
@@ -53,6 +53,75 @@ function appealApplicationStatus(appeal: Appeal) {
   };
 }
 
+function cmaRequirementsStatus(appeal: Appeal) {
+  const accessNeeds: boolean = !!_.get(appeal, 'cmaRequirements.accessNeeds');
+
+  const accessNeedsTask: Task = {
+    saved: accessNeeds,
+    completed: _.has(appeal, 'cmaRequirements.accessNeeds.isHearingLoopNeeded'),
+    active: true
+  };
+  const otherNeeds: boolean = !!_.get(appeal, 'cmaRequirements.otherNeeds');
+
+  const otherNeedsTask: Task = {
+    saved: otherNeeds,
+    completed: _.has(appeal, 'cmaRequirements.otherNeeds.anythingElse'),
+    active: accessNeedsTask.completed
+  };
+
+  const datesToAvoid: boolean = !!_.get(appeal, 'cmaRequirements.datesToAvoid');
+
+  const datesToAvoidTask: Task = {
+    saved: datesToAvoid,
+    completed: datesToAvoid,
+    active: otherNeedsTask.completed
+  };
+
+  const checkAndSend: Task = {
+    saved: false,
+    completed: false,
+    active: datesToAvoidTask.completed
+  };
+
+  return {
+    accessNeeds: accessNeedsTask,
+    otherNeeds: otherNeedsTask,
+    datesToAvoid: datesToAvoidTask,
+    checkAndSend
+  };
+}
+
+/**
+ * Creates a new Section object and determines the current status of the step using the taskIds provided.
+ * @param sectionId the sectionId to construct a new Section Object
+ * @param taskIds the taskId under the section used to check for saved status and completion status
+ * @param req the request Object containing the session
+ */
+function buildSectionObject(sectionId: string, taskIds: string[], status: ApplicationStatus): Section {
+
+  function isSaved(taskId: string) {
+    return status[taskId].saved;
+  }
+
+  function isCompleted(taskId: string) {
+    return status[taskId].completed;
+  }
+
+  function isActive(taskId: string) {
+    return status[taskId].active;
+  }
+
+  const tasks: Task[] = taskIds.map((taskId): Task => {
+    const completed: boolean = isCompleted(taskId);
+    const saved: boolean = isSaved(taskId);
+    const active: boolean = isActive(taskId);
+    return { id: taskId, saved, completed, active };
+  });
+  return { sectionId, tasks };
+}
+
 export {
-  appealApplicationStatus
+  appealApplicationStatus,
+  buildSectionObject,
+  cmaRequirementsStatus
 };

@@ -1,5 +1,6 @@
 import config from 'config';
 import { Request } from 'express';
+import * as path from 'path';
 import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';
@@ -51,13 +52,52 @@ class UploadData {
 }
 
 /**
+ * Takes in a fileName and converts it to the correct display format
+ * @param fileName the file name e.g Some_file.pdf
+ * @return the formatted name as a string e.g Some_File(PDF)
+ */
+function fileNameFormatter(fileName: string): string {
+  const extension = path.extname(fileName);
+  const baseName = path.basename(fileName, extension);
+  const extName = extension.split('.').join('').toUpperCase();
+  return `${baseName}(${extName})`;
+}
+
+/**
+ * Given a file Id, name and base url converts it to a html link.
+ * returns a html link using target _blank and noopener noreferrer
+ */
+function toHtmlLink(fileId: string, name: string, hrefBase: string): string {
+  const formattedFileName = fileNameFormatter(name);
+  return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${hrefBase}/${fileId}'>${formattedFileName}</a>`;
+}
+
+/**
+ * Looks up  document store url in the document map and converts it to a html link.
+ * returns a html link using target _blank and noopener noreferrer
+ */
+function docStoreUrlToHtmlLink(hrefBase: string, evidenceName: string, evidenceUrl: string, req: Request): string {
+  const fileId = docStoreUrlToId(evidenceUrl, req.session.appeal.documentMap);
+  return toHtmlLink(fileId, evidenceName, hrefBase);
+}
+
+/**
+ * Coverts a document to a html link creating a new entry in the document mapper.
+ * Adds the document to documents mapper and returns a html link using target _blank and noopener noreferrer
+ */
+function documentToHtmlLink(hrefBase: string, evidence: TimeExtensionEvidenceCollection, req: Request): string {
+  const fileId = addToDocumentMapper(evidence.value.document_url, req.session.appeal.documentMap);
+  return toHtmlLink(fileId, evidence.value.document_filename, hrefBase);
+}
+
+/**
  * Attempts to find the document store url if found on the documentMap returns the document store file location as a URL
  * @param id the fileId used as a lookup key
  * @param documentMap the document map array.
  */
 function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
   const target: DocumentMap = documentMap.find(e => e.id === id);
-  return target.url;
+  return target ? target.url : null;
 }
 
 /**
@@ -206,5 +246,8 @@ export {
   DocumentManagementService,
   documentIdToDocStoreUrl,
   docStoreUrlToId,
-  addToDocumentMapper
+  addToDocumentMapper,
+  documentToHtmlLink,
+  docStoreUrlToHtmlLink,
+  toHtmlLink
 };

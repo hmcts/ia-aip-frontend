@@ -1,8 +1,11 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
+import i18n from '../../locale/en.json';
+import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
+import S2SService from './s2s-service';
 
 enum Subscriber {
   APPELLANT = 'appellant',
@@ -14,13 +17,21 @@ enum YesOrNo {
   NO = 'No'
 }
 
+function isEmpty(text: string) {
+  return text === '';
+}
+
 export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
+  private readonly _s2sService: S2SService;
+  private documentMap: DocumentMap[];
 
-  constructor(ccdService: CcdService, authenticationService: AuthenticationService) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
+    this._s2sService = s2sService;
+    this.documentMap = [];
   }
 
   getCcdService(): CcdService {
@@ -34,139 +45,8 @@ export default class UpdateAppealService {
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
-
     req.session.ccdCaseId = ccdCase.id;
-
-    const caseData: Partial<CaseData> = ccdCase.case_data;
-    const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
-    const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
-
-    let documentMap: DocumentMap[] = [];
-
-    const appellantAddress = caseData.appellantAddress ? {
-      line1: caseData.appellantAddress.AddressLine1,
-      line2: caseData.appellantAddress.AddressLine2,
-      city: caseData.appellantAddress.PostTown,
-      county: caseData.appellantAddress.County,
-      postcode: caseData.appellantAddress.PostCode
-    } : null;
-
-    const appealType = caseData.appealType || null;
-    const subscriptions = caseData.subscriptions || [];
-    let outOfTimeAppeal: LateAppeal = null;
-    let respondentDocuments: RespondentDocument[] = null;
-    let directions: Direction[] = null;
-    let reasonsForAppealDocumentUploads: Evidence[] = null;
-
-    const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
-      const value = subscription.value;
-      if (Subscriber.APPELLANT === value.subscriber) {
-        return {
-          email: value.email || null,
-          wantsEmail: (YesOrNo.YES === value.wantsEmail),
-          phone: value.mobileNumber || null,
-          wantsSms: (YesOrNo.YES === value.wantsSms)
-        };
-      }
-    }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
-
-    if (this.yesNoToBool(caseData.submissionOutOfTime)) {
-
-      if (caseData.applicationOutOfTimeExplanation) {
-        outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
-      }
-
-      if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
-
-        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, documentMap);
-        outOfTimeAppeal = {
-          ...outOfTimeAppeal,
-          evidence: {
-            fileId: documentMapperId,
-            name: caseData.applicationOutOfTimeDocument.document_filename
-          }
-        };
-      }
-    }
-
-    if (caseData.reasonsForAppealDocuments) {
-      reasonsForAppealDocumentUploads = [];
-      caseData.reasonsForAppealDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
-
-        reasonsForAppealDocumentUploads.push(
-          {
-            fileId: documentMapperId,
-            name: document.value.document.document_filename,
-            dateUploaded: this.getDate(document.value.dateUploaded),
-            description: document.value.description
-          }
-        );
-      });
-    }
-
-    if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
-      respondentDocuments = [];
-
-      caseData.respondentDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
-
-        let evidence = {
-          dateUploaded: document.value.dateUploaded,
-          evidence: {
-            fileId: documentMapperId,
-            name: document.value.document.document_filename
-          }
-        };
-        respondentDocuments.push(evidence);
-      });
-    }
-    if (caseData.directions) {
-      directions = caseData.directions.map(d => {
-        return {
-          tag: d.value.tag,
-          parties: d.value.parties,
-          dueDate: d.value.dateDue,
-          dateSent: d.value.dateSent
-        };
-      });
-    }
-
-    req.session.appeal = {
-      appealStatus: ccdCase.state,
-      appealCreatedDate: ccdCase.created_date,
-      appealLastModified: ccdCase.last_modified,
-      appealReferenceNumber: caseData.appealReferenceNumber,
-      application: {
-        homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
-        appealType: appealType,
-        contactDetails: {
-          ...appellantContactDetails
-        },
-        dateLetterSent,
-        isAppealLate: caseData.submissionOutOfTime ? this.yesNoToBool(caseData.submissionOutOfTime) : undefined,
-        lateAppeal: outOfTimeAppeal || undefined,
-        personalDetails: {
-          givenNames: caseData.appellantGivenNames,
-          familyName: caseData.appellantFamilyName,
-          dob: dateOfBirth,
-          nationality: caseData.appellantNationalities ? caseData.appellantNationalities[0].value.code : null,
-          address: appellantAddress
-        },
-        addressLookup: {}
-      },
-      reasonsForAppeal: {
-        applicationReason: caseData.reasonsForAppealDecision,
-        evidences: reasonsForAppealDocumentUploads
-      },
-      hearingRequirements: {},
-      respondentDocuments: respondentDocuments,
-      documentMap: documentMap,
-      directions: directions
-    };
-
-    req.session.appeal.askForMoreTime = {};
-    req.session.appeal.previousAskForMoreTime = caseData.timeExtensions || [];
+    req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
   }
 
   private getDate(ccdDate): AppealDate {
@@ -183,12 +63,7 @@ export default class UpdateAppealService {
     return null;
   }
 
-  yesNoToBool(answer: string): boolean {
-    if (answer === 'Yes') {
-      return true;
-    } else if (answer === 'No') return false;
-  }
-
+  // TODO: remove submitEvent when all app is refactored using new submitEvent
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
 
@@ -205,6 +80,344 @@ export default class UpdateAppealService {
     return updatedAppeal;
   }
 
+  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string): Promise<Appeal> {
+    const securityHeaders: SecurityHeaders = {
+      userToken: `Bearer ${userToken}`,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const caseData: CaseData = this.convertToCcdCaseData(appeal);
+    const updatedCcdCase: CcdCaseDetails = {
+      id: appeal.ccdCaseId,
+      state: appeal.appealStatus,
+      case_data: caseData
+    };
+    const ccdCase: CcdCaseDetails = await this._ccdService.updateAppeal(event, uid, updatedCcdCase, securityHeaders);
+    return this.mapCcdCaseToAppeal(ccdCase);
+  }
+
+  mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
+    const caseData: CaseData = ccdCase.case_data;
+    const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
+    const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
+    const listCmaHearingCentre = caseData.listCmaHearingCentre || '';
+    const listCmaHearingLength = caseData.listCmaHearingLength || '';
+    const listCmaHearingDate = caseData.listCmaHearingDate || '';
+    let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
+
+    const appellantAddress = caseData.appellantAddress ? {
+      line1: caseData.appellantAddress.AddressLine1,
+      line2: caseData.appellantAddress.AddressLine2,
+      city: caseData.appellantAddress.PostTown,
+      county: caseData.appellantAddress.County,
+      postcode: caseData.appellantAddress.PostCode
+    } : null;
+
+    const subscriptions = caseData.subscriptions || [];
+    let outOfTimeAppeal: LateAppeal = null;
+    let respondentDocuments: RespondentDocument[] = null;
+    let timeExtensions: TimeExtension[] = null;
+    let directions: Direction[] = null;
+    let reasonsForAppealDocumentUploads: Evidence[] = null;
+    let requestClarifyingQuestionsDirection;
+    let cmaRequirements: CmaRequirements = {};
+    let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+    let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
+    let hasInflightTimeExtension = false;
+
+    const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
+      const value = subscription.value;
+      if (Subscriber.APPELLANT === value.subscriber) {
+        return {
+          email: value.email || null,
+          wantsEmail: (YesOrNo.YES === value.wantsEmail),
+          phone: value.mobileNumber || null,
+          wantsSms: (YesOrNo.YES === value.wantsSms)
+        };
+      }
+    }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
+
+    if (yesNoToBool(caseData.submissionOutOfTime)) {
+
+      if (caseData.applicationOutOfTimeExplanation) {
+        outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
+      }
+      if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
+
+        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, this.documentMap);
+        outOfTimeAppeal = {
+          ...outOfTimeAppeal,
+          evidence: {
+            fileId: documentMapperId,
+            name: caseData.applicationOutOfTimeDocument.document_filename
+          }
+        };
+      }
+    }
+
+    if (caseData.reasonsForAppealDocuments) {
+      reasonsForAppealDocumentUploads = [];
+      caseData.reasonsForAppealDocuments.forEach(document => {
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
+
+        reasonsForAppealDocumentUploads.push(
+          {
+            fileId: documentMapperId,
+            name: document.value.document.document_filename,
+            dateUploaded: this.getDate(document.value.dateUploaded),
+            description: document.value.description
+          }
+        );
+      });
+    }
+
+    if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
+      respondentDocuments = [];
+      caseData.respondentDocuments.forEach(document => {
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
+
+        let evidence = {
+          dateUploaded: document.value.dateUploaded,
+          evidence: {
+            fileId: documentMapperId,
+            name: document.value.document.document_filename
+          }
+        };
+        respondentDocuments.push(evidence);
+      });
+    }
+
+    if (caseData.timeExtensions) {
+      timeExtensions = caseData.timeExtensions.map((timeExtension: Collection<CcdTimeExtension>): TimeExtension => {
+        if (timeExtension.value.status === 'submitted' && timeExtension.value.state === ccdCase.state) {
+          hasInflightTimeExtension = true;
+        }
+        let evidencesList: Evidence[] = [];
+        if (timeExtension.value.evidence) {
+          evidencesList = timeExtension.value.evidence.map(e => this.mapSupportingDocumentToEvidence(e));
+        }
+        return {
+          id: timeExtension.id,
+          requestDate: timeExtension.value.requestDate,
+          state: timeExtension.value.state,
+          status: timeExtension.value.status,
+          reason: timeExtension.value.reason,
+          decision: timeExtension.value.decision,
+          decisionReason: timeExtension.value.decisionReason,
+          evidence: evidencesList
+        };
+      });
+    }
+
+    if (caseData.directions) {
+      directions = caseData.directions.map((ccdDirection: Collection<CcdDirection>): Direction => {
+        const direction: Direction = {
+          id: ccdDirection.id as string,
+          tag: ccdDirection.value.tag,
+          parties: ccdDirection.value.parties,
+          dateDue: ccdDirection.value.dateDue,
+          dateSent: ccdDirection.value.dateSent,
+          explanation: ccdDirection.value.explanation
+        };
+        return direction;
+      });
+      requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
+    }
+
+    if (caseData.draftClarifyingQuestionsAnswers && caseData.draftClarifyingQuestionsAnswers.length > 0) {
+      draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map((answer): ClarifyingQuestion<Evidence> => {
+        let evidencesList: Evidence[] = [];
+        if (answer.value.supportingEvidence) {
+          evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+        }
+        return {
+          id: answer.id,
+          value: {
+            dateSent: answer.value.dateSent,
+            dueDate: answer.value.dueDate,
+            question: answer.value.question,
+            answer: answer.value.answer || '',
+            supportingEvidence: evidencesList
+          }
+        };
+      });
+    } else if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
+      draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ].map((question) => {
+        question.value.dateSent = requestClarifyingQuestionsDirection.value.dateSent;
+        question.value.dueDate = requestClarifyingQuestionsDirection.value.dateDue;
+        return question;
+      });
+      draftClarifyingQuestionsAnswers.push({
+        value: {
+          dateSent: requestClarifyingQuestionsDirection.value.dateSent,
+          dueDate: requestClarifyingQuestionsDirection.value.dateDue,
+          question: i18n.pages.clarifyingQuestionAnythingElseQuestion.question
+        }
+      });
+    }
+
+    if (caseData.clarifyingQuestionsAnswers) {
+      clarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers);
+    }
+
+    if (caseData.isInterpreterServicesNeeded) {
+      let isInterpreterServicesNeeded: boolean = yesNoToBool(caseData.isInterpreterServicesNeeded);
+      let interpreterLanguage = {};
+      let isHearingRoomNeeded: boolean = null;
+      let isHearingLoopNeeded: boolean = null;
+      if (caseData.isHearingRoomNeeded) {
+        isHearingRoomNeeded = yesNoToBool(caseData.isHearingRoomNeeded);
+      }
+      if (caseData.isHearingLoopNeeded) {
+        isHearingLoopNeeded = yesNoToBool(caseData.isHearingLoopNeeded);
+      }
+      if (caseData.interpreterLanguage) {
+        interpreterLanguage = caseData.interpreterLanguage;
+      }
+      cmaRequirements.accessNeeds = {
+        isInterpreterServicesNeeded,
+        isHearingRoomNeeded,
+        isHearingLoopNeeded,
+        interpreterLanguage
+      };
+    }
+
+    // Other Needs section
+    if (caseData.multimediaEvidence) {
+
+      let multimediaEvidence: boolean = yesNoToBool(caseData.multimediaEvidence);
+      let bringOwnMultimediaEquipment: boolean = null;
+      let bringOwnMultimediaEquipmentReason: string = null;
+      let singleSexAppointment: boolean = yesNoToBool(caseData.singleSexCourt);
+      let singleSexTypeAppointment: 'All female' | 'All male' = null;
+      let singleSexAppointmentReason: string = null;
+      let privateAppointment: boolean = yesNoToBool(caseData.inCameraCourt);
+      let privateAppointmentReason: string = null;
+      let healthConditions: boolean = yesNoToBool(caseData.physicalOrMentalHealthIssues);
+      let healthConditionsReason: string = null;
+      let pastExperiences: boolean = yesNoToBool(caseData.pastExperiences);
+      let pastExperiencesReason: string = null;
+      let anythingElse: boolean = yesNoToBool(caseData.additionalRequests);
+      let anythingElseReason: string = null;
+
+      if (multimediaEvidence) {
+        if (caseData.multimediaEvidenceDescription) {
+          bringOwnMultimediaEquipment = false;
+          bringOwnMultimediaEquipmentReason = caseData.multimediaEvidenceDescription;
+        }
+      }
+
+      if (singleSexAppointment) {
+        singleSexTypeAppointment = caseData.singleSexCourtType;
+        singleSexAppointmentReason = caseData.singleSexCourtTypeDescription;
+      }
+
+      if (privateAppointment) {
+        privateAppointmentReason = caseData.inCameraCourtDescription;
+      }
+
+      if (healthConditions) {
+        healthConditionsReason = caseData.physicalOrMentalHealthIssuesDescription;
+      }
+
+      if (pastExperiences) {
+        pastExperiencesReason = caseData.pastExperiencesDescription;
+      }
+
+      if (anythingElse) {
+        anythingElseReason = caseData.additionalRequestsDescription;
+      }
+
+      cmaRequirements.otherNeeds = {
+        multimediaEvidence,
+        bringOwnMultimediaEquipment,
+        bringOwnMultimediaEquipmentReason,
+        singleSexAppointment,
+        singleSexTypeAppointment,
+        singleSexAppointmentReason,
+        privateAppointment,
+        privateAppointmentReason,
+        healthConditions,
+        healthConditionsReason,
+        pastExperiences,
+        pastExperiencesReason,
+        anythingElse,
+        anythingElseReason
+      };
+    }
+
+    // Other Needs section
+    if (caseData.datesToAvoid) {
+      let isDateCannotAttend: boolean = null;
+      let dates: CmaDateToAvoid[] = null;
+      if (caseData.datesToAvoid.length) {
+        isDateCannotAttend = true;
+        dates = caseData.datesToAvoid.map((d) => {
+          return {
+            date: this.getDate(d.value.dateToAvoid),
+            reason: d.value.dateToAvoidReason
+          };
+        }
+        );
+
+      }
+
+      cmaRequirements.datesToAvoid = {
+        isDateCannotAttend,
+        dates
+      };
+    }
+
+    const appeal: Appeal = {
+      ccdCaseId: ccdCase.id,
+      appealStatus: ccdCase.state,
+      appealCreatedDate: ccdCase.created_date,
+      appealLastModified: ccdCase.last_modified,
+      appealReferenceNumber: caseData.appealReferenceNumber,
+      application: {
+        homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
+        appealType: caseData.appealType || null,
+        contactDetails: {
+          ...appellantContactDetails
+        },
+        dateLetterSent,
+        isAppealLate: caseData.submissionOutOfTime ? yesNoToBool(caseData.submissionOutOfTime) : undefined,
+        lateAppeal: outOfTimeAppeal || undefined,
+        personalDetails: {
+          givenNames: caseData.appellantGivenNames,
+          familyName: caseData.appellantFamilyName,
+          dob: dateOfBirth,
+          nationality: caseData.appellantNationalities ? caseData.appellantNationalities[0].value.code : null,
+          address: appellantAddress
+        },
+        addressLookup: {}
+      },
+      reasonsForAppeal: {
+        applicationReason: caseData.reasonsForAppealDecision,
+        evidences: reasonsForAppealDocumentUploads,
+        uploadDate: caseData.reasonsForAppealDateUploaded
+      },
+      hearingRequirements: {},
+      respondentDocuments: respondentDocuments,
+      documentMap: [ ...this.documentMap ],
+      ...(_.has(caseData, 'directions')) && { directions },
+      timeExtensionEventsMap: timeExtensionEventsMap,
+      timeExtensions: timeExtensions ? [ ...timeExtensions ] : [],
+      draftClarifyingQuestionsAnswers: draftClarifyingQuestionsAnswers ? [ ...draftClarifyingQuestionsAnswers ] : [],
+      clarifyingQuestionsAnswers,
+      cmaRequirements,
+      askForMoreTime: {
+        ...(_.has(caseData, 'submitTimeExtensionReason')) && { reason: caseData.submitTimeExtensionReason },
+        inFlight: hasInflightTimeExtension
+      },
+      hearing: {
+        hearingCentre: listCmaHearingCentre,
+        time: listCmaHearingLength,
+        date: listCmaHearingDate
+      }
+    };
+    return appeal;
+  }
+
   convertToCcdCaseData(appeal: Appeal) {
     const caseData = {
       journeyType: 'aip'
@@ -215,7 +428,7 @@ export default class UpdateAppealService {
         caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
       }
       if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
-        caseData.homeOfficeDecisionDate = this.toIsoDate(appeal.application.dateLetterSent);
+        caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
       }
 
@@ -240,7 +453,7 @@ export default class UpdateAppealService {
         caseData.appellantFamilyName = appeal.application.personalDetails.familyName;
       }
       if (appeal.application.personalDetails.dob && appeal.application.personalDetails.dob.year) {
-        caseData.appellantDateOfBirth = this.toIsoDate(appeal.application.personalDetails.dob);
+        caseData.appellantDateOfBirth = toIsoDate(appeal.application.personalDetails.dob);
       }
       if (appeal.application.personalDetails && appeal.application.personalDetails.nationality) {
         caseData.appellantNationalities = [
@@ -297,57 +510,210 @@ export default class UpdateAppealService {
           const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
-              dateUploaded: this.toIsoDate(evidence.dateUploaded),
+              dateUploaded: toIsoDate(evidence.dateUploaded),
               description: evidence.description,
+              tag: 'additionalEvidence',
               document: {
                 document_filename: evidence.name,
                 document_url: documentLocationUrl,
                 document_binary_url: `${documentLocationUrl}/binary`
               }
             } as DocumentWithMetaData
-          } as SupportingEvidenceCollection;
+          };
         });
+
+        if (appeal.reasonsForAppeal.uploadDate) {
+          caseData.reasonsForAppealDateUploaded = appeal.reasonsForAppeal.uploadDate;
+        }
       }
     }
 
-    caseData.timeExtensions = appeal.previousAskForMoreTime || [];
+    if (_.has(appeal, 'cmaRequirements')) {
+
+      // Access Needs Section
+      if (_.has(appeal, 'cmaRequirements.accessNeeds')) {
+        const { accessNeeds } = appeal.cmaRequirements;
+        if (_.has(accessNeeds, 'isInterpreterServicesNeeded')) {
+          caseData.isInterpreterServicesNeeded = boolToYesNo(accessNeeds.isInterpreterServicesNeeded);
+        }
+
+        if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
+          if (_.has(accessNeeds, 'interpreterLanguage')) {
+            caseData.interpreterLanguage = [ {
+              value: {
+                language: accessNeeds.interpreterLanguage.language,
+                languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
+              }
+            } ];
+          }
+        }
+
+        if (_.has(accessNeeds, 'isHearingLoopNeeded')) {
+          caseData.isHearingLoopNeeded = boolToYesNo(accessNeeds.isHearingLoopNeeded);
+        }
+
+        if (_.has(accessNeeds, 'isHearingRoomNeeded')) {
+          caseData.isHearingRoomNeeded = boolToYesNo(accessNeeds.isHearingRoomNeeded);
+        }
+      }
+
+      // Other Needs Section
+      if (_.has(appeal, 'cmaRequirements.otherNeeds')) {
+        const { otherNeeds } = appeal.cmaRequirements;
+
+        if (_.has(otherNeeds, 'multimediaEvidence')) {
+          caseData.multimediaEvidence = boolToYesNo(otherNeeds.multimediaEvidence);
+
+          if (!otherNeeds.bringOwnMultimediaEquipment && !isEmpty(otherNeeds.bringOwnMultimediaEquipmentReason)) {
+            caseData.multimediaEvidenceDescription = otherNeeds.bringOwnMultimediaEquipmentReason;
+          }
+        }
+        if (_.has(otherNeeds, 'singleSexAppointment')) {
+          caseData.singleSexCourt = boolToYesNo(otherNeeds.singleSexAppointment);
+
+          if (otherNeeds.singleSexAppointment && otherNeeds.singleSexTypeAppointment) {
+            caseData.singleSexCourtType = otherNeeds.singleSexTypeAppointment;
+            if (!isEmpty(otherNeeds.singleSexAppointmentReason)) {
+              caseData.singleSexCourtTypeDescription = otherNeeds.singleSexAppointmentReason;
+            }
+          }
+        }
+
+        if (_.has(otherNeeds, 'privateAppointment')) {
+          caseData.inCameraCourt = boolToYesNo(otherNeeds.privateAppointment);
+
+          if (otherNeeds.privateAppointment && !isEmpty(otherNeeds.privateAppointmentReason)) {
+            caseData.inCameraCourtDescription = otherNeeds.privateAppointmentReason;
+          }
+        }
+        if (_.has(otherNeeds, 'healthConditions')) {
+          caseData.physicalOrMentalHealthIssues = boolToYesNo(otherNeeds.healthConditions);
+
+          if (otherNeeds.healthConditions && !isEmpty(otherNeeds.healthConditionsReason)) {
+            caseData.physicalOrMentalHealthIssuesDescription = otherNeeds.healthConditionsReason;
+          }
+        }
+        if (_.has(otherNeeds, 'pastExperiences')) {
+          caseData.pastExperiences = boolToYesNo(otherNeeds.pastExperiences);
+
+          if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.pastExperiencesReason)) {
+            caseData.pastExperiencesDescription = otherNeeds.pastExperiencesReason;
+          }
+        }
+
+        if (_.has(otherNeeds, 'anythingElse')) {
+          caseData.additionalRequests = boolToYesNo(otherNeeds.anythingElse);
+
+          if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.anythingElseReason)) {
+            caseData.additionalRequestsDescription = otherNeeds.anythingElseReason;
+          }
+        }
+      }
+      // Dates To avoid Section
+      if (_.has(appeal, 'cmaRequirements.datesToAvoid')) {
+        const { datesToAvoid } = appeal.cmaRequirements;
+
+        if (_.has(datesToAvoid, 'isDateCannotAttend')) {
+          caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
+
+          if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
+            caseData.datesToAvoid = datesToAvoid.dates.map(date => {
+
+              return {
+                value: {
+                  dateToAvoid: toIsoDate(date.date),
+                  dateToAvoidReason: date.reason
+                } as DateToAvoid
+              } as Collection<DateToAvoid>;
+            }
+            );
+          }
+        }
+      }
+    }
 
     const askForMoreTime = appeal.askForMoreTime;
-    if (askForMoreTime && askForMoreTime.status === 'submitted') {
+    if (askForMoreTime && askForMoreTime.reason) {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 
+    if (appeal.draftClarifyingQuestionsAnswers) {
+      caseData.draftClarifyingQuestionsAnswers = this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap);
+    }
+
+    if (appeal.clarifyingQuestionsAnswers) {
+      caseData.clarifyingQuestionsAnswers = this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap);
+    }
     return caseData;
   }
 
-  private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
-    const currentTimeExtension = {
-      reason: askForMoreTime.reason,
-      state: askForMoreTime.state,
-      status: askForMoreTime.status,
-      requestedDate: askForMoreTime.requestedDate
-    } as TimeExtension;
+  private mapCcdClarifyingQuestionsToAppeal(clarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[]): ClarifyingQuestion<Evidence>[] {
+    return clarifyingQuestions.map(answer => {
+      let evidencesList: Evidence[] = [];
+      if (answer.value.supportingEvidence) {
+        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+      }
+      return {
+        id: answer.id,
+        value: {
+          dateSent: answer.value.dateSent,
+          dueDate: answer.value.dueDate,
+          question: answer.value.question,
+          answer: answer.value.answer || '',
+          supportingEvidence: evidencesList
+        }
+      };
+    });
+  }
 
-    if (askForMoreTime.reviewTimeExtensionRequired === 'Yes') {
-      caseData.reviewTimeExtensionRequired = 'Yes';
+  private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
+    return clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
+      let supportingEvidence: Collection<SupportingDocument>[];
+      if (answer.value.supportingEvidence) {
+        supportingEvidence = answer.value.supportingEvidence.map(evidence => this.mapEvidenceToSupportingDocument(evidence, documentMap));
+      }
+      return {
+        ...answer,
+        value: {
+          ...answer.value,
+          supportingEvidence
+        }
+      };
+    });
+  }
+
+  private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
+
+    caseData.submitTimeExtensionReason = askForMoreTime.reason;
+
+    if (askForMoreTime.reviewTimeExtensionRequired === YesOrNo.YES) {
+      caseData.reviewTimeExtensionRequired = YesOrNo.YES;
     }
     if (askForMoreTime.evidence) {
-      currentTimeExtension.evidence = this.toSupportingDocument(askForMoreTime.evidence, appeal);
+      caseData.submitTimeExtensionEvidence = this.mapToTimeExtensionEvidenceCollection(askForMoreTime.evidence, appeal);
     }
-    caseData.timeExtensions.push({ value: currentTimeExtension });
   }
 
-  private toIsoDate(appealDate: AppealDate) {
-    const date = new Date(`${appealDate.year}-${appealDate.month}-${appealDate.day}`);
-    const isoDate = date.toISOString().split('T')[0];
-    return isoDate;
+  private mapSupportingDocumentToEvidence(evidence: Collection<SupportingDocument>) {
+    const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, this.documentMap);
+    return {
+      fileId: documentMapperId,
+      name: evidence.value.document_filename
+    };
   }
 
-  private nowIsoDate() {
-    return new Date().toISOString().split('T')[0];
+  private mapEvidenceToSupportingDocument(evidence: Evidence, documentMap: DocumentMap[]): Collection<SupportingDocument> {
+    const documentUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+    return {
+      value: {
+        document_filename: evidence.name,
+        document_url: documentUrl,
+        document_binary_url: `${documentUrl}/binary`
+      }
+    };
   }
 
-  private toSupportingDocument(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {
+  private mapToTimeExtensionEvidenceCollection(evidences: Evidence[], appeal: Appeal): TimeExtensionEvidenceCollection[] {
     return evidences ? evidences.map((evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
       return {

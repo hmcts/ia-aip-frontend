@@ -9,6 +9,7 @@ import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
+import { formatTextForCYA } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
@@ -70,7 +71,7 @@ describe('createSummaryRowsFrom', () => {
     };
 
     const rows: any[] = createSummaryRowsFrom(appeal.application);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [ appeal.application.lateAppeal.reason ], paths.appealStarted.appealLate);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(appeal.application.lateAppeal.reason) ], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
@@ -105,7 +106,7 @@ describe('Check and Send Controller', () => {
     } as Partial<Request>;
 
     updateAppealService = {
-      submitEvent: sandbox.stub().returns({
+      submitEventRefactored: sandbox.stub().returns({
         state: 'appealSubmitted',
         case_data: { appealReferenceNumber: 'PA/1234567' }
       })
@@ -166,6 +167,10 @@ describe('Check and Send Controller', () => {
   it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', async () => {
     req.session.appeal = createDummyAppealApplication();
     req.body = { statement: 'acceptance' };
+    updateAppealService.submitEventRefactored = sandbox.stub().returns({
+      appealStatus: 'appealSubmitted',
+      appealReferenceNumber: 'PA/1234567'
+    } as Appeal);
     await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
@@ -186,6 +191,10 @@ describe('Check and Send Controller', () => {
     const error = new Error('an error');
     req.body = { statement: 'acceptance' };
     res.redirect = sandbox.stub().throws(error);
+    updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      appealStatus: 'appealSubmitted',
+      appealReferenceNumber: 'PA/1234567'
+    } as Appeal);
     await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
   });

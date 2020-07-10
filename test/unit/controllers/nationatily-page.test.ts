@@ -7,8 +7,8 @@ import {
   setupPersonalDetailsController
 } from '../../../app/controllers/appeal-application/personal-details';
 import { countryList } from '../../../app/data/country-list';
+import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-import { Events } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
@@ -27,9 +27,13 @@ describe('Nationality details Controller', function () {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
-      cookies: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
       idam: {
-        userDetails: {}
+        userDetails: {
+          uid: 'idamUID'
+        }
       },
       app: {
         locals: {
@@ -53,7 +57,7 @@ describe('Nationality details Controller', function () {
 
     next = sandbox.stub() as NextFunction;
 
-    updateAppealService = { submitEvent: sandbox.stub() };
+    updateAppealService = { submitEventRefactored: sandbox.stub() };
   });
 
   afterEach(() => {
@@ -94,27 +98,48 @@ describe('Nationality details Controller', function () {
   });
 
   describe('postNationality', () => {
-    it('should validate and redirect personal-details/nationality.njk', async () => {
+    let appeal: Appeal;
+    beforeEach(() => {
       req.body.nationality = 'AQ';
+      appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            nationality: 'AQ'
+          }
+        }
+      };
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          personalDetails: {
+            nationality: 'AQ'
+          }
+        }
+      } as Appeal);
+
+    });
+    it('should validate and redirect personal-details/nationality.njk', async () => {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
-
-      req.body.nationality = 'AQ';
+      appeal.application.isEdit = true;
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
 
     });
 
     it('should fail validation and render personal-details/nationality.njk with error when nothing selected', async () => {
+      req.body.nationality = '';
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const nationalitiesOptions = getNationalitiesOptions(countryList, '', 'Please select a nationality');
       const error = {
@@ -123,7 +148,7 @@ describe('Nationality details Controller', function () {
         text: i18n.validationErrors.nationality.selectNationality
       };
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errorList: [ error ],
@@ -139,39 +164,35 @@ describe('Nationality details Controller', function () {
       };
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
+      appeal.application.isEdit = true;
       req.body = {
         'saveForLater': 'saveForLater'
       };
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should catch an exception and call next() with error', async () => {
       const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
+      res.redirect = sandbox.stub().throws(error);
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
-  });
-
-  describe('should redirect to the correct page', () => {
     it('redirects to enter postcode page if no address has been set', async () => {
-      req.body.nationality = 'Taiwan';
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.enterPostcode);
     });
 
     it('redirects to enter address page if address has been set', async () => {
-      req.body.nationality = 'Taiwan';
       _.set(req.session.appeal.application, 'personalDetails.address.line1', 'addressLine1');
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

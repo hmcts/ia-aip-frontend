@@ -1,3 +1,4 @@
+import config from 'config';
 const express = require('express');
 import { NextFunction, Request, Response } from 'express';
 import {
@@ -47,7 +48,7 @@ describe('Reasons for Appeal Controller', function () {
 
     next = sandbox.stub() as NextFunction;
 
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
   });
 
   afterEach(() => {
@@ -72,7 +73,8 @@ describe('Reasons for Appeal Controller', function () {
       expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/reason-for-appeal-page.njk', {
         previousPage: paths.common.overview,
         applicationReason: undefined,
-        askForMoreTimeFeatureEnabled: false
+        askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime'),
+        askForMoreTimeInFlight: false
       });
     });
 
@@ -105,7 +107,7 @@ describe('Reasons for Appeal Controller', function () {
             key: 'applicationReason',
             text: 'Enter the reasons you think the Home Office decision is wrong'
           } ],
-          askForMoreTimeFeatureEnabled: false
+          askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
         }
       );
     });
@@ -137,6 +139,13 @@ describe('Reasons for Appeal Controller', function () {
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith('/appeal-overview?saved');
     });
+
+    it('when Save and ask for more time should pass validation and redirect to more time page without error', async () => {
+      req.body.applicationReason = 'Text Word';
+      req.body.saveAndAskForMoreTime = 'saveAndAskForMoreTime';
+      await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.reason);
+    });
   });
 
   describe('postSupportingEvidenceSubmit.', function () {
@@ -156,7 +165,7 @@ describe('Reasons for Appeal Controller', function () {
         {
           error: [ { href: 'uploadFile', text: 'Select a file', value: '#uploadFile' } ],
           errorList: [ { 'href': 'uploadFile', 'text': 'Select a file', 'value': '#uploadFile' } ],
-          askForMoreTimeFeatureEnabled: false
+          askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime')
         }
       );
     });

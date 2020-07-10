@@ -5,7 +5,10 @@ const caseIdToHistory = {
   '2': mockData.partialAppealStartedHistoryEvent,
   '3': mockData.appealSubmittedHistoryEvent,
   '4': mockData.awaitingReasonsForAppealHistoryEvent,
-  '5': mockData.partialAwaitingReasonsForAppealHistoryEvent
+  '5': mockData.partialAwaitingReasonsForAppealHistoryEvent,
+  '7': mockData.awaitingReasonsForAppealHistoryEvent,
+  '11': mockData.submittedCmaRequirementsEvent,
+  '12': mockData.cmaListed
 };
 
 module.exports = {
@@ -14,7 +17,6 @@ module.exports = {
   cache: false,
   template: params => {
     if (caseIdToHistory[params.caseId]) {
-      console.info(caseIdToHistory[params.caseId]);
       return caseIdToHistory[params.caseId];
     } else {
       return caseIdToHistory['1'];

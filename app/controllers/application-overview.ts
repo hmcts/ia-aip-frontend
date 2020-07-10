@@ -3,9 +3,10 @@ import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppealApplicationHistory, getAppealApplicationNextStep } from '../utils/application-state-utils';
+import { getAppealApplicationNextStep } from '../utils/application-state-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
-import { asBooleanValue } from '../utils/utils';
+import { getAppealApplicationHistory } from '../utils/timeline-utils';
+import { asBooleanValue, hasInflightTimeExtension } from '../utils/utils';
 
 function getAppealRefNumber(appealRef: string) {
   if (appealRef && appealRef.toUpperCase() === 'DRAFT') {
@@ -32,8 +33,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const loggedInUserFullName: string = getAppellantName(req);
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
       const stagesStatus = buildProgressBarStages(req.session.appeal.appealStatus);
-      const nextSteps = getAppealApplicationNextStep(req);
       const history = await getAppealApplicationHistory(req, updateAppealService);
+      const nextSteps = getAppealApplicationNextStep(req);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -42,7 +43,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         history: history,
         stages: stagesStatus,
         saved: isPartiallySaved,
-        askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
+        askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
+        askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
       });
     } catch (e) {
       next(e);
@@ -50,9 +52,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupApplicationOverviewController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupApplicationOverviewController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.common.overview, middleware, getApplicationOverview(updateAppealService));
+  router.get(paths.common.overview, getApplicationOverview(updateAppealService));
   return router;
 }
 

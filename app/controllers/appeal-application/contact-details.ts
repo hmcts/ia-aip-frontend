@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { getRedirectPage } from '../../utils/utils';
 import { contactDetailsValidation } from '../../utils/validations/fields-validations';
 
 function getContactDetails(req: Request, res: Response, next: NextFunction) {
@@ -30,30 +31,13 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
       if (!req.body.selections) {
         req.body.selections = '';
       }
-
-      let email = null;
-      let wantsEmail = false;
-      let phone = null;
-      let wantsSms = false;
-
-      if (req.body.selections.includes('email')) {
-        email = req.body['email-value'];
-        if (email && email.length > 0) {
-          wantsEmail = true;
-        }
-      }
-      if (req.body.selections.includes('text-message')) {
-        req.body['text-message-value'] = req.body['text-message-value'].replace(/\s/g, '');
-        phone = req.body['text-message-value'];
-        if (phone) {
-          wantsSms = true;
-        }
-      }
-
-      const contactDetails = { email, wantsEmail, phone, wantsSms };
-
       const validation = contactDetailsValidation(req.body);
-
+      const contactDetails = {
+        email: req.body.selections.includes('email') ? req.body['email-value'] : null,
+        wantsEmail: req.body.selections.includes('email'),
+        phone: req.body.selections.includes('text-message') ? req.body['text-message-value'].replace(/\s/g, '') : null,
+        wantsSms: req.body.selections.includes('text-message')
+      };
       if (validation) {
         return res.render('appeal-application/contact-details.njk', {
           contactDetails,
@@ -63,10 +47,21 @@ function postContactDetails(updateAppealService: UpdateAppealService) {
         });
       }
 
-      req.session.appeal.application.contactDetails = contactDetails;
-      await updateAppealService.submitEvent(Events.EDIT_APPEAL, req);
-      return getConditionalRedirectUrl(req, res, paths.appealStarted.taskList);
-
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          contactDetails
+        }
+      };
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      return res.redirect(redirectPage);
     } catch (error) {
       next(error);
     }

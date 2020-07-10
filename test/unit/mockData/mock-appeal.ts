@@ -4,9 +4,9 @@ export function createDummyAppealApplication(): Appeal {
     application: {
       homeOfficeRefNumber: 'A1234567',
       dateLetterSent: {
-        day: 1,
-        month: 7,
-        year: 2019
+        day: '1',
+        month: '7',
+        year: '2019'
       },
       appealType: 'protection',
       isAppealLate: false,
@@ -14,9 +14,9 @@ export function createDummyAppealApplication(): Appeal {
         givenNames: 'Pedro',
         familyName: 'Jimenez',
         dob: {
-          day: 10,
-          month: 10,
-          year: 1980
+          day: '10',
+          month: '10',
+          year: '1980'
         },
         nationality: 'AT',
         address: {
@@ -40,6 +40,11 @@ export function createDummyAppealApplication(): Appeal {
     },
     hearingRequirements: {
       data: {}
+    },
+    hearing: {
+      hearingCentre: 'Taylor House',
+      date: '21 April 2019',
+      time: '10am'
     }
   };
 }

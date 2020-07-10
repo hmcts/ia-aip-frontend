@@ -1,0 +1,12 @@
+{% set pageTitleName =  i18n.pages.fileNotFoundPage.title %}
+{% extends "layout.njk" %}
+{% set pageHeader = i18n.pages.fileNotFoundPage.title %}
+{% block content %}
+            <h1 class="govuk-heading-xl">{{ i18n.pages.fileNotFoundPage.title }}</h1>
+            <p class="govuk-body">
+                {{ i18n.pages.fileNotFoundPage.fileNoLongerAvailable }} <a class='govuk-link' href='javascript:history.back()'>{{  i18n.pages.fileNotFoundPage.link }}</a>
+            </p>
+            <p class="govuk-body govuk-!-margin-top-9">
+                {{ contactUs() }}
+            </p>
+{% endblock %}

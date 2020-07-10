@@ -25,12 +25,12 @@
         isPageHeading: true
       }
     }) %}
-      <p class="govuk-body">{{ i18n.pages.askForMoreTimePage.adviceHeader }}</p>
+      <p>{{ i18n.pages.askForMoreTimePage.adviceHeader }}</p>
 
-      <ul>
-      {% for advice in i18n.pages.askForMoreTimePage.advice %}
-        <li>{{ advice | safe }}</li>
-      {% endfor %}
+      <ul class="govuk-list govuk-list--bullet">
+        {% for advice in i18n.pages.askForMoreTimePage.advice %}
+          <li>{{ advice | safe }}</li>
+        {% endfor %}
       </ul>
 
       <div class="govuk-inset-text">

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import i18n from '../../../locale/en.json';
-import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -126,8 +125,8 @@ export function postUploadFile(documentManagementService: DocumentManagementServ
 export function getSupportingEvidenceDeleteFile(documentManagementService: DocumentManagementService, evidenceUploadConfig: EvidenceUploadConfig) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (req.query['id']) {
-        const fileId = req.query['id'];
+      const fileId: string = req.query.id as string;
+      if (fileId) {
         const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
         evidenceUploadConfig.removeEvidenceFromSessionFunction(fileId, req);
@@ -142,30 +141,26 @@ export function getSupportingEvidenceDeleteFile(documentManagementService: Docum
 export function postSupportingEvidence(updateAppealService: UpdateAppealService, evidenceUploadConfig: EvidenceUploadConfig) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      if (req.body['saveForLater']) {
-        return res.redirect(paths.common.overview + '?saved');
-      } else {
-        const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req);
+      const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req);
 
-        if (evidences === undefined || !evidences.length) {
-          const validation = [ {
-            href: 'uploadFile',
-            text: i18n.validationErrors.fileUpload.noFileSelected,
-            value: '#uploadFile'
-          } ];
+      if (evidences === undefined || !evidences.length) {
+        const validation = [ {
+          href: 'uploadFile',
+          text: i18n.validationErrors.fileUpload.noFileSelected,
+          value: '#uploadFile'
+        } ];
 
-          return res.render('upload-evidence/evidence-upload-page.njk', {
-            ...getEvidenceUploadPageOptions(evidences, evidenceUploadConfig),
-            ...{
-              error: validation,
-              errorList: Object.values(validation)
-            }
-          });
-        }
-
-        await updateAppealService.submitEvent(evidenceUploadConfig.updateCcdEvent, req);
-        return getConditionalRedirectUrl(req, res, evidenceUploadConfig.nextPath);
+        return res.render('upload-evidence/evidence-upload-page.njk', {
+          ...getEvidenceUploadPageOptions(evidences, evidenceUploadConfig),
+          ...{
+            error: validation,
+            errorList: Object.values(validation)
+          }
+        });
       }
+
+      await updateAppealService.submitEvent(evidenceUploadConfig.updateCcdEvent, req);
+      return getConditionalRedirectUrl(req, res, evidenceUploadConfig.nextPath);
     } catch (e) {
       next(e);
     }

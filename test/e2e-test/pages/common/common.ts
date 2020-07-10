@@ -5,6 +5,8 @@ import { paths } from '../../../../app/paths';
 
 const { fillInDate } = require('../helper-functions');
 
+const testUrl = require('config').get('testUrl');
+
 const caseData = {
   'id': 1573640323267110,
   'jurisdiction': 'IA',
@@ -263,7 +265,7 @@ module.exports = {
 
     When(/^I visit the "([^"]*)" page$/, async (key: string) => {
       await I.seeInCurrentUrl(`${PATHS[key]}`);
-      await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
+      await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
 
     Then(/^I click continue$/, async () => {
@@ -272,15 +274,49 @@ module.exports = {
 
     Given(/^I am on the "([^"]*)" page$/, async (key: string) => {
       await I.seeInCurrentUrl(`${PATHS[key]}`);
-      await I.amOnPage(`https://localhost:3000${PATHS[key]}`);
+      await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
 
     Then(/^I am on the overview page$/, async () => {
-      await I.amOnPage(`https://localhost:3000/appeal-overview`);
+      await I.amOnPage(`${testUrl}/appeal-overview`);
     });
 
     Then(/^I see "([^"]*)" in title$/, async (title: string) => {
       await I.see(title, 'h1');
+    });
+
+    Then(/^I see "([^"]*)" item in list$/, async (title: string) => {
+      await I.see(title, 'ul');
+    });
+
+    Then(/^I see "([^"]*)" link$/, async (title: string) => {
+      await I.see(title, 'a');
+    });
+
+    Then(/^I see "([^"]*)" description in overview banner$/, async (title: string) => {
+      await I.see(title, '.overview-banner');
+    });
+
+    Then(/^I fill textarea with "([^"]*)"$/, async (title: string) => {
+      await I.fillField('textarea', title);
+    });
+
+    When('I select No and click save and continue', async () => {
+      await I.checkOption('#answer');
+      await I.click('Save and continue');
+    });
+
+    When('I select Yes and click save and continue', async () => {
+      await I.checkOption('#answer-2');
+      await I.click('Save and continue');
+    });
+
+    When('I select from the drop-down', async () => {
+      await I.selectOption('#language','Afar');
+    });
+
+    Then('I should see the date time and hearing centre in do this next', async () => {
+      await I.seeInSource('Hearing Centre:');
     });
   }
 };

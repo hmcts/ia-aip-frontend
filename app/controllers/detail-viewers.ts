@@ -1,35 +1,25 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import moment from 'moment';
-import * as path from 'path';
 import i18n from '../../locale/en.json';
 import { countryList } from '../data/country-list';
 import { serverErrorHandler } from '../handlers/error-handler';
 import { paths } from '../paths';
 import {
-  docStoreUrlToId,
+  docStoreUrlToHtmlLink,
   documentIdToDocStoreUrl,
-  DocumentManagementService
+  DocumentManagementService,
+  documentToHtmlLink,
+  toHtmlLink
 } from '../service/document-management-service';
-import { dayMonthYearFormat } from '../utils/date-formats';
+import { dayMonthYearFormat } from '../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
-
-/**
- * Takes in a fileName and converts it to the correct display format
- * @param fileName the file name e.g Some_file.pdf
- * @return the formatted name as a string e.g Some_File(PDF)
- */
-function fileNameFormatter(fileName: string): string {
-  const extension = path.extname(fileName);
-  const baseName = path.basename(fileName, extension);
-  const extName = extension.split('.').join('').toUpperCase();
-  return `${baseName}(${extName})`;
-}
+import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
+import { boolToYesNo } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
-  const result = history.filter(h => h.id === eventId);
-  return result;
+  return history.filter(h => h.id === eventId);
 };
 
 const formatDateLongDate = (date: string) => {
@@ -73,9 +63,8 @@ function setupAppealDetails(req: Request): Array<any> {
   }
   if (_.has(data, 'applicationOutOfTimeDocument')) {
     const evidence = data.applicationOutOfTimeDocument;
-    const fileId = docStoreUrlToId(evidence.document_url, req.session.appeal.documentMap);
-    const formattedFileName = fileNameFormatter(evidence.document_filename);
-    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${fileId}'>${formattedFileName}</a>`;
+    const htmlLink = docStoreUrlToHtmlLink(paths.common.detailsViewers.document, evidence.document_filename, evidence.document_url, req);
+    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p>${htmlLink}`;
     array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ urlHtml ], null));
   }
   return array;
@@ -87,14 +76,178 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const { data } = reasonsForAppeal[0];
   if (_.has(data, 'reasonsForAppealDocuments')) {
     const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
-      const fileId = docStoreUrlToId(evidence.value.document_url, req.session.appeal.documentMap);
-      const formattedFileName = fileNameFormatter(evidence.value.document_filename);
-      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${fileId}'>${formattedFileName}</a>`;
+      return docStoreUrlToHtmlLink(paths.common.detailsViewers.document, evidence.value.document_filename, evidence.value.document_url, req);
     });
-    array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
-    array.push(addSummaryRow(i18n.pages.overviewPage.timeline.reasonsForAppealCheckAnswersHistory.providingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
+    array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
+    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
   }
   return array;
+}
+
+function setupTimeExtensionDecision(req: Request, timeExtensionEvent: TimeExtensionCollection) {
+  const array = [];
+  const data = timeExtensionEvent.value;
+  if (_.has(data, 'decision')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.decision, [ data.decision ], null));
+  }
+  if (_.has(data, 'decisionReason')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.reason, [ data.decisionReason ], null));
+  }
+  return array;
+}
+
+function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionCollection) {
+  const array = [];
+  const data = timeExtensionEvent.value;
+  if (_.has(data, 'reason')) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.question, [ data.reason ], null));
+  }
+  if (_.has(data, 'evidence')) {
+    const listOfDocuments: string[] = data.evidence.map(evidence => {
+      return documentToHtmlLink(paths.common.detailsViewers.document, evidence, req);
+    });
+    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.supportingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
+  }
+  return array;
+}
+
+function setupCmaRequirementsViewer(req: Request) {
+  const interpreter = [];
+  const stepFree = [];
+  const hearingLoop = [];
+  const multiEvidence = [];
+  const sexAppointment = [];
+  const privateAppointment = [];
+  const physicalOrMental = [];
+  const pastExperiences = [];
+  const anythingElse = [];
+  const dateToAvoid = [];
+  const submitCmaRequirements = getAppealApplicationData('submitCmaRequirements', req);
+  const { data } = submitCmaRequirements[0];
+  const cmaRequirements: CmaRequirements = req.session.appeal.cmaRequirements;
+  if (_.has(data,'isInterpreterServicesNeeded')) {
+    interpreter.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.interpreterTitle], null));
+    interpreter.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isInterpreterServicesNeeded], null));
+    if (data.isInterpreterServicesNeeded === 'Yes') {
+      const interpreterTitle = i18n.pages.detailViewers.cmaRequirements.language + ' ' + i18n.pages.detailViewers.cmaRequirements.dialect;
+      interpreter.push(addSummaryRow(interpreterTitle, [
+        `${data.interpreterLanguage[0].value.language}`,
+        Delimiter.BREAK_LINE,
+        `<pre>${data.interpreterLanguage[0].value.languageDialect || ''}</pre>`,
+        Delimiter.BREAK_LINE
+      ], null));
+    }
+  }
+  if (_.has(data,'isHearingRoomNeeded')) {
+    stepFree.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.stepFreeAccessTitle], null));
+    stepFree.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isHearingRoomNeeded], null));
+  }
+  if (_.has(data,'isHearingLoopNeeded')) {
+    hearingLoop.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
+    hearingLoop.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isHearingLoopNeeded], null));
+  }
+  // // Other NEEDS
+  // // MULTIMEDIA
+  if (_.has(data,'multimediaEvidence')) {
+    multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceTitle], null));
+    multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
+  }
+  if (_.has(data,'multimediaEvidence')) {
+    multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceBringEquip ], null));
+    multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [boolToYesNo(cmaRequirements.otherNeeds.bringOwnMultimediaEquipment)], null));
+    if ((data.multimediaEvidenceDescription && !_.isEmpty(data.multimediaEvidenceDescription))) {
+      multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceCantBringEquip], null));
+      multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidenceDescription], null));
+    }
+  }
+  // // SAME SEX
+  if (_.has(data,'singleSexCourt')) {
+    sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMTitle], null));
+    sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourt], null));
+  }
+  if (_.has(data,'singleSexCourt')) {
+    sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMQuestion], null));
+    sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourtType], null));
+    if (data.singleSexCourt === 'Yes') {
+      sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMWhy], null));
+      sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourtTypeDescription], null));
+    }
+  }
+  // // PRIVATE APPOINTMENT NEEDED
+  if (_.has(data,'inCameraCourt')) {
+    privateAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.privateAppointmentTitle], null));
+    privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.inCameraCourt], null));
+    if (data.inCameraCourt === 'Yes') {
+      privateAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.privateAppointmentQuestion], null));
+      privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.inCameraCourtDescription], null));
+    }
+  }
+  // // PHYSICAL EVIDENCE
+  if (_.has(data,'physicalOrMentalHealthIssues')) {
+    physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalTitle], null));
+    physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle,[data.physicalOrMentalHealthIssues], null));
+
+    if (data.physicalOrMentalHealthIssues === 'Yes') {
+      physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalQuestion], null));
+      physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssuesDescription], null));
+    }
+  }
+  // // PRIVATE pastExperiencesTitle
+  if (_.has(data,'pastExperiences')) {
+    pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperiencesTitle], null));
+    pastExperiences.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.pastExperiences], null));
+
+    if (data.pastExperiences === 'Yes') {
+      pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperienceQuestion], null));
+      pastExperiences.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.pastExperiencesDescription], null));
+    }
+  }
+  // // ANYTHING ELSE
+  if (_.has(data,'additionalRequests')) {
+    anythingElse.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseTitle], null));
+    anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.additionalRequests], null));
+
+    if (data.additionalRequests === 'Yes') {
+      anythingElse.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseQuestion], null));
+      anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.additionalRequestsDescription], null));
+    }
+  }
+
+  // // dates to avoid
+  if (_.has(data,'datesToAvoidYesNo')) {
+    dateToAvoid.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.cmaRequirements.taskList.datesToAvoid.title], null));
+    dateToAvoid.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.datesToAvoidYesNo], null));
+    // Loop dates
+    if (data.datesToAvoidYesNo === 'Yes') {
+      data.datesToAvoid.map((date: any, i: number) => {
+        dateToAvoid.push(
+        addSummaryRow(
+          i === 0 ? i18n.pages.cmaRequirements.taskList.sections.datesToAvoid : null,
+          [
+            `<b>${i18n.common.cya.date}</b>`,
+            Delimiter.BREAK_LINE,
+            `<pre>${date.value.dateToAvoid}</pre>`,
+            Delimiter.BREAK_LINE,
+            `<b>${i18n.common.cya.reason}</b>`,
+            Delimiter.BREAK_LINE,
+            `<pre>${date.value.dateToAvoidReason || ''}</pre>`
+          ],
+          null));
+      });
+    }
+  }
+  return {
+    interpreter,
+    stepFree,
+    hearingLoop,
+    multiEvidence,
+    sexAppointment,
+    privateAppointment,
+    physicalOrMental,
+    pastExperiences,
+    anythingElse,
+    dateToAvoid
+  };
 }
 
 function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
@@ -132,8 +285,8 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
       const respondentDocs = req.session.appeal.respondentDocuments;
 
       documents = respondentDocs.map(document => {
-        const formattedFileName = fileNameFormatter(document.evidence.name);
-        const urlHtml = `<a class='govuk-link' target='_blank' rel="noopener noreferrer" href='${paths.common.documentViewer}/${document.evidence.fileId}'>${formattedFileName}</a>`;
+
+        const urlHtml = toHtmlLink(document.evidence.fileId, document.evidence.name, paths.common.detailsViewers.document);
         const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
@@ -158,12 +311,12 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
       const documentLocationUrl: string = documentIdToDocStoreUrl(documentId, req.session.appeal.documentMap);
       if (documentLocationUrl) {
         const response = await documentManagementService.fetchFile(req, documentLocationUrl);
-        if (response) {
+        if (response.statusCode === 200) {
           res.setHeader('content-type', response.headers['content-type']);
           return res.send(Buffer.from(response.body, 'binary'));
         }
       }
-      return serverErrorHandler;
+      return res.redirect(paths.common.fileNotFound);
 
     } catch (error) {
       next(error);
@@ -171,12 +324,75 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
   };
 }
 
-function setupDetailViewersController(middleware: Middleware[], documentManagementService: DocumentManagementService): Router {
+function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const timeExtensionId = req.params.id;
+    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+    if (timeExtensionData) {
+      let previousPage: string = paths.common.overview;
+      const data = setupTimeExtension(req, timeExtensionData);
+      return res.render('detail-viewers/time-extension-details-viewer.njk', {
+        previousPage: previousPage,
+        data: data
+      });
+    }
+    // SHOULD THROW NOT FOUND
+    return serverErrorHandler;
+  } catch (error) {
+    next(error);
+  }
+}
+
+function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const timeExtensionId = req.params.id;
+    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+    if (timeExtensionData) {
+      let previousPage: string = paths.common.overview;
+      const data = setupTimeExtensionDecision(req, timeExtensionData);
+      return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
+        previousPage: previousPage,
+        data: data
+      });
+    }
+    // SHOULD THROW NOT FOUND
+    return serverErrorHandler;
+  } catch (error) {
+    next(error);
+  }
+}
+
+function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const { interpreter, stepFree, hearingLoop, multiEvidence, sexAppointment, privateAppointment, physicalOrMental, pastExperiences, anythingElse, dateToAvoid } = setupCmaRequirementsViewer(req);
+    return res.render('detail-viewers/cma-requirements-details-viewer.njk', {
+      previousPage: previousPage,
+      interpreter: interpreter,
+      stepFree,
+      hearingLoop,
+      multiEvidence,
+      sexAppointment,
+      privateAppointment,
+      physicalOrMental,
+      pastExperiences,
+      anythingElse,
+      dateToAvoid
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.common.documentViewer + '/:documentId', middleware, getDocumentViewer(documentManagementService));
-  router.get(paths.common.viewHomeOfficeDocuments, middleware, getHoEvidenceDetailsViewer);
-  router.get(paths.common.viewAppealDetails, middleware, getAppealDetailsViewer);
-  router.get(paths.common.viewReasonsForAppeal, middleware, getReasonsForAppealViewer);
+  router.get(paths.common.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
+  router.get(paths.common.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
+  router.get(paths.common.detailsViewers.appealDetails, getAppealDetailsViewer);
+  router.get(paths.common.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
+  router.get(paths.common.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
+  router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
+  router.get(paths.common.detailsViewers.cmaRequirementsAnswer, getCmaRequirementsViewer);
 
   return router;
 }
@@ -186,5 +402,9 @@ export {
   getReasonsForAppealViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
-  setupDetailViewersController
+  getTimeExtensionViewer,
+  getTimeExtensionDecisionViewer,
+  setupDetailViewersController,
+  setupCmaRequirementsViewer,
+  getCmaRequirementsViewer
 };

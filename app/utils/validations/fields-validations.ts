@@ -42,14 +42,14 @@ function validate(obj: object, schema: any, abortEarly: boolean = false): Valida
   return null;
 }
 
-function textAreaValidation(text: string, theKey: string): ValidationErrors | null {
+function textAreaValidation(text: string, theKey: string, errorMessage: string = null): ValidationErrors | null {
   const schema = Joi.object({
     [theKey]: Joi.string()
       .required()
       .trim()
       .messages({
-        'any.required': i18n.validationErrors.emptyReasonAppealIsLate,
-        'string.empty': i18n.validationErrors.emptyReasonAppealIsLate
+        'any.required': errorMessage || i18n.validationErrors.emptyReasonAppealIsLate,
+        'string.empty': errorMessage || i18n.validationErrors.emptyReasonAppealIsLate
       })
   });
 
@@ -291,6 +291,13 @@ function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
   return validate(obj, schema);
 }
 
+function selectedRequiredValidation(obj: object, errorMessage: string) {
+  const schema = Joi.object({
+    language: Joi.string().required().messages({ 'string.empty': errorMessage })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function askForMoreTimeValidation(obj: object) {
   const schema = Joi.object({
     askForMoreTime: Joi.string().required().messages({
@@ -298,6 +305,50 @@ function askForMoreTimeValidation(obj: object) {
     })
   }).unknown();
   return validate(obj, schema);
+}
+
+function isDateInRange(dateFrom: string, dateTo: string, obj): boolean | ValidationErrors {
+
+  const errorMessage = `Enter a date between ${dateFrom} and ${dateTo}`;
+  const { year, month, day } = obj;
+  const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
+    moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
+
+  const toValidate = {
+    ...obj,
+    date
+  };
+
+  const schema = Joi.object({
+    day: Joi.number().empty('').required().integer().min(1).max(31).messages({
+      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
+      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    year: Joi.number().empty('').required().integer().min(1900).required().messages({
+      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
+      'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    }),
+    date: Joi.date().required().min(dateFrom).max(dateTo).messages({
+      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'date.min': errorMessage,
+      'date.max': errorMessage,
+      'date.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
+    })
+  }).unknown(true);
+
+  return validate(toValidate, schema, true);
 }
 
 export {
@@ -319,5 +370,7 @@ export {
   reasonForAppealDecisionValidation,
   yesOrNoRequiredValidation,
   DOBValidation,
-  askForMoreTimeValidation
+  askForMoreTimeValidation,
+  selectedRequiredValidation,
+  isDateInRange
 };

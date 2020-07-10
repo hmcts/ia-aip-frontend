@@ -15,10 +15,44 @@ describe('application-state-utils', () => {
       cookies: {},
       session: {
         appeal: {
+          hearing: {
+            'hearingCentre': 'taylorHouse',
+            'time': '90',
+            'date': '2020-08-11T10:00:01.000'
+          },
           application: {},
           caseBuilding: {},
           reasonsForAppeal: {},
-          directions: {}
+          directions: [
+            {
+              'id': 3,
+              'tag': 'requestCmaRequirements',
+              'dateDue': '2020-05-21',
+              'dateSent': '2020-05-02'
+            },
+            {
+              'id': 2,
+              'tag': 'requestReasonsForAppeal',
+              'dateDue': '2020-05-01',
+              'dateSent': '2020-04-21'
+            },
+            {
+              'id': 1,
+              'tag': 'respondentEvidence',
+              'dateDue': '2020-04-28',
+              'dateSent': '2020-04-14'
+            }
+          ],
+          history: [
+            {
+              'id': 'submitAppeal',
+              'createdDate': '2020-02-08T16:00:00.000'
+            },
+            {
+              'id': 'submitReasonsForAppeal',
+              'createdDate': '2020-02-18T16:00:00.000'
+            }
+          ]
         }
       },
       idam: {
@@ -43,14 +77,13 @@ describe('application-state-utils', () => {
   describe('getAppealApplicationNextStep', () => {
     it('when application status is unknown should return default \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'unknown';
-      req.session.lastModified = '2020-02-07T16:00:00.000';
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
         {
           deadline: 'TBC',
           descriptionParagraphs: [
-            'Description for event <b>unknown</b> not found'
+            'Description for appeal status <b>unknown</b> not found'
           ]
         }
       );
@@ -78,14 +111,12 @@ describe('application-state-utils', () => {
 
     it('when application status is appealSubmitted should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'appealSubmitted';
-      req.session.appeal.appealCreatedDate = '2020-02-06T16:00:00.000';
-      req.session.appeal.appealLastModified = '2020-02-07T16:00:00.000';
 
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
-        deadline: '06 March 2020',
+        deadline: '07 March 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
           'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
@@ -100,20 +131,24 @@ describe('application-state-utils', () => {
 
     it('when application status is awaitingReasonsForAppeal should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-      req.session.lastModified = '2020-02-07T16:00:00.000';
       req.session.appeal.directions = [
         {
-          tag: 'requestReasonsForAppeal',
-          parties: 'appellant',
-          dueDate: '2020-04-21',
-          dateSent: '2020-03-24'
+          'id': '2',
+          'tag': 'requestReasonsForAppeal',
+          'parties': 'appellant',
+          'dateDue': '2020-09-01',
+          'dateSent': '2020-04-21',
+          'explanation': 'direction explanation'
         },
         {
-          tag: 'respondentEvidence',
-          parties: 'respondent',
-          dueDate: '2020-04-07',
-          dateSent: '2020-03-24'
-        } ];
+          'id': '1',
+          'tag': 'respondentEvidence',
+          'parties': 'respondent',
+          'dateDue': '2020-04-28',
+          'dateSent': '2020-04-14',
+          'explanation': 'direction explanation'
+        }
+      ];
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
@@ -121,11 +156,15 @@ describe('application-state-utils', () => {
           allowedAskForMoreTime: true,
           cta: {
             respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
+            respondByTextAskForMoreTime: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
             url: '/case-building/home-office-decision-wrong'
           },
-          deadline: '21 April 2020',
+          deadline: '01 September 2020',
           descriptionParagraphs: [
             'Tell us why you think the Home Office decision to refuse your claim is wrong.'
+          ],
+          descriptionParagraphsAskForMoreTime: [
+            'You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.'
           ],
           info: {
             title: 'Helpful Information',
@@ -133,7 +172,7 @@ describe('application-state-utils', () => {
           },
           usefulDocuments: {
             title: 'Useful documents',
-            url: "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
+            url: "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
           }
         }
       );
@@ -142,20 +181,23 @@ describe('application-state-utils', () => {
 
   it('when application status is awaitingReasonsForAppeal and it\'s partially completed should get correct \'Do This next section\'', () => {
     req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-    req.session.lastModified = '2020-02-07T16:00:00.000';
     req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
     req.session.appeal.directions = [
       {
+        id: '2',
         tag: 'requestReasonsForAppeal',
         parties: 'appellant',
-        dueDate: '2020-04-21',
-        dateSent: '2020-03-24'
+        dateDue: '2020-04-21',
+        dateSent: '2020-03-24',
+        explanation: 'direction explanation'
       },
       {
+        id: '1',
         tag: 'respondentEvidence',
         parties: 'respondent',
-        dueDate: '2020-04-07',
-        dateSent: '2020-03-24'
+        dateDue: '2020-04-07',
+        dateSent: '2020-03-24',
+        explanation: 'direction explanation'
       } ];
     const result = getAppealApplicationNextStep(req as Request);
 
@@ -163,11 +205,15 @@ describe('application-state-utils', () => {
       {
         cta: {
           respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
+          'respondByTextAskForMoreTime': 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
           url: '/case-building/home-office-decision-wrong'
         },
         deadline: '21 April 2020',
         descriptionParagraphs: [
           'You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.'
+        ],
+        'descriptionParagraphsAskForMoreTime': [
+          'You might not get more time. You need to finish telling us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.'
         ],
         info: {
           title: 'Helpful Information',
@@ -175,7 +221,7 @@ describe('application-state-utils', () => {
         },
         usefulDocuments: {
           title: 'Useful documents',
-          url: "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
+          url: "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
         },
         allowedAskForMoreTime: true
       }
@@ -184,19 +230,76 @@ describe('application-state-utils', () => {
 
   it('when application status is reasonsForAppealSubmitted should get correct Do this next section.', () => {
     req.session.appeal.appealStatus = 'reasonsForAppealSubmitted';
-    req.session.appeal.appealCreatedDate = '2020-02-06T16:00:00.000';
-    req.session.appeal.appealLastModified = '2020-02-07T16:00:00.000';
 
     const result = getAppealApplicationNextStep(req as Request);
 
     expect(result).to.eql({
       cta: null,
-      deadline: '21 February 2020',
+      deadline: '03 March 2020',
       descriptionParagraphs: [
         'You have told us why you think the Home Office decision is wrong.',
         'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
       ],
       allowedAskForMoreTime: false
     });
+  });
+
+  it('when application status is awaitingCmaRequirements should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'awaitingCmaRequirements';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql(
+      {
+        allowedAskForMoreTime: true,
+        cta: {
+          respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
+          respondByTextAskForMoreTime: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+          url: '/appointment-needs'
+        },
+        deadline: '21 May 2020',
+        descriptionParagraphs: [
+          'You need to attend a case management appointment.',
+          'First, tell us if you will need anything at the appointment, like an interpreter or step-free access.'
+        ],
+        descriptionParagraphsAskForMoreTime: [
+          'You might not get more time. You should still try and provide the requirements by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> if you can.'
+        ],
+        info: {
+          title: 'Helpful Information',
+          url: "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        }
+      }
+    );
+  });
+  it('when application status is awaitingCmaRequirements should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'cmaListed';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.deep.include(
+      {
+        'allowedAskForMoreTime': false,
+        'date': '11 August 2020',
+        'deadline': 'TBC',
+        descriptionParagraphs: [
+          'The Tribunal has set a date for your case management appointment. Here are the details:',
+          '<span class="govuk-!-font-weight-bold">Date:</span> {{ applicationNextStep.date }}',
+          '<span class="govuk-!-font-weight-bold">Time:</span> {{ applicationNextStep.time }}',
+          '<span class="govuk-!-font-weight-bold">Hearing Centre:</span> {{ applicationNextStep.hearingCentre }}',
+          'You should read your Notice of Case Management Appointment carefully. It has important information about your appointment.'
+        ],
+        'hearingCentre': 'Taylor House',
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        },
+        'time': '10:00 am',
+        'usefulDocuments': {
+          'title': 'Useful documents',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+        }
+      }
+    );
   });
 });

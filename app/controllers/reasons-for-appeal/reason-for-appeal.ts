@@ -2,18 +2,18 @@ import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { addDaysToDate } from '../../utils/date-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue, nowAppealDate } from '../../utils/utils';
+import { asBooleanValue, hasInflightTimeExtension, nowAppealDate } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
   yesOrNoRequiredValidation
 } from '../../utils/validations/fields-validations';
-import { daysToWaitUntilContact } from '../appeal-application/confirmation-page';
 
 const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
@@ -23,7 +23,8 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
     return res.render('reasons-for-appeal/reason-for-appeal-page.njk', {
       previousPage: paths.common.overview,
       applicationReason: req.session.appeal.reasonsForAppeal.applicationReason,
-      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
+      askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
+      askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
     });
   } catch (e) {
     next(e);
@@ -42,19 +43,32 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
           askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
         });
       }
-      req.session.appeal.reasonsForAppeal = {
-        ...req.session.appeal.reasonsForAppeal,
-        applicationReason: req.body.applicationReason
+
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        reasonsForAppeal: {
+          ...req.session.appeal.reasonsForAppeal,
+          applicationReason: req.body.applicationReason
+        }
       };
-
-      await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
-
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       if (req.body['saveForLater']) {
         if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
         return res.redirect(paths.common.overview + '?saved');
+      }
+      if (req.body['saveAndAskForMoreTime']) {
+        if (_.has(req.session, 'appeal.reasonsForAppeal.isEdit')
+          && req.session.appeal.reasonsForAppeal.isEdit === true) {
+          req.session.appeal.reasonsForAppeal.isEdit = false;
+        }
+        return res.redirect(paths.common.askForMoreTime.reason);
       }
 
       return getConditionalRedirectUrl(req, res, paths.awaitingReasonsForAppeal.supportingEvidence);
@@ -137,7 +151,12 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
             askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled
           });
         }
-        await updateAppealService.submitEvent(Events.EDIT_REASONS_FOR_APPEAL, req);
+        const appeal: Appeal = { ...req.session.appeal };
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_REASONS_FOR_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.appeal = {
+          ...req.session.appeal,
+          ...appealUpdated
+        };
         return getConditionalRedirectUrl(req, res, paths.awaitingReasonsForAppeal.checkAndSend);
       }
     } catch (e) {
@@ -185,8 +204,8 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
 function getSupportingEvidenceDeleteFile(documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (req.query['id']) {
-        const fileId = req.query['id'];
+      const fileId: string = req.query.id as string;
+      if (fileId) {
         const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
         await documentManagementService.deleteFile(req, targetUrl);
         const evidences: Evidence[] = [ ...req.session.appeal.reasonsForAppeal.evidences ];
@@ -202,7 +221,7 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('reasons-for-appeal/confirmation-page.njk', {
-      date: daysToWaitUntilContact(14)
+      date: addDaysToDate(14)
     });
   } catch (e) {
     next(e);

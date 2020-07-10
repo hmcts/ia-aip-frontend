@@ -66,6 +66,36 @@ module.exports = {
           signInForUser('partial-awaiting-reasons-for-appeal@example.com');
           break;
         }
+        case 'awaitingReasonsForAppeal with time extensions': {
+          signInForUser('awaitingReasonsForAppeal-with-time_extension@example.com');
+          break;
+        }
+        case 'awaitingClarifyingQuestionsAnswers with time extensions': {
+          signInForUser('awaitingClarifyingQuestions-with-time_extension@example.com');
+          break;
+        }
+        case 'awaitingClarifyingQuestionsAnswers': {
+          signInForUser('clarifying-questions@example.com');
+          break;
+        }
+        case 'awaitingCmaRequirements': {
+          signInForUser('awaitingCmaRequirements@example.com');
+          break;
+        }
+        case 'awaitingCmaRequirements with time extensions': {
+          signInForUser('awaitingCmaRequirements-with-time_extension@example.com');
+          break;
+        }
+        case 'cmaRequirementsSubmitted': {
+          signInForUser('cmaRequirementsSubmitted@example.com');
+          break;
+        }
+        case 'cmaListed': {
+          signInForUser('cmaListed@example.com');
+          break;
+        }
+        default:
+          break;
       }
 
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);

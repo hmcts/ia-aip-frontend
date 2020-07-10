@@ -3,7 +3,18 @@ interface Href {
   text: string;
 }
 
+interface SummarySection {
+  title: string;
+  summaryLists: SummaryList[];
+}
+
+interface SummaryList {
+  title?: string;
+  summaryRows: SummaryRow[];
+}
+
 interface SummaryRow {
+  classes?: string;
   key: {
     text: string
   };
@@ -42,7 +53,14 @@ interface DocumentMap {
   url: string;
 }
 
+interface TimeExtensionEventMap {
+  id: string;
+  externalId: string;
+  historyData: HistoryEvent;
+}
+
 interface Evidence {
+  id?: string;
   fileId: string;
   name: string;
   dateUploaded?: AppealDate;
@@ -54,35 +72,39 @@ interface DocumentUploadResponse {
   name: string;
 }
 
-interface Direction {
-  tag: string;
-  parties: string;
-  dueDate: string;
-  dateSent: string;
-}
-
 interface Appeal {
+  ccdCaseId?: string;
   appealStatus?: string;
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
   application: AppealApplication;
   reasonsForAppeal: ReasonsForAppeal;
-  hearingRequirements: HearingRequirements;
+  hearingRequirements?: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
+  cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
-  directions?: Direction[];
   history?: HistoryEvent[];
   askForMoreTime?: AskForMoreTime;
-  previousAskForMoreTime?: TimeExtensionCollection[];
+  timeExtensions?: TimeExtension[];
+  timeExtensionEventsMap?: TimeExtensionEventMap[];
+  directions?: Direction[];
+  draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+  clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
+  hearing: Hearing;
+
+}
+
+interface Hearing {
+  hearingCentre: string;
+  time: string;
+  date: string;
 }
 
 interface AskForMoreTime {
+  inFlight?: boolean;
   reason?: string;
-  status?: string;
-  state?: string;
   evidence?: Evidence[];
-  requestedDate?: string;
   reviewTimeExtensionRequired?: 'Yes' | 'No';
 }
 
@@ -107,9 +129,9 @@ interface HistoryEvent {
 }
 
 interface AppealDate {
-  day: number;
-  month: number;
-  year: number;
+  day: string;
+  month: string;
+  year: string;
 }
 
 interface LateAppeal {
@@ -151,8 +173,53 @@ interface AppealApplication {
   isEdit?: boolean;
 }
 
+interface CmaRequirements {
+  isEdit?: boolean;
+  tasks?: {
+    [key: string]: Task;
+  };
+  accessNeeds?: AccessNeeds;
+  otherNeeds?: OtherNeeds;
+  datesToAvoid?: DatesToAvoid;
+}
+
+interface AccessNeeds {
+  isInterpreterServicesNeeded?: boolean;
+  interpreterLanguage?: AdditionalLanguage;
+  isHearingRoomNeeded?: boolean;
+  isHearingLoopNeeded?: boolean;
+}
+
+interface OtherNeeds {
+  multimediaEvidence: boolean;
+  bringOwnMultimediaEquipment: boolean;
+  bringOwnMultimediaEquipmentReason: string;
+  singleSexAppointment: boolean;
+  singleSexTypeAppointment: 'All female' | 'All male';
+  singleSexAppointmentReason: string;
+  privateAppointment: boolean;
+  privateAppointmentReason: string;
+  healthConditions: boolean;
+  healthConditionsReason: string;
+  pastExperiences: boolean;
+  pastExperiencesReason: string;
+  anythingElse: boolean;
+  anythingElseReason: string;
+}
+
+interface DatesToAvoid {
+  isDateCannotAttend: boolean;
+  dates?: CmaDateToAvoid[];
+}
+
+interface CmaDateToAvoid {
+  date: AppealDate;
+  reason?: string;
+}
+
 interface ReasonsForAppeal {
   applicationReason: string;
+  uploadDate?: string;
   evidences?: Evidence[];
   isEdit?: boolean;
 }
@@ -180,4 +247,45 @@ interface IdamDetails {
   family_name: string;
 }
 
+interface TimeExtension {
+  id?: number | string;
+  requestDate: string;
+  reason: string;
+  state: string;
+  status: string;
+  evidence?: Evidence[];
+  decision?: string;
+  decisionReason?: string;
+  decisionOutcomeDate?: string;
+}
+
+interface Direction {
+  id: string;
+  tag: string;
+  parties: string;
+  dateDue: string;
+  dateSent: string;
+  explanation: string;
+}
+
+interface ClarifyingQuestion<T> {
+  id?: string;
+  value: {
+    dateSent?: string;
+    dueDate?: string;
+    question: string;
+    dateResponded?: string;
+    answer?: string;
+    supportingEvidence?: T[];
+  };
+}
+
+interface AdditionalLanguage {
+  language?: string;
+  languageDialect?: string;
+}
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;
+
+interface ApplicationStatus {
+  [key: string]: Task;
+}

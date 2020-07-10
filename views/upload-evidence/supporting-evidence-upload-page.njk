@@ -1,0 +1,74 @@
+{% set pageTitleName = i18n.pages.reasonsForAppealUpload.title %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "components/evidence-list.njk" import evidenceList with context %}
+
+{% extends "layout.njk" %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form action="{{ formSubmitAction }}" method="post">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.reasonsForAppealUpload.heading,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <p>{{ i18n.pages.askForMoreTimePage.adviceHeader }}</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        {% for advice in i18n.pages.askForMoreTimePage.advice %}
+          <li>{{ advice | safe }}</li>
+        {% endfor %}
+      </ul>
+
+      <div class="govuk-inset-text">
+        {{ govukFileUpload({
+          id: "file-upload",
+          name: "file-upload",
+          label: {
+            html: i18n.pages.reasonsForAppealUpload.uploadFile | safe
+          },
+          errorMessage: {
+            text: errorList[0].text
+          } if (errorList)
+        }) }}
+
+        {{ govukButton({
+          text: i18n.common.buttons.uploadFile,
+          name: 'uploadFile',
+          classes: "govuk-button--secondary",
+          attributes: {
+            formEnctype: 'multipart/form-data',
+            formaction: evidenceUploadAction + '?_csrf=' + csrfToken
+          }
+        }) }}
+      </div>
+      {{ evidenceList(evidences, evidenceCTA) }}
+      {% if askForMoreTimeFeatureEnabled %}
+        <div class="panel-background">
+          <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
+          <ul>
+            <li>{{ i18n.common.askForMoreTime.wantToProvideEvidenceLater }}
+              <a href='{{ paths.common.askForMoreTime.reason }}'
+                 class='govuk-link'>{{ i18n.common.askForMoreTime.saveAnswerAndAsk | lower }}</a>
+            </li>
+          </ul>
+        </div>
+      {% endif %}
+      {{ saveButtons() }}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+
+{% endblock %}

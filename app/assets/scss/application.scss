@@ -8,6 +8,7 @@
 @import "_timeline-component.scss";
 @import "_header";
 @import "_timeout-modal";
+@import "save-buttons-component";
 
 body {
   @extend .govuk-body;
@@ -37,6 +38,15 @@ img {
   background-color: #f3f2f1;
   padding: 0.01rem;
   border-left: 0.4rem solid #006600;
+  margin-top: 1rem;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.ask-for-more-time-banner {
+  background-color: #f3f2f1;
+  padding: 0.01rem;
+  border-left: 0.4rem solid $govuk-focus-colour;
   margin-top: 1rem;
   padding-bottom: 0.4rem;
   margin-bottom: 1rem;
@@ -80,4 +90,22 @@ img {
   white-space: pre-line;
 }
 
+pre {
+  font-family: "GDS Transport", Arial, sans-serif;
+  white-space: pre-wrap;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1rem;
+  color: $govuk-brand-colour;
+  padding: 0;
+}
+
+.link-button:hover {
+  color: govuk-colour("light-blue");
+}
 

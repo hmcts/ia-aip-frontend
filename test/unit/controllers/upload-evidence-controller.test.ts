@@ -3,7 +3,7 @@ import {
   EvidenceUploadConfig,
   getEvidenceYesNo, getSupportingEvidenceDeleteFile,
   getUploadPage,
-  postEvidenceYesNo, postUploadFile
+  postEvidenceYesNo ,postUploadFile
 } from '../../../app/controllers/upload-evidence/upload-evidence-controller';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -256,6 +256,30 @@ describe('upload evidence controller', () => {
       const error = new Error('an error');
       res.redirect = sandbox.stub().throws(error);
       await getSupportingEvidenceDeleteFile(documentManagementService as DocumentManagementService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('should catch error and call next with error', async () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+
+      getEvidenceYesNo('previousPage', { extra: 'model' }, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('should catch error and call next with error', async () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+
+      postEvidenceYesNo('previousPage', { extra: 'model' }, uploadEvidenceConfig as EvidenceUploadConfig, req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+
+    it('should catch error and call next with error', async () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+
+      await postUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService, uploadEvidenceConfig as EvidenceUploadConfig)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 

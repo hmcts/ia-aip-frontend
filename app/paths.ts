@@ -31,6 +31,55 @@ const paths = {
   reasonsForAppealSubmitted: {
     confirmation: '/case-building/answer-sent'
   },
+  awaitingClarifyingQuestionsAnswers: {
+    questionsList: '/questions-about-appeal',
+    question: '/question/:id',
+    supportingEvidenceQuestion: '/clarifying-questions/supporting-evidence/:id',
+    supportingEvidenceUploadFile: '/clarifying-questions/upload-evidence/:id',
+    supportingEvidenceDeleteFile: '/clarifying-questions/delete-evidence/:id/',
+    supportingEvidenceSubmit: '/clarifying-questions/submit/:id',
+    anythingElse: '/anything-else',
+    anythingElseQuestionPage: '/anything-else-question',
+    anythingElseAnswerPage: '/anything-else-answer',
+    checkAndSend: '/check-your-answers'
+  },
+  clarifyingQuestionsAnswersSubmitted: {
+    confirmation: '/clarifying-questions-sent'
+  },
+  awaitingCmaRequirements: {
+    taskList: '/appointment-needs',
+    accessNeeds: '/appointment-access-needs',
+    accessNeedsInterpreter: '/appointment-interpreter',
+    accessNeedsStepFreeAccess: '/appointment-step-free-access',
+    accessNeedsHearingLoop: '/appointment-hearing-loop',
+    accessNeedsAdditionalLanguage: '/appointment-add-language-details',
+    otherNeeds: '/appointment-other-needs',
+    otherNeedsMultimediaEvidenceQuestion: '/appointment-multimedia-evidence',
+    otherNeedsMultimediaEquipmentQuestion: '/appointment-multimedia-evidence-equipment',
+    otherNeedsMultimediaEquipmentReason: '/appointment-multimedia-evidence-equipment-reasons',
+    otherNeedsSingleSexAppointment: '/appointment-single-sex',
+    otherNeedsSingleSexTypeAppointment: '/appointment-single-sex-type',
+    otherNeedsAllMaleAppointment: '/appointment-single-sex-type-male',
+    otherNeedsAllFemaleAppointment: '/appointment-single-sex-type-female',
+    otherNeedsPrivateAppointment: '/appointment-private',
+    otherNeedsPrivateAppointmentReason : '/appointment-private-reasons',
+    otherNeedsHealthConditions: '/appointment-physical-mental-health',
+    otherNeedsHealthConditionsReason: '/appointment-physical-mental-health-reasons',
+    otherNeedsPastExperiences: '/appointment-past-experiences',
+    otherNeedsPastExperiencesReasons: '/appointment-past-experiences-reasons',
+    otherNeedsAnythingElse: '/appointment-anything-else',
+    otherNeedsAnythingElseReasons: '/appointment-anything-else-reasons',
+    datesToAvoidQuestion: '/appointment-dates-avoid',
+    datesToAvoidEnterDate: '/appointment-dates-avoid-enter',
+    datesToAvoidEnterDateWithId: '/appointment-dates-avoid-enter/:id',
+    datesToAvoidReason: '/appointment-dates-avoid-reasons',
+    datesToAvoidReasonWithId: '/appointment-dates-avoid-reasons/:id',
+    datesToAvoidAddAnotherDate: '/appointment-dates-avoid-new',
+    checkAndSend: '/appointment-check-answers'
+  },
+  cmaRequirementsSubmitted: {
+    confirmation: '/appointment-success'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',
@@ -39,6 +88,8 @@ const paths = {
     redirectUrl: '/redirectUrl',
     start: '/start-appeal',
     overview: '/appeal-overview',
+    fileNotFound: '/file-not-found',
+    yourCQanswers: '/your-answers',
 
     // Health endpoints
     health: '/health',
@@ -50,11 +101,16 @@ const paths = {
     questions: '/eligibility',
     eligible: '/eligible',
 
-    // Viewers endppoints
-    documentViewer: '/view/document',
-    viewHomeOfficeDocuments: '/view/home-office-documents',
-    viewAppealDetails: '/appeal-details',
-    viewReasonsForAppeal: '/appeal-reasons',
+    // Viewers endpoints
+    detailsViewers: {
+      document: '/view/document',
+      homeOfficeDocuments: '/view/home-office-documents',
+      appealDetails: '/appeal-details',
+      reasonsForAppeal: '/appeal-reasons',
+      timeExtension: '/view/time-extension',
+      timeExtensionDecision: '/view/time-extension-decision',
+      cmaRequirementsAnswer: '/your-appointment-needs'
+    },
 
     // Ask for more time
     askForMoreTime: {
@@ -64,7 +120,8 @@ const paths = {
       supportingEvidenceUpload: '/provide-supporting-evidence-more-time',
       supportingEvidenceSubmit: '/provide-supporting-evidence-more-time-submit',
       supportingEvidenceDelete: '/provide-supporting-evidence-more-time-delete',
-      checkAndSend: '/check-answer-more-time'
+      checkAndSend: '/check-answer-more-time',
+      confirmation: '/request-more-time-sent'
     },
 
     // Session extension
@@ -79,11 +136,13 @@ const paths = {
     moreHelp: '/appeal-help',
     evidenceToSupportAppeal: '/supporting-evidence',
     homeOfficeDocuments: '/home-office-documents',
+    whatToExpectAtCMA: '/expect-case-management-appointment',
 
     // Footer links
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy'
+
   }
 };
 export {

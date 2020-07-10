@@ -36,7 +36,9 @@
     "cya": {
       "questionRowTitle": "Question",
       "answerRowTitle": "Answer",
-      "supportingEvidenceRowTitle": "Supporting evidence"
+      "supportingEvidenceRowTitle": "Supporting evidence",
+      "date": "Date",
+      "reason": "Reason"
     },
     "askForMoreTime": {
       "text": "Ask for more time",
@@ -223,7 +225,7 @@
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",
@@ -293,6 +295,7 @@
       "newWindow": "(opens in a new window)",
       "appealRef": "Appeal reference:",
       "answersBeenSaved": "Your answers have been saved",
+      "askedForMoreTime": "You have asked for more time",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
@@ -310,6 +313,14 @@
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
+        "cmaRequirementsSubmitted": {
+          "description": "A Tribunal Caseworker is looking at your answers and will contact you with details of your case management appointment and tell you what to do next.",
+          "description2": "This should be by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> but may be longer than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          }
+        },
         "awaitingRespondentEvidence": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
           "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
@@ -321,79 +332,154 @@
         "awaitingReasonsForAppeal": {
           "new": {
             "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
+            "descriptionAskForMoreTime": "You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
             "info": {
               "title": "Helpful Information",
               "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
             }
           },
           "partial": {
             "description": "You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.",
+            "descriptionAskForMoreTime": "You might not get more time. You need to finish telling us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
+            "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
             "info": {
               "title": "Helpful Information",
               "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.viewHomeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
             }
           }
         },
         "reasonsForAppealSubmitted": {
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+        },
+        "clarifyingQuestions": {
+          "description": "You need to answer some questions about your appeal.",
+          "descriptionAskForMoreTime": "You might not get more time. You should still try to answer the Tribunal’s questions by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
+          "respondByText": "You need to respond by {{ applicationNextStep.deadline }}."
+        },
+        "awaitingCmaRequirements": {
+          "description": "You need to attend a case management appointment.",
+          "description2": "First, tell us if you will need anything at the appointment, like an interpreter or step-free access.",
+          "descriptionAskForMoreTime": "You might not get more time. You should still try and provide the requirements by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          }
+        },
+        "clarifyingQuestionsAnswersSubmitted": {
+          "description": "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.",
+          "dueDate": "This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that."
+        },
+        "cmaListed": {
+          "description": "The Tribunal has set a date for your case management appointment. Here are the details:",
+          "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
+          "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
+          "hearingCentre": "<span class=\"govuk-!-font-weight-bold\">Hearing Centre:</span> {{ applicationNextStep.hearingCentre }}",
+          "respondByTextAskForMoreTime": "You should read your Notice of Case Management Appointment carefully. It has important information about your appointment.",
+          "usefulDocuments": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+          },
+          "usefulDoc": {
+            "title": "Useful documents",
+            "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+          }
         }
       },
       "timeline": {
         "completed": "Completed",
+        "sections": {
+          "appealArgumentSection": "Your appeal argument",
+          "appealDetailsSection": "Your appeal details"
+        },
         "submitAppeal": {
-          "title": "Your appeal details",
           "text": "You sent your appeal details to the Tribunal.",
           "links": [
             {
               "title": "What you sent",
               "text": "Your appeal details",
-              "href": "{{ paths.common.viewAppealDetails }}"
+              "href": "{{ paths.common.detailsViewers.appealDetails }}"
             },
             {
               "title": "Helpful information",
               "text": "What is a Tribunal Caseworker?",
-              "href": "{{ paths.guidancePages.tribunalCaseworker }}"
+              "href": "{{ paths.common.tribunalCaseworker }}"
             }
           ]
         },
         "submitReasonsForAppeal": {
-          "title": "Your appeal argument",
           "text": "You told us why you think the Home Office decision to refuse your claim is wrong.",
           "links": [
             {
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
-              "href": "{{ paths.common.viewReasonsForAppeal }}"
+              "href": "{{ paths.common.detailsViewers.reasonsForAppeal }}"
             },
             {
               "title": "Useful documents",
               "text": "Home Office documents about your case",
-              "href": "{{ paths.common.viewHomeOfficeDocuments }}"
+              "href": "{{ paths.common.detailsViewers.homeOfficeDocuments }}"
             },
             {
               "title": "Helpful information",
               "text": "Understanding your Home Office documents",
-              "href": "{{ paths.guidancePages.homeOfficeDocuments }}"
+              "href": "{{ paths.common.homeOfficeDocuments }}"
             }
           ]
         },
-        "reasonsForAppealCheckAnswersHistory": {
-          "title": "Why you think the Home Office is wrong",
-          "question": "Question",
-          "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?",
-          "providingEvidence": "Providing supporting evidence"
+        "submitTimeExtension": {
+          "text": "You asked for more time.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Reason you needed more time",
+              "href": "{{ paths.common.detailsViewers.timeExtension }}"
+            }
+          ]
         },
-        "appealApplicationCheckAnswersHistory": {
-          "title": "Your appeal details"
+        "reviewTimeExtension": {
+          "text": "Your request for more time was",
+          "links": [
+            {
+              "title": "What the Tribunal said ",
+              "text": "Reason for decision",
+              "href": "{{ paths.common.detailsViewers.timeExtensionDecision }}"
+            }
+          ]
+        },
+        "submitClarifyingQuestionAnswers": {
+          "text": "You answered some questions about your appeal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your answers",
+              "href": "{{ paths.common.yourCQanswers }}"
+            }
+          ]
+        },
+        "submitCmaRequirements": {
+          "text": "You sent your case management appointment needs.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appointment needs",
+              "href": "{{ paths.common.detailsViewers.cmaRequirementsAnswer }}"
+            }
+          ]
+        },
+        "listCma": {
+          "text": "Your case management appointment was listed."
         }
       }
     },
@@ -408,8 +494,57 @@
         "title": "Home Office documents about your case",
         "dateUploaded": "Date uploaded",
         "document": "Document"
+      },
+      "reasonsForAppealCheckAnswersHistory": {
+        "title": "Why you think the Home Office is wrong",
+        "question": "Question",
+        "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
+      },
+      "timeExtensionRequest": {
+        "title": "Reason you needed more time",
+        "question": "How much time to you need and why do you need it?",
+        "supportingEvidence": "Supporting evidence"
+      },
+      "timeExtensionReview": {
+        "title": "Reason for decision",
+        "reason": "Decision",
+        "decision": "How much time to you need and why do you need it?"
+      },
+      "cmaRequirements": {
+        "interpreterTitle": "Will you need an interpreter at the appointment?",
+        "language": "Language",
+        "dialect": "Dialect",
+        "stepFreeAccessTitle": "Will you or anyone coming with you need step-free access?",
+        "hearingLoopTitle": "Will you or anyone coming with you need a hearing loop?",
+        "anythingElseTitle": "Will you need anything else at the appointment?",
+        "anythingElseQuestion": "Tell us what you will need and why you need it",
+        "pastExperiencesTitle": "Have you had any past experiences that may affect you at the appointment?",
+        "pastExperienceQuestion": "Tell us how any past experiences may affect you at the appointment",
+        "physicalTitle": "Do you have any physical or mental health conditions that may affect you at the hearing?",
+        "physicalQuestion": "Tell us how any physical or mental health conditions you have that may affect you at the appointment",
+        "privateAppointmentTitle": "Will you need a private appointment?",
+        "privateAppointmentQuestion": "Tell us why you need a private appointment",
+        "AllFOrMTitle": "Will you need an all-female or all-male appointment",
+        "AllFOrMQuestion": "What type of appointment will you need?",
+        "AllFOrMWhy": "Tell us why you need an {{ appointmentType }} appointment",
+        "MultimediaEvidenceTitle":  "Will you bring any multimedia evidence",
+        "MultimediaEvidenceBringEquip": "Will you bring the equipment to play this evidence",
+        "MultimediaEvidenceCantBringEquip": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it.",
+        "title": "Your appointment needs",
+        "accessNeedsTitle": "1. Access needs",
+        "InterpreterTitle": "Interpreter",
+        "stepFreeAccessTitle": "Step free access",
+        "hearingLoopTitle": "Hearing loop",
+        "datesToAvoidTitle": "3. Dates to avoid",
+        "otherNeedsTitle": "2. Other needs",
+        "multiMediaViewTitle": "Multimedia evidence",
+        "sexAppointmentViewerTitle": "All-female or all-male appointment",
+        "privateAppointmentViewerTitle": "Private appointment",
+        "HealthViewerTitle": "Physical or mental health conditions",
+        "pastExpViewerTitle": "Past experiences",
+        "anythingElseViewerTitle": "Anything else"
       }
-    },
+},
     "guidancePages": {
       "caseWorker": {
         "title": "What is a Tribunal Caseworker?",
@@ -969,8 +1104,296 @@
       ],
       "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
     },
-    "forbidden": {
-      "title": "This page is unavailable"
+    "askForMoreTimeConfirmation": {
+      "title": "Your request for more time has been sent",
+      "contactDate": "A Tribunal Caseworker should contact you within <b>five working days</b> to tell you if you have more time but it might take longer than that",
+      "mightNotGetIt": "You might not get more time. You should still respond to the Tribunal by the date you were given if you can",
+      "thingsYouCanDoNow": "Things you can do now",
+      "readMore": "Read more about appealing an immigration or asylum decision",
+      "organisationHelp": "Find organisations that can help you with your appeal"
+    },
+    "clarifyingQuestionsList": {
+      "title": "Questions about your appeal",
+      "sections": {
+        "questions": {
+          "header": "Questions",
+          "itemTitle": "Answer question"
+        },
+        "otherInformation": {
+          "header": "Other information"
+        },
+        "checkAndSend": {
+          "header": "Check and send",
+          "itemTitle": "Check and send your answers"
+        }
+      }
+    },
+    "cmaRequirements": {
+      "taskList": {
+        "title": "Tell us your appointment needs",
+        "header": "Tell us your appointment needs",
+        "sections": {
+          "accessNeeds": "Access needs",
+          "otherNeeds": "Other needs",
+          "datesToAvoid": "Dates to avoid",
+          "checkAndSend": "Check and send"
+        },
+        "accessNeeds": {
+          "id": "accessNeedsLink",
+          "title": "Will you need an interpreter, step-free access or a hearing loop at the appointment?",
+          "path": "awaitingCmaRequirements.accessNeeds"
+        },
+        "otherNeeds": {
+          "id": "otherNeedsLink",
+          "title": "Will you need anything else at the appointment?",
+          "path": "awaitingCmaRequirements.otherNeeds"
+        },
+        "datesToAvoid": {
+          "id": "datesToAvoidLink",
+          "title": "Are there any dates you cannot go to the appointment?",
+          "path": "awaitingCmaRequirements.datesToAvoidQuestion"
+        },
+        "checkAndSend": {
+          "id": "checkAndSendLink",
+          "title": "Check and send us your appointment needs",
+          "path": "awaitingCmaRequirements.checkAndSend"
+        }
+      },
+      "accessNeedsSection": {
+        "accessNeedsPage": {
+          "pageTitle": "Your access needs",
+          "title": "Access needs",
+          "text": "If you need an interpreter or if you or anyone coming with you needs step-free access or a hearing loop, they will be provided at the appointment."
+        },
+        "additionalLanguagePage": {
+          "pageTitle": "Add language details",
+          "title": "Add language details",
+          "hint": "Dialect (Optional)",
+          "text": "A dialect is a form of a language spoken in a part of a country or by groups of people in a country."
+        },
+        "needInterpreterPage": {
+          "pageTitle": "Will you or anyone coming with you need an interpreter?",
+          "title": "Will you need an interpreter?"
+        },
+        "hearingLoopPage": {
+          "pageTitle": "Will you or anyone coming with you need a hearing loop?",
+          "title": "Will you or anyone coming with you need a hearing loop?",
+          "text": "A hearing loop is a sound system designed to help people who use hearing aids."
+        },
+        "stepFreeAccessPage": {
+          "pageTitle": "Will you or anyone coming with you need step-free access?",
+          "title": "Will you or anyone coming with you need step-free access?",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues.",
+          "path": "awaitingCmaRequirements.checkAndSend"
+        }
+      },
+      "otherNeedsSection": {
+        "startPage": {
+          "title": "Other needs",
+          "description": "If you have any other needs, they will be considered but it might not be possible to provide for them at the appointment."
+        },
+        "multimediaEvidence": {
+          "title": "Will you bring any multimedia evidence?",
+          "question": "Will you bring any multimedia evidence?",
+          "description": "For example, video or sound recordings."
+        },
+        "bringEquipment": {
+          "title": "Will you bring the equipment to play this evidence?",
+          "question": "Will you bring the equipment to play this evidence?",
+          "description": "For example, a laptop or DVD player."
+        },
+        "bringEquipmentReason": {
+          "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
+          "heading": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it"
+        },
+        "singleSexAppointment": {
+          "title": "Will you need an all-female or all-male appointment?",
+          "question": "Will you need an all-female or all-male appointment?"
+        },
+        "singleSexTypeAppointment": {
+          "title": "What type of appointment will you need?",
+          "question": "What type of appointment will you need?"
+        },
+        "singleSexAppointmentAllMale": {
+          "title": "Tell us why you need an all-male appointment",
+          "heading": "Tell us why you need an all-male appointment"
+        },
+        "singleSexAppointmentAllFemale": {
+          "title": "Tell us why you need an all-female appointment",
+          "heading": "Tell us why you need an all-female appointment"
+        },
+        "privateAppointment": {
+          "title": "Will you need a private appointment?",
+          "question": "Will you need a private appointment?",
+          "description": "A private appointment means the public will not be allowed to attend."
+        },
+        "privateAppointmentReason": {
+          "title": "Tell us why you need a private appointment",
+          "heading": "Tell us why you need a private appointment"
+        },
+        "healthConditions": {
+          "title": "Do you have any physical or mental health conditions that may affect you at the appointment?",
+          "question": "Do you have any physical or mental health conditions that may affect you at the appointment?"
+        },
+        "healthConditionsReason": {
+          "title": "Tell us how any physical or mental health conditions you have may affect you at the appointment",
+          "heading": "Tell us how any physical or mental health conditions you have may affect you at the appointment"
+        },
+        "pastExperiences": {
+          "title": "Have you had any past experiences that may affect you at the appointment?",
+          "question": "Have you had any past experiences that may affect you at the appointment?",
+          "description": "This might be experience of physical or sexual abuse, trafficking or torture."
+        },
+        "pastExperiencesReasons": {
+          "title": "Tell us how any past experiences that may affect you at the appointment",
+          "heading": "Tell us how any past experiences that may affect you at the appointment"
+        },
+        "anythingElse": {
+          "title": "Will you need anything else at the appointment?",
+          "question": "Will you need anything else at the appointment?"
+        },
+        "anythingElseReasons": {
+          "title": "Tell us what you will need and why you need it",
+          "heading": "Tell us what you will need and why you need it",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
+        }
+      },
+      "datesToAvoidSection": {
+        "questionPage": {
+          "title": "Are there any dates you cannot go to the appointment?",
+          "question": "Are there any dates you cannot go to the appointment?",
+          "description": "You will need to tell us why you cannot go to the appointment on the dates you include."
+        },
+        "enterADatePage": {
+          "title": "Enter a date",
+          "heading": "Enter a date",
+          "description": "Only include dates from {{ availableDates.from }} to {{ availableDates.to }}",
+          "hint": "For example, 12 11 2020"
+        },
+        "reason": {
+          "title": "Why can you not go to the appointment on this date?",
+          "heading": "Why can you not go to the appointment on this date?"
+        },
+        "addAnotherDateQuestion": {
+          "title": "Do you want to add another date you cannot go to the appointment?",
+          "heading": "Do you want to add another date you cannot go to the appointment?"
+        }
+      }
+    },
+    "cmaRequirementsCYA": {
+      "title": "Check your answers",
+      "sections": {
+        "accessNeeds": "Access needs",
+        "otherNeeds": "Other needs",
+        "datesToAvoid": "Dates to avoid"
+      },
+      "rows": {
+        "interpreterTitle": "Interpreter",
+        "language": "Language",
+        "dialect": "Dialect",
+        "stepFreeTitle": "Step-free access",
+        "hearingLoopTitle": "Hearing loop",
+        "multimediaEvidenceTitle": "Multimedia evidence",
+        "singleSexAppointmentTitle": "All-female or all-male appointment",
+        "privateAppointmentTitle": "Private appointment",
+        "healthConditionsTitle": "Physical or mental health conditions",
+        "pastExperiencesTitle": "Past experiences",
+        "anythingElseTitle": "Anything else",
+        "datesToAvoidTitle": "Dates to avoid"
+      }
+    },
+    "cmaRequirementsConfirmation": {
+      "title": "You have sent your appointment needs",
+      "whatNextListItems": [
+        "A Tribunal Caseworker will look at your appointment needs. If you have asked for an interpreter, step-free access or a hearing loop, these will be provided. If you have asked for anything else, it will be considered but may not be provided",
+        "A Tribunal Caseworker will then contact you to tell you where and when the appointment will take place and what will be provided",
+        "This should be by <b>{{ date }}</b> but may take longer than that"
+      ],
+      "info": {
+        "title": "Helpful Information",
+        "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+      }
+    },
+    "clarifyingQuestionPage": {
+      "pageTitle": "Answer question {{ question.orderNo }} about your appeal",
+      "title": "Question {{ question.orderNo }}",
+      "textAreaLabel": "Answer question {{ question.orderNo }}",
+      "panel": {
+        "supportingEvidence": "Supporting evidence",
+        "ableToAddEvidence": "You will be able to add supporting evidence on the next page if you want to.",
+        "needMoreTime": "Need more time?",
+        "saveAndAskMoreTime": "Save your answer and ask for more time"
+      }
+    },
+    "clarifyingQuestionAnythingElseQuestion": {
+      "hint": "This could be something you haven't already told us or any new information that might affect your case.",
+      "question": "Do you want to tell us anything else about your case?"
+    },
+    "clarifyingQuestionAnythingElseAnswer": {
+      "description": "This could be something you haven't already told us or any new information that might affect your case.",
+      "hint": "Tell us anything else about your case"
+    },
+    "clarifyingQuestionsCYA": {
+      "title": "You have answered the Tribunal's questions",
+      "whatNextListItems": [
+        "A tribunal Caseworker will look at your answers and contact you to tell you what to do next",
+        "This should be by <b>{{ date }}</b> but it might take longer than that"
+      ],
+      "info": {
+        "title": "Helpful Information",
+        "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+      }
+    },
+    "whatToExpectPage": {
+      "pageTitle": "What to expect at a case management appointment",
+      "title": "What to expect at a case management appointment",
+      "whatIsCMA": "A case management appointment is a meeting with a Tribunal Caseworker to talk about your appeal. A Home Office representative may also be at the appointment. It is <strong>not</strong> a final hearing and a final decision will not be made about your appeal at the appointment. ",
+      "whenYouArrive": {
+        "title": "When you arrive",
+        "text": "You must arrive at least 15 minutes before your appointment is due to start. First go to reception and tell them why you are there. They will check you in and show you where the waiting area is."
+      },
+      "theHearingRoom": {
+        "title": "The hearing room",
+        "text": "The Tribunal clerk will take you into the hearing room. The Tribunal Caseworker sits behind a table. You’ll be invited to sit opposite them. If you have someone to support you, they may sit next to you."
+      },
+      "peopleAtAppointment": {
+        "title": "The people at your appointment",
+        "titleOne": "The following people will be at the appointment:",
+        "bulletOne": ["A Tribunal Caseworker", "You"],
+        "titleTwo": "The following people may also be at the appointment:",
+        "bulletTwo": [
+          	"Anyone you bring to support you, like a friend or family member",
+        	"A Home Office representative",
+        	"Any interpreters you have asked for",
+        	"Tribunal staff",
+        	"Members of the public"
+
+      ]
+      },
+      "DuringAppointment": {
+        "title": "During the appointment",
+        "introduction": "The Tribunal Caseworker will introduce everyone in the room and explain how the case management appointment will work. The Tribunal Caseworker may ask you some questions about your appeal. ",
+        "questions": "If a Home Office representative is at the meeting, the Tribunal Caseworker may ask them questions.",
+        "endOfAppointment": "At the end of the appointment, the Tribunal Caseworker will summarise what was talked about and agree what will happen next with you and the Home Office representative. "
+      },
+      "AfterAppointment": {
+        "title": "After the appointment",
+        "notification": "The Tribunal Caseworker will send you a notification confirming what you need to do next. For example, you might need to provide more information to the Tribunal.",
+        "onlineSummary": "You will also be able to view the Case Management Appointment Summary on the online service soon after the appointment. This is a record of what was talked about and agreed at the appointment."
+      },
+      "AdviceForPreparation": {
+        "title": "Advice on preparing for an appointment",
+        "bullets": [
+          "If you can, visit the hearing centre before the day of your appointment",
+          "Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <a href='#' class=\"govuk-link\">See the full list of items you’re not allowed to take in</a>",
+          "Children are not always allowed into the hearing room. If you need to bring children with you, you should bring a responsible adult to take care of them while you’re at the appointment",
+          "Bring food and drink and any medication you might need",
+          "Bring family and friends along for support if you want to"
+
+
+
+        ]
+      }
     }
   },
   "error": {
@@ -1058,7 +1481,47 @@
       "incorrectFormat": "The selected file must be a",
       "fileCannotBeUploaded": "The file cannot be uploaded"
     },
-    "askForMoreTime": "Enter how much time you need and why you need it"
+    "askForMoreTime": "Enter how much time you need and why you need it",
+    "clarifyingQuestions": {
+      "emptyAnswer": "Please enter an answer for the question",
+      "anythingElseEmptyAnswer": "Enter any other information you want tell us about your case"
+    },
+    "cmaRequirements": {
+      "accessNeeds": {
+        "emptyAnswer": "Please enter an answer for the question",
+        "selectInterpreter": "Select yes if anyone will need an interpreter",
+        "addLanguage": "Select a language",
+        "stepFreeAccess": "Select yes if you or anyone coming with will you need step-free access",
+        "hearingLoop": "Select yes if you or anyone coming with you will need a hearing loop"
+      },
+      "otherNeeds": {
+        "multimediaEvidenceAnswerRequired": "Select yes if you will bring any multimedia evidence",
+        "bringEquipmentAnswerRequired": "Select yes if you will bring the equipment to play this evidence",
+        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it",
+        "singleSexAppointmentRequired": "Select yes if you need an all-female or all-male appointment",
+        "singleSexTypeAppointmentRequired": "Select if you need an all-female or all-male appointment",
+        "singleSexAppointmentAllMaleReasonRequired": "Enter the reasons you need an all-male appointment",
+        "singleSexAppointmentAllFemaleReasonRequired": "Enter the reasons you need an all-female appointment",
+        "privateAppointmentAnswerRequired": "Select yes if you need a private appointment",
+        "privateAppointmentReasonRequired": "Enter the reasons you need a private appointment",
+        "healthConditionsAnswerRequired": "Select yes if you have any physical or mental health conditions that may affect you at the appointment",
+        "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the appointment",
+        "pastExperiencesAnswerRequired": "Select yes if you have had any past experiences that may affect you at the appointment",
+        "pastExperiencesReasonRequired": "Enter details of how any past experiences that will affect you at the appointment",
+        "anythingElseAnswerRequired": "Select yes if you need anything else at the appointment",
+        "anythingElseReasonRequired": "Enter details of what you will need and why you need it"
+      },
+      "datesToAvoid": {
+        "datesToAvoidAnswerRequired": "Select yes if there are any dates you cannot go to the appointment",
+        "dateRequired": "Enter a date you cannot go to the appointment",
+        "reasonRequired": "Enter details of why you cannot go to the appointment on this date",
+        "addAnotherDateAnswerRequired": "Select yes if you want to add another date you cannot go to the appointment",
+        "date": {
+          "missing": "Enter a date you cannot go to the appointment",
+          "incorrectFormat": "Enter the date in the correct format"
+        }
+      }
+    }
   },
   "components": {
     "evidenceList": {

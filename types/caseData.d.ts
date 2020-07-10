@@ -8,6 +8,7 @@ interface DocumentWithMetaData {
   suppliedBy?: string;
   description?: string;
   dateUploaded?: string;
+  tag?: string;
   document: SupportingDocument;
 }
 
@@ -36,11 +37,48 @@ interface CaseData {
   applicationOutOfTimeExplanation: string;
   applicationOutOfTimeDocument: SupportingDocument;
   reasonsForAppealDecision: string;
-  reasonsForAppealDocuments: SupportingEvidenceCollection[];
-  respondentDocuments: RespondentEvidenceCollection[];
-  timeExtensions: TimeExtensionCollection[];
+  reasonsForAppealDateUploaded?: string;
+  reasonsForAppealDocuments: Collection<DocumentWithMetaData>[];
+  respondentDocuments: Collection<RespondentEvidenceDocument>[];
+  timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
-  directions: DirectionCollection[];
+  directions: Collection<CcdDirection>[];
+  draftClarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
+  submitTimeExtensionReason?: string;
+  submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
+  clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
+  isInterpreterServicesNeeded?: string;
+  interpreterLanguage?: Collection<AdditionalLanguage>[];
+  isHearingRoomNeeded?: string;
+  isHearingLoopNeeded?: string;
+  multimediaEvidence: 'Yes' | 'No';
+  multimediaEvidenceDescription: string;
+  singleSexCourt: 'Yes' | 'No';
+  singleSexCourtType: 'All male' | 'All female';
+  singleSexCourtTypeDescription: string;
+  inCameraCourt: 'Yes' | 'No';
+  inCameraCourtDescription: string;
+  physicalOrMentalHealthIssues: 'Yes' | 'No';
+  physicalOrMentalHealthIssuesDescription: string;
+  pastExperiences: 'Yes' | 'No';
+  pastExperiencesDescription: string;
+  additionalRequests: 'Yes' | 'No';
+  additionalRequestsDescription: string;
+  datesToAvoidYesNo: 'Yes' | 'No';
+  datesToAvoid: Collection<DateToAvoid>[];
+  listCmaHearingCentre: string;
+  listCmaHearingLength: string;
+  listCmaHearingDate: string;
+}
+
+interface DateToAvoid {
+  dateToAvoid: string;
+  dateToAvoidReason: string;
+}
+
+interface Collection<T> {
+  id?: string | number;
+  value: T;
 }
 
 interface Nationality {
@@ -60,7 +98,7 @@ interface CCDAddress {
 }
 
 interface SubscriptionCollection {
-  id?: number;
+  id?: number | string;
   value: Subscription;
 }
 
@@ -81,35 +119,48 @@ interface RespondentEvidenceCollection {
 
 interface TimeExtensionCollection {
   id?: number;
-  value: TimeExtension;
+  value: CcdTimeExtension;
 }
 
-interface DirectionValue {
+interface DirectionCollection {
+  id?: number;
+  value: CcdDirection;
+}
+
+interface PreviousDateCollection {
+  id?: number;
+  value: CcdPreviousDate;
+}
+
+interface CcdTimeExtension {
+  requestDate?: string;
+  reason: string;
+  evidence?: TimeExtensionEvidenceCollection[];
+  status: string;
+  state: string;
+  decision?: string;
+  decisionReason?: string;
+  decisionOutcomeDate?: string;
+}
+
+interface CcdDirection {
   tag: string;
   dateDue: string;
   parties: string;
   dateSent: string;
   explanation: string;
-  previousDates: string[];
+  previousDates?: PreviousDateCollection[];
+  [key: string]: any;
 }
 
-interface DirectionCollection {
-  id?: number;
-  value: DirectionValue;
+interface CcdPreviousDate {
+  dateDue: string;
+  dateSent: string;
 }
-
 interface Subscription {
   subscriber: string;
   wantsEmail: 'Yes' | 'No';
   email: string;
   wantsSms: 'Yes' | 'No';
   mobileNumber: string;
-}
-
-interface TimeExtension {
-  reason: string;
-  evidence?: TimeExtensionEvidenceCollection[];
-  status: string;
-  state: string;
-  requestedDate?: string;
 }

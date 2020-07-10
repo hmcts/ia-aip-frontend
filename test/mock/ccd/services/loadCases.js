@@ -6,7 +6,15 @@ const usersToCaseData = {
   '2': [ mockData.partialAppealStartedCaseData ],
   '3': [ mockData.appealSubmittedCaseData ],
   '4': [ mockData.awaitingReasonsForAppealCaseData ],
-  '5': [ mockData.partialAwaitingReasonsForAppealCaseData ]
+  '5': [ mockData.partialAwaitingReasonsForAppealCaseData ],
+  '6': [ mockData.clarifyingQuestionsCaseData],
+  '7': [ mockData.awaitingReasonsForAppealCaseDataWithTimeExtension ],
+  '8': [ mockData.clarifyingQuestionsCaseDataWithTimeExtensions ],
+  '9': [ mockData.awaitingCmaRequirements ],
+  '10': [ mockData.awaitingCmaRequirementsWithTimeExtensions ],
+  '11': [ mockData.submittedCmaRequirements ],
+  '12': [ mockData.cmaListed ],
+
 };
 
 module.exports = {

@@ -7,16 +7,13 @@ import IdamService from '../service/idam-service';
 import S2SService from '../service/s2s-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import Logger from '../utils/logger';
-import { appealApplicationStatus } from '../utils/tasks-utils';
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService);
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
     await updateAppealService.loadAppeal(req);
-    req.session.appeal.application.tasks = appealApplicationStatus(req.session.appeal);
     next();
   } catch (e) {
     next(e);
@@ -35,19 +32,23 @@ function checkSession(args: any = {}) {
   };
 }
 
-function applicationStatusUpdate(req: Request, res: Response, next: NextFunction) {
-  try {
-    req.session.appeal.application.tasks = appealApplicationStatus(req.session.appeal);
-    next();
-  } catch (e) {
-    next(e);
+/**
+ * Used to ignore values from printing cleaning up noise
+ */
+function replacer(key, value) {
+  switch (key) {
+    case 'history':
+    case 'data':
+      return '**OMITTED**';
+    default:
+      return value;
   }
 }
 
 function logSession(req: Request, res: Response, next: NextFunction) {
   try {
     const logger: Logger = req.app.locals.logger;
-    logger.request(JSON.stringify(req.session, null, 2), 'logSession');
+    logger.request(JSON.stringify(req.session, replacer, 2), 'logSession');
     next();
   } catch (e) {
     next(e);
@@ -55,7 +56,6 @@ function logSession(req: Request, res: Response, next: NextFunction) {
 }
 
 export {
-  applicationStatusUpdate,
   checkSession,
   initSession,
   logSession

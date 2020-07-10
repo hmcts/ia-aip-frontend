@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { getNamePage, postNamePage, setupPersonalDetailsController } from '../../../app/controllers/appeal-application/personal-details';
+import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-import { Events } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -20,7 +20,9 @@ describe('Personal Details Controller', function () {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
-      cookies: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
       session: {
         appeal: {
           application: {}
@@ -29,7 +31,8 @@ describe('Personal Details Controller', function () {
       idam: {
         userDetails: {
           forename: 'forename',
-          surname: 'surname'
+          surname: 'surname',
+          uid: 'idamUID'
         }
       },
       app: {
@@ -45,7 +48,10 @@ describe('Personal Details Controller', function () {
       redirect: sandbox.spy()
     } as Partial<Response>;
 
-    updateAppealService = { submitEvent: sandbox.stub() } as Partial<UpdateAppealService>;
+    updateAppealService = {
+      submitEventRefactored: sandbox.stub(),
+      submitEvent: sandbox.stub()
+    } as Partial<UpdateAppealService>;
 
     next = sandbox.stub() as NextFunction;
   });
@@ -96,26 +102,46 @@ describe('Personal Details Controller', function () {
   });
 
   describe('postNamePage', () => {
-    it('should validate and redirect to next page personal-details/date-of-birth', async () => {
+    let appeal: Appeal;
+    beforeEach(() => {
       req.body.givenNames = 'Lewis';
       req.body.familyName = 'Williams';
 
+      appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          personalDetails: {
+            ...req.session.appeal.application.personalDetails,
+            familyName: req.body.familyName,
+            givenNames: req.body.givenNames
+          }
+        }
+      };
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          personalDetails: {
+            familyName: req.body.familyName,
+            givenNames: req.body.givenNames
+          }
+        }
+      } as Appeal);
+    });
+    it('should validate and redirect to next page personal-details/date-of-birth', async () => {
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.dob);
     });
 
     it('when in edit mode should validate and redirect to CYA page and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
-      req.body.givenNames = 'Lewis';
-      req.body.familyName = 'Williams';
-
+      appeal.application.isEdit = true;
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('should redirect to task list and not validate if nothing selected and save for later clicked', async () => {
@@ -124,29 +150,26 @@ describe('Personal Details Controller', function () {
       };
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
     it('should redirect to CYA page and not validate if nothing selected and save for later clicked and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
       req.body = {
-        'saveForLater': 'saveForLater'
+        saveForLater: 'saveForLater'
       };
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
     it('should redirect to CYA page and validate when save for later clicked', async () => {
-      req.body = {
-        'saveForLater': 'saveForLater',
-        'familyName': 'Joey',
-        'givenNames': 'Trib'
-      };
+      req.body.saveForLater = 'saveForLater';
       await postNamePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.called;
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
   });

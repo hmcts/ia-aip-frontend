@@ -1,20 +1,48 @@
 {% macro timeline(history) %}
   <h2 class="govuk-heading-m govuk-!-padding-top-8">{{ i18n.pages.overviewPage.timeline.completed }}</h2>
-  {% for event in history %}
+  {% if history.appealArgumentSection | length > 0  %}
     <div class="govuk-!-margin-bottom-3">
-      <h3 class="govuk-heading-s">{{ event.title }}</h3>
-      <div class="inline-flow">
-        <div class="timeline-tick"></div>
-        <div><span class='govuk-body govuk-!-font-weight-bold'>{{ event.date }}</span> - {{ event.text }}</div>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealArgumentSection }}</h3>
+
+      <div class="timeline-section">
+        {% for event in history.appealArgumentSection %}
+          <div class="timeline-event">
+            <div class="inline-flow">
+              <div class="timeline-tick"></div>
+              <div><span class='govuk-body govuk-!-font-weight-bold'>{{ event.date }}</span> - {{ event.text }}</div>
+            </div>
+            {% for link in event.links %}
+              <div class="timeline-margin-left">
+                <h4 class="govuk-heading-s govuk-!-margin-top-3 ">{{ link.title }}</h4>
+                <a href="{{ link.href | eval | safe }}" class="govuk-link govuk-!-margin-bottom-1">{{ link.text }}</a>
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
       </div>
-      {% for link in event.links %}
-        {% if link %}
-        <div class="timeline-margin-left">
-          <h4 class="govuk-heading-s govuk-!-margin-top-3 ">{{ link.title }}</h4>
-          <a href="{{ link.href | eval | safe}}" class="govuk-link govuk-!-margin-bottom-1">{{ link.text }}</a>
-        </div>
-        {% endif %}
-      {% endfor %}
     </div>
-  {% endfor %}
+  {% endif %}
+
+  {% if history.appealDetailsSection %}
+    <div class="govuk-!-margin-bottom-3">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealDetailsSection }}</h3>
+      <div class="timeline-section">
+        {% for event in history.appealDetailsSection %}
+          <div class="timeline-event">
+
+            <div class="inline-flow">
+              <div class="timeline-tick"></div>
+              <div><span class='govuk-body govuk-!-font-weight-bold'>{{ event.date }}</span> - {{ event.text }}</div>
+            </div>
+            {% for link in event.links %}
+              <div class="timeline-margin-left">
+                <h4 class="govuk-heading-s govuk-!-margin-top-3 ">{{ link.title }}</h4>
+                <a href="{{ link.href | eval | safe }}" class="govuk-link govuk-!-margin-bottom-1">{{ link.text }}</a>
+              </div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
 {% endmacro %}

@@ -2,11 +2,12 @@ import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { countryList } from '../../data/country-list';
+import { Events } from '../../data/events';
 import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';
 import { paths } from '../../paths';
-import { Events } from '../../service/ccd-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
 function createSummaryRowsFrom(appealApplication: AppealApplication) {
@@ -23,7 +24,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
-      [ appealApplication.dateLetterSent.day, moment.months(appealApplication.dateLetterSent.month - 1), appealApplication.dateLetterSent.year ],
+      [ appealApplication.dateLetterSent.day, moment.months(parseInt(appealApplication.dateLetterSent.month, 10) - 1), appealApplication.dateLetterSent.year ],
       paths.appealStarted.letterSent + editParameter,
       Delimiter.SPACE
     ),
@@ -35,7 +36,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.dob,
-      [ appealApplication.personalDetails.dob.day, moment.months(appealApplication.personalDetails.dob.month - 1), appealApplication.personalDetails.dob.year ],
+      [ appealApplication.personalDetails.dob.day, moment.months(parseInt(appealApplication.personalDetails.dob.month, 10) - 1), appealApplication.personalDetails.dob.year ],
       paths.appealStarted.dob + editParameter,
       Delimiter.SPACE
     ),
@@ -64,9 +65,9 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   ];
 
   if (appealApplication.isAppealLate) {
-    const lateAppealValue = [ appealApplication.lateAppeal.reason ];
+    const lateAppealValue = [ formatTextForCYA(appealApplication.lateAppeal.reason) ];
     if (appealApplication.lateAppeal.evidence) {
-      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
+      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(urlHtml);
     }
     const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);
@@ -104,9 +105,12 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.taskList
         });
       }
-      const updatedAppeal = await updateAppealService.submitEvent(Events.SUBMIT_APPEAL, req);
-      req.session.appeal.appealStatus = updatedAppeal.state;
-      req.session.appeal.appealReferenceNumber = updatedAppeal.case_data.appealReferenceNumber;
+      const { appeal } = req.session;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       return res.redirect(paths.appealSubmitted.confirmation);
     } catch (error) {
       next(error);

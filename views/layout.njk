@@ -23,17 +23,17 @@
   {% endif %}
 {% endmacro %}
 
-{% macro saveButtons() %}
-  <div class="buttons__container">
+{% macro saveButtons(button1, button2) %}
+  <div class="save-buttons__container">
     {{ govukButton({
-      name: 'saveAndContinue',
-      text: i18n.common.buttons.saveAndContinue,
+      name: button1.name if button1.name else 'saveAndContinue',
+      text: button1.text if button1.text else i18n.common.buttons.saveAndContinue,
       classes: "govuk-!-margin-right-1"
     }) }}
 
     {{ govukButton({
-      text: i18n.common.buttons.saveForLater,
-      name: "saveForLater",
+      text: button2.text if button2.text else i18n.common.buttons.saveForLater,
+      name: button2.name if button2.name else "saveForLater",
       value: "saveForLater",
       classes: "govuk-button--secondary"
     }) }}
@@ -68,7 +68,7 @@
     {{ i18n.components.contactUsErrorPages.callCharges |safe }}</p>
 {% endmacro %}
 
-{% macro radioButtons(legendText, hintText, errorMessage) %}
+{% macro radioButtons(legendText, hintText, errorMessage, answer) %}
   {{ govukRadios({
     classes: "govuk-radios--inline",
     name: "answer",
@@ -94,7 +94,8 @@
         value: "no",
         text: "No"
       }
-    ]
+    ],
+    value: answer
   }) }}
 {% endmacro %}
 
@@ -103,6 +104,13 @@
     text: "Continue"
   }) }}
 {% endmacro %}
+
+{% macro saveAndContinueButton() %}
+  {{ govukButton({
+    text: "Save and continue"
+  }) }}
+{% endmacro %}
+
 
 {% block pageTitle %}
   {% if error or errors %}{{ i18n.errorTitlePrefix }} {% endif %}{{ pageTitleName }} - {{ i18n.serviceName }} - {{ i18n.provider }}

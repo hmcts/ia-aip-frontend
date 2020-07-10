@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { getHearingCentre, getHearingDate, getHearingTime } from '../../../app/utils/cma-hearing-details';
 import { getDeadline } from '../../../app/utils/event-deadline-date-finder';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -16,6 +17,11 @@ describe('event-deadline-date-finder', () => {
       cookies: {},
       session: {
         appeal: {
+          hearing: {
+            'hearingCentre': 'taylorHouse',
+            'time': '90',
+            'date': '2020-08-11T10:00:00.000'
+          },
           application: {},
           caseBuilding: {},
           reasonsForAppeal: {},
@@ -125,6 +131,63 @@ describe('event-deadline-date-finder', () => {
       const result = getDeadline(currentAppealStatus, req as Request);
 
       expect(result).to.be.equal('21 May 2020');
+    });
+
+    it('cmaListed should return the formatted date', () => {
+      const result = getHearingDate(req as Request);
+      expect(result).to.be.equal('11 August 2020');
+    });
+
+    it('cmaListed should return the formatted time', () => {
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('Taylor House');
+    });
+
+    it('cmaListed should return the formatted time', () => {
+      req.session.appeal.hearing.hearingCentre = 'manchester';
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('Manchester');
+    });
+
+    it('cmaListed should return the formatted time', () => {
+      req.session.appeal.hearing.hearingCentre = 'glasgow';
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('Glasgow');
+    });
+
+    it('cmaListed should return the formatted time', () => {
+      req.session.appeal.hearing.hearingCentre = 'newport';
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('Newport');
+    });
+
+    it('cmaListed should return the formatted time', () => {
+      req.session.appeal.hearing.hearingCentre = 'bradford';
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('Bradford');
+    });
+
+    it('cmaListed should return the formatted time', () => {
+      req.session.appeal.hearing.hearingCentre = 'northShields';
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('North Shields');
+    });
+
+    it('cmaListed should return the formatted time', () => {
+      req.session.appeal.hearing.hearingCentre = 'hattonCross';
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('Hatton Cross');
+    });
+
+    it('cmaListed should return the formatted time', () => {
+      req.session.appeal.hearing.hearingCentre = 'birmingham';
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('Birmingham');
+    });
+
+    it('cmaListed should return the formatted hearing centre', () => {
+      const result = getHearingTime(req as Request);
+      expect(result).to.be.equal('10:00 am');
     });
   });
 });

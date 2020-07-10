@@ -5,6 +5,11 @@ describe('getStatus', () => {
 
   const appeal: Appeal = {
     appealStatus: 'appealStarted',
+    hearing: {
+      hearingCentre: 'Taylor House',
+      date: '21 April 2019',
+      time: '10am'
+    },
     application: {
       homeOfficeRefNumber: 'reference no',
       appealType: null,

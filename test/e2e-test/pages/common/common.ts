@@ -314,5 +314,9 @@ module.exports = {
     When('I select from the drop-down', async () => {
       await I.selectOption('#language','Afar');
     });
+
+    Then('I should see the date time and hearing centre in do this next', async () => {
+      await I.seeInSource('Hearing Centre:');
+    });
   }
 };

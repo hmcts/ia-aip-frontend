@@ -56,7 +56,6 @@ describe('Home Office Details Controller', function () {
     next = sandbox.stub() as NextFunction;
 
     updateAppealService = {
-      submitEvent: sandbox.stub(),
       submitEventRefactored: sandbox.stub().returns({
         case_data: {
           homeOfficeReferenceNumber: 'A1234567'
@@ -466,29 +465,39 @@ describe('Home Office Details Controller', function () {
       req.body.saveForLater = 'saveForLater';
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
-      expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
+      expect(req.session.appeal.application.isAppealLate).to.be.eq(false);
     });
-      it('should validate and redirect to Appeal Late page and isEdit flag is not updated', async () => {
+
+    it('should validate and redirect to Appeal Late page and isEdit flag is not updated', async () => {
       req.session.appeal.application.isEdit = true;
 
-      const date = moment().subtract(15, 'd');
+      const date = moment().subtract(15, 'days');
       req.body['day'] = date.format('DD');
       req.body['month'] = date.format('MM');
       req.body['year'] = date.format('YYYY');
-      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      const { dateLetterSent } = req.session.appeal.application;
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_APPEAL, req);
-      expect(dateLetterSent.day).to.be.eql(date.format('DD'));
-      expect(dateLetterSent.month).to.be.eql(date.format('MM'));
-      expect(dateLetterSent.year).to.be.eql(date.format('YYYY'));
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          isEdit: true,
+          dateLetterSent: { 'day': '25', 'month': '06', 'year': '2020' },
+          isAppealLate: true
+        }
+      });
+
+      await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      const expectedAppeal = { 'application': { 'isAppealLate': true,'isEdit': true,'dateLetterSent': { 'day': '25','month': '06','year': '2020' } } };
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, expectedAppeal, 'idamUID', 'atoken');
+      expect(req.session.appeal.application.dateLetterSent.day).to.be.eql(date.format('DD'));
+      expect(req.session.appeal.application.dateLetterSent.month).to.be.eql(date.format('MM'));
+      expect(req.session.appeal.application.dateLetterSent.year).to.be.eql(date.format('YYYY'));
 
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
 
       expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
-      expect(req.session.appeal.application.isEdit).to.have.eq(false);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
 
     });
 
@@ -499,7 +508,7 @@ describe('Home Office Details Controller', function () {
       req.body['year'] = date.format('YYYY');
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk');
     });
 
@@ -518,7 +527,7 @@ describe('Home Office Details Controller', function () {
       const errorList = [ dateError ];
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/letter-sent.njk',
         {
           error,
@@ -534,7 +543,7 @@ describe('Home Office Details Controller', function () {
       res.render = sandbox.stub().throws(error);
       await postDateLetterSent(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEvent).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

@@ -95,16 +95,17 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const isAppealLate = diffInDays > 14;
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          isAppealLate: diffInDays <= 14 ? false : true,
           dateLetterSent: {
             day,
             month,
             year
-          }
+          },
+          isAppealLate: isAppealLate
         }
       };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);

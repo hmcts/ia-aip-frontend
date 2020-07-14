@@ -20,6 +20,8 @@ function getCurrentState(params) {
       return 'clarifyingQuestionsAnswersSubmitted';
     case 'submitCmaRequirements':
       return  'cmaRequirementsSubmitted';
+    case 'listCma':
+      return 'cmaListed';
     default:
       throw `Event type ${params.eventType} no current state set`
   }

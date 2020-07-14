@@ -40,6 +40,11 @@ export function createDummyAppealApplication(): Appeal {
     },
     hearingRequirements: {
       data: {}
+    },
+    hearing: {
+      hearingCentre: 'Taylor House',
+      date: '21 April 2019',
+      time: '10am'
     }
   };
 }

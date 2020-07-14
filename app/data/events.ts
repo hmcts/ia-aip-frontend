@@ -58,5 +58,10 @@ export const Events = {
     id: 'sendDirectionWithQuestions',
     summary: 'Direct the appellant to answer clarifying questions',
     description: 'Direct the appellant to answer clarifying questions'
+  },
+  LIST_CMA: {
+    id: 'listCma',
+    summary: 'Cma has been listed.',
+    description: 'Cma has been listed.'
   }
 };

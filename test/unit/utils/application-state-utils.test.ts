@@ -15,6 +15,11 @@ describe('application-state-utils', () => {
       cookies: {},
       session: {
         appeal: {
+          hearing: {
+            'hearingCentre': 'taylorHouse',
+            'time': '90',
+            'date': '2020-08-11T10:00:01.000'
+          },
           application: {},
           caseBuilding: {},
           reasonsForAppeal: {},
@@ -46,6 +51,10 @@ describe('application-state-utils', () => {
             {
               'id': 'submitReasonsForAppeal',
               'createdDate': '2020-02-18T16:00:00.000'
+            },
+            {
+              'id': 'submitCmaRequirements',
+              'createdDate': '2020-02-23T16:00:00.000'
             }
           ]
         }
@@ -122,6 +131,27 @@ describe('application-state-utils', () => {
         },
         allowedAskForMoreTime: false
       });
+    });
+
+    it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '07 March 2020',
+        'descriptionParagraphs': [
+          'Your appeal details have been sent to the Tribunal.',
+          "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next."
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+        }
+      });
+
     });
 
     it('when application status is awaitingReasonsForAppeal should get correct \'Do This next section\'', () => {
@@ -239,6 +269,45 @@ describe('application-state-utils', () => {
     });
   });
 
+  it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      'allowedAskForMoreTime': true,
+      'cta': {
+        'respondByText': 'You need to respond by {{ applicationNextStep.deadline }}.',
+        'respondByTextAskForMoreTime': 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+        'url': '/questions-about-appeal'
+      },
+      'deadline': null,
+      'descriptionParagraphs': [
+        'You need to answer some questions about your appeal.'
+      ],
+      'descriptionParagraphsAskForMoreTime': [
+        'You might not get more time. You should still try to answer the Tribunal’s questions by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> if you can.'
+      ],
+      'info': null
+    });
+  });
+
+  it('when application status is clarifyingQuestionsAnswersSubmitted should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'clarifyingQuestionsAnswersSubmitted';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql({
+      'allowedAskForMoreTime': false,
+      'cta': null,
+      'deadline': null,
+      'descriptionParagraphs': [
+        'A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.',
+        'This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that.'
+      ]
+    });
+  });
+
   it('when application status is awaitingCmaRequirements should get correct Do this next section.', () => {
     req.session.appeal.appealStatus = 'awaitingCmaRequirements';
 
@@ -267,4 +336,111 @@ describe('application-state-utils', () => {
       }
     );
   });
+
+  it('when application status is cmaRequirementsSubmitted should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'cmaRequirementsSubmitted';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql(
+      {
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '08 March 2020',
+        'descriptionParagraphs': [
+          'A Tribunal Caseworker is looking at your answers and will contact you with details of your case management appointment and tell you what to do next.',
+          'This should be by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> but may be longer than that.'
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        }
+      }
+    );
+  });
+
+  it('when application status is cmaAdjustmentsAgreed should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'cmaAdjustmentsAgreed';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.eql(
+      {
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '08 March 2020',
+        'descriptionParagraphs': [
+          'A Tribunal Caseworker is looking at your answers and will contact you with details of your case management appointment and tell you what to do next.',
+          'This should be by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> but may be longer than that.'
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        }
+      }
+    );
+  });
+
+  it('when application status is awaitingCmaRequirements should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'cmaListed';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.deep.include(
+      {
+        'allowedAskForMoreTime': false,
+        'date': '11 August 2020',
+        'deadline': 'TBC',
+        descriptionParagraphs: [
+          'The Tribunal has set a date for your case management appointment. Here are the details:',
+          '<span class="govuk-!-font-weight-bold">Date:</span> {{ applicationNextStep.date }}',
+          '<span class="govuk-!-font-weight-bold">Time:</span> {{ applicationNextStep.time }}',
+          '<span class="govuk-!-font-weight-bold">Hearing Centre:</span> {{ applicationNextStep.hearingCentre }}',
+          'You should read your Notice of Case Management Appointment carefully. It has important information about your appointment.'
+        ],
+        'hearingCentre': 'Taylor House',
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        },
+        'time': '10:00 am',
+        'usefulDocuments': {
+          'title': 'Useful documents',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+        }
+      }
+    );
+  });
+
+  it('when application status is cmaListed should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'cmaListed';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.deep.include(
+      {
+        'allowedAskForMoreTime': false,
+        'date': '11 August 2020',
+        'deadline': 'TBC',
+        descriptionParagraphs: [
+          'The Tribunal has set a date for your case management appointment. Here are the details:',
+          '<span class="govuk-!-font-weight-bold">Date:</span> {{ applicationNextStep.date }}',
+          '<span class="govuk-!-font-weight-bold">Time:</span> {{ applicationNextStep.time }}',
+          '<span class="govuk-!-font-weight-bold">Hearing Centre:</span> {{ applicationNextStep.hearingCentre }}',
+          'You should read your Notice of Case Management Appointment carefully. It has important information about your appointment.'
+        ],
+        'hearingCentre': 'Taylor House',
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        },
+        'time': '10:00 am',
+        'usefulDocuments': {
+          'title': 'Useful documents',
+          'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+        }
+      }
+    );
+  });
+
 });

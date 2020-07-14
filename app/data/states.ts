@@ -34,5 +34,13 @@ export const States = {
   CMA_REQUIREMENTS_SUBMITTED: {
     id: 'cmaRequirementsSubmitted',
     name: 'CMA Requirements submitted'
+  },
+  CMA_ADJUSTMENTS_AGREED: {
+    id: 'cmaAdjustmentsAgreed',
+    name: 'CMA Requirements listed'
+  },
+  CMA_LISTED: {
+    id: 'cmaListed',
+    name: 'CMA Requirements listed'
   }
 };

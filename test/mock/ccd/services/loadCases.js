@@ -13,6 +13,7 @@ const usersToCaseData = {
   '9': [ mockData.awaitingCmaRequirements ],
   '10': [ mockData.awaitingCmaRequirementsWithTimeExtensions ],
   '11': [ mockData.submittedCmaRequirements ],
+  '12': [ mockData.cmaListed ],
 
 };
 

@@ -1,40 +1,53 @@
-{% extends 'views/layout.njk' %}
-{% set pageTitleName = page.title %}
+{% extends 'guidanceLayout.njk' %}
+{% set pageTitleName = i18n.pages.onlineSupportPages.howToGetHelpPage.pageTitle %}
 
 {% block content %}
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper">
-
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    <h1 class="govuk-heading-xl">Two-thirds column</h1>
-                </div>
-            </div>
-
+            <img src="/assets/images/banner.png" alt="banner">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-one-third">
-                    <h3 class="govuk-heading-m">Contents</h3>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">What is the service and who is it for?</a>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">Getting started</a>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">The four stages of the new appeal process</a>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">Notifications</a>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">Documents</a>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">Offline processes</a>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">Guidance</a>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">How to get help</a>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">How to give feedback</a>
+                    <h3 class="govuk-heading-m">{{ i18n.common.contents }}</h3>
+                    <ul class="govuk-list">
+                        <li>
+                            <a href="{{ paths.common.whatIsIt }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.whatIsThisService }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ paths.common.gettingStarted }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.gettingStarted }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ paths.common.fourStages }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.fourStages }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ paths.common.notifications }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.notifications }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ paths.common.documents }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.documents }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ paths.common.offlineProcesses }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.offlineProcesses }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ paths.common.guidance }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.guidance }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ paths.common.howToHelp }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.howToHelp }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ paths.common.giveFeedback }}" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.howToGiveFeedback }}</a>
+                        </li>
+                    </ul>
                 </div>
 
                 <div class="govuk-grid-column-two-thirds">
-                    <h2 class="govuk-heading-l">What is the service and who is it for?</h2>
-                    <h2 class="govuk-heading-s">What is it?</h2>
-                    <p class="govuk-body">A new online service for appellants in person who are appealing a Home Office decision.</p>
-                    <h2 class="govuk-heading-s">A pilot service</h2>
-                    <p class="govuk-body">A pilot service launches in April 2020. This will involve a small controlled numbers of appellants and will help us test and improve the service before it launches
-                    publicly. Your feedback will be vital to the success of this phase</p>
-                    <h2 class="govuk-heading-s">Who is it for</h2>
-                    <p class="govuk-body">At the start the service will only be for those appealing Asylum and/or Humanitarian Protection decision. We will introduce Human Rights, EEA and Deprivation of Citizenship appeals as the service develops.</p>
-                    <a href="#" class="govuk-link govuk-link--no-visited-state">Next Page ></a>
+                    <h2 class="govuk-heading-l">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.title }}</h2>
+                    <img src="/assets/images/contact-us.png" alt="contact-us">
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.getInTouch }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.text }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.phone | safe }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.email | safe }}</p>
+                    {{  backForward(paths.common.guidance,paths.common.giveFeedback) }}
+
                 </div>
             </div>
 

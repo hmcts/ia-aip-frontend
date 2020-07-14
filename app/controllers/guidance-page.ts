@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { getGuidancePageText } from '../utils/guidance-page-utils';
 
@@ -64,7 +65,7 @@ function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextF
 
 function getDocumentsPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/what-is-service.njk');
+    return res.render('guidance-pages/online-guidance-support/documents.njk');
   } catch (e) {
     next(e);
   }
@@ -72,7 +73,7 @@ function getDocumentsPage(req: Request, res: Response, next: NextFunction) {
 
 function getFourStagesPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/what-is-service.njk');
+    return res.render('guidance-pages/online-guidance-support/four-stages-of-process.njk');
   } catch (e) {
     next(e);
   }
@@ -80,7 +81,7 @@ function getFourStagesPage(req: Request, res: Response, next: NextFunction) {
 
 function getNotificationsSupportPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/what-is-service.njk');
+    return res.render('guidance-pages/online-guidance-support/notifications.njk');
   } catch (e) {
     next(e);
   }
@@ -88,7 +89,7 @@ function getNotificationsSupportPage(req: Request, res: Response, next: NextFunc
 
 function getOfflineProcessesPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/what-is-service.njk');
+    return res.render('guidance-pages/online-guidance-support/offline-process.njk');
   } catch (e) {
     next(e);
   }
@@ -96,7 +97,7 @@ function getOfflineProcessesPage(req: Request, res: Response, next: NextFunction
 
 function getGuidanceSupportPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/what-is-service.njk');
+    return res.render('guidance-pages/online-guidance-support/guidance.njk');
   } catch (e) {
     next(e);
   }
@@ -104,7 +105,7 @@ function getGuidanceSupportPage(req: Request, res: Response, next: NextFunction)
 
 function getHowToHelpPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/what-is-service.njk');
+    return res.render('guidance-pages/online-guidance-support/how-to-help.njk');
   } catch (e) {
     next(e);
   }
@@ -112,7 +113,7 @@ function getHowToHelpPage(req: Request, res: Response, next: NextFunction) {
 
 function getGiveFeedbackPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/what-is-service.njk');
+    return res.render('guidance-pages/online-guidance-support/how-to-give-feedback.njk');
   } catch (e) {
     next(e);
   }
@@ -120,7 +121,15 @@ function getGiveFeedbackPage(req: Request, res: Response, next: NextFunction) {
 
 function getWhatIsService(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/what-is-service.njk');
+    return res.render('guidance-pages/online-guidance-support/what-is-service.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getGettingStartedPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/online-guidance-support/getting-started.njk');
   } catch (e) {
     next(e);
   }
@@ -140,6 +149,7 @@ function setupGuidancePagesController(): Router {
   router.get(paths.common.howToHelp, getHowToHelpPage);
   router.get(paths.common.offlineProcesses, getOfflineProcessesPage);
   router.get(paths.common.guidance, getGuidanceSupportPage);
+  router.get(paths.common.gettingStarted, getGettingStartedPage);
   return router;
 }
 
@@ -149,5 +159,13 @@ export {
   getHomeOfficeDocumentsPage,
   getMoreHelpPage,
   getCaseworkerPage,
-  getWhatIsService
+  getWhatIsService,
+  getDocumentsPage,
+    getFourStagesPage,
+  getNotificationsSupportPage,
+  getGiveFeedbackPage,
+  getHowToHelpPage ,
+  getOfflineProcessesPage,
+  getGuidanceSupportPage ,
+  getGettingStartedPage
 };

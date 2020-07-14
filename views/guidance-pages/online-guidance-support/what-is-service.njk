@@ -1,0 +1,41 @@
+{% extends 'views/layout.njk' %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper">
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h1 class="govuk-heading-xl">Two-thirds column</h1>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-third">
+                    <h3 class="govuk-heading-m">{{ i18n.common.contents }}</h3>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.whatIsThisService }}</a>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.gettingStarted }}</a>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.fourStages }}</a>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.notifications }}</a>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.documents }}</a>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.offlineProcesses }}</a>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.guidance }}</a>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.howToHelp }}</a>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService.howToGiveFeedback }}</a>
+                </div>
+
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-l">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsTheService }}</h2>
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whatIsIt }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.newService }}</p>
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.pilotServiceTitle }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.pilotServiceText }}</p>
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whoIsItForTitle }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.whatIsThisServicePage.whoIsItForText }}</p>
+                    <a href="#" class="govuk-link govuk-link--no-visited-state">{{ i18n.common.nextPage }}</a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+{% endblock %}

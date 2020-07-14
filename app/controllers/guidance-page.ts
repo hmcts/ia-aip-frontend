@@ -62,16 +62,65 @@ function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextF
   }
 }
 
-function getSupportAppealPage(req: Request, res: Response, next: NextFunction) {
-  const text = getGuidancePageText('evidenceToSupportAppeal');
+function getDocumentsPage(req: Request, res: Response, next: NextFunction) {
   try {
-    return res.render('guidance-pages/guidance-for-support.njk', {
-      showContactUs: true,
-      previousPage: {
-        attributes: { onclick: 'history.go(-1); return false;' }
-      },
-      page: text
-    });
+    return res.render('guidance-pages/what-is-service.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getFourStagesPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/what-is-service.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getNotificationsSupportPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/what-is-service.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getOfflineProcessesPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/what-is-service.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getGuidanceSupportPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/what-is-service.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getHowToHelpPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/what-is-service.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getGiveFeedbackPage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/what-is-service.njk');
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getWhatIsService(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/what-is-service.njk');
   } catch (e) {
     next(e);
   }
@@ -83,7 +132,14 @@ function setupGuidancePagesController(): Router {
   router.get(paths.common.moreHelp, getMoreHelpPage);
   router.get(paths.common.homeOfficeDocuments, getHomeOfficeDocumentsPage);
   router.get(paths.common.evidenceToSupportAppeal, getEvidenceToSupportAppealPage);
-  router.get(paths.common.evidenceToSupport, getSupportAppealPage);
+  router.get(paths.common.whatIsIt, getWhatIsService);
+  router.get(paths.common.documents, getDocumentsPage);
+  router.get(paths.common.fourStages, getFourStagesPage);
+  router.get(paths.common.notifications, getNotificationsSupportPage);
+  router.get(paths.common.giveFeedback, getGiveFeedbackPage);
+  router.get(paths.common.howToHelp, getHowToHelpPage);
+  router.get(paths.common.offlineProcesses, getOfflineProcessesPage);
+  router.get(paths.common.guidance, getGuidanceSupportPage);
   return router;
 }
 
@@ -93,5 +149,5 @@ export {
   getHomeOfficeDocumentsPage,
   getMoreHelpPage,
   getCaseworkerPage,
-  getSupportAppealPage
+  getWhatIsService
 };

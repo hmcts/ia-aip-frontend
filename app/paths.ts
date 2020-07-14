@@ -135,6 +135,7 @@ const paths = {
     tribunalCaseworker: '/tribunal-caseworker',
     moreHelp: '/appeal-help',
     evidenceToSupportAppeal: '/supporting-evidence',
+    evidenceToSupport: '/supporting',
     homeOfficeDocuments: '/home-office-documents',
     whatToExpectAtCMA: '/expect-case-management-appointment',
 

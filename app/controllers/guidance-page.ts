@@ -62,12 +62,28 @@ function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextF
   }
 }
 
+function getSupportAppealPage(req: Request, res: Response, next: NextFunction) {
+  const text = getGuidancePageText('evidenceToSupportAppeal');
+  try {
+    return res.render('guidance-pages/guidance-for-support.njk', {
+      showContactUs: true,
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      page: text
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
 function setupGuidancePagesController(): Router {
   const router = Router();
   router.get(paths.common.tribunalCaseworker, getCaseworkerPage);
   router.get(paths.common.moreHelp, getMoreHelpPage);
   router.get(paths.common.homeOfficeDocuments, getHomeOfficeDocumentsPage);
   router.get(paths.common.evidenceToSupportAppeal, getEvidenceToSupportAppealPage);
+  router.get(paths.common.evidenceToSupport, getSupportAppealPage);
   return router;
 }
 
@@ -76,5 +92,6 @@ export {
   getEvidenceToSupportAppealPage,
   getHomeOfficeDocumentsPage,
   getMoreHelpPage,
-  getCaseworkerPage
+  getCaseworkerPage,
+  getSupportAppealPage
 };

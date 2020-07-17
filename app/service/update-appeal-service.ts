@@ -99,9 +99,9 @@ export default class UpdateAppealService {
     const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
-    const listCmaHearingCentre = caseData.listCmaHearingCentre || '';
-    const listCmaHearingLength = caseData.listCmaHearingLength || '';
-    const listCmaHearingDate = caseData.listCmaHearingDate || '';
+    const listCmaHearingCentre = caseData.listCaseHearingCentre || '';
+    const listCmaHearingLength = caseData.listCaseHearingLength || '';
+    const listCmaHearingDate = caseData.listCaseHearingDate || '';
     let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
 
     const appellantAddress = caseData.appellantAddress ? {

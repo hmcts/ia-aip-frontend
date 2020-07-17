@@ -19,5 +19,8 @@ Feature: Online support pages @only
     When I click "Next page >" link
     Then I should see the "Guidance - Appeal an immigration or asylum decision - HMCTS" eligibility page
     When I click "Next page >" link
+    Then I should see the "How to get help - Appeal an immigration or asylum decision - HMCTS" eligibility page
+    When I click "Next page >" link
     Then I should see the "How to give feedback - Appeal an immigration or asylum decision - HMCTS" eligibility page
+
 

@@ -39,6 +39,39 @@
 {% block footer %}
 {% endblock%}
 
+
+{% macro navigation() %}
+  <ul class="govuk-list">
+    <li>
+      <a href="{{ paths.common.whatIsIt | safe }}" class="govuk-link govuk-link--no-visited-state whatIsIt">{{ i18n.pages.onlineSupportPages.links.whatIsThisService | safe }}</a>
+    </li>
+    <li>
+      <a href="{{ paths.common.gettingStarted | safe }}" class="govuk-link govuk-link--no-visited-state gettingStarted">{{ i18n.pages.onlineSupportPages.links.gettingStarted | safe }}</a>
+    </li>
+    <li>
+      <a href="{{ paths.common.fourStages | safe }}" class="govuk-link govuk-link--no-visited-state fourStages">{{ i18n.pages.onlineSupportPages.links.fourStages | safe }}</a>
+    </li>
+    <li>
+      <a href="{{ paths.common.notifications | safe }}" class="govuk-link govuk-link--no-visited-state notifications">{{ i18n.pages.onlineSupportPages.links.notifications | safe }}</a>
+    </li>
+    <li>
+      <a href="{{ paths.common.documents | safe }}" class="govuk-link govuk-link--no-visited-state documents">{{ i18n.pages.onlineSupportPages.links.documents | safe }}</a>
+    </li>
+    <li>
+      <a href="{{ paths.common.offlineProcesses | safe }}" class="govuk-link govuk-link--no-visited-state offlineProcesses ">{{ i18n.pages.onlineSupportPages.links.offlineProcesses | safe }}</a>
+    </li>
+    <li>
+      <a href="{{ paths.common.guidance | safe }}" class="govuk-link govuk-link--no-visited-state guidance ">{{ i18n.pages.onlineSupportPages.links.guidance | safe }}</a>
+    </li>
+    <li>
+      <a href="{{ paths.common.howToHelp | safe }}" class="govuk-link govuk-link--no-visited-state howToHelp">{{ i18n.pages.onlineSupportPages.links.howToHelp | safe }}</a>
+    </li>
+    <li>
+      <a href="{{ paths.common.giveFeedback | safe }}" class="govuk-link govuk-link--no-visited-state giveFeedback ">{{ i18n.pages.onlineSupportPages.links.howToGiveFeedback | safe }}</a>
+    </li>
+  </ul>
+{% endmacro %}
+
 {% macro backForward(back,forward) %}
   <div style="display: inline-block">
     <a class="govuk-link govuk-link--no-visited-state"  href={{ back }}>< Previous page</a>

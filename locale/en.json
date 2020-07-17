@@ -1436,7 +1436,7 @@
           "appealing an Asylum and/or Humanitarian Protection decision"
         ],
         "statelessTitle": "Stateless appellants",
-        "statelessText": "Appellants who are stateless are not eligible for the pilot service. Please check if the appellant you are supporting is stateless before getting started. If they are, they will need to use the current online or paper service.",
+        "statelessText": "Appellants who are stateless are not eligible for the pilot service. Please check if the appellant you are supporting is stateless before getting started. If they are, they will need to use the current <a href='https://immigrationappealsonline.justice.gov.uk/IACFees/' class=\"govuk-link govuk-link--no-visited-state\">online</a> or <a class=\"govuk-link govuk-link--no-visited-state\" href='https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5'>paper</a> service.",
         "creatingAccountTitle": "Creating an account",
         "creatingAccountText": "Appellants will then be asked to create an account. It is important that the appellant you’re supporting uses an email addresses that belongs to them and that they are unlikely to forget or delete.",
         "feesTitle": "Fees",
@@ -1534,22 +1534,22 @@
           {
           "title": "What is a Tribunal Caseworker?",
           "text": "Information on how a Tribunal Caseworker manages the appeal process.",
-          "pdf": "<a href='/app/pdfs/caseworker.pdf'>Read the guidance</a> (PDF)"
+          "pdf": "<a href='/assets/images/caseworker.pdf' target=\"_blank\">Read the guidance</a> (PDF)"
           },
           {
           "title": "Get help with your appeal",
           "text": "Information about and links to organisations such as Asylum Support and Citizens Advice.",
-          "pdf":"<a href='app/pdfs/helpWithAppeal.pdf'>Read the guidance</a> (PDF)"
+          "pdf":"<a href='/assets/images/helpWithAppeal.pdf' target=\"_blank\">Read the guidance</a> (PDF)"
           },
           {
           "title":"Understanding the Home Office bundle",
           "text":"A guide to the information and documents that appellants can expect to find in the Home Office bundle about their case.",
-          "pdf":"<a href='app/pdfs/homeOfficeDoc.pdf'>Read the guidance</a> (PDF)"
+          "pdf":"<a href='/assets/images/homeOfficeDoc.pdf' target=\"_blank\">Read the guidance</a> (PDF)"
           },
           {
           "title":"Evidence to support your appeal",
           "text":"Information on what evidence is and the different types of evidence that an appellant can use to support their appeal.",
-          "pdf":"<a href='app/pdfs/supportAppeal.pdf'>Read the guidance</a> (PDF)"
+          "pdf":"<a href='/assets/images/supportAppeal.pdf' target=\"_blank\">Read the guidance</a> (PDF)"
         }
         ]
       },

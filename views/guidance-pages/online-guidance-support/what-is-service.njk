@@ -4,48 +4,12 @@
 {% block content %}
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper">
+            <div class="whatIsIt">
             <img src="/assets/images/banner.png" alt="banner">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-one-third">
                     <h3 class="govuk-heading-m">{{ i18n.common.contents }}</h3>
-                    <ul class="govuk-list">
-                        <li>
-                            <a href="{{ paths.common.whatIsIt }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.whatIsThisService }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ paths.common.gettingStarted }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.gettingStarted }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ paths.common.fourStages }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.fourStages }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ paths.common.notifications }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.notifications }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ paths.common.documents }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.documents }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ paths.common.offlineProcesses }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.offlineProcesses }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ paths.common.guidance }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.guidance }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ paths.common.howToHelp }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.howToHelp }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ paths.common.giveFeedback }}"
-                               class="govuk-link govuk-link--no-visited-state">{{ i18n.pages.onlineSupportPages.links.howToGiveFeedback }}</a>
-                        </li>
-                    </ul>
+                    {{ navigation() }}
                 </div>
 
                 <div class="govuk-grid-column-two-thirds">
@@ -60,7 +24,7 @@
                        class="govuk-link govuk-link--no-visited-state floater">{{ i18n.common.nextPage }}</a>
                 </div>
             </div>
-
+             </div>
         </main>
     </div>
 {% endblock %}

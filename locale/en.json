@@ -1534,22 +1534,22 @@
           {
           "title": "What is a Tribunal Caseworker?",
           "text": "Information on how a Tribunal Caseworker manages the appeal process.",
-          "pdf": "<a href='/assets/images/caseworker.pdf' target=\"_blank\">Read the guidance</a> (PDF)"
+          "pdf": "<a href='/assets/images/caseworker.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
           },
           {
           "title": "Get help with your appeal",
           "text": "Information about and links to organisations such as Asylum Support and Citizens Advice.",
-          "pdf":"<a href='/assets/images/helpWithAppeal.pdf' target=\"_blank\">Read the guidance</a> (PDF)"
+          "pdf":"<a href='/assets/images/helpWithAppeal.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
           },
           {
           "title":"Understanding the Home Office bundle",
           "text":"A guide to the information and documents that appellants can expect to find in the Home Office bundle about their case.",
-          "pdf":"<a href='/assets/images/homeOfficeDoc.pdf' target=\"_blank\">Read the guidance</a> (PDF)"
+          "pdf":"<a href='/assets/images/homeOfficeDoc.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
           },
           {
           "title":"Evidence to support your appeal",
           "text":"Information on what evidence is and the different types of evidence that an appellant can use to support their appeal.",
-          "pdf":"<a href='/assets/images/supportAppeal.pdf' target=\"_blank\">Read the guidance</a> (PDF)"
+          "pdf":"<a href='/assets/images/supportAppeal.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
         }
         ]
       },

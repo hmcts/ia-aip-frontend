@@ -24,6 +24,9 @@ module.exports = {
       I.amOnPage(testUrl + paths.awaitingCmaRequirements.accessNeeds);
     });
 
+    Given('I am on the online support page', async () => {
+      I.amOnPage(testUrl + paths.common.whatIsIt);
+    });
     When('I select appeal type Protection', async () => {
       I.checkOption('#appealType');
     });

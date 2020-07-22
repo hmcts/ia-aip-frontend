@@ -31,7 +31,7 @@ function getFormattedDirectionDueDate(directions: Direction[], directionTagToLoo
  * @param eventTagToLookFor the event to look for
  * @param daysToAdd days to add to the event triggering date
  */
-function getFormattedEventHistoryDate(history: HistoryEvent[], eventTagToLookFor: string, daysToAdd: any) {
+function getFormattedEventHistoryDate(history: HistoryEvent[], eventTagToLookFor: string, daysToAdd: any): string {
   let formattedDeadline = null;
   if (history) {
     const historyEvent = history.find(h => h.id === eventTagToLookFor);
@@ -49,7 +49,7 @@ function getFormattedEventHistoryDate(history: HistoryEvent[], eventTagToLookFor
  * @param currentAppealStatus the appeal status
  * @param req the request containing  all the directions in session
  */
-function getDeadline(currentAppealStatus: string, req: Request) {
+function getDeadline(currentAppealStatus: string, req: Request): string {
 
   const history = req.session.appeal.history;
   let formattedDeadline;
@@ -85,6 +85,7 @@ function getDeadline(currentAppealStatus: string, req: Request) {
       formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestCmaRequirements');
       break;
     }
+    case 'cmaAdjustmentsAgreed':
     case 'cmaRequirementsSubmitted': {
       formattedDeadline = getFormattedEventHistoryDate(history, 'submitCmaRequirements', 14);
       break;

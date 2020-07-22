@@ -1,0 +1,29 @@
+{% extends 'guidanceLayout.njk' %}
+{% set pageTitleName = i18n.pages.onlineSupportPages.howToGetHelpPage.pageTitle %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper">
+            <div class="howToHelp">
+            <img src="/assets/images/banner.png" alt="banner">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-third">
+                    <h3 class="govuk-heading-m">{{ i18n.common.contents }}</h3>
+                    {{ navigation() }}
+                </div>
+
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-l">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.title }}</h2>
+                    <img src="/assets/images/contact-us.png" alt="contact-us">
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.getInTouch }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.text }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.phone | safe }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.howToGetHelpPage.email | safe }}</p>
+                    {{  backForward(paths.common.guidance,paths.common.giveFeedback) }}
+
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

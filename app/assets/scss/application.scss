@@ -109,3 +109,25 @@ pre {
   color: govuk-colour("light-blue");
 }
 
+.floater {
+  float: right;
+}
+
+
+
+div.whatIsIt a.whatIsIt, div.gettingStarted a.gettingStarted,
+div.fourStages a.fourStages, div.notifications a.notifications,
+div.documents a.documents, div.offlineProcesses a.offlineProcesses,
+div.guidance a.guidance, div.howToHelp a.howToHelp,
+div.giveFeedback a.giveFeedback,{
+  color: black;
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.previous-button {
+  float: left;
+  padding-top: 8rem
+}

@@ -1,9 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
 import {
     getCaseworkerPage,
+    getDocumentsPage,
     getEvidenceToSupportAppealPage,
+    getFourStagesPage,
+    getGettingStartedPage,
+    getGiveFeedbackPage,
+    getGuidanceSupportPage,
     getHomeOfficeDocumentsPage,
+    getHowToHelpPage,
     getMoreHelpPage,
+    getNotificationsSupportPage,
+    getOfflineProcessesPage,
+    getWhatIsService,
     setupGuidancePagesController
 } from '../../../app/controllers/guidance-page';
 import { paths } from '../../../app/paths';
@@ -68,6 +77,15 @@ describe('Contact details Controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.evidenceToSupportAppeal);
       expect(routerGetStub).to.have.been.calledWith(paths.common.moreHelp);
       expect(routerGetStub).to.have.been.calledWith(paths.common.tribunalCaseworker);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.whatIsIt);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.documents);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.fourStages);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.notifications);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.giveFeedback);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.howToHelp);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.offlineProcesses);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.guidance);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.gettingStarted);
     });
   });
 
@@ -105,7 +123,7 @@ describe('Contact details Controller', () => {
       });
     });
 
-    it('getEvidenceToSupportAppealPage should render guidance-pages/guidance-page.njk', () => {
+    it('getMoreHelpPage should render guidance-pages/guidance-page.njk', () => {
       const text = getGuidancePageText('evidenceToSupportAppeal');
 
       getEvidenceToSupportAppealPage(req as Request, res as Response, next);
@@ -114,6 +132,56 @@ describe('Contact details Controller', () => {
         previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
+    });
+
+    it('name should render guidance-pages/online-guidance-support/what-is-service.njk', () => {
+      getWhatIsService(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/what-is-service.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/documents.njk', () => {
+      getDocumentsPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/documents.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/four-stages-of-process.njk', () => {
+      getFourStagesPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/four-stages-of-process.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/notifications.njk', () => {
+      getNotificationsSupportPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/notifications.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/how-to-give-feedback.njk', () => {
+      getGiveFeedbackPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/how-to-give-feedback.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/how-to-help.njk', () => {
+      getHowToHelpPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/how-to-help.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/offline-process.njk', () => {
+      getOfflineProcessesPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/offline-process.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/guidance.njk', () => {
+      getGuidanceSupportPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/guidance.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/getting-started.njk', () => {
+      getGettingStartedPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/online-guidance-support/getting-started.njk');
+    });
+
+    it('name should render guidance-pages/online-guidance-support/place', () => {
+      getEvidenceToSupportAppealPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk');
     });
   });
 });

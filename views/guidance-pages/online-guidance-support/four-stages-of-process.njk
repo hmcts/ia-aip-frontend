@@ -1,0 +1,52 @@
+{% extends 'guidanceLayout.njk' %}
+{% set pageTitleName = i18n.pages.onlineSupportPages.fourStagesPage.pageTitle %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper">
+            <div class="fourStages">
+            <img src="/assets/images/banner.png" alt="banner">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-third">
+                    <h3 class="govuk-heading-m">{{ i18n.common.contents }}</h3>
+                    {{ navigation() }}
+                </div>
+
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-l">{{ i18n.pages.onlineSupportPages.fourStagesPage.title }}</h2>
+                    <img src="/assets/images/progress-bar.png" alt="progress-bar">
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealDetailsTitle }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealDetailsText }}</p>
+                    <img src="/assets/images/home-office-ref.png" alt="home-office-ref">
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealDetailsTextTwo }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealDetailsTextThree }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealDetailsTextFour }}</p>
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealArgumentTitle }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealArgumentText }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealArgumentTextTwo }}</p>
+                    <img src="/assets/images/wrong-decision.png" alt="wrong-decision">
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealArgumentTextThree }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealArgumentTextFour }}</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        {% for text in i18n.pages.onlineSupportPages.fourStagesPage.appealArgumentTextFive %}
+                            <li class="govuk-body">{{ text }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.appealArgumentTextSix }}</p>
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.fourStagesPage.hearingTitle }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.hearingText }}</p>
+                    <img src="/assets/images/home-office-panel.png" alt="home-office-panel">
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.hearingTextTwo }}</p>
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.fourStagesPage.decisionTitle }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.decisionText }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.decisionTextTwo }}</p>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.fourStagesPage.decisionTextThree }}</p>
+                    {{  backForward(paths.common.gettingStarted,paths.common.notifications) }}
+
+                </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+{% endblock %}

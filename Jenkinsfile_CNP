@@ -43,8 +43,6 @@ withPipeline("nodejs", product, component) {
   enableAksStagingDeployment()
   disableLegacyDeployment()
 
-  before('securitychecks') { yarnBuilder.yarn('test:audit') }
-
   env.S2S_MICROSERVICE_NAME = 'iac'
   env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
   env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'

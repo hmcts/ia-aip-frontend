@@ -49,7 +49,10 @@
     "askForMoreTimeEvidenceYesNo": {
       "question": "Do you want to provide supporting evidence for why you need more time?",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
-    }
+    },
+    "contents": "Contents",
+    "nextPage": "Next page >",
+    "previousPage": "< Previous page"
   },
   "pages": {
     "index": {
@@ -182,7 +185,7 @@
     "homeOfficePage": {
       "title": "What is your Home Office reference number?",
       "description": "You can find this on the top right-hand side of the decision letter.",
-      "refImageAltText": "Image of Home Office decision letter",
+      "refImageAltText": "Home Office decision letter with the position of the reference number highlighted",
       "homeOfficeReferenceNumberLabel": "Home Office reference number"
     },
     "homeOfficeLetterSent": {
@@ -190,7 +193,7 @@
       "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
       "dateTitle": "Date letter sent",
       "dateHint": "For example, 31 3 2019",
-      "letterSentImageAltText": "Image of Home Office decision letter"
+      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     },
     "homeOfficeAppealLate": {
       "title": "Your appeal is late",
@@ -1393,6 +1396,183 @@
 
 
         ]
+      }
+    },
+    "onlineSupportPages": {
+      "links": {
+        "whatIsThisService": "What is the service and who is it for?",
+        "gettingStarted": "Getting started",
+        "fourStages": "The four stages of the new appeal process",
+        "notifications": "Notifications",
+        "documents": "Documents",
+        "offlineProcesses": "Offline processes",
+        "guidance": "Guidance",
+        "howToHelp": "How to get help",
+        "howToGiveFeedback": "How to give feedback"
+      },
+      "whatIsThisServicePage": {
+        "pageTitle": "What is the service and who is it for?",
+        "whatIsTheService": "What is the service and who is it for?",
+        "whatIsIt": "What is it?",
+        "newService": "A new online service for appellants in person who are appealing a Home Office decision.",
+        "pilotServiceTitle": "A pilot service",
+        "pilotServiceText": "A pilot service launches in April 2020. This will involve a small controlled numbers of appellants and will help us test and improve the service before it launches publicly. Your feedback will be vital to the success of this phase",
+        "whoIsItForTitle": "Who is it for",
+        "whoIsItForText": "At the start the service will only be for those appealing Asylum and/or Humanitarian Protection decision. We will introduce Human Rights, EEA and Deprivation of Citizenship appeals as the service develops."
+      },
+      "gettingStartedPage": {
+        "pageTitle": "Getting started",
+        "gettingStartedTitle": "Getting started",
+        "linkToServiceTitle": "Link to the service",
+        "accessText": "Appellants can access the online service using the following link: ",
+        "link": "https://www.immigration-appeal.platform.hmcts.net ",
+        "eligibility": "Eligibility",
+        "eligibilityText": "Appellants will first be asked a number of questions to ensure they are eligible to use the service. At the start, appellants must be:",
+        "eligibilityBullets": [
+          "over 18",
+          "living in England or Wales",
+          "not in detention",
+          "not part of a linked or grouped appeal",
+          "appealing an Asylum and/or Humanitarian Protection decision"
+        ],
+        "statelessTitle": "Stateless appellants",
+        "statelessText": "Appellants who are stateless are not eligible for the pilot service. Please check if the appellant you are supporting is stateless before getting started. If they are, they will need to use the current <a href='https://immigrationappealsonline.justice.gov.uk/IACFees/' class=\"govuk-link govuk-link--no-visited-state\">online</a> or <a class=\"govuk-link govuk-link--no-visited-state\" href='https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5'>paper</a> service.",
+        "creatingAccountTitle": "Creating an account",
+        "creatingAccountText": "Appellants will then be asked to create an account. It is important that the appellant you’re supporting uses an email addresses that belongs to them and that they are unlikely to forget or delete.",
+        "feesTitle": "Fees",
+        "feesText": "There is a fee of £140 for all appeals that are decided at an in-person hearing. This fee will also apply for the new appeals service. The process to pay this fee isn't ready yet, so appellants who have started their appeal will be asked to pay this fee at a later date.",
+        "feesTextTwo": "When we ask appellants to pay the fee, we will also ask for information about exemptions, e.g. if an appellant is in receipt of Asylum Support. Appellants will not pay more to use the online service.",
+        "feesTextThree": "Find information about exemptions in the <a href='https://www.gov.uk/government/publications/immigration-and-appeals-tribunal-fees-t495'>Immigration and Asylum Tribunal Fees Guidance document.</a>",
+        "feesTextFour": "If an appellant does not have an exemption and wants to apply for help paying a fee, they must do this at the same time as submitting their appeal.  <a href='https://www.gov.uk/get-help-with-court-fees'>Visit the Help with Fees page to apply.</a>",
+        "sessionTimeoutTitle": "Session timeout",
+        "sessionTimeoutText": "If an appellant does not click Save and continue or Save for later for 20 minutes, any information they have not saved is deleted to protect their personal information. ",
+        "sessionTimeoutTextTwo": "A warning appears on screen after 18 minutes, but you should encourage any appellants you’re supporting to regularly save their work. "
+      },
+      "fourStagesPage": {
+        "pageTitle": "The four stages of the new appeal process",
+        "title": "The four stages of the new appeal process",
+        "appealDetailsTitle": "1. Appeal details",
+        "appealDetailsText": "The appellant provides basic details about themselves and their appeal such as their Home Office reference number, name, date of birth and nationality.",
+        "appealDetailsTextTwo": "The appellant does not need to make any argument at this stage but does need to select their appeal type. ",
+        "appealDetailsTextThree": "There are only a few questions and most appellants should be able to complete this stage in a short amount of time.",
+        "appealDetailsTextFour": "A Tribunal Caseworker reviews the appeal details. If they are satisfied the appeal is valid, they direct the Home Office to upload the bundle to the service. Once this is done, the case moves to the next stage.",
+        "appealArgumentTitle": "2. Appeal argument",
+        "appealArgumentText": "The appellant makes their case by answering the question: ",
+        "appealArgumentTextTwo": "Why do you think the Home Office decision to refuse your claim is wrong?",
+        "appealArgumentTextThree": "A Tribunal Caseworker reviews the appellant’s answer and any supporting evidence they send.",
+        "appealArgumentTextFour": "Sometimes the caseworker will need more information before the appeal can progress. In this case, they have two choices:",
+        "appealArgumentTextFive": [
+          "Direct the appellant to answer one or more clarifying questions about the appeal",
+          "Direct the appellant to attend a face-to-face Case Management Appointment "
+        ],
+        "appealArgumentTextSix": "Once a Tribunal Caseworker is happy that the case is ready to proceed, they direct the Home Office to review the information the appellant has provided. At this stage, the Home Office may decide to withdraw to grant the appeal.",
+        "hearingTitle": "3. Hearing",
+        "hearingText": "If the Home Office does not choose to withdraw, the case will go to a hearing.",
+        "hearingTextTwo": "The appellant submits hearing requirements, the case is listed and the appellant and the Home Office are sent a Hearing Notice, which details the location and time of the hearing and other relevant details.",
+        "decisionTitle": "4. Decision",
+        "decisionText": "After the hearing, the Judge writes their decision and uploads it to the online service.",
+        "decisionTextTwo": "The appellant is notified that it is ready to view and can sign in to get their decision.",
+        "decisionTextThree": "If the appeal is dismissed, the appellant is given instructions on what they can do next. "
+      },
+      "notificationsPage": {
+        "pageTitle": "Notifications",
+        "title": "Notifications",
+        "contactPrefTitle": "Contact preferences",
+        "contactPrefText": "Appellants can choose to receive notifications via email and/or text message.",
+        "notificationsTitle": "Notification types",
+        "notificationText": "Appellants receive notifications",
+        "bullets": [
+          "when they have a task to complete",
+          "when they have completed a task",
+          "when they have a document to review ",
+          "when an application has been granted or refused",
+          "when the status of an appeal has changed",
+          "when the Home Office has been asked to complete a task",
+          "when the Home Office has completed a task"
+        ]
+      },
+      "documentsPage": {
+        "pageTitle": "Documents",
+        "title": "Documents",
+        "types": "Document types",
+        "text": "Appellants can access the following documents at different stages of the process:",
+        "bullets": [
+          "Home Office bundle",
+          "Notice of Case Management Appointment",
+          "Home Office response to the appellant’s appeal argument",
+          "Notice of Hearing",
+          "Notice of Ended Appeal",
+          "Decision and Reasons"
+        ]
+      },
+      "offlineProcessesPage": {
+        "pageTitle": "Offline processes\n",
+        "title": "Offline processes",
+        "text": "Some parts of the appeal will be managed via email for a time.",
+        "askForMoreTimeTitle": "Ask for more time",
+        "afmtText": "If an appellant needs more time to complete a task, they can email <a class=\"govuk-link\" href=\"mailto:applications@justice.org.uk\">applications@justice.org.uk</a>. The appellant must include the reason why they need more time and provide supporting evidence if they can",
+        "withdrawTitle": "Withdraw, expedite, adjourn or transfer",
+        "withdrawText": "Appellants can apply to the Tribunal to:",
+        "bullets": [
+          "withdraw their appeal",
+          "expedite their appeal",
+          "adjourn their appeal",
+          "transfer to a different hearing centre"
+
+        ],
+        "withdrawTextTwo": "If an appellant needs to make any of these applications, they can email <a class=\"govuk-link\" href=\"mailto:applications@justice.org.uk\">applications@justice.org.uk</a> The appellant must include the reason they are making their application and provide supporting evidence if they can.",
+        "askForJudgeTitle": "Ask a Judge to review a decision",
+        "askForJudgeText": "A Tribunal Caseworker may make a decision that an appellant wants to challenge. For example, a Tribunal Caseworker may refuse a request for more time or a transfer. In this case, an appellant can ask for a Judge to review that decision. To do this, the appellant must email <a class=\"govuk-link\" href=\"mailto:judge.review@justice.org.uk\">judge.review@justice.org.uk</a> within 14 days."
+      },
+      "guidancePage": {
+        "pageTitle": "Guidance",
+        "title": "Guidance",
+        "info": "Information at the point of need",
+        "para": "We know there are some parts of the service where appellants need guiding information and we have created guidance pages to provide that information at the point where it is needed.",
+        "text": "So far we have created the following guidance pages:",
+        "bullets": [
+          {
+          "title": "What is a Tribunal Caseworker?",
+          "text": "Information on how a Tribunal Caseworker manages the appeal process.",
+          "pdf": "<a href='/assets/images/caseworker.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
+          },
+          {
+          "title": "Get help with your appeal",
+          "text": "Information about and links to organisations such as Asylum Support and Citizens Advice.",
+          "pdf":"<a href='/assets/images/helpWithAppeal.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
+          },
+          {
+          "title":"Understanding the Home Office bundle",
+          "text":"A guide to the information and documents that appellants can expect to find in the Home Office bundle about their case.",
+          "pdf":"<a href='/assets/images/homeOfficeDoc.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
+          },
+          {
+          "title":"Evidence to support your appeal",
+          "text":"Information on what evidence is and the different types of evidence that an appellant can use to support their appeal.",
+          "pdf":"<a href='/assets/images/supportAppeal.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
+        }
+        ]
+      },
+      "howToGetHelpPage": {
+        "pageTitle": "How to get help",
+        "title": "How to get help",
+        "getInTouch": "Get in touch",
+        "text": "Contact details are available on each page of the service if an appellant needs help at any point.",
+        "phone": "<strong>Phone:</strong> 0300 123 1711",
+        "email": "<strong>Email:</strong> <a class=\"govuk-link\" href=\"mailto:customer.service@justice.org.uk\">customer.service@justice.org.uk</a>"
+      },
+      "giveFeedbackPage": {
+        "pageTitle": "How to give feedback",
+        "title": "How to give feedback",
+        "onlineFeedback": "Online feedback",
+        "text": "Each page on the service includes a link to provide feedback about:",
+        "bullets": [
+          "anything that's difficult to understand",
+          "anything you or an appellant needed support with",
+          "anything you think could be improved"
+        ],
+        "feedbackSessions": "Feedback sessions",
+        "feedbackText": "We also hope you can attend feedback sessions, along with any appellants you have supported that are happy to take part. This will help us understand more about your experience and identify ways to improve the service."
       }
     }
   },

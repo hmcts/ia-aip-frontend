@@ -1,0 +1,30 @@
+{% extends 'guidanceLayout.njk' %}
+{% set pageTitleName = i18n.pages.onlineSupportPages.documentsPage.pageTitle %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper">
+            <div class="documents">
+            <img src="/assets/images/banner.png" alt="banner">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-third">
+                    <h3 class="govuk-heading-m">{{ i18n.common.contents }}</h3>
+                    {{ navigation() }}
+                </div>
+
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-l">{{ i18n.pages.onlineSupportPages.documentsPage.title }}</h2>
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.documentsPage.types }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.documentsPage.text }}</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        {% for text in i18n.pages.onlineSupportPages.documentsPage.bullets %}
+                            <li class="govuk-body">{{ text }}</li>
+                        {% endfor %}
+                    </ul>
+                    {{  backForward(paths.common.notifications,paths.common.offlineProcesses) }}
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

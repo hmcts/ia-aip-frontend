@@ -154,6 +154,8 @@ describe('Ask for more time Controller', function () {
       req.body.askForMoreTime = askForMoreReason;
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.evidenceYesNo);
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_TIME_EXTENSION, req.session.appeal, 'idamUID', 'atoken');
+
     });
 
     it('should setup ask for more time in session', async () => {

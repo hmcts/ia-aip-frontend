@@ -62,7 +62,7 @@ function getCancelAskForMoreTime(req: Request, res: Response) {
 }
 
 function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
-  return async function(req: Request, res: Response, next: NextFunction) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { askForMoreTime } = req.body;
       const validation = askForMoreTimeValidation(req.body);
@@ -84,7 +84,7 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
         }
       };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_TIME_EXTENSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -136,7 +136,7 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
     const reasonFormattingPreserved = formatTextForCYA(req.session.appeal.askForMoreTime.reason);
     const summaryRows = [
-      addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.askForMoreTimePage.textAreaText], null),
+      addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.askForMoreTimePage.textAreaText ], null),
       addSummaryRow(i18n.common.cya.answerRowTitle, [ reasonFormattingPreserved ], paths.common.askForMoreTime.reason)
     ];
     let previousPage = paths.common.askForMoreTime.evidenceYesNo;

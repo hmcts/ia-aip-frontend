@@ -1,0 +1,33 @@
+{% extends 'guidanceLayout.njk' %}
+{% set pageTitleName = i18n.pages.onlineSupportPages.giveFeedbackPage.pageTitle %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper">
+            <div class="giveFeedback">
+            <img src="/assets/images/banner.png" alt="banner">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-third">
+                    <h3 class="govuk-heading-m">{{ i18n.common.contents }}</h3>
+                    {{ navigation() }}
+                    <a href="{{ paths.common.howToHelp }}" class="govuk-link govuk-link--no-visited-state previous-button">{{ i18n.common.previousPage }}</a>
+                </div>
+
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-l">{{ i18n.pages.onlineSupportPages.giveFeedbackPage.title }}</h2>
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.giveFeedbackPage.onlineFeedback }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.giveFeedbackPage.text }}</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        {% for text in i18n.pages.onlineSupportPages.giveFeedbackPage.bullets %}
+                            <li class="govuk-body">{{ text }}</li>
+                        {% endfor %}
+                    </ul>
+                    <img src="/assets/images/feedback-banner.png" alt="banner">
+                    <h2 class="govuk-heading-s">{{ i18n.pages.onlineSupportPages.giveFeedbackPage.feedbackSessions }}</h2>
+                    <p class="govuk-body">{{ i18n.pages.onlineSupportPages.giveFeedbackPage.feedbackText }}</p>
+                </div>
+            </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

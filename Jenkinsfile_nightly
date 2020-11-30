@@ -35,14 +35,16 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline("nodejs", product, component) {
-  loadVaultSecrets(secrets)
-  env.TEST_URL = params.URL_TO_TEST
-  enableCrossBrowserTest()
-  enableSlackNotifications('#aip-tech')
-  enableSecurityScan()
-
-  env.S2S_MICROSERVICE_NAME = 'iac'
-  env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
-  env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+//    The following code was commented temporarily to stop using Jenkins resources, due to the AiP project being paused.  The expectation is that it will be resumed and the commented code will be required
+    
+//  loadVaultSecrets(secrets)
+//  env.TEST_URL = params.URL_TO_TEST
+//  enableCrossBrowserTest()
+//  enableSlackNotifications('#aip-tech')
+//  enableSecurityScan()
+//
+//  env.S2S_MICROSERVICE_NAME = 'iac'
+//  env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
+//  env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
 
 }

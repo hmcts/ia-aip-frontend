@@ -41,7 +41,7 @@
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "1.0.6",
     "@hmcts/properties-volume": "^0.0.9",
-    "applicationinsights": "^1.4.2",
+    "applicationinsights": "^1.8.8",
     "codeceptjs": "^2.6.6",
     "config": "^3.2.2",
     "connect-redis": "^4.0.3",

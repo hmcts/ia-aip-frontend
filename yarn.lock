@@ -3048,15 +3048,7 @@ convert-source-map@^1.1.0, convert-source-map@^1.7.0:
   dependencies:
     safe-buffer "~5.1.1"
 
-cookie-parser@1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/cookie-parser/-/cookie-parser-1.4.4.tgz#e6363de4ea98c3def9697b93421c09f30cf5d188"
-  integrity sha512-lo13tqF3JEtFO7FyA49CqbhaFkskRJ0u/UAiINgrIXeRCY41c88/zxtrECl8AKH3B0hj9q10+h3Kt8I7KlW4tw==
-  dependencies:
-    cookie "0.3.1"
-    cookie-signature "1.0.6"
-
-cookie-parser@^1.4.4:
+cookie-parser@1.4.5, cookie-parser@^1.4.4:
   version "1.4.5"
   resolved "https://registry.yarnpkg.com/cookie-parser/-/cookie-parser-1.4.5.tgz#3e572d4b7c0c80f9c61daf604e4336831b5d1d49"
   integrity sha512-f13bPUj/gG/5mDr+xLmSxxDsB9DQiTIfhJS/sqjrmfAWiAN+x2O4i/XguTL9yDZ+/IFDanJ+5x7hC4CXT9Tdzw==
@@ -3068,11 +3060,6 @@ cookie-signature@1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/cookie-signature/-/cookie-signature-1.0.6.tgz#e303a882b342cc3ee8ca513a79999734dab3ae2c"
   integrity sha1-4wOogrNCzD7oylE6eZmXNNqzriw=
-
-cookie@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
-  integrity sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s=
 
 cookie@0.4.0:
   version "0.4.0"
@@ -3885,16 +3872,16 @@ duration@^0.2.1:
     d "1"
     es5-ext "~0.10.46"
 
-dyson@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/dyson/-/dyson-3.0.2.tgz#664f6dabd8ead332397d256cb81bac8b1941f6cd"
-  integrity sha512-vMuj+bi7h++Rx6zkr/w1ejvzMydlIs6WAvz1V5zKPTsmN5C0TtI9yJbU+lrWxnCLx+kUEwN28El699+cSLVuIQ==
+dyson@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/dyson/-/dyson-3.0.4.tgz#b7a8a3ef9aa43b87ee45992e63094d581156a49b"
+  integrity sha512-eDApbyQ/Z1nwI62sEw6F+LKr1Ko+zMIQF1CDHTfGXfDYA+1e6Ufonu225jxAW7IZpzz4t9/6/l/JNb8JV7MSpw==
   dependencies:
     body-parser "1.19.0"
-    cookie-parser "1.4.4"
+    cookie-parser "1.4.5"
     cors "2.8.5"
     express "4.17.1"
-    lodash "4.17.15"
+    lodash "4.17.20"
     request "2.88.2"
     require-directory "2.1.1"
     serve-favicon "2.5.0"
@@ -6457,10 +6444,10 @@ lodash.zip@^4.2.0:
   resolved "https://registry.yarnpkg.com/lodash.zip/-/lodash.zip-4.2.0.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
   integrity sha1-7GZi5IlkCO1KtsVCo5kLcswIACA=
 
-lodash@4.17.15:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+lodash@4.17.20, lodash@^4.17.20:
+  version "4.17.20"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
+  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
 
 lodash@^4.0.0, lodash@^4.16.6, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.5, lodash@~4.17.10:
   version "4.17.19"

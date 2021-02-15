@@ -29,4 +29,9 @@ describe('Health Controller', function() {
     liveness(req as Request, res as Response);
     expect(res.json).to.have.been.calledOnce.calledWith({ });
   });
+
+  it('get /health/readiness should return ok', function() {
+    health(req as Request, res as Response);
+    expect(res.json).to.have.been.calledOnce.calledWith({ status: 'UP' });
+  });
 });

@@ -95,6 +95,7 @@ const paths = {
     health: '/health',
     liveness: '/liveness',
     healthLiveness: '/health/liveness',
+    healthReadiness: '/health/readiness',
 
     // Eligibility Questions endpoints
     ineligible: '/not-eligible',

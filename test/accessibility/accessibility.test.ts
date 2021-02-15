@@ -9,7 +9,7 @@ const testUrl = require('config').get('testUrl');
 const pa11y = require('pa11y');
 
 const pathsToIgnore = [
-  paths.common.health, paths.common.liveness, paths.common.healthLiveness, paths.common.logout, paths.common.redirectUrl, paths.common.start,
+  paths.common.health, paths.common.liveness, paths.common.healthLiveness, paths.common.healthReadiness, paths.common.logout, paths.common.redirectUrl, paths.common.start,
   paths.appealStarted.deleteEvidence, paths.appealStarted.uploadEvidence, paths.appealStarted.checkAndSend
 ];
 const errorTitles = ['Page not found', 'Service unavailable'];

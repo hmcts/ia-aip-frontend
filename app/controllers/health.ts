@@ -15,6 +15,7 @@ function setupHealthController(): Router {
   router.get(paths.common.health, health);
   router.get(paths.common.liveness, liveness);
   router.get(paths.common.healthLiveness, liveness);
+  router.get(paths.common.healthReadiness, health);
   return router;
 }
 

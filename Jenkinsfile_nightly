@@ -16,7 +16,7 @@ properties([
 def type      = "nodejs"
 def product   = "ia"
 def component = "aip-frontend"
-def channel   = "#aip-tech"
+def channel   = "#ia-tech"
 
 def secrets = [
     'ia-${env}': [

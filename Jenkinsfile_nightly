@@ -49,9 +49,9 @@ withNightlyPipeline(type, product, component) {
     env.TEST_URL = 'https://immigration-appeal.aat.platform.hmcts.net'
     env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
     env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+    env.S2S_MICROSERVICE_NAME = 'iac'
 
     enableCrossBrowserTest()
     enableSecurityScan()    
-    env.S2S_MICROSERVICE_NAME = 'iac'
 
 }

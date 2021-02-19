@@ -180,7 +180,9 @@
   "90033_Loosely Scoped Cookie_https://immigration-appeal.aat.platform.hmcts.net/robots.txt_GET": "ignore",
   "90033_Loosely Scoped Cookie_https://immigration-appeal.aat.platform.hmcts.net_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/main.css_GET": "ignore",
-  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/all.js_GET": "ignore",
-  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/robots.txt_GET": "ignore"
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/robots.txt_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/sitemap.xml_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore"
 }

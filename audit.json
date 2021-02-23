@@ -185,5 +185,10 @@
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/robots.txt_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/sitemap.xml_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore",
-  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/assets/images/hmcts-logo-compress.svg_GET": "ignore"
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/assets/images/hmcts-logo-compress.svg_GET": "ignore",
+  "10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+  "10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+  "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+  "30003_Integer Overflow Error_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+  "90027_Cookie Slack Detector_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore"
 }

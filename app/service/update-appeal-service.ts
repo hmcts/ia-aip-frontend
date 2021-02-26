@@ -64,7 +64,7 @@ export default class UpdateAppealService {
   }
 
   // TODO: remove submitEvent when all app is refactored using new submitEvent
-  async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
+  async submitEvent(event: any, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
 
     const currentUserId = req.idam.userDetails.uid;

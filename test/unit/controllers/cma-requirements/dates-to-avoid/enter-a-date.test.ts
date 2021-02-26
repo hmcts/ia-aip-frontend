@@ -170,8 +170,8 @@ describe('CMA Requirements - Enter A date controller', () => {
       req.body['year'] = validDate.year();
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.datesToAvoidReason);
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
     });
 
     it('should catch error and call next with error', async () => {
@@ -231,8 +231,8 @@ describe('CMA Requirements - Enter A date controller', () => {
       req.body['year'] = validDate.year();
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith('/appointment-dates-avoid-reasons/0');
+      expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
     });
 
     it('should catch error and call next with error', async () => {

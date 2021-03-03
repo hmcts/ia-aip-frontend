@@ -54,18 +54,18 @@ withNightlyPipeline(type, product, component) {
     enableCrossBrowserTest()
     enableSecurityScan()    
 
-    after('build') { 
+    // after('build') { 
         
-        yarnBuilder.yarn('test:a11y')
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/a11y/",
-            reportFiles          : 'Report.html',
-            reportName           : 'Manage Cases a11y Test Report'
-        ])
+    //     yarnBuilder.yarn('test:a11y')
+    //     publishHTML([
+    //         allowMissing         : true,
+    //         alwaysLinkToLastBuild: true,
+    //         keepAll              : true,
+    //         reportDir            : "reports/tests/a11y/",
+    //         reportFiles          : 'Report.html',
+    //         reportName           : 'Manage Cases a11y Test Report'
+    //     ])
         
-     }
+    //  }
 
 }

@@ -76,7 +76,7 @@
     "redis": "^3.0.2",
     "request-promise": "^4.2.5",
     "webdriverio": "^6.12.1",
-    "webpack": "^4.42.0",
+    "webpack": "^4.46.0",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^1.7.2"

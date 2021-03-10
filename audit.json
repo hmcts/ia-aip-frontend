@@ -185,5 +185,22 @@
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/robots.txt_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/sitemap.xml_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore",
-  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/assets/images/hmcts-logo-compress.svg_GET": "ignore"
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/assets/images/hmcts-logo-compress.svg_GET": "ignore",
+  "10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+  "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+  "30003_Integer Overflow Error_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+  "90027_Cookie Slack Detector_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+  "10010_Cookie No HttpOnly Flag_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET:": "ignore",
+  "10109_Modern Web Application_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore",
+  "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore",
+  "90027_Cookie Slack Detector_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore",
+  "10027_Information Disclosure - Suspicious Comments_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore",
+  "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(3)%20of%20ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore",
+  "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20of%20ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore",
+  "10035_Strict-Transport-Security Header Not Set_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore",
+  "10054_Cookie Without SameSite Attribute_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET": "ignore",
+  "90033_Loosely Scoped Cookie_https://immigration-appeal.aat.platform.hmcts.net/start-appeal_GET": "ignore",
+  "10021_X-Content-Type-Options Header Missing_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore",
+  "10098_Cross-Domain Misconfiguration_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10209210209190405.js_GET": "ignore"
 }

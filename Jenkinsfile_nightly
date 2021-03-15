@@ -16,7 +16,7 @@ properties([
 def type      = "nodejs"
 def product   = "ia"
 def component = "aip-frontend"
-def channel   = "#ia-tech"
+def channel   = "#aip-tech"
 
 def secrets = [
     'ia-${env}': [
@@ -40,6 +40,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
    envVariable: envVar
   ]
 }
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
@@ -49,9 +50,14 @@ withNightlyPipeline(type, product, component) {
     env.TEST_URL = 'https://immigration-appeal.aat.platform.hmcts.net'
     env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
     env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+    env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     env.S2S_MICROSERVICE_NAME = 'iac'
 
     enableCrossBrowserTest()
-    enableSecurityScan()    
+    enableSecurityScan()
+
+    after('crossBrowserTest') {
+        yarnBuilder.yarn('test:a11y')
+    }
 
 }

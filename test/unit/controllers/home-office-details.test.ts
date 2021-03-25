@@ -110,19 +110,19 @@ describe('Home Office Details Controller', function () {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          homeOfficeRefNumber: 'A1234567'
+          homeOfficeRefNumber: '1212-0099-0089-1080'
         }
       };
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
-          homeOfficeRefNumber: 'A1234567'
+          homeOfficeRefNumber: '1212-0099-0089-1080'
         }
       } as Appeal);
-      req.body['homeOfficeRefNumber'] = 'A1234567';
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('1212-0099-0089-1080');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.letterSent);
     });
 
@@ -131,7 +131,7 @@ describe('Home Office Details Controller', function () {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          homeOfficeRefNumber: 'A1234567'
+          homeOfficeRefNumber: '1212-0099-0089-1080'
         }
       };
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
@@ -139,7 +139,7 @@ describe('Home Office Details Controller', function () {
           homeOfficeRefNumber: 'A1234567'
         }
       } as Appeal);
-      req.body['homeOfficeRefNumber'] = 'A1234567';
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
       req.body['saveForLater'] = 'saveForLater';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -153,27 +153,29 @@ describe('Home Office Details Controller', function () {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          homeOfficeRefNumber: 'A1234567',
+          homeOfficeRefNumber: '1212-0099-0089-1080',
           isEdit: true
         }
       };
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
-          homeOfficeRefNumber: 'A1234567'
+          homeOfficeRefNumber: '1212-0099-0089-1080'
         }
       } as Appeal);
       req.session.appeal.application.isEdit = true;
-      req.body['homeOfficeRefNumber'] = 'A1234567';
+      req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('A1234567');
+      expect(req.session.appeal.application.homeOfficeRefNumber).to.be.eql('1212-0099-0089-1080');
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('should fail validation and render home-office/details.njk with error', async () => {
-      req.body['homeOfficeRefNumber'] = 'notValid';
+      // req.body['homeOfficeRefNumber'] = 'notValid';
+      // req.body['homeOfficeRefNumber'] = '1212-0099-0089-1080';
+      req.body['homeOfficeRefNumber'] = 'A1234567';
       await postHomeOfficeDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const error = {
@@ -189,7 +191,7 @@ describe('Home Office Details Controller', function () {
             homeOfficeRefNumber: error
           },
           errorList: [ error ],
-          homeOfficeRefNumber: 'notValid',
+          homeOfficeRefNumber: 'A1234567',
           previousPage: paths.appealStarted.taskList
         });
     });

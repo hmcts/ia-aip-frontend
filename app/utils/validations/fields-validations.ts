@@ -76,8 +76,21 @@ function dropdownValidation(text: string, theKey: string): ValidationErrors | nu
 }
 
 function homeOfficeNumberValidation(obj: object) {
+/**
+ * Validates whether the Home Office reference number
+ * Home Office references accept either UANs or CID references (zero padded on letters) in the validation reference.
+ * UAN has the format of xxxx-xxxx-xxxx-xxxx.
+ * CID reference has the format of xxxxxxxxx
+ * A (CID) number with less than 9 digit will be padded with preceding zeros ( eg 123456 becomes 000123456).
+ */
+
+  let homeOfficeNumber = String(obj['homeOfficeRefNumber']);
+  if (homeOfficeNumber.length > 0 && homeOfficeNumber.length < 9 && parseInt(homeOfficeNumber, 10)) {
+    obj['homeOfficeRefNumber'] = homeOfficeNumber.padStart(9, '0'); // pad number with leading zeros
+  }
+
   const schema = Joi.object({
-    homeOfficeRefNumber: Joi.string().required().regex(/^[A-Za-z][0-9]{6}[0-9]?(|\/[0-9][0-9]?[0-9]?)$/).messages({
+    homeOfficeRefNumber: Joi.string().required().regex(/^(([0-9]{1,9})|([0-9]{4}\-[0-9]{4}\-[0-9]{4}\-[0-9]{4}))$/).messages({
       'string.empty': i18n.validationErrors.homeOfficeReference.required,
       'string.pattern.base': i18n.validationErrors.homeOfficeReference.invalid
     })

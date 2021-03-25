@@ -28,7 +28,7 @@ Feature: Business rules
     Then I should see the task-list page
     When I click on Home office details
     Then I should be taken to the home office ref number page
-    Then I enter a home office reference "A1234567"
+    Then I enter a home office reference "1234-1234-1234-1234"
     And I click "Save and continue" button
     Then I should see letter sent page
     When I enter an on time letter sent date

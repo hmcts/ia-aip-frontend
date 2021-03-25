@@ -8,7 +8,7 @@ Scenario: Explain the reason why my appeal is late
   Then I click continue
   And I click "Your Home Office details" link
   # When I click on Home office details
-  And I enter "A1234567" as the Office ref number and click Save and continue
+  And I enter "1234-1234-1234-1234" as the Office ref number and click Save and continue
   And I enter an out of time letter sent date and click Save and continue
 
   And I click "Your personal details" link

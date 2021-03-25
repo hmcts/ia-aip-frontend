@@ -14,7 +14,6 @@ import {
   textAreaValidation,
   yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
-
 import i18n from '../../../../locale/en.json';
 import { expect } from '../../../utils/testUtils';
 
@@ -29,7 +28,7 @@ describe('fields-validations', () => {
 
   describe('homeOfficeNumberValidation', () => {
     it('should validate', () => {
-      const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: 'A1234567' });
+      const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '1212-0099-0089-1080' });
       expect(validations).to.equal(null);
     });
 

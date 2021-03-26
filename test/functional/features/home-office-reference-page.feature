@@ -23,7 +23,7 @@ Feature: Home office reference page
     Then I should see error summary
 
     Given I am on the home office reference page
-    When I enter a home office reference "A1234567"
+    When I enter a home office reference "1234-1234-1234-1234"
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue

@@ -14,7 +14,6 @@ import {
   textAreaValidation,
   yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
-
 import i18n from '../../../../locale/en.json';
 import { expect } from '../../../utils/testUtils';
 
@@ -28,8 +27,18 @@ describe('fields-validations', () => {
   }
 
   describe('homeOfficeNumberValidation', () => {
-    it('should validate', () => {
-      const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: 'A1234567' });
+    it('should validate a UAN', () => {
+      const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '1212-0099-0089-1080' });
+      expect(validations).to.equal(null);
+    });
+
+    it('should validate a 9 digit CID reference', () => {
+      const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '121210801' });
+      expect(validations).to.equal(null);
+    });
+
+    it('should validate an 8 digit CID reference', () => {
+      const validations = homeOfficeNumberValidation({ homeOfficeRefNumber: '12121080' });
       expect(validations).to.equal(null);
     });
 

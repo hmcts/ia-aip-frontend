@@ -4,7 +4,6 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { nowIsoDate } from '../../utils/utils';
 import { yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
 function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: NextFunction) {
@@ -61,7 +60,8 @@ function postSupportingEvidenceQuestionPage(updateAppealService: UpdateAppealSer
         });
       }
       if (req.body.answer === 'true') {
-        return res.redirect(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(`:id`), `${req.params.id}`));
+        let redirectUri = paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), parseInt(req.params.id, 10).toString());
+        return res.redirect(redirectUri);
       } else {
         const questionOrderNo = parseInt(req.params.id, 10) - 1;
         const supportingEvidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.supportingEvidence;

@@ -5,20 +5,20 @@ In order to achieve my goals
 As a person
 I want be able to sign in
 
-# Scenario: Complete appeal application
-#   Given I am on home page
-#   When I click start now
-#   Then I should see the "Are you at least 18 years old" eligibility page
-#   When I select Yes and click continue
-#   Then I should see the "Are you currently living in England or Wales" eligibility page
-#   When I select Yes and click continue
-#   Then I should see the "Are you currently in detention" eligibility page
-#   When I select No and click continue
-#   Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
-#   When I select Yes and click continue
-#   Then I should see the "Is anyone else in your immediate family appealing their own Home Office decision" eligibility page
-#   When I select No and click continue
-#   Then I should see the eligible page
+Scenario: Complete appeal application
+  Given I am on home page
+  When I click start now
+  Then I should see the "Are you at least 18 years old" eligibility page
+  When I select Yes and click continue
+  Then I should see the "Are you currently living in England or Wales" eligibility page
+  When I select Yes and click continue
+  Then I should see the "Are you currently in detention" eligibility page
+  When I select No and click continue
+  Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
+  When I select Yes and click continue
+  Then I should see the "Is anyone else in your immediate family appealing their own Home Office decision" eligibility page
+  When I select No and click continue
+  Then I should see the eligible page
 #   When I click continue
 #   Then I should see the Create an account page
 #   When I click Sign in to your account

@@ -10,6 +10,7 @@ import { AuthenticationService } from '../../../app/service/authentication-servi
 import { CcdService } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
+import { asBooleanValue } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedMultipleEventsData } from '../mockData/events/expectations';
 
@@ -168,7 +169,7 @@ describe('Confirmation Page Controller', () => {
       history: expectedHistory,
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime'),
+      askForMoreTimeFeatureEnabled: asBooleanValue(asBooleanValue(config.get('features.askForMoreTime'))),
       askForMoreTimeInFlight: false
     });
   });
@@ -239,7 +240,7 @@ describe('Confirmation Page Controller', () => {
       history: { appealArgumentSection: [], appealDetailsSection: [] },
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime'),
+      askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
       askForMoreTimeInFlight: false
     });
   });
@@ -298,7 +299,7 @@ describe('Confirmation Page Controller', () => {
       history: { appealArgumentSection: [], appealDetailsSection: [] },
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime'),
+      askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
       askForMoreTimeInFlight: false
     });
   });
@@ -358,7 +359,7 @@ describe('Confirmation Page Controller', () => {
       history: { appealArgumentSection: [], appealDetailsSection: [] },
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime'),
+      askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
       askForMoreTimeInFlight: false
     });
   });
@@ -420,7 +421,7 @@ describe('Confirmation Page Controller', () => {
       history: { appealArgumentSection: [], appealDetailsSection: [] },
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: config.get('features.askForMoreTime'),
+      askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
       askForMoreTimeInFlight: false
     });
   });

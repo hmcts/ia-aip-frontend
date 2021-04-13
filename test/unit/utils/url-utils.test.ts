@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import { getIdamLoginUrl, getIdamRedirectUrl } from '../../../app/utils/url-utils';
-
 import { expect } from '../../utils/testUtils';
 
 describe('creates url', () => {

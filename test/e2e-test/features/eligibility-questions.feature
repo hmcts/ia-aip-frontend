@@ -6,7 +6,7 @@ Feature: Eligibility
 
   Scenario: Citizen was once a british citizen and is eligible to use the service
     Given I am on home page
-
+    When I click start now
     Then I should see the "Are you currently living in England or Wales" eligibility page
     When I select Yes and click continue
     Then I should see the "Are you currently in detention" eligibility page

@@ -49,7 +49,7 @@ Feature: Eligibility
     Then I should see the "Are you currently living in England or Wales" eligibility page
     When I select Yes and click continue
     Then I should see the "Are you currently in detention" eligibility page
-    When I select No and click continue
+    When I select Yes and click continue
     Then I should see the ineligible page
     When I click "Back" button
     Then I should see the "Are you currently in detention" eligibility page

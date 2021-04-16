@@ -1804,11 +1804,6 @@
       "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country.",
       "eligibleAnswer": "yes",
       "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision"
-    },
-    {
-      "question": "Is anyone else in your immediate family appealing their own Home Office decision?",
-      "eligibleAnswer": "no",
-      "errorMessage": "Select yes if anyone in your immediate family is appealing their own Home Office decision"
     }
   ]
 }

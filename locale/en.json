@@ -1789,9 +1789,9 @@
   },
   "eligibility": [
     {
-      "question": "Are you currently living in England or Wales?",
+      "question": "Are you currently living in the United Kingdom?",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are currently living in England or Wales"
+      "errorMessage": "Select yes if you are currently living in the United Kingdom"
     },
     {
       "question": "Are you currently in detention?",

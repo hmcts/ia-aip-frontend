@@ -530,7 +530,7 @@
         "AllFOrMTitle": "Will you need an all-female or all-male appointment",
         "AllFOrMQuestion": "What type of appointment will you need?",
         "AllFOrMWhy": "Tell us why you need an {{ appointmentType }} appointment",
-        "MultimediaEvidenceTitle":  "Will you bring any multimedia evidence",
+        "MultimediaEvidenceTitle": "Will you bring any multimedia evidence",
         "MultimediaEvidenceBringEquip": "Will you bring the equipment to play this evidence",
         "MultimediaEvidenceCantBringEquip": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it.",
         "title": "Your appointment needs",
@@ -547,7 +547,7 @@
         "pastExpViewerTitle": "Past experiences",
         "anythingElseViewerTitle": "Anything else"
       }
-},
+    },
     "guidancePages": {
       "caseWorker": {
         "title": "What is a Tribunal Caseworker?",
@@ -1362,16 +1362,18 @@
       "peopleAtAppointment": {
         "title": "The people at your appointment",
         "titleOne": "The following people will be at the appointment:",
-        "bulletOne": ["A Tribunal Caseworker", "You"],
+        "bulletOne": [
+          "A Tribunal Caseworker",
+          "You"
+        ],
         "titleTwo": "The following people may also be at the appointment:",
         "bulletTwo": [
-          	"Anyone you bring to support you, like a friend or family member",
-        	"A Home Office representative",
-        	"Any interpreters you have asked for",
-        	"Tribunal staff",
-        	"Members of the public"
-
-      ]
+          "Anyone you bring to support you, like a friend or family member",
+          "A Home Office representative",
+          "Any interpreters you have asked for",
+          "Tribunal staff",
+          "Members of the public"
+        ]
       },
       "DuringAppointment": {
         "title": "During the appointment",
@@ -1392,9 +1394,6 @@
           "Children are not always allowed into the hearing room. If you need to bring children with you, you should bring a responsible adult to take care of them while you’re at the appointment",
           "Bring food and drink and any medication you might need",
           "Bring family and friends along for support if you want to"
-
-
-
         ]
       }
     },
@@ -1518,7 +1517,6 @@
           "expedite their appeal",
           "adjourn their appeal",
           "transfer to a different hearing centre"
-
         ],
         "withdrawTextTwo": "If an appellant needs to make any of these applications, they can email <a class=\"govuk-link\" href=\"mailto:applications@justice.org.uk\">applications@justice.org.uk</a> The appellant must include the reason they are making their application and provide supporting evidence if they can.",
         "askForJudgeTitle": "Ask a Judge to review a decision",
@@ -1532,25 +1530,25 @@
         "text": "So far we have created the following guidance pages:",
         "bullets": [
           {
-          "title": "What is a Tribunal Caseworker?",
-          "text": "Information on how a Tribunal Caseworker manages the appeal process.",
-          "pdf": "<a href='/assets/images/caseworker.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
+            "title": "What is a Tribunal Caseworker?",
+            "text": "Information on how a Tribunal Caseworker manages the appeal process.",
+            "pdf": "<a href='/assets/images/caseworker.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
           },
           {
-          "title": "Get help with your appeal",
-          "text": "Information about and links to organisations such as Asylum Support and Citizens Advice.",
-          "pdf":"<a href='/assets/images/helpWithAppeal.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
+            "title": "Get help with your appeal",
+            "text": "Information about and links to organisations such as Asylum Support and Citizens Advice.",
+            "pdf": "<a href='/assets/images/helpWithAppeal.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
           },
           {
-          "title":"Understanding the Home Office bundle",
-          "text":"A guide to the information and documents that appellants can expect to find in the Home Office bundle about their case.",
-          "pdf":"<a href='/assets/images/homeOfficeDoc.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
+            "title": "Understanding the Home Office bundle",
+            "text": "A guide to the information and documents that appellants can expect to find in the Home Office bundle about their case.",
+            "pdf": "<a href='/assets/images/homeOfficeDoc.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
           },
           {
-          "title":"Evidence to support your appeal",
-          "text":"Information on what evidence is and the different types of evidence that an appellant can use to support their appeal.",
-          "pdf":"<a href='/assets/images/supportAppeal.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
-        }
+            "title": "Evidence to support your appeal",
+            "text": "Information on what evidence is and the different types of evidence that an appellant can use to support their appeal.",
+            "pdf": "<a href='/assets/images/supportAppeal.pdf' target=\"_blank\" file-preview-type='document'>Read the guidance</a> (PDF)"
+          }
         ]
       },
       "howToGetHelpPage": {
@@ -1790,11 +1788,6 @@
     }
   },
   "eligibility": [
-    {
-      "question": "Are you at least 18 years old?",
-      "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are at least 18 years old"
-    },
     {
       "question": "Are you currently living in England or Wales?",
       "eligibleAnswer": "yes",

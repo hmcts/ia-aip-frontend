@@ -246,5 +246,13 @@
   "90027_Cookie Slack Detector_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10213210407103252.js_GET": "ignore",
   "10098_Cross-Domain Misconfiguration_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10213210407103252.js_GET": "ignore",
   "10021_X-Content-Type-Options Header Missing_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10213210407103252.js_GET": "ignore",
-  "10035_Strict-Transport-Security Header Not Set_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10213210407103252.js_GET": "ignore"
+  "10035_Strict-Transport-Security Header Not Set_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10213210407103252.js_GET": "ignore",
+  "10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+  "10055_CSP: script-src unsafe-inline_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+  "10109_Modern Web Application_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+  "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+  "90027_Cookie Slack Detector_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+  "10055_CSP: Wildcard Directive_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+  "10017_Cross-Domain JavaScript Source File Inclusion_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+  "10031_User Controllable HTML Element Attribute (Potential XSS)_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore"
 }

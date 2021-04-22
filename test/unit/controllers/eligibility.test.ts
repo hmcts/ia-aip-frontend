@@ -200,11 +200,15 @@ describe('Eligibility Controller', () => {
 
   describe('getIneligible', () => {
     it('should render the view', () => {
-      req.query = { id: '123' };
+      req.query = { id: '1' };
+      const questionId: string = req.query.id as string;
       getIneligible(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('eligibility/ineligible-page.njk',
         {
-          previousPage: `${paths.common.questions}?id=123`
+          title: i18n.ineligible[questionId].title,
+          description: i18n.ineligible[questionId].description,
+          optionsList: i18n.ineligible[questionId].optionsList,
+          previousPage: `${paths.common.questions}?id=1`
         }
       );
     });

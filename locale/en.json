@@ -265,12 +265,6 @@
       "needMoreTime": "Need more time?"
     },
     "ineligiblePage": {
-      "title": "You cannot currently use the new service",
-      "description": "Based on your answers you can't use the new service at the moment. However, you can still appeal the Home Office decision either online or using our paper form",
-      "optionsList": [
-        "<a href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Appeal online</a>",
-        "<a href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">Appeal by post or fax with form IAFT-5</a>"
-      ],
       "moreInfo": {
         "title": "More information",
         "moreInfoList": [

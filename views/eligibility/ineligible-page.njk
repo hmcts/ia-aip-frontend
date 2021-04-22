@@ -2,10 +2,10 @@
 {% set pageTitleName = i18n.pages.ineligiblePage.title %}
 
 {% block content %}
-<h1 class="govuk-heading-xl">{{ i18n.pages.ineligiblePage.title }}</h1>
-<p>{{ i18n.pages.ineligiblePage.description }}</p>
+<h1 class="govuk-heading-xl">{{ title }}</h1>
+<p>{{ description }}</p>
 <ul class="govuk-list govuk-list--bullet">
-  {% for item in i18n.pages.ineligiblePage.optionsList %}
+  {% for item in optionsList %}
     <li>{{ item | safe }} </li>
   {% endfor %}
 </ul>

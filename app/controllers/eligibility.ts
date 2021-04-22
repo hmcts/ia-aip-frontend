@@ -91,7 +91,11 @@ function getEligible(req: Request, res: Response, next: NextFunction) {
 
 function getIneligible(req: Request, res: Response, next: NextFunction) {
   try {
+    const questionId: string = req.query.id as string;
     res.render('eligibility/ineligible-page.njk', {
+      title: i18n.ineligible[questionId].title,
+      description: i18n.ineligible[questionId].description,
+      optionsList: i18n.ineligible[questionId].optionsList,
       previousPage: `${paths.common.questions}?id=${req.query.id}`
     });
   } catch (e) {

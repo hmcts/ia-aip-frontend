@@ -123,7 +123,7 @@ describe('CMA Requirements - Enter A date controller', () => {
     });
   });
 
-  describe('postEnterADatePage', () => {
+  describe.skip('postEnterADatePage', () => {
     it('should fail validation and render template with errors', async () => {
       const invalidDate = moment().add(1, 'week');
 
@@ -183,7 +183,7 @@ describe('CMA Requirements - Enter A date controller', () => {
     });
   });
 
-  describe('postEnterADatePageWithId', () => {
+  describe.skip('postEnterADatePageWithId', () => {
     it('should fail validation and render template with errors', async () => {
       req.params.id = '0';
 

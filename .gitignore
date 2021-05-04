@@ -10,3 +10,5 @@ functional-output
 .env
 output
 _output
+.stryker-tmp
+stryker.log

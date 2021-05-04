@@ -29,7 +29,9 @@
     "codecept:functional": "TEST_URL=https://localhost:3000 USE_REDIS=false IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 ADDRESS_LOOKUP_URL=http://localhost:20002 DOC_MANAGEMENT_URL=http://localhost:20003 cross-env NODE_ENV=test codeceptjs run -c codecept.functional.js --verbose",
     "codecept:e2e": "IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.e2e.js --verbose --debug",
     "codecept:e2e-local": "TEST_URL=https://localhost:3000 IDAM_API_URL=http://localhost:5000 cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.e2e.js --verbose --debug",
-    "setupUser": "cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.setup.js --verbose --debug | grep ia_citizen"
+    "setupUser": "cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.setup.js --verbose --debug | grep ia_citizen",
+    "test:mutation": "echo 'not implemented'",
+    "test:mutation-local": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js"
   },
   "husky": {
     "hooks": {
@@ -85,6 +87,12 @@
     "@babel/core": "^7.10.4",
     "@babel/preset-env": "^7.8.4",
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@stryker-mutator/api": "^3.1.0",
+    "@stryker-mutator/core": "^3.1.0",
+    "@stryker-mutator/html-reporter": "^3.1.0",
+    "@stryker-mutator/karma-runner": "^3.1.0",
+    "@stryker-mutator/mocha-runner": "^3.1.0",
+    "@stryker-mutator/typescript": "^3.0.1",
     "@types/chai": "^4.2.3",
     "@types/connect-redis": "^0.0.13",
     "@types/cucumber": "^6.0.0",
@@ -108,6 +116,7 @@
     "config": "^3.2.2",
     "css-loader": "^3.2.0",
     "cucumber": "^6.0.3",
+    "dotenv-extended": "^2.9.0",
     "husky": "^4.2.3",
     "memory-cache": "^0.2.0",
     "mocha": "^7.1.0",

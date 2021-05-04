@@ -55,9 +55,20 @@ withNightlyPipeline(type, product, component) {
 
     enableCrossBrowserTest()
     enableSecurityScan()
+    enableMutationTest()
 
     after('crossBrowserTest') {
         yarnBuilder.yarn('test:a11y')
     }
 
+    after('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'AIP Frontend Mutation tests'
+        ])
+    }
 }

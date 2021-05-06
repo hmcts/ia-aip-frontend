@@ -96,6 +96,8 @@ interface Appeal {
   hearing: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
+  makeAnApplicationTypes?: any;
+  makeAnApplicationDetails?: string;
 }
 
 interface Hearing {
@@ -252,15 +254,15 @@ interface IdamDetails {
 }
 
 interface TimeExtension {
-  id?: number | string;
-  requestDate: string;
-  reason: string;
+  id: string;
+  date: string;
+  type: string;
   state: string;
-  status: string;
-  evidence?: Evidence[];
-  decision?: string;
-  decisionReason?: string;
-  decisionOutcomeDate?: string;
+  details: string;
+  decision: string;
+  evidence: Evidence[];
+  applicant: string;
+  applicantRole: string;
 }
 
 interface Direction {

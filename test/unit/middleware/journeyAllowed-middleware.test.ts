@@ -75,7 +75,17 @@ describe('isJourneyAllowedMiddleware', () => {
 
   it('should render forbidden if time extension in progress', () => {
     req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
-    req.session.appeal.askForMoreTime = { inFlight: true };
+    req.session.appeal.timeExtensions = [{
+      id: '1',
+      applicant: '',
+      applicantRole: 'citizen',
+      date: '',
+      details: '',
+      evidence: [],
+      state: '',
+      type: '',
+      decision: 'Pending'
+    }];
     isTimeExtensionsInProgress(req as Request, res as Response, next);
     expect(res.redirect).to.have.been.called.calledWith(paths.common.forbidden);
   });

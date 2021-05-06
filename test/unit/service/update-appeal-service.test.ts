@@ -387,36 +387,37 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
     });
 
-    it('load time extensions when time extension in flight', async () => {
-      expectedCaseData.timeExtensions = [ {
-        id: '1',
-        value: {
-          requestDate: '2020-01-02',
-          reason: 'some reason',
-          status: 'submitted',
-          state: 'awaitingReasonsForAppeal',
-          evidence: [ {
-            value: {
-              'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
-              'document_filename': 'expected_time_extension_evidence.png',
-              'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
-            }
-          } ]
-        }
-      } ];
+    // TODO: review this test and delete if not needed
+    // it('load time extensions when time extension in flight', async () => {
+    //   expectedCaseData.timeExtensions = [ {
+    //     id: '1',
+    //     value: {
+    //       requestDate: '2020-01-02',
+    //       reason: 'some reason',
+    //       status: 'submitted',
+    //       state: 'awaitingReasonsForAppeal',
+    //       evidence: [ {
+    //         value: {
+    //           'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
+    //           'document_filename': 'expected_time_extension_evidence.png',
+    //           'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
+    //         }
+    //       } ]
+    //     }
+    //   } ];
 
-      ccdServiceMock.expects('loadOrCreateCase')
-        .withArgs(userId, { userToken, serviceToken })
-        .resolves({
-          id: caseId,
-          state: 'awaitingReasonsForAppeal',
-          case_data: expectedCaseData
-        });
-      await updateAppealService.loadAppeal(req as Request);
+    //   ccdServiceMock.expects('loadOrCreateCase')
+    //     .withArgs(userId, { userToken, serviceToken })
+    //     .resolves({
+    //       id: caseId,
+    //       state: 'awaitingReasonsForAppeal',
+    //       case_data: expectedCaseData
+    //     });
+    //   await updateAppealService.loadAppeal(req as Request);
 
-      expect(req.session.appeal.askForMoreTime).to.be.eql(
-        { inFlight: true });
-    });
+    //   expect(req.session.appeal.askForMoreTime).to.be.eql(
+    //     { inFlight: true });
+    // });
 
     it('load cmaRequirements', async () => {
 
@@ -554,7 +555,10 @@ describe('update-appeal-service', () => {
     it('converts empty application', () => {
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip' });
+      expect(caseData).eql({
+        journeyType: 'aip',
+        uploadTheNoticeOfDecisionDocs: []
+      });
     });
 
     it('converts home office reference number', () => {
@@ -563,7 +567,8 @@ describe('update-appeal-service', () => {
 
       expect(caseData).eql({
         journeyType: 'aip',
-        homeOfficeReferenceNumber: 'ref'
+        homeOfficeReferenceNumber: 'ref',
+        uploadTheNoticeOfDecisionDocs: []
       });
     });
 
@@ -576,7 +581,8 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-12-11',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          uploadTheNoticeOfDecisionDocs: []
         });
       });
 
@@ -588,7 +594,8 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-01',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          uploadTheNoticeOfDecisionDocs: []
         });
       });
 
@@ -600,7 +607,8 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-03',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          uploadTheNoticeOfDecisionDocs: []
         });
       });
     });
@@ -619,7 +627,11 @@ describe('update-appeal-service', () => {
       emptyApplication.application.personalDetails.familyName = 'familyName';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', appellantFamilyName: 'familyName' });
+      expect(caseData).eql({
+        journeyType: 'aip',
+        appellantFamilyName: 'familyName',
+        uploadTheNoticeOfDecisionDocs: []
+      });
     });
 
     describe('converts date of birth', () => {
@@ -629,7 +641,11 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-12-11' });
+        expect(caseData).eql({
+          journeyType: 'aip',
+          appellantDateOfBirth: '2019-12-11',
+          uploadTheNoticeOfDecisionDocs: []
+        });
       });
 
       it('day and month leading 0', () => {
@@ -638,7 +654,11 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-01' });
+        expect(caseData).eql({
+          journeyType: 'aip',
+          appellantDateOfBirth: '2019-02-01',
+          uploadTheNoticeOfDecisionDocs: []
+        });
       });
 
       it('day and month no leading 0', () => {
@@ -647,14 +667,22 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({ journeyType: 'aip', appellantDateOfBirth: '2019-02-03' });
+        expect(caseData).eql({
+          journeyType: 'aip',
+          appellantDateOfBirth: '2019-02-03',
+          uploadTheNoticeOfDecisionDocs: []
+        });
       });
     });
     it('converts appealType', () => {
       emptyApplication.application.appealType = 'appealType';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', appealType: 'appealType' });
+      expect(caseData).eql({
+        journeyType: 'aip',
+        appealType: 'appealType',
+        uploadTheNoticeOfDecisionDocs: []
+      });
     });
     describe('converts contact details', () => {
       it('converts contactDetails for both email and phone', () => {
@@ -679,7 +707,8 @@ describe('update-appeal-service', () => {
                   mobileNumber: '07123456789'
                 }
               }
-            ]
+            ],
+            uploadTheNoticeOfDecisionDocs: []
           }
         );
       });
@@ -703,7 +732,8 @@ describe('update-appeal-service', () => {
                   mobileNumber: null
                 }
               }
-            ]
+            ],
+            uploadTheNoticeOfDecisionDocs: []
           }
         );
       });
@@ -727,7 +757,8 @@ describe('update-appeal-service', () => {
                   mobileNumber: '07123456789'
                 }
               }
-            ]
+            ],
+            uploadTheNoticeOfDecisionDocs: []
           }
         );
       });
@@ -740,7 +771,8 @@ describe('update-appeal-service', () => {
 
       expect(caseData).eql(
         {
-          journeyType: 'aip'
+          journeyType: 'aip',
+          uploadTheNoticeOfDecisionDocs: []
         }
       );
     });
@@ -1036,8 +1068,9 @@ describe('update-appeal-service', () => {
             }
           }
         ],
-        submitTimeExtensionEvidence: [],
-        submitTimeExtensionReason: 'ask for more time reason'
+        uploadTheNoticeOfDecisionDocs: []
+        // submitTimeExtensionEvidence: [],
+        // submitTimeExtensionReason: 'ask for more time reason'
       };
     });
 

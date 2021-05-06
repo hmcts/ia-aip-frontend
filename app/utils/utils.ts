@@ -39,7 +39,13 @@ export function nowAppealDate(): AppealDate {
 }
 
 export function hasInflightTimeExtension(appeal: Appeal): boolean {
-  return _.get(appeal, 'askForMoreTime.inFlight', false);
+  if (appeal.timeExtensions) {
+    const pendingExtension = appeal.timeExtensions.reduce((acc, extension) => {
+      return acc || extension.decision === 'Pending';
+    }, false);
+    return pendingExtension;
+  }
+  return false;
 }
 
 export function formatTextForCYA(text: string) {

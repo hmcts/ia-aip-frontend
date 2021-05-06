@@ -71,7 +71,7 @@ Feature: Overview page
     Then I click continue
     Then I should see the cma requirements task-list page
 
-  Scenario: Awaiting Clarifying Questions appeal with time extension
+  Scenario: Awaiting CMA requirements appeal with time extension
     Given I have logged in as an appellant in state "awaitingCmaRequirements with time extensions"
     When I visit the overview page
     Then I should see the 'do this next section' for 'awaitingCmaRequirements with time extensions' with respond by date '17 June 2020'

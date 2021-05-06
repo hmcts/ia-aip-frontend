@@ -648,7 +648,7 @@ export default class UpdateAppealService {
         uploadTheNoticeOfDecisionDocs: this.mapAppealEvidencesToDocumentsCaseData(appeal.application.homeOfficeLetter, appeal.documentMap)
       },
       ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
-      ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
+      ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails }
     };
     return caseData;
   }

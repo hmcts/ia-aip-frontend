@@ -268,7 +268,7 @@
       "moreInfo": {
         "title": "More information",
         "moreInfoList": [
-          "<a href=\"https://www.gov.uk/immigration-asylum-tribunal\">Find out more about appealing an immigration or asylum decision</a>"
+          "<a target=\"_blank\" href=\"https://www.gov.uk/immigration-asylum-tribunal\">Find out more about appealing an immigration or asylum decision</a>"
         ]
       }
     },
@@ -1805,22 +1805,22 @@
       "title": "You cannot currently use the service",
       "description": "You cannot use this service because you are appealing from outside the UK.",
       "optionsList": [
-        "<a href=\"https://www.gov.uk/immigration-asylum-tribunal/appeal-from-outside-the-uk/\">Find out more about appealing from outside the UK</a>"
+        "<a target=\"_blank\" href=\"https://www.gov.uk/immigration-asylum-tribunal/appeal-from-outside-the-uk/\">Find out more about appealing from outside the UK</a>"
       ]
     },
     {
       "title": "You cannot currently use the service",
       "description": "You cannot use this service because you are in detention.",
       "optionsList": [
-        "If you are in an immigration removal centre, you can <a href=\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\">use form IAFT-DIA</a> to appeal by post or fax.",
-        "If you are in a prison, you can <a href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+        "If you are in an immigration removal centre, you can <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\">use form IAFT-DIA</a> to appeal by post or fax.",
+        "If you are in a prison, you can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
       ]
     },
     {
       "title": "You cannot currently use the service",
       "description": "You cannot use the new online service because you are not appealing an Asylum and/or Humanitarian Protection decision.",
       "optionsList": [
-        "You can <a href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+        "You can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
       ]
     }
   ]

@@ -1042,7 +1042,7 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@stryker-mutator/api@^3.1.0", "@stryker-mutator/api@^3.3.1":
+"@stryker-mutator/api@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@stryker-mutator/api/-/api-3.3.1.tgz#1a003c6ab21b4477e6251754451deb009107bd98"
   integrity sha512-t3TZyzxZYwZHUF1aCCpqLOQJjW0DZMZTrwGP/zGuDBUjr1/Opq+S6emeLFVjSJiDeMyqkqh9X01ZzHIWJPD+Sg==
@@ -1051,7 +1051,7 @@
     surrial "~2.0.2"
     tslib "~2.0.0"
 
-"@stryker-mutator/core@^3.1.0":
+"@stryker-mutator/core@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@stryker-mutator/core/-/core-3.3.1.tgz#75771bfdbe0f4e2f1ff29fdd3d57921f1479adc1"
   integrity sha512-OT2X5qI+ePHhsjO8iwkWGdj70q3F8wxLGoNZYDtV6ct8PQU79Yn2ZUpBBK36RubMoaU3ld1XVcjieSAeVUJ4mg==
@@ -1087,7 +1087,7 @@
   resolved "https://registry.yarnpkg.com/@stryker-mutator/html-reporter/-/html-reporter-3.1.0.tgz#b89692338037a0d168f9153457f5c71360c0c8c6"
   integrity sha512-Lpn9YGt4NS9lLYhjBNZ1yZ9tCX9FWa66skR6Ieij3wMMtQvPlSswar6fmVqUiyPl/wmpTGSoptOcWDFEZ5qp8A==
 
-"@stryker-mutator/karma-runner@^3.1.0":
+"@stryker-mutator/karma-runner@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@stryker-mutator/karma-runner/-/karma-runner-3.3.1.tgz#b5b6024d9db252a3a197e242290c6ce4e9ce7ed7"
   integrity sha512-FNr3iAJtbud6trxARMT+CDw9p/Jk3hDRllSU1doXwtggyzkTl+4zqp91L+i5T3ZO/US6Kk+jp9KGVGxa+gpHVQ==
@@ -1097,7 +1097,7 @@
     semver "~6.3.0"
     tslib "~2.0.0"
 
-"@stryker-mutator/mocha-runner@^3.1.0":
+"@stryker-mutator/mocha-runner@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@stryker-mutator/mocha-runner/-/mocha-runner-3.3.1.tgz#c7205e9017986e75338d312a614150b497586381"
   integrity sha512-5ozL2gU3U1x+O0qHa95n4lLpS2UV6WF54195KNjAUfOULbII0Vcwrv+B/6FaF0Tpfb0G0aQQ/0X347VY2aPDQg==
@@ -1107,7 +1107,7 @@
     multimatch "~4.0.0"
     tslib "~2.0.0"
 
-"@stryker-mutator/typescript@^3.0.1":
+"@stryker-mutator/typescript@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@stryker-mutator/typescript/-/typescript-3.3.1.tgz#8e5a1ed1623d4ff0cc99fde2815d8a71af20ce74"
   integrity sha512-fWQSXTiFJ8eVyQdlwN5IUy4nQ5HpzqVmUcCO90EnUX0HSsp7DQlec3hjBgE3X7XNGzTawjVwQlww2Fe91CX/kw==
@@ -4158,7 +4158,7 @@ dyson@^3.0.4:
     cookie-parser "1.4.5"
     cors "2.8.5"
     express "4.17.1"
-    lodash "4.17.20"
+    lodash "4.17.21"
     request "2.88.2"
     require-directory "2.1.1"
     serve-favicon "2.5.0"
@@ -5422,10 +5422,12 @@ hoopy@^0.1.2:
   resolved "https://registry.yarnpkg.com/hoopy/-/hoopy-0.1.4.tgz#609207d661100033a9a9402ad3dea677381c1b1d"
   integrity sha512-HRcs+2mr52W0K+x8RzcLzuPPmVIKMSv97RGHy0Ea9y/mpcaK+xTrjICA04KAHi4GRzxliNqNJEFYWHghy3rSfQ==
 
-hosted-git-info@^2.1.4:
-  version "2.8.8"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.8.tgz#7539bd4bc1e0e0a895815a2e0262420b12858488"
-  integrity sha512-f/wzC2QaWBs7t9IYqB4T3sR1xviIViXJRJTWBlx2Gf3g0Xi5vI7Yy4koXQ1c9OYDGHN9sBy1DQ2AB8fqZBWhUg==
+hosted-git-info@^2.1.4, hosted-git-info@3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-3.0.8.tgz#6e35d4cc87af2c5f816e4cb9ce350ba87a3f370d"
+  integrity sha512-aXpmwoOhRBrw6X3j0h5RloK4x1OzsxMPyxqIHyNfSe2pypkVTZFpEiRoSipPEPlMrh0HW/XsjkJ5WgnCirpNUw==
+  dependencies:
+    lru-cache "^6.0.0"
 
 hpkp@2.0.0:
   version "2.0.0"
@@ -6667,15 +6669,10 @@ lodash.zip@^4.2.0:
   resolved "https://registry.yarnpkg.com/lodash.zip/-/lodash.zip-4.2.0.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
   integrity sha1-7GZi5IlkCO1KtsVCo5kLcswIACA=
 
-lodash@4.17.20, lodash@^4.17.20:
-  version "4.17.20"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
-  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
-
-lodash@^4.0.0, lodash@^4.16.6, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.5, lodash@~4.17.10:
-  version "4.17.19"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
-  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
+lodash@^4.0.0, lodash@^4.16.6, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.21, lodash@^4.17.5, lodash@~4.17.10, lodash@4.17.20:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 log-symbols@2.2.0:
   version "2.2.0"
@@ -7538,7 +7535,7 @@ normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.5.0.tgz#e66db1838b200c1dfc233225d12cb36520e234a8"
   integrity sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==
   dependencies:
-    hosted-git-info "^2.1.4"
+    hosted-git-info "^3.0.8"
     resolve "^1.10.0"
     semver "2 || 3 || 4 || 5"
     validate-npm-package-license "^3.0.1"
@@ -10625,7 +10622,7 @@ typed-rest-client@~1.7.1:
   dependencies:
     qs "^6.9.1"
     tunnel "0.0.6"
-    underscore "1.8.3"
+    underscore "1.12.1"
 
 typedarray-to-buffer@^3.1.5:
   version "3.1.5"
@@ -10678,10 +10675,10 @@ undefsafe@^2.0.2:
   dependencies:
     debug "^2.2.0"
 
-underscore@1.8.3:
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
-  integrity sha1-Tz+1OxBuYJf8+ctBCfKl6b36UCI=
+underscore@1.8.3, underscore@1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.12.1.tgz#7bb8cc9b3d397e201cf8553336d262544ead829e"
+  integrity sha512-hEQt0+ZLDVUMhebKxL4x1BTtDY7bavVofhZ9KZ4aI26X9SRaE+Y3m83XUL1UP2jn8ynjndwCCpEHdUG+9pP1Tw==
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"

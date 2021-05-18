@@ -186,6 +186,7 @@ export default class UpdateAppealService {
       });
     }
 
+    // TODO: remove timeExtensions logic, been replaced by makeAnApplication event and fields
     if (caseData.timeExtensions) {
       timeExtensions = caseData.timeExtensions.map((timeExtension: Collection<CcdTimeExtension>): TimeExtension => {
         if (timeExtension.value.status === 'submitted' && timeExtension.value.state === ccdCase.state) {
@@ -389,7 +390,8 @@ export default class UpdateAppealService {
           nationality: caseData.appellantNationalities ? caseData.appellantNationalities[0].value.code : null,
           address: appellantAddress
         },
-        addressLookup: {}
+        addressLookup: {},
+        ...caseData.uploadTheNoticeOfDecisionDocs && { homeOfficeLetter: this.mapCaseDataDocumentsToAppealEvidences(caseData.uploadTheNoticeOfDecisionDocs) }
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -419,7 +421,7 @@ export default class UpdateAppealService {
   }
 
   convertToCcdCaseData(appeal: Appeal) {
-    const caseData = {
+    let caseData = {
       journeyType: 'aip'
     } as CaseData;
 
@@ -637,14 +639,51 @@ export default class UpdateAppealService {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
 
-    if (appeal.draftClarifyingQuestionsAnswers) {
-      caseData.draftClarifyingQuestionsAnswers = this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap);
-    }
-
-    if (appeal.clarifyingQuestionsAnswers) {
-      caseData.clarifyingQuestionsAnswers = this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap);
-    }
+    caseData = {
+      ...caseData,
+      ...appeal.draftClarifyingQuestionsAnswers && {
+        draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
+      },
+      ...appeal.clarifyingQuestionsAnswers && {
+        clarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap)
+      },
+      ...appeal.application.homeOfficeLetter && {
+        uploadTheNoticeOfDecisionDocs: this.mapAppealEvidencesToDocumentsCaseData(appeal.application.homeOfficeLetter, appeal.documentMap)
+      }
+    };
     return caseData;
+  }
+
+  mapAppealEvidencesToDocumentsCaseData = (evidences: Evidence[], documentMap: DocumentMap[]): Collection<DocumentWithMetaData>[] => {
+    return evidences.map((evidence: Evidence) => {
+      const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+      return {
+        ...evidence.id && { id: evidence.id },
+        value: {
+          ...evidence.description && { description: evidence.description },
+          ...evidence.dateUploaded && { dateUploaded: toIsoDate(evidence.dateUploaded) },
+          tag: 'additionalEvidence',
+          document: {
+            document_filename: evidence.name,
+            document_url: documentLocationUrl,
+            document_binary_url: `${documentLocationUrl}/binary`
+          }
+        }
+      } as Collection<DocumentWithMetaData>;
+    });
+  }
+
+  mapCaseDataDocumentsToAppealEvidences = (documents: Collection<DocumentWithMetaData>[]): Evidence[] => {
+    return documents.map(document => {
+      const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
+      return {
+        id: document.id,
+        fileId: documentMapperId,
+        name: document.value.document.document_filename,
+        ...document.value.dateUploaded && { dateUploaded: this.getDate(document.value.dateUploaded) },
+        ...document.value.description && { description: document.value.description }
+      } as Evidence;
+    });
   }
 
   private mapCcdClarifyingQuestionsToAppeal(clarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[]): ClarifyingQuestion<Evidence>[] {

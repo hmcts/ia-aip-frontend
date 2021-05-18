@@ -196,7 +196,8 @@ module.exports = {
             wantsSms: 'Yes',
             mobileNumber: '07899999999'
           }
-        }]
+        }],
+        uploadTheNoticeOfDecisionDocs: []
       });
     });
 
@@ -230,7 +231,8 @@ module.exports = {
             mobileNumber: '07899999999'
           }
         } ],
-        appealType: 'protection'
+        appealType: 'protection',
+        uploadTheNoticeOfDecisionDocs: []
       });
     });
 

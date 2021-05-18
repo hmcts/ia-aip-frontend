@@ -30,7 +30,7 @@ describe('creates url', () => {
 
     const loginUrl = getIdamLoginUrl(req as Request);
 
-    expect(loginUrl).eq('IDAM_WEB_URL/users/selfRegister');
+    expect(loginUrl).contains('/users/selfRegister');
   });
 
   it('getIdamLoginUrl for login', () => {
@@ -40,6 +40,6 @@ describe('creates url', () => {
 
     const loginUrl = getIdamLoginUrl(req as Request);
 
-    expect(loginUrl).eq('IDAM_WEB_URL/login');
+    expect(loginUrl).contains('/login');
   });
 });

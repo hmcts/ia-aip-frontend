@@ -136,6 +136,7 @@
         "emailAddress": "Enter email address",
         "homeOfficeRefNumber": "Home Office reference number",
         "dateLetterSent": "Date letter sent",
+        "homeOfficeDecisionLetter": "Home Office decision letter",
         "name": "Name",
         "dob": "Date of birth",
         "nationality": "Nationality",
@@ -194,6 +195,19 @@
       "dateTitle": "Date letter sent",
       "dateHint": "For example, 31 3 2019",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
+    },
+    "homeOfficeLetterUpload": {
+      "title": "Upload your Home Office decision letter",
+      "content": [
+        {
+          "title": "If you got your decision by email",
+          "description": "Upload the decision letter attached to the email."
+        },
+        {
+          "title": "If you got your decision by post",
+          "description": "If you have a smartphone, you can use a scanner app to create a single document to upload. Or you can can or take a photo of each page and upload each file individually."
+        }
+      ]
     },
     "homeOfficeAppealLate": {
       "title": "Your appeal is late",
@@ -1650,8 +1664,8 @@
     },
     "fileUpload": {
       "noFileSelected": "Select a file",
-      "fileTooLarge": "The selected file must be smaller than",
-      "incorrectFormat": "The selected file must be a",
+      "fileTooLarge": "The selected file must be smaller than {{maxFileSizeInMb}}MB",
+      "incorrectFormat": "The selected file must be a {{ supportedFormats | join(', ') }}",
       "fileCannotBeUploaded": "The file cannot be uploaded"
     },
     "askForMoreTime": "Enter how much time you need and why you need it",

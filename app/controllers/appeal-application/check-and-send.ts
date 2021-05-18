@@ -29,6 +29,12 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
       Delimiter.SPACE
     ),
     addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
+      appealApplication.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${evidence.fileId}'>${evidence.name}</a>`),
+      paths.appealStarted.homeOfficeDecisionLetter + editParameter,
+      Delimiter.BREAK_LINE
+    ),
+    addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.name,
       [ appealApplication.personalDetails.givenNames, appealApplication.personalDetails.familyName ],
       paths.appealStarted.name + editParameter,

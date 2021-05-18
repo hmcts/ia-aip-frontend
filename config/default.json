@@ -64,7 +64,14 @@
   "showTests": false,
   "maxCharacters": 50000,
   "evidenceUpload": {
-    "maxFileSizeInMb": 100
+    "maxFileSizeInMb": 100,
+    "supportedFormats": [
+      ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".png",
+      ".txt", ".doc", ".dot", ".docx", ".dotx",
+      ".xls", ".xlt", ".xla", ".xlsx", ".xltx", ".xlsb",
+      ".ppt", ".pot", ".pps", ".ppa", ".pptx", ".potx",
+      ".ppsx", ".rtf", ".csv"
+    ]
   },
   "daysToWait": {
     "afterSubmission": 28,

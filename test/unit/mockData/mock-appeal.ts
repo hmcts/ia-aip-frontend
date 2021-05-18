@@ -10,6 +10,7 @@ export function createDummyAppealApplication(): Appeal {
       },
       appealType: 'protection',
       isAppealLate: false,
+      homeOfficeLetter: [{ fileId: 'anId', name: 'name' } as Evidence],
       personalDetails: {
         givenNames: 'Pedro',
         familyName: 'Jimenez',
@@ -46,5 +47,5 @@ export function createDummyAppealApplication(): Appeal {
       date: '21 April 2019',
       time: '10am'
     }
-  };
+  } as Appeal;
 }

@@ -269,5 +269,8 @@
   "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20of%20ruxitagentjs_ICA27SVfgjqrux_10215210506134511.js_GET": "ignore",
   "10098_Cross-Domain Misconfiguration_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10215210506134511.js_GET": "ignore",
   "40035_Hidden File Found_https://immigration-appeal.aat.platform.hmcts.net/.svn/entries_GET": "ignore",
-  "10108_Reverse Tabnabbing_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore"
+  "10108_Reverse Tabnabbing_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+  "10054_Cookie Without SameSite Attribute_https://immigration-appeal.aat.platform.hmcts.net/_GET": "ignore",
+  "10054_Cookie Without SameSite Attribute_https://immigration-appeal.aat.platform.hmcts.net/robots.txt_GET": "ignore",
+  "10054_Cookie Without SameSite Attribute_https://immigration-appeal.aat.platform.hmcts.net_GET": "ignore"
 }

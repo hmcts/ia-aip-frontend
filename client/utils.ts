@@ -1,6 +1,7 @@
 const govUK = require('govuk-frontend');
 import { addAriaExpandedAttribute,addAriaExpandedEventListener } from './aria-utils';
 import CookiesBanner from './cookies-banner';
+import { addNationalityEventListener, addStatelessEventListener } from './nationality-utils';
 import SessionTimeout from './session-timeout';
 
 const ready = (callback) => {
@@ -16,6 +17,8 @@ function initialize() {
   sessionTimeout.init();
   addAriaExpandedAttribute();
   addAriaExpandedEventListener();
+  addStatelessEventListener();
+  addNationalityEventListener();
 }
 
 export {

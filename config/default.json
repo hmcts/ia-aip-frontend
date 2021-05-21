@@ -67,7 +67,7 @@
     "maxFileSizeInMb": 100,
     "supportedFormats": [
       ".jpg", ".jpeg", ".bmp", ".tif", ".tiff", ".png",
-      ".txt", ".doc", ".dot", ".docx", ".dotx",
+      ".pdf", ".txt", ".doc", ".dot", ".docx", ".dotx",
       ".xls", ".xlt", ".xla", ".xlsx", ".xltx", ".xlsb",
       ".ppt", ".pot", ".pps", ".ppa", ".pptx", ".potx",
       ".ppsx", ".rtf", ".csv"

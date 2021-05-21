@@ -104,11 +104,12 @@
     },
     "contactDetails": {
       "header": "How do you want us to contact you?",
-      "hint": "Select at least one of the option below",
+      "hint": "Select at least one of option, or both",
       "email": "Email",
       "enterEmail": "Enter email address",
-      "mobile": "Enter mobile phone number",
-      "textMessage": "Text message"
+      "mobile": "Enter a UK phone number",
+      "textMessage": "Text message",
+      "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
     },
     "appealType": {
       "header": "What is your appeal type?",
@@ -131,7 +132,7 @@
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
         "textMessage": "Text message",
-        "mobilePhone": "Enter mobile phone number",
+        "mobilePhone": "Enter a UK phone number",
         "email": "Email",
         "emailAddress": "Enter email address",
         "homeOfficeRefNumber": "Home Office reference number",

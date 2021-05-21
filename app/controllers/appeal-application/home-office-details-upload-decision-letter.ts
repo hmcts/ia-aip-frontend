@@ -53,8 +53,8 @@ function postHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFun
 function validate(req: Request, res: Response, next: NextFunction) {
   try {
     let errorCode: string;
-    if (res.locals.multerError) {
-      errorCode = res.locals.multerError;
+    if (res.locals.errorCode) {
+      errorCode = res.locals.errorCode;
     }
     if (errorCode) {
       return res.redirect(`${paths.appealStarted.homeOfficeDecisionLetter}?error=${errorCode}`);

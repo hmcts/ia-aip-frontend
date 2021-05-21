@@ -22,12 +22,13 @@
         isPageHeading: true
       }
     }) %}
-      <p>{{ i18n.pages.homeOfficeLetterSent.description }}</p>
-      <img
-          src="/assets/images/home_office_letter_date.png"
-          class="govuk-!-padding-bottom-4 govuk-!-padding-top-2"
-          alt="{{ i18n.pages.homeOfficeLetterSent.letterSentImageAltText }}"
-      />
+
+    {% for section in i18n.pages.homeOfficeLetterSent.sections %}
+      <h2 class="govuk-heading-m">{{ section.title }}</h2>
+      <p>{{ section.description }}</p>
+    {% endfor %}
+
+      <span>{{ i18n.pages.homeOfficeLetterSent.dateTitle }}</span>
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       {% set errorMessage =  error.day.text if error.day %}
       {% set errorMessage =  error.month.text if error.month else errorMessage %}
@@ -35,13 +36,7 @@
       {% set errorMessage =  error.date.text if error.date else errorMessage %}
 
       {{ govukDateInput({
-        fieldset: {
-          legend: {
-            isPageHeading: false,
-            text: i18n.pages.homeOfficeLetterSent.dateTitle,
-            classes: 'govuk-fieldset__legend--s'
-          }
-        },
+        fieldset: {},
         hint: {
           text: i18n.pages.homeOfficeLetterSent.dateHint
         },

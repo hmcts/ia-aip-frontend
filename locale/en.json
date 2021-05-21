@@ -189,11 +189,20 @@
       "homeOfficeReferenceNumberLabel": "Home Office reference number"
     },
     "homeOfficeLetterSent": {
-      "title": "What date was the letter sent?",
+      "title": "What date was your decision letter sent?",
       "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
-      "dateTitle": "Date letter sent",
+      "dateTitle": "Enter the date the letter was sent",
       "dateHint": "For example, 31 3 2019",
-      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
+      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted",
+      "sections": [
+        {
+          "title": "If you got your decision by email",
+          "description": "Enter the date the email was sent by the Home Office."
+        }, {
+          "title": "If you got your decision by post",
+          "description": "Enter the date stamped on the front of the envelope. If you don't have the envelope, enter the date on the first page of the decision letter."
+        }
+      ]
     },
     "homeOfficeAppealLate": {
       "title": "Your appeal is late",

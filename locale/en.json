@@ -610,10 +610,6 @@
           {
             "smallTitle": "Where to find your Home Office bundle",
             "desc": "Your Home Office bundle is accessible from the Overview page. <a class=\"govuk-link\" href=\"/appeal-overview\">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. "
-          },
-          {
-            "smallTitle": "Contact us for help",
-            "desc": "If you need help understanding your Home Office documents, you can call <span class='govuk-body govuk-!-font-weight-bold'>0300 123 1711 </span>or email <a class=\"govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>"
           }
         ]
       },

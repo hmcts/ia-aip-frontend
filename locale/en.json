@@ -113,7 +113,7 @@
     },
     "appealType": {
       "header": "What is your appeal type?",
-      "pageHint": "Select one appeal type. If you think more than one applies to your appeal, you will have the chance to tell us about that later.",
+      "pageHint": "<p>If you're unsure, the first page of your decision letter should include the type of decision you're appealing.</p><p>If you think more than one appeal type applies to your appeal, you will have the chance to tell us about that later.</p><p>Select one option.</p>",
       "exampleSummaryText": "Reasons to select "
     },
     "DOB": {

@@ -111,6 +111,8 @@ describe('Home office decision letter', function () {
         evidenceUploadAction: paths.appealStarted.homeOfficeDecisionLetterUpload,
         evidences: [],
         evidenceCTA: paths.appealStarted.homeOfficeDecisionLetterDelete,
+        previousPage: paths.appealStarted.letterSent,
+        saveForLaterCTA: paths.common.overview,
         error: validationErrors,
         errorList: Object.values(validationErrors)
       });
@@ -172,14 +174,14 @@ describe('Home office decision letter', function () {
     });
 
     it('should redirect to \'/home-office-upload-decision-letter\' with error code', async () => {
-      res.locals.multerError = 'anError';
+      res.locals.errorCode = 'anError';
       validate(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.called;
     });
 
     it('should catch error and call next with error', async () => {
-      res.locals.multerError = 'anError';
+      res.locals.errorCode = 'anError';
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);
 

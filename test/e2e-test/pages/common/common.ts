@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import rp from 'request-promise';
 import { paths } from '../../../../app/paths';
+const mockData = require('../../../mock/ccd/mock-case-data');
 
 const { fillInDate } = require('../helper-functions');
 
@@ -44,6 +45,14 @@ async function setupData(newCaseData) {
   });
 }
 
+async function setupCase(ccdCase: CcdCaseDetails) {
+  await rp.post({
+    uri: 'http://localhost:20000/setupCase',
+    body: [ ccdCase ],
+    json: true
+  });
+}
+
 const PATHS = {
   'reasons for appeal': paths.awaitingReasonsForAppeal.decision,
   'supporting evidence question': paths.awaitingReasonsForAppeal.supportingEvidence,
@@ -56,6 +65,10 @@ const PATHS = {
 
 module.exports = {
   common(I) {
+    Given('I have an ended appeal', async () => {
+      await setupCase(mockData.endedAppeal);
+    });
+
     Given('I have an appeal with home office reference', async () => {
       await setupData({ homeOfficeReferenceNumber: 'A1111111' });
     });
@@ -285,6 +298,22 @@ module.exports = {
 
     Then(/^I see "([^"]*)" in title$/, async (title: string) => {
       await I.see(title, 'h1');
+    });
+
+    Then(/^I see "([^"]*)" in title$/, async (title: string) => {
+      await I.see(title, 'h1');
+    });
+
+    Then(/^I see "([^"]*)" in subheading$/, async (title: string) => {
+      await I.see(title, ['h2', 'h3', 'h4']);
+    });
+
+    Then(/^I see "([^"]*)" in timeline$/, async (title: string) => {
+      await I.see(title, '.timeline-event');
+    });
+
+    Then(/^I see "([^"]*)" in summary list$/, async (title: string) => {
+      await I.see(title, '.govuk-summary-list');
     });
 
     Then(/^I see "([^"]*)" item in list$/, async (title: string) => {

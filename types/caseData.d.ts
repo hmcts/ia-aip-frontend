@@ -71,6 +71,8 @@ interface CaseData {
   listCaseHearingDate: string;
   uploadTheNoticeOfDecisionDocs: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   recordedOutOfTimeDecision: string;
+  legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
+  tribunalDocuments?: Collection<DocumentWithMetaData>[];
 }
 
 interface DateToAvoid {

@@ -63,8 +63,10 @@ interface Evidence {
   id?: string;
   fileId: string;
   name: string;
-  dateUploaded?: AppealDate;
+  tag?: string;
+  suppliedBy?: string;
   description?: string;
+  dateUploaded?: string;
 }
 
 interface DocumentUploadResponse {
@@ -92,7 +94,8 @@ interface Appeal {
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   hearing: Hearing;
-
+  legalRepresentativeDocuments?: Evidence[];
+  tribunalDocuments?: Evidence[];
 }
 
 interface Hearing {

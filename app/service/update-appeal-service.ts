@@ -163,7 +163,7 @@ export default class UpdateAppealService {
           {
             fileId: documentMapperId,
             name: document.value.document.document_filename,
-            dateUploaded: this.getDate(document.value.dateUploaded),
+            dateUploaded: document.value.dateUploaded,
             description: document.value.description
           }
         );
@@ -400,7 +400,6 @@ export default class UpdateAppealService {
       },
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
-      documentMap: [ ...this.documentMap ],
       ...(_.has(caseData, 'directions')) && { directions },
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions ? [ ...timeExtensions ] : [],
@@ -415,7 +414,10 @@ export default class UpdateAppealService {
         hearingCentre: listCmaHearingCentre,
         time: listCmaHearingLength,
         date: listCmaHearingDate
-      }
+      },
+      ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments) },
+      ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments) },
+      documentMap: [ ...this.documentMap ]
     };
     return appeal;
   }
@@ -512,7 +514,7 @@ export default class UpdateAppealService {
           const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
           return {
             value: {
-              dateUploaded: toIsoDate(evidence.dateUploaded),
+              dateUploaded: evidence.dateUploaded,
               description: evidence.description,
               tag: 'additionalEvidence',
               document: {
@@ -661,7 +663,7 @@ export default class UpdateAppealService {
         ...evidence.id && { id: evidence.id },
         value: {
           ...evidence.description && { description: evidence.description },
-          ...evidence.dateUploaded && { dateUploaded: toIsoDate(evidence.dateUploaded) },
+          ...evidence.dateUploaded && { dateUploaded: evidence.dateUploaded },
           tag: 'additionalEvidence',
           document: {
             document_filename: evidence.name,
@@ -680,7 +682,7 @@ export default class UpdateAppealService {
         id: document.id,
         fileId: documentMapperId,
         name: document.value.document.document_filename,
-        ...document.value.dateUploaded && { dateUploaded: this.getDate(document.value.dateUploaded) },
+        ...document.value.dateUploaded && { dateUploaded: document.value.dateUploaded },
         ...document.value.description && { description: document.value.description }
       } as Evidence;
     });
@@ -763,5 +765,21 @@ export default class UpdateAppealService {
         } as SupportingDocument
       } as TimeExtensionEvidenceCollection;
     }) : null;
+  }
+
+  private mapDocsWithMetadataToEvidenceArray = (docs: Collection<DocumentWithMetaData>[]): Evidence[] => {
+    const evidences = docs.map((doc: Collection<DocumentWithMetaData>): Evidence => {
+      const fileId = addToDocumentMapper(doc.value.document.document_url, this.documentMap);
+      return {
+        fileId,
+        name: doc.value.document.document_filename,
+        ...doc.id && { id: doc.id as string },
+        ...doc.value.tag && { tag: doc.value.tag },
+        ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
+        ...doc.value.description && { description: doc.value.description },
+        ...doc.value.dateUploaded && { dateUploaded: doc.value.dateUploaded }
+      };
+    });
+    return evidences;
   }
 }

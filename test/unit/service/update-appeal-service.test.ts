@@ -15,7 +15,7 @@ describe('update-appeal-service', () => {
   let idamService: Partial<IdamService>;
   let s2sService: Partial<S2SService>;
   let authenticationService: Partial<AuthenticationService>;
-  let updateAppealService;
+  let updateAppealService: UpdateAppealService;
   let expectedCaseData: Partial<CaseData>;
 
   const userId = 'userId';
@@ -163,7 +163,7 @@ describe('update-appeal-service', () => {
           state: 'awaitingReasonsForAppeal',
           case_data: expectedCaseData
         });
-      await updateAppealService.loadAppeal(req);
+      await updateAppealService.loadAppeal(req as Request);
       expect(req.session.appeal.ccdCaseId).eq(caseId);
       expect(req.session.appeal.application.appealType).eq('protection');
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
@@ -609,7 +609,10 @@ describe('update-appeal-service', () => {
       emptyApplication.application.personalDetails.givenNames = 'givenNames';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({ journeyType: 'aip', appellantGivenNames: 'givenNames' });
+      expect(caseData).eql({
+        journeyType: 'aip',
+        appellantGivenNames: 'givenNames'
+      });
     });
 
     it('converts family name', () => {
@@ -784,6 +787,53 @@ describe('update-appeal-service', () => {
         }
       );
     });
+
+    describe('legalRepresentativeDocuments @legal', () => {
+      const caseData: Partial<CaseData> = {
+        'tribunalDocuments': [
+          {
+            'id': '1',
+            'value': {
+              'tag': 'endAppeal',
+              'document': {
+                'document_url': 'http://dm-store:8080/documents/59c0a265-1fd8-4698-9b75-d7438870d6e6',
+                'document_filename': 'PA 50002 2021-perez-NoticeOfEndedAppeal.PDF',
+                'document_binary_url': 'http://dm-store:8080/documents/59c0a265-1fd8-4698-9b75-d7438870d6e6/binary'
+              },
+              'suppliedBy': '',
+              'description': '',
+              'dateUploaded': '2021-06-01'
+            }
+          }
+        ],
+        'legalRepresentativeDocuments': [
+          {
+            'id': '1',
+            'value': {
+              'tag': 'appealSubmission',
+              'document': {
+                'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+                'document_filename': 'PA 50002 2021-perez-appeal-form.PDF',
+                'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+              },
+              'suppliedBy': '',
+              'description': '',
+              'dateUploaded': '2021-05-26'
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map docs to appeal evidences', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.tribunalDocuments).to.be.length(1);
+        expect(mappedAppeal.legalRepresentativeDocuments).to.be.length(1);
+      });
+    });
   });
 
   describe('submitEvent', () => {
@@ -821,11 +871,7 @@ describe('update-appeal-service', () => {
                 evidence: {
                   name: 'somefile.png',
                   fileId: '00000000-0000-0000-0000-000000000000',
-                  dateUploaded: {
-                    year: '2020',
-                    month: '1',
-                    day: '1'
-                  },
+                  dateUploaded: '2020-01-01',
                   'description': 'Some evidence 1',
                   'tag': 'additionalEvidence'
                 }
@@ -862,21 +908,13 @@ describe('update-appeal-service', () => {
                 {
                   fileId: '00000000-0000-0000-0000-000000000001',
                   name: 'File1.png',
-                  dateUploaded: {
-                    year: 2020,
-                    month: 1,
-                    day: 1
-                  },
+                  dateUploaded: '2020-01-01',
                   description: 'Some evidence 1'
                 },
                 {
                   fileId: '00000000-0000-0000-0000-000000000002',
                   name: 'File2.png',
-                  dateUploaded: {
-                    year: '2020',
-                    month: '2',
-                    day: '2'
-                  },
+                  dateUploaded: '2020-02-02',
                   description: 'Some evidence 2'
                 }
               ] as Evidence[]

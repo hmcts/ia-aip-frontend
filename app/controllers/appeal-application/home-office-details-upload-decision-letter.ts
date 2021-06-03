@@ -28,6 +28,8 @@ function getHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunc
       evidenceUploadAction: paths.appealStarted.homeOfficeDecisionLetterUpload,
       evidences: homeOfficeLetterEvidences,
       evidenceCTA: paths.appealStarted.homeOfficeDecisionLetterDelete,
+      previousPage: paths.appealStarted.letterSent,
+      saveForLaterCTA: paths.common.overview,
       ...validationErrors && { error: validationErrors },
       ...validationErrors && { errorList: Object.values(validationErrors) }
     });

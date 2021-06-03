@@ -502,6 +502,16 @@
         },
         "listCma": {
           "text": "Your case management appointment was listed."
+        },
+        "endAppeal": {
+          "text": "Your appeal was ended",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Notice of Ended Appeal",
+              "href": "{{ paths.common.detailsViewers.noticeEndedAppeal }}"
+            }
+          ]
         }
       }
     },
@@ -512,10 +522,12 @@
       "signIn": "Sign in to continue with your appeal"
     },
     "detailViewers": {
-      "hoDocuments": {
-        "title": "Home Office documents about your case",
+      "common": {
         "dateUploaded": "Date uploaded",
         "document": "Document"
+      },
+      "hoDocuments": {
+        "title": "Home Office documents about your case"
       },
       "reasonsForAppealCheckAnswersHistory": {
         "title": "Why you think the Home Office is wrong",
@@ -565,6 +577,9 @@
         "HealthViewerTitle": "Physical or mental health conditions",
         "pastExpViewerTitle": "Past experiences",
         "anythingElseViewerTitle": "Anything else"
+      },
+      "endedAppeal": {
+        "title": "Notice of Ended Appeal"
       }
     },
     "guidancePages": {

@@ -63,5 +63,10 @@ export const Events = {
     id: 'listCma',
     summary: 'Cma has been listed.',
     description: 'Cma has been listed.'
+  },
+  END_APPEAL: {
+    id: 'endAppeal',
+    summary: 'End appeal',
+    description: 'End appeal'
   }
 };

@@ -53,7 +53,7 @@ function createApp() {
   app.post('*', uploadConfiguration, handleFileUploadErrors);
   app.post('*', filterRequest);
 
-  if (environment === 'development') {
+  if (environment === 'development' || environment === 'test') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
     const options = { stats: 'errors-only' } as Options;

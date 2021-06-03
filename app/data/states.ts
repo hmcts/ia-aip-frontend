@@ -42,5 +42,9 @@ export const States = {
   CMA_LISTED: {
     id: 'cmaListed',
     name: 'CMA Requirements listed'
+  },
+  ENDED: {
+    id: 'ended',
+    name: 'Ended'
   }
 };

@@ -89,11 +89,11 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
   req.session.appeal.history = history;
 
-  const appealArgumentSection = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION, Events.SUBMIT_CMA_REQUIREMENTS, Events.LIST_CMA ];
+  const appealArgumentSection = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION, Events.SUBMIT_CMA_REQUIREMENTS, Events.LIST_CMA, Events.END_APPEAL ];
   const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
 
   return {
-    appealArgumentSection: constructSection(appealArgumentSection, history, [ States.CLARIFYING_QUESTIONS_SUBMITTED, States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL, States.AWAITING_CLARIFYING_QUESTIONS, States.CMA_REQUIREMENTS_SUBMITTED, States.CMA_LISTED ], req),
+    appealArgumentSection: constructSection(appealArgumentSection, history, [ States.CLARIFYING_QUESTIONS_SUBMITTED, States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL, States.AWAITING_CLARIFYING_QUESTIONS, States.CMA_REQUIREMENTS_SUBMITTED, States.CMA_LISTED, States.ENDED ], req),
     appealDetailsSection: constructSection(appealDetailsSection, history, null, req)
   };
 }

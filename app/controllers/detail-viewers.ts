@@ -10,6 +10,7 @@ import {
   documentIdToDocStoreUrl,
   DocumentManagementService,
   documentToHtmlLink,
+  fileNameFormatter,
   toHtmlLink
 } from '../service/document-management-service';
 import { dayMonthYearFormat } from '../utils/date-utils';
@@ -384,6 +385,25 @@ function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunctio
   }
 }
 
+function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const endedAppealDoc = req.session.appeal.tribunalDocuments.find(doc => doc.tag === 'endAppeal');
+    const fileNameFormatted = fileNameFormatter(endedAppealDoc.name);
+    const data = [
+      addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(endedAppealDoc.dateUploaded).format(dayMonthYearFormat)]),
+      addSummaryRow(i18n.pages.detailViewers.common.document, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${endedAppealDoc.fileId}'>${fileNameFormatted}</a>` ])
+    ];
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.endedAppeal.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
@@ -393,6 +413,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
   router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
   router.get(paths.common.detailsViewers.cmaRequirementsAnswer, getCmaRequirementsViewer);
+  router.get(paths.common.detailsViewers.noticeEndedAppeal, getNoticeEndedAppeal);
 
   return router;
 }
@@ -402,6 +423,7 @@ export {
   getReasonsForAppealViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
+  getNoticeEndedAppeal,
   getTimeExtensionViewer,
   getTimeExtensionDecisionViewer,
   setupDetailViewersController,

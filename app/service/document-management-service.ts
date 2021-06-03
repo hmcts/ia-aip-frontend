@@ -249,5 +249,6 @@ export {
   addToDocumentMapper,
   documentToHtmlLink,
   docStoreUrlToHtmlLink,
+  fileNameFormatter,
   toHtmlLink
 };

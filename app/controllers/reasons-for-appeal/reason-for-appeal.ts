@@ -174,7 +174,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         evidences.push({
           fileId: evidenceStored.fileId,
           name: evidenceStored.name,
-          dateUploaded: nowAppealDate(),
+          dateUploaded: new Date().toISOString(),
           description: 'Appeal Reasons supporting evidence'
         });
         req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];

@@ -69,6 +69,8 @@ interface CaseData {
   listCaseHearingCentre: string;
   listCaseHearingLength: string;
   listCaseHearingDate: string;
+  uploadTheNoticeOfDecisionDocs: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  recordedOutOfTimeDecision: string;
 }
 
 interface DateToAvoid {

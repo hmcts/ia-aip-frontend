@@ -57,6 +57,7 @@ import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendControl
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
+import { PageSetup } from './interfaces/PageSetup';
 import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middleware/journeyAllowed-middleware';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -66,6 +67,8 @@ import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
+
+import './controllers/appeal-application/home-office-details-upload-decision-letter';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
@@ -154,6 +157,12 @@ router.use(askForMoreTime);
 // router.use(initSession);
 if (process.env.NODE_ENV === 'development' && sessionLoggerEnabled) {
   router.use(logSession);
+}
+
+const privatePages = PageSetup.GetImplementations();
+for (let x = 0; x < privatePages.length; x++) {
+  const page = new privatePages[x]();
+  router.use(page.initialise(middleware, updateAppealService, documentManagementService));
 }
 
 router.use(taskListController);

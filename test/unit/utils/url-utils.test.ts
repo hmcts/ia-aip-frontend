@@ -42,4 +42,6 @@ describe('creates url', () => {
 
     expect(loginUrl).contains('/login');
   });
+
+  // TODO: add tests for getConditionalRedirectUrl method
 });

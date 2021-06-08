@@ -104,11 +104,12 @@
     },
     "contactDetails": {
       "header": "How do you want us to contact you?",
-      "hint": "Select at least one of the option below",
+      "hint": "Select at least one of option, or both",
       "email": "Email",
       "enterEmail": "Enter email address",
-      "mobile": "Enter mobile phone number",
-      "textMessage": "Text message"
+      "mobile": "Enter a UK phone number",
+      "textMessage": "Text message",
+      "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
     },
     "appealType": {
       "header": "What is your appeal type?",
@@ -131,11 +132,12 @@
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
         "textMessage": "Text message",
-        "mobilePhone": "Enter mobile phone number",
+        "mobilePhone": "Enter a UK phone number",
         "email": "Email",
         "emailAddress": "Enter email address",
         "homeOfficeRefNumber": "Home Office reference number",
         "dateLetterSent": "Date letter sent",
+        "homeOfficeDecisionLetter": "Home Office decision letter",
         "name": "Name",
         "dob": "Date of birth",
         "nationality": "Nationality",
@@ -189,11 +191,33 @@
       "homeOfficeReferenceNumberLabel": "Home Office reference number"
     },
     "homeOfficeLetterSent": {
-      "title": "What date was the letter sent?",
+      "title": "What date was your decision letter sent?",
       "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
-      "dateTitle": "Date letter sent",
+      "dateTitle": "Enter the date the letter was sent",
       "dateHint": "For example, 31 3 2019",
-      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
+      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted",
+      "sections": [
+        {
+          "title": "If you got your decision by email",
+          "description": "Enter the date the email was sent by the Home Office."
+        }, {
+          "title": "If you got your decision by post",
+          "description": "Enter the date stamped on the front of the envelope. If you don't have the envelope, enter the date on the first page of the decision letter."
+        }
+      ]
+    },
+    "homeOfficeLetterUpload": {
+      "title": "Upload your Home Office decision letter",
+      "content": [
+        {
+          "title": "If you got your decision by email",
+          "description": "Upload the decision letter attached to the email."
+        },
+        {
+          "title": "If you got your decision by post",
+          "description": "If you have a smartphone, you can use a scanner app to create a single document to upload. Or you can scan or take a photo of each page and upload each file individually."
+        }
+      ]
     },
     "homeOfficeAppealLate": {
       "title": "Your appeal is late",
@@ -1650,8 +1674,8 @@
     },
     "fileUpload": {
       "noFileSelected": "Select a file",
-      "fileTooLarge": "The selected file must be smaller than",
-      "incorrectFormat": "The selected file must be a",
+      "fileTooLarge": "The selected file must be smaller than {{maxFileSizeInMb}}MB",
+      "incorrectFormat": "The selected file must be a {{ supportedFormats | join(', ') }}",
       "fileCannotBeUploaded": "The file cannot be uploaded"
     },
     "askForMoreTime": "Enter how much time you need and why you need it",

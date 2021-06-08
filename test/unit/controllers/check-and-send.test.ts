@@ -25,6 +25,10 @@ function getMockedSummaryRows(): SummaryRow[] {
     key: { text: 'Date letter sent' },
     value: { html: '1 July 2019' }
   }, {
+    actions: { items: [ { href: paths.appealStarted.homeOfficeDecisionLetter + '?edit', text: 'Change' } ] },
+    key: { text: 'Home Office decision letter' },
+    value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' }
+  }, {
     actions: { items: [ { href: paths.appealStarted.name + '?edit', text: 'Change' } ] },
     key: { text: 'Name' },
     value: { html: 'Pedro Jimenez' }

@@ -142,6 +142,7 @@ interface LateAppeal {
 interface AppealApplication {
   homeOfficeRefNumber: string;
   dateLetterSent: AppealDate;
+  homeOfficeLetter?: Evidence[];
   appealType: string;
   isAppealLate: boolean;
   lateAppeal?: LateAppeal;

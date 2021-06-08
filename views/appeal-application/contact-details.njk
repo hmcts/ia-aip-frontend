@@ -2,6 +2,7 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% import "helpers/text-helpers.njk" as text %}
 
@@ -95,6 +96,9 @@
       errorMessage: {
         text: i18n.validationErrors.atLeastOneOption
       } if errors['selections'] == 0
+    }) }}
+    {{ govukInsetText({
+      text: i18n.pages.contactDetails.minorsHelp
     }) }}
     {{ saveButtons() }}
   </form>

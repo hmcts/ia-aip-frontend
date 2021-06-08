@@ -19,16 +19,16 @@ describe('#handleFileUploadErrors middleware', () => {
 
   it('should catch multer LIMIT_FILE_SIZE error.', () => {
     // Because the file size is being overriden on the development config for testing purposes
-    // error message will show max file size as 0.001MB
+    // error message will show max file size as {{maxFileSizeInMb}}MB
 
     handleFileUploadErrors(new multer.MulterError('LIMIT_FILE_SIZE'), req, res, next);
-    expect(res.locals.multerError).to.equal(`The selected file must be smaller than 0.001MB`);
+    expect(res.locals.multerError).to.equal(`The selected file must be smaller than {{maxFileSizeInMb}}MB`);
     expect(next).to.have.been.calledOnce.calledWith();
   });
 
   it('should catch multer LIMIT_FILE_TYPE error', () => {
     handleFileUploadErrors(new multer.MulterError('LIMIT_FILE_TYPE'), req, res, next);
-    expect(res.locals.multerError).to.equal('The selected file must be a .jpg, .jpeg, .bmp, .tif, .tiff, .png, .pdf, .txt, .doc, .dot, .docx, .dotx, .xls, .xlt, .xla, .xlsx, .xltx, .xlsb, .ppt, .pot, .pps, .ppa, .pptx, .potx, .ppsx, .rtf, .csv');
+    expect(res.locals.multerError).to.equal('The selected file must be a {{ supportedFormats | join(\', \') }}');
     expect(next).to.have.been.calledOnce.calledWith();
   });
 

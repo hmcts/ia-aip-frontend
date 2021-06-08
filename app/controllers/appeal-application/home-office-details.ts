@@ -113,7 +113,7 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.homeOfficeDecisionLetter);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);

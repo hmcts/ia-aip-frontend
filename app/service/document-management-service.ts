@@ -223,7 +223,7 @@ class DocumentManagementService {
   async deleteFile(req: Request, fileLocation: string): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.uid;
-
+    // TODO: delete file from documentMap?
     logger.trace(`Received call from user '${userId}' to delete`, logLabel);
     return this.delete(userId, headers, fileLocation);
   }

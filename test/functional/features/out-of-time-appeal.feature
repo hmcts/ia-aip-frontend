@@ -11,6 +11,10 @@ Scenario: Explain the reason why my appeal is late
   And I enter "1234-1234-1234-1234" as the Office ref number and click Save and continue
   And I enter an out of time letter sent date and click Save and continue
 
+  Then I see "Upload your Home Office decision letter" in title
+  And I choose a file that is "VALID" and click the "Upload file" button
+  And I click "Save and continue" button
+
   And I click "Your personal details" link
   And Enter "Random" "User" as my Given and Family Name and click Save and continue
   And I enter "11" "11" "1999" as my DOB and click Save and continue
@@ -54,17 +58,3 @@ Scenario: Delete an evidence changes on reason should persist
   Then I see "reason" as my reason for being late
   And I dont see Uploaded file list
 
-
-  Scenario: Delete an evidence changes on reason should persist
-    Given I have an out of time appeal with reason for being late an evidence
-    And I have logged in
-    And I click "Continue" button
-    And I should see the "Task list" page
-    And I click "Check and send your appeal" button
-    And I should see the "Check and send" page
-    And I click Reason for late appeal change button
-    And I should see the "Out of time appeal" page
-    And I enter "reason" as the reason for being late
-    And I click "Delete" button
-    Then I see "reason" as my reason for being late
-    And I dont see Uploaded file list

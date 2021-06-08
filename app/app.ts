@@ -1,3 +1,4 @@
+import config from 'config';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
 import expectCt from 'expect-ct';
@@ -41,6 +42,8 @@ function createApp() {
   app.set('trust proxy', 1);
   app.locals.i18n = internationalization;
   app.locals.paths = paths;
+  app.locals.maxFileSizeInMb = config.get('evidenceUpload.maxFileSizeInMb');
+  app.locals.supportedFormats = config.get('evidenceUpload.supportedFormats');
   if (environment !== 'test') app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(express.json());

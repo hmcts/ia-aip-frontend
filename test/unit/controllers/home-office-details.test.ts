@@ -332,7 +332,7 @@ describe('Home Office Details Controller', function () {
         expect(dateLetterSent.month).to.be.eql(month);
         expect(dateLetterSent.year).to.be.eql(year);
         expect(req.session.appeal.application.isAppealLate).to.be.eq(false);
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
       });
 
       it('should validate and redirect to CYA page and reset isEdit flag, and set isAppealLate flag to false', async () => {
@@ -401,7 +401,7 @@ describe('Home Office Details Controller', function () {
         expect(dateLetterSent.month).to.be.eql(month);
         expect(dateLetterSent.year).to.be.eql(year);
         expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
       });
 
       it('should validate and redirect to CYA page and reset isEdit flag and set isAppealLate flag to true', async () => {
@@ -427,7 +427,7 @@ describe('Home Office Details Controller', function () {
         expect(dateLetterSent.day).to.be.eql(day);
         expect(dateLetterSent.month).to.be.eql(month);
         expect(dateLetterSent.year).to.be.eql(year);
-        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+        expect(res.redirect).to.have.been.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
         expect(req.session.appeal.application.isAppealLate).to.be.eq(true);
       });
 

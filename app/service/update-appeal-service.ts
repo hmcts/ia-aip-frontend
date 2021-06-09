@@ -404,7 +404,7 @@ export default class UpdateAppealService {
       ...(_.has(caseData, 'directions')) && { directions },
       timeExtensionEventsMap: timeExtensionEventsMap,
       timeExtensions: timeExtensions ? [ ...timeExtensions ] : [],
-      draftClarifyingQuestionsAnswers: draftClarifyingQuestionsAnswers ? [ ...draftClarifyingQuestionsAnswers ] : [],
+      ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       clarifyingQuestionsAnswers,
       cmaRequirements,
       askForMoreTime: {

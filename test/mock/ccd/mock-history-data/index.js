@@ -5,6 +5,9 @@ const partialAwaitingReasonsForAppealHistoryEvent = require('./data/partial-awai
 const submittedCmaRequirementsEvent = require('./data/submitted-cma-requirements');
 const cmaListed = require('./data/cma-listed');
 const endedAppealHistory = require('./data/ended-appeal')
+const outOfTimeDecisionGranted = require('./data/out-of-time-decision-granted');
+const outOfTimeDecisionRejected = require('./data/out-of-time-decision-rejected');
+const outOfTimeDecisionInTime = require('./data/out-of-time-decision-in-time');
 
 module.exports = {
   appealSubmittedHistoryEvent,
@@ -13,5 +16,8 @@ module.exports = {
   partialAwaitingReasonsForAppealHistoryEvent,
   submittedCmaRequirementsEvent,
   cmaListed,
-  endedAppealHistory
+  endedAppealHistory,
+  outOfTimeDecisionGranted,
+  outOfTimeDecisionRejected,
+  outOfTimeDecisionInTime
 };

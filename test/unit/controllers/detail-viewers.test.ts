@@ -5,6 +5,7 @@ import {
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getNoticeEndedAppeal,
+  getOutOfTimeDecisionViewer,
   getReasonsForAppealViewer,
   getTimeExtensionDecisionViewer,
   getTimeExtensionViewer,
@@ -410,6 +411,33 @@ describe('Detail viewer Controller', () => {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
+
+  describe('getOutOfTimeDecisionViewer @outOfTime', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-NoticeOfEndedAppeal.PDF',
+      id: '1',
+      tag: 'recordOutOfTimeDecisionDocument',
+      dateUploaded: '2021-06-01'
+    };
+    it('should render details-viewer.njk template', () => {
+      req.session.appeal.tribunalDocuments = [ document ];
+      getOutOfTimeDecisionViewer(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.called;
+    });
+
+    it('should catch error', () => {
+      req.session.appeal.tribunalDocuments = [ document ];
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getOutOfTimeDecisionViewer(req as Request, res as Response, next);
+
+      expect(next).to.have.been.called;
+    });
+
+  });
+
   describe('getCmaDetailsViewer', () => {
     it('should render detail-viewers/cma-requirements-viewer.njk with no evidences', () => {
       req.session.appeal.history = expectedEventsWithCmaRequirements;

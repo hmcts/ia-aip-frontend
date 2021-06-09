@@ -529,6 +529,20 @@
               "href": "{{ paths.common.detailsViewers.noticeEndedAppeal }}"
             }
           ]
+        },
+        "recordOutOfTimeDecision": {
+          "type": {
+            "rejected": "The tribunal decided your late appeal cannot continue.",
+            "approved": "The tribunal decided your late appeal can continue.",
+            "inTime": "The tribunal decided your appeal is in time."
+          },
+          "links": [
+            {
+              "title": "What the Tribunal said",
+              "text": "Reasons for decision",
+              "href": "{{ paths.common.detailsViewers.outOfTimeDecision }}"
+            }
+          ]
         }
       }
     },
@@ -597,6 +611,17 @@
       },
       "endedAppeal": {
         "title": "Notice of Ended Appeal"
+      },
+      "outOfTimeDecision": {
+        "title": "Reasons for decision",
+        "decision": "Decision",
+        "decisionMaker": "Decision Maker",
+        "reasonForDecision": "Reason for decision",
+        "type": {
+          "rejected": "The appeal is out of time and cannot proceed",
+          "approved": "The appeal is out of time but can proceed",
+          "inTime": "The appeal is in time"
+        }
       }
     },
     "guidancePages": {

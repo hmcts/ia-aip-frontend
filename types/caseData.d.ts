@@ -75,6 +75,8 @@ interface CaseData {
   recordedOutOfTimeDecision: string;
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];
+  outOfTimeDecisionType?: string;
+  outOfTimeDecisionMaker?: string;
 }
 
 interface DateToAvoid {

@@ -3,10 +3,11 @@ import * as _ from 'lodash';
 function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const homeOfficeRefNumber: boolean = !!_.get(appeal.application, 'homeOfficeRefNumber');
   const dateLetterSent: boolean = !!_.get(appeal.application, 'dateLetterSent');
+  const homeOfficeLetter: boolean = appeal.application.homeOfficeLetter && appeal.application.homeOfficeLetter.length > 0 || false;
 
   const homeOfficeDetails: Task = {
-    saved: homeOfficeRefNumber || dateLetterSent,
-    completed: homeOfficeRefNumber && dateLetterSent,
+    saved: homeOfficeRefNumber || dateLetterSent || homeOfficeLetter,
+    completed: homeOfficeRefNumber && dateLetterSent && homeOfficeLetter,
     active: true
   };
 

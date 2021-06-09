@@ -1,4 +1,4 @@
-Feature: Home office letter sent page
+Feature: Home office letter sent page @letterSent
   In order complete my appeal
   As a citizen
   I want to be able to enter a home office letter sent date
@@ -29,5 +29,5 @@ Feature: Home office letter sent page
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I should be able to click "Your personal details"
+    And I shouldnt be able to click "Your personal details"
 

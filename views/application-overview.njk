@@ -71,9 +71,7 @@
             <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
-        {% if history.appealDetailsSection | length > 0  %}
-          {{ timeline(history) }}
-        {% endif %}
+        {{ timeline(history) }}
       </div>
       <div class="govuk-grid-column-one-third">
         <div class="contact-us-component">

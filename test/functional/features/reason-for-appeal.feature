@@ -15,13 +15,13 @@ Feature: Reason for appeal
 
     When I visit the "reasons for appeal" page
     Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
-    Then I should see the "supporting evidence question" page
+    Then I see "/case-building/supporting-evidence" in current url
 
     When I click "Continue" button
     Then I should see error summary
 
     When I select Yes and click continue
-    Then I should see the "supporting evidence upload" page
+    Then I see "/case-building/provide-supporting-evidence" in current url
 
     Then I click "Upload file" button
     Then I should see error summary
@@ -51,7 +51,7 @@ Feature: Reason for appeal
 
     When I visit the "reasons for appeal" page
     Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
-    Then I should see the "supporting evidence question" page
+    Then I see "/case-building/supporting-evidence" in current url
 
     When I click "Continue" button
     Then I should see error summary

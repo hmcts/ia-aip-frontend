@@ -114,7 +114,8 @@ const paths = {
       timeExtension: '/view/time-extension',
       timeExtensionDecision: '/view/time-extension-decision',
       cmaRequirementsAnswer: '/your-appointment-needs',
-      noticeEndedAppeal: '/notice-ended-appeal'
+      noticeEndedAppeal: '/notice-ended-appeal',
+      outOfTimeDecision: '/out-of-time-decision'
     },
 
     // Ask for more time

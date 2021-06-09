@@ -68,5 +68,10 @@ export const Events = {
     id: 'endAppeal',
     summary: 'End appeal',
     description: 'End appeal'
+  },
+  RECORD_OUT_OF_TIME_DECISION: {
+    id: 'recordOutOfTimeDecision',
+    summary: 'Record out of time decision',
+    description: 'Record out of time decision'
   }
 };

@@ -404,6 +404,26 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const recordOutOfTimeDecisionDoc = req.session.appeal.tribunalDocuments.find(doc => doc.tag === 'recordOutOfTimeDecisionDocument');
+    const fileNameFormatted = fileNameFormatter(recordOutOfTimeDecisionDoc.name);
+    const data = [
+      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decision, [i18n.pages.detailViewers.outOfTimeDecision.type[req.session.appeal.outOfTimeDecisionType]]),
+      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decisionMaker, [ req.session.appeal.outOfTimeDecisionMaker ]),
+      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.reasonForDecision, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${recordOutOfTimeDecisionDoc.fileId}'>${fileNameFormatted}</a>` ])
+    ];
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.outOfTimeDecision.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
@@ -414,6 +434,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
   router.get(paths.common.detailsViewers.cmaRequirementsAnswer, getCmaRequirementsViewer);
   router.get(paths.common.detailsViewers.noticeEndedAppeal, getNoticeEndedAppeal);
+  router.get(paths.common.detailsViewers.outOfTimeDecision, getOutOfTimeDecisionViewer);
 
   return router;
 }
@@ -428,5 +449,6 @@ export {
   getTimeExtensionDecisionViewer,
   setupDetailViewersController,
   setupCmaRequirementsViewer,
-  getCmaRequirementsViewer
+  getCmaRequirementsViewer,
+  getOutOfTimeDecisionViewer
 };

@@ -10,6 +10,9 @@ const awaitingCmaRequirementsWithTimeExtensions = require('./data/awaiting-cma-r
 const submittedCmaRequirements = require('./data/submitted-cma-requirements');
 const cmaListed = require('./data/cmaListed');
 const endedAppeal = require('./data/endedAppeal');
+const outOfTimeDecisionGranted = require('./data/out-of-time-decision-granted');
+const outOfTimeDecisionRejected = require('./data/out-of-time-decision-rejected');
+const outOfTimeDecisionInTime = require('./data/out-of-time-decision-in-time');
 
 module.exports = {
   partialAppealStartedCaseData,
@@ -23,5 +26,8 @@ module.exports = {
   awaitingCmaRequirementsWithTimeExtensions,
   submittedCmaRequirements,
   cmaListed,
-  endedAppeal
+  endedAppeal,
+  outOfTimeDecisionGranted,
+  outOfTimeDecisionRejected,
+  outOfTimeDecisionInTime
 };

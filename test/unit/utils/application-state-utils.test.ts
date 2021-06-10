@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { getAppealApplicationNextStep } from '../../../app/utils/application-state-utils';
+import { getAppealApplicationNextStep, getAppealStatus } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -223,7 +223,7 @@ describe('application-state-utils', () => {
         dateDue: '2020-04-07',
         dateSent: '2020-03-24',
         explanation: 'direction explanation'
-      } ];
+      }];
     const result = getAppealApplicationNextStep(req as Request);
 
     expect(result).to.eql(
@@ -441,6 +441,33 @@ describe('application-state-utils', () => {
         }
       }
     );
+  });
+
+  it('when application status is appealSubmitted and appeal is late status should be lateAppealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.application.isAppealLate = true;
+
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('lateAppealSubmitted');
+  });
+
+  it('when application status is appealSubmitted and appeal is not late status should be lateAppealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.application.isAppealLate = false;
+
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('appealSubmitted');
+  });
+
+  it('when application status is not appealSubmitted and appeal is late status should be lateAppealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.application.isAppealLate = true;
+
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('appealStarted');
   });
 
 });

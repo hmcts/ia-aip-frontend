@@ -186,8 +186,8 @@
     },
     "homeOfficePage": {
       "title": "What is your Home Office reference number?",
-      "label": "How to find your your Office reference number",
-      "footNote": "Call the Home Office on <strong>+44 (0) 161 877 5919</strong> if you cannot find the correct number.",
+      "label": "How to find your Office reference number",
+      "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find the correct number.",
       "homeOfficeReferenceNumberLabel": "Enter your Home Office reference number",
       "hints": [
         "Your Home Office reference number is usually on the first page of your Home Office decision letter",

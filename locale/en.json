@@ -191,7 +191,8 @@
       "homeOfficeReferenceNumberLabel": "Enter your Home Office reference number",
       "hints": [
         "Your Home Office reference number is usually on the first page of your Home Office decision letter",
-        "It is either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
+        "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
+        "If your letter includes a reference with 8 numbers, like 98765432, add 0 to the start and enter that number, for example 098765432",
         "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521"
       ]
     },

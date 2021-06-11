@@ -54,7 +54,13 @@ describe('getStatus', () => {
           active: false
         }
       },
-      addressLookup: {}
+      addressLookup: {},
+      homeOfficeLetter: [
+        {
+          fileId: 'fileId',
+          name: 'filename'
+        }
+      ]
     },
     reasonsForAppeal: {
       applicationReason: null

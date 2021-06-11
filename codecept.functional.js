@@ -10,11 +10,7 @@ exports.config = {
       url: config.get('testUrl'),
       show: config.get('showTests'),
       chrome: {
-        ignoreHTTPSErrors: true,
-        defaultViewport: {
-          width: 1280,
-          height: 720
-        }
+        ignoreHTTPSErrors: true
       }
     }
   },

@@ -4,14 +4,17 @@ import {
   getCmaRequirementsViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
+  getNoticeEndedAppeal,
   getReasonsForAppealViewer,
   getTimeExtensionDecisionViewer,
-  getTimeExtensionViewer, setupCmaRequirementsViewer,
+  getTimeExtensionViewer,
+  setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import Logger from '../../../app/utils/logger';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 import { expectedEventsWithCmaRequirements } from '../mockData/events/expectation/expected-history-cma-requirements';
@@ -302,6 +305,44 @@ describe('Detail viewer Controller', () => {
       res.render = sandbox.stub().throws(error);
       getTimeExtensionViewer(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getNoticeEndedAppeal @getNotice', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-NoticeOfEndedAppeal.PDF',
+      id: '1',
+      tag: 'endAppeal',
+      dateUploaded: '2021-06-01'
+    };
+    it('should render templates/details-viewer.njk with ended appeal notice document', () => {
+      req.session.appeal.tribunalDocuments = [ document ];
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-perez-NoticeOfEndedAppeal(PDF)</a>` }
+        } ];
+
+      getNoticeEndedAppeal(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.endedAppeal.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should catch error and call next with it', () => {
+      req.session.appeal.tribunalDocuments = [ document ];
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+
+      getNoticeEndedAppeal(req as Request, res as Response, next);
+      expect(next).to.have.been.calledWith(error);
     });
   });
 

@@ -8,7 +8,8 @@ const caseIdToHistory = {
   '5': mockData.partialAwaitingReasonsForAppealHistoryEvent,
   '7': mockData.awaitingReasonsForAppealHistoryEvent,
   '11': mockData.submittedCmaRequirementsEvent,
-  '12': mockData.cmaListed
+  '12': mockData.cmaListed,
+  '13': mockData.endedAppealHistory
 };
 
 module.exports = {

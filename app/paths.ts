@@ -113,7 +113,8 @@ const paths = {
       reasonsForAppeal: '/appeal-reasons',
       timeExtension: '/view/time-extension',
       timeExtensionDecision: '/view/time-extension-decision',
-      cmaRequirementsAnswer: '/your-appointment-needs'
+      cmaRequirementsAnswer: '/your-appointment-needs',
+      noticeEndedAppeal: '/notice-ended-appeal'
     },
 
     // Ask for more time

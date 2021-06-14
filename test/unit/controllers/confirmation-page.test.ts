@@ -96,7 +96,7 @@ describe('Confirmation Page Controller', () => {
 
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
-      date: addDaysToDate(28),
+      date: addDaysToDate(5),
       late: true
     });
   });

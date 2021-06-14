@@ -120,7 +120,7 @@ describe('application-state-utils', () => {
 
       expect(result).to.eql({
         cta: null,
-        deadline: '07 March 2020',
+        deadline: '13 February 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
           'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
@@ -141,7 +141,7 @@ describe('application-state-utils', () => {
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
         'cta': null,
-        'deadline': '07 March 2020',
+        'deadline': '13 February 2020',
         'descriptionParagraphs': [
           'Your appeal details have been sent to the Tribunal.',
           "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next."

@@ -1,7 +1,7 @@
 import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import {
-  getAppealRefNumber,
+  checkAppealEnded, getAppealRefNumber,
   getApplicationOverview,
   setupApplicationOverviewController
 } from '../../../app/controllers/application-overview';
@@ -170,7 +170,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(asBooleanValue(config.get('features.askForMoreTime'))),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -241,7 +242,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -300,7 +302,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -360,7 +363,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -422,7 +426,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -462,5 +467,18 @@ describe('Confirmation Page Controller', () => {
     const { appealReferenceNumber } = req.session.appeal;
     const result = getAppealRefNumber(appealReferenceNumber);
     expect(result).to.equal(null);
+  });
+
+  it('checkAppealEnded with ended case ', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: 'ended'
+        }
+      }
+    };
+    const { appealStatus } = req.session.appeal;
+    const result = checkAppealEnded(appealStatus);
+    expect(result).to.equal(true);
   });
 });

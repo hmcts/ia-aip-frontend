@@ -3,7 +3,7 @@ import _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { States } from '../data/states';
 import { paths } from '../paths';
-import { getHearingCentre, getHearingDate, getHearingTime } from './cma-hearing-details';
+import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
 
 /**
@@ -32,7 +32,7 @@ function isPartiallySavedAppeal(req: Request, currentAppealStatus: string) {
 function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
 
   switch (currentAppealStatus) {
-    case'appealStarted':
+    case 'appealStarted':
       return {
         descriptionParagraphs: [
           i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions,
@@ -184,7 +184,7 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         cta: null,
         allowedAskForMoreTime: false
       };
-    case'cmaAdjustmentsAgreed':
+    case 'cmaAdjustmentsAgreed':
     case 'cmaRequirementsSubmitted':
       return {
         descriptionParagraphs: [
@@ -218,6 +218,21 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         cta: null,
         allowedAskForMoreTime: false
       };
+    case 'ended':
+      return {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
+          i18n.pages.overviewPage.doThisNext.ended.ctaReview,
+          i18n.pages.overviewPage.doThisNext.ended.ctaContact,
+          i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackTitle,
+          i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackDescription
+        ],
+        cta: {
+          url: null,
+          ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
+        },
+        allowedAskForMoreTime: false
+      };
     default:
       // default message to avoid app crashing on events that are to be implemented.
       return {
@@ -242,12 +257,14 @@ interface DoThisNextSection {
     url: string;
     respondByText?: string,
     respondByTextAskForMoreTime?: string;
+    ctaTitle?: string;
   };
   allowedAskForMoreTime?: boolean;
   deadline?: string;
   date?: string;
   time?: string;
   hearingCentre?: string;
+  hearingCentreEmail?: string;
 }
 
 /**
@@ -270,6 +287,9 @@ function getAppealApplicationNextStep(req: Request) {
     doThisNextSection.date = getHearingDate(req);
     doThisNextSection.time = getHearingTime(req);
     doThisNextSection.hearingCentre = getHearingCentre(req);
+  }
+  if (currentAppealStatus === 'ended') {
+    doThisNextSection.hearingCentreEmail = getHearingCentreEmail(req);
   }
   return doThisNextSection;
 }

@@ -87,5 +87,15 @@
     "testCaseOfficerPassword": "TEST_CASEOFFICER_PASSWORD",
     "testHomeOfficeGenericUserName": "TEST_HOMEOFFICE_GENERIC_USERNAME",
     "testHomeOfficeGenericPassword": "TEST_HOMEOFFICE_GENERIC_PASSWORD"
+  },
+  "hearingCentres": {
+    "bradfordEmail": "IA_HEARING_CENTRE_BRADFORD_EMAIL",
+    "manchesterEmail": "IA_HEARING_CENTRE_MANCHESTER_EMAIL",
+    "newportEmail": "IA_HEARING_CENTRE_NEWPORT_EMAIL",
+    "taylorHouseEmail": "IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL",
+    "northShieldsEmail": "IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL",
+    "birminghamEmail": "IA_HEARING_CENTRE_BIRMINGHAM_EMAIL",
+    "hattonCrossEmail": "IA_HEARING_CENTRE_HATTON_CROSS_EMAIL",
+    "glasgowEmail": "IA_HEARING_CENTRE_GLASGOW_EMAIL"
   }
 }

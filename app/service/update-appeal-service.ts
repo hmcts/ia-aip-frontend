@@ -103,6 +103,7 @@ export default class UpdateAppealService {
     const listCmaHearingLength = caseData.listCaseHearingLength || '';
     const listCmaHearingDate = caseData.listCaseHearingDate || '';
     let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
+    const hearingCentre = caseData.hearingCentre || '';
 
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
@@ -417,7 +418,8 @@ export default class UpdateAppealService {
       },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments) },
-      documentMap: [ ...this.documentMap ]
+      documentMap: [ ...this.documentMap ],
+      hearingCentre: hearingCentre
     };
     return appeal;
   }

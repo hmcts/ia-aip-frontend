@@ -96,6 +96,8 @@ interface Appeal {
   hearing: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
+  hearingCentre?: string;
+
 }
 
 interface Hearing {

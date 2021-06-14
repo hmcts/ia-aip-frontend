@@ -15,6 +15,13 @@ function getAppealRefNumber(appealRef: string) {
   return appealRef;
 }
 
+function checkAppealEnded(appealStatus: string): boolean {
+  if (appealStatus && appealStatus.toUpperCase() === 'ENDED') {
+    return true;
+  }
+  return false;
+}
+
 const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
 
 function getAppellantName(req: Request) {
@@ -35,6 +42,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const stagesStatus = buildProgressBarStages(req.session.appeal.appealStatus);
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = getAppealApplicationNextStep(req);
+      const appealEnded = checkAppealEnded(req.session.appeal.appealStatus);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -43,6 +51,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         history: history,
         stages: stagesStatus,
         saved: isPartiallySaved,
+        ended: appealEnded,
         askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
         askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
       });
@@ -61,5 +70,6 @@ function setupApplicationOverviewController(updateAppealService: UpdateAppealSer
 export {
   setupApplicationOverviewController,
   getApplicationOverview,
-  getAppealRefNumber
+  getAppealRefNumber,
+  checkAppealEnded
 };

@@ -17,7 +17,13 @@
     </div>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        {{ progressBar(stages) }}
+        {% if ended %}
+        <div class="govuk-inset-text inset-bold">
+          {{ i18n.pages.overviewPage.endedInsert }}
+        </div>      
+        {% else %}
+          {{ progressBar(stages) }}
+        {% endif %}
         <h2 class="govuk-heading-m">
           {{ i18n.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDo }}
         </h2>
@@ -32,6 +38,9 @@
           </div>
         {% endif %}
         <div class="overview-banner govuk-!-margin-top-0">
+          {% if applicationNextStep.cta.ctaTitle %}
+             <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ applicationNextStep.cta.ctaTitle }}</h3>
+          {% endif %}
           {% if askForMoreTimeInFlight and applicationNextStep.descriptionParagraphsAskForMoreTime %}
             {% set descriptionParagraphs = applicationNextStep.descriptionParagraphsAskForMoreTime %}
           {% else %}

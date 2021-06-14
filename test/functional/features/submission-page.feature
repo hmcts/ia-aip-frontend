@@ -13,4 +13,4 @@ Feature: submission
     And I click send
     Then I am on the appeal details sent page
     And I see "Your appeal details have been sent" in title
-    And I see the respond by date is 4 weeks in the future
+    And I see the respond by date is 5 days in the future

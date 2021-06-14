@@ -186,9 +186,15 @@
     },
     "homeOfficePage": {
       "title": "What is your Home Office reference number?",
-      "description": "You can find this on the top right-hand side of the decision letter.",
-      "refImageAltText": "Home Office decision letter with the position of the reference number highlighted",
-      "homeOfficeReferenceNumberLabel": "Home Office reference number"
+      "label": "How to find your Office reference number",
+      "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find the correct number.",
+      "homeOfficeReferenceNumberLabel": "Enter your Home Office reference number",
+      "hints": [
+        "Your Home Office reference number is usually on the first page of your Home Office decision letter",
+        "It is usually either 9 numbers or 16 numbers with dashes, for example 123456789 or 1234-1234-1234-1234",
+        "If your letter includes a reference with 8 numbers, like 98765432, add 0 to the start and enter that number, for example 098765432",
+        "<strong>Do not</strong> enter any reference that includes a letter, for example A246893521"
+      ]
     },
     "homeOfficeLetterSent": {
       "title": "What date was your decision letter sent?",

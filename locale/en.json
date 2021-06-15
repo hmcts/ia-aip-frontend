@@ -346,7 +346,7 @@
         },
         "lateAppealSubmitted": {
           "detailsSent": "Your late appeal details have been sent to the Tribunal.",
-          "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
           "info": {
             "title": "Helpful Information",
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"

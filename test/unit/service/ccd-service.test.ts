@@ -152,7 +152,7 @@ describe('idam-service', () => {
 
       const result = await ccdService.getCaseHistory(userId, caseId, headers);
 
-      expect(result).deep.equal(expectedMultipleEventsData);
+      expect(result).deep.equal(expectedMultipleEventsData.filter(event => event.id !== 'editAppeal'));
     });
   });
 

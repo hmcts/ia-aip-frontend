@@ -11,5 +11,9 @@ module.exports = {
     Then('I see the respond by date is 4 weeks in the future', async () => {
       I.seeInSource(moment().add(28,'days').format(dayMonthYearFormat));
     });
+
+    Then('I see the respond by date is 5 days in the future', async () => {
+      I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
+    });
   }
 };

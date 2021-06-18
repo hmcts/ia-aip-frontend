@@ -249,7 +249,10 @@
       "readMore": "Read more about appealing an immigration or asylum decision",
       "findOutMore": "Find organisations that can help with your appeal",
       "outOfTime": {
-        "panel": "Your late appeal details have been sent"
+        "panel": "Your late appeal details have been sent",
+        "askHomeOffice": "A Tribunal Caseworker will look at the reasons your appeal was late and decide if your appeal can continue",
+        "whatToDoNext": "You will be sent a notification to tell you what the Tribunal has decided and what you can do next" ,
+        "timescale": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might be later than that"
       },
       "inTime": {
         "panel": "Your appeal details have been sent"
@@ -335,7 +338,15 @@
         },
         "appealSubmitted": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
-          "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          }
+        },
+        "lateAppealSubmitted": {
+          "detailsSent": "Your late appeal details have been sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
           "info": {
             "title": "Helpful Information",
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"

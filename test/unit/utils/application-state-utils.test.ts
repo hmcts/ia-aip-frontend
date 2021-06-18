@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { getAppealApplicationNextStep } from '../../../app/utils/application-state-utils';
+import { getAppealApplicationNextStep, getAppealStatus } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -120,10 +120,10 @@ describe('application-state-utils', () => {
 
       expect(result).to.eql({
         cta: null,
-        deadline: '07 March 2020',
+        deadline: '13 February 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
-          'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+          'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
         ],
         info: {
           title: 'Helpful Information',
@@ -141,7 +141,7 @@ describe('application-state-utils', () => {
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
         'cta': null,
-        'deadline': '07 March 2020',
+        'deadline': '13 February 2020',
         'descriptionParagraphs': [
           'Your appeal details have been sent to the Tribunal.',
           "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next."
@@ -223,7 +223,7 @@ describe('application-state-utils', () => {
         dateDue: '2020-04-07',
         dateSent: '2020-03-24',
         explanation: 'direction explanation'
-      } ];
+      }];
     const result = getAppealApplicationNextStep(req as Request);
 
     expect(result).to.eql(
@@ -441,6 +441,33 @@ describe('application-state-utils', () => {
         }
       }
     );
+  });
+
+  it('when application status is appealSubmitted and appeal is late status should be lateAppealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.application.isAppealLate = true;
+
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('lateAppealSubmitted');
+  });
+
+  it('when application status is appealSubmitted and appeal is not late status should be lateAppealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.application.isAppealLate = false;
+
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('appealSubmitted');
+  });
+
+  it('when application status is not appealSubmitted and appeal is late status should be lateAppealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.application.isAppealLate = true;
+
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('appealStarted');
   });
 
 });

@@ -206,8 +206,7 @@ function getSupportingEvidenceDeleteFile(documentManagementService: DocumentMana
     try {
       const fileId: string = req.query.id as string;
       if (fileId) {
-        const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
-        await documentManagementService.deleteFile(req, targetUrl);
+        await documentManagementService.deleteFile(req, fileId);
         const evidences: Evidence[] = [ ...req.session.appeal.reasonsForAppeal.evidences ];
         req.session.appeal.reasonsForAppeal.evidences = evidences.filter((evidence: Evidence) => evidence.fileId !== req.query['id']);
       }

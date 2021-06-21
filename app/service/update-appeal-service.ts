@@ -25,13 +25,11 @@ export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
   private readonly _s2sService: S2SService;
-  private documentMap: DocumentMap[];
 
   constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
     this._s2sService = s2sService;
-    this.documentMap = [];
   }
 
   getCcdService(): CcdService {
@@ -124,6 +122,7 @@ export default class UpdateAppealService {
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasInflightTimeExtension = false;
+    let documentMap: DocumentMap[] = [];
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -138,13 +137,12 @@ export default class UpdateAppealService {
     }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
 
     if (yesNoToBool(caseData.submissionOutOfTime)) {
-
       if (caseData.applicationOutOfTimeExplanation) {
         outOfTimeAppeal = { reason: caseData.applicationOutOfTimeExplanation };
       }
       if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
 
-        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, this.documentMap);
+        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, documentMap);
         outOfTimeAppeal = {
           ...outOfTimeAppeal,
           evidence: {
@@ -158,7 +156,7 @@ export default class UpdateAppealService {
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
 
         reasonsForAppealDocumentUploads.push(
           {
@@ -174,7 +172,7 @@ export default class UpdateAppealService {
     if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
       respondentDocuments = [];
       caseData.respondentDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
+        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
 
         let evidence = {
           dateUploaded: document.value.dateUploaded,
@@ -206,7 +204,7 @@ export default class UpdateAppealService {
       draftClarifyingQuestionsAnswers = caseData.draftClarifyingQuestionsAnswers.map((answer): ClarifyingQuestion<Evidence> => {
         let evidencesList: Evidence[] = [];
         if (answer.value.supportingEvidence) {
-          evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+          evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e, documentMap));
         }
         return {
           id: answer.id,
@@ -235,7 +233,7 @@ export default class UpdateAppealService {
     }
 
     if (caseData.clarifyingQuestionsAnswers) {
-      clarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers);
+      clarifyingQuestionsAnswers = this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers, documentMap);
     }
 
     if (caseData.isInterpreterServicesNeeded) {
@@ -368,7 +366,8 @@ export default class UpdateAppealService {
           nationality: caseData.appellantNationalities ? caseData.appellantNationalities[0].value.code : null,
           address: appellantAddress
         },
-        ...caseData.uploadTheNoticeOfDecisionDocs && { homeOfficeLetter: this.mapCaseDataDocumentsToAppealEvidences(caseData.uploadTheNoticeOfDecisionDocs) }
+        addressLookup: {},
+        ...caseData.uploadTheNoticeOfDecisionDocs && { homeOfficeLetter: this.mapCaseDataDocumentsToAppealEvidences(caseData.uploadTheNoticeOfDecisionDocs, documentMap) }
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -392,11 +391,11 @@ export default class UpdateAppealService {
         time: listCmaHearingLength,
         date: listCmaHearingDate
       },
-      ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments) },
-      ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments) },
+      ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
+      ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
-      documentMap: [ ...this.documentMap ]
+      documentMap
     };
     return appeal;
   }
@@ -419,7 +418,6 @@ export default class UpdateAppealService {
     let caseData = {
       journeyType: 'aip'
     } as CaseData;
-
     if (_.has(appeal, 'application')) {
       if (appeal.application.homeOfficeRefNumber) {
         caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
@@ -429,18 +427,20 @@ export default class UpdateAppealService {
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
       }
 
-      if (_.has(appeal.application.lateAppeal, 'reason')) {
-        caseData.applicationOutOfTimeExplanation = appeal.application.lateAppeal.reason;
-      }
-
-      if (_.has(appeal.application.lateAppeal, 'evidence')) {
-
-        const documentLocationUrl: string = documentIdToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
-        caseData.applicationOutOfTimeDocument = {
-          document_filename: appeal.application.lateAppeal.evidence.name,
-          document_url: documentLocationUrl,
-          document_binary_url: `${documentLocationUrl}/binary`
-        };
+      if (appeal.application.isAppealLate) {
+        if (_.has(appeal.application.lateAppeal, 'reason')) {
+          caseData.applicationOutOfTimeExplanation = appeal.application.lateAppeal.reason;
+        }
+        if (_.has(appeal.application.lateAppeal, 'evidence')) {
+          const documentLocationUrl: string = documentIdToDocStoreUrl(appeal.application.lateAppeal.evidence.fileId, appeal.documentMap);
+          caseData.applicationOutOfTimeDocument = {
+            document_filename: appeal.application.lateAppeal.evidence.name,
+            document_url: documentLocationUrl,
+            document_binary_url: `${documentLocationUrl}/binary`
+          };
+        } else {
+          caseData.applicationOutOfTimeDocument = null;
+        }
       }
 
       if (appeal.application.personalDetails && appeal.application.personalDetails.givenNames) {
@@ -672,9 +672,9 @@ export default class UpdateAppealService {
     });
   }
 
-  mapCaseDataDocumentsToAppealEvidences = (documents: Collection<DocumentWithMetaData>[]): Evidence[] => {
+  mapCaseDataDocumentsToAppealEvidences = (documents: Collection<DocumentWithMetaData>[], documentMap: DocumentMap[]): Evidence[] => {
     return documents.map(document => {
-      const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, this.documentMap);
+      const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
       return {
         id: document.id,
         fileId: documentMapperId,
@@ -685,11 +685,11 @@ export default class UpdateAppealService {
     });
   }
 
-  private mapCcdClarifyingQuestionsToAppeal(clarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[]): ClarifyingQuestion<Evidence>[] {
+  private mapCcdClarifyingQuestionsToAppeal(clarifyingQuestions: ClarifyingQuestion<Collection<SupportingDocument>>[], documentMap: DocumentMap[]): ClarifyingQuestion<Evidence>[] {
     return clarifyingQuestions.map(answer => {
       let evidencesList: Evidence[] = [];
       if (answer.value.supportingEvidence) {
-        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e));
+        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e, documentMap));
       }
       return {
         id: answer.id,
@@ -732,8 +732,8 @@ export default class UpdateAppealService {
     }
   }
 
-  private mapSupportingDocumentToEvidence(evidence: Collection<SupportingDocument>) {
-    const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, this.documentMap);
+  private mapSupportingDocumentToEvidence(evidence: Collection<SupportingDocument>, documentMap: DocumentMap[]) {
+    const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, documentMap);
     return {
       fileId: documentMapperId,
       name: evidence.value.document_filename
@@ -764,9 +764,9 @@ export default class UpdateAppealService {
     }) : null;
   }
 
-  private mapDocsWithMetadataToEvidenceArray = (docs: Collection<DocumentWithMetaData>[]): Evidence[] => {
+  private mapDocsWithMetadataToEvidenceArray = (docs: Collection<DocumentWithMetaData>[], documentMap: DocumentMap[]): Evidence[] => {
     const evidences = docs.map((doc: Collection<DocumentWithMetaData>): Evidence => {
-      const fileId = addToDocumentMapper(doc.value.document.document_url, this.documentMap);
+      const fileId = addToDocumentMapper(doc.value.document.document_url, documentMap);
       return {
         fileId,
         name: doc.value.document.document_filename,

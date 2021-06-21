@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { Events } from '../../../app/data/events';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
-import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
+import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -75,8 +75,7 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
 
       if (fileId) {
         const questionOrder = parseInt(req.params.id, 10) - 1;
-        const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
-        await documentManagementService.deleteFile(req, targetUrl);
+        await documentManagementService.deleteFile(req, fileId);
         const supportingEvidences: Evidence[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence ];
         const draftClarifyingQuestionsAnswers = { ...req.session.appeal.draftClarifyingQuestionsAnswers };
         draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [

@@ -15,17 +15,15 @@
   {% endif %}
   <form method="post" action="{{ paths.appealStarted.nationality }}">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {% call govukFieldset({
-      legend: {
-        text: i18n.pages.nationality.title,
-        classes: "govuk-fieldset__legend--xl",
-        isPageHeading: true
-      }
-    }) %}
       {{ govukSelect({
         id: "nationality",
         name: "nationality",
         items: nationalitiesOptions,
+        label: {
+          text: i18n.pages.nationality.title,
+          classes: "govuk-!-font-size-48 govuk-!-font-weight-bold govuk-!-margin-bottom-3",
+          isPageHeading: true
+        },
         attributes: {
           'aria-label': i18n.pages.nationality.title
         },
@@ -34,7 +32,6 @@
         } if errors["nationality-statelessNationality"]
       }) }}
 
-    {% endcall %}
     {{ saveButtons() }}
   </form>
   {{ contactUs() }}

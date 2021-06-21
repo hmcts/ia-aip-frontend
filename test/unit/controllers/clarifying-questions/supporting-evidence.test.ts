@@ -181,7 +181,7 @@ describe('Question-page controller', () => {
       const appeal: Appeal = { ...req.session.appeal };
       await getSupportingEvidenceDelete(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, req.session.appeal.documentMap[0].url);
+      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, documentMap.id);
       expect(updateAppealService.submitEventRefactored).to.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(new RegExp(':id'), req.params.id));
     });

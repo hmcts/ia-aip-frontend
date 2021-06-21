@@ -125,6 +125,10 @@ function addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
   return documentId;
 }
 
+function removeFromDocumentMapper(fileId: string, documentMap: DocumentMap[]): DocumentMap[] {
+  return documentMap.filter(document => document.id !== fileId);
+}
+
 class DocumentManagementService {
   private authenticationService: AuthenticationService;
 
@@ -220,12 +224,13 @@ class DocumentManagementService {
    * @property {string} req.idam.userDetails.uid - the user id
    * @param fileLocation - the target file url to be deleted
    */
-  async deleteFile(req: Request, fileLocation: string): Promise<DocumentUploadResponse> {
+  async deleteFile(req: Request, fileId: string): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.uid;
-    // TODO: delete file from documentMap?
+    const documentLocationUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
+    req.session.appeal.documentMap = removeFromDocumentMapper(fileId, req.session.appeal.documentMap);
     logger.trace(`Received call from user '${userId}' to delete`, logLabel);
-    return this.delete(userId, headers, fileLocation);
+    return this.delete(userId, headers, documentLocationUrl);
   }
 
   /**
@@ -247,6 +252,7 @@ export {
   documentIdToDocStoreUrl,
   docStoreUrlToId,
   addToDocumentMapper,
+  removeFromDocumentMapper,
   documentToHtmlLink,
   docStoreUrlToHtmlLink,
   fileNameFormatter,

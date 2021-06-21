@@ -60,6 +60,7 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       break;
     }
     case 'appealSubmitted':
+    case 'lateAppealSubmitted':
     case 'awaitingRespondentEvidence': {
       formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);
       break;

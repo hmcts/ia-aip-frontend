@@ -74,7 +74,7 @@
     ]
   },
   "daysToWait": {
-    "afterSubmission": 28,
+    "afterSubmission": 5,
     "afterReasonsForAppeal": 14,
     "afterCQSubmission": 7
   },

@@ -32,7 +32,7 @@ function isPartiallySavedAppeal(req: Request, currentAppealStatus: string) {
 function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
 
   switch (currentAppealStatus) {
-    case'appealStarted':
+    case 'appealStarted':
       return {
         descriptionParagraphs: [
           i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions,
@@ -63,6 +63,19 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         descriptionParagraphs: [
           i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent,
           i18n.pages.overviewPage.doThisNext.appealSubmitted.dueDate
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
+          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+    case 'lateAppealSubmitted':
+      return {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.detailsSent,
+          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.dueDate
         ],
         info: {
           title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
@@ -184,7 +197,7 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         cta: null,
         allowedAskForMoreTime: false
       };
-    case'cmaAdjustmentsAgreed':
+    case 'cmaAdjustmentsAgreed':
     case 'cmaRequirementsSubmitted':
       return {
         descriptionParagraphs: [
@@ -251,13 +264,21 @@ interface DoThisNextSection {
 }
 
 /**
+ * Returns the appeal status, overrides status if the appeal is late .
+ * @param req the request containing the session and appeal status
+ */
+function getAppealStatus(req: Request) {
+  return (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus === 'appealSubmitted') ? 'lateAppealSubmitted' : req.session.appeal.appealStatus;
+}
+
+/**
  * Retrieves the information required based on appeal state also known as 'Do This Next' section
  * In the case of Partially saved appeal it will append 'Partial' to the current state
  * e.g 'awaitingReasonsForAppealPartial' which should be defined in APPEAL_STATE.
  * @param req the request containing the session and appeal status
  */
 function getAppealApplicationNextStep(req: Request) {
-  let currentAppealStatus = req.session.appeal.appealStatus;
+  let currentAppealStatus = getAppealStatus(req);
 
   if (isPartiallySavedAppeal(req, currentAppealStatus)) {
     currentAppealStatus = currentAppealStatus + 'Partial';
@@ -275,5 +296,6 @@ function getAppealApplicationNextStep(req: Request) {
 }
 
 export {
-  getAppealApplicationNextStep
+  getAppealApplicationNextStep,
+  getAppealStatus
 };

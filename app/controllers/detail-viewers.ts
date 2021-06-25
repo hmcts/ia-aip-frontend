@@ -23,6 +23,18 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
   return history.filter(h => h.id === eventId);
 };
 
+const getReasonsForAppeal = (req: Request) => {
+  const array = [];
+  const appeal = req.session.appeal;
+  if (_.has(appeal, 'reasonsForAppeal')) {
+    if (appeal.reasonsForAppeal.applicationReason) {
+      array.push(appeal.reasonsForAppeal.applicationReason);
+      // TODO: handle documents attached to reasons.
+    }
+  }
+  return array;
+};
+
 const formatDateLongDate = (date: string) => {
   return moment(date).format(dayMonthYearFormat);
 };
@@ -73,15 +85,9 @@ function setupAppealDetails(req: Request): Array<any> {
 
 function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const array = [];
-  const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
-  const { data } = reasonsForAppeal[0];
-  if (_.has(data, 'reasonsForAppealDocuments')) {
-    const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
-      return docStoreUrlToHtmlLink(paths.common.detailsViewers.document, evidence.value.document_filename, evidence.value.document_url, req);
-    });
-    array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
-    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
-  }
+  const reasonsForAppeal = getReasonsForAppeal(req);
+  array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ reasonsForAppeal[0] ], null));
+  // TODO: handle documents attached to reasons.
   return array;
 }
 

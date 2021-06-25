@@ -666,6 +666,8 @@ describe('update-appeal-service', () => {
 
         expect(caseData).eql(
           {
+            appellantEmailAddress: 'abc@example.net',
+            appellantPhoneNumber: '07123456789',
             journeyType: 'aip',
             subscriptions: [
               {
@@ -690,6 +692,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
+            appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
                 value: {
@@ -713,6 +716,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
+            appellantPhoneNumber: '07123456789',
             subscriptions: [
               {
                 value: {
@@ -984,6 +988,7 @@ describe('update-appeal-service', () => {
           Country: 'United Kingdom'
         },
         appellantHasFixedAddress: 'Yes',
+        appellantEmailAddress: 'email@example.net',
         appellantNationalities: [
           {
             value: {

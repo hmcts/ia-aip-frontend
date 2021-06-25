@@ -496,10 +496,12 @@ export default class UpdateAppealService {
         if (appeal.application.contactDetails.wantsEmail === true && appeal.application.contactDetails.email) {
           subscription.wantsEmail = YesOrNo.YES;
           subscription.email = appeal.application.contactDetails.email;
+          caseData.appellantEmailAddress = appeal.application.contactDetails.email;
         }
         if (appeal.application.contactDetails.wantsSms === true && appeal.application.contactDetails.phone) {
           subscription.wantsSms = YesOrNo.YES;
           subscription.mobileNumber = appeal.application.contactDetails.phone;
+          caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
         }
         caseData.subscriptions = [ { value: subscription } ];
       }

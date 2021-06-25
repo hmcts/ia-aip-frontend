@@ -32,6 +32,8 @@ interface CaseData {
   appellantNationalities: Nationality[];
   appellantAddress: CCDAddress;
   appellantHasFixedAddress: 'Yes' | 'No';
+  appellantEmailAddress: string;
+  appellantPhoneNumber: string;
   subscriptions: SubscriptionCollection[];
   submissionOutOfTime: 'Yes' | 'No';
   applicationOutOfTimeExplanation: string;

@@ -278,5 +278,9 @@
   "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
   "90027_Cookie Slack Detector_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
   "10035_Strict-Transport-Security Header Not Set_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
-  "10021_X-Content-Type-Options Header Missing_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore"
+  "10021_X-Content-Type-Options Header Missing_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
+  "10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/all.js_GET": "ignore",
+  "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
+  "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(3)%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
+  "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(2)%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore"
 }

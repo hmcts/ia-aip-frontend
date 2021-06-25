@@ -14,7 +14,7 @@ import UpdateAppealService from '../service/update-appeal-service';
  */
 function addToTimeExtensionMapper(timeExtensionEvent: HistoryEvent, req: Request) {
   const timeExtensionInternalId: string = uuid();
-  const lastTimeExtension = timeExtensionEvent.data.timeExtensions[timeExtensionEvent.data.timeExtensions.length - 1];
+  const lastTimeExtension = (timeExtensionEvent.data) ? timeExtensionEvent.data.timeExtensions[timeExtensionEvent.data.timeExtensions.length - 1] : 'xxxxxx';
   req.session.appeal.timeExtensionEventsMap.push(
     {
       id: timeExtensionInternalId,
@@ -31,7 +31,7 @@ function addToTimeExtensionMapper(timeExtensionEvent: HistoryEvent, req: Request
  */
 function timeExtensionIdToTimeExtensionData(id: string, timeExtensionEventMap: TimeExtensionEventMap[]) {
   const target: TimeExtensionEventMap = timeExtensionEventMap.find(e => e.id === id);
-  if (target) {
+  if (target && target.historyData && target.historyData.data) {
     return target.historyData.data.timeExtensions.find(timeExt => timeExt.id === target.externalId);
   }
   return null;

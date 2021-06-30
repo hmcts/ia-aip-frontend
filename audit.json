@@ -282,5 +282,20 @@
   "10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/all.js_GET": "ignore",
   "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
   "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(3)%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
-  "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(2)%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore"
+  "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(2)%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
+  "10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/cookie-policy_GET",
+"10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/eligibility_GET": "ignore",
+"10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+"10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=1_GET": "ignore",
+"10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+"10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/privacy-policy_GET": "ignore",
+"10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/terms-and-conditions_GET": "ignore",
+"10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/cookie-policy_GET": "ignore",
+"10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/eligibility_GET": "ignore",
+"10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
+"10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=1_GET": "ignore",
+"10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=1_GET": "ignore",
+"10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/privacy-policy_GET": "ignore",
+"10055_CSP: X-WebKit-CSP_https://immigration-appeal.aat.platform.hmcts.net/terms-and-conditions_GET": "ignore",
+"10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore"
 }

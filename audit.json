@@ -283,7 +283,7 @@
   "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
   "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(3)%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
   "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(2)%20of%20ruxitagentjs_ICA27SVfgjqrux_10217210531114014.js_GET": "ignore",
-  "10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/cookie-policy_GET",
+  "10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/cookie-policy_GET": "ignore",
 "10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/eligibility_GET": "ignore",
 "10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=0_GET": "ignore",
 "10055_CSP: X-Content-Security-Policy_https://immigration-appeal.aat.platform.hmcts.net/eligibility?id=1_GET": "ignore",

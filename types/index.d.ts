@@ -80,6 +80,8 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
+  removeAppealFromOnlineReason?: string;
+  removeAppealFromOnlineDate?: string;
   application: AppealApplication;
   reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;

@@ -349,6 +349,8 @@ export default class UpdateAppealService {
       appealCreatedDate: ccdCase.created_date,
       appealLastModified: ccdCase.last_modified,
       appealReferenceNumber: caseData.appealReferenceNumber,
+      removeAppealFromOnlineReason: caseData.removeAppealFromOnlineReason,
+      removeAppealFromOnlineDate: caseData.removeAppealFromOnlineDate,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: caseData.appealType || null,

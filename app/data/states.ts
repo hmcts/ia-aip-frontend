@@ -43,6 +43,10 @@ export const States = {
     id: 'cmaListed',
     name: 'CMA Requirements listed'
   },
+  REMOVE_APPEAL_FROM_ONLINE: {
+    id: 'appealTakenOffline',
+    name: 'Appeal taken offline'
+  },
   ENDED: {
     id: 'ended',
     name: 'Ended'

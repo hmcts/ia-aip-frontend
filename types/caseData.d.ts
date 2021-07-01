@@ -25,6 +25,8 @@ interface CaseData {
   appealType: string;
   homeOfficeReferenceNumber: string;
   appealReferenceNumber: string;
+  removeAppealFromOnlineReason: string;
+  removeAppealFromOnlineDate: string;
   homeOfficeDecisionDate: string;
   appellantGivenNames: string;
   appellantFamilyName: string;

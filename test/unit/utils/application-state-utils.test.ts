@@ -1,5 +1,9 @@
 import { Request } from 'express';
-import { getAppealApplicationNextStep, getAppealStatus } from '../../../app/utils/application-state-utils';
+import {
+  getAppealApplicationNextStep,
+  getAppealStatus, getMoveAppealOfflineDate,
+  getMoveAppealOfflineReason
+} from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -487,6 +491,25 @@ describe('application-state-utils', () => {
     );
   });
 
+  it('when application status is appealTakenOffline should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'appealTakenOffline';
+    req.session.appeal.removeAppealFromOnlineReason = 'Reason to move an appeal offline';
+    req.session.appeal.removeAppealFromOnlineDate = '2021-06-30';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.deep.include(
+      {
+        descriptionParagraphs: [
+        ],
+        'info': {
+          'title': 'What happens next',
+          'url': 'Your appeal will continue offline. The Tribunal will contact you soon to tell you what will happen next.'
+        }
+      }
+    );
+  });
+
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;
@@ -503,6 +526,18 @@ describe('application-state-utils', () => {
     const result = getAppealStatus(req as Request);
 
     expect(result).to.eql('appealSubmitted');
+  });
+
+  it('when application status is appealTakenOffline and removeAppealFromOnlineReason and date can be read.', () => {
+    req.session.appeal.removeAppealFromOnlineReason = 'Reason to move an appeal offline';
+    req.session.appeal.removeAppealFromOnlineDate = '2021-06-30';
+    req.session.appeal.application.isAppealLate = false;
+
+    const result = getMoveAppealOfflineReason(req as Request);
+    const offlineDate = getMoveAppealOfflineDate(req as Request);
+
+    expect(result).to.eql('Reason to move an appeal offline');
+    expect(offlineDate).to.eql('2021-06-30');
   });
 
   it('when application has not ended and outOfTimeDecisionType is rejected and appeal is late status, should be lateAppealRejected.', () => {

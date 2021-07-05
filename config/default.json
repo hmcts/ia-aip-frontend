@@ -55,7 +55,7 @@
   },
   "addressLookup": {
     "token": "address_lookup_token",
-    "url": "https://api.ordnancesurvey.co.uk"
+    "url": "https://api.os.uk"
   },
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"

@@ -76,7 +76,7 @@ const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
-const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
+const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise);
 
 const router = express.Router();
 

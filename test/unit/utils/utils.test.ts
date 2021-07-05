@@ -88,9 +88,9 @@ describe('utils', () => {
     it('does not have inflight appeals if previous time extension for different state', () => {
       const inflightTimeExtension = hasInflightTimeExtension({
         timeExtensions: [{
-          status: 'submitted',
+          type: 'Time Extension',
           state: 'oldState'
-        }],
+        } as Partial<TimeExtension>],
         appealStatus: 'currentState'
       } as Appeal);
       expect(inflightTimeExtension).to.be.eq(false);
@@ -113,6 +113,9 @@ describe('utils', () => {
 
     it('has inflight appeal', () => {
       const inflightTimeExtension = hasInflightTimeExtension({
+        timeExtensions: [{
+          decision: 'Pending'
+        } as Partial<TimeExtension>],
         askForMoreTime: {
           inFlight: true
         }

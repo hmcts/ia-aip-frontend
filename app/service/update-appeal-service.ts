@@ -102,6 +102,7 @@ export default class UpdateAppealService {
     const listCmaHearingCentre = caseData.listCaseHearingCentre || '';
     const listCmaHearingLength = caseData.listCaseHearingLength || '';
     const listCmaHearingDate = caseData.listCaseHearingDate || '';
+    // TODO: is timeExtensionEventsMap needed?
     let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
 
     const appellantAddress = caseData.appellantAddress ? {
@@ -183,29 +184,6 @@ export default class UpdateAppealService {
           }
         };
         respondentDocuments.push(evidence);
-      });
-    }
-
-    // TODO: remove timeExtensions logic, been replaced by makeAnApplication event and fields
-    if (caseData.timeExtensions) {
-      timeExtensions = caseData.timeExtensions.map((timeExtension: Collection<CcdTimeExtension>): TimeExtension => {
-        if (timeExtension.value.status === 'submitted' && timeExtension.value.state === ccdCase.state) {
-          hasInflightTimeExtension = true;
-        }
-        let evidencesList: Evidence[] = [];
-        if (timeExtension.value.evidence) {
-          evidencesList = timeExtension.value.evidence.map(e => this.mapSupportingDocumentToEvidence(e));
-        }
-        return {
-          id: timeExtension.id,
-          requestDate: timeExtension.value.requestDate,
-          state: timeExtension.value.state,
-          status: timeExtension.value.status,
-          reason: timeExtension.value.reason,
-          decision: timeExtension.value.decision,
-          decisionReason: timeExtension.value.decisionReason,
-          evidence: evidencesList
-        };
       });
     }
 
@@ -401,9 +379,10 @@ export default class UpdateAppealService {
       hearingRequirements: {},
       respondentDocuments: respondentDocuments,
       ...(_.has(caseData, 'directions')) && { directions },
+      // TODO: remove timeExtensionEventsMap if not needed?
       timeExtensionEventsMap: timeExtensionEventsMap,
-      timeExtensions: timeExtensions ? [ ...timeExtensions ] : [],
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
+      timeExtensions: caseData.makeAnApplications && this.mapMakeAnApplicationTimeExtensionToAppeal(caseData),
       clarifyingQuestionsAnswers,
       cmaRequirements,
       askForMoreTime: {
@@ -420,6 +399,20 @@ export default class UpdateAppealService {
       documentMap: [ ...this.documentMap ]
     };
     return appeal;
+  }
+
+  mapMakeAnApplicationTimeExtensionToAppeal(caseData: CaseData): Array<TimeExtension> {
+    if (caseData.makeAnApplications) {
+      return caseData.makeAnApplications.map(application => {
+        if (application.value.type === 'Time extension') {
+          return {
+            id: application.id,
+            ...application.value
+          };
+        }
+      });
+    }
+    return null;
   }
 
   convertToCcdCaseData(appeal: Appeal) {
@@ -653,7 +646,9 @@ export default class UpdateAppealService {
       },
       ...appeal.application.homeOfficeLetter && {
         uploadTheNoticeOfDecisionDocs: this.mapAppealEvidencesToDocumentsCaseData(appeal.application.homeOfficeLetter, appeal.documentMap)
-      }
+      },
+      ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
+      ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails }
     };
     return caseData;
   }
@@ -724,7 +719,7 @@ export default class UpdateAppealService {
       };
     });
   }
-
+  // TODO: remove method if not needed
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
 
     caseData.submitTimeExtensionReason = askForMoreTime.reason;

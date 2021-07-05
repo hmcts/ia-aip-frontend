@@ -154,23 +154,22 @@ describe('Ask for more time Controller', function () {
       req.body.askForMoreTime = askForMoreReason;
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.evidenceYesNo);
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_TIME_EXTENSION, req.session.appeal, 'idamUID', 'atoken');
-
     });
 
-    it('should setup ask for more time in session', async () => {
-      req.session.appeal.appealStatus = 'current State';
-      req.body.askForMoreTime = askForMoreReason;
-      await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(req.session.appeal.askForMoreTime).to.be.eql({
-        reason: askForMoreReason
-      });
-    });
+    // TODO: remove ask for more time if not needed
+    // it('should setup ask for more time in session', async () => {
+    //   req.session.appeal.appealStatus = 'current State';
+    //   req.body.askForMoreTime = askForMoreReason;
+    //   await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    //   expect(req.session.appeal.askForMoreTime).to.be.eql({
+    //     reason: askForMoreReason
+    //   });
+    // });
   });
 
   describe('getCheckAndSend', function () {
     it('should render check and send page without evidence', () => {
-      req.session.appeal.askForMoreTime.reason = 'some reasons';
+      req.session.appeal.makeAnApplicationDetails = 'some reasons';
       getCheckAndSend(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith(
@@ -182,13 +181,13 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [ { href: '/ask-for-more-time', text: 'Change' } ] },
             key: { text: 'Answer' },
-            value: { html: formatTextForCYA(req.session.appeal.askForMoreTime.reason) }
+            value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
           } ]
         });
     });
 
     it('should render check and send page with evidence', () => {
-      req.session.appeal.askForMoreTime.reason = 'some reasons';
+      req.session.appeal.makeAnApplicationDetails = 'some reasons';
       req.session.appeal.askForMoreTime.evidence = [
         {
           fileId: 'fileId',
@@ -206,7 +205,7 @@ describe('Ask for more time Controller', function () {
           }, {
             actions: { items: [ { href: '/ask-for-more-time', text: 'Change' } ] },
             key: { text: 'Answer' },
-            value: { html: formatTextForCYA(req.session.appeal.askForMoreTime.reason) }
+            value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
           }, {
             actions: { items: [ { href: paths.common.askForMoreTime.supportingEvidenceUpload, text: 'Change' } ] },
             key: { text: 'Supporting evidence' },
@@ -244,7 +243,7 @@ describe('Ask for more time Controller', function () {
       } as Appeal);
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.SUBMIT_TIME_EXTENSION, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.MAKE_AN_APPLICATION.TIME_EXTENSION, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.askForMoreTime.inFlight).to.be.true;
     });
   });

@@ -19,20 +19,30 @@ export const Events = {
     summary: 'Submits Reasons for appeal case AIP',
     description: 'Submits Reasons for appeal case AIP'
   },
+  // TODO: remove event once make an application is fully working
   SUBMIT_TIME_EXTENSION: {
     id: 'submitTimeExtension',
     summary: 'Submit time extension AIP',
     description: 'Submit time extensions for case AIP'
   },
+  // TODO: remove event once make an application is fully working
   REVIEW_TIME_EXTENSION: {
     id: 'reviewTimeExtension',
     summary: 'Submits review of time extension for appeal case AIP',
     description: 'Submits review of time extension for appeal case AIP'
   },
+  // TODO: remove event once make an application is fully working
   EDIT_TIME_EXTENSION: {
     id: 'editTimeExtension',
     summary: 'Edit time extension AIP',
     description: 'edits time extensions for case AIP'
+  },
+  MAKE_AN_APPLICATION: {
+    TIME_EXTENSION: {
+      id: 'makeAnApplication',
+      summary: 'Make an application',
+      description: 'Make an application'
+    }
   },
   EDIT_CLARIFYING_QUESTION_ANSWERS: {
     id: 'editClarifyingQuestionAnswers',

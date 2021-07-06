@@ -46,14 +46,18 @@ const awaitingCmaRequirementsWithTimeExtensions = {
         }
       }
     ],
-    "timeExtensions": [
+    "makeAnApplications": [
       {
-        "id": "88adad33-061a-4c86-83d8-2defd1e935d1",
+        "id": "1",
         "value": {
-          "state": "awaitingCmaRequirements",
-          "reason": "sdw",
-          "status": "submitted",
-          "requestDate": "2020-05-01"
+          "date": "2021-04-30",
+          "type": "Time extension",
+          "state": "awaitingReasonsForAppeal",
+          "details": "bla blab bla bla bla",
+          "decision": "Pending",
+          "evidence": [],
+          "applicant": "Appellant",
+          "applicantRole": "citizen"
         }
       }
     ],

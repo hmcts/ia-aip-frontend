@@ -27,7 +27,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request for more time has been sent screen
+    Then I see Your request has been sent to the Tribunal screen
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -43,7 +43,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request for more time has been sent screen
+    Then I see Your request has been sent to the Tribunal screen
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -59,7 +59,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request for more time has been sent screen
+    Then I see Your request has been sent to the Tribunal screen
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -86,12 +86,13 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request for more time has been sent screen
+    Then I see Your request has been sent to the Tribunal screen
     When I click "See your appeal progress" button
     Then I am on the overview page
 
 
-  Scenario: AFMT - Awaiting Cma requirements without evidence
+
+  Scenario: AFMT - Awaiting Cma requirements without evidence @trythis
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     When I visit the overview page
     Then I click Ask for more time
@@ -103,7 +104,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request for more time has been sent screen
+    Then I see Your request has been sent to the Tribunal screen
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -130,6 +131,6 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request for more time has been sent screen
+    Then I see Your request has been sent to the Tribunal screen
     When I click "See your appeal progress" button
     Then I am on the overview page

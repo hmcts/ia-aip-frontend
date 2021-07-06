@@ -77,8 +77,24 @@ interface CaseData {
   tribunalDocuments?: Collection<DocumentWithMetaData>[];
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
+  makeAnApplicationTypes?: any;
+  makeAnApplicationDetails?: string;
+  makeAnApplications?: Array<Application>;
 }
 
+interface Application {
+  id: string;
+  value: {
+    date: string;
+    type: string;
+    state: string;
+    details: string;
+    decision: string;
+    evidence: any[]; // TODO: change any for appropiate type for evidences
+    applicant: string;
+    applicantRole: string;
+  }
+}
 interface DateToAvoid {
   dateToAvoid: string;
   dateToAvoidReason: string;

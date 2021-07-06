@@ -13,62 +13,39 @@ import {
   fileNameFormatter,
   toHtmlLink
 } from '../service/document-management-service';
-import { dayMonthYearFormat } from '../utils/date-utils';
+import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
-import { boolToYesNo } from '../utils/utils';
+import { boolToYesNo, toIsoDate } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
   return history.filter(h => h.id === eventId);
 };
 
-const formatDateLongDate = (date: string) => {
-  return moment(date).format(dayMonthYearFormat);
-};
-
-function setupAppealDetails(req: Request): Array<any> {
-  const array = [];
-  const appealData = getAppealApplicationData('submitAppeal', req);
-  const { data } = appealData[0];
-  const appealTypeNames: string[] = data.appealType.split(',').map(appealType => {
-    return i18n.appealTypes[appealType].name;
+function getAppealDetails(req: Request): Array<any> {
+  const { application } = req.session.appeal;
+  const nation = countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
+    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${doc.fileId}'>${doc.name}</a>`;
   });
-  if (_.has(data, 'homeOfficeReferenceNumber')) {
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [ data.homeOfficeReferenceNumber ], null));
-  }
-  if (_.has(data, 'homeOfficeDecisionDate')) {
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [ formatDateLongDate(data.homeOfficeDecisionDate) ], null));
-  }
-  if (_.has(data, 'appellantNameForDisplay')) {
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [ data.appellantNameForDisplay ], null));
-  }
-  if (_.has(data, 'appellantDateOfBirth')) {
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [ formatDateLongDate(data.appellantDateOfBirth) ], null));
-  }
-  if (_.has(data, 'appellantNationalities[0].value.code')) {
-    const nation = countryList.find(country => country.value === appealData[0].data.appellantNationalities[0].value.code).name;
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [ nation ], null));
-  }
-  if (_.has(data, 'appellantAddress')) {
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [ ...Object.values(data.appellantAddress) ], null, Delimiter.BREAK_LINE));
-  }
-  if (_.has(data, 'subscriptions[0].value')) {
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [ data.subscriptions[0].value.email, data.subscriptions[0].value.mobileNumber ], null, Delimiter.BREAK_LINE));
-  }
-  if (_.has(data, 'appealType')) {
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [ appealTypeNames ], null));
-  }
-  if (_.has(data, 'applicationOutOfTimeExplanation')) {
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ data.applicationOutOfTimeExplanation ], null));
-  }
-  if (_.has(data, 'applicationOutOfTimeDocument')) {
-    const evidence = data.applicationOutOfTimeDocument;
-    const htmlLink = docStoreUrlToHtmlLink(paths.common.detailsViewers.document, evidence.document_filename, evidence.document_url, req);
-    const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p>${htmlLink}`;
-    array.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ urlHtml ], null));
-  }
-  return array;
+
+  return [
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [ application.homeOfficeRefNumber ], null),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [ formatDate(toIsoDate(application.dateLetterSent)) ], null),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [ application.personalDetails.givenNames, application.personalDetails.familyName ], null, Delimiter.SPACE),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [ formatDate(toIsoDate(application.personalDetails.dob)) ], null),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [ nation ], null),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [ ...Object.values(application.personalDetails.address) ], null, Delimiter.BREAK_LINE),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [
+      ...(application.contactDetails.wantsEmail ? [ application.contactDetails.email ] : []),
+      ...(application.contactDetails.wantsSms ? [ application.contactDetails.phone ] : [])
+    ], null, Delimiter.BREAK_LINE),
+    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [ i18n.appealTypes[application.appealType].name ], null),
+    application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ application.lateAppeal.reason ], null),
+    application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>` ])
+  ];
 }
 
 function setupAnswersReasonsForAppeal(req: Request): Array<any> {
@@ -253,10 +230,10 @@ function setupCmaRequirementsViewer(req: Request) {
 
 function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    let previousPage: string = paths.common.overview;
-    const data = setupAppealDetails(req);
-    return res.render('detail-viewers/appeal-details-viewer.njk', {
-      previousPage: previousPage,
+    const data = getAppealDetails(req);
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.appealDetails.title,
+      previousPage: paths.common.overview,
       data: data
     });
   } catch (error) {

@@ -31,14 +31,18 @@ const clarifyingQuestionsCaseData = {
       "applicationOutOfTimeExplanation": "My reason for being late",
       "appealReferenceNumber": "PA/50005/2020",
       "appellantGivenNames": "Pablo",
-      "timeExtensions": [
+      "makeAnApplications": [
         {
-          "id": "88adad33-061a-4c86-83d8-2defd1e935d1",
+          "id": "1",
           "value": {
-            "state": "awaitingClarifyingQuestionsAnswers",
-            "reason": "I need more time",
-            "status": "submitted",
-            "requestDate": "2020-04-30"
+            "date": "2021-04-30",
+            "type": "Time extension",
+            "state": "awaitingReasonsForAppeal",
+            "details": "bla blab bla bla bla",
+            "decision": "Pending",
+            "evidence": [],
+            "applicant": "Appellant",
+            "applicantRole": "citizen"
           }
         }
       ],

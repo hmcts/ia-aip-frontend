@@ -81,7 +81,7 @@ interface Appeal {
   appealLastModified?: string;
   appealReferenceNumber?: string;
   application: AppealApplication;
-  reasonsForAppeal: ReasonsForAppeal;
+  reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   cmaRequirements?: CmaRequirements;
@@ -93,11 +93,13 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
-  hearing: Hearing;
+  hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
+  makeAnApplicationTypes?: any;
+  makeAnApplicationDetails?: string;
 }
 
 interface Hearing {
@@ -173,7 +175,7 @@ interface AppealApplication {
   tasks?: {
     [key: string]: Task;
   };
-  addressLookup: {
+  addressLookup?: {
     result?: any;
   };
   isEdit?: boolean;
@@ -254,15 +256,15 @@ interface IdamDetails {
 }
 
 interface TimeExtension {
-  id?: number | string;
-  requestDate: string;
-  reason: string;
+  id: string;
+  date: string;
+  type: string;
   state: string;
-  status: string;
-  evidence?: Evidence[];
-  decision?: string;
-  decisionReason?: string;
-  decisionOutcomeDate?: string;
+  details: string;
+  decision: string;
+  evidence: Evidence[];
+  applicant: string;
+  applicantRole: string;
 }
 
 interface Direction {

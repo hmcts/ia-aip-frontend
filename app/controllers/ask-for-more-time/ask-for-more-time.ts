@@ -76,18 +76,11 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
           }
         );
       }
-      const appeal: Appeal = {
-        ...req.session.appeal,
-        askForMoreTime: {
-          ...req.session.appeal.askForMoreTime,
-          reason: req.body.askForMoreTime
-        }
-      };
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_TIME_EXTENSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
-        ...appealUpdated
+        makeAnApplicationTypes: 'Time extension',
+        makeAnApplicationDetails: req.body.askForMoreTime
       };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.common.askForMoreTime.evidenceYesNo);
       return res.redirect(redirectPage);
@@ -134,7 +127,7 @@ function postSubmitEvidence(updateAppealService: UpdateAppealService) {
 
 function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const reasonFormattingPreserved = formatTextForCYA(req.session.appeal.askForMoreTime.reason);
+    const reasonFormattingPreserved = formatTextForCYA(req.session.appeal.makeAnApplicationDetails);
     const summaryRows = [
       addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.askForMoreTimePage.textAreaText ], null),
       addSummaryRow(i18n.common.cya.answerRowTitle, [ reasonFormattingPreserved ], paths.common.askForMoreTime.reason)
@@ -166,14 +159,7 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const appeal: Appeal = {
-        ...req.session.appeal,
-        askForMoreTime: {
-          ...req.session.appeal.askForMoreTime,
-          reviewTimeExtensionRequired: 'Yes'
-        }
-      };
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_TIME_EXTENSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.MAKE_AN_APPLICATION.TIME_EXTENSION, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated

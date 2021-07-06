@@ -54,7 +54,7 @@
     "apiUrl": "DOC_MANAGEMENT_URL"
   },
   "addressLookup": {
-    "token": "address_lookup_token",
+    "token": "ADDRESS_LOOKUP_TOKEN",
     "url": "https://api.os.uk"
   },
   "saucelabs": {

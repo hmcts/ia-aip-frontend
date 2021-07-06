@@ -259,7 +259,7 @@ describe('upload evidence controller', () => {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should catch error and call next with error', async () => {
+    it('should catch error and call next with error @onlythis', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 

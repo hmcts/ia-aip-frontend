@@ -10,7 +10,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 
 function buildEvidencesList(evidences: Evidence[]): string[] {
   return evidences.map((evidence: Evidence) => {
-    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${evidence.fileId}'>${evidence.name}</a>`;
+    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
   });
 }
 
@@ -19,7 +19,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
     const previousPage: string = paths.awaitingClarifyingQuestionsAnswers.questionsList;
     const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
     const anythingElseQuestion: ClarifyingQuestion<Evidence> = clarifyingQuestions.pop();
-
+    const editParameter = '?edit';
     const summaryLists: SummaryList[] = clarifyingQuestions.map((question: ClarifyingQuestion<Evidence>, index: number) => {
       const summaryRows: SummaryRow[] = [];
       summaryRows.push(
@@ -29,7 +29,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
         addSummaryRow(
           i18n.common.cya.answerRowTitle,
           [ `<pre>${question.value.answer}</pre>` ],
-          paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', `${index + 1}`)
+          paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', `${index + 1}`) + editParameter
         )
       );
       if (question.value.supportingEvidence && question.value.supportingEvidence.length) {
@@ -38,7 +38,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
           addSummaryRow(
             i18n.common.cya.supportingEvidenceRowTitle,
             evidencesList,
-            paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(':id', `${index + 1}`),
+            paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(':id', `${index + 1}`) + editParameter,
             Delimiter.BREAK_LINE
           )
         );
@@ -50,7 +50,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
     });
     if (anythingElseQuestion.value.answer && anythingElseQuestion.value.answer !== CQ_NOTHING_ELSE) {
       const summaryRows: SummaryRow[] = [
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ `<pre>${anythingElseQuestion.value.answer}</pre>` ], paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ `<pre>${anythingElseQuestion.value.answer}</pre>` ], paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage + editParameter)
       ];
       if (anythingElseQuestion.value.supportingEvidence && anythingElseQuestion.value.supportingEvidence.length) {
         const evidencesList = buildEvidencesList(anythingElseQuestion.value.supportingEvidence);
@@ -85,9 +85,15 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
       if (req.body['saveForLater']) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
-      const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
-      const { draftClarifyingQuestionsAnswers, ...appeal } = req.session.appeal;
-      appeal.clarifyingQuestionsAnswers = clarifyingQuestions;
+      const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [
+        ...req.session.appeal.draftClarifyingQuestionsAnswers,
+        ...(req.session.appeal.clarifyingQuestionsAnswers ? req.session.appeal.clarifyingQuestionsAnswers : [])
+      ];
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        clarifyingQuestionsAnswers: clarifyingQuestions,
+        draftClarifyingQuestionsAnswers: []
+      };
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,

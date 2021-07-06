@@ -276,6 +276,7 @@ interface Direction {
   dateDue: string;
   dateSent: string;
   explanation: string;
+  clarifyingQuestions?: ClarifyingQuestion;
 }
 
 interface ClarifyingQuestion<T> {

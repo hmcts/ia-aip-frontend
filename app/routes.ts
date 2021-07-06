@@ -6,6 +6,7 @@ import { setupCheckAndSendController } from './controllers/appeal-application/ch
 import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
 import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
 import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
+import './controllers/appeal-application/home-office-details-upload-decision-letter';
 import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
 import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
 import { setupTaskListController } from './controllers/appeal-application/task-list';
@@ -67,15 +68,14 @@ import IdamService from './service/idam-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
-
-import './controllers/appeal-application/home-office-details-upload-decision-letter';
-
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
+// tslint:disable:no-console
+console.log('OSPlacesClient addressLookup.token:', config.get('addressLookup.token'));
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise);
 
 const router = express.Router();

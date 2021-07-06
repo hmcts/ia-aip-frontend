@@ -4,7 +4,7 @@ module.exports = {
   template: params => {
     return {
       "header": {
-        "uri": "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?offset=0&postcode=W1W%207RT",
+        "uri": "https://api.os.uk/places/v1/addresses/postcode?offset=0&postcode=W1W%207RT",
         "query": "postcode=W1W 7RT",
         "offset": 0,
         "totalresults": 3,

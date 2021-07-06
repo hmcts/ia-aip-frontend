@@ -368,7 +368,6 @@ export default class UpdateAppealService {
           nationality: caseData.appellantNationalities ? caseData.appellantNationalities[0].value.code : null,
           address: appellantAddress
         },
-        addressLookup: {},
         ...caseData.uploadTheNoticeOfDecisionDocs && { homeOfficeLetter: this.mapCaseDataDocumentsToAppealEvidences(caseData.uploadTheNoticeOfDecisionDocs) }
       },
       reasonsForAppeal: {
@@ -376,7 +375,6 @@ export default class UpdateAppealService {
         evidences: reasonsForAppealDocumentUploads,
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
-      hearingRequirements: {},
       respondentDocuments: respondentDocuments,
       ...(_.has(caseData, 'directions')) && { directions },
       // TODO: remove timeExtensionEventsMap if not needed?

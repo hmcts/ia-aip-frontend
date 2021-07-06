@@ -81,7 +81,7 @@ interface Appeal {
   appealLastModified?: string;
   appealReferenceNumber?: string;
   application: AppealApplication;
-  reasonsForAppeal: ReasonsForAppeal;
+  reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;
   respondentDocuments?: RespondentDocument[];
   cmaRequirements?: CmaRequirements;
@@ -93,7 +93,7 @@ interface Appeal {
   directions?: Direction[];
   draftClarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
   clarifyingQuestionsAnswers?: ClarifyingQuestion<Evidence>[];
-  hearing: Hearing;
+  hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
   makeAnApplicationTypes?: any;
@@ -173,7 +173,7 @@ interface AppealApplication {
   tasks?: {
     [key: string]: Task;
   };
-  addressLookup: {
+  addressLookup?: {
     result?: any;
   };
   isEdit?: boolean;

@@ -155,53 +155,6 @@ describe('Detail viewer Controller', () => {
     });
   });
 
-  describe('getAppealDetailsViewer', () => {
-    it('should render detail-viewers/appeal-details-viewer.njk', () => {
-
-      req.session.appeal.history = expectedMultipleEventsData;
-      req.session.appeal.documentMap = [ {
-        id: '00000',
-        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
-      }, {
-        id: '00001',
-        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
-      } ];
-
-      const expectedSummaryRows = [
-        { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
-        { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
-        { key: { text: 'Name' }, value: { html: 'Aleka sad' } },
-        { key: { text: 'Date of birth' }, value: { html: '20 July 1994' } },
-        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
-        { key: { text: 'Address' }, value: { html: 'United Kingdom<br>W1W 7RT<br>LONDON<br>60 GREAT PORTLAND STREET' } },
-        { key: { text: 'Contact details' }, value: { html: 'alejandro@example.net<br>' } },
-        { key: { text: 'Appeal type' }, value: { html: 'Protection' } } ];
-
-      getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/appeal-details-viewer.njk', {
-        data: expectedSummaryRows,
-        previousPage: paths.common.overview
-      });
-    });
-
-    it('getAppealDetailsViewer should catch exception and call next with the error', () => {
-
-      req.session.appeal.history = expectedMultipleEventsData;
-      req.session.appeal.documentMap = [ {
-        id: '00000',
-        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
-      }, {
-        id: '00001',
-        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
-      } ];
-
-      const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
   describe('getReasonsForAppealViewer', () => {
     it('should render detail-viewers/reasons-for-appeal-details-viewer.njk', () => {
 
@@ -233,12 +186,137 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.history = expectedMultipleEventsData;
       req.session.appeal.documentMap = [ {
         id: '00000',
-        url: 'http://dm-store:4506/documents/7aea22e8-ca47-4e3c-8cdb-d24e96e2890c'
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
       }, {
         id: '00001',
         url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
       } ];
 
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getReasonsForAppealViewer(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getAppealDetailsViewer', () => {
+    beforeEach(() => {
+
+      req.session.appeal = {
+        ccdCaseId: '1623767014596745',
+        appealStatus: 'appealSubmitted',
+        appealCreatedDate: '2021-06-15T14:23:34.581353',
+        appealLastModified: '2021-06-15T14:40:04.384479',
+        appealReferenceNumber: 'PA/50008/2021',
+        application: {
+          homeOfficeRefNumber: 'A1234567',
+          appealType: 'protection',
+          contactDetails: {
+            email: 'test@email.com',
+            wantsEmail: true,
+            phone: '7759991234',
+            wantsSms: true
+          },
+          dateLetterSent: {
+            year: '2020',
+            month: '2',
+            day: '16'
+          },
+          isAppealLate: true,
+          lateAppeal: {
+            reason: 'a reason for being late',
+            evidence: {
+              fileId: '318c373c-dd10-4deb-9590-04282653715d',
+              name: 'MINI-UK-66-reg.jpg'
+            }
+          },
+          personalDetails: {
+            givenNames: 'Pablo',
+            familyName: 'Ramirez',
+            dob: {
+              year: '1988',
+              month: '07',
+              day: '20'
+            },
+            nationality: 'AL',
+            address: {
+              line1: '60 GREAT PORTLAND STREET',
+              line2: '',
+              city: 'LONDON',
+              county: 'United Kingdom',
+              postcode: 'W1W 7RT'
+            }
+          }
+        },
+        legalRepresentativeDocuments: [
+          {
+            fileId: '9e33677f-92cf-4b72-b183-ce09ee72aafd',
+            name: 'PA 50008 2021-Ramirez-appeal-form.PDF',
+            id: '3',
+            tag: 'appealSubmission',
+            dateUploaded: '2021-06-15'
+          },
+          {
+            fileId: 'f1d73cba-a117-4a0c-acf3-d8b787c984d7',
+            name: 'unnamed.jpg',
+            id: '2',
+            tag: 'homeOfficeDecisionLetter',
+            dateUploaded: '2021-06-15'
+          },
+          {
+            fileId: '3d8bf49d-766f-4f41-b814-e82a04dec002',
+            name: 'Screenshot 2021-06-10 at 13.01.57.png',
+            id: '1',
+            tag: 'homeOfficeDecisionLetter',
+            dateUploaded: '2021-06-15'
+          }
+        ],
+        documentMap: [
+          {
+            id: '318c373c-dd10-4deb-9590-04282653715d',
+            url: 'http://dm-store:8080/documents/c69d78f4-e9cb-48b6-8d13-1e566d2d1e5c'
+          },
+          {
+            id: '9e33677f-92cf-4b72-b183-ce09ee72aafd',
+            url: 'http://dm-store:8080/documents/8fa0f52e-4760-4ee3-9d4e-f38b9cd37a42'
+          },
+          {
+            id: 'f1d73cba-a117-4a0c-acf3-d8b787c984d7',
+            url: 'http://dm-store:8080/documents/3cae9ca9-b0fc-4eff-ab9d-2772187f5474'
+          },
+          {
+            id: '3d8bf49d-766f-4f41-b814-e82a04dec002',
+            url: 'http://dm-store:8080/documents/a9e25073-b9a3-4af6-a586-ae3b2444b850'
+          }
+        ]
+      };
+    });
+
+    it('should render detail-viewers/appeal-details-viewer.njk @detailsViewer', () => {
+
+      const expectedSummaryRows = [
+        { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
+        { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
+        { key: { text: 'Home Office decision letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>" } },
+        { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
+        { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
+        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+        { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' } },
+        { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } },
+        { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
+        { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
+        { key: { text: 'Supporting evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>" } }
+      ];
+
+      getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
+    it('getAppealDetailsViewer should catch exception and call next with the error', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       getAppealDetailsViewer(req as Request, res as Response, next);

@@ -543,6 +543,9 @@
         "dateUploaded": "Date uploaded",
         "document": "Document"
       },
+      "appealDetails": {
+        "title": "Your appeal details"
+      },
       "hoDocuments": {
         "title": "Home Office documents about your case"
       },

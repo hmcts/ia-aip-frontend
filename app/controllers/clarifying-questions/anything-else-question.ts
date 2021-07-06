@@ -5,6 +5,7 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { nowIsoDate } from '../../utils/utils';
 import { yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
 function getAnythingElseQuestionPage(req: Request, res: Response, next: NextFunction) {
@@ -77,6 +78,7 @@ function postAnythingElseQuestionPage(updateAppealService: UpdateAppealService, 
           }
           anythingElseQuestion.value = {
             ...anythingElseQuestion.value,
+            dateResponded: nowIsoDate(),
             answer: CQ_NOTHING_ELSE,
             supportingEvidence: []
           };

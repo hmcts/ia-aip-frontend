@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { CQ_NOTHING_ELSE } from '../../data/constants';
 import { Events } from '../../data/events';
@@ -11,6 +12,7 @@ import { textAreaValidation } from '../../utils/validations/fields-validations';
 
 function getAnythingElseAnswerPage(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const { draftClarifyingQuestionsAnswers } = req.session.appeal;
     const anythingElseQuestion: ClarifyingQuestion<Evidence> = draftClarifyingQuestionsAnswers[draftClarifyingQuestionsAnswers.length - 1];
     res.render('templates/textarea-question-page.njk', {
@@ -76,7 +78,7 @@ function postAnythingElseAnswerPage(updateAppealService: UpdateAppealService) {
       };
       let redirectPage = getRedirectPage(
         editingMode,
-        paths.appealStarted.checkAndSend,
+        paths.awaitingClarifyingQuestionsAnswers.checkAndSend,
         req.body.saveForLater,
         paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(':id', `${draftClarifyingQuestionsAnswers.length}`)
       );

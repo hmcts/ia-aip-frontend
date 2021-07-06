@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
 import { Events } from '../../../app/data/events';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
@@ -6,10 +7,12 @@ import { DocumentManagementService } from '../../service/document-management-ser
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getNextPage } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { getRedirectPage } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
 function getSupportingEvidenceUploadPage(req: Request, res: Response, next: NextFunction) {
   try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const questionOrder = parseInt(req.params.id, 10) - 1;
     const evidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence || [];
     res.render('upload-evidence/supporting-evidence-upload-page.njk', {
@@ -77,11 +80,10 @@ function getSupportingEvidenceDelete(documentManagementService: DocumentManageme
         const questionOrder = parseInt(req.params.id, 10) - 1;
         await documentManagementService.deleteFile(req, fileId);
         const supportingEvidences: Evidence[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence ];
-        const draftClarifyingQuestionsAnswers = { ...req.session.appeal.draftClarifyingQuestionsAnswers };
+        const draftClarifyingQuestionsAnswers = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
         draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence = [
           ...supportingEvidences.filter((evidence: Evidence) => evidence.fileId !== req.query['id'])
         ];
-
         const appeal: Appeal = {
           ...req.session.appeal,
           draftClarifyingQuestionsAnswers
@@ -105,7 +107,13 @@ function postSupportingEvidenceSubmit(req: Request, res: Response, next: NextFun
     if (req.body.saveForLater) {
       return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
     }
-    res.redirect(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+    const redirectPage = getRedirectPage(
+      req.session.appeal.application.isEdit || false,
+      paths.awaitingClarifyingQuestionsAnswers.checkAndSend,
+      req.body.saveForLater,
+      paths.awaitingClarifyingQuestionsAnswers.questionsList
+    );
+    return res.redirect(redirectPage);
   } catch (e) {
     next(e);
   }

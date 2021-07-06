@@ -137,7 +137,34 @@ describe('Clarifying Questions: Anything else question-page controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage);
     });
 
-    it('should validate and redirect to questions list page', async () => {
+    it('should validate, delete evidene, and redirect to questions list page', async () => {
+      const evidences: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName'
+        }
+      ];
+      // req.session.appeal.draftClarifyingQuestionsAnswers[1].value.supportingEvidence = [ ...evidences ];
+      const draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];
+      const anythingElseQuestion: ClarifyingQuestion<Evidence> = draftClarifyingQuestionsAnswers.pop();
+      // anythingElseQuestion.value.supportingEvidence = [ ...evidences ];
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        draftClarifyingQuestionsAnswers: [
+          ...draftClarifyingQuestionsAnswers,
+          anythingElseQuestion
+        ]
+      };
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub();
+      req.body['answer'] = 'false';
+      await postAnythingElseQuestionPage(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+
+      expect(documentManagementService.deleteFile).to.not.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
+      expect(res.redirect).to.have.been.calledWith(paths.awaitingClarifyingQuestionsAnswers.questionsList);
+    });
+
+    it('should validate, delete evidence, and redirect to questions list page', async () => {
       const evidences: Evidence[] = [
         {
           fileId: 'aFileId',

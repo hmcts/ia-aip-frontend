@@ -8,26 +8,26 @@ const testUrl = config.get('testUrl');
 module.exports = {
   askForMoreTime(I) {
     Then(/^I click Ask for more time$/, async () => {
-      await I.amOnPage(testUrl + paths.common.askForMoreTime.reason);
+      await I.amOnPage(testUrl + paths.common.askForMoreTimeReason);
     });
 
     Then(/^I should see the ask-for-more-time page$/, async () => {
-      await I.seeInCurrentUrl(paths.common.askForMoreTime.reason);
+      await I.seeInCurrentUrl(paths.common.askForMoreTimeReason);
     });
 
     Then(/^I should see do you want to upload evidence page$/, async () => {
-      I.amOnPage(testUrl + paths.common.askForMoreTime.evidenceYesNo);
+      I.amOnPage(testUrl + paths.common.askForMoreTimeSupportingEvidence);
       I.seeInTitle('Do you want to provide supporting evidence for why you need more time?');
     });
 
     Then(/^I should see the ask for more time check you answers page$/, async () => {
-      I.amOnPage(testUrl + paths.common.askForMoreTime.checkAndSend);
+      I.amOnPage(testUrl + paths.common.askForMoreTimeCheckAndSend);
       I.seeInTitle('Check your answer');
     });
 
-    Then(/^I see Your request has been sent to the Tribunal screen$/, async () => {
-      I.amOnPage(testUrl + paths.common.askForMoreTime.confirmation);
-      I.seeInTitle('Your request has been sent to the Tribunal');
+    Then(/^I see Your request for more time has been sent screen$/, async () => {
+      I.amOnPage(testUrl + paths.common.askForMoreTimeConfirmation);
+      I.seeInTitle('Your request for more time has been sent');
     });
 
     Then(/^I should see the reasons for appeal$/, async () => {
@@ -39,7 +39,7 @@ module.exports = {
     });
 
     Then(/^I am on the evidence upload page$/, async () => {
-      I.amOnPage(testUrl + paths.common.askForMoreTime.supportingEvidenceUpload);
+      I.amOnPage(testUrl + paths.common.askForMoreTimeSupportingEvidenceUpload);
       I.seeInTitle('Provide supporting evidence');
     });
 

@@ -97,7 +97,7 @@ describe('timeline-utils', () => {
           'links': [ {
             'title': 'What you sent',
             'text': 'Your appeal details',
-            'href': '{{ paths.common.detailsViewers.appealDetails }}'
+            'href': '{{ paths.common.appealDetailsViewer }}'
           }, {
             'title': 'Helpful information',
             'text': 'What is a Tribunal Caseworker?',

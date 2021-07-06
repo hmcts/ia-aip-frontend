@@ -1162,7 +1162,7 @@
       "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
     },
     "askForMoreTimeConfirmation": {
-      "title": "Your request for more time has been sent",
+      "title": "Your request has been sent to the Tribunal",
       "contactDate": "A Tribunal Caseworker should contact you within <b>five working days</b> to tell you if you have more time but it might take longer than that",
       "mightNotGetIt": "You might not get more time. You should still respond to the Tribunal by the date you were given if you can",
       "thingsYouCanDoNow": "Things you can do now",

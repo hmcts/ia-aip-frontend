@@ -75,6 +75,8 @@ const authenticationService: AuthenticationService = new AuthenticationService(n
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
 // tslint:disable:no-console
+console.log('OSPlacesClient appInsights.instrumentationKey:', config.get('appInsights.instrumentationKey'));
+// tslint:disable:no-console
 console.log('OSPlacesClient addressLookup.token:', config.get('addressLookup.token'));
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise);
 

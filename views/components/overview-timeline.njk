@@ -1,25 +1,26 @@
 {% macro timeline(history) %}
-  <h2 class="govuk-heading-m govuk-!-padding-top-8">{{ i18n.pages.overviewPage.timeline.completed }}</h2>
-  {% if history.appealArgumentSection | length > 0  %}
-    <div class="govuk-!-margin-bottom-3">
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealArgumentSection }}</h3>
-
-      <div class="timeline-section">
-        {% for event in history.appealArgumentSection %}
-          {% include "components/event-in-timeline.njk" %}
-        {% endfor %}
+  {% if (history.appealArgumentSection | length > 0) or (history.appealDetailsSection | length > 0) %}
+    <h2 class="govuk-heading-m govuk-!-padding-top-8">{{ i18n.pages.overviewPage.timeline.completed }}</h2>
+    {% if history.appealArgumentSection | length > 0  %}
+      <div class="govuk-!-margin-bottom-3">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealArgumentSection }}</h3>
+        <div class="timeline-section">
+          {% for event in history.appealArgumentSection %}
+            {% include "components/event-in-timeline.njk" %}
+          {% endfor %}
+        </div>
       </div>
-    </div>
-  {% endif %}
+    {% endif %}
 
-  {% if history.appealDetailsSection %}
-    <div class="govuk-!-margin-bottom-3">
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealDetailsSection }}</h3>
-      <div class="timeline-section">
-        {% for event in history.appealDetailsSection %}
-          {% include "components/event-in-timeline.njk" %}
-        {% endfor %}
+    {% if history.appealDetailsSection | length > 0 %}
+      <div class="govuk-!-margin-bottom-3">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealDetailsSection }}</h3>
+        <div class="timeline-section">
+          {% for event in history.appealDetailsSection %}
+            {% include "components/event-in-timeline.njk" %}
+          {% endfor %}
+        </div>
       </div>
-    </div>
+    {% endif %}
   {% endif %}
 {% endmacro %}

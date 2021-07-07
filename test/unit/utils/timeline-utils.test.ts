@@ -45,9 +45,9 @@ describe('timeline-utils', () => {
   describe('constructSection', () => {
     it('Should construct the appeal argument section', () => {
       req.session.appeal.timeExtensionEventsMap = [];
-      const appealArgumentSection = [ Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION ];
+      const appealArgumentSection = [ Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.SUBMIT_TIME_EXTENSION.id, Events.REVIEW_TIME_EXTENSION.id ];
 
-      const result = constructSection(appealArgumentSection, expectedEventsWithTimeExtensionsData, [ States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL ], req as Request);
+      const result = constructSection(appealArgumentSection, expectedEventsWithTimeExtensionsData, [ States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id ], req as Request);
       expect(result).to.deep.eq(
         [ {
           'date': '15 April 2020',
@@ -87,7 +87,7 @@ describe('timeline-utils', () => {
 
     it('Should construct the appeal details section', () => {
       req.session.appeal.timeExtensionEventsMap = [];
-      const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
+      const appealDetailsSection = [ Events.SUBMIT_APPEAL.id ];
 
       const result = constructSection(appealDetailsSection, expectedEventsWithTimeExtensionsData, null, req as Request);
       expect(result).to.deep.eq(

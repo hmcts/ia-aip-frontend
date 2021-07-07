@@ -69,6 +69,18 @@ module.exports = {
       await setupCase(mockData.endedAppeal);
     });
 
+    Given('I have an out of time granted decision appeal', async () => {
+      await setupCase(mockData.outOfTimeDecisionGranted);
+    });
+
+    Given('I have an out of time rejected decision appeal', async () => {
+      await setupCase(mockData.outOfTimeDecisionRejected);
+    });
+
+    Given('I have an out of time in-time decision appeal', async () => {
+      await setupCase(mockData.outOfTimeDecisionInTime);
+    });
+
     Given('I have an appeal with home office reference', async () => {
       await setupData({ homeOfficeReferenceNumber: 'A1111111' });
     });
@@ -274,8 +286,8 @@ module.exports = {
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
-    Then(/^I should see the "([^"]*)" page$/, async (key: string) => {
-      await I.seeInCurrentUrl(`${PATHS[key]}`);
+    Then(/^I see "([^"]*)" in current url$/, async (key: string) => {
+      await I.seeInCurrentUrl(key);
     });
 
     When(/^I visit the "([^"]*)" page$/, async (key: string) => {
@@ -348,6 +360,14 @@ module.exports = {
 
     Then('I should see the date time and hearing centre in do this next', async () => {
       await I.seeInSource('Hearing Centre:');
+    });
+
+    Then(/^I see "([^"]*)" in timeline$/, async (title: string) => {
+      await I.see(title, '.timeline-event');
+    });
+
+    Then(/^I see "([^"]*)" in summary list$/, async (title: string) => {
+      await I.see(title, '.govuk-summary-list');
     });
   }
 };

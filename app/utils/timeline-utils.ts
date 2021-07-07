@@ -45,13 +45,14 @@ function timeExtensionIdToTimeExtensionData(id: string, timeExtensionEventMap: T
 function constructEventObject(event: HistoryEvent, req: Request) {
 
   const formattedDate = moment(event.createdDate).format('DD MMMM YYYY');
-  const eventContent = JSON.parse(JSON.stringify(i18n.pages.overviewPage.timeline[event.id]));
+  const eventContent = i18n.pages.overviewPage.timeline[event.id];
 
   let eventObject = {
     date: formattedDate,
-    text: eventContent.text,
+    text: eventContent.text || null,
     links: eventContent.links
   };
+  // TODO: remove time extension logic since we have moved to makeAnApplication?
   // If it is a time extension submission the link should point to a timeExtensionMap resource
   if (event.id === Events.SUBMIT_TIME_EXTENSION.id) {
     const requestId: string = addToTimeExtensionMapper(event, req);
@@ -63,21 +64,25 @@ function constructEventObject(event: HistoryEvent, req: Request) {
     eventObject.text = `${eventObject.text} ${event.data.reviewTimeExtensionDecision}.`;
     eventObject.links[0].href = `${eventObject.links[0].href}/${reviewId}`;
   }
+
+  if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
+    eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
+  }
   return eventObject;
 }
 
 /**
  * Constructs a section object, finds the events specified within the history and an optional case state
  * @param eventsToLookFor and array of type CcdEvent used to find events within the history
- * @param history the history
- * @param caseState optional use if a section must be constructed within a specific state only
+ * @param events the history events
+ * @param states optional use if a section must be constructed within a specific state only
  * @param req the request containing the session to update the timeExtensionsMap
  */
-function constructSection(eventsToLookFor: CcdEvent[], history: HistoryEvent[], caseState: CcdState[] | null, req: Request) {
+function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request) {
 
-  const filteredEvents = caseState
-    ? history.filter(h => eventsToLookFor.some(evnt => evnt.id === h.id) && caseState.some(cs => cs.id === h.state.id))
-    : history.filter(h => eventsToLookFor.some(evnt => evnt.id === h.id));
+  const filteredEvents = states
+    ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
+    : events.filter(event => eventsToLookFor.includes(event.id));
 
   return filteredEvents.map(event => constructEventObject(event, req));
 }
@@ -89,12 +94,15 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
   req.session.appeal.history = history;
 
-  const appealArgumentSection = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, Events.SUBMIT_REASONS_FOR_APPEAL, Events.SUBMIT_TIME_EXTENSION, Events.REVIEW_TIME_EXTENSION, Events.SUBMIT_CMA_REQUIREMENTS, Events.LIST_CMA, Events.END_APPEAL ];
-  const appealDetailsSection = [ Events.SUBMIT_APPEAL ];
+  const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.SUBMIT_TIME_EXTENSION.id, Events.REVIEW_TIME_EXTENSION.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
+  const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
+
+  const appealArgumentSection = constructSection(appealArgumentSectionEvents, history, [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.ENDED.id ], req);
+  const appealDetailsSection = constructSection(appealDetailsSectionEvents, history, null, req);
 
   return {
-    appealArgumentSection: constructSection(appealArgumentSection, history, [ States.CLARIFYING_QUESTIONS_SUBMITTED, States.REASONS_FOR_APPEAL_SUBMITTED, States.AWAITING_REASONS_FOR_APPEAL, States.AWAITING_CLARIFYING_QUESTIONS, States.CMA_REQUIREMENTS_SUBMITTED, States.CMA_LISTED, States.ENDED ], req),
-    appealDetailsSection: constructSection(appealDetailsSection, history, null, req)
+    appealArgumentSection,
+    appealDetailsSection
   };
 }
 

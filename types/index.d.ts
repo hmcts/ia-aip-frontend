@@ -96,6 +96,8 @@ interface Appeal {
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
+  outOfTimeDecisionType?: string;
+  outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
 }

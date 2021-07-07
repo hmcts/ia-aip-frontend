@@ -398,7 +398,7 @@
         },
         "reasonsForAppealSubmitted": {
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
-          "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
         },
         "clarifyingQuestions": {
           "description": "You need to answer some questions about your appeal.",
@@ -529,6 +529,20 @@
               "href": "{{ paths.common.detailsViewers.noticeEndedAppeal }}"
             }
           ]
+        },
+        "recordOutOfTimeDecision": {
+          "type": {
+            "rejected": "The tribunal decided your late appeal cannot continue.",
+            "approved": "The tribunal decided your late appeal can continue.",
+            "inTime": "The tribunal decided your appeal is in time."
+          },
+          "links": [
+            {
+              "title": "What the Tribunal said",
+              "text": "Reasons for decision",
+              "href": "{{ paths.common.detailsViewers.outOfTimeDecision }}"
+            }
+          ]
         }
       }
     },
@@ -600,6 +614,17 @@
       },
       "endedAppeal": {
         "title": "Notice of Ended Appeal"
+      },
+      "outOfTimeDecision": {
+        "title": "Reasons for decision",
+        "decision": "Decision",
+        "decisionMaker": "Decision Maker",
+        "reasonForDecision": "Reason for decision",
+        "type": {
+          "rejected": "The appeal is out of time and cannot proceed",
+          "approved": "The appeal is out of time but can proceed",
+          "inTime": "The appeal is in time"
+        }
       }
     },
     "guidancePages": {

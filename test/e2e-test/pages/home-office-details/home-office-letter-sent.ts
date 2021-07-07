@@ -1,7 +1,6 @@
 import { paths } from '../../../../app/paths';
 const config = require('config');
 const { fillInDate } = require('../helper-functions');
-const cache = require('memory-cache');
 
 const testUrl = config.get('testUrl');
 

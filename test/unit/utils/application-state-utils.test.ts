@@ -263,7 +263,7 @@ describe('application-state-utils', () => {
       deadline: '03 March 2020',
       descriptionParagraphs: [
         'You have told us why you think the Home Office decision is wrong.',
-        'A Tribunal Caseworker will contact you to tell you what to do next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
+        'A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
       ],
       allowedAskForMoreTime: false
     });

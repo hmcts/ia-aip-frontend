@@ -1,10 +1,10 @@
 module.exports = {
-  path: '/places/v1/addresses/postcode',
+  path: '/search/places/v1/postcode',
   method: 'GET',
   template: params => {
     return {
       "header": {
-        "uri": "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode?offset=0&postcode=W1W%207RT",
+        "uri": "https://api.os.uk/search/places/v1/postcode/postcode?offset=0&postcode=W1W%207RT",
         "query": "postcode=W1W 7RT",
         "offset": 0,
         "totalresults": 3,

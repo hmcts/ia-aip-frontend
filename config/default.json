@@ -54,8 +54,8 @@
     "apiUrl": "DOC_MANAGEMENT_URL"
   },
   "addressLookup": {
-    "token": "address_lookup_token",
-    "url": "https://api.ordnancesurvey.co.uk"
+    "token": "ADDRESS_LOOKUP_TOKEN",
+    "url": "ADDRESS_LOOKUP_URL"
   },
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"

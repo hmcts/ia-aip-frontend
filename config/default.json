@@ -55,7 +55,7 @@
   },
   "addressLookup": {
     "token": "ADDRESS_LOOKUP_TOKEN",
-    "url": "ADDRESS_LOOKUP_URL"
+    "url": "https://api.os.uk"
   },
   "saucelabs": {
     "secret": "SAUCELABS_SECRET"

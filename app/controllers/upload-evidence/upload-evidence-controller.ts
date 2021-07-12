@@ -127,8 +127,7 @@ export function getSupportingEvidenceDeleteFile(documentManagementService: Docum
     try {
       const fileId: string = req.query.id as string;
       if (fileId) {
-        const targetUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
-        await documentManagementService.deleteFile(req, targetUrl);
+        await documentManagementService.deleteFile(req, fileId);
         evidenceUploadConfig.removeEvidenceFromSessionFunction(fileId, req);
       }
       return res.redirect(evidenceUploadConfig.evidenceUploadPath);

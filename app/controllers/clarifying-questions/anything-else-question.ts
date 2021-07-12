@@ -72,8 +72,7 @@ function postAnythingElseQuestionPage(updateAppealService: UpdateAppealService, 
         } else {
           if (anythingElseQuestion.value.supportingEvidence) {
             anythingElseQuestion.value.supportingEvidence.forEach(async (evidence: Evidence) => {
-              const targetUrl: string = documentIdToDocStoreUrl(evidence.id, req.session.appeal.documentMap);
-              await documentManagementService.deleteFile(req, targetUrl);
+              await documentManagementService.deleteFile(req, evidence.id);
             });
           }
           anythingElseQuestion.value = {

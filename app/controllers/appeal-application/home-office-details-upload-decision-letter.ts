@@ -100,8 +100,7 @@ function deleteHomeOfficeDecisionLetter(updateAppealService: UpdateAppealService
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
-        const targetUrl: string = documentIdToDocStoreUrl(req.query.id as string, req.session.appeal.documentMap);
-        await documentManagementService.deleteFile(req, targetUrl);
+        await documentManagementService.deleteFile(req, req.query.id as string);
 
         const appeal: Appeal = {
           ...req.session.appeal,

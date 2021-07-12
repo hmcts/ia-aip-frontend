@@ -344,6 +344,25 @@ module.exports = {
       await I.fillField('textarea', title);
     });
 
+    Then(/^I fill "([^"]*)" field with "([^"]*)"$/, async (field, value) => {
+      await I.fillField(field, value);
+    });
+
+    Then(/^I select "([^"]*)" from "([^"]*)" drop-down$/, async (option, dropdown) => {
+      await I.selectOption(dropdown, option);
+    });
+
+    Then(/^I check "([^"]*)" option$/, async (option) => {
+      await I.checkOption(option);
+    });
+
+    Then(/^I click "([^"]*)" change link$/, async (text) => {
+      await I.click(
+        'Change',
+        `//div/dt[contains(text(), "${text}")]/parent::div//a`
+      );
+    });
+
     When('I select No and click save and continue', async () => {
       await I.checkOption('#answer');
       await I.click('Save and continue');

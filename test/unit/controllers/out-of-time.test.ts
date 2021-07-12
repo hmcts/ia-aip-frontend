@@ -184,7 +184,7 @@ describe('Out of time controller', () => {
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, documentMap.url);
+      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidenceExample.fileId);
       expect(documentManagementService.uploadFile).to.have.been.calledWith(req);
       expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
@@ -285,7 +285,7 @@ describe('Out of time controller', () => {
       req.session.appeal.documentMap = [ documentMap ];
 
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, documentMap.url);
+      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidenceExample.fileId);
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk', {
         appealLateReason: undefined,
@@ -318,7 +318,7 @@ describe('Out of time controller', () => {
       } as Appeal);
       await postAppealLateDeleteFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, documentMap.url);
+      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidenceExample.fileId);
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.application.lateAppeal.evidence).to.be.undefined;
       expect(res.redirect).to.have.been.called;

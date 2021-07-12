@@ -611,7 +611,8 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-12-11',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          applicationOutOfTimeDocument: null
         });
       });
 
@@ -623,7 +624,8 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-01',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          applicationOutOfTimeDocument: null
         });
       });
 
@@ -631,11 +633,11 @@ describe('update-appeal-service', () => {
         emptyApplication.application.dateLetterSent = { year: '2019', month: '2', day: '3' };
         emptyApplication.application.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
-
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-03',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          applicationOutOfTimeDocument: null
         });
       });
     });

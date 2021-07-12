@@ -67,8 +67,7 @@ function postSupportingEvidenceQuestionPage(updateAppealService: UpdateAppealSer
         const supportingEvidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrderNo].value.supportingEvidence;
         if (supportingEvidences) {
           supportingEvidences.forEach(async (evidence: Evidence) => {
-            const targetUrl: string = documentIdToDocStoreUrl(evidence.fileId, req.session.appeal.documentMap);
-            await documentManagementService.deleteFile(req, targetUrl);
+            await documentManagementService.deleteFile(req, evidence.fileId);
           });
 
           const questions = [ ...req.session.appeal.draftClarifyingQuestionsAnswers ];

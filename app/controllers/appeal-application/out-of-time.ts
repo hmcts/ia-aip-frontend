@@ -59,8 +59,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       let lateAppeal: LateAppeal;
       if (req.file) {
         if (_.has(application.lateAppeal, 'evidence.fileId')) {
-          const documentLocationUrl: string = documentIdToDocStoreUrl(application.lateAppeal.evidence.fileId, req.session.appeal.documentMap);
-          await documentManagementService.deleteFile(req, documentLocationUrl);
+          await documentManagementService.deleteFile(req, application.lateAppeal.evidence.fileId);
         }
         const evidenceStored: DocumentUploadResponse = await documentManagementService.uploadFile(req);
         lateAppeal = {
@@ -99,10 +98,8 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const evidence: Evidence = req.session.appeal.application.lateAppeal.evidence;
-      const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, req.session.appeal.documentMap);
-      await documentManagementService.deleteFile(req, documentLocationUrl);
+      await documentManagementService.deleteFile(req, evidence.fileId);
       delete req.session.appeal.application.lateAppeal.evidence;
-
       const validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
       if (validationError) {
         return res.render('appeal-application/home-office/appeal-late.njk', {

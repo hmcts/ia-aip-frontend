@@ -23,6 +23,7 @@ module.exports = {
   template: {
     uid: () => emailToUserId[cache.get('email')] || defaultUserId,
     email: () => cache.get('email'),
+    name: 'John Smith',
     forename: 'John',
     surname: 'Smith'
   },

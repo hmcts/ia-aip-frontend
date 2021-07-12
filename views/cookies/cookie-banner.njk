@@ -1,0 +1,40 @@
+{% macro cookie() %}
+    <div id="app-cookie-banner" class="govuk-cookie-banner " role="region" aria-label="'Cookies on MyHMCTS'">
+        <div class="govuk-cookie-banner__message govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-cookie-banner__heading govuk-heading-m">{{ i18n.cookieBanner.title | safe }}</h2>
+                    <div class="govuk-cookie-banner__content">
+                        <p>{{ i18n.cookieBanner.firstParagraph | safe }}</p>
+                        <p>{{ i18n.cookieBanner.secondParagraph | safe }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-button-group">
+                <button id="acceptCookies" class="govuk-button" data-module="govuk-button" name="cookies" type="button" value="accept"> {{ i18n.cookieBanner.acceptButton | safe }} </button>
+                <button id="rejectCookies" class="govuk-button" data-module="govuk-button" name="cookies" type="button" value="reject"> {{ i18n.cookieBanner.rejectButton | safe }} </button>
+                <a class="govuk-link" routerlink="/cookies" href="/cookie-policy">{{ i18n.cookieBanner.link | safe }}</a>
+            </div>
+        </div>
+    </div>
+    <div id="cookie-preference-success" class="govuk-cookie-banner">
+     <div class="govuk-cookie-banner__message govuk-width-container">
+       <div class="govuk-grid-row">
+           <div class="govuk-grid-column-two-thirds">
+                <p class="govuk-body">You've accepted analytics cookies. You can <a class="govuk-link" routerlink="/cookies" href="/cookie-policy">change your cookie settings</a> at anytime.</p>
+                <button id="hideAcceptCookies" class="govuk-button" data-module="govuk-button" name="cookies" type="button" value="accept"> {{ i18n.cookieBanner.hideButton | safe }} </button>
+           </div>
+        </div>
+      </div>
+    </div>
+    <div id="cookie-preference-rejection" class="govuk-cookie-banner">
+      <div class="govuk-cookie-banner__message govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <p class="govuk-body">You've rejected analytics cookies. You can <a class="govuk-link" routerlink="/cookies" href="/cookie-policy">change your cookie settings</a> at anytime.</p>
+                <button id="hideRejectCookies" class="govuk-button" data-module="govuk-button" name="cookies" type="button" value="accept"> {{ i18n.cookieBanner.hideButton | safe }} </button>
+            </div>
+        </div>
+      </div>
+    </div>
+{% endmacro %}

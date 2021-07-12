@@ -7,7 +7,7 @@ Feature: End of appeal @endappeal
     Given I have an ended appeal
     And I have logged in
     Then I see "Pedro Jimeno" in title
-    And I see "Nothing to do next" in subheading
+    And I see "Do this next" in subheading
 
     And I see "Your appeal was ended" in timeline
     And I click "Notice of Ended Appeal" link

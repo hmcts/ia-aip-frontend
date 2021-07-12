@@ -145,7 +145,8 @@ describe('update-appeal-service', () => {
       ],
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
-      isHearingLoopNeeded: 'true'
+      isHearingLoopNeeded: 'true',
+      hearingCentre: 'birmingham'
     };
 
   });
@@ -231,6 +232,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(false);
+      expect(req.session.appeal.hearingCentre).eq('birmingham');
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -611,7 +613,8 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-12-11',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          applicationOutOfTimeDocument: null
         });
       });
 
@@ -623,7 +626,8 @@ describe('update-appeal-service', () => {
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-01',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          applicationOutOfTimeDocument: null
         });
       });
 
@@ -631,11 +635,11 @@ describe('update-appeal-service', () => {
         emptyApplication.application.dateLetterSent = { year: '2019', month: '2', day: '3' };
         emptyApplication.application.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
-
         expect(caseData).eql({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-03',
-          submissionOutOfTime: 'Yes'
+          submissionOutOfTime: 'Yes',
+          applicationOutOfTimeDocument: null
         });
       });
     });

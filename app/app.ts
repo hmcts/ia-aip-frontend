@@ -92,7 +92,10 @@ function configureHelmet(app) {
         '\'unsafe-inline\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
-        'tagmanager.google.com'
+        'tagmanager.google.com',
+        'www.code.jquery.com',
+        'http://maxcdn.bootstrapcdn.com',
+        'www.maxcdn.bootstrapcdn.com'
       ],
       styleSrc: [
         '\'self\'',
@@ -103,7 +106,12 @@ function configureHelmet(app) {
             ? `'unsafe-inline'`
             : `'nonce-${res.locals.nonce}'`
       ],
-      connectSrc: [ '\'self\'', 'www.gov.uk' ],
+      connectSrc: ['\'self\'',
+        'www.gov.uk',
+        'www.code.jquery.com',
+        'http://maxcdn.bootstrapcdn.com',
+        'www.maxcdn.bootstrapcdn.com'
+      ],
       mediaSrc: [ '\'self\'' ],
       frameSrc: [
         '\'self\'',
@@ -120,7 +128,10 @@ function configureHelmet(app) {
         'www.google-analytics.com',
         'www.googletagmanager.com',
         'tagmanager.google.com',
-        'vcc-eu4.8x8.com'
+        'vcc-eu4.8x8.com',
+        'www.code.jquery.com',
+        'http://maxcdn.bootstrapcdn.com',
+        'www.maxcdn.bootstrapcdn.com'
       ]
     }
   }));

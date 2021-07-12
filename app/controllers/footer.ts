@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 
 function getCookiesPage(req: Request, res: Response, next: NextFunction) {
-  res.render('footer/cookies.njk', {
+  res.render('cookies/cookies.njk', {
     previousPage: {
       attributes: { onclick: 'history.go(-1); return false;' }
     }

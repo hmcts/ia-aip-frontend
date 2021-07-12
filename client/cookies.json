@@ -1,0 +1,7 @@
+{
+"featureFlags": {
+    "cookieBanner": {
+      "enabled": "false"
+    }
+  }
+}

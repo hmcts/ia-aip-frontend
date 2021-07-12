@@ -48,6 +48,7 @@
     "config": "^3.3.6",
     "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.5",
+    "cmc-cookies-manager": "github:hmcts/cmc-cookies-manager#3.0.2",
     "copy-webpack-plugin": "^5.1.2",
     "cross-env": "^7.0.3",
     "csurf": "^1.11.0",

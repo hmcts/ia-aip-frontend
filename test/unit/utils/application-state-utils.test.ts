@@ -133,6 +133,28 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'appealSubmitted';
+      req.session.appeal.application.isAppealLate = true;
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '13 February 2020',
+        'descriptionParagraphs': [
+          'Your late appeal details have been sent to the Tribunal.',
+          "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+        }
+      });
+
+    });
+
     it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
 
@@ -150,6 +172,28 @@ describe('application-state-utils', () => {
           'title': 'Helpful Information',
           'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
         }
+      });
+
+    });
+
+    it('when application status is lateAppealEnded should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'appealStarted';
+      req.session.appeal.outOfTimeDecisionType = 'rejected';
+      req.session.appeal.application.isAppealLate = true;
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        'allowedAskForMoreTime': false,
+        'cta': {
+          url: null,
+          respondByText: null
+        },
+        'deadline': 'TBC',
+        'descriptionParagraphs': [
+          "Your appeal cannot continue. Read the <a href='{{ paths.common.detailsViewers.outOfTimeDecision }}'>reasons for this decision</a>.",
+          'If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal.'
+        ]
       });
 
     });

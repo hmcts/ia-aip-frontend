@@ -352,6 +352,10 @@
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
+        "lateAppealEnded": {
+          "description": "Your appeal cannot continue. Read the <a href='{{ paths.common.detailsViewers.outOfTimeDecision }}'>reasons for this decision</a>.",
+          "description2": "If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal."
+        },
         "cmaRequirementsSubmitted": {
           "description": "A Tribunal Caseworker is looking at your answers and will contact you with details of your case management appointment and tell you what to do next.",
           "description2": "This should be by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> but may be longer than that.",

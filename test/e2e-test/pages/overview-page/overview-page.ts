@@ -50,6 +50,13 @@ module.exports = {
       I.seeInSource(`${i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime}`);
     });
 
+    Then(/^I should see the 'do this next section' for 'Your appeal cannot continue'$/, () => {
+      I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
+
+      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.lateAppealEnded.description}`);
+      I.seeInSource(`${i18n.pages.overviewPage.doThisNext.lateAppealEnded.description2}`);
+    });
+
     Then(/^I should see the 'do this next section' for 'Saved - Awaiting reasons for appeal'$/, () => {
       I.see(i18n.pages.overviewPage.doThisNext.toDo, '//h2[1]');
       I.seeInSource(`<p>${i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description}</p>`);

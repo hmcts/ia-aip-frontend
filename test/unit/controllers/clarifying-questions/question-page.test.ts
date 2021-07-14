@@ -89,6 +89,7 @@ describe('Question-page controller', () => {
         'clarifying-questions/question-page.njk',
         {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
+          pendingTimeExtension: false,
           question: {
             ...clarifyingQuestions[questionOrderNo],
             orderNo: req.params.id

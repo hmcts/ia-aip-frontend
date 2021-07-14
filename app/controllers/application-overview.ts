@@ -22,8 +22,6 @@ function checkAppealEnded(appealStatus: string): boolean {
   return false;
 }
 
-const askForMoreTimeFeatureEnabled: boolean = asBooleanValue(config.get('features.askForMoreTime'));
-
 function getAppellantName(req: Request) {
   let name = req.idam.userDetails.name;
   if (_.has(req.session.appeal, 'application.personalDetails.givenNames')) {
@@ -36,6 +34,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const isPartiallySaved = _.has(req.query, 'saved');
+      const askForMoreTime = _.has(req.query, 'ask-for-more-time');
+      const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
       const { appealReferenceNumber } = req.session.appeal;
       const loggedInUserFullName: string = getAppellantName(req);
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
@@ -52,8 +52,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         stages: stagesStatus,
         saved: isPartiallySaved,
         ended: appealEnded,
-        askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
-        askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal)
+        askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal),
+        askForMoreTime,
+        saveAndAskForMoreTime
       });
     } catch (e) {
       next(e);

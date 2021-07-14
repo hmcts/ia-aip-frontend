@@ -21,12 +21,74 @@ describe('Confirmation Page Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
+  const headers = {};
+  let mockAuthenticationService: Partial<AuthenticationService>;
+  let mockCcdService: Partial<CcdService>;
   let updateAppealService: Partial<UpdateAppealService>;
 
   const logger: Logger = new Logger();
+  const expectedNextStep = {
+    cta: { url: '/about-appeal' },
+    deadline: null,
+    descriptionParagraphs: [
+      'You need to answer a few questions about yourself and your appeal to get started.',
+      'You will need to have your Home Office decision letter with you to answer some questions.'
+    ],
+    info: null,
+    allowedAskForMoreTime: false
+  };
+
+  const expectedHistory = {
+    appealArgumentSection: [ {
+      'date': '27 February 2020',
+      'dateObject': sinon.match.any,
+      'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
+      'links': [
+        {
+          'title': 'What you sent',
+          'text': 'Why you think the Home Office is wrong',
+          'href': '{{ paths.common.reasonsForAppealViewer }}'
+        }, {
+          'title': 'Useful documents',
+          'text': 'Home Office documents about your case',
+          'href': '{{ paths.common.homeOfficeDocumentsViewer }}'
+        }, {
+          'title': 'Helpful information',
+          'text': 'Understanding your Home Office documents',
+          'href': '{{ paths.common.homeOfficeDocuments }}'
+        } ]
+    }
+    ],
+    appealDetailsSection: [ {
+      'date': '27 February 2020',
+      'dateObject': sinon.match.any,
+      'text': 'You sent your appeal details to the Tribunal.',
+      'links': [
+        {
+          'title': 'What you sent',
+          'text': 'Your appeal details',
+          'href': '{{ paths.common.appealDetailsViewer }}'
+        }, {
+          'title': 'Helpful information',
+          'text': 'What is a Tribunal Caseworker?',
+          'href': '{{ paths.common.tribunalCaseworker }}'
+        } ]
+    } ]
+  };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    mockAuthenticationService = {
+      getSecurityHeaders: sandbox.stub().returns(headers)
+    } as Partial<AuthenticationService>;
+    mockCcdService = {
+      getCaseHistory: sandbox.stub().returns(expectedMultipleEventsData)
+    } as Partial<CcdService>;
+
+    updateAppealService = {
+      getAuthenticationService: sandbox.stub().returns(mockAuthenticationService),
+      getCcdService: sandbox.stub().returns(mockCcdService)
+    };
     req = {
       session: {
         appeal: {
@@ -78,31 +140,7 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.appealReferenceNumber = 'DRAFT';
 
-    const headers = {};
-    const mockAuthenticationService = {
-      getSecurityHeaders: sinon.stub().returns(headers)
-    } as Partial<AuthenticationService>;
-    const mockCcdService = {
-      getCaseHistory: sinon.stub().returns(expectedMultipleEventsData)
-    } as Partial<CcdService>;
-
-    updateAppealService = {
-      getAuthenticationService: sinon.stub().returns(mockAuthenticationService),
-      getCcdService: sinon.stub().returns(mockCcdService)
-    };
-
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-    const expectedNextStep = {
-      cta: { respondByText: null, url: '/about-appeal' },
-      deadline: null,
-      descriptionParagraphs: [
-        'You need to answer a few questions about yourself and your appeal to get started.',
-        'You will need to have your Home Office decision letter with you to answer some questions.'
-      ],
-      info: null,
-      allowedAskForMoreTime: false
-    };
 
     const expectedStages = [ {
       active: true,
@@ -126,44 +164,6 @@ describe('Confirmation Page Controller', () => {
       title: 'Your appeal<br/> decision'
     } ];
 
-    const expectedHistory = {
-      appealArgumentSection: [ {
-        'date': '27 February 2020',
-        'dateObject': sinon.match.any,
-        'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
-        'links': [
-          {
-            'title': 'What you sent',
-            'text': 'Why you think the Home Office is wrong',
-            'href': '{{ paths.common.reasonsForAppealViewer }}'
-          }, {
-            'title': 'Useful documents',
-            'text': 'Home Office documents about your case',
-            'href': '{{ paths.common.homeOfficeDocumentsViewer }}'
-          }, {
-            'title': 'Helpful information',
-            'text': 'Understanding your Home Office documents',
-            'href': '{{ paths.common.homeOfficeDocuments }}'
-          } ]
-      }
-      ],
-      appealDetailsSection: [ {
-        'date': '27 February 2020',
-        'dateObject': sinon.match.any,
-        'text': 'You sent your appeal details to the Tribunal.',
-        'links': [
-          {
-            'title': 'What you sent',
-            'text': 'Your appeal details',
-            'href': '{{ paths.common.appealDetailsViewer }}'
-          }, {
-            'title': 'Helpful information',
-            'text': 'What is a Tribunal Caseworker?',
-            'href': '{{ paths.common.tribunalCaseworker }}'
-          } ]
-      } ]
-    };
-
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: null,
@@ -171,9 +171,10 @@ describe('Confirmation Page Controller', () => {
       history: expectedHistory,
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: asBooleanValue(asBooleanValue(config.get('features.askForMoreTime'))),
+      ended: false,
       askForMoreTimeInFlight: false,
-      ended: false
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false
     });
   });
 
@@ -188,31 +189,7 @@ describe('Confirmation Page Controller', () => {
     };
     req.session.appeal.appealStatus = 'appealStarted';
 
-    const headers = {};
-    const mockAuthenticationService = {
-      getSecurityHeaders: sinon.stub().returns(headers)
-    } as Partial<AuthenticationService>;
-    const mockCcdService = {
-      getCaseHistory: sinon.stub().returns([])
-    } as Partial<CcdService>;
-
-    updateAppealService = {
-      getAuthenticationService: sinon.stub().returns(mockAuthenticationService),
-      getCcdService: sinon.stub().returns(mockCcdService)
-    };
-
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-    const expectedNextStep = {
-      cta: { respondByText: null, url: '/about-appeal' },
-      deadline: null,
-      descriptionParagraphs: [
-        'You need to answer a few questions about yourself and your appeal to get started.',
-        'You will need to have your Home Office decision letter with you to answer some questions.'
-      ],
-      info: null,
-      allowedAskForMoreTime: false
-    };
 
     const expectedStages = [ {
       active: true,
@@ -240,12 +217,13 @@ describe('Confirmation Page Controller', () => {
       name: 'Alex Developer',
       appealRefNumber: undefined,
       applicationNextStep: expectedNextStep,
-      history: { appealArgumentSection: [], appealDetailsSection: [] },
+      history: expectedHistory,
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
+      ended: false,
       askForMoreTimeInFlight: false,
-      ended: false
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false
     });
   });
 
@@ -262,17 +240,6 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealReferenceNumber = 'appealNumber';
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-    const expectedNextStep = {
-      allowedAskForMoreTime: false,
-      cta: { respondByText: null, url: '/about-appeal' },
-      deadline: null,
-      descriptionParagraphs: [
-        'You need to answer a few questions about yourself and your appeal to get started.',
-        'You will need to have your Home Office decision letter with you to answer some questions.'
-      ],
-      info: null
-    };
 
     const expectedStages = [ {
       active: true,
@@ -300,12 +267,13 @@ describe('Confirmation Page Controller', () => {
       name: 'Alex Developer',
       appealRefNumber: 'appealNumber',
       applicationNextStep: expectedNextStep,
-      history: { appealArgumentSection: [], appealDetailsSection: [] },
+      history: expectedHistory,
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
+      ended: false,
       askForMoreTimeInFlight: false,
-      ended: false
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false
     });
   });
 
@@ -324,16 +292,10 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    const expectedNextStep = {
-      allowedAskForMoreTime: false,
-      cta: { respondByText: null, url: '/about-appeal' },
-      deadline: 'TBC',
-      descriptionParagraphs: [
-        'You need to finish telling us about your appeal.',
-        'You will need to have your Home Office decision letter with you to answer some questions.'
-      ],
-      info: null
-    };
+    expectedNextStep.descriptionParagraphs = [
+      'You need to finish telling us about your appeal.',
+      'You will need to have your Home Office decision letter with you to answer some questions.'
+    ];
 
     const expectedStages = [ {
       active: true,
@@ -361,16 +323,17 @@ describe('Confirmation Page Controller', () => {
       name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
-      history: { appealArgumentSection: [], appealDetailsSection: [] },
+      history: expectedHistory,
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
+      ended: false,
       askForMoreTimeInFlight: false,
-      ended: false
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false
     });
   });
 
-  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name', async () => {
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name @justthis', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -387,16 +350,10 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    const expectedNextStep = {
-      allowedAskForMoreTime: false,
-      cta: { respondByText: null, url: '/about-appeal' },
-      deadline: 'TBC',
-      descriptionParagraphs: [
-        'You need to finish telling us about your appeal.',
-        'You will need to have your Home Office decision letter with you to answer some questions.'
-      ],
-      info: null
-    };
+    expectedNextStep.descriptionParagraphs = [
+      'You need to finish telling us about your appeal.',
+      'You will need to have your Home Office decision letter with you to answer some questions.'
+    ];
 
     const expectedStages = [ {
       active: true,
@@ -424,12 +381,13 @@ describe('Confirmation Page Controller', () => {
       name: 'Appellant Name',
       appealRefNumber: 'RP/50004/2020',
       applicationNextStep: expectedNextStep,
-      history: { appealArgumentSection: [], appealDetailsSection: [] },
+      history: expectedHistory,
       stages: expectedStages,
       saved: false,
-      askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
+      ended: false,
       askForMoreTimeInFlight: false,
-      ended: false
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false
     });
   });
 

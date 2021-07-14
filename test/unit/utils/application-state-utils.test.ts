@@ -87,50 +87,184 @@ describe('application-state-utils', () => {
   });
 
   describe('getDoThisNextSectionFromAppealState', () => {
-    const expected = {
-      descriptionParagraphs: [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ],
+    describe('awaitingReasonsForAppeal state', () => {
+      const expectedAwaitingReasonsForAppeal = {
+        descriptionParagraphs: [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
+        },
+        usefulDocuments: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
+        },
+        cta: {
+          url: paths.awaitingReasonsForAppeal.decision,
+          respondBy: i18n.pages.overviewPage.doThisNext.respondByText
+        },
+        allowedAskForMoreTime: true
+      };
+      it('should return do this next section', () => {
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, false, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingReasonsForAppeal);
+      });
+
+      it('should return do this next section with pending extension', () => {
+        expectedAwaitingReasonsForAppeal.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime ];
+        expectedAwaitingReasonsForAppeal.cta.respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', true, false, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingReasonsForAppeal);
+      });
+
+      it('should return do this next section with granted extension', () => {
+        expectedAwaitingReasonsForAppeal.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
+        expectedAwaitingReasonsForAppeal.cta.respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, true, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingReasonsForAppeal);
+      });
+
+      it('should return do this next section with refused extension', () => {
+        expectedAwaitingReasonsForAppeal.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
+        expectedAwaitingReasonsForAppeal.cta.respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, false, true);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingReasonsForAppeal);
+      });
+    });
+
+    describe('awaitingReasonsForAppealPartial state', () => {
+      const expectedAwaitingReasonsForAppealPartial = {
+        descriptionParagraphs: [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.url
+        },
+        usefulDocuments: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.url
+        },
+        cta: {
+          url: paths.awaitingReasonsForAppeal.decision,
+          respondBy: i18n.pages.overviewPage.doThisNext.respondByText
+        },
+        allowedAskForMoreTime: true
+      };
+
+      it('should return do this next section', () => {
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppealPartial', false, false, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingReasonsForAppealPartial);
+      });
+
+      it('should return do this next section with granted extension', () => {
+        expectedAwaitingReasonsForAppealPartial.cta.respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppealPartial', false, true, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingReasonsForAppealPartial);
+      });
+
+      it('should return do this next section with refused extension', () => {
+        expectedAwaitingReasonsForAppealPartial.cta.respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppealPartial', false, false, true);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingReasonsForAppealPartial);
+      });
+
+      it('should return do this next section with pending extension', () => {
+        expectedAwaitingReasonsForAppealPartial.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime ];
+        expectedAwaitingReasonsForAppealPartial.cta.respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppealPartial', true, false, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingReasonsForAppealPartial);
+      });
+    });
+
+    describe('awaitingClarifyingQuestionsAnswers state', () => {
+      const expectedAwaitingClarifyingQuestionsAnswers = {
+        descriptionParagraphs: [ i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description ],
+        info: null,
+        cta: {
+          url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
+          respondBy: i18n.pages.overviewPage.doThisNext.respondByText
+        },
+        allowedAskForMoreTime: true
+      };
+
+      it('should return do this next section', () => {
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingClarifyingQuestionsAnswers', false, false, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingClarifyingQuestionsAnswers);
+      });
+
+      it('should return do this next section with granted extension', () => {
+        expectedAwaitingClarifyingQuestionsAnswers.cta.respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingClarifyingQuestionsAnswers', false, true, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingClarifyingQuestionsAnswers);
+      });
+
+      it('should return do this next section with refused extension', () => {
+        expectedAwaitingClarifyingQuestionsAnswers.cta.respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingClarifyingQuestionsAnswers', false, false, true);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingClarifyingQuestionsAnswers);
+      });
+
+      it('should return do this next section with pending extension', () => {
+        expectedAwaitingClarifyingQuestionsAnswers.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime ];
+        expectedAwaitingClarifyingQuestionsAnswers.cta.respondBy = i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime;
+        const doThisNext = getDoThisNextSectionFromAppealState('awaitingClarifyingQuestionsAnswers', true, false, false);
+
+        expect(doThisNext).to.be.eql(expectedAwaitingClarifyingQuestionsAnswers);
+      });
+    });
+  });
+
+  describe('awaitingCmaRequirements state', () => {
+    const expectedAwaitingCmaRequirements = {
+      descriptionParagraphs: [
+        i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description,
+        i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description2 ],
       info: {
-        title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
-        url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
-      },
-      usefulDocuments: {
-        title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
-        url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
+        title: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.title,
+        url: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.url
       },
       cta: {
-        url: paths.awaitingReasonsForAppeal.decision,
+        url: paths.awaitingCmaRequirements.taskList,
         respondBy: i18n.pages.overviewPage.doThisNext.respondByText
       },
       allowedAskForMoreTime: true
     };
+
     it('should return do this next section', () => {
-      const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, false, false);
+      const doThisNext = getDoThisNextSectionFromAppealState('awaitingCmaRequirements', false, false, false);
 
-      expect(doThisNext).to.be.eql(expected);
-    });
-
-    it('should return do this next section with pending extension', () => {
-      expected.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime ];
-      expected.cta.respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
-      const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', true, false, false);
-
-      expect(doThisNext).to.be.eql(expected);
+      expect(doThisNext).to.be.eql(expectedAwaitingCmaRequirements);
     });
 
     it('should return do this next section with granted extension', () => {
-      expected.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
-      expected.cta.respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
-      const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, true, false);
+      expectedAwaitingCmaRequirements.cta.respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      const doThisNext = getDoThisNextSectionFromAppealState('awaitingCmaRequirements', false, true, false);
 
-      expect(doThisNext).to.be.eql(expected);
+      expect(doThisNext).to.be.eql(expectedAwaitingCmaRequirements);
     });
 
     it('should return do this next section with refused extension', () => {
-      expected.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
-      expected.cta.respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
-      const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, false, true);
+      expectedAwaitingCmaRequirements.cta.respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      const doThisNext = getDoThisNextSectionFromAppealState('awaitingCmaRequirements', false, false, true);
 
-      expect(doThisNext).to.be.eql(expected);
+      expect(doThisNext).to.be.eql(expectedAwaitingCmaRequirements);
+    });
+
+    it('should return do this next section with pending extension', () => {
+      expectedAwaitingCmaRequirements.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime ];
+      expectedAwaitingCmaRequirements.cta.respondBy = i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime;
+      const doThisNext = getDoThisNextSectionFromAppealState('awaitingCmaRequirements', true, false, false);
+
+      expect(doThisNext).to.be.eql(expectedAwaitingCmaRequirements);
     });
   });
 
@@ -156,7 +290,6 @@ describe('application-state-utils', () => {
 
       expect(result).to.deep.equal({
         cta: {
-          respondByText: null,
           url: '/about-appeal'
         },
         deadline: null,
@@ -369,16 +502,12 @@ describe('application-state-utils', () => {
     expect(result).to.eql({
       'allowedAskForMoreTime': true,
       'cta': {
-        'respondByText': 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-        'respondByTextAskForMoreTime': 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+        'respondBy': 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
         'url': '/questions-about-appeal'
       },
       'deadline': null,
       'descriptionParagraphs': [
         'You need to answer some questions about your appeal.'
-      ],
-      'descriptionParagraphsAskForMoreTime': [
-        'You might not get more time. You should still try to answer the Tribunal’s questions by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> if you can.'
       ],
       'info': null
     });
@@ -409,17 +538,13 @@ describe('application-state-utils', () => {
       {
         allowedAskForMoreTime: true,
         cta: {
-          respondByText: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-          respondByTextAskForMoreTime: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+          respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
           url: '/appointment-needs'
         },
         deadline: '21 May 2020',
         descriptionParagraphs: [
           'You need to attend a case management appointment.',
           'First, tell us if you will need anything at the appointment, like an interpreter or step-free access.'
-        ],
-        descriptionParagraphsAskForMoreTime: [
-          'You might not get more time. You should still try and provide the requirements by <span class="govuk-!-font-weight-bold">{{ applicationNextStep.deadline }}</span> if you can.'
         ],
         info: {
           title: 'Helpful Information',

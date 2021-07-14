@@ -48,9 +48,13 @@
         </h2>
         <ul class="govuk-list govuk-list--bullet">
           <li>
-            <a href={{ paths.common.askForMoreTimeReason }} class="govuk-link">
-              {{ i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime }}
-            </a>
+            {{ govukButton({
+              text: i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime,
+              name: "saveAndAskMoreTime",
+              href: saveForLaterCTA,
+              value: "saveAndAskMoreTime",
+              classes: "govuk-link button--link"
+            }) }}
           </li>
         </ul>
       {% endset %}

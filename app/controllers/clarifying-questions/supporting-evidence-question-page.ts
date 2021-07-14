@@ -35,6 +35,10 @@ function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: Ne
 function postSupportingEvidenceQuestionPage(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.body.saveAndAskMoreTime) {
+        req.session.appeal.application.saveAndAskForTime = true;
+        return res.redirect(paths.common.askForMoreTimeReason);
+      }
       const options = [
         {
           value: true,

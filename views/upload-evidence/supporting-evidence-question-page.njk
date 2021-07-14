@@ -22,17 +22,22 @@
         errorList[0].text
       )
     }}
-    {% if askForMoreTimeFeatureEnabled %}
-      <div class="panel-background">
-        <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>{{ i18n.common.askForMoreTime.wantToProvideEvidenceLater }}
-            <a href='{{ paths.common.askForMoreTimeReason }}'
-                class='govuk-link'>{{ i18n.common.askForMoreTime.saveAnswerAndAsk | lower }}</a>
-          </li>
-        </ul>
-      </div>
-    {% endif %}
+
+    <div class="panel-background">
+      <h2 class="govuk-heading-s">{{ i18n.common.askForMoreTime.needMoreTimeQuestion }}</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>{{ i18n.common.askForMoreTime.wantToProvideEvidenceLater }}
+            {{ govukButton({
+              text: i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime,
+              name: "saveAndAskMoreTime",
+              href: saveForLaterCTA,
+              value: "saveAndAskMoreTime",
+              classes: "govuk-link button--link"
+            }) }}
+        </li>
+      </ul>
+    </div>
+  
     {{ continueButton() }}
   </form>
   {{ contactUs() }}

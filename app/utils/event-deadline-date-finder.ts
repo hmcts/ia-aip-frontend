@@ -55,6 +55,7 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
   let formattedDeadline;
 
   switch (currentAppealStatus) {
+    case 'appealStartedPartial':
     case 'appealStarted': {
       formattedDeadline = null;
       break;
@@ -74,6 +75,7 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       formattedDeadline = getFormattedEventHistoryDate(history, 'submitReasonsForAppeal', daysToWaitAfterReasonsForAppeal);
       break;
     }
+    case 'awaitingClarifyingQuestionsAnswersPartial':
     case 'awaitingClarifyingQuestionsAnswers': {
       formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestClarifyingQuestions');
       break;

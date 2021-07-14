@@ -503,7 +503,11 @@
           ]
         },
         "makeAnApplication": {
+<<<<<<< HEAD
           "text": "You sent the Tribunal a request.",
+=======
+          "text": "You sent the Tribunal a request",
+>>>>>>> RIA-4385: RFMT timeline
           "links": [
             {
               "title": "What you sent",
@@ -513,6 +517,7 @@
           ]
         },
         "decideAnApplication": {
+<<<<<<< HEAD
           "Granted": "Your request was granted.",
           "Refused": "Your request was refused.",
           "links": [
@@ -522,6 +527,10 @@
               "href": "{{ paths.common.detailsViewers.timeExtension }}"
             }
           ]
+=======
+          "Granted": "Your request was granted",
+          "Refused": "Your request was refused"
+>>>>>>> RIA-4385: RFMT timeline
         },
         "submitTimeExtension": {
           "text": "You asked for more time.",

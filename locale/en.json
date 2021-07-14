@@ -352,7 +352,7 @@
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
-        "lateAppealEnded": {
+        "lateAppealRejected": {
           "description": "Your appeal cannot continue. Read the <a href='{{ paths.common.detailsViewers.outOfTimeDecision }}'>reasons for this decision</a>.",
           "description2": "If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal."
         },

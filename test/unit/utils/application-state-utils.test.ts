@@ -176,7 +176,7 @@ describe('application-state-utils', () => {
 
     });
 
-    it('when application status is lateAppealEnded should get correct \'Do This next section\'', () => {
+    it('when application status is lateAppealRejected should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'appealStarted';
       req.session.appeal.outOfTimeDecisionType = 'rejected';
       req.session.appeal.application.isAppealLate = true;
@@ -505,14 +505,14 @@ describe('application-state-utils', () => {
     expect(result).to.eql('appealSubmitted');
   });
 
-  it('when application status is not appealStarted and outOfTimeDecisionType is rejected and appeal is late status, should be lateAppealEnded.', () => {
+  it('when application status is not appealStarted and outOfTimeDecisionType is rejected and appeal is late status, should be lateAppealRejected.', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.outOfTimeDecisionType = 'rejected';
     req.session.appeal.application.isAppealLate = true;
 
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('lateAppealEnded');
+    expect(result).to.eql('lateAppealRejected');
   });
 
 });

@@ -97,11 +97,11 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         cta: null,
         allowedAskForMoreTime: false
       };
-    case 'lateAppealEnded':
+    case 'lateAppealRejected':
       return {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.lateAppealEnded.description,
-          i18n.pages.overviewPage.doThisNext.lateAppealEnded.description2
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description,
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description2
         ],
         cta: {
           url: null,
@@ -285,7 +285,7 @@ function getAppealStatus(req: Request) {
       return 'lateAppealSubmitted';
     }
     if (req.session.appeal.outOfTimeDecisionType) {
-      return 'lateAppealEnded';
+      return 'lateAppealRejected';
     }
     return req.session.appeal.appealStatus;
   } else {

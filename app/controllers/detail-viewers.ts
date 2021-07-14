@@ -15,7 +15,7 @@ import {
 } from '../service/document-management-service';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
-import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
+// import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
 import { boolToYesNo, toIsoDate } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
@@ -302,43 +302,45 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
   };
 }
 
-function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
-  try {
-    const timeExtensionId = req.params.id;
-    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
-    if (timeExtensionData) {
-      let previousPage: string = paths.common.overview;
-      const data = setupTimeExtension(req, timeExtensionData);
-      return res.render('detail-viewers/time-extension-details-viewer.njk', {
-        previousPage: previousPage,
-        data: data
-      });
-    }
-    // SHOULD THROW NOT FOUND
-    return serverErrorHandler;
-  } catch (error) {
-    next(error);
-  }
-}
+// function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
+//   try {
+//     const timeExtensionId = req.params.id;
+//     // TODO: to refactor timeExtension viewer with RIA-4386
+//     // const timeExtension: Collection<Application> = req.session.appeal.makeAnApplications.find(application => application.id === timeExtensionId);
+//     const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+//     if (timeExtensionData) {
+//       let previousPage: string = paths.common.overview;
+//       const data = setupTimeExtension(req, timeExtensionData);
+//       return res.render('detail-viewers/time-extension-details-viewer.njk', {
+//         previousPage: previousPage,
+//         data: data
+//       });
+//     }
+//     // SHOULD THROW NOT FOUND
+//     return serverErrorHandler;
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
-function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextFunction) {
-  try {
-    const timeExtensionId = req.params.id;
-    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
-    if (timeExtensionData) {
-      let previousPage: string = paths.common.overview;
-      const data = setupTimeExtensionDecision(req, timeExtensionData);
-      return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
-        previousPage: previousPage,
-        data: data
-      });
-    }
-    // SHOULD THROW NOT FOUND
-    return serverErrorHandler;
-  } catch (error) {
-    next(error);
-  }
-}
+// function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextFunction) {
+//   try {
+//     const timeExtensionId = req.params.id;
+//     const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
+//     if (timeExtensionData) {
+//       let previousPage: string = paths.common.overview;
+//       const data = setupTimeExtensionDecision(req, timeExtensionData);
+//       return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
+//         previousPage: previousPage,
+//         data: data
+//       });
+//     }
+//     // SHOULD THROW NOT FOUND
+//     return serverErrorHandler;
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
   try {
@@ -407,8 +409,8 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
   router.get(paths.common.detailsViewers.appealDetails, getAppealDetailsViewer);
   router.get(paths.common.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
-  router.get(paths.common.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
-  router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
+  // router.get(paths.common.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
+  // router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
   router.get(paths.common.detailsViewers.cmaRequirementsAnswer, getCmaRequirementsViewer);
   router.get(paths.common.detailsViewers.noticeEndedAppeal, getNoticeEndedAppeal);
   router.get(paths.common.detailsViewers.outOfTimeDecision, getOutOfTimeDecisionViewer);
@@ -422,8 +424,8 @@ export {
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getNoticeEndedAppeal,
-  getTimeExtensionViewer,
-  getTimeExtensionDecisionViewer,
+  // getTimeExtensionViewer,
+  // getTimeExtensionDecisionViewer,
   setupDetailViewersController,
   setupCmaRequirementsViewer,
   getCmaRequirementsViewer,

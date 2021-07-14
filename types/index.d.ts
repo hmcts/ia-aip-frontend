@@ -101,6 +101,7 @@ interface Appeal {
   outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
+  makeAnApplications?: Collection<Application>[];
 }
 
 interface Hearing {

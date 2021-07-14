@@ -82,4 +82,5 @@ withNightlyPipeline(type, product, component) {
                 reportFiles          : 'index.html',
                 reportName           : 'AIP Frontend Functional Test'
         ])
+    }
 }

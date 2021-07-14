@@ -23,6 +23,7 @@
     "test:smoke": "yarn codecept:e2e -g @smoke",
     "test:smoke-local": "yarn codecept:e2e-local -g @smoke",
     "test:functional": "yarn test:e2e",
+    "test:fullFunctional": "yarn test:functional",
     "test:e2e": "yarn codecept:e2e -g @e2e",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional && yarn test:e2e",
     "test:crossbrowser": "cross-env NODE_ENV=ci IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run-multiple -c test/crossbrowser/saucelabs.config.js --all --steps",

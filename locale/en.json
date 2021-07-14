@@ -310,7 +310,7 @@
       "heading": "You can use the new service",
       "basedOnAnswers": "Based on your answers, you can use the new service to appeal an immigration or asylum decision.",
       "askQuestions": "We will now ask you a few questions so you can send us your appeal details. You will first need to create an account, or sign in if you already have one.",
-      "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:customer.service@justice.gov.uk\"> customer.service@justice.gov.uk/a>"
+      "questions": "If you have any questions about the appeal process, call the Tribunal on<span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span> or email<a class=\"govuk-link govuk-link--no-visited-state\" href=\"mailto:contactia@justice.gov.uk\"> contactia@justice.gov.uk/a>"
     },
     "overviewPage": {
       "title": "Your appeal overview",
@@ -697,7 +697,7 @@
           },
           {
             "smallTitle": "Contact us for help",
-            "desc": "If you need help understanding your Home Office documents, you can call <span class='govuk-body govuk-!-font-weight-bold'>0300 123 1711 </span>or email <a class=\"govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>"
+            "desc": "If you need help understanding your Home Office documents, you can call <span class='govuk-body govuk-!-font-weight-bold'>0300 123 1711 </span>or email <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>"
           }
         ]
       },

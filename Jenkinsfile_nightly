@@ -72,4 +72,14 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'AIP Frontend Mutation tests'
         ])
     }
+
+    after('fullFunctionalTest') {
+        publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "reports/tests/functional/",
+                reportFiles          : 'index.html',
+                reportName           : 'AIP Frontend Functional Test'
+        ])
 }

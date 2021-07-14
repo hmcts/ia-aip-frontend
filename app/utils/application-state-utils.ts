@@ -383,7 +383,7 @@ function getAppealApplicationNextStep(req: Request) {
 export {
   getAppealApplicationNextStep,
   getAppealStatus,
+  getDoThisNextSectionFromAppealState,
   getMoveAppealOfflineReason,
-  getMoveAppealOfflineDate,
-  getDoThisNextSectionFromAppealState
+  getMoveAppealOfflineDate
 };

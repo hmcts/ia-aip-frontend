@@ -82,8 +82,7 @@ describe('Detail viewer Controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeDocumentsViewer);
       expect(routerGetStub).to.have.been.calledWith(paths.common.appealDetailsViewer);
       expect(routerGetStub).to.have.been.calledWith(paths.common.reasonsForAppealViewer);
-      // expect(routerGetStub).to.have.been.calledWith(paths.common.timeExtensionViewer + '/:id');
-      // expect(routerGetStub).to.have.been.calledWith(paths.common.timeExtensionDecisionViewer + '/:id');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.timeExtensionViewer + '/:id');
       expect(routerGetStub).to.have.been.calledWith(paths.common.cmaRequirementsAnswerViewer);
     });
   });

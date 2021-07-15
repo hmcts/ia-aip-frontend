@@ -131,3 +131,10 @@ div.giveFeedback a.giveFeedback,{
   float: left;
   padding-top: 8rem
 }
+
+div.inset-bold {
+  font-size: larger;
+  font-weight: 900;
+  background-color: govuk-colour("light-grey");
+  border-left-color: govuk-colour("black");
+}

@@ -30,6 +30,7 @@ interface CaseData {
   appellantFamilyName: string;
   appellantDateOfBirth: string;
   appellantNationalities: Nationality[];
+  appellantStateless: string;
   appellantAddress: CCDAddress;
   appellantHasFixedAddress: 'Yes' | 'No';
   appellantEmailAddress: string;

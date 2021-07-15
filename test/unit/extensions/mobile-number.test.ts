@@ -1,4 +1,4 @@
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import { expect } from '../../utils/testUtils';
 
 const MobilePhoneNumberExtension = require('../../../extensions/joi/mobile-number');

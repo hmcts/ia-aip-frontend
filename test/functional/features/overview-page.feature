@@ -50,15 +50,15 @@ Feature: Overview page
     Then I click continue
     Then I should see the reasons for appeal decision page
 
-  Scenario: Awaiting Reasons for appeal with time extension
-    Given I have logged in as an appellant in state "awaitingReasonsForAppeal with time extensions"
-    When I visit the overview page
-    Then I should see the 'do this next section' for 'Awaiting reasons for appeal with time extensions' with respond by date '01 January 2020'
+  # Scenario: Awaiting Reasons for appeal with time extension
+  #   Given I have logged in as an appellant in state "awaitingReasonsForAppeal with time extensions"
+  #   When I visit the overview page
+  #   Then I should see the 'do this next section' for 'Awaiting reasons for appeal with time extensions' with respond by date '01 January 2020'
 
-  Scenario: Awaiting Clarifying Questions appeal with time extension
-    Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers with time extensions"
-    When I visit the overview page
-    Then I should see the 'do this next section' for 'Awaiting clarifying questions with time extensions' with respond by date '02 May 2020'
+  # Scenario: Awaiting Clarifying Questions appeal with time extension
+  #   Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers with time extensions"
+  #   When I visit the overview page
+  #   Then I should see the 'do this next section' for 'Awaiting clarifying questions with time extensions' with respond by date '02 May 2020'
 
   Scenario: Awaiting Cma Requirements appeal
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
@@ -71,7 +71,7 @@ Feature: Overview page
     Then I click continue
     Then I should see the cma requirements task-list page
 
-  Scenario: Awaiting CMA requirements appeal with time extension
-    Given I have logged in as an appellant in state "awaitingCmaRequirements with time extensions"
-    When I visit the overview page
-    Then I should see the 'do this next section' for 'awaitingCmaRequirements with time extensions' with respond by date '17 June 2020'
+  # Scenario: Awaiting CMA requirements appeal with time extension
+  #   Given I have logged in as an appellant in state "awaitingCmaRequirements with time extensions"
+  #   When I visit the overview page
+  #   Then I should see the 'do this next section' for 'awaitingCmaRequirements with time extensions' with respond by date '17 June 2020'

@@ -143,9 +143,11 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { application } = req.session.appeal;
+    const stateless = application.personalDetails.stateless;
     const nationality = application.personalDetails && application.personalDetails.nationality || null;
     const nationalitiesOptions = getNationalitiesOptions(countryList, nationality, i18n.pages.nationality.defaultNationality);
     return res.render('appeal-application/personal-details/nationality.njk', {
+      stateless,
       nationalitiesOptions,
       previousPage: paths.appealStarted.dob
     });
@@ -157,7 +159,7 @@ function getNationalityPage(req: Request, res: Response, next: NextFunction) {
 function postNationalityPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!shouldValidateWhenSaveForLater(req.body, 'nationality')) {
+      if (!shouldValidateWhenSaveForLater(req.body, 'nationality', 'stateless')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
       const validation = nationalityValidation(req.body);
@@ -178,11 +180,11 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
           ...req.session.appeal.application,
           personalDetails: {
             ...req.session.appeal.application.personalDetails,
-            nationality: req.body.nationality
+            nationality: req.body.nationality || null,
+            stateless: req.body.stateless || 'hasNationality'
           }
         }
       };
-
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

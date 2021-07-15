@@ -76,7 +76,7 @@
             <p>{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
           {% endif %}
           {% if applicationNextStep.removeAppealFromOnlineReason %}
-            <p>Your appeal was removed from the online service on {{ applicationNextStep.removeAppealFromOnlineDate }}. The reason for this is:</p>
+            <p>Your appeal was removed from the online service on <b>{{ applicationNextStep.removeAppealFromOnlineDate }}</b>. The reason for this is:</p>
             <p>{{ applicationNextStep.removeAppealFromOnlineReason }}</p>
           {% endif %}
           {% if applicationNextStep.info %}

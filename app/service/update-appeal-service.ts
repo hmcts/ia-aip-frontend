@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
+import { formatDate } from '../utils/date-utils';
 import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
@@ -350,7 +351,7 @@ export default class UpdateAppealService {
       appealLastModified: ccdCase.last_modified,
       appealReferenceNumber: caseData.appealReferenceNumber,
       removeAppealFromOnlineReason: caseData.removeAppealFromOnlineReason,
-      removeAppealFromOnlineDate: caseData.removeAppealFromOnlineDate,
+      removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: caseData.appealType || null,

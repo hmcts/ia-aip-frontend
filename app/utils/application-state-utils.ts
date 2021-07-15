@@ -280,12 +280,12 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  if (req.session.appeal.application.isAppealLate) {
+  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== 'ended') {
+    if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
+      return 'lateAppealRejected';
+    }
     if (req.session.appeal.appealStatus === 'appealSubmitted') {
       return 'lateAppealSubmitted';
-    }
-    if (req.session.appeal.outOfTimeDecisionType) {
-      return 'lateAppealRejected';
     }
     return req.session.appeal.appealStatus;
   } else {

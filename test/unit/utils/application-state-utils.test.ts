@@ -525,4 +525,29 @@ describe('application-state-utils', () => {
     expect(result).to.eql('ended');
   });
 
+  it('when application status is ended should get the correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'ended';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.deep.include(
+      {
+        'allowedAskForMoreTime': false,
+        'deadline': 'TBC',
+        descriptionParagraphs: [
+          'Review your <a href=\"{{ paths.common.detailsViewers.noticeEndedAppeal }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.',
+          'If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to ask for the decision to be reviewed by a judge.',
+          'You can do this by emailing <a href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a>. Please include your Appeal reference in the subject line of the email.',
+          '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>',
+          '<a href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>.'
+        ],
+        cta: {
+          url: null,
+          ctaTitle: 'Your appeal has now ended'
+        }
+      }
+    );
+    expect(result.hearingCentreEmail).not.to.be.equal(null);
+  });
+
 });

@@ -395,7 +395,8 @@ export default class UpdateAppealService {
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
-      documentMap
+      documentMap,
+      hearingCentre: caseData.hearingCentre || null
     };
     return appeal;
   }

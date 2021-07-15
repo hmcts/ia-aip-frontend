@@ -145,7 +145,8 @@ describe('update-appeal-service', () => {
       ],
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
-      isHearingLoopNeeded: 'true'
+      isHearingLoopNeeded: 'true',
+      hearingCentre: 'birmingham'
     };
 
   });
@@ -231,6 +232,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(false);
+      expect(req.session.appeal.hearingCentre).eq('birmingham');
     });
 
     it('load time extensions when no time extensions', async () => {

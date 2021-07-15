@@ -1,14 +1,15 @@
 import { Request } from 'express';
-import { getHearingCentre, getHearingDate, getHearingTime } from '../../../app/utils/cma-hearing-details';
+import { setupSecrets } from '../../../app/setupSecrets';
+import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from '../../../app/utils/cma-hearing-details';
 import { getDeadline } from '../../../app/utils/event-deadline-date-finder';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
-
 describe('event-deadline-date-finder', () => {
 
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   const logger: Logger = new Logger();
+  const config = setupSecrets();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -138,51 +139,168 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.equal('11 August 2020');
     });
 
-    it('cmaListed should return the formatted time', () => {
+    it('cmaListed should return the correct hearing centre', () => {
       const result = getHearingCentre(req as Request);
       expect(result).to.be.equal('Taylor House');
     });
 
-    it('cmaListed should return the formatted time', () => {
+    it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'manchester';
       const result = getHearingCentre(req as Request);
       expect(result).to.be.equal('Manchester');
     });
 
-    it('cmaListed should return the formatted time', () => {
+    it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'glasgow';
       const result = getHearingCentre(req as Request);
       expect(result).to.be.equal('Glasgow');
     });
 
-    it('cmaListed should return the formatted time', () => {
+    it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'newport';
       const result = getHearingCentre(req as Request);
       expect(result).to.be.equal('Newport');
     });
 
-    it('cmaListed should return the formatted time', () => {
+    it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'bradford';
       const result = getHearingCentre(req as Request);
       expect(result).to.be.equal('Bradford');
     });
 
-    it('cmaListed should return the formatted time', () => {
+    it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'northShields';
       const result = getHearingCentre(req as Request);
       expect(result).to.be.equal('North Shields');
     });
 
-    it('cmaListed should return the formatted time', () => {
+    it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'hattonCross';
       const result = getHearingCentre(req as Request);
       expect(result).to.be.equal('Hatton Cross');
     });
 
-    it('cmaListed should return the formatted time', () => {
+    it('cmaListed should return the correct hearing centre', () => {
       req.session.appeal.hearing.hearingCentre = 'birmingham';
       const result = getHearingCentre(req as Request);
       expect(result).to.be.equal('Birmingham');
+    });
+
+    it('cmaListed should return a blank hearing centre', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      const result = getHearingCentre(req as Request);
+      expect(result).to.be.equal('');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case not listed', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      req.session.appeal.hearingCentre = 'taylorHouse';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case not listed', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      req.session.appeal.hearingCentre = 'manchester';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_MANCHESTER_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case not listed', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      req.session.appeal.hearingCentre = 'glasgow';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_GLASGOW_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case not listed', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      req.session.appeal.hearingCentre = 'newport';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_NEWPORT_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case not listed', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      req.session.appeal.hearingCentre = 'bradford';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_BRADFORD_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case not listed', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      req.session.appeal.hearingCentre = 'northShields';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case not listed', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      req.session.appeal.hearingCentre = 'hattonCross';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_HATTON_CROSS_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case not listed', () => {
+      req.session.appeal.hearing.hearingCentre = '';
+      req.session.appeal.hearingCentre = 'birmingham';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'taylorHouse';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'manchester';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_MANCHESTER_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'glasgow';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_GLASGOW_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'newport';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_NEWPORT_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'bradford';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_BRADFORD_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'northShields';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_NORTH_SHIELDS_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'hattonCross';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_HATTON_CROSS_EMAIL');
+    });
+
+    it('cmaListed should return the hearing centre email for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'birmingham';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
+    });
+
+    it('getHearingCentreEmail should return the hearing centre email based on the hearing.hearingCentre for an ended case previously listed', () => {
+      req.session.appeal.hearing.hearingCentre = 'birmingham';
+      req.session.appeal.hearingCentre = 'hattonCross';
+      const result = getHearingCentreEmail(req as Request);
+      expect(result).to.be.equal('IA_HEARING_CENTRE_BIRMINGHAM_EMAIL');
     });
 
     it('cmaListed should return the formatted hearing centre', () => {

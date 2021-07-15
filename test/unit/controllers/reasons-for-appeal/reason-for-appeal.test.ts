@@ -145,7 +145,7 @@ describe('Reasons for Appeal Controller', function () {
       req.body.applicationReason = 'Text Word';
       req.body.saveAndAskForMoreTime = 'saveAndAskForMoreTime';
       await postReasonForAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTime.reason);
+      expect(res.redirect).to.have.been.calledWith(paths.common.askForMoreTimeReason);
     });
   });
 

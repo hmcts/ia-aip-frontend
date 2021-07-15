@@ -189,11 +189,7 @@ export default class UpdateAppealService {
       directions = caseData.directions.map((ccdDirection: Collection<CcdDirection>): Direction => {
         const direction: Direction = {
           id: ccdDirection.id as string,
-          tag: ccdDirection.value.tag,
-          parties: ccdDirection.value.parties,
-          dateDue: ccdDirection.value.dateDue,
-          dateSent: ccdDirection.value.dateSent,
-          explanation: ccdDirection.value.explanation
+          ...ccdDirection.value
         };
         return direction;
       });
@@ -213,7 +209,8 @@ export default class UpdateAppealService {
             dueDate: answer.value.dueDate,
             question: answer.value.question,
             answer: answer.value.answer || '',
-            supportingEvidence: evidencesList
+            supportingEvidence: evidencesList,
+            dateResponded: answer.value.dateResponded
           }
         };
       });
@@ -374,13 +371,13 @@ export default class UpdateAppealService {
         evidences: reasonsForAppealDocumentUploads,
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
-      respondentDocuments: respondentDocuments,
+      respondentDocuments,
       ...(_.has(caseData, 'directions')) && { directions },
       // TODO: remove timeExtensionEventsMap if not needed?
       timeExtensionEventsMap: timeExtensionEventsMap,
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       timeExtensions: caseData.makeAnApplications && this.mapMakeAnApplicationTimeExtensionToAppeal(caseData),
-      clarifyingQuestionsAnswers,
+      ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
       cmaRequirements,
       askForMoreTime: {
         ...(_.has(caseData, 'submitTimeExtensionReason')) && { reason: caseData.submitTimeExtensionReason },
@@ -705,7 +702,7 @@ export default class UpdateAppealService {
   }
 
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
-    return clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
+    const ccdCQ = clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
       let supportingEvidence: Collection<SupportingDocument>[];
       if (answer.value.supportingEvidence) {
         supportingEvidence = answer.value.supportingEvidence.map(evidence => this.mapEvidenceToSupportingDocument(evidence, documentMap));
@@ -714,10 +711,11 @@ export default class UpdateAppealService {
         ...answer,
         value: {
           ...answer.value,
-          supportingEvidence
+          ...answer.value.supportingEvidence && { supportingEvidence }
         }
       };
     });
+    return ccdCQ;
   }
   // TODO: remove method if not needed
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {

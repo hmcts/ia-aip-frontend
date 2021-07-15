@@ -94,6 +94,7 @@ describe('Clarifying Questions Check and Send controller', () => {
     });
 
     it('should render CYA template page with evidences', () => {
+      const editParam = '?edit';
       const evidences: Evidence[] = [
         {
           fileId: 'aFileId',
@@ -108,7 +109,7 @@ describe('Clarifying Questions Check and Send controller', () => {
       expect(addSummaryRowStub.thirdCall).to.have.been.calledWith(
         i18n.common.cya.supportingEvidenceRowTitle,
         evidenceList,
-        paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(':id', `1`),
+        paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceUploadFile.replace(':id', `1`) + editParam,
         '<br>'
       );
       expect(addSummaryRowStub.getCall(4)).to.have.been.calledWith(
@@ -148,6 +149,7 @@ describe('Clarifying Questions Check and Send controller', () => {
     it('should submit CQ and redirect to confirmation page', async () => {
       await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
+      appeal.draftClarifyingQuestionsAnswers = [];
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.clarifyingQuestionsAnswers).to.eql(clarifyingQuestions);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.be.undefined;

@@ -22,6 +22,8 @@ function getCurrentState(params) {
       return  'cmaRequirementsSubmitted';
     case 'listCma':
       return 'cmaListed';
+    case 'makeAnApplication':
+      return 'awaitingReasonsForAppeal';
     default:
       throw `Event type ${params.eventType} no current state set`
   }

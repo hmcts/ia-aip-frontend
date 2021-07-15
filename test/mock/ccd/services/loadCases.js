@@ -14,7 +14,9 @@ const usersToCaseData = {
   '10': [ mockData.awaitingCmaRequirementsWithTimeExtensions ],
   '11': [ mockData.submittedCmaRequirements ],
   '12': [ mockData.cmaListed ],
-
+  '14': [ mockData.outOfTimeDecisionGranted ],
+  '15': [ mockData.outOfTimeDecisionRejected ],
+  '16': [ mockData.outOfTimeDecisionInTime ]
 };
 
 module.exports = {

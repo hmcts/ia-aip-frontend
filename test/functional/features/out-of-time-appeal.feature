@@ -1,4 +1,4 @@
-Feature: Out of Time appeal @outOfTime
+Feature: Out of Time appeal @outOfTimeAppeal
   In order to send my appeal out of time
   As a citizen
   I need to explain why my appeal is late

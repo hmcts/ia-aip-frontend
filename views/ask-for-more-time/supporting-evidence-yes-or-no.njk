@@ -13,7 +13,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form action="{{ paths.common.askForMoreTime.evidenceYesNo }}" method="post">
+  <form action="{{ paths.common.askForMoreTimeSupportingEvidence }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {% call govukFieldset({
       legend: {
@@ -24,7 +24,7 @@
     }) %}
       {{ radioButtons(legendText = '',hintText = i18n.pages.evidence.heading, errorMessage = errorList[0].text) }}
       {{ continueButton() }}
-      <a class="cancel-button" href="{{ paths.common.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
+      <a class="cancel-button" href="{{ paths.common.askForMoreTimeCancel }}">{{ i18n.common.buttons.cancel }}</a>
     {% endcall %}
   </form>
 

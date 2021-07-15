@@ -80,6 +80,24 @@ describe('createSummaryRowsFrom', () => {
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
   });
+
+  it('should create rows when appeal is late with evidence', () => {
+    const appeal: Appeal = createDummyAppealApplication();
+    appeal.application.isAppealLate = true;
+    appeal.application.lateAppeal = {
+      reason: 'The reason why I am late',
+      evidence: {
+        fileId: 'fileId',
+        name: 'filename'
+      }
+    };
+
+    const rows: any[] = createSummaryRowsFrom(appeal.application);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(appeal.application.lateAppeal.reason), `<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/fileId'>filename</a>` ], paths.appealStarted.appealLate);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows();
+    mockedRows.push(appealLateRow);
+    expect(rows).to.be.deep.equal(mockedRows);
+  });
 });
 
 describe('Check and Send Controller', () => {

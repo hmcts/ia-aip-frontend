@@ -13,7 +13,7 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form action="{{ paths.common.askForMoreTime.reason }}" method="post" >
+  <form action="{{ paths.common.askForMoreTimeReason }}" method="post" >
     {% call govukFieldset({
       legend: {
         text: i18n.pages.askForMoreTimePage.title,
@@ -47,7 +47,7 @@
         </ul>
       </div>
       {{ continueButton() }}
-      <a class="cancel-button" href="{{ paths.common.askForMoreTime.cancel }}">{{ i18n.common.buttons.cancel }}</a>
+      <a class="cancel-button" href="{{ paths.common.askForMoreTimeCancel }}">{{ i18n.common.buttons.cancel }}</a>
     {% endcall %}
   </form>
   {{ contactUs() }}

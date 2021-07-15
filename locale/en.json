@@ -261,7 +261,7 @@
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",
@@ -379,7 +379,7 @@
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
             }
           },
           "partial": {
@@ -392,7 +392,7 @@
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
             }
           }
         },
@@ -448,7 +448,7 @@
             {
               "title": "What you sent",
               "text": "Your appeal details",
-              "href": "{{ paths.common.detailsViewers.appealDetails }}"
+              "href": "{{ paths.common.appealDetailsViewer }}"
             },
             {
               "title": "Helpful information",
@@ -463,12 +463,12 @@
             {
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
-              "href": "{{ paths.common.detailsViewers.reasonsForAppeal }}"
+              "href": "{{ paths.common.reasonsForAppealViewer }}"
             },
             {
               "title": "Useful documents",
               "text": "Home Office documents about your case",
-              "href": "{{ paths.common.detailsViewers.homeOfficeDocuments }}"
+              "href": "{{ paths.common.homeOfficeDocumentsViewer }}"
             },
             {
               "title": "Helpful information",
@@ -483,7 +483,7 @@
             {
               "title": "What you sent",
               "text": "Reason you needed more time",
-              "href": "{{ paths.common.detailsViewers.timeExtension }}"
+              "href": "{{ paths.common.timeExtensionViewer }}"
             }
           ]
         },
@@ -493,7 +493,7 @@
             {
               "title": "What the Tribunal said ",
               "text": "Reason for decision",
-              "href": "{{ paths.common.detailsViewers.timeExtensionDecision }}"
+              "href": "{{ paths.common.timeExtensionViewerDecision }}"
             }
           ]
         },
@@ -513,7 +513,7 @@
             {
               "title": "What you sent",
               "text": "Your appointment needs",
-              "href": "{{ paths.common.detailsViewers.cmaRequirementsAnswer }}"
+              "href": "{{ paths.common.cmaRequirementsAnswerViewer }}"
             }
           ]
         },
@@ -526,7 +526,7 @@
             {
               "title": "Useful documents",
               "text": "Notice of Ended Appeal",
-              "href": "{{ paths.common.detailsViewers.noticeEndedAppeal }}"
+              "href": "{{ paths.common.noticeEndedAppealViewer }}"
             }
           ]
         },
@@ -540,7 +540,7 @@
             {
               "title": "What the Tribunal said",
               "text": "Reasons for decision",
-              "href": "{{ paths.common.detailsViewers.outOfTimeDecision }}"
+              "href": "{{ paths.common.outOfTimeDecisionViewer }}"
             }
           ]
         }

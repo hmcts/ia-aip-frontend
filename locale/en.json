@@ -1672,7 +1672,14 @@
     }
   },
   "cookieBanner": {
-    "content": "GOV.UK uses cookies to make the site simpler. <a href='/cookie-policy' class='govuk-link' title='Find out more about cookies'>Find out more about cookies</a>"
+    "title":"Cookies on MyHMCTS",
+    "firstParagraph": "We use some essential cookies to make this service work.",
+    "secondParagraph": "We’d also like to use analytics cookies so we can understand how you use the service and make improvements.",
+    "acceptButton": "Accept analytics cookies",
+    "rejectButton": "Reject analytics cookies",
+    "hideButton": "Hide this message",
+    "content": "We use some essential cookies to make this service work.<br /><br />We’d also like to use analytics cookies so we can understand how you use the service and make improvements.",
+    "link": "View cookies"
   },
   "validationErrors": {
     "errorSummary": "There is a problem",

@@ -391,6 +391,7 @@ export {
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getNoticeEndedAppeal,
+  getTimeExtensionSummaryRows,
   getTimeExtensionViewer,
   setupDetailViewersController,
   setupCmaRequirementsViewer,

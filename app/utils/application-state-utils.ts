@@ -185,7 +185,7 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string, pendin
         info: null,
         cta: {
           url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
-          respondByText: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText,
+          respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
           respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime
         },
         allowedAskForMoreTime: true

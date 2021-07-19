@@ -2,7 +2,7 @@ import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 
-const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
+const daysToWaitAfterSubmission: number = config.get('daysToWait.afterSubmission');
 
 import { paths } from '../../paths';
 import { addDaysToDate } from '../../utils/date-utils';

@@ -129,6 +129,7 @@ describe('Confirmation Page Controller', () => {
     const expectedHistory = {
       appealArgumentSection: [ {
         'date': '27 February 2020',
+        'dateObject': sinon.match.any,
         'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
         'links': [
           {
@@ -148,6 +149,7 @@ describe('Confirmation Page Controller', () => {
       ],
       appealDetailsSection: [ {
         'date': '27 February 2020',
+        'dateObject': sinon.match.any,
         'text': 'You sent your appeal details to the Tribunal.',
         'links': [
           {

@@ -16,7 +16,8 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   const eventContent = i18n.pages.overviewPage.timeline[event.id];
 
   let eventObject = {
-    date: new Date(event.createdDate),
+    date: moment(event.createdDate).format('DD MMMM YYYY'),
+    dateObject: new Date(event.createdDate),
     text: eventContent.text || null,
     links: eventContent.links
   };
@@ -47,7 +48,8 @@ function getTimeExtensionsEvents(makeAnApplications: Collection<Application>[]):
   const makeDirectionsFlatMap = makeAnApplications ? makeAnApplications.flatMap(application => {
     const request = {
       id: application.id,
-      date: new Date(application.value.date),
+      date: moment(application.value.date).format('DD MMMM YYYY'),
+      dateObject: new Date(application.value.date),
       text: i18n.pages.overviewPage.timeline.makeAnApplication.text,
       links: [{
         ...i18n.pages.overviewPage.timeline.makeAnApplication.links[0],
@@ -58,7 +60,8 @@ function getTimeExtensionsEvents(makeAnApplications: Collection<Application>[]):
     if (application.value.decision !== 'Pending') {
       decision = {
         id: application.id,
-        date: new Date(application.value.decisionDate),
+        date: moment(application.value.date).format('DD MMMM YYYY'),
+        dateObject: new Date(application.value.decisionDate),
         text: i18n.pages.overviewPage.timeline.decideAnApplication[application.value.decision],
         links: [{
           ...i18n.pages.overviewPage.timeline.decideAnApplication.links[0],
@@ -89,21 +92,11 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const timeExtensions = getTimeExtensionsEvents(req.session.appeal.makeAnApplications);
 
   const argumentSection = appealArgumentSection.concat(timeExtensions)
-    .sort((a: any, b: any) => b.date - a.date)
-    .map(event => {
-      return {
-        ...event,
-        date: moment(event.date).format('DD MMMM YYYY')
-      };
-    });
-
-  const appealSection = appealDetailsSection.map(event => {
-    return { ...event, date: moment(event.date).format('DD MMMM YYYY') };
-  });
+    .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
     appealArgumentSection: argumentSection,
-    appealDetailsSection: appealSection
+    appealDetailsSection
   };
 }
 

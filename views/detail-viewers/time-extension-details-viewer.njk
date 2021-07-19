@@ -3,10 +3,21 @@
 {% set pageTitleName = i18n.pages.detailViewers.timeExtensionRequest.title %}
 
 {% block content %}
-    <h1>{{ i18n.pages.detailViewers.timeExtensionRequest.title  }}</h1>
+  <h1 class="govuk-heading-xl">{{ i18n.pages.detailViewers.timeExtension.title  }}</h1>
+  {{ govukSummaryList({
+    rows: request
+  }) }}
+
+  {% if response %}
+    <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.timeExtension.response.title }}</h2>
     {{ govukSummaryList({
-        rows: data
+      rows: response
     }) }}
+
+    <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.timeExtension.whatNext.title }}</h2>
+    <p>{{ i18n.pages.detailViewers.timeExtension.whatNext[timeExtension.value.decision] | eval | safe }}</p>
+  {% endif %}
+
   {{ contactUs() }}
 {% endblock %}
 

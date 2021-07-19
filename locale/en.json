@@ -491,11 +491,7 @@
           ]
         },
         "makeAnApplication": {
-<<<<<<< HEAD
           "text": "You sent the Tribunal a request.",
-=======
-          "text": "You sent the Tribunal a request",
->>>>>>> RIA-4385: RFMT timeline
           "links": [
             {
               "title": "What you sent",
@@ -505,7 +501,6 @@
           ]
         },
         "decideAnApplication": {
-<<<<<<< HEAD
           "Granted": "Your request was granted.",
           "Refused": "Your request was refused.",
           "links": [
@@ -515,10 +510,6 @@
               "href": "{{ paths.common.detailsViewers.timeExtension }}"
             }
           ]
-=======
-          "Granted": "Your request was granted",
-          "Refused": "Your request was refused"
->>>>>>> RIA-4385: RFMT timeline
         },
         "submitTimeExtension": {
           "text": "You asked for more time.",
@@ -611,8 +602,28 @@
         "question": "Question",
         "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
       },
-      "timeExtensionRequest": {
-        "title": "Reason you needed more time",
+      "timeExtension": {
+        "title": "Your request",
+        "whatNext": {
+          "title": "What happens next",
+          "Refused": "Your appeal will continue. If a Tribunal Caseworker made this decision you can ask for it to be reviewed by a judge by emailing <a class='govuk-link' href='mailto:{{ hearingCentreEmail }}'>{{ hearingCentreEmail }}</a> within 14 days of the date of decision.",
+          "Granted": "A Tribunal Caseworker will give you more time to complete your next task. You will get a notification with the new date soon."
+        },
+        "request": {
+          "whatYouAskedFor": "What you asked for",
+          "wantMoreTime": "I want more time",
+          "reason": "Why you need it",
+          "date": "Date requested"
+        },
+        "response": {
+          "title": "Decision details",
+          "decision": "What the Tribunal decided",
+          "reason": "Reason for the decision",
+          "date": "Date of the decision",
+          "maker": "Who made the decision",
+          "Refused": "Your request was refused",
+          "Granted": "Your request has been granted"
+        },
         "question": "How much time to you need and why do you need it?",
         "supportingEvidence": "Supporting evidence"
       },

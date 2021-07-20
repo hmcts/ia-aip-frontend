@@ -156,8 +156,8 @@ const paths = {
     // Footer links
     cookies: '/cookie-policy',
     termsAndConditions: '/terms-and-conditions',
-    privacyPolicy: '/privacy-policy'
-
+    privacyPolicy: '/privacy-policy',
+    accessibility: '/accessibility-statement'
   }
 };
 export {

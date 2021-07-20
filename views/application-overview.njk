@@ -58,8 +58,17 @@
                 href: applicationNextStep.cta.url
               }) }}
             {% endif %}
-            {% if applicationNextStep.cta.respondByText %}
+            {% if applicationNextStep.cta.respondBy %}
               <p>
+                {{ applicationNextStep.cta.respondBy | eval | safe }}
+                {% if applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
+                  <a href='{{ paths.common.askForMoreTime.reason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                {% endif %}
+              </p>
+            {% endif %}
+            {# TODO: Refactor respondByText and respondByTextAskForMoreTime for respondBy on CQ and CMA states#}
+            {% if applicationNextStep.cta.respondByText %}
+              <p><b>
                 {% if askForMoreTimeInFlight and applicationNextStep.cta.respondByTextAskForMoreTime %}
                   {{ applicationNextStep.cta.respondByTextAskForMoreTime | eval | safe }}
                 {% else %}
@@ -67,7 +76,7 @@
                 {% endif %}
                 {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
                   <a href='{{ paths.common.askForMoreTime.reason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
-                {% endif %}
+                {% endif %}</b>
               </p>
             {% endif %}
           {% endif %}

@@ -38,12 +38,9 @@ export function nowAppealDate(): AppealDate {
   } as AppealDate;
 }
 
-export function hasInflightTimeExtension(appeal: Appeal): boolean {
-  if (appeal.timeExtensions) {
-    const pendingExtension = appeal.timeExtensions.reduce((acc, extension) => {
-      return acc || extension.decision === 'Pending';
-    }, false);
-    return pendingExtension;
+export function hasPendingTimeExtension(appeal: Appeal): boolean {
+  if (appeal.makeAnApplications) {
+    return !!appeal.makeAnApplications.find(application => application.value.decision === 'Pending');
   }
   return false;
 }

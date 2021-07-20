@@ -345,6 +345,14 @@
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
+        "appealTakenOffline": {
+          "description": "Your appeal was removed from the online service on <date of removal>. The reason for this is:",
+          "reason": "",
+          "info": {
+            "title": "What happens next",
+            "description": "Your appeal will continue offline. The Tribunal will contact you soon to tell you what will happen next."
+          }
+        },
         "lateAppealSubmitted": {
           "detailsSent": "Your late appeal details have been sent to the Tribunal.",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",

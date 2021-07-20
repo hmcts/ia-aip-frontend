@@ -97,6 +97,18 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         cta: null,
         allowedAskForMoreTime: false
       };
+    case 'lateAppealRejected':
+      return {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description,
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description2
+        ],
+        cta: {
+          url: null,
+          respondByText: null
+        },
+        allowedAskForMoreTime: false
+      };
     case 'awaitingReasonsForAppeal':
       return {
         descriptionParagraphs: [
@@ -285,7 +297,17 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  return (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus === 'appealSubmitted') ? 'lateAppealSubmitted' : req.session.appeal.appealStatus;
+  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== 'ended') {
+    if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
+      return 'lateAppealRejected';
+    }
+    if (req.session.appeal.appealStatus === 'appealSubmitted') {
+      return 'lateAppealSubmitted';
+    }
+    return req.session.appeal.appealStatus;
+  } else {
+    return req.session.appeal.appealStatus;
+  }
 }
 
 /**

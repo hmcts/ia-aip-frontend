@@ -150,7 +150,7 @@ const paths = {
     whatToExpectAtCMA: '/expect-case-management-appointment',
 
     // Footer links
-    cookies: '/cookie-policy',
+    cookies: '/cookies',
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy',
     accessibility: '/accessibility-statement'

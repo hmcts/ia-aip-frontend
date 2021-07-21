@@ -147,14 +147,13 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W4WSRN2"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
+  <div>
+      <link href="assets/govuk-frontend-3.11.0.min.css" media="screen" rel="stylesheet" type="text/css"/>
+      {% include "cookie-banner/cookie-manager/cookie-banner.njk" %}
+  </div>
 {% endblock %}
 
 {% block header %}
-  <div id="cookie-banner">
-    <div  class="govuk-width-container">
-      <p>{{ i18n.cookieBanner.content | safe }}</p>
-    </div>
-  </div>
   {{ header() }}
 {% endblock %}
 
@@ -215,4 +214,6 @@
 {% block bodyEnd %}
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
   <script src="/all.js"></script>
+  <script src="assets/js/lib/jquery.min.js"></script>
+  <script src="assets/js/cookies-manager.js"></script>
 {% endblock %}

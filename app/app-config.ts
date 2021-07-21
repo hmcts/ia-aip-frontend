@@ -9,7 +9,7 @@ import S2SService from './service/s2s-service';
 import Logger from './utils/logger';
 
 function configureLogger(app: express.Application) {
-  const iKey = config.get('appInsights.instrumentationKey');
+  const iKey: string = config.get('appInsights.instrumentationKey');
   const logger: Logger = new Logger(iKey);
   app.locals.logger = logger;
 }

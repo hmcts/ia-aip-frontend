@@ -6,11 +6,11 @@ import Logger, { getLogLabel } from '../utils/logger';
 const config = setupSecrets();
 
 const otp = require('otp');
-const s2sSecret = config.get('s2s.secret');
-const s2sUrl = config.get('s2s.url');
-const proxyHost = config.get('proxy.host');
-const proxyPort = config.get('proxy.port');
-const microServiceName = config.get('s2s.microserviceName');
+const s2sSecret: string = config.get('s2s.secret');
+const s2sUrl: string = config.get('s2s.url');
+const proxyHost: string = config.get('proxy.host');
+const proxyPort: number = config.get('proxy.port');
+const microServiceName: string = config.get('s2s.microserviceName');
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);

@@ -16,3 +16,4 @@ Dockerfile
 LICENSE
 nodemon.json
 sonar-project.properties
+!cookie-banner/**

@@ -17,12 +17,16 @@ function configureLogger(app: express.Application) {
 function configureNunjucks(app: express.Application) {
   const nunjucksEnv: nunjucks.Environment = nunjucks.configure([
     'views',
-    path.resolve('node_modules/govuk-frontend/')
+    path.resolve('node_modules/govuk-frontend/'),
+    path.resolve('node_modules/govuk-frontend/govuk/'),
+    path.resolve('node_modules/govuk-frontend/govuk/components/'),
+    path.resolve(__dirname, 'cookie-banner/')
   ], {
     autoescape: true,
     express: app,
     noCache: true
   });
+  nunjucksEnv.addGlobal('serviceName', `IAC`);
   nunjucksEnv.addFilter('eval', function(text: string) {
     return nunjucks.renderString(text, this.ctx);
   });

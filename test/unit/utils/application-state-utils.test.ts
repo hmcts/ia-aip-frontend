@@ -133,6 +133,28 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'appealSubmitted';
+      req.session.appeal.application.isAppealLate = true;
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '13 February 2020',
+        'descriptionParagraphs': [
+          'Your late appeal details have been sent to the Tribunal.',
+          "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+        }
+      });
+
+    });
+
     it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
 
@@ -150,6 +172,28 @@ describe('application-state-utils', () => {
           'title': 'Helpful Information',
           'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
         }
+      });
+
+    });
+
+    it('when application status is lateAppealRejected should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'appealStarted';
+      req.session.appeal.outOfTimeDecisionType = 'rejected';
+      req.session.appeal.application.isAppealLate = true;
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        'allowedAskForMoreTime': false,
+        'cta': {
+          url: null,
+          respondByText: null
+        },
+        'deadline': 'TBC',
+        'descriptionParagraphs': [
+          "Your appeal cannot continue. Read the <a href='{{ paths.common.detailsViewers.outOfTimeDecision }}'>reasons for this decision</a>.",
+          'If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal.'
+        ]
       });
 
     });
@@ -443,7 +487,7 @@ describe('application-state-utils', () => {
     );
   });
 
-  it('when application status is appealSubmitted and appeal is late status should be lateAppealSubmitted.', () => {
+  it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;
 
@@ -452,7 +496,7 @@ describe('application-state-utils', () => {
     expect(result).to.eql('lateAppealSubmitted');
   });
 
-  it('when application status is appealSubmitted and appeal is not late status should be lateAppealSubmitted.', () => {
+  it('when application status is appealSubmitted and appeal is not late, status should be appealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = false;
 
@@ -461,13 +505,24 @@ describe('application-state-utils', () => {
     expect(result).to.eql('appealSubmitted');
   });
 
-  it('when application status is not appealSubmitted and appeal is late status should be lateAppealSubmitted.', () => {
+  it('when application has not ended and outOfTimeDecisionType is rejected and appeal is late status, should be lateAppealRejected.', () => {
     req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.outOfTimeDecisionType = 'rejected';
     req.session.appeal.application.isAppealLate = true;
 
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('appealStarted');
+    expect(result).to.eql('lateAppealRejected');
+  });
+
+  it('when application has ended and outOfTimeDecisionType is rejected and appeal is late status, should be ended.', () => {
+    req.session.appeal.appealStatus = 'ended';
+    req.session.appeal.outOfTimeDecisionType = 'rejected';
+    req.session.appeal.application.isAppealLate = true;
+
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('ended');
   });
 
   it('when application status is ended should get the correct Do this next section.', () => {

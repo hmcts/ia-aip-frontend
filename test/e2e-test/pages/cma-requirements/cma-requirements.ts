@@ -15,7 +15,7 @@ module.exports = {
     });
 
     Then(/^I should see the cma requirements detail viewer page$/, async () => {
-      await I.seeInCurrentUrl(paths.common.detailsViewers.cmaRequirementsAnswer);
+      await I.seeInCurrentUrl(paths.common.cmaRequirementsAnswerViewer);
       await I.see('Your appointment needs', 'h1');
     });
 

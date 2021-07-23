@@ -78,13 +78,13 @@ describe('Detail viewer Controller', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
 
       setupDetailViewersController(documentManagementService as DocumentManagementService);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.document + '/:documentId');
-      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.homeOfficeDocuments);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.appealDetails);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.reasonsForAppeal);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.timeExtension + '/:id');
-      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.timeExtensionDecision + '/:id');
-      expect(routerGetStub).to.have.been.calledWith(paths.common.detailsViewers.cmaRequirementsAnswer);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.documentViewer + '/:documentId');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeDocumentsViewer);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.appealDetailsViewer);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.reasonsForAppealViewer);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.timeExtensionViewer + '/:id');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.timeExtensionDecisionViewer + '/:id');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.cmaRequirementsAnswerViewer);
     });
   });
 

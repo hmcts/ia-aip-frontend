@@ -14,6 +14,9 @@ const emailToUserId = {
   'awaitingCmaRequirements-with-time_extension@example.com': '10',
   'cmaRequirementsSubmitted@example.com': '11',
   'cmaListed@example.com': '12',
+  'outOfTimeDecisionGranted@example.com': '14',
+  'outOfTimeDecisionRejected@example.com': '15',
+  'outOfTimeDecisionInTime@example.com': '16',
   'setupcase@example.com': '999'
 };
 

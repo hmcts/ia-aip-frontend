@@ -1,8 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { getCookiesPage,
-    getPrivacyPolicyPage,
-    getTermsAndConditionsPage,
-    setupFooterController } from '../../../app/controllers/footer';
+import {
+  getAccessibilityPage,
+  getCookiesPage,
+  getPrivacyPolicyPage,
+  getTermsAndConditionsPage,
+  setupFooterController
+} from '../../../app/controllers/footer';
 import { paths } from '../../../app/paths';
 import { expect, sinon } from '../../utils/testUtils';
 const express = require('express');
@@ -33,6 +36,7 @@ describe('footer controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.common.cookies);
     expect(routerGetStub).to.have.been.calledWith(paths.common.privacyPolicy);
     expect(routerGetStub).to.have.been.calledWith(paths.common.termsAndConditions);
+    expect(routerGetStub).to.have.been.calledWith(paths.common.accessibility);
   });
 
   it('should render cookies page', () => {
@@ -65,4 +69,13 @@ describe('footer controller', () => {
     });
   });
 
+  it('should render accessibility page', () => {
+    getAccessibilityPage(req as Request, res as Response, next);
+
+    expect(res.render).to.have.been.calledWith('footer/accessibility-statement.njk', {
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      }
+    });
+  });
 });

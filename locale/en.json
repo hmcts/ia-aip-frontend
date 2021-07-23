@@ -1182,6 +1182,100 @@
         }
       ]
     },
+    "accessibilityStatement": {
+      "title": "Accessibility statement for the 'Appeal an immigration or asylum decision' service",
+      "description": "This service allows appellants to submit, track and manage an immigration or asylum appeal online",
+      "sections": [
+        {
+          "content": [
+            "This service is run by HM Courts and Tribunals. We want as many people as possible to be able to use it, so we've designed it to be accessible. For example, you should be able to:",
+            "<ul class='govuk-list govuk-list--bullet'><li>change colours, contrast levels and fonts</li><li>zoom in up to 300% without the text spilling off the screen</li><li>navigate most of the website using just a keyboard</li><li>navigate most of the website using speech recognition software</li><li>listen to most of the website using a screen reader(including the most recent versions of JAWS, NVDA and VoiceOver)</li><li>We've also made the text as simple as possible to understand.</li></ul>",
+            "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://mcmw.abilitynet.org.uk/'>AbilityNet</a> has advice on making your device easier to use if you have a disability."
+          ]
+        },
+        {
+          "title": "How accessible this website is",
+          "content": [
+            "We know some parts of this service may not be accessible:",
+            "<ul class='govuk-list govuk-list--bullet'><li>most older PDF documents are not fully accessible to screen reader software</li></ul>"
+          ]
+        },
+        {
+          "title": "Feedback and contact information",
+          "content": [
+            "If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille:",
+            "<ul class='govuk-list govuk-list--bullet'><li>email <a class=\"govuk-link\" href=\"mailto:HMCTSforms@justice.gov.uk\">HMCTSforms@justice.gov.uk</a></li><li>call 0300 123 1711</li></ul>",
+            "We’ll consider your request and get back to you in 10 working days."
+          ]
+        },
+        {
+          "title": "Reporting accessibility problems with this website",
+          "content": [
+            "We’re always looking to improve the accessibility of this website. If you find any problems that aren’t addressed on this page, or think we’re not meeting accessibility requirements, please contact us:",
+            "Email: <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>",
+            "Telephone: +44 (0) 300 123 1711"
+          ]
+        },
+        {
+          "title": "Enforcement procedure",
+          "content": [
+            "The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’).",
+            "If you’ve contacted us about accessibility and you’re not happy with our response, you can contact the <a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://www.equalityadvisoryservice.com/'>Equality Advisory and Support Service (EASS)</a>."
+          ]
+        },
+        {
+          "title": "Contacting us by phone or visiting us in person",
+          "content": [
+            "If you have a question about accessibility in our Tribunal venues, you can contact the First-tier Tribunal enquiry line: +44 (0) 300 123 1711",
+            "We provide a text relay service for people who are D/deaf, hearing impaired or have a speech impediment.",
+            "The Tribunal venues have audio induction loops and when you submit your appeal, you can also request step-free access, a sign language interpreter or foreign language interpreter."
+          ]
+        },
+        {
+          "title": "Technical information about this website’s accessibility",
+          "content": [
+            "HMCTS is committed to making its website accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018."
+          ]
+        },
+        {
+          "title": "Compliance status",
+          "content": [
+            "This website is compliant with the Web Content Accessibility Guidelines version 2.1 AA standard."
+          ]
+        },
+        {
+          "title": "Content that’s not within the scope of the accessibility regulations",
+          "content": [
+            "<span class='govuk-!-font-weight-bold'>Documents</span>",
+            "Many of our older PDFs and Word documents do not meet accessibility standards - for example, they may not be structured so they’re accessible to a screen reader. This does not meet WCAG 2.1 success criterion 4.1.2 (name, role value).",
+            "Some of our PDFs and Word documents are essential to providing our services. By December 2021, we plan to either fix these or replace them with accessible HTML pages. Any new PDFs or Word documents we publish will meet accessibility standards.",
+            "<span class='govuk-!-font-weight-bold'>Surveys</span>",
+            "Our feedback form and exit survey are both hosted by a third-party provider. We identified a number of accessibility issues with these pages but fixing them is beyond our control. We are liaising with the Ministry of Justice Transforming Performance and Perception team to see what improvements can be made."
+          ]
+        },
+        {
+          "title": "How we tested this website",
+          "content": [
+            "The user interface has been tested by our team using a range of tools.",
+            "<ul class='govuk-list govuk-list--bullet'><li>Axe extension for Chrome and Firefox</li><li>Wave for Chrome and Firefox</li><li>Chrome Lighthouse auditing tool</li><li>tota11y - an accessibility visualisation toolkit</li><li>VoiceOver</li><li>End-to-end testing for all GDS browsers for keyboard use</li></ul>",
+            "Our tester completed the EdX Introduction to Web Accessibility course. "
+          ]
+        },
+        {
+          "title": "What we’re doing to improve accessibility",
+          "content": [
+            "We’re committed to ensuring our services are accessible to all our customers and that they comply with level AA of the Web Content Accessibility Guidelines – WCAG 2.1.",
+            "To help us achieve this, we will commission the <a target='_blank' rel='noopener noreferrer' class='govuk-link' href='https://digitalaccessibilitycentre.org/'>Digital Accessibility Centre (DAC)</a> to carry out a WCAG 2.1 AA level technical compliance audit that includes over 50 hours of testing by users with a wide range of disabilities. We will update this statement with the testing date when it is confirmed. Any issues identified during testing will be reviewed and addressed appropriately. "
+          ]
+        },
+        {
+          "title": "Preparation of this accessibility statement",
+          "content": [
+            "This statement was prepared on 28 July 2021. It was last reviewed on 28 July 2021. "
+          ]
+        }
+      ]
+    },
     "forbidden": {
       "title": "This page is unavailable"
     },
@@ -1833,6 +1927,9 @@
         },
         "privacyPolicy": {
           "text": "Privacy policy"
+        },
+        "accessibility": {
+          "text": "Accessibility statement"
         }
       }
     },

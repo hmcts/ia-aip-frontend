@@ -1,4 +1,4 @@
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { postcodeRegex } from '../regular-expressions';
@@ -207,11 +207,21 @@ function contactDetailsValidation(obj: object) {
 }
 
 function nationalityValidation(obj: object) {
-  const schema = Joi.object({
+  const nationalitySchema = Joi.object({
     nationality: Joi.string().required().empty('').messages({
       'any.required': i18n.validationErrors.nationality.selectNationality
     })
   }).unknown(true);
+
+  const statelessSchema = Joi.object({
+    stateless: Joi.required().messages({
+      'any.required': i18n.validationErrors.nationality.selectNationality
+    })
+  }).unknown(true);
+
+  const schema = Joi.alternatives().try(nationalitySchema, statelessSchema).messages({
+    'alternatives.match': i18n.validationErrors.nationality.selectNationality
+  });
 
   return validate(obj, schema);
 }

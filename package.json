@@ -16,7 +16,7 @@
     "lint": "tslint --project .",
     "test": "yarn test:unit && yarn codecept:functional",
     "test:accessibility": "IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=development USE_REDIS=false mocha test/accessibility/*.ts --exit",
-    "test:unit": "rm -rf test/coverage && cross-env NODE_ENV=test nyc mocha --recursive \"test/unit/**/*.test.ts\"",
+    "test:unit": "rm -rf test/coverage && cross-env NODE_ENV=test nyc mocha --recursive \"test/unit/**/*.test.ts\" --recursive \"app/**/*.test.ts\" --recursive \"client/**/*.test.ts\"",
     "test:coverage": "nyc report",
     "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",
@@ -40,7 +40,6 @@
     }
   },
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "^1.1.2",
     "@hmcts/properties-volume": "^0.0.9",
@@ -63,7 +62,8 @@
     "helmet": "^3.23.3",
     "http-status-codes": "^1.4.0",
     "i18n": "^0.13.2",
-    "jsdom": "^16.6.0",
+    "joi": "^17.4.0",
+    "jsdom": "^16.2.2",
     "jsdom-global": "^3.0.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",

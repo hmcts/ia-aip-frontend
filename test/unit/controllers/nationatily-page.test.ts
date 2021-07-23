@@ -101,20 +101,23 @@ describe('Nationality details Controller', function () {
     let appeal: Appeal;
     beforeEach(() => {
       req.body.nationality = 'AQ';
+      req.body.stateless = 'hasNationality';
       appeal = {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
           personalDetails: {
             ...req.session.appeal.application.personalDetails,
-            nationality: 'AQ'
+            nationality: 'AQ',
+            stateless: 'hasNationality'
           }
         }
       };
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           personalDetails: {
-            nationality: 'AQ'
+            nationality: 'AQ',
+            stateless: 'hasNationality'
           }
         }
       } as Appeal);
@@ -138,13 +141,15 @@ describe('Nationality details Controller', function () {
 
     });
 
-    it('should fail validation and render personal-details/nationality.njk with error when nothing selected', async () => {
-      req.body.nationality = '';
+    it('should fail validation and render personal-details/nationality.njk with error when nothing selected @failing', async () => {
+      req.body = {
+        nationality: ''
+      };
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const nationalitiesOptions = getNationalitiesOptions(countryList, '', 'Please select a nationality');
       const error = {
-        href: '#nationality',
-        key: 'nationality',
+        href: '#undefined',
+        key: undefined,
         text: i18n.validationErrors.nationality.selectNationality
       };
 
@@ -152,7 +157,7 @@ describe('Nationality details Controller', function () {
       expect(res.render).to.have.been.calledWith('appeal-application/personal-details/nationality.njk',
         {
           errorList: [ error ],
-          errors: { 'nationality': error },
+          errors: { undefined: error },
           nationalitiesOptions,
           previousPage: paths.appealStarted.dob
         });

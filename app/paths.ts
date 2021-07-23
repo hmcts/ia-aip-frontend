@@ -106,29 +106,25 @@ const paths = {
     eligible: '/eligible',
 
     // Viewers endpoints
-    detailsViewers: {
-      document: '/view/document',
-      homeOfficeDocuments: '/view/home-office-documents',
-      appealDetails: '/appeal-details',
-      reasonsForAppeal: '/appeal-reasons',
-      timeExtension: '/view/time-extension',
-      timeExtensionDecision: '/view/time-extension-decision',
-      cmaRequirementsAnswer: '/your-appointment-needs',
-      noticeEndedAppeal: '/notice-ended-appeal',
-      outOfTimeDecision: '/out-of-time-decision'
-    },
+    documentViewer: '/view/document',
+    homeOfficeDocumentsViewer: '/view/home-office-documents',
+    appealDetailsViewer: '/appeal-details',
+    reasonsForAppealViewer: '/appeal-reasons',
+    timeExtensionViewer: '/view/time-extension',
+    timeExtensionDecisionViewer: '/view/time-extension-decision',
+    cmaRequirementsAnswerViewer: '/your-appointment-needs',
+    noticeEndedAppealViewer: '/notice-ended-appeal',
+    outOfTimeDecisionViewer: '/out-of-time-decision',
 
     // Ask for more time
-    askForMoreTime: {
-      reason: '/ask-for-more-time',
-      cancel: '/ask-for-more-time-cancel',
-      evidenceYesNo: '/supporting-evidence-more-time',
-      supportingEvidenceUpload: '/provide-supporting-evidence-more-time',
-      supportingEvidenceSubmit: '/provide-supporting-evidence-more-time-submit',
-      supportingEvidenceDelete: '/provide-supporting-evidence-more-time-delete',
-      checkAndSend: '/check-answer-more-time',
-      confirmation: '/request-more-time-sent'
-    },
+    askForMoreTimeReason: '/ask-for-more-time',
+    askForMoreTimeCancel: '/ask-for-more-time-cancel',
+    askForMoreTimeSupportingEvidence: '/supporting-evidence-more-time',
+    askForMoreTimeSupportingEvidenceUpload: '/provide-supporting-evidence-more-time',
+    askForMoreTimeSupportingEvidenceSubmit: '/provide-supporting-evidence-more-time-submit',
+    askForMoreTimeSupportingEvidenceDelete: '/provide-supporting-evidence-more-time-delete',
+    askForMoreTimeCheckAndSend: '/check-answer-more-time',
+    askForMoreTimeConfirmation: '/request-more-time-sent',
 
     // Session extension
     extendSession: '/extend-session',

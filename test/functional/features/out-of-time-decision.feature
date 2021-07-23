@@ -1,4 +1,4 @@
-Feature: Out of time decision
+Feature: Out of time decision @outOfTimeDecision
   In order complete my appeal
   As a citizen
   I can see the out of time appeal decision

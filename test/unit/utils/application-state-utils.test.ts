@@ -195,7 +195,7 @@ describe('application-state-utils', () => {
         },
         'deadline': 'TBC',
         'descriptionParagraphs': [
-          "Your appeal cannot continue. Read the <a href='{{ paths.common.detailsViewers.outOfTimeDecision }}'>reasons for this decision</a>.",
+          "Your appeal cannot continue. Read the <a href='{{ paths.common.outOfTimeDecisionViewer }}'>reasons for this decision</a>.",
           'If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal.'
         ]
       });
@@ -245,7 +245,7 @@ describe('application-state-utils', () => {
           },
           usefulDocuments: {
             title: 'Useful documents',
-            url: "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+            url: "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
           }
         }
       );
@@ -294,7 +294,7 @@ describe('application-state-utils', () => {
         },
         usefulDocuments: {
           title: 'Useful documents',
-          url: "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+          url: "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
         },
         allowedAskForMoreTime: true
       }
@@ -570,7 +570,7 @@ describe('application-state-utils', () => {
         'allowedAskForMoreTime': false,
         'deadline': 'TBC',
         descriptionParagraphs: [
-          'Review your <a href=\"{{ paths.common.detailsViewers.noticeEndedAppeal }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.',
+          'Review your <a href=\"{{ paths.common.noticeEndedAppealViewer }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.',
           'If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to ask for the decision to be reviewed by a judge.',
           'You can do this by emailing <a href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a>. Please include your Appeal reference in the subject line of the email.',
           '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>',

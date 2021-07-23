@@ -1,7 +1,7 @@
 const outOfTimeDecisionRejectedCaseData = {
   "id": 15,
   "jurisdiction": "IA",
-  "state": "appealSubmitted",
+  "state": "ended",
   "version": 35,
   "case_type_id": "Asylum",
   "created_date": "2021-06-09T13:53:13.395876",

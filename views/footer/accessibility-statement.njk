@@ -1,0 +1,14 @@
+{% extends "layout.njk" %}
+{% set pageTitleName = i18n.pages.accessibilityStatement.title %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.accessibilityStatement.title }}</h1>
+  <p>{{ i18n.pages.accessibilityStatement.description | safe }}</p>
+  {% for section in i18n.pages.accessibilityStatement.sections %}
+    <h2 class="govuk-heading-l">{{ section.title }}</h2>
+    {% for item in section.content %}
+      <p>{{ item | safe }}</p>
+    {% endfor %}  
+  {% endfor %}
+  {{ contactUs() }}
+{% endblock %}

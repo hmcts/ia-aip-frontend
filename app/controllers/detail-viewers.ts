@@ -25,9 +25,9 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
 
 function getAppealDetails(req: Request): Array<any> {
   const { application } = req.session.appeal;
-  const nation = countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
-    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${doc.fileId}'>${doc.name}</a>`;
+    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
 
   return [
@@ -44,7 +44,7 @@ function getAppealDetails(req: Request): Array<any> {
     ], null, Delimiter.BREAK_LINE),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [ i18n.appealTypes[application.appealType].name ], null),
     application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ application.lateAppeal.reason ], null),
-    application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>` ])
+    application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>` ])
   ];
 }
 
@@ -54,7 +54,7 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const { data } = reasonsForAppeal[0];
   if (_.has(data, 'reasonsForAppealDocuments')) {
     const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
-      return docStoreUrlToHtmlLink(paths.common.detailsViewers.document, evidence.value.document_filename, evidence.value.document_url, req);
+      return docStoreUrlToHtmlLink(paths.common.documentViewer, evidence.value.document_filename, evidence.value.document_url, req);
     });
     array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
     array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
@@ -82,7 +82,7 @@ function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionColle
   }
   if (_.has(data, 'evidence')) {
     const listOfDocuments: string[] = data.evidence.map(evidence => {
-      return documentToHtmlLink(paths.common.detailsViewers.document, evidence, req);
+      return documentToHtmlLink(paths.common.documentViewer, evidence, req);
     });
     array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.supportingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
   }
@@ -264,7 +264,7 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
 
       documents = respondentDocs.map(document => {
 
-        const urlHtml = toHtmlLink(document.evidence.fileId, document.evidence.name, paths.common.detailsViewers.document);
+        const urlHtml = toHtmlLink(document.evidence.fileId, document.evidence.name, paths.common.documentViewer);
         const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
@@ -369,7 +369,7 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
     const fileNameFormatted = fileNameFormatter(endedAppealDoc.name);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(endedAppealDoc.dateUploaded).format(dayMonthYearFormat)]),
-      addSummaryRow(i18n.pages.detailViewers.common.document, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${endedAppealDoc.fileId}'>${fileNameFormatted}</a>` ])
+      addSummaryRow(i18n.pages.detailViewers.common.document, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${endedAppealDoc.fileId}'>${fileNameFormatted}</a>` ])
     ];
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.endedAppeal.title,
@@ -389,7 +389,7 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
     const data = [
       addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decision, [i18n.pages.detailViewers.outOfTimeDecision.type[req.session.appeal.outOfTimeDecisionType]]),
       addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decisionMaker, [ req.session.appeal.outOfTimeDecisionMaker ]),
-      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.reasonForDecision, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${recordOutOfTimeDecisionDoc.fileId}'>${fileNameFormatted}</a>` ])
+      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.reasonForDecision, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${recordOutOfTimeDecisionDoc.fileId}'>${fileNameFormatted}</a>` ])
     ];
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.outOfTimeDecision.title,
@@ -403,16 +403,15 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
 
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.common.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
-  router.get(paths.common.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
-  router.get(paths.common.detailsViewers.appealDetails, getAppealDetailsViewer);
-  router.get(paths.common.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
-  router.get(paths.common.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
-  router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
-  router.get(paths.common.detailsViewers.cmaRequirementsAnswer, getCmaRequirementsViewer);
-  router.get(paths.common.detailsViewers.noticeEndedAppeal, getNoticeEndedAppeal);
-  router.get(paths.common.detailsViewers.outOfTimeDecision, getOutOfTimeDecisionViewer);
-
+  router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
+  router.get(paths.common.homeOfficeDocumentsViewer, getHoEvidenceDetailsViewer);
+  router.get(paths.common.appealDetailsViewer, getAppealDetailsViewer);
+  router.get(paths.common.reasonsForAppealViewer, getReasonsForAppealViewer);
+  router.get(paths.common.timeExtensionViewer + '/:id', getTimeExtensionViewer);
+  router.get(paths.common.timeExtensionDecisionViewer + '/:id', getTimeExtensionDecisionViewer);
+  router.get(paths.common.cmaRequirementsAnswerViewer, getCmaRequirementsViewer);
+  router.get(paths.common.noticeEndedAppealViewer, getNoticeEndedAppeal);
+  router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
   return router;
 }
 

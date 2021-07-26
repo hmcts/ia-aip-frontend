@@ -97,6 +97,18 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         cta: null,
         allowedAskForMoreTime: false
       };
+    case 'lateAppealRejected':
+      return {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description,
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description2
+        ],
+        cta: {
+          url: null,
+          respondByText: null
+        },
+        allowedAskForMoreTime: false
+      };
     case 'awaitingReasonsForAppeal':
       return {
         descriptionParagraphs: [
@@ -246,6 +258,15 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         },
         allowedAskForMoreTime: false
       };
+    case 'appealTakenOffline':
+      return {
+        descriptionParagraphs: [
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.title,
+          url: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.description
+        }
+      };
     default:
       // default message to avoid app crashing on events that are to be implemented.
       return {
@@ -278,6 +299,8 @@ interface DoThisNextSection {
   time?: string;
   hearingCentre?: string;
   hearingCentreEmail?: string;
+  removeAppealFromOnlineReason?: string;
+  removeAppealFromOnlineDate?: string;
 }
 
 /**
@@ -285,7 +308,33 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  return (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus === 'appealSubmitted') ? 'lateAppealSubmitted' : req.session.appeal.appealStatus;
+  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== 'ended') {
+    if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
+      return 'lateAppealRejected';
+    }
+    if (req.session.appeal.appealStatus === 'appealSubmitted') {
+      return 'lateAppealSubmitted';
+    }
+    return req.session.appeal.appealStatus;
+  } else {
+    return req.session.appeal.appealStatus;
+  }
+}
+
+/**
+ * Returns the reason for moving an appeal offline.
+ * @param req the request containing the session and appeal status
+ */
+function getMoveAppealOfflineReason(req: Request) {
+  return req.session.appeal.removeAppealFromOnlineReason;
+}
+
+/**
+ * Returns the date an appeal is moved offline.
+ * @param req the request containing the session and appeal status
+ */
+function getMoveAppealOfflineDate(req: Request) {
+  return req.session.appeal.removeAppealFromOnlineDate;
 }
 
 /**
@@ -304,6 +353,10 @@ function getAppealApplicationNextStep(req: Request) {
   let doThisNextSection: DoThisNextSection = getDoThisNextSectionFromAppealState(currentAppealStatus);
 
   doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
+  if (currentAppealStatus === 'appealTakenOffline') {
+    doThisNextSection.removeAppealFromOnlineReason = getMoveAppealOfflineReason(req);
+    doThisNextSection.removeAppealFromOnlineDate = getMoveAppealOfflineDate(req);
+  }
   if (currentAppealStatus === States.CMA_LISTED.id) {
     doThisNextSection.date = getHearingDate(req);
     doThisNextSection.time = getHearingTime(req);
@@ -317,5 +370,7 @@ function getAppealApplicationNextStep(req: Request) {
 
 export {
   getAppealApplicationNextStep,
-  getAppealStatus
+  getAppealStatus,
+  getMoveAppealOfflineReason,
+  getMoveAppealOfflineDate
 };

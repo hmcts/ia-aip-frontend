@@ -313,7 +313,9 @@ describe('update-appeal-service', () => {
         value: {
           dateSent: '2020-04-23',
           dueDate: '2020-05-07',
-          question: 'the questions'
+          question: 'the questions',
+          answer: 'draft answer',
+          dateResponded: '2020-05-01'
         }
       };
 
@@ -324,7 +326,8 @@ describe('update-appeal-service', () => {
             dateSent: '2020-04-23',
             dueDate: '2020-05-07',
             question: 'the questions',
-            answer: '',
+            answer: 'draft answer',
+            dateResponded: '2020-05-01',
             supportingEvidence: []
           }
         }

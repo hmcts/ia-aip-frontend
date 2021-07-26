@@ -20,8 +20,10 @@ function getNextState(body) {
       return 'cmaRequirementsSubmitted';
     case 'editCmaRequirements':
       return 'awaitingCmaRequirements';
-      case 'listCma':
+    case 'listCma':
       return 'cmaListed';
+    case 'makeAnApplication':
+      return 'awaitingReasonsForAppeal';
     default:
       throw `Event type ${body.eventType} no next state set`
   }

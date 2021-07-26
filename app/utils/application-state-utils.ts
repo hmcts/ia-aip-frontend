@@ -258,6 +258,15 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         },
         allowedAskForMoreTime: false
       };
+    case 'appealTakenOffline':
+      return {
+        descriptionParagraphs: [
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.title,
+          url: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.description
+        }
+      };
     default:
       // default message to avoid app crashing on events that are to be implemented.
       return {
@@ -290,6 +299,8 @@ interface DoThisNextSection {
   time?: string;
   hearingCentre?: string;
   hearingCentreEmail?: string;
+  removeAppealFromOnlineReason?: string;
+  removeAppealFromOnlineDate?: string;
 }
 
 /**
@@ -311,6 +322,22 @@ function getAppealStatus(req: Request) {
 }
 
 /**
+ * Returns the reason for moving an appeal offline.
+ * @param req the request containing the session and appeal status
+ */
+function getMoveAppealOfflineReason(req: Request) {
+  return req.session.appeal.removeAppealFromOnlineReason;
+}
+
+/**
+ * Returns the date an appeal is moved offline.
+ * @param req the request containing the session and appeal status
+ */
+function getMoveAppealOfflineDate(req: Request) {
+  return req.session.appeal.removeAppealFromOnlineDate;
+}
+
+/**
  * Retrieves the information required based on appeal state also known as 'Do This Next' section
  * In the case of Partially saved appeal it will append 'Partial' to the current state
  * e.g 'awaitingReasonsForAppealPartial' which should be defined in APPEAL_STATE.
@@ -326,6 +353,10 @@ function getAppealApplicationNextStep(req: Request) {
   let doThisNextSection: DoThisNextSection = getDoThisNextSectionFromAppealState(currentAppealStatus);
 
   doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
+  if (currentAppealStatus === 'appealTakenOffline') {
+    doThisNextSection.removeAppealFromOnlineReason = getMoveAppealOfflineReason(req);
+    doThisNextSection.removeAppealFromOnlineDate = getMoveAppealOfflineDate(req);
+  }
   if (currentAppealStatus === States.CMA_LISTED.id) {
     doThisNextSection.date = getHearingDate(req);
     doThisNextSection.time = getHearingTime(req);
@@ -339,5 +370,7 @@ function getAppealApplicationNextStep(req: Request) {
 
 export {
   getAppealApplicationNextStep,
-  getAppealStatus
+  getAppealStatus,
+  getMoveAppealOfflineReason,
+  getMoveAppealOfflineDate
 };

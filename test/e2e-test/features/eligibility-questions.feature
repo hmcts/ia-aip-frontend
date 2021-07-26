@@ -1,4 +1,3 @@
-@smoke
 Feature: Eligibility
   In know if can use the service
   As a citizen

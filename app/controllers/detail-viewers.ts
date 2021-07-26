@@ -25,7 +25,7 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
 
 function getAppealDetails(req: Request): Array<any> {
   const { application } = req.session.appeal;
-  const nation = countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });

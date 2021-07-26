@@ -145,7 +145,8 @@ describe('update-appeal-service', () => {
       ],
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
-      isHearingLoopNeeded: 'true'
+      isHearingLoopNeeded: 'true',
+      hearingCentre: 'birmingham'
     };
 
   });
@@ -231,6 +232,7 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(false);
+      expect(req.session.appeal.hearingCentre).eq('birmingham');
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -311,7 +313,9 @@ describe('update-appeal-service', () => {
         value: {
           dateSent: '2020-04-23',
           dueDate: '2020-05-07',
-          question: 'the questions'
+          question: 'the questions',
+          answer: 'draft answer',
+          dateResponded: '2020-05-01'
         }
       };
 
@@ -322,7 +326,8 @@ describe('update-appeal-service', () => {
             dateSent: '2020-04-23',
             dueDate: '2020-05-07',
             question: 'the questions',
-            answer: '',
+            answer: 'draft answer',
+            dateResponded: '2020-05-01',
             supportingEvidence: []
           }
         }

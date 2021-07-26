@@ -14,7 +14,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   const appealTypeNames: string[] = appealApplication.appealType.split(',').map(appealType => {
     return i18n.appealTypes[appealType].name;
   });
-  const nationality = countryList.find(country => country.value === appealApplication.personalDetails.nationality);
+  const nationality = appealApplication.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === appealApplication.personalDetails.nationality).name;
   const editParameter = '?edit';
   const rows = [
     addSummaryRow(
@@ -30,7 +30,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
-      appealApplication.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${evidence.fileId}'>${evidence.name}</a>`),
+      appealApplication.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
       paths.appealStarted.homeOfficeDecisionLetter + editParameter,
       Delimiter.BREAK_LINE
     ),
@@ -48,7 +48,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.nationality,
-      [ nationality.name ],
+      [ nationality ],
       paths.appealStarted.nationality + editParameter
     ),
     addSummaryRow(
@@ -73,7 +73,7 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
   if (appealApplication.isAppealLate) {
     const lateAppealValue = [ formatTextForCYA(appealApplication.lateAppeal.reason) ];
     if (appealApplication.lateAppeal.evidence) {
-      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
+      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(urlHtml);
     }
     const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);

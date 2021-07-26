@@ -17,7 +17,13 @@
     </div>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        {{ progressBar(stages) }}
+        {% if ended %}
+        <div class="govuk-inset-text inset-bold">
+          {{ i18n.pages.overviewPage.endedInsert }}
+        </div>      
+        {% else %}
+          {{ progressBar(stages) }}
+        {% endif %}
         <h2 class="govuk-heading-m">
           {{ i18n.pages.overviewPage.doThisNext.toDo if applicationNextStep.cta else i18n.pages.overviewPage.doThisNext.nothingToDo }}
         </h2>
@@ -32,6 +38,9 @@
           </div>
         {% endif %}
         <div class="overview-banner govuk-!-margin-top-0">
+          {% if applicationNextStep.cta.ctaTitle %}
+             <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ applicationNextStep.cta.ctaTitle }}</h3>
+          {% endif %}
           {% if askForMoreTimeInFlight and applicationNextStep.descriptionParagraphsAskForMoreTime %}
             {% set descriptionParagraphs = applicationNextStep.descriptionParagraphsAskForMoreTime %}
           {% else %}
@@ -57,7 +66,7 @@
                   {{ applicationNextStep.cta.respondByText | eval | safe }}
                 {% endif %}
                 {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
-                  <a href='{{ paths.common.askForMoreTime.reason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                  <a href='{{ paths.common.askForMoreTimeReason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
                 {% endif %}
               </p>
             {% endif %}
@@ -65,6 +74,10 @@
           {% if applicationNextStep.usefulDocuments %}
             <p><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
             <p>{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
+          {% endif %}
+          {% if applicationNextStep.removeAppealFromOnlineReason %}
+            <p>Your appeal was removed from the online service on <b>{{ applicationNextStep.removeAppealFromOnlineDate }}</b>. The reason for this is:</p>
+            <p>{{ applicationNextStep.removeAppealFromOnlineReason }}</p>
           {% endif %}
           {% if applicationNextStep.info %}
             <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span></p>

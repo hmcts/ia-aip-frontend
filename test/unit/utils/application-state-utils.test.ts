@@ -1,5 +1,9 @@
 import { Request } from 'express';
-import { getAppealApplicationNextStep, getAppealStatus } from '../../../app/utils/application-state-utils';
+import {
+  getAppealApplicationNextStep,
+  getAppealStatus, getMoveAppealOfflineDate,
+  getMoveAppealOfflineReason
+} from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -133,6 +137,28 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'appealSubmitted';
+      req.session.appeal.application.isAppealLate = true;
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        'allowedAskForMoreTime': false,
+        'cta': null,
+        'deadline': '13 February 2020',
+        'descriptionParagraphs': [
+          'Your late appeal details have been sent to the Tribunal.',
+          "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
+        ],
+        'info': {
+          'title': 'Helpful Information',
+          'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+        }
+      });
+
+    });
+
     it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', () => {
       req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
 
@@ -150,6 +176,28 @@ describe('application-state-utils', () => {
           'title': 'Helpful Information',
           'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
         }
+      });
+
+    });
+
+    it('when application status is lateAppealRejected should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'appealStarted';
+      req.session.appeal.outOfTimeDecisionType = 'rejected';
+      req.session.appeal.application.isAppealLate = true;
+
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        'allowedAskForMoreTime': false,
+        'cta': {
+          url: null,
+          respondByText: null
+        },
+        'deadline': 'TBC',
+        'descriptionParagraphs': [
+          "Your appeal cannot continue. Read the <a href='{{ paths.common.outOfTimeDecisionViewer }}'>reasons for this decision</a>.",
+          'If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal.'
+        ]
       });
 
     });
@@ -197,7 +245,7 @@ describe('application-state-utils', () => {
           },
           usefulDocuments: {
             title: 'Useful documents',
-            url: "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+            url: "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
           }
         }
       );
@@ -246,7 +294,7 @@ describe('application-state-utils', () => {
         },
         usefulDocuments: {
           title: 'Useful documents',
-          url: "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+          url: "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
         },
         allowedAskForMoreTime: true
       }
@@ -443,7 +491,26 @@ describe('application-state-utils', () => {
     );
   });
 
-  it('when application status is appealSubmitted and appeal is late status should be lateAppealSubmitted.', () => {
+  it('when application status is appealTakenOffline should get correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'appealTakenOffline';
+    req.session.appeal.removeAppealFromOnlineReason = 'Reason to move an appeal offline';
+    req.session.appeal.removeAppealFromOnlineDate = '2021-06-30';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.deep.include(
+      {
+        descriptionParagraphs: [
+        ],
+        'info': {
+          'title': 'What happens next',
+          'url': 'Your appeal will continue offline. The Tribunal will contact you soon to tell you what will happen next.'
+        }
+      }
+    );
+  });
+
+  it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;
 
@@ -452,7 +519,7 @@ describe('application-state-utils', () => {
     expect(result).to.eql('lateAppealSubmitted');
   });
 
-  it('when application status is appealSubmitted and appeal is not late status should be lateAppealSubmitted.', () => {
+  it('when application status is appealSubmitted and appeal is not late, status should be appealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = false;
 
@@ -461,13 +528,61 @@ describe('application-state-utils', () => {
     expect(result).to.eql('appealSubmitted');
   });
 
-  it('when application status is not appealSubmitted and appeal is late status should be lateAppealSubmitted.', () => {
+  it('when application status is appealTakenOffline and removeAppealFromOnlineReason and date can be read.', () => {
+    req.session.appeal.removeAppealFromOnlineReason = 'Reason to move an appeal offline';
+    req.session.appeal.removeAppealFromOnlineDate = '2021-06-30';
+    req.session.appeal.application.isAppealLate = false;
+
+    const result = getMoveAppealOfflineReason(req as Request);
+    const offlineDate = getMoveAppealOfflineDate(req as Request);
+
+    expect(result).to.eql('Reason to move an appeal offline');
+    expect(offlineDate).to.eql('2021-06-30');
+  });
+
+  it('when application has not ended and outOfTimeDecisionType is rejected and appeal is late status, should be lateAppealRejected.', () => {
     req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.outOfTimeDecisionType = 'rejected';
     req.session.appeal.application.isAppealLate = true;
 
     const result = getAppealStatus(req as Request);
 
-    expect(result).to.eql('appealStarted');
+    expect(result).to.eql('lateAppealRejected');
+  });
+
+  it('when application has ended and outOfTimeDecisionType is rejected and appeal is late status, should be ended.', () => {
+    req.session.appeal.appealStatus = 'ended';
+    req.session.appeal.outOfTimeDecisionType = 'rejected';
+    req.session.appeal.application.isAppealLate = true;
+
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('ended');
+  });
+
+  it('when application status is ended should get the correct Do this next section.', () => {
+    req.session.appeal.appealStatus = 'ended';
+
+    const result = getAppealApplicationNextStep(req as Request);
+
+    expect(result).to.deep.include(
+      {
+        'allowedAskForMoreTime': false,
+        'deadline': 'TBC',
+        descriptionParagraphs: [
+          'Review your <a href=\"{{ paths.common.noticeEndedAppealViewer }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.',
+          'If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to ask for the decision to be reviewed by a judge.',
+          'You can do this by emailing <a href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a>. Please include your Appeal reference in the subject line of the email.',
+          '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>',
+          '<a href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>.'
+        ],
+        cta: {
+          url: null,
+          ctaTitle: 'Your appeal has now ended'
+        }
+      }
+    );
+    expect(result.hearingCentreEmail).not.to.be.equal(null);
   });
 
 });

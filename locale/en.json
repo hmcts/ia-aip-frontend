@@ -261,7 +261,7 @@
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
-      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
+      "usefulInfo": "It may be helpful to look at the <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents</a> (opens in a new window). They include your decision letter and other information about your case.",
       "textTitle": "<span class='govuk-body govuk-!-font-weight-bold'> Tell us in your own words</span> - you don't have to have perfect English.",
       "howToAnswer": "How to answer this question",
       "bulletOne": "Carefully read your Home Office decision letter",
@@ -320,6 +320,7 @@
       "telephoneNumber": "0300 123 1711",
       "email": "Email:",
       "emailLink": "contactia@justice.gov.uk",
+      "endedInsert": "This appeal has ended",
       "time": "Monday to Friday, 8:30am to 5pm",
       "charges": "Find out about call charges",
       "newWindow": "(opens in a new window)",
@@ -344,6 +345,14 @@
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
+        "appealTakenOffline": {
+          "description": "Your appeal was removed from the online service on <date of removal>. The reason for this is:",
+          "reason": "",
+          "info": {
+            "title": "What happens next",
+            "description": "Your appeal will continue offline. The Tribunal will contact you soon to tell you what will happen next."
+          }
+        },
         "lateAppealSubmitted": {
           "detailsSent": "Your late appeal details have been sent to the Tribunal.",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
@@ -351,6 +360,10 @@
             "title": "Helpful Information",
             "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
+        },
+        "lateAppealRejected": {
+          "description": "Your appeal cannot continue. Read the <a href='{{ paths.common.outOfTimeDecisionViewer }}'>reasons for this decision</a>.",
+          "description2": "If you do not contact the Tribunal within 14 days of the decision, a Tribunal Caseworker will end the appeal."
         },
         "cmaRequirementsSubmitted": {
           "description": "A Tribunal Caseworker is looking at your answers and will contact you with details of your case management appointment and tell you what to do next.",
@@ -379,7 +392,7 @@
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
             }
           },
           "partial": {
@@ -392,7 +405,7 @@
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.detailsViewers.homeOfficeDocuments }}'>Home Office documents about your case</a>"
+              "url": "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
             }
           }
         },
@@ -419,6 +432,16 @@
         "clarifyingQuestionsAnswersSubmitted": {
           "description": "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.",
           "dueDate": "This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that."
+        },
+        "ended": {
+          "description": "ended desc",
+          "dueDate": "ended  should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that.",
+          "ctaTitle": "Your appeal has now ended",
+          "ctaInstruction": "Review your <a href=\"{{ paths.common.noticeEndedAppealViewer }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.",
+          "ctaReview": "If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to ask for the decision to be reviewed by a judge.",
+          "ctaContact": "You can do this by emailing <a href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a>. Please include your Appeal reference in the subject line of the email.",
+          "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
+          "ctaFeedbackDescription": "<a href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
         },
         "cmaListed": {
           "description": "The Tribunal has set a date for your case management appointment. Here are the details:",
@@ -448,7 +471,7 @@
             {
               "title": "What you sent",
               "text": "Your appeal details",
-              "href": "{{ paths.common.detailsViewers.appealDetails }}"
+              "href": "{{ paths.common.appealDetailsViewer }}"
             },
             {
               "title": "Helpful information",
@@ -463,12 +486,12 @@
             {
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
-              "href": "{{ paths.common.detailsViewers.reasonsForAppeal }}"
+              "href": "{{ paths.common.reasonsForAppealViewer }}"
             },
             {
               "title": "Useful documents",
               "text": "Home Office documents about your case",
-              "href": "{{ paths.common.detailsViewers.homeOfficeDocuments }}"
+              "href": "{{ paths.common.homeOfficeDocumentsViewer }}"
             },
             {
               "title": "Helpful information",
@@ -483,7 +506,7 @@
             {
               "title": "What you sent",
               "text": "Reason you needed more time",
-              "href": "{{ paths.common.detailsViewers.timeExtension }}"
+              "href": "{{ paths.common.timeExtensionViewer }}"
             }
           ]
         },
@@ -493,7 +516,7 @@
             {
               "title": "What the Tribunal said ",
               "text": "Reason for decision",
-              "href": "{{ paths.common.detailsViewers.timeExtensionDecision }}"
+              "href": "{{ paths.common.timeExtensionViewerDecision }}"
             }
           ]
         },
@@ -513,7 +536,7 @@
             {
               "title": "What you sent",
               "text": "Your appointment needs",
-              "href": "{{ paths.common.detailsViewers.cmaRequirementsAnswer }}"
+              "href": "{{ paths.common.cmaRequirementsAnswerViewer }}"
             }
           ]
         },
@@ -526,7 +549,7 @@
             {
               "title": "Useful documents",
               "text": "Notice of Ended Appeal",
-              "href": "{{ paths.common.detailsViewers.noticeEndedAppeal }}"
+              "href": "{{ paths.common.noticeEndedAppealViewer }}"
             }
           ]
         },
@@ -540,7 +563,7 @@
             {
               "title": "What the Tribunal said",
               "text": "Reasons for decision",
-              "href": "{{ paths.common.detailsViewers.outOfTimeDecision }}"
+              "href": "{{ paths.common.outOfTimeDecisionViewer }}"
             }
           ]
         }
@@ -1163,6 +1186,100 @@
             "The information you submit will be deleted 2 years after the Tribunal has issued its decision and the last update has been made to your appeal.",
             "If the Tribunal doesn’t make a decision about your appeal (for example, it is withdrawn, or both parties agree) then the information you provide will be deleted 2 years after the appeal has been closed and the last update made.",
             "If you make a complaint against the Tribunal then information about the appeal is stored for 3 years after the last update on the complaint."
+          ]
+        }
+      ]
+    },
+    "accessibilityStatement": {
+      "title": "Accessibility statement for the 'Appeal an immigration or asylum decision' service",
+      "description": "This service allows appellants to submit, track and manage an immigration or asylum appeal online",
+      "sections": [
+        {
+          "content": [
+            "This service is run by HM Courts and Tribunals. We want as many people as possible to be able to use it, so we've designed it to be accessible. For example, you should be able to:",
+            "<ul class='govuk-list govuk-list--bullet'><li>change colours, contrast levels and fonts</li><li>zoom in up to 300% without the text spilling off the screen</li><li>navigate most of the website using just a keyboard</li><li>navigate most of the website using speech recognition software</li><li>listen to most of the website using a screen reader(including the most recent versions of JAWS, NVDA and VoiceOver)</li><li>We've also made the text as simple as possible to understand.</li></ul>",
+            "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://mcmw.abilitynet.org.uk/'>AbilityNet</a> has advice on making your device easier to use if you have a disability."
+          ]
+        },
+        {
+          "title": "How accessible this website is",
+          "content": [
+            "We know some parts of this service may not be accessible:",
+            "<ul class='govuk-list govuk-list--bullet'><li>most older PDF documents are not fully accessible to screen reader software</li></ul>"
+          ]
+        },
+        {
+          "title": "Feedback and contact information",
+          "content": [
+            "If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille:",
+            "<ul class='govuk-list govuk-list--bullet'><li>email <a class=\"govuk-link\" href=\"mailto:HMCTSforms@justice.gov.uk\">HMCTSforms@justice.gov.uk</a></li><li>call 0300 123 1711</li></ul>",
+            "We’ll consider your request and get back to you in 10 working days."
+          ]
+        },
+        {
+          "title": "Reporting accessibility problems with this website",
+          "content": [
+            "We’re always looking to improve the accessibility of this website. If you find any problems that aren’t addressed on this page, or think we’re not meeting accessibility requirements, please contact us:",
+            "Email: <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>",
+            "Telephone: +44 (0) 300 123 1711"
+          ]
+        },
+        {
+          "title": "Enforcement procedure",
+          "content": [
+            "The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’).",
+            "If you’ve contacted us about accessibility and you’re not happy with our response, you can contact the <a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://www.equalityadvisoryservice.com/'>Equality Advisory and Support Service (EASS)</a>."
+          ]
+        },
+        {
+          "title": "Contacting us by phone or visiting us in person",
+          "content": [
+            "If you have a question about accessibility in our Tribunal venues, you can contact the First-tier Tribunal enquiry line: +44 (0) 300 123 1711",
+            "We provide a text relay service for people who are D/deaf, hearing impaired or have a speech impediment.",
+            "The Tribunal venues have audio induction loops and when you submit your appeal, you can also request step-free access, a sign language interpreter or foreign language interpreter."
+          ]
+        },
+        {
+          "title": "Technical information about this website’s accessibility",
+          "content": [
+            "HMCTS is committed to making its website accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018."
+          ]
+        },
+        {
+          "title": "Compliance status",
+          "content": [
+            "This website is compliant with the Web Content Accessibility Guidelines version 2.1 AA standard."
+          ]
+        },
+        {
+          "title": "Content that’s not within the scope of the accessibility regulations",
+          "content": [
+            "<span class='govuk-!-font-weight-bold'>Documents</span>",
+            "Many of our older PDFs and Word documents do not meet accessibility standards - for example, they may not be structured so they’re accessible to a screen reader. This does not meet WCAG 2.1 success criterion 4.1.2 (name, role value).",
+            "Some of our PDFs and Word documents are essential to providing our services. By December 2021, we plan to either fix these or replace them with accessible HTML pages. Any new PDFs or Word documents we publish will meet accessibility standards.",
+            "<span class='govuk-!-font-weight-bold'>Surveys</span>",
+            "Our feedback form and exit survey are both hosted by a third-party provider. We identified a number of accessibility issues with these pages but fixing them is beyond our control. We are liaising with the Ministry of Justice Transforming Performance and Perception team to see what improvements can be made."
+          ]
+        },
+        {
+          "title": "How we tested this website",
+          "content": [
+            "The user interface has been tested by our team using a range of tools.",
+            "<ul class='govuk-list govuk-list--bullet'><li>Axe extension for Chrome and Firefox</li><li>Wave for Chrome and Firefox</li><li>Chrome Lighthouse auditing tool</li><li>tota11y - an accessibility visualisation toolkit</li><li>VoiceOver</li><li>End-to-end testing for all GDS browsers for keyboard use</li></ul>",
+            "Our tester completed the EdX Introduction to Web Accessibility course. "
+          ]
+        },
+        {
+          "title": "What we’re doing to improve accessibility",
+          "content": [
+            "We’re committed to ensuring our services are accessible to all our customers and that they comply with level AA of the Web Content Accessibility Guidelines – WCAG 2.1.",
+            "To help us achieve this, we will commission the <a target='_blank' rel='noopener noreferrer' class='govuk-link' href='https://digitalaccessibilitycentre.org/'>Digital Accessibility Centre (DAC)</a> to carry out a WCAG 2.1 AA level technical compliance audit that includes over 50 hours of testing by users with a wide range of disabilities. We will update this statement with the testing date when it is confirmed. Any issues identified during testing will be reviewed and addressed appropriately. "
+          ]
+        },
+        {
+          "title": "Preparation of this accessibility statement",
+          "content": [
+            "This statement was prepared on 28 July 2021. It was last reviewed on 28 July 2021. "
           ]
         }
       ]
@@ -1818,6 +1935,9 @@
         },
         "privacyPolicy": {
           "text": "Privacy policy"
+        },
+        "accessibility": {
+          "text": "Accessibility statement"
         }
       }
     },

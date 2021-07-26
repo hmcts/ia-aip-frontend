@@ -68,7 +68,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.common.askForMoreTime.reason);
+        return res.redirect(paths.common.askForMoreTimeReason);
       }
 
       return getConditionalRedirectUrl(req, res, paths.awaitingReasonsForAppeal.supportingEvidence);

@@ -1,3 +1,4 @@
+import config from 'config';
 import { Request } from 'express';
 import moment from 'moment';
 import { dayMonthYearFormat, timeFormat } from './date-utils';
@@ -42,8 +43,32 @@ function getHearingCentre(req: Request): string {
   }
 }
 
+function getHearingCentreEmail(req: Request): string {
+  const hearingCentre = (req.session.appeal.hearing.hearingCentre !== '') ? req.session.appeal.hearing.hearingCentre : req.session.appeal.hearingCentre;
+  switch (hearingCentre) {
+    case 'taylorHouse':
+      return config.get('hearingCentres.taylorHouseEmail');
+    case 'manchester':
+      return config.get('hearingCentres.manchesterEmail');
+    case 'newport':
+      return config.get('hearingCentres.newportEmail');
+    case 'bradford':
+      return config.get('hearingCentres.bradfordEmail');
+    case 'northShields':
+      return config.get('hearingCentres.northShieldsEmail');
+    case 'birmingham':
+      return config.get('hearingCentres.birminghamEmail');
+    case 'hattonCross':
+      return config.get('hearingCentres.hattonCrossEmail');
+    case 'glasgow':
+      return config.get('hearingCentres.glasgowEmail');
+    default:
+      return '';
+  }
+}
 export {
   getHearingDate,
   getHearingTime,
-  getHearingCentre
+  getHearingCentre,
+  getHearingCentreEmail
 };

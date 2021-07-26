@@ -25,11 +25,14 @@ interface CaseData {
   appealType: string;
   homeOfficeReferenceNumber: string;
   appealReferenceNumber: string;
+  removeAppealFromOnlineReason: string;
+  removeAppealFromOnlineDate: string;
   homeOfficeDecisionDate: string;
   appellantGivenNames: string;
   appellantFamilyName: string;
   appellantDateOfBirth: string;
   appellantNationalities: Nationality[];
+  appellantStateless: string;
   appellantAddress: CCDAddress;
   appellantHasFixedAddress: 'Yes' | 'No';
   appellantEmailAddress: string;
@@ -75,6 +78,7 @@ interface CaseData {
   recordedOutOfTimeDecision: string;
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];
+  hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;

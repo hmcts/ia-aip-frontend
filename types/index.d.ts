@@ -80,6 +80,8 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
+  removeAppealFromOnlineReason?: string;
+  removeAppealFromOnlineDate?: string;
   application: AppealApplication;
   reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;
@@ -96,6 +98,7 @@ interface Appeal {
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
+  hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;
@@ -158,6 +161,7 @@ interface AppealApplication {
     familyName: string;
     dob: AppealDate;
     nationality?: string;
+    stateless?: string;
     address?: {
       line1?: string;
       line2?: string;
@@ -274,6 +278,7 @@ interface Direction {
   dateDue: string;
   dateSent: string;
   explanation: string;
+  clarifyingQuestions?: ClarifyingQuestion;
 }
 
 interface ClarifyingQuestion<T> {

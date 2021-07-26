@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
+import { formatDate } from '../utils/date-utils';
 import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
@@ -100,8 +101,7 @@ export default class UpdateAppealService {
     const listCmaHearingCentre = caseData.listCaseHearingCentre || '';
     const listCmaHearingLength = caseData.listCaseHearingLength || '';
     const listCmaHearingDate = caseData.listCaseHearingDate || '';
-    // TODO: is timeExtensionEventsMap needed?
-    let timeExtensionEventsMap: TimeExtensionEventMap[] = [];
+    let timeExtensionEventsMap: TimeExtensionEventMap[];
 
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
@@ -189,11 +189,7 @@ export default class UpdateAppealService {
       directions = caseData.directions.map((ccdDirection: Collection<CcdDirection>): Direction => {
         const direction: Direction = {
           id: ccdDirection.id as string,
-          tag: ccdDirection.value.tag,
-          parties: ccdDirection.value.parties,
-          dateDue: ccdDirection.value.dateDue,
-          dateSent: ccdDirection.value.dateSent,
-          explanation: ccdDirection.value.explanation
+          ...ccdDirection.value
         };
         return direction;
       });
@@ -213,7 +209,8 @@ export default class UpdateAppealService {
             dueDate: answer.value.dueDate,
             question: answer.value.question,
             answer: answer.value.answer || '',
-            supportingEvidence: evidencesList
+            supportingEvidence: evidencesList,
+            dateResponded: answer.value.dateResponded
           }
         };
       });
@@ -350,6 +347,8 @@ export default class UpdateAppealService {
       appealCreatedDate: ccdCase.created_date,
       appealLastModified: ccdCase.last_modified,
       appealReferenceNumber: caseData.appealReferenceNumber,
+      removeAppealFromOnlineReason: caseData.removeAppealFromOnlineReason,
+      removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: caseData.appealType || null,
@@ -364,6 +363,7 @@ export default class UpdateAppealService {
           familyName: caseData.appellantFamilyName,
           dob: dateOfBirth,
           nationality: caseData.appellantNationalities ? caseData.appellantNationalities[0].value.code : null,
+          ...caseData.appellantStateless && { stateless: caseData.appellantStateless },
           address: appellantAddress
         },
         addressLookup: {},
@@ -374,13 +374,14 @@ export default class UpdateAppealService {
         evidences: reasonsForAppealDocumentUploads,
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
-      respondentDocuments: respondentDocuments,
+      ...respondentDocuments && { respondentDocuments },
       ...(_.has(caseData, 'directions')) && { directions },
-      // TODO: remove timeExtensionEventsMap if not needed?
-      timeExtensionEventsMap: timeExtensionEventsMap,
+      ...timeExtensionEventsMap && { timeExtensionEventsMap },
+      ...timeExtensions && { timeExtensions },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
+      ...clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
       timeExtensions: caseData.makeAnApplications && this.mapMakeAnApplicationTimeExtensionToAppeal(caseData),
-      clarifyingQuestionsAnswers,
+      ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
       cmaRequirements,
       askForMoreTime: {
         ...(_.has(caseData, 'submitTimeExtensionReason')) && { reason: caseData.submitTimeExtensionReason },
@@ -395,7 +396,8 @@ export default class UpdateAppealService {
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
-      documentMap
+      documentMap,
+      hearingCentre: caseData.hearingCentre || null
     };
     return appeal;
   }
@@ -635,9 +637,9 @@ export default class UpdateAppealService {
     if (askForMoreTime && askForMoreTime.reason) {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
     }
-
     caseData = {
       ...caseData,
+      ...appeal.application.personalDetails.stateless && { appellantStateless: appeal.application.personalDetails.stateless },
       ...appeal.draftClarifyingQuestionsAnswers && {
         draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
       },
@@ -705,7 +707,7 @@ export default class UpdateAppealService {
   }
 
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
-    return clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
+    const ccdCQ = clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
       let supportingEvidence: Collection<SupportingDocument>[];
       if (answer.value.supportingEvidence) {
         supportingEvidence = answer.value.supportingEvidence.map(evidence => this.mapEvidenceToSupportingDocument(evidence, documentMap));
@@ -714,10 +716,11 @@ export default class UpdateAppealService {
         ...answer,
         value: {
           ...answer.value,
-          supportingEvidence
+          ...answer.value.supportingEvidence && { supportingEvidence }
         }
       };
     });
+    return ccdCQ;
   }
   // TODO: remove method if not needed
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {

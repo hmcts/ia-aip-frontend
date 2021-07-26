@@ -1,4 +1,4 @@
-Feature: Online support pages @only
+Feature: Online support pages
   In order to understand the process
   As a citizen
   I want to be able to see online support pages

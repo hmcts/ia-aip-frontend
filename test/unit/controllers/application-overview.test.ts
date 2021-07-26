@@ -1,7 +1,7 @@
 import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import {
-  getAppealRefNumber,
+  checkAppealEnded, getAppealRefNumber,
   getApplicationOverview,
   setupApplicationOverviewController
 } from '../../../app/controllers/application-overview';
@@ -66,7 +66,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.common.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name @only', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -134,11 +134,11 @@ describe('Confirmation Page Controller', () => {
           {
             'title': 'What you sent',
             'text': 'Why you think the Home Office is wrong',
-            'href': '{{ paths.common.detailsViewers.reasonsForAppeal }}'
+            'href': '{{ paths.common.reasonsForAppealViewer }}'
           }, {
             'title': 'Useful documents',
             'text': 'Home Office documents about your case',
-            'href': '{{ paths.common.detailsViewers.homeOfficeDocuments }}'
+            'href': '{{ paths.common.homeOfficeDocumentsViewer }}'
           }, {
             'title': 'Helpful information',
             'text': 'Understanding your Home Office documents',
@@ -153,7 +153,7 @@ describe('Confirmation Page Controller', () => {
           {
             'title': 'What you sent',
             'text': 'Your appeal details',
-            'href': '{{ paths.common.detailsViewers.appealDetails }}'
+            'href': '{{ paths.common.appealDetailsViewer }}'
           }, {
             'title': 'Helpful information',
             'text': 'What is a Tribunal Caseworker?',
@@ -170,7 +170,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(asBooleanValue(config.get('features.askForMoreTime'))),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -241,7 +242,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -300,7 +302,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -360,7 +363,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -422,7 +426,8 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime')),
-      askForMoreTimeInFlight: false
+      askForMoreTimeInFlight: false,
+      ended: false
     });
   });
 
@@ -462,5 +467,31 @@ describe('Confirmation Page Controller', () => {
     const { appealReferenceNumber } = req.session.appeal;
     const result = getAppealRefNumber(appealReferenceNumber);
     expect(result).to.equal(null);
+  });
+
+  it('checkAppealEnded with ended case ', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: 'ended'
+        }
+      }
+    };
+    const { appealStatus } = req.session.appeal;
+    const result = checkAppealEnded(appealStatus);
+    expect(result).to.equal(true);
+  });
+
+  it('checkAppealEnded with case not ended', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: 'draft'
+        }
+      }
+    };
+    const { appealStatus } = req.session.appeal;
+    const result = checkAppealEnded(appealStatus);
+    expect(result).to.equal(false);
   });
 });

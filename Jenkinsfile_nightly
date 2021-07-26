@@ -56,6 +56,7 @@ withNightlyPipeline(type, product, component) {
     enableCrossBrowserTest()
     enableSecurityScan()
     enableMutationTest()
+    enableFullFunctionalTest(120)
 
     after('crossBrowserTest') {
         yarnBuilder.yarn('test:a11y')
@@ -69,6 +70,17 @@ withNightlyPipeline(type, product, component) {
             reportDir            : "reports/tests/mutation/node/",
             reportFiles          : 'index.html',
             reportName           : 'AIP Frontend Mutation tests'
+        ])
+    }
+
+    after('fullFunctionalTest') {
+        publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "reports/tests/functional/",
+                reportFiles          : 'index.html',
+                reportName           : 'AIP Frontend Functional Test'
         ])
     }
 }

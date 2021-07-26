@@ -1,4 +1,4 @@
-import { asBooleanValue, formatTextForCYA, hasInflightTimeExtension, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
+import { asBooleanValue, formatTextForCYA, hasPendingTimeExtension, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
 import { expect } from '../../utils/testUtils';
 
 describe('utils', () => {
@@ -69,9 +69,38 @@ describe('utils', () => {
     });
   });
 
-  describe('hasInflightTimeExtension', () => {
+  describe('hasPendingTimeExtension', () => {
+    const pendingApplication: Collection<Application>[] = [{
+      id: '2',
+      value: {
+        applicant: 'Appellant',
+        applicantRole: 'citizen',
+        date: '2021-07-15',
+        decision: 'Pending',
+        details: 'my details',
+        state: 'awaitingReasonsForAppeal',
+        type: 'Time extension',
+        evidence: []
+      }
+    }];
+    const refusedApplication: Collection<Application>[] = [{
+      id: '1',
+      value: {
+        applicant: 'Appellant',
+        applicantRole: 'citizen',
+        date: '2021-07-10',
+        decision: 'Refused',
+        decisionDate: '2021-07-12',
+        decisionMaker: 'Tribunal Caseworker',
+        decisionReason: 'reason why',
+        details: 'my details',
+        state: 'awaitingReasonsForAppeal',
+        type: 'Time extension',
+        evidence: []
+      }
+    }];
     it('does not have inflight appeals if no time extensions', () => {
-      const inflightTimeExtension = hasInflightTimeExtension({
+      const inflightTimeExtension = hasPendingTimeExtension({
         timeExtensions: [],
         appealStatus: 'currentState'
       } as Appeal);
@@ -79,14 +108,14 @@ describe('utils', () => {
     });
 
     it('does not have inflight appeals if previous time extensions are not set', () => {
-      const inflightTimeExtension = hasInflightTimeExtension({
+      const inflightTimeExtension = hasPendingTimeExtension({
         appealStatus: 'currentState'
       } as Appeal);
       expect(inflightTimeExtension).to.be.eq(false);
     });
 
     it('does not have inflight appeals if previous time extension for different state', () => {
-      const inflightTimeExtension = hasInflightTimeExtension({
+      const inflightTimeExtension = hasPendingTimeExtension({
         timeExtensions: [{
           type: 'Time Extension',
           state: 'oldState'
@@ -97,28 +126,21 @@ describe('utils', () => {
     });
 
     it('should return default value if undefined', () => {
-      const inflightTimeExtension = hasInflightTimeExtension({} as Appeal);
+      const inflightTimeExtension = hasPendingTimeExtension({} as Appeal);
       expect(inflightTimeExtension).to.be.eq(false);
     });
 
     it('does not have inflight appeals', () => {
-      const inflightTimeExtension = hasInflightTimeExtension(
+      const inflightTimeExtension = hasPendingTimeExtension(
         {
-          askForMoreTime: {
-            inFlight: false
-          }
+          makeAnApplications: refusedApplication
         } as Appeal);
       expect(inflightTimeExtension).to.be.eq(false);
     });
 
     it('has inflight appeal', () => {
-      const inflightTimeExtension = hasInflightTimeExtension({
-        timeExtensions: [{
-          decision: 'Pending'
-        } as Partial<TimeExtension>],
-        askForMoreTime: {
-          inFlight: true
-        }
+      const inflightTimeExtension = hasPendingTimeExtension({
+        makeAnApplications: pendingApplication
       } as Appeal);
       expect(inflightTimeExtension).to.be.eq(true);
     });

@@ -331,7 +331,9 @@
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
-        "respondByText": "You need to respond by {{ applicationNextStep.deadline }}.",
+        "respondByText": "You need to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+        "nowRespondBy": "You now need to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+        "stillRespondBy": "You still need to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
         "appealStarted": {
           "fewQuestions": "You need to answer a few questions about yourself and your appeal to get started.",
           "finishQuestions": "You need to finish telling us about your appeal.",
@@ -417,7 +419,7 @@
           "description": "You need to answer some questions about your appeal.",
           "descriptionAskForMoreTime": "You might not get more time. You should still try to answer the Tribunal’s questions by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
           "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
-          "respondByText": "You need to respond by {{ applicationNextStep.deadline }}."
+          "respondByText": "You need to respond by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>."
         },
         "awaitingCmaRequirements": {
           "description": "You need to attend a case management appointment.",
@@ -497,6 +499,27 @@
               "title": "Helpful information",
               "text": "Understanding your Home Office documents",
               "href": "{{ paths.common.homeOfficeDocuments }}"
+            }
+          ]
+        },
+        "makeAnApplication": {
+          "text": "You sent the Tribunal a request.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your request",
+              "href": "{{ paths.common.detailsViewers.timeExtension }}"
+            }
+          ]
+        },
+        "decideAnApplication": {
+          "Granted": "Your request was granted.",
+          "Refused": "Your request was refused.",
+          "links": [
+            {
+              "title": "What the Tribunal said",
+              "text": "Reason for decision",
+              "href": "{{ paths.common.detailsViewers.timeExtension }}"
             }
           ]
         },

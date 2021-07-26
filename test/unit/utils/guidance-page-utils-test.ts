@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import { getGuidancePageText } from '../../../app/utils/guidance-page-utils';
 import { expect } from '../../utils/testUtils';
 
@@ -75,7 +74,7 @@ describe('guidance-page-utils', () => {
           'smallTitle': 'Where to find your Home Office bundle'
         },
         {
-          'desc': "If you need help understanding your Home Office documents, you can call <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or email <a class=\"govuk-link\" href=\"mailto:customer.service@justice.gov.uk\">customer.service@justice.gov.uk</a>",
+          'desc': "If you need help understanding your Home Office documents, you can call <span  class='govuk-body govuk-!-font-weight-bold'> 0300 123 1711</span>  or email <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>",
           'smallTitle': 'Contact us for help'
         }
       ],

@@ -51,7 +51,8 @@ describe('timeline-utils', () => {
       const result = constructSection(appealDetailsSection, expectedEventsWithTimeExtensionsData, null, req as Request);
       expect(result).to.deep.eq(
         [{
-          'date': new Date('2020-04-14T14:53:26.099'),
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
           'text': 'You sent your appeal details to the Tribunal.',
           'links': [ {
             'title': 'What you sent',

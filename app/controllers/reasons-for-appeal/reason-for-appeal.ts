@@ -167,7 +167,6 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
 }
 
 function postSupportingEvidenceUploadFile(documentManagementService: DocumentManagementService, updateAppealService: UpdateAppealService) {
-  // '2012-04-21+01:00'
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {

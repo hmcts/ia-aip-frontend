@@ -51,6 +51,7 @@ describe('Question-page controller', () => {
       params: {},
       session: {
         appeal: {
+          application: {},
           draftClarifyingQuestionsAnswers: [ ...clarifyingQuestions ]
         }
       }

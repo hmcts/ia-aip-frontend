@@ -8,7 +8,7 @@ import { documentIdToDocStoreUrl, DocumentManagementService } from '../../servic
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysToDate } from '../../utils/date-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue, hasInflightTimeExtension, nowAppealDate } from '../../utils/utils';
+import { asBooleanValue, hasPendingTimeExtension } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
@@ -24,7 +24,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
       previousPage: paths.common.overview,
       applicationReason: req.session.appeal.reasonsForAppeal.applicationReason,
       askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
-      askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
+      askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal)
     });
   } catch (e) {
     next(e);
@@ -68,7 +68,7 @@ function postReasonForAppeal(updateAppealService: UpdateAppealService) {
           && req.session.appeal.reasonsForAppeal.isEdit === true) {
           req.session.appeal.reasonsForAppeal.isEdit = false;
         }
-        return res.redirect(paths.common.askForMoreTime.reason);
+        return res.redirect(paths.common.askForMoreTimeReason);
       }
 
       return getConditionalRedirectUrl(req, res, paths.awaitingReasonsForAppeal.supportingEvidence);

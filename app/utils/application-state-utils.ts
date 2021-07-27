@@ -3,6 +3,7 @@ import _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { States } from '../data/states';
 import { paths } from '../paths';
+import { hasPendingTimeExtension } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
 
@@ -29,8 +30,9 @@ function isPartiallySavedAppeal(req: Request, currentAppealStatus: string) {
  * Pulls do this next content based on status
  * @param currentAppealStatus the status the appeal is currently in
  */
-function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
-
+function getDoThisNextSectionFromAppealState(currentAppealStatus: string, pendingTimeExtension: boolean, decisionGranted: boolean, decisionRefused: boolean) {
+  let descriptionParagraphs;
+  let respondBy;
   switch (currentAppealStatus) {
     case 'appealStarted':
       return {
@@ -97,14 +99,31 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         cta: null,
         allowedAskForMoreTime: false
       };
-    case 'awaitingReasonsForAppeal':
+    case 'lateAppealRejected':
       return {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description,
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description2
         ],
-        descriptionParagraphsAskForMoreTime: [
-          i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime
-        ],
+        cta: {
+          url: null,
+          respondByText: null
+        },
+        allowedAskForMoreTime: false
+      };
+    case 'awaitingReasonsForAppeal':
+      descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
+      return {
+        descriptionParagraphs,
         info: {
           title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
           url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
@@ -115,19 +134,23 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         },
         cta: {
           url: paths.awaitingReasonsForAppeal.decision,
-          respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
-          respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime
+          respondBy
         },
         allowedAskForMoreTime: true
       };
     case 'awaitingReasonsForAppealPartial':
+      descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
       return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description
-        ],
-        descriptionParagraphsAskForMoreTime: [
-          i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime
-        ],
+        descriptionParagraphs,
         info: {
           title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.title,
           url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.url
@@ -138,8 +161,7 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         },
         cta: {
           url: paths.awaitingReasonsForAppeal.decision,
-          respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
-          respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime
+          respondBy
         },
         allowedAskForMoreTime: true
       };
@@ -163,7 +185,7 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         info: null,
         cta: {
           url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
-          respondByText: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByText,
+          respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
           respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime
         },
         allowedAskForMoreTime: true
@@ -246,6 +268,15 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string) {
         },
         allowedAskForMoreTime: false
       };
+    case 'appealTakenOffline':
+      return {
+        descriptionParagraphs: [
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.title,
+          url: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.description
+        }
+      };
     default:
       // default message to avoid app crashing on events that are to be implemented.
       return {
@@ -278,6 +309,8 @@ interface DoThisNextSection {
   time?: string;
   hearingCentre?: string;
   hearingCentreEmail?: string;
+  removeAppealFromOnlineReason?: string;
+  removeAppealFromOnlineDate?: string;
 }
 
 /**
@@ -285,7 +318,33 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  return (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus === 'appealSubmitted') ? 'lateAppealSubmitted' : req.session.appeal.appealStatus;
+  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== 'ended') {
+    if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
+      return 'lateAppealRejected';
+    }
+    if (req.session.appeal.appealStatus === 'appealSubmitted') {
+      return 'lateAppealSubmitted';
+    }
+    return req.session.appeal.appealStatus;
+  } else {
+    return req.session.appeal.appealStatus;
+  }
+}
+
+/**
+ * Returns the reason for moving an appeal offline.
+ * @param req the request containing the session and appeal status
+ */
+function getMoveAppealOfflineReason(req: Request) {
+  return req.session.appeal.removeAppealFromOnlineReason;
+}
+
+/**
+ * Returns the date an appeal is moved offline.
+ * @param req the request containing the session and appeal status
+ */
+function getMoveAppealOfflineDate(req: Request) {
+  return req.session.appeal.removeAppealFromOnlineDate;
 }
 
 /**
@@ -300,10 +359,16 @@ function getAppealApplicationNextStep(req: Request) {
   if (isPartiallySavedAppeal(req, currentAppealStatus)) {
     currentAppealStatus = currentAppealStatus + 'Partial';
   }
-
-  let doThisNextSection: DoThisNextSection = getDoThisNextSectionFromAppealState(currentAppealStatus);
+  const pendingTimeExtension = hasPendingTimeExtension(req.session.appeal);
+  const lastDecisionTimeExtensionGranted = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Granted' || null;
+  const lastDecisionTimeExtensionRefused = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Refused' || null;
+  let doThisNextSection: DoThisNextSection = getDoThisNextSectionFromAppealState(currentAppealStatus, pendingTimeExtension, lastDecisionTimeExtensionGranted, lastDecisionTimeExtensionRefused);
 
   doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
+  if (currentAppealStatus === 'appealTakenOffline') {
+    doThisNextSection.removeAppealFromOnlineReason = getMoveAppealOfflineReason(req);
+    doThisNextSection.removeAppealFromOnlineDate = getMoveAppealOfflineDate(req);
+  }
   if (currentAppealStatus === States.CMA_LISTED.id) {
     doThisNextSection.date = getHearingDate(req);
     doThisNextSection.time = getHearingTime(req);
@@ -317,5 +382,8 @@ function getAppealApplicationNextStep(req: Request) {
 
 export {
   getAppealApplicationNextStep,
-  getAppealStatus
+  getAppealStatus,
+  getDoThisNextSectionFromAppealState,
+  getMoveAppealOfflineReason,
+  getMoveAppealOfflineDate
 };

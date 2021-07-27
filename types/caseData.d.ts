@@ -25,6 +25,8 @@ interface CaseData {
   appealType: string;
   homeOfficeReferenceNumber: string;
   appealReferenceNumber: string;
+  removeAppealFromOnlineReason: string;
+  removeAppealFromOnlineDate: string;
   homeOfficeDecisionDate: string;
   appellantGivenNames: string;
   appellantFamilyName: string;
@@ -81,21 +83,21 @@ interface CaseData {
   outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
-  makeAnApplications?: Array<Application>;
+  makeAnApplications?: Collection<Application>[];
 }
 
 interface Application {
-  id: string;
-  value: {
-    date: string;
-    type: string;
-    state: string;
-    details: string;
-    decision: string;
-    evidence: any[]; // TODO: change any for appropiate type for evidences
-    applicant: string;
-    applicantRole: string;
-  }
+  date: string;
+  type: string;
+  state: string;
+  details: string;
+  decision: string;
+  evidence: any[]; // TODO: change any for appropiate type for evidences
+  applicant: string;
+  applicantRole: string;
+  decisionDate?: string;
+  decisionMaker?: string;
+  decisionReason?: string;
 }
 interface DateToAvoid {
   dateToAvoid: string;
@@ -103,7 +105,7 @@ interface DateToAvoid {
 }
 
 interface Collection<T> {
-  id?: string | number;
+  id?: string;
   value: T;
 }
 

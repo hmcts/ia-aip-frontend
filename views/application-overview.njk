@@ -58,6 +58,15 @@
                 href: applicationNextStep.cta.url
               }) }}
             {% endif %}
+            {% if applicationNextStep.cta.respondBy %}
+              <p>
+                {{ applicationNextStep.cta.respondBy | eval | safe }}
+                {% if applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
+                  <a href='{{ paths.common.askForMoreTime.reason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                {% endif %}
+              </p>
+            {% endif %}
+            {# TODO: Refactor respondByText and respondByTextAskForMoreTime for respondBy on CQ and CMA states#}
             {% if applicationNextStep.cta.respondByText %}
               <p>
                 {% if askForMoreTimeInFlight and applicationNextStep.cta.respondByTextAskForMoreTime %}
@@ -66,7 +75,7 @@
                   {{ applicationNextStep.cta.respondByText | eval | safe }}
                 {% endif %}
                 {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
-                  <a href='{{ paths.common.askForMoreTime.reason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                  <a href='{{ paths.common.askForMoreTimeReason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
                 {% endif %}
               </p>
             {% endif %}
@@ -74,6 +83,10 @@
           {% if applicationNextStep.usefulDocuments %}
             <p><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
             <p>{{ applicationNextStep.usefulDocuments.url | eval | safe }}</p>
+          {% endif %}
+          {% if applicationNextStep.removeAppealFromOnlineReason %}
+            <p>Your appeal was removed from the online service on <b>{{ applicationNextStep.removeAppealFromOnlineDate }}</b>. The reason for this is:</p>
+            <p>{{ applicationNextStep.removeAppealFromOnlineReason }}</p>
           {% endif %}
           {% if applicationNextStep.info %}
             <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span></p>

@@ -155,38 +155,6 @@ describe('update-appeal-service', () => {
     sandbox.restore();
   });
 
-  describe('Mapping helper functions', () => {
-    describe('mapMakeAnApplicationTimeExtensionToAppeal', () => {
-      it('should return null if no extensions present', () => {
-        const timeExtensions = updateAppealService.mapMakeAnApplicationTimeExtensionToAppeal(expectedCaseData as CaseData);
-
-        expect(timeExtensions).to.be.null;
-      });
-
-      it('should map a time extension', () => {
-        expectedCaseData.makeAnApplications = [
-          {
-            id: '1',
-            value: {
-              date: '2021-04-30',
-              type: 'Time extension',
-              state: 'awaitingReasonsForAppeal',
-              details: 'The reasons for the time extension',
-              decision: 'Pending',
-              evidence: [],
-              applicant: 'Appellant',
-              applicantRole: 'citizen'
-            }
-          }
-        ];
-
-        const timeExtensions = updateAppealService.mapMakeAnApplicationTimeExtensionToAppeal(expectedCaseData as CaseData);
-
-        expect(timeExtensions).to.be.length(1);
-      });
-    });
-  });
-
   describe('loadAppeal', () => {
     it('set case details', async () => {
       ccdServiceMock.expects('loadOrCreateCase')
@@ -313,7 +281,9 @@ describe('update-appeal-service', () => {
         value: {
           dateSent: '2020-04-23',
           dueDate: '2020-05-07',
-          question: 'the questions'
+          question: 'the questions',
+          answer: 'draft answer',
+          dateResponded: '2020-05-01'
         }
       };
 
@@ -324,7 +294,8 @@ describe('update-appeal-service', () => {
             dateSent: '2020-04-23',
             dueDate: '2020-05-07',
             question: 'the questions',
-            answer: '',
+            answer: 'draft answer',
+            dateResponded: '2020-05-01',
             supportingEvidence: []
           }
         }

@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { Events } from '../../../app/data/events';
 import { States } from '../../../app/data/states';
 import Logger from '../../../app/utils/logger';
-import { constructSection } from '../../../app/utils/timeline-utils';
+import { constructSection, getTimeExtensionsEvents } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -43,47 +43,6 @@ describe('timeline-utils', () => {
   });
 
   describe('constructSection', () => {
-    it('Should construct the appeal argument section', () => {
-      req.session.appeal.timeExtensionEventsMap = [];
-      const appealArgumentSection = [ Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.SUBMIT_TIME_EXTENSION.id, Events.REVIEW_TIME_EXTENSION.id ];
-
-      const result = constructSection(appealArgumentSection, expectedEventsWithTimeExtensionsData, [ States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id ], req as Request);
-      expect(result).to.deep.eq(
-        [ {
-          'date': '15 April 2020',
-          'text': 'Your request for more time was granted.',
-          'links': [ {
-            'title': 'What the Tribunal said ',
-            'text': 'Reason for decision',
-            'href': `${result[0].links[0].href}`
-          } ]
-        }, {
-          'date': '15 April 2020',
-          'text': 'You asked for more time.',
-          'links': [ {
-            'title': 'What you sent',
-            'text': 'Reason you needed more time',
-            'href': `${result[1].links[0].href}`
-          } ]
-        }, {
-          'date': '14 April 2020',
-          'text': 'Your request for more time was refused.',
-          'links': [ {
-            'title': 'What the Tribunal said ',
-            'text': 'Reason for decision',
-            'href': `${result[2].links[0].href}`
-          } ]
-        }, {
-          'date': '14 April 2020',
-          'text': 'You asked for more time.',
-          'links': [ {
-            'title': 'What you sent',
-            'text': 'Reason you needed more time',
-            'href': `${result[3].links[0].href}`
-          } ]
-        } ]
-      );
-    });
 
     it('Should construct the appeal details section', () => {
       req.session.appeal.timeExtensionEventsMap = [];
@@ -91,13 +50,14 @@ describe('timeline-utils', () => {
 
       const result = constructSection(appealDetailsSection, expectedEventsWithTimeExtensionsData, null, req as Request);
       expect(result).to.deep.eq(
-        [ {
+        [{
           'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
           'text': 'You sent your appeal details to the Tribunal.',
           'links': [ {
             'title': 'What you sent',
             'text': 'Your appeal details',
-            'href': '{{ paths.common.detailsViewers.appealDetails }}'
+            'href': '{{ paths.common.appealDetailsViewer }}'
           }, {
             'title': 'Helpful information',
             'text': 'What is a Tribunal Caseworker?',
@@ -105,6 +65,45 @@ describe('timeline-utils', () => {
           } ]
         } ]
       );
+    });
+  });
+
+  describe('getTimeExtensionsEvents @timeExtensions', () => {
+    it('should get timeExtensions', () => {
+      const makeAnApplications: Collection<Application>[] = [
+        {
+          id: '2',
+          value: {
+            applicant: 'Appellant',
+            applicantRole: 'citizen',
+            date: '2021-07-15',
+            decision: 'Pending',
+            details: 'my details',
+            state: 'awaitingReasonsForAppeal',
+            type: 'Time extension',
+            evidence: []
+          }
+        },
+        {
+          id: '1',
+          value: {
+            applicant: 'Appellant',
+            applicantRole: 'citizen',
+            date: '2021-07-10',
+            decision: 'Refused',
+            decisionDate: '2021-07-12',
+            decisionMaker: 'Tribunal Caseworker',
+            decisionReason: 'reason why',
+            details: 'my details',
+            state: 'awaitingReasonsForAppeal',
+            type: 'Time extension',
+            evidence: []
+          }
+        }
+      ];
+      const timeExtensions = getTimeExtensionsEvents(makeAnApplications);
+
+      expect(timeExtensions.length).to.be.eq(3);
     });
   });
 });

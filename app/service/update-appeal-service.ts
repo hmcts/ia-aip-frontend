@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
+import { formatDate } from '../utils/date-utils';
 import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
@@ -100,7 +101,6 @@ export default class UpdateAppealService {
     const listCmaHearingCentre = caseData.listCaseHearingCentre || '';
     const listCmaHearingLength = caseData.listCaseHearingLength || '';
     const listCmaHearingDate = caseData.listCaseHearingDate || '';
-    let timeExtensionEventsMap: TimeExtensionEventMap[];
 
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
@@ -113,14 +113,13 @@ export default class UpdateAppealService {
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     let respondentDocuments: RespondentDocument[] = null;
-    let timeExtensions: TimeExtension[] = null;
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
     let cmaRequirements: CmaRequirements = {};
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
-    let hasInflightTimeExtension = false;
+    let hasPendingTimeExtension = false;
     let documentMap: DocumentMap[] = [];
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
@@ -187,12 +186,8 @@ export default class UpdateAppealService {
     if (caseData.directions) {
       directions = caseData.directions.map((ccdDirection: Collection<CcdDirection>): Direction => {
         const direction: Direction = {
-          id: ccdDirection.id as string,
-          tag: ccdDirection.value.tag,
-          parties: ccdDirection.value.parties,
-          dateDue: ccdDirection.value.dateDue,
-          dateSent: ccdDirection.value.dateSent,
-          explanation: ccdDirection.value.explanation
+          id: ccdDirection.id,
+          ...ccdDirection.value
         };
         return direction;
       });
@@ -212,7 +207,8 @@ export default class UpdateAppealService {
             dueDate: answer.value.dueDate,
             question: answer.value.question,
             answer: answer.value.answer || '',
-            supportingEvidence: evidencesList
+            supportingEvidence: evidencesList,
+            dateResponded: answer.value.dateResponded
           }
         };
       });
@@ -349,6 +345,8 @@ export default class UpdateAppealService {
       appealCreatedDate: ccdCase.created_date,
       appealLastModified: ccdCase.last_modified,
       appealReferenceNumber: caseData.appealReferenceNumber,
+      removeAppealFromOnlineReason: caseData.removeAppealFromOnlineReason,
+      removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: caseData.appealType || null,
@@ -376,14 +374,13 @@ export default class UpdateAppealService {
       },
       ...respondentDocuments && { respondentDocuments },
       ...(_.has(caseData, 'directions')) && { directions },
-      ...timeExtensionEventsMap && { timeExtensionEventsMap },
-      ...timeExtensions && { timeExtensions },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
+      ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
       cmaRequirements,
       askForMoreTime: {
         ...(_.has(caseData, 'submitTimeExtensionReason')) && { reason: caseData.submitTimeExtensionReason },
-        inFlight: hasInflightTimeExtension
+        inFlight: hasPendingTimeExtension
       },
       hearing: {
         hearingCentre: listCmaHearingCentre,
@@ -394,24 +391,11 @@ export default class UpdateAppealService {
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
-      documentMap,
-      hearingCentre: caseData.hearingCentre || null
+      ...caseData.makeAnApplications && { makeAnApplications: caseData.makeAnApplications },
+      hearingCentre: caseData.hearingCentre || null,
+      documentMap
     };
     return appeal;
-  }
-
-  mapMakeAnApplicationTimeExtensionToAppeal(caseData: CaseData): Array<TimeExtension> {
-    if (caseData.makeAnApplications) {
-      return caseData.makeAnApplications.map(application => {
-        if (application.value.type === 'Time extension') {
-          return {
-            id: application.id,
-            ...application.value
-          };
-        }
-      });
-    }
-    return null;
   }
 
   convertToCcdCaseData(appeal: Appeal) {
@@ -705,7 +689,7 @@ export default class UpdateAppealService {
   }
 
   private mapAppealClarifyingQuestionsToCcd(clarifyingQuestions: ClarifyingQuestion<Evidence>[], documentMap: DocumentMap[]): ClarifyingQuestion<Collection<SupportingDocument>>[] {
-    return clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
+    const ccdCQ = clarifyingQuestions.map((answer: ClarifyingQuestion<Evidence>): ClarifyingQuestion<Collection<SupportingDocument>> => {
       let supportingEvidence: Collection<SupportingDocument>[];
       if (answer.value.supportingEvidence) {
         supportingEvidence = answer.value.supportingEvidence.map(evidence => this.mapEvidenceToSupportingDocument(evidence, documentMap));
@@ -714,10 +698,11 @@ export default class UpdateAppealService {
         ...answer,
         value: {
           ...answer.value,
-          supportingEvidence
+          ...answer.value.supportingEvidence && { supportingEvidence }
         }
       };
     });
+    return ccdCQ;
   }
   // TODO: remove method if not needed
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
@@ -770,7 +755,7 @@ export default class UpdateAppealService {
       return {
         fileId,
         name: doc.value.document.document_filename,
-        ...doc.id && { id: doc.id as string },
+        ...doc.id && { id: doc.id },
         ...doc.value.tag && { tag: doc.value.tag },
         ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
         ...doc.value.description && { description: doc.value.description },

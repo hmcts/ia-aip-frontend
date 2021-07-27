@@ -27,7 +27,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request has been sent to the Tribunal screen
+    Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -43,7 +43,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request has been sent to the Tribunal screen
+    Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -59,7 +59,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request has been sent to the Tribunal screen
+    Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -86,7 +86,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request has been sent to the Tribunal screen
+    Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -104,7 +104,7 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request has been sent to the Tribunal screen
+    Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
     Then I am on the overview page
 
@@ -131,6 +131,6 @@ Feature: Ask for more time page
     Then I should see the ask for more time check you answers page
     And I should see the reasons for appeal
     When I click send
-    Then I see Your request has been sent to the Tribunal screen
+    Then I see "Your request has been sent to the Tribunal" in title
     When I click "See your appeal progress" button
     Then I am on the overview page

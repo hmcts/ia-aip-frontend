@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { countryList } from '../data/country-list';
-import { serverErrorHandler } from '../handlers/error-handler';
 import { paths } from '../paths';
 import {
   docStoreUrlToHtmlLink,
@@ -13,9 +12,9 @@ import {
   fileNameFormatter,
   toHtmlLink
 } from '../service/document-management-service';
+import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
-import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
 import { boolToYesNo, toIsoDate } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
@@ -25,9 +24,9 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
 
 function getAppealDetails(req: Request): Array<any> {
   const { application } = req.session.appeal;
-  const nation = countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
-    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${doc.fileId}'>${doc.name}</a>`;
+    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
 
   return [
@@ -44,7 +43,7 @@ function getAppealDetails(req: Request): Array<any> {
     ], null, Delimiter.BREAK_LINE),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [ i18n.appealTypes[application.appealType].name ], null),
     application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ application.lateAppeal.reason ], null),
-    application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>` ])
+    application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>` ])
   ];
 }
 
@@ -54,7 +53,7 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const { data } = reasonsForAppeal[0];
   if (_.has(data, 'reasonsForAppealDocuments')) {
     const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
-      return docStoreUrlToHtmlLink(paths.common.detailsViewers.document, evidence.value.document_filename, evidence.value.document_url, req);
+      return docStoreUrlToHtmlLink(paths.common.documentViewer, evidence.value.document_filename, evidence.value.document_url, req);
     });
     array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
     array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
@@ -62,31 +61,22 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   return array;
 }
 
-function setupTimeExtensionDecision(req: Request, timeExtensionEvent: TimeExtensionCollection) {
-  const array = [];
+function getTimeExtensionSummaryRows(timeExtensionEvent: Collection<Application>) {
+  const request = [];
   const data = timeExtensionEvent.value;
-  if (_.has(data, 'decision')) {
-    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.decision, [ data.decision ], null));
-  }
-  if (_.has(data, 'decisionReason')) {
-    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.reason, [ data.decisionReason ], null));
-  }
-  return array;
-}
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.reason, [ data.details ]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.date, [ moment(data.date).format(dayMonthYearFormat) ]));
 
-function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionCollection) {
-  const array = [];
-  const data = timeExtensionEvent.value;
-  if (_.has(data, 'reason')) {
-    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.question, [ data.reason ], null));
+  if (data.decision !== 'Pending') {
+    const response = [];
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.decision, [ i18n.pages.detailViewers.timeExtension.response[data.decision] ]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.reason, [ data.decisionReason ]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.date, [ moment(data.decisionDate).format(dayMonthYearFormat) ]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.maker, [ data.decisionMaker ]));
+    return { request, response };
   }
-  if (_.has(data, 'evidence')) {
-    const listOfDocuments: string[] = data.evidence.map(evidence => {
-      return documentToHtmlLink(paths.common.detailsViewers.document, evidence, req);
-    });
-    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.supportingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
-  }
-  return array;
+  return { request };
 }
 
 function setupCmaRequirementsViewer(req: Request) {
@@ -264,7 +254,7 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
 
       documents = respondentDocs.map(document => {
 
-        const urlHtml = toHtmlLink(document.evidence.fileId, document.evidence.name, paths.common.detailsViewers.document);
+        const urlHtml = toHtmlLink(document.evidence.fileId, document.evidence.name, paths.common.documentViewer);
         const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
@@ -305,36 +295,17 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
 function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
   try {
     const timeExtensionId = req.params.id;
-    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
-    if (timeExtensionData) {
-      let previousPage: string = paths.common.overview;
-      const data = setupTimeExtension(req, timeExtensionData);
-      return res.render('detail-viewers/time-extension-details-viewer.njk', {
-        previousPage: previousPage,
-        data: data
-      });
-    }
-    // SHOULD THROW NOT FOUND
-    return serverErrorHandler;
-  } catch (error) {
-    next(error);
-  }
-}
-
-function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextFunction) {
-  try {
-    const timeExtensionId = req.params.id;
-    const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
-    if (timeExtensionData) {
-      let previousPage: string = paths.common.overview;
-      const data = setupTimeExtensionDecision(req, timeExtensionData);
-      return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
-        previousPage: previousPage,
-        data: data
-      });
-    }
-    // SHOULD THROW NOT FOUND
-    return serverErrorHandler;
+    const timeExtension: Collection<Application> = req.session.appeal.makeAnApplications.find(application => application.id === timeExtensionId);
+    const previousPage: string = paths.common.overview;
+    const { request, response = null } = getTimeExtensionSummaryRows(timeExtension);
+    const hearingCentreEmail = getHearingCentreEmail(req);
+    return res.render('detail-viewers/time-extension-details-viewer.njk', {
+      previousPage: previousPage,
+      timeExtension,
+      request,
+      response,
+      hearingCentreEmail
+    });
   } catch (error) {
     next(error);
   }
@@ -369,7 +340,7 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
     const fileNameFormatted = fileNameFormatter(endedAppealDoc.name);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(endedAppealDoc.dateUploaded).format(dayMonthYearFormat)]),
-      addSummaryRow(i18n.pages.detailViewers.common.document, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${endedAppealDoc.fileId}'>${fileNameFormatted}</a>` ])
+      addSummaryRow(i18n.pages.detailViewers.common.document, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${endedAppealDoc.fileId}'>${fileNameFormatted}</a>` ])
     ];
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.endedAppeal.title,
@@ -389,7 +360,7 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
     const data = [
       addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decision, [i18n.pages.detailViewers.outOfTimeDecision.type[req.session.appeal.outOfTimeDecisionType]]),
       addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decisionMaker, [ req.session.appeal.outOfTimeDecisionMaker ]),
-      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.reasonForDecision, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.detailsViewers.document}/${recordOutOfTimeDecisionDoc.fileId}'>${fileNameFormatted}</a>` ])
+      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.reasonForDecision, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${recordOutOfTimeDecisionDoc.fileId}'>${fileNameFormatted}</a>` ])
     ];
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.outOfTimeDecision.title,
@@ -403,16 +374,14 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
 
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
-  router.get(paths.common.detailsViewers.document + '/:documentId', getDocumentViewer(documentManagementService));
-  router.get(paths.common.detailsViewers.homeOfficeDocuments, getHoEvidenceDetailsViewer);
-  router.get(paths.common.detailsViewers.appealDetails, getAppealDetailsViewer);
-  router.get(paths.common.detailsViewers.reasonsForAppeal, getReasonsForAppealViewer);
-  router.get(paths.common.detailsViewers.timeExtension + '/:id', getTimeExtensionViewer);
-  router.get(paths.common.detailsViewers.timeExtensionDecision + '/:id', getTimeExtensionDecisionViewer);
-  router.get(paths.common.detailsViewers.cmaRequirementsAnswer, getCmaRequirementsViewer);
-  router.get(paths.common.detailsViewers.noticeEndedAppeal, getNoticeEndedAppeal);
-  router.get(paths.common.detailsViewers.outOfTimeDecision, getOutOfTimeDecisionViewer);
-
+  router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
+  router.get(paths.common.homeOfficeDocumentsViewer, getHoEvidenceDetailsViewer);
+  router.get(paths.common.appealDetailsViewer, getAppealDetailsViewer);
+  router.get(paths.common.reasonsForAppealViewer, getReasonsForAppealViewer);
+  router.get(paths.common.timeExtensionViewer + '/:id', getTimeExtensionViewer);
+  router.get(paths.common.cmaRequirementsAnswerViewer, getCmaRequirementsViewer);
+  router.get(paths.common.noticeEndedAppealViewer, getNoticeEndedAppeal);
+  router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
   return router;
 }
 
@@ -422,8 +391,8 @@ export {
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getNoticeEndedAppeal,
+  getTimeExtensionSummaryRows,
   getTimeExtensionViewer,
-  getTimeExtensionDecisionViewer,
   setupDetailViewersController,
   setupCmaRequirementsViewer,
   getCmaRequirementsViewer,

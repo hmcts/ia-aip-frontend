@@ -66,7 +66,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.common.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name @only', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -129,16 +129,17 @@ describe('Confirmation Page Controller', () => {
     const expectedHistory = {
       appealArgumentSection: [ {
         'date': '27 February 2020',
+        'dateObject': sinon.match.any,
         'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
         'links': [
           {
             'title': 'What you sent',
             'text': 'Why you think the Home Office is wrong',
-            'href': '{{ paths.common.detailsViewers.reasonsForAppeal }}'
+            'href': '{{ paths.common.reasonsForAppealViewer }}'
           }, {
             'title': 'Useful documents',
             'text': 'Home Office documents about your case',
-            'href': '{{ paths.common.detailsViewers.homeOfficeDocuments }}'
+            'href': '{{ paths.common.homeOfficeDocumentsViewer }}'
           }, {
             'title': 'Helpful information',
             'text': 'Understanding your Home Office documents',
@@ -148,12 +149,13 @@ describe('Confirmation Page Controller', () => {
       ],
       appealDetailsSection: [ {
         'date': '27 February 2020',
+        'dateObject': sinon.match.any,
         'text': 'You sent your appeal details to the Tribunal.',
         'links': [
           {
             'title': 'What you sent',
             'text': 'Your appeal details',
-            'href': '{{ paths.common.detailsViewers.appealDetails }}'
+            'href': '{{ paths.common.appealDetailsViewer }}'
           }, {
             'title': 'Helpful information',
             'text': 'What is a Tribunal Caseworker?',

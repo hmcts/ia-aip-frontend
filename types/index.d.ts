@@ -80,6 +80,8 @@ interface Appeal {
   appealCreatedDate?: string;
   appealLastModified?: string;
   appealReferenceNumber?: string;
+  removeAppealFromOnlineReason?: string;
+  removeAppealFromOnlineDate?: string;
   application: AppealApplication;
   reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;
@@ -101,6 +103,7 @@ interface Appeal {
   outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
+  makeAnApplications?: Collection<Application>[];
 }
 
 interface Hearing {
@@ -276,6 +279,7 @@ interface Direction {
   dateDue: string;
   dateSent: string;
   explanation: string;
+  clarifyingQuestions?: ClarifyingQuestion;
 }
 
 interface ClarifyingQuestion<T> {

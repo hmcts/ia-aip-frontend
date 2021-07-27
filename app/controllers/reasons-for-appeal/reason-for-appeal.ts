@@ -1,6 +1,7 @@
 import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
+import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -174,7 +175,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         evidences.push({
           fileId: evidenceStored.fileId,
           name: evidenceStored.name,
-          dateUploaded: new Date().toISOString(),
+          dateUploaded: moment().format('YYYY-MM-DDZ'),
           description: 'Appeal Reasons supporting evidence'
         });
         req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];

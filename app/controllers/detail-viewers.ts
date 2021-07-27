@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { countryList } from '../data/country-list';
-import { serverErrorHandler } from '../handlers/error-handler';
 import { paths } from '../paths';
 import {
   docStoreUrlToHtmlLink,
@@ -13,9 +12,9 @@ import {
   fileNameFormatter,
   toHtmlLink
 } from '../service/document-management-service';
+import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
-// import { timeExtensionIdToTimeExtensionData } from '../utils/timeline-utils';
 import { boolToYesNo, toIsoDate } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
@@ -62,31 +61,22 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   return array;
 }
 
-function setupTimeExtensionDecision(req: Request, timeExtensionEvent: TimeExtensionCollection) {
-  const array = [];
+function getTimeExtensionSummaryRows(timeExtensionEvent: Collection<Application>) {
+  const request = [];
   const data = timeExtensionEvent.value;
-  if (_.has(data, 'decision')) {
-    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.decision, [ data.decision ], null));
-  }
-  if (_.has(data, 'decisionReason')) {
-    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionReview.reason, [ data.decisionReason ], null));
-  }
-  return array;
-}
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.reason, [ data.details ]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.date, [ moment(data.date).format(dayMonthYearFormat) ]));
 
-function setupTimeExtension(req: Request, timeExtensionEvent: TimeExtensionCollection) {
-  const array = [];
-  const data = timeExtensionEvent.value;
-  if (_.has(data, 'reason')) {
-    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.question, [ data.reason ], null));
+  if (data.decision !== 'Pending') {
+    const response = [];
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.decision, [ i18n.pages.detailViewers.timeExtension.response[data.decision] ]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.reason, [ data.decisionReason ]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.date, [ moment(data.decisionDate).format(dayMonthYearFormat) ]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.maker, [ data.decisionMaker ]));
+    return { request, response };
   }
-  if (_.has(data, 'evidence')) {
-    const listOfDocuments: string[] = data.evidence.map(evidence => {
-      return documentToHtmlLink(paths.common.documentViewer, evidence, req);
-    });
-    array.push(addSummaryRow(i18n.pages.detailViewers.timeExtensionRequest.supportingEvidence, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
-  }
-  return array;
+  return { request };
 }
 
 function setupCmaRequirementsViewer(req: Request) {
@@ -302,45 +292,24 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
   };
 }
 
-// function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
-//   try {
-//     const timeExtensionId = req.params.id;
-//     // TODO: to refactor timeExtension viewer with RIA-4386
-//     // const timeExtension: Collection<Application> = req.session.appeal.makeAnApplications.find(application => application.id === timeExtensionId);
-//     const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
-//     if (timeExtensionData) {
-//       let previousPage: string = paths.common.overview;
-//       const data = setupTimeExtension(req, timeExtensionData);
-//       return res.render('detail-viewers/time-extension-details-viewer.njk', {
-//         previousPage: previousPage,
-//         data: data
-//       });
-//     }
-//     // SHOULD THROW NOT FOUND
-//     return serverErrorHandler;
-//   } catch (error) {
-//     next(error);
-//   }
-// }
-
-// function getTimeExtensionDecisionViewer(req: Request, res: Response, next: NextFunction) {
-//   try {
-//     const timeExtensionId = req.params.id;
-//     const timeExtensionData: TimeExtensionCollection = timeExtensionIdToTimeExtensionData(timeExtensionId, req.session.appeal.timeExtensionEventsMap);
-//     if (timeExtensionData) {
-//       let previousPage: string = paths.common.overview;
-//       const data = setupTimeExtensionDecision(req, timeExtensionData);
-//       return res.render('detail-viewers/time-extension-decision-details-viewer.njk', {
-//         previousPage: previousPage,
-//         data: data
-//       });
-//     }
-//     // SHOULD THROW NOT FOUND
-//     return serverErrorHandler;
-//   } catch (error) {
-//     next(error);
-//   }
-// }
+function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    const timeExtensionId = req.params.id;
+    const timeExtension: Collection<Application> = req.session.appeal.makeAnApplications.find(application => application.id === timeExtensionId);
+    const previousPage: string = paths.common.overview;
+    const { request, response = null } = getTimeExtensionSummaryRows(timeExtension);
+    const hearingCentreEmail = getHearingCentreEmail(req);
+    return res.render('detail-viewers/time-extension-details-viewer.njk', {
+      previousPage: previousPage,
+      timeExtension,
+      request,
+      response,
+      hearingCentreEmail
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
   try {
@@ -409,8 +378,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.homeOfficeDocumentsViewer, getHoEvidenceDetailsViewer);
   router.get(paths.common.appealDetailsViewer, getAppealDetailsViewer);
   router.get(paths.common.reasonsForAppealViewer, getReasonsForAppealViewer);
-  // router.get(paths.common.timeExtensionViewer + '/:id', getTimeExtensionViewer);
-  // router.get(paths.common.timeExtensionDecisionViewer + '/:id', getTimeExtensionDecisionViewer);
+  router.get(paths.common.timeExtensionViewer + '/:id', getTimeExtensionViewer);
   router.get(paths.common.cmaRequirementsAnswerViewer, getCmaRequirementsViewer);
   router.get(paths.common.noticeEndedAppealViewer, getNoticeEndedAppeal);
   router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
@@ -423,8 +391,8 @@ export {
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getNoticeEndedAppeal,
-  // getTimeExtensionViewer,
-  // getTimeExtensionDecisionViewer,
+  getTimeExtensionSummaryRows,
+  getTimeExtensionViewer,
   setupDetailViewersController,
   setupCmaRequirementsViewer,
   getCmaRequirementsViewer,

@@ -1,15 +1,12 @@
 import { Request } from 'express';
-import { setupSecrets } from '../../../app/setupSecrets';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from '../../../app/utils/cma-hearing-details';
 import { getDeadline } from '../../../app/utils/event-deadline-date-finder';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 describe('event-deadline-date-finder', () => {
-
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   const logger: Logger = new Logger();
-  const config = setupSecrets();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();

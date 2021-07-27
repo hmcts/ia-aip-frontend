@@ -62,7 +62,7 @@
               <p>
                 {{ applicationNextStep.cta.respondBy | eval | safe }}
                 {% if applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
-                  <a href='{{ paths.common.askForMoreTime.reason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
+                  <a href='{{ paths.common.askForMoreTimeReason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
                 {% endif %}
               </p>
             {% endif %}

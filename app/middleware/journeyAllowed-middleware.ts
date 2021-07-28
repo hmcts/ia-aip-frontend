@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { paths } from '../paths';
-import { hasInflightTimeExtension } from '../utils/utils';
+import { hasPendingTimeExtension } from '../utils/utils';
 
 const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const currentPath: string = req.path;
@@ -33,7 +33,7 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
 };
 
 const isTimeExtensionsInProgress = (req: Request, res: Response, next: NextFunction) => {
-  if (!hasInflightTimeExtension(req.session.appeal)) {
+  if (!hasPendingTimeExtension(req.session.appeal)) {
     return next();
   }
   return res.redirect(paths.common.forbidden);

@@ -6,7 +6,7 @@ import UpdateAppealService from '../service/update-appeal-service';
 import { getAppealApplicationNextStep } from '../utils/application-state-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
-import { asBooleanValue, hasInflightTimeExtension } from '../utils/utils';
+import { asBooleanValue, hasPendingTimeExtension } from '../utils/utils';
 
 function getAppealRefNumber(appealRef: string) {
   if (appealRef && appealRef.toUpperCase() === 'DRAFT') {
@@ -53,7 +53,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         saved: isPartiallySaved,
         ended: appealEnded,
         askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
-        askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
+        askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal)
       });
     } catch (e) {
       next(e);

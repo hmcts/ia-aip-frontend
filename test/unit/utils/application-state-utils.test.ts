@@ -1,10 +1,14 @@
 import { Request } from 'express';
+import { paths } from '../../../app/paths';
 import {
   getAppealApplicationNextStep,
-  getAppealStatus, getMoveAppealOfflineDate,
+  getAppealStatus,
+  getDoThisNextSectionFromAppealState,
+  getMoveAppealOfflineDate,
   getMoveAppealOfflineReason
 } from '../../../app/utils/application-state-utils';
 import Logger from '../../../app/utils/logger';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('application-state-utils', () => {
@@ -80,6 +84,54 @@ describe('application-state-utils', () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  describe('getDoThisNextSectionFromAppealState', () => {
+    const expected = {
+      descriptionParagraphs: [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ],
+      info: {
+        title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
+        url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
+      },
+      usefulDocuments: {
+        title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
+        url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
+      },
+      cta: {
+        url: paths.awaitingReasonsForAppeal.decision,
+        respondBy: i18n.pages.overviewPage.doThisNext.respondByText
+      },
+      allowedAskForMoreTime: true
+    };
+    it('should return do this next section', () => {
+      const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, false, false);
+
+      expect(doThisNext).to.be.eql(expected);
+    });
+
+    it('should return do this next section with pending extension', () => {
+      expected.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime ];
+      expected.cta.respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
+      const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', true, false, false);
+
+      expect(doThisNext).to.be.eql(expected);
+    });
+
+    it('should return do this next section with granted extension', () => {
+      expected.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
+      expected.cta.respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, true, false);
+
+      expect(doThisNext).to.be.eql(expected);
+    });
+
+    it('should return do this next section with refused extension', () => {
+      expected.descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
+      expected.cta.respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      const doThisNext = getDoThisNextSectionFromAppealState('awaitingReasonsForAppeal', false, false, true);
+
+      expect(doThisNext).to.be.eql(expected);
+    });
   });
 
   describe('getAppealApplicationNextStep', () => {
@@ -228,16 +280,12 @@ describe('application-state-utils', () => {
         {
           allowedAskForMoreTime: true,
           cta: {
-            respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
-            respondByTextAskForMoreTime: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+            respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
             url: '/case-building/home-office-decision-wrong'
           },
           deadline: '01 September 2020',
           descriptionParagraphs: [
             'Tell us why you think the Home Office decision to refuse your claim is wrong.'
-          ],
-          descriptionParagraphsAskForMoreTime: [
-            'You might not get more time. You should still try to tell us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.'
           ],
           info: {
             title: 'Helpful Information',
@@ -277,16 +325,12 @@ describe('application-state-utils', () => {
     expect(result).to.eql(
       {
         cta: {
-          respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
-          'respondByTextAskForMoreTime': 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+          respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
           url: '/case-building/home-office-decision-wrong'
         },
         deadline: '21 April 2020',
         descriptionParagraphs: [
           'You need to finish telling us why you think the Home Office decision to refuse your claim is wrong.'
-        ],
-        'descriptionParagraphsAskForMoreTime': [
-          'You might not get more time. You need to finish telling us why you think the Home Office decision is wrong by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.'
         ],
         info: {
           title: 'Helpful Information',
@@ -325,7 +369,7 @@ describe('application-state-utils', () => {
     expect(result).to.eql({
       'allowedAskForMoreTime': true,
       'cta': {
-        'respondByText': 'You need to respond by {{ applicationNextStep.deadline }}.',
+        'respondByText': 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
         'respondByTextAskForMoreTime': 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
         'url': '/questions-about-appeal'
       },
@@ -365,7 +409,7 @@ describe('application-state-utils', () => {
       {
         allowedAskForMoreTime: true,
         cta: {
-          respondByText: 'You need to respond by {{ applicationNextStep.deadline }}.',
+          respondByText: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
           respondByTextAskForMoreTime: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
           url: '/appointment-needs'
         },

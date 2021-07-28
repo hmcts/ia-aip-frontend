@@ -5,8 +5,8 @@ import puppeteer, { Browser, LaunchOptions, Page } from 'puppeteer';
 import { createApp } from '../../app/app';
 import Logger from '../../app/utils/logger';
 
-const httpProxy = config.get('httpProxy');
-const testUrl = config.get('testUrl');
+const httpProxy: number = config.get('httpProxy');
+const testUrl: string = config.get('testUrl');
 const port: number | string = process.env.PORT || 3000;
 const logger: Logger = new Logger();
 

@@ -1,6 +1,7 @@
 import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
+import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -8,7 +9,7 @@ import { documentIdToDocStoreUrl, DocumentManagementService } from '../../servic
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysToDate } from '../../utils/date-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue, hasInflightTimeExtension, nowAppealDate } from '../../utils/utils';
+import { asBooleanValue, hasPendingTimeExtension } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,
@@ -24,7 +25,7 @@ function getReasonForAppeal(req: Request, res: Response, next: NextFunction) {
       previousPage: paths.common.overview,
       applicationReason: req.session.appeal.reasonsForAppeal.applicationReason,
       askForMoreTimeFeatureEnabled: askForMoreTimeFeatureEnabled,
-      askForMoreTimeInFlight: hasInflightTimeExtension(req.session.appeal)
+      askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal)
     });
   } catch (e) {
     next(e);
@@ -174,7 +175,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         evidences.push({
           fileId: evidenceStored.fileId,
           name: evidenceStored.name,
-          dateUploaded: new Date().toISOString(),
+          dateUploaded: moment().format('YYYY-MM-DDZ'),
           description: 'Appeal Reasons supporting evidence'
         });
         req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];

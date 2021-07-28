@@ -83,6 +83,7 @@ interface CaseData {
   outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
+  makeAnApplicationEvidence?: Collection<SupportingDocument>[];
   makeAnApplications?: Collection<Application>[];
   appealReviewDecisionTitle?: any;
   appealReviewOutcome?: string;
@@ -99,7 +100,7 @@ interface Application {
   state: string;
   details: string;
   decision: string;
-  evidence: any[]; // TODO: change any for appropiate type for evidences
+  evidence: Evidence[]; // TODO: change any for appropiate type for evidences
   applicant: string;
   applicantRole: string;
   decisionDate?: string;

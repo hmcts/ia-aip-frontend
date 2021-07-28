@@ -65,6 +65,12 @@ function getTimeExtensionSummaryRows(timeExtensionEvent: Collection<Application>
   const data = timeExtensionEvent.value;
   request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]));
   request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.reason, [ data.details ]));
+  if (data.evidence.length) {
+    const evidenceText = data.evidence.map((evidence) => {
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+    });
+    request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.evidence, evidenceText, null, Delimiter.BREAK_LINE));
+  }
   request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.date, [ moment(data.date).format(dayMonthYearFormat) ]));
 
   if (data.decision !== 'Pending') {

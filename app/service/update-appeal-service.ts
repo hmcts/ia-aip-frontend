@@ -640,23 +640,38 @@ export default class UpdateAppealService {
         clarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap)
       },
       ...appeal.application.homeOfficeLetter && {
-        uploadTheNoticeOfDecisionDocs: this.mapAppealEvidencesToDocumentsCaseData(appeal.application.homeOfficeLetter, appeal.documentMap)
+        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
       ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
-      ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails }
+      ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
+      ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) }
     };
     return caseData;
   }
 
-  mapAppealEvidencesToDocumentsCaseData = (evidences: Evidence[], documentMap: DocumentMap[]): Collection<DocumentWithMetaData>[] => {
+  mapAppealEvidencesToDocumentsCaseData = (evidences: Evidence[], documentMap: DocumentMap[]): Collection<SupportingDocument>[] => {
+    return evidences.map((evidence) => {
+      const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+      return {
+         ...evidence.id && { id: evidence.id },
+        value: {
+          document_filename: evidence.name,
+          document_url: documentLocationUrl,
+          document_binary_url: `${documentLocationUrl}/binary`
+        } as SupportingDocument
+      } as Collection<SupportingDocument>;
+    });
+  }
+
+  mapUploadTheNoticeOfDecisionDocs = (evidences: Evidence[], documentMap: DocumentMap[], tag: string = null): Collection<DocumentWithMetaData>[] => {
     return evidences.map((evidence: Evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
       return {
-        ...evidence.id && { id: evidence.id },
+        ...evidence.fileId && { id: evidence.fileId },
         value: {
           ...evidence.description && { description: evidence.description },
           ...evidence.dateUploaded && { dateUploaded: evidence.dateUploaded },
-          tag: 'additionalEvidence',
+          ...tag && { tag: 'additionalEvidence' },
           document: {
             document_filename: evidence.name,
             document_url: documentLocationUrl,

@@ -295,6 +295,10 @@ module.exports = {
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
 
+    When(/^I visit the health page$/, async () => {
+      await I.amOnPage(`${testUrl}/health`);
+    });
+
     Then(/^I click continue$/, async () => {
       await I.click('Continue');
     });
@@ -306,6 +310,10 @@ module.exports = {
 
     Then(/^I am on the overview page$/, async () => {
       await I.amOnPage(`${testUrl}/appeal-overview`);
+    });
+
+    Then(/^I see "([^"]*)" on the page$/, async (text: string) => {
+      await I.see(text);
     });
 
     Then(/^I see "([^"]*)" in title$/, async (title: string) => {

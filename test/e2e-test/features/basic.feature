@@ -26,11 +26,12 @@ Scenario: Complete appeal application
   Then I should see the task-list page
   When I click on Home office details
   Then I should be taken to the home office ref number page
-  Then I enter a home office reference "A1234567"
+  Then I enter a home office reference "123456789"
   And I click "Save and continue" button
   Then I should see letter sent page
   When I enter an on time letter sent date
   Then I click "Save and continue" button
+  
   Then I expect to be redirect back to the task-list
   When I click Your personal details
   Then I should be taken to the enter your name page

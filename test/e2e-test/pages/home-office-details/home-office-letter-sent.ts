@@ -34,6 +34,11 @@ module.exports = {
       I.amOnPage(testUrl + '/view/document/fileID');
     });
 
+    When('I upload a Home Office decision letter', async () => {
+      await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
+      I.click('Upload file');
+    });
+
     Then('I should see the no file found page', async () => {
       I.seeInCurrentUrl(paths.common.fileNotFound);
     });

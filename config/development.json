@@ -1,5 +1,5 @@
 {
-  "testUrl": "https://immigration-appeal.aat.platform.hmcts.net",
+  "testUrl": "https://localhost:3000/",
   "session": {
     "useRedis": true,
     "useLogger": false

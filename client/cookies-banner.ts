@@ -1,3 +1,5 @@
+import { isNull } from 'lodash';
+
 interface ICookies {
   init: () => void;
   addCookie: (name: string, value: string) => void;
@@ -15,34 +17,11 @@ export default class CookiesBanner implements ICookies {
 
   init() {
     this.cookieBanner = document.querySelector('#cookie-banner');
+    if (isNull(this.cookieBanner)) { return; }
     this.acceptCookiesButton = document.querySelector('#acceptCookies');
     this.rejectCookiesButton = document.querySelector('#rejectCookies');
     this.addEventListeners();
-
-    const analyticsCookieExist = document.cookie.indexOf('analytics_consent') > -1;
-    if (analyticsCookieExist) {
-      const consent = this.getCookieValue('analytics_consent');
-      this.hideCookieBanner();
-      if (consent === 'yes') {
-        window.gtag('consent', 'default', {
-          'ad_storage': 'denied',
-          'analytics_storage': 'granted'
-        });
-      } else if (consent === 'no') {
-        window.gtag('consent', 'default', {
-          'ad_storage': 'denied',
-          'analytics_storage': 'denied'
-        });
-      }
-      // console.log('INIT: analytics cookie exist, grant consent');
-    } else {
-      // console.log('INIT: analytics cookie DOES NOT exist, deny consent');
-      this.showCookieBanner();
-      window.gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'analytics_storage': 'denied'
-      });
-    }
+    this.verifyAnalyticsCookie();
 
     // const isSessionSeenCookieExist = document.cookie.indexOf('seen_cookie_message=1') > -1;
     // if (this.cookieBanner) {
@@ -73,6 +52,33 @@ export default class CookiesBanner implements ICookies {
       });
       this.hideCookieBanner();
     });
+  }
+
+  verifyAnalyticsCookie() {
+    const analyticsCookieExist = document.cookie.indexOf('analytics_consent') > -1;
+    if (analyticsCookieExist) {
+      const consent = this.getCookieValue('analytics_consent');
+      this.hideCookieBanner();
+      if (consent === 'yes') {
+        window.gtag('consent', 'default', {
+          'ad_storage': 'denied',
+          'analytics_storage': 'granted'
+        });
+      } else if (consent === 'no') {
+        window.gtag('consent', 'default', {
+          'ad_storage': 'denied',
+          'analytics_storage': 'denied'
+        });
+      }
+      // console.log('INIT: analytics cookie exist, grant consent');
+    } else {
+      // console.log('INIT: analytics cookie DOES NOT exist, deny consent');
+      this.showCookieBanner();
+      window.gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied'
+      });
+    }
   }
 
   addCookie(name, value) {

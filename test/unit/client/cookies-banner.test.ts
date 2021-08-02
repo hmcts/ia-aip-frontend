@@ -1,16 +1,21 @@
 import CookiesBanner from '../../../client/cookies-banner';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Cookies Banner', () => {
+describe.only('Cookies Banner', () => {
   let sandbox: sinon.SinonSandbox;
   let hideCookieBannerSpy: sinon.SinonSpy;
   let showCookieBannerSpy: sinon.SinonSpy;
   let cookiesBanner: CookiesBanner;
-  const html = `<div id="cookie-banner">Cookie banner</div>`;
+  const html = `<div id="cookie-banner">
+      <button id="acceptCookies">Accept</button>
+      <button id="rejectCookies">Reject</button>
+    </div>`;
 
   before(() => {
-    cookiesBanner = new CookiesBanner();
+    /* tslint:disable:no-empty */
+    (window as any).gtag = function () {};
     document.body.innerHTML = html;
+    cookiesBanner = new CookiesBanner();
   });
 
   beforeEach(() => {

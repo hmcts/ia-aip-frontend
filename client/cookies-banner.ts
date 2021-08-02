@@ -21,22 +21,11 @@ export default class CookiesBanner implements ICookies {
     this.acceptCookiesButton = document.querySelector('#acceptCookies');
     this.rejectCookiesButton = document.querySelector('#rejectCookies');
     this.addEventListeners();
-    this.verifyAnalyticsCookie();
-
-    // const isSessionSeenCookieExist = document.cookie.indexOf('seen_cookie_message=1') > -1;
-    // if (this.cookieBanner) {
-    //   if (isSessionSeenCookieExist) {
-    //     this.hideCookieBanner();
-    //   } else {
-    //     this.addCookie('seen_cookie_message');
-    //     this.showCookieBanner();
-    //   }
-    // }
+    this.initAnalyticsCookie();
   }
 
   addEventListeners() {
     this.acceptCookiesButton.addEventListener('click', () => {
-      // console.log('BANNER: accept cookies');
       this.addCookie('analytics_consent', 'yes');
       window.gtag('consent', 'update', {
         'analytics_storage': 'granted'
@@ -45,7 +34,6 @@ export default class CookiesBanner implements ICookies {
     });
 
     this.rejectCookiesButton.addEventListener('click', () => {
-      // console.log('BANNER: reject cookies')
       this.addCookie('analytics_consent', 'no');
       window.gtag('consent', 'update', {
         'analytics_storage': 'denied'
@@ -54,30 +42,25 @@ export default class CookiesBanner implements ICookies {
     });
   }
 
-  verifyAnalyticsCookie() {
+  initAnalyticsCookie() {
     const analyticsCookieExist = document.cookie.indexOf('analytics_consent') > -1;
     if (analyticsCookieExist) {
-      const consent = this.getCookieValue('analytics_consent');
       this.hideCookieBanner();
-      if (consent === 'yes') {
-        window.gtag('consent', 'default', {
-          'ad_storage': 'denied',
-          'analytics_storage': 'granted'
-        });
-      } else if (consent === 'no') {
-        window.gtag('consent', 'default', {
-          'ad_storage': 'denied',
-          'analytics_storage': 'denied'
-        });
-      }
-      // console.log('INIT: analytics cookie exist, grant consent');
-    } else {
-      // console.log('INIT: analytics cookie DOES NOT exist, deny consent');
-      this.showCookieBanner();
-      window.gtag('consent', 'default', {
-        'ad_storage': 'denied',
-        'analytics_storage': 'denied'
+      const consent = this.getCookieValue('analytics_consent');
+      window.gtag('consent', 'update', {
+        'ad_storage': consent === 'yes' ? 'granted' : 'denied',
+        'analytics_storage': consent === 'yes' ? 'granted' : 'denied'
       });
+      if (consent === 'yes') {
+        window.gtag('js', new Date());
+        window.gtag('config', 'UA-159574540-1');
+      }
+    } else {
+      this.showCookieBanner();
+      // window.gtag('consent', 'default', {
+      //   'ad_storage': 'denied',
+      //   'analytics_storage': 'denied'
+      // });
     }
   }
 
@@ -86,12 +69,10 @@ export default class CookiesBanner implements ICookies {
   }
 
   removeCookie(name) {
-    // console.log('removing cookie with date', this.pastDate)
     document.cookie = `${name}=; expires=${this.pastDate}; path=/`;
   }
 
   getCookieValue(name) {
-    // tslint:disable-next-line
     return document.cookie.split('; ').find(row => row.startsWith(`${name}=`)).split('=')[1];
   }
 

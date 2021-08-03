@@ -27,8 +27,6 @@ export default class CookiesBanner implements ICookies {
   addEventListeners() {
     this.acceptCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'yes');
-      this.addCookie('cookies_preferences_set', 'true');
-      this.addCookie('cookies_policy', '{"essential":true,"analytics":true,"apm":true}');
       window.gtag('consent', 'update', {
         'analytics_storage': 'granted'
       });
@@ -37,12 +35,11 @@ export default class CookiesBanner implements ICookies {
 
     this.rejectCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'no');
-      this.addCookie('cookies_preferences_set', 'true');
-      this.addCookie('cookies_policy', '{"essential":true,"analytics":false,"apm":false}');
       window.gtag('consent', 'update', {
         'analytics_storage': 'denied'
       });
       this.hideCookieBanner();
+      this.removeDynaCookies();
     });
   }
 
@@ -55,11 +52,20 @@ export default class CookiesBanner implements ICookies {
         'ad_storage': consent === 'yes' ? 'granted' : 'denied',
         'analytics_storage': consent === 'yes' ? 'granted' : 'denied'
       });
+      if (consent === 'no') this.removeDynaCookies();
     } else {
       this.showCookieBanner();
-      this.addCookie('cookies_preferences_set', 'false');
-      this.addCookie('cookies_policy', '{"essential":true,"analytics":false,"apm":false}');
+      this.removeDynaCookies();
     }
+  }
+
+  removeDynaCookies() {
+    this.removeCookie('dtCookie');
+    this.removeCookie('dtLatC');
+    this.removeCookie('dtPC');
+    this.removeCookie('dtSa');
+    this.removeCookie('rxVisitor');
+    this.removeCookie('rxvt');
   }
 
   addCookie(name, value) {

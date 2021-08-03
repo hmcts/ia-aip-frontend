@@ -27,6 +27,7 @@ export default class CookiesBanner implements ICookies {
   addEventListeners() {
     this.acceptCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'yes');
+      this.addCookie('cookies_policy', '{"essential":true,"analytics":true,"apm":true}');
       window.gtag('consent', 'update', {
         'analytics_storage': 'granted'
       });
@@ -35,6 +36,7 @@ export default class CookiesBanner implements ICookies {
 
     this.rejectCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'no');
+      this.addCookie('cookies_policy', '{"essential":true,"analytics":false,"apm":false}');
       window.gtag('consent', 'update', {
         'analytics_storage': 'denied'
       });

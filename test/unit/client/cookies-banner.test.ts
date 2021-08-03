@@ -23,6 +23,7 @@ describe('Cookies Banner', () => {
     window.gtag = sandbox.stub();
     hideCookieBannerSpy = sandbox.spy(CookiesBanner.prototype, 'hideCookieBanner');
     showCookieBannerSpy = sandbox.spy(CookiesBanner.prototype, 'showCookieBanner');
+    sandbox.stub(CookiesBanner.prototype, 'removeCookie');
   });
 
   afterEach(() => {
@@ -54,6 +55,12 @@ describe('Cookies Banner', () => {
   });
 
   describe('initAnalyticsCookie', () => {
+    it('should show banner and deny cookies if cookie not present', () => {
+      cookiesBanner.initAnalyticsCookie();
+
+      expect(showCookieBannerSpy).to.have.been.called;
+    });
+
     it('should hide banner and grant cookies if cookie is present', () => {
       cookiesBanner.addCookie('analytics_consent', 'yes');
       cookiesBanner.initAnalyticsCookie();
@@ -74,12 +81,6 @@ describe('Cookies Banner', () => {
         'ad_storage': 'denied',
         'analytics_storage': 'denied'
       });
-    });
-    it('should show banner and deny cookies if cookie not present', () => {
-      cookiesBanner.removeCookie('analytics_consent');
-      cookiesBanner.initAnalyticsCookie();
-
-      expect(showCookieBannerSpy).to.have.been.called;
     });
   });
 

@@ -31,6 +31,7 @@ export default class CookiesBanner implements ICookies {
         'analytics_storage': 'granted'
       });
       this.hideCookieBanner();
+      this.enableDynaCookies();
     });
 
     this.rejectCookiesButton.addEventListener('click', () => {
@@ -52,10 +53,17 @@ export default class CookiesBanner implements ICookies {
         'ad_storage': consent === 'yes' ? 'granted' : 'denied',
         'analytics_storage': consent === 'yes' ? 'granted' : 'denied'
       });
-      if (consent === 'no') this.removeDynaCookies();
+      consent === 'no' ? this.removeDynaCookies() : this.enableDynaCookies();
     } else {
       this.showCookieBanner();
       this.removeDynaCookies();
+    }
+  }
+
+  enableDynaCookies() {
+    if (window.dtrum !== undefined) {
+      window.dtrum.enable();
+      window.dtrum.enableSessionReplay();
     }
   }
 
@@ -66,6 +74,10 @@ export default class CookiesBanner implements ICookies {
     this.removeCookie('dtSa');
     this.removeCookie('rxVisitor');
     this.removeCookie('rxvt');
+    if (window.dtrum !== undefined) {
+      window.dtrum.disableSessionReplay();
+      window.dtrum.disable();
+    }
   }
 
   addCookie(name, value) {
@@ -74,6 +86,8 @@ export default class CookiesBanner implements ICookies {
 
   removeCookie(name) {
     document.cookie = `${name}=; expires=${this.pastDate}; path=/`;
+    window.localStorage.removeItem(name);
+    window.sessionStorage.removeItem(name);
   }
 
   getCookieValue(name) {

@@ -53,36 +53,6 @@ describe('Cookies Banner', () => {
     });
   });
 
-  describe('initAnalyticsCookie', () => {
-    it('should hide banner and grant cookies if cookie is present', () => {
-      cookiesBanner.addCookie('analytics_consent', 'yes');
-      cookiesBanner.initAnalyticsCookie();
-
-      expect(hideCookieBannerSpy).to.have.been.called;
-      expect(window.gtag).to.have.been.calledWith('consent', 'update', {
-        'ad_storage': 'granted',
-        'analytics_storage': 'granted'
-      });
-    });
-
-    it('should hide banner and grant cookies if cookie is present', () => {
-      cookiesBanner.addCookie('analytics_consent', 'no');
-      cookiesBanner.initAnalyticsCookie();
-
-      expect(hideCookieBannerSpy).to.have.been.called;
-      expect(window.gtag).to.have.been.calledWith('consent', 'update', {
-        'ad_storage': 'denied',
-        'analytics_storage': 'denied'
-      });
-    });
-    it('should show banner and deny cookies if cookie not present', () => {
-      cookiesBanner.removeCookie('analytics_consent');
-      cookiesBanner.initAnalyticsCookie();
-
-      expect(showCookieBannerSpy).to.have.been.called;
-    });
-  });
-
   describe('Banner visibility', () => {
     it('should hide cookie banner', () => {
       cookiesBanner.hideCookieBanner();

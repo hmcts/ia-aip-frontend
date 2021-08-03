@@ -27,6 +27,7 @@ export default class CookiesBanner implements ICookies {
   addEventListeners() {
     this.acceptCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'yes');
+      this.addCookie('cookies_preferences_set', 'true');
       this.addCookie('cookies_policy', '{"essential":true,"analytics":true,"apm":true}');
       window.gtag('consent', 'update', {
         'analytics_storage': 'granted'
@@ -36,6 +37,7 @@ export default class CookiesBanner implements ICookies {
 
     this.rejectCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'no');
+      this.addCookie('cookies_preferences_set', 'true');
       this.addCookie('cookies_policy', '{"essential":true,"analytics":false,"apm":false}');
       window.gtag('consent', 'update', {
         'analytics_storage': 'denied'
@@ -53,16 +55,10 @@ export default class CookiesBanner implements ICookies {
         'ad_storage': consent === 'yes' ? 'granted' : 'denied',
         'analytics_storage': consent === 'yes' ? 'granted' : 'denied'
       });
-      if (consent === 'yes') {
-        window.gtag('js', new Date());
-        window.gtag('config', 'UA-159574540-1');
-      }
     } else {
       this.showCookieBanner();
-      // window.gtag('consent', 'default', {
-      //   'ad_storage': 'denied',
-      //   'analytics_storage': 'denied'
-      // });
+      this.addCookie('cookies_preferences_set', 'false');
+      this.addCookie('cookies_policy', '{"essential":true,"analytics":false,"apm":false}');
     }
   }
 

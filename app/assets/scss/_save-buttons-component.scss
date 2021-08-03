@@ -1,6 +1,10 @@
 .save-buttons__container {
   margin: 1rem 0;
-
+  display: flex;
+  align-items: center;
+  &--space-between {
+    justify-content: space-between;
+  }
   button {
     margin: 0;
     box-sizing: border-box;

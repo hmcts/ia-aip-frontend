@@ -316,6 +316,10 @@ module.exports = {
       await I.see(text);
     });
 
+    Then(/^I dont see "([^"]*)" on the page$/, async (text: string) => {
+      await I.dontSee(text);
+    });
+
     Then(/^I see "([^"]*)" in title$/, async (title: string) => {
       await I.see(title, 'h1');
     });

@@ -125,14 +125,6 @@
   <link href="/main.css" rel="stylesheet" />
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159574540-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-159574540-1');
-  </script>
-
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -140,6 +132,19 @@
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-W4WSRN2');</script>
   <!-- End Google Tag Manager -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag(){dataLayer.push(arguments);};
+    window.gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied'
+    });
+  </script>
+  <script>
+    window.gtag('js', new Date());
+    window.gtag('config', 'UA-159574540-1');
+  </script>
+
 {% endblock %}
 
 {% block bodyStart %}
@@ -151,8 +156,35 @@
 
 {% block header %}
   <div id="cookie-banner">
-    <div  class="govuk-width-container">
-      <p>{{ i18n.cookieBanner.content | safe }}</p>
+    <div  class="govuk-width-container govuk-body govuk-!-margin-bottom-0">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <h2 class="govuk-heading-m">{{ i18n.cookieBanner.title }}</h2>
+          {% for paragraph in i18n.cookieBanner.content %}
+            <p>{{ paragraph | eval | safe }}</p>
+          {% endfor %}
+          <div class="save-buttons__container">
+            {{ govukButton({
+              name: 'acceptCookies',
+              text: i18n.cookieBanner.acceptCookiesButton,
+              classes: "govuk-!-margin-right-3",
+              attributes: {
+                id: 'acceptCookies'
+              }
+            }) }}
+
+            {{ govukButton({
+              name: "rejectCookies",
+              text: i18n.cookieBanner.rejectCookiesButton,
+              classes: "govuk-!-margin-right-3",
+              attributes: {
+                id: 'rejectCookies'
+              }
+            }) }}
+            <a href="{{paths.common.cookies}}" class="govuk-link">{{ i18n.cookieBanner.viewCookies }}</a>
+        </div>
+      </div>
+      </div>
     </div>
   </div>
   {{ header() }}

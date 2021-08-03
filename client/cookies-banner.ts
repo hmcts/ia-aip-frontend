@@ -74,6 +74,7 @@ export default class CookiesBanner implements ICookies {
 
   removeCookie(name) {
     document.cookie = `${name}=; expires=${this.pastDate}; path=/`;
+    this.removeFromLocalAndSessionStorage(name);
   }
 
   getCookieValue(name) {
@@ -86,5 +87,10 @@ export default class CookiesBanner implements ICookies {
 
   showCookieBanner() {
     this.cookieBanner.style.display = 'block';
+  }
+
+  removeFromLocalAndSessionStorage(cookieName) {
+    window.localStorage.removeItem(cookieName);
+    window.sessionStorage.removeItem(cookieName);
   }
 }

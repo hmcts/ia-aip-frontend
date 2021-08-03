@@ -85,6 +85,25 @@ export default class CookiesBanner implements ICookies {
   }
 
   removeCookie(name) {
+    const hostname = window.location.hostname;
+    const dotHostname = '.' + hostname;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${hostname};path=/`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${dotHostname};path=/`;
+
+    // for live
+    const firstDot = hostname.indexOf('.');
+    const upperDomain = hostname.substring(firstDot);
+    const dotUpperDomain = '.' + upperDomain;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${upperDomain};path=/`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${dotUpperDomain};path=/`;
+
+    // for sub-live
+    const dots = hostname.split('.');
+    const subLiveUpperDomain = dots[dots.length - 2] + '.' + dots[dots.length - 1];
+    const subLiveDotUpperDomain = '.' + subLiveUpperDomain;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${subLiveUpperDomain};path=/`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${subLiveDotUpperDomain};path=/`;
+
     document.cookie = `${name}=; expires=${this.pastDate}; path=/`;
     window.localStorage.removeItem(name);
     window.sessionStorage.removeItem(name);

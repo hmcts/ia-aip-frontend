@@ -2,4 +2,3 @@
 --require jsdom-global/register
 --require source-map-support/register
 --timeout=10000
---testURL=\"http://localhost\"

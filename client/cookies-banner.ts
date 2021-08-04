@@ -68,16 +68,16 @@ export default class CookiesBanner implements ICookies {
   }
 
   removeDynaCookies() {
+    if (window.dtrum !== undefined) {
+      window.dtrum.disableSessionReplay();
+      window.dtrum.disable();
+    }
     this.removeCookie('dtCookie');
     this.removeCookie('dtLatC');
     this.removeCookie('dtPC');
     this.removeCookie('dtSa');
     this.removeCookie('rxVisitor');
     this.removeCookie('rxvt');
-    if (window.dtrum !== undefined) {
-      window.dtrum.disableSessionReplay();
-      window.dtrum.disable();
-    }
   }
 
   addCookie(name, value) {

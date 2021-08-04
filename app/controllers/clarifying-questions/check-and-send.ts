@@ -29,7 +29,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
         addSummaryRow(
           i18n.common.cya.answerRowTitle,
           [ `<pre>${question.value.answer}</pre>` ],
-          paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', `${index + 1}`) + editParameter
+          paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', `${index + 1}`)
         )
       );
       if (question.value.supportingEvidence && question.value.supportingEvidence.length) {

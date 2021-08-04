@@ -20,6 +20,7 @@ export default class CookiesBanner implements ICookies {
     if (isNull(this.cookieBanner)) { return; }
     this.acceptCookiesButton = document.querySelector('#acceptCookies');
     this.rejectCookiesButton = document.querySelector('#rejectCookies');
+    this.removeDynaCookies();
     this.addEventListeners();
     this.initAnalyticsCookie();
   }
@@ -69,6 +70,8 @@ export default class CookiesBanner implements ICookies {
 
   removeDynaCookies() {
     if (window.dtrum !== undefined) {
+      // tslint:disable:no-console
+      console.log('disabling sessionReplay and dyna');
       window.dtrum.disableSessionReplay();
       window.dtrum.disable();
     }

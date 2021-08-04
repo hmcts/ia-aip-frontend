@@ -1037,6 +1037,17 @@
                   ],
                   [
                     {
+                      "text": "_gat"
+                    },
+                    {
+                      "text": "Manages the rate at which page view requests are made"
+                    },
+                    {
+                      "text": "10 minutes"
+                    }
+                  ],
+                  [
+                    {
                       "text": "_gid"
                     },
                     {
@@ -1052,9 +1063,11 @@
           ]
         },
         {
-          "title": "Cookies used to turn our introductory message off",
+          "title": "Cookies used to measure application performance",
           "content": [
-            "You may see a welcome message when you first visit the service. We’ll store a cookie so that your computer knows not to show this message again.",
+            "We use Dynatrace Software Intelligence Platform to provide an Application Performance Monitoring Service to collect information about how you use HMCTS services. We do this to monitor HMCTS services in order to resolve issues within our services as well as collect data on how our services can be improved. HMCTS store information about:",
+            "<ul class='govuk-list govuk-list--bullet'><li>site performance</li><li>website usage</li><li>user behaviour</li></ul>",
+            "Information is presented within the Application Performance Monitoring service for the purposes detailed above. We do not use or share the information for any other purpose. We do not allow Dynatrace to use or share the information for any other purposes.",
             {
               "table": {
                 "head": [
@@ -1071,13 +1084,68 @@
                 "rows": [
                   [
                     {
-                      "text": "seen_cookie_message"
+                      "text": "dtCookie"
                     },
                     {
-                      "text": "Saves a message to let us know that you’ve seen our cookie message"
+                      "text": "Tracks a visit across multiple request"
                     },
                     {
-                      "text": "1 month"
+                      "text": "When session ends"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "dtLatC"
+                    },
+                    {
+                      "text": "Measures server latency for performance monitoring"
+                    },
+                    {
+                      "text": "When session ends"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "dtPC"
+                    },
+                    {
+                      "text": "Required to identify proper endpoints for beacon transmission; includes session ID for correlation"
+                    },
+                    {
+                      "text": "When session ends"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "dtSa"
+                    },
+                    {
+                      "text": "Intermediate store for page-spanning actions"
+                    },
+                    {
+                      "text": "When session ends"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "rxVisitor"
+                    },
+                    {
+                      "text": "Visitor ID to correlate sessions"
+                    },
+                    {
+                      "text": "1 year"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "rxvt"
+                    },
+                    {
+                      "text": "Session timeout"
+                    },
+                    {
+                      "text": "When session ends"
                     }
                   ]
                 ]
@@ -1086,9 +1154,9 @@
           ]
         },
         {
-          "title": "Cookies used to store the answers you’ve given during your visit (known as a ‘session’)",
+          "title": "Essential cookies",
           "content": [
-            "Session cookies are stored on your computer as you browse a website, and let the website know what you’ve seen and done so far. These are temporary cookies and are automatically deleted after you leave the website.",
+            "These essential cookies make the service more secure. They always need to be on.",
             {
               "table": {
                 "head": [
@@ -1105,24 +1173,57 @@
                 "rows": [
                   [
                     {
-                      "text": "session"
+                      "text": "Idam.Session"
                     },
                     {
-                      "text": "Keeps track of your answers"
+                      "text": "Keeps track of your login state"
                     },
                     {
-                      "text": "When you close your browser"
+                      "text": "When session ends"
                     }
                   ],
                   [
                     {
-                      "text": "ARRAffinity"
+                      "text": "Idam.AuthId"
                     },
                     {
-                      "text": "To know which internal IP a request should be routed to."
+                      "text": "Keeps track of your login state when using multi-factor authentication"
                     },
                     {
-                      "text": "When you close your browser"
+                      "text": "When session ends"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "Idam.SSOSession"
+                    },
+                    {
+                      "text": "Keeps track of your login state when using federated authentication"
+                    },
+                    {
+                      "text": "When session ends"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "idam_ui_locales"
+                    },
+                    {
+                      "text": "Stores your language preferences"
+                    },
+                    {
+                      "text": "10 years"
+                    }
+                  ],
+                  [
+                    {
+                      "text": "XSRF-TOKEN"
+                    },
+                    {
+                      "text": "Helps protect against forgery"
+                    },
+                    {
+                      "text": "When session ends"
                     }
                   ]
                 ]
@@ -1831,7 +1932,14 @@
     }
   },
   "cookieBanner": {
-    "content": "GOV.UK uses cookies to make the site simpler. <a href='/cookie-policy' class='govuk-link' title='Find out more about cookies'>Find out more about cookies</a>"
+    "title": "Cookies on MyHMCTS",
+    "content": [
+      "We use some essential cookies to make this service work.",
+      "We’d also like to use analytics cookies so we can understand how you use the service and make improvements."
+    ],
+    "acceptCookiesButton": "Accept analytics cookies",
+    "rejectCookiesButton": "Reject analytics cookies",
+    "viewCookies": "View cookies"
   },
   "validationErrors": {
     "errorSummary": "There is a problem",

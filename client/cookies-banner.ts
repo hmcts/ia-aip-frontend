@@ -1,30 +1,119 @@
+import { isNull } from 'lodash';
+
 interface ICookies {
   init: () => void;
-  addCookie: () => void;
+  addCookie: (name: string, value: string) => void;
   hideCookieBanner: () => void;
   showCookieBanner: () => void;
 }
 
 export default class CookiesBanner implements ICookies {
   public cookieBanner: HTMLElement = null;
+  public acceptCookiesButton: HTMLElement = null;
+  public rejectCookiesButton: HTMLElement = null;
+  private currentDate = new Date();
+  private expiryDate = new Date(this.currentDate.setMonth(this.currentDate.getMonth() + 1));
+  private pastDate = new Date(this.currentDate.setMonth(this.currentDate.getMonth() - 2));
 
   init() {
     this.cookieBanner = document.querySelector('#cookie-banner');
-    const isSessionSeenCookieExist = document.cookie.indexOf('seen_cookie_message=1') > -1;
-    if (this.cookieBanner) {
-      if (isSessionSeenCookieExist) {
-        this.hideCookieBanner();
-      } else {
-        this.addCookie();
-        this.showCookieBanner();
-      }
+    if (isNull(this.cookieBanner)) { return; }
+    this.acceptCookiesButton = document.querySelector('#acceptCookies');
+    this.rejectCookiesButton = document.querySelector('#rejectCookies');
+    this.removeDynaCookies();
+    this.addEventListeners();
+    this.initAnalyticsCookie();
+  }
+
+  addEventListeners() {
+    this.acceptCookiesButton.addEventListener('click', () => {
+      this.addCookie('analytics_consent', 'yes');
+      window.gtag('consent', 'update', {
+        'analytics_storage': 'granted'
+      });
+      this.hideCookieBanner();
+      this.enableDynaCookies();
+    });
+
+    this.rejectCookiesButton.addEventListener('click', () => {
+      this.addCookie('analytics_consent', 'no');
+      window.gtag('consent', 'update', {
+        'analytics_storage': 'denied'
+      });
+      this.hideCookieBanner();
+      this.removeDynaCookies();
+    });
+  }
+
+  initAnalyticsCookie() {
+    const analyticsCookieExist = document.cookie.indexOf('analytics_consent') > -1;
+    if (analyticsCookieExist) {
+      this.hideCookieBanner();
+      const consent = this.getCookieValue('analytics_consent');
+      window.gtag('consent', 'update', {
+        'ad_storage': consent === 'yes' ? 'granted' : 'denied',
+        'analytics_storage': consent === 'yes' ? 'granted' : 'denied'
+      });
+      consent === 'no' ? this.removeDynaCookies() : this.enableDynaCookies();
+    } else {
+      this.showCookieBanner();
+      this.removeDynaCookies();
     }
   }
 
-  addCookie() {
-    const currentDate = new Date();
-    const expiryDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
-    document.cookie = `seen_cookie_message=1; expires=${expiryDate}; path=/`;
+  enableDynaCookies() {
+    if (window.dtrum !== undefined) {
+      window.dtrum.enable();
+      window.dtrum.enableSessionReplay();
+    }
+  }
+
+  removeDynaCookies() {
+    if (window.dtrum !== undefined) {
+      // tslint:disable:no-console
+      console.log('disabling sessionReplay and dyna');
+      window.dtrum.disableSessionReplay();
+      window.dtrum.disable();
+    }
+    this.removeCookie('dtCookie');
+    this.removeCookie('dtLatC');
+    this.removeCookie('dtPC');
+    this.removeCookie('dtSa');
+    this.removeCookie('rxVisitor');
+    this.removeCookie('rxvt');
+  }
+
+  addCookie(name, value) {
+    document.cookie = `${name}=${value}; expires=${this.expiryDate}; path=/`;
+  }
+
+  removeCookie(name) {
+    const hostname = window.location.hostname;
+    const dotHostname = '.' + hostname;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${hostname};path=/`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${dotHostname};path=/`;
+
+    // for live
+    const firstDot = hostname.indexOf('.');
+    const upperDomain = hostname.substring(firstDot);
+    const dotUpperDomain = '.' + upperDomain;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${upperDomain};path=/`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${dotUpperDomain};path=/`;
+
+    // for sub-live
+    const dots = hostname.split('.');
+    const subLiveUpperDomain = dots[dots.length - 2] + '.' + dots[dots.length - 1];
+    const subLiveDotUpperDomain = '.' + subLiveUpperDomain;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${subLiveUpperDomain};path=/`;
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT;domain=${subLiveDotUpperDomain};path=/`;
+
+    document.cookie = `${name}=; expires=${this.pastDate}; path=/`;
+    window.localStorage.removeItem(name);
+    window.sessionStorage.removeItem(name);
+  }
+
+  getCookieValue(name) {
+    return document.cookie.split('; ').find(row => row.startsWith(`${name}=`)).split('=')[1];
   }
 
   hideCookieBanner() {

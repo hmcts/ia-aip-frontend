@@ -157,7 +157,18 @@ describe('Detail viewer Controller', () => {
   describe('getReasonsForAppealViewer', () => {
     it('should render detail-viewers/reasons-for-appeal-details-viewer.njk', () => {
 
-      req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.reasonsForAppeal = {
+        'applicationReason': 'HELLO',
+        'evidences': [
+          {
+            'fileId': '00000',
+            'name': 'test.txt',
+            'dateUploaded': '2021-07-26+01:00',
+            'description': 'Appeal Reasons supporting evidence'
+          }
+        ]
+      };
+
       req.session.appeal.documentMap = [ {
         id: '00000',
         url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
@@ -171,18 +182,28 @@ describe('Detail viewer Controller', () => {
         'value': { 'html': 'HELLO' }
       }, {
         'key': { 'text': 'Provide supporting evidence' },
-        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>404 1(PNG)</a>" }
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>test.txt</a>" }
       } ];
       getReasonsForAppealViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
-        data: expectedSummaryRows,
-        previousPage: paths.common.overview
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
       });
     });
 
     it('getReasonsForAppealViewer should catch exception and call next with the error', () => {
 
-      req.session.appeal.history = expectedMultipleEventsData;
+      req.session.appeal.reasonsForAppeal = {
+        'applicationReason': 'HELLO',
+        'evidences': [
+          {
+            'fileId': 'dfa20ad2-4e5b-4f68-9df7-ad564c324e47',
+            'name': 'test.txt',
+            'dateUploaded': '2021-07-26+01:00',
+            'description': 'Appeal Reasons supporting evidence'
+          }
+        ]
+      };
       req.session.appeal.documentMap = [ {
         id: '00000',
         url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'

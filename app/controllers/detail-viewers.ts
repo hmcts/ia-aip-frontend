@@ -55,7 +55,7 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
     const evidenceText = data.evidences.map((evidence) => {
       return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
     });
-    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, evidenceText, null, Delimiter.BREAK_LINE));
+    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.titleNew, evidenceText, null, Delimiter.BREAK_LINE));
   }
   return array;
 }

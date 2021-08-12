@@ -181,7 +181,7 @@ describe('Detail viewer Controller', () => {
         'key': { 'text': 'Why do you think the Home Office decision is wrong?' },
         'value': { 'html': 'HELLO' }
       }, {
-        'key': { 'text': 'Provide supporting evidence' },
+        'key': { 'text': 'Supporting evidence' },
         'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>test.txt</a>" }
       } ];
       getReasonsForAppealViewer(req as Request, res as Response, next);

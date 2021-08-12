@@ -10,7 +10,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 
 function buildEvidencesList(evidences: Evidence[]): string[] {
   return evidences.map((evidence: Evidence) => {
-    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+    return `<a target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
   });
 }
 
@@ -29,7 +29,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
         addSummaryRow(
           i18n.common.cya.answerRowTitle,
           [ `<pre>${question.value.answer}</pre>` ],
-          paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', `${index + 1}`)
+          paths.awaitingClarifyingQuestionsAnswers.question.replace(':id', `${index + 1}`) + editParameter
         )
       );
       if (question.value.supportingEvidence && question.value.supportingEvidence.length) {

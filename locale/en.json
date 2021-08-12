@@ -908,6 +908,75 @@
             ]
           }
         ]
+      },
+      "whatToExpectAtHearing": {
+        "title": "What to expect at your hearing",
+        "titleText": "Your hearing is an opportunity to tell the Tribunal why you think the Home Office was wrong to refuse your application to stay in or enter the UK. A Tribunal judge will listen to everything you say and make a decision on your appeal. The Tribunal judge is independent and does not work for the Home Office.",
+        "textAndBullets": [
+          {
+            "smallTitle": "Before the hearing",
+            "desc": "If the hearing takes place at a hearing centre, you must arrive at least 15 minutes before your hearing is due to start. First go to reception and tell them why you are there. They will check you in and show you where the waiting area is. You may have to wait several hours as the order the hearings take place is decided on the day. ",
+            "text": "If the hearing takes place by video call, be ready at least 20 minutes before the hearing starts. If you do not join the call, the hearing may continue without you."
+          },
+          {
+            "smallTitle": "The hearing room",
+            "desc": "If the hearing takes place at a hearing centre, someone will take you into the hearing room. The Tribunal judge sits behind a table. You will sit opposite them. If you have someone to support you or to give evidence, they will sit next to you. ",
+            "text": "If the hearing takes place by video call, you will be able to see everyone at the hearing on your screen. If you have someone to support you, they may be in the room with you."
+          },
+          {
+            "smallTitle": "The people at your hearing",
+            "desc": "The following people will be at a hearing",
+            "bullets": [
+              "You",
+              "A Tribunal judge ",
+              "A Home Office Presenting Officer will usually be there"
+            ]
+          },
+          {
+            "desc": "The following people may also be at a hearing",
+            "bullets": [
+              "People there to support you like family or friends",
+              "Witnesses who will speak either for you or for the Home Office, including expert witnesses like a doctor or social worker ",
+              "An interpreter if needed",
+              "Tribunal staff",
+              "Members of the public (if the hearing takes place at a hearing centre)"
+            ]
+          },
+          {
+            "smallTitle": "During your hearing",
+            "desc": "The judge will introduce everyone and explain how the hearing will work.  ",
+            "text": "If there is a Home Office Presenting Officer they will tell the judge why they think the Home Office decision is right. The Home Office Presenting Officer may also ask you some questions. "
+          },
+          {
+            "text": "If there are any witnesses they will then be asked to speak. The judge and the Home Office Presenting Officer may ask the witnesses some questions. You can also ask witnesses questions."
+          },
+          {
+            "smallTitle": "Getting a decision",
+            "desc": "The hearing finishes when the judge has heard everything everyone has to say. At the end of the hearing the judge will tell you when you are likely to get a decision about your case. This will usually be within two weeks. If you haven’t received a decision after four weeks, you should contact the Tribunal.  "
+          },
+          {
+            "smallTitle": "Advice on preparing for a hearing",
+            "desc": "If the hearing takes place at a hearing centre ",
+            "bullets": [
+              "If you can, visit the hearing centre before your hearing day ",
+              "Go to a hearing during your visit – they are usually open to the public",
+              "Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new window)</a>",
+              "Children are not always allowed into the hearing room. If you need to bring children with you, you should bring a responsible adult to take care of them while you are at the hearing ",
+              "Bring food and drink and any medication you might need; you may have to wait several hours before your hearing starts.",
+              "Bring family and friends along for support if you can. Supporters will not be able to speak at the hearing unless they are part of your case"
+            ]
+          },
+          {
+            "desc": "If the hearing takes place by video call ",
+            "bullets": [
+              "Make sure you have any documents you will need before the day of the hearing",
+              "If you have any electronic documents, make sure you have downloaded them and you are able to easily see them",
+              "Try to be somewhere private and quiet for the hearing ",
+              "If you can, you should dress smartly. You are not allowed to wear anything on your head unless it is for religious reasons",
+              "You <strong>must not</strong> make any personal or private recording or publish any part of the hearing. It is a criminal offence to do so."
+            ]
+          }
+        ]
       }
     },
     "sessionEnded": {

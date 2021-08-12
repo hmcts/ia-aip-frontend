@@ -10,7 +10,7 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 
 function buildEvidencesList(evidences: Evidence[]): string[] {
   return evidences.map((evidence: Evidence) => {
-    return `<a target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
   });
 }
 

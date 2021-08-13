@@ -491,6 +491,9 @@
             }
           ]
         },
+        "requestRespondentReview": {
+          "text": "Your appeal was sent to the Home Office to review."
+        },
         "submitReasonsForAppeal": {
           "text": "You told us why you think the Home Office decision to refuse your claim is wrong.",
           "links": [

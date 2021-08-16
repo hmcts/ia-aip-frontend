@@ -221,12 +221,12 @@ describe('application-state-utils', () => {
         'cta': null,
         'deadline': '13 February 2020',
         'descriptionParagraphs': [
-          'Your appeal details have been sent to the Tribunal.',
-          "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next."
+          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
+          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
         ],
         'info': {
-          'title': 'Helpful Information',
-          'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
         }
       });
 

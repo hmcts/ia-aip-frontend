@@ -289,6 +289,7 @@
     },
     "reasonsForAppealUpload": {
       "title": "Provide supporting evidence",
+      "titleNew": "Supporting evidence",
       "heading": "Provide supporting evidence",
       "uploadInfo": "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above.",
       "uploadFile": "<span class='govuk-body govuk-!-font-weight-bold'> Upload a file</span> ",

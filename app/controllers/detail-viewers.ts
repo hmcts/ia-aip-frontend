@@ -49,14 +49,13 @@ function getAppealDetails(req: Request): Array<any> {
 
 function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const array = [];
-  const reasonsForAppeal = getAppealApplicationData('submitReasonsForAppeal', req);
-  const { data } = reasonsForAppeal[0];
-  if (_.has(data, 'reasonsForAppealDocuments')) {
-    const listOfDocuments: string[] = data.reasonsForAppealDocuments.map(evidence => {
-      return docStoreUrlToHtmlLink(paths.common.documentViewer, evidence.value.document_filename, evidence.value.document_url, req);
+  const data = req.session.appeal.reasonsForAppeal;
+  array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.applicationReason ], null));
+  if (data.evidences !== null) {
+    const evidenceText = data.evidences.map((evidence) => {
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
     });
-    array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.reasonsForAppealDecision ], null));
-    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.title, [ ...Object.values(listOfDocuments) ], null, Delimiter.BREAK_LINE));
+    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.titleNew, evidenceText, null, Delimiter.BREAK_LINE));
   }
   return array;
 }

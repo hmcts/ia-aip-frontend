@@ -10,6 +10,8 @@ export const getGuidancePageText = (pageText: string) => {
       return i18n.pages.guidancePages.helpWithAppeal;
     case 'evidenceToSupportAppeal':
       return i18n.pages.guidancePages.evidenceToSupportAppeal;
+    case 'whatToExpectAtHearing':
+      return i18n.pages.guidancePages.whatToExpectAtHearing;
     default:
       return false;
   }

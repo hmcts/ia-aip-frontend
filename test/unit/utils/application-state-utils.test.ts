@@ -647,7 +647,7 @@ describe('application-state-utils', () => {
     expect(result).to.eql('lateAppealSubmitted');
   });
 
-  it('when application hasn\'t ended and appealStatus === appealSubmitted.', () => {
+  it('when application hasn\'t ended and appealStatus !== appealSubmitted.', () => {
     req.session.appeal.appealStatus = 'aappealSubmitted';
     req.session.appeal.application.isAppealLate = true;
     req.session.appeal.outOfTimeDecisionType = 'approved';

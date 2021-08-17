@@ -629,4 +629,31 @@ describe('application-state-utils', () => {
     expect(result.hearingCentreEmail).not.to.be.equal(null);
   });
 
+  it('when application hasn\'t ended and isAppealLate.', () => {
+    req.session.appeal.appealStatus = 'notEnded';
+    req.session.appeal.application.isAppealLate = true;
+    req.session.appeal.outOfTimeDecisionType = 'rejected';
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('lateAppealRejected');
+  });
+
+  it('when application hasn\'t ended and appealStatus === appealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.application.isAppealLate = true;
+    req.session.appeal.outOfTimeDecisionType = 'approved';
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('lateAppealSubmitted');
+  });
+
+  it('when application hasn\'t ended and appealStatus === appealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'aappealSubmitted';
+    req.session.appeal.application.isAppealLate = true;
+    req.session.appeal.outOfTimeDecisionType = 'approved';
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('aappealSubmitted');
+  });
+
 });

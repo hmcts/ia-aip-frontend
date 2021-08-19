@@ -377,11 +377,11 @@
           }
         },
         "awaitingRespondentEvidence": {
-          "detailsSent": "Your appeal details have been sent to the Tribunal.",
-          "dueDate": "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next.",
+          "detailsSent": "The Tribunal has asked the Home Office to review your appeal. The Home Office will look at all the information you sent to the Tribunal and will either withdraw or maintain their decision to refuse your application to stay in or enter the UK. <ul class='govuk-list govuk-list--bullet'><li>If the Home Office withdraw their decsion it means they will look again their decision to refuse your application</li><li>If the Home Office maintain their decision it means they still think they were correct to refuse your application</li></ul>",
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by<span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span> but it might be later than that.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+            "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a></br><a class='govuk-link' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -696,216 +696,323 @@
     "guidancePages": {
       "caseWorker": {
         "title": "What is a Tribunal Caseworker?",
-        "titleText": "A Tribunal Caseworker manages immigration and asylum appeals to make sure everything is ready for a decision to be made about your appeal.",
-        "textAndBullets": [
+        "description": "A Tribunal Caseworker manages immigration and asylum appeals to make sure everything is ready for a decision to be made about your appeal.",
+        "sections": [
           {
-            "smallTitle": "What a Tribunal Caseworker does",
-            "title": "A Tribunal Caseworker:",
-            "bullets": [
-              "works with you and the Home Office to manage an appeal from start to finish",
-              "looks at any information you or the Home Office send the Tribunal",
-              "tells you or the Home Office what to do at each stage of the appeal and when it needs to be done by",
-              "tells you or the Home Office if there is anything you need to know about your appeal. For example, if you or the Home Office withdraws from the appeal",
-              "may decide to grant or refuse any applications you or the Home Office make to the Tribunal. For example, if you or the Home Office ask for more time",
-              "is not a Judge but does work closely with Judges"
-            ],
-            "desc": "If you disagree with a decision a Tribunal Caseworker makes, you have 14 days to ask the Tribunal for a Judge to review the decision."
+            "title": "What a Tribunal Caseworker does",
+            "content": [
+              "A Tribunal Caseworker:",
+              "<ul class='govuk-list govuk-list--bullet'><li>works with you and the Home Office to manage an appeal from start to finish</li><li>looks at any information you or the Home Office send the Tribunal</li><li>tells you or the Home Office what to do at each stage of the appeal and when it needs to be done by</li><li>tells you or the Home Office if there is anything you need to know about your appeal. For example, if you or the Home Office withdraws from the appeal</li><li>may decide to grant or refuse any applications you or the Home Office make to the Tribunal. For example, if you or the Home Office ask for more time</li><li>is not a Judge but does work closely with Judges</li></ul>",
+              "If you disagree with a decision a Tribunal Caseworker makes, you have 14 days to ask the Tribunal for a Judge to review the decision."
+            ]
           },
           {
-            "smallTitle": "What a Tribunal Caseworker can’t do",
-            "title": "A Tribunal Caseworker cannot:",
-            "bullets": [
-              "offer legal advice",
-              "go to a hearing with you",
-              "decide the outcome of your appeal"
+            "title": "What a Tribunal Caseworker can’t do",
+            "content": [
+              "A Tribunal Caseworker cannot:",
+              "<ul class='govuk-list govuk-list--bullet'><li>offer legal advice</li><li>go to a hearing with you</li><li>decide the outcome of your appeal</li></ul>"
             ]
           }
         ]
       },
       "homeOfficeDocuments": {
         "title": "Understanding your Home Office documents",
-        "titleText": "As part of the appeal process, the Home Office must send the Tribunal all the documents it has about your case. This is called the Home Office bundle.",
-        "textAndBullets": [
+        "description": "As part of the appeal process, the Home Office must send the Tribunal all the documents it has about your case. This is called the Home Office bundle.",
+        "sections": [
           {
             "title": "The Home Office bundle has two parts:",
-            "bullets": [
-              "Cover letter",
-              "Documents about your case"
+            "content": [
+              "<ul class='govuk-list govuk-list--bullet'><li>Cover letter</li><li>Documents about your case</li></ul>"
             ]
           },
           {
-            "smallTitle": "Cover letter",
-            "title": "The cover letter is the first page of your bundle and contains:",
-            "bullets": [
-              "your personal details and any Home Office or other reference numbers",
-              "a record of the decision to refuse your claim",
-              "your immigration history. For example, the date you arrived in the country, the date you made your claim and any other relevant dates",
-              "a list of the documents that are in the bundle and their page numbers. Details of the documents that might be in your bundle are in the next section",
-              "the date you decided to appeal"
+            "title": "Cover letter",
+            "content": [
+              "The cover letter is the first page of your bundle and contains:",
+              "<ul class='govuk-list govuk-list--bullet'><li>your personal details and any Home Office or other reference numbers</li><li>a record of the decision to refuse your claim</li><li>your immigration history. For example, the date you arrived in the country, the date you made your claim and any other relevant dates</li><li>a list of the documents that are in the bundle and their page numbers. Details of the documents that might be in your bundle are in the next section</li><li>the date you decided to appeal</li></ul>"
             ]
           },
           {
-            "smallTitle": "Documents about your case",
-            "title": "Your bundle will include some or all of the following documents:",
-            "bulletsSpacing": [
-              "<span class='govuk-body govuk-!-font-weight-bold'> Visa Application Form:</span> If you made a Visa application, the application form and any evidence relevant to the decision to refuse you claim will be included in the bundle",
-              "<span class='govuk-body govuk-!-font-weight-bold'> Screening Interview:</span> If you have claimed asylum, the Screening Interview is the first interview that takes place. The bundle will include a written record of the interview",
-              "<span class='govuk-body govuk-!-font-weight-bold'> Asylum Interview Record:</span> If you have claimed asylum, the Asylum Interview (also known as the Asylum Substantive Interview) is when the Home Office asks you in detail about your reasons for claiming asylum. The bundle will include a written record of the interview",
-              "<span class='govuk-body govuk-!-font-weight-bold'> Documents submitted by appellant in support of claim:</span> This is any supporting evidence that you gave to the Home Office as part of your claim. This could be a witness statement, medical records or official documents such as a birth certificate",
-              "<span class='govuk-body govuk-!-font-weight-bold'> Previous refusal:</span> If you made a previous claim that was refused, any documents related to this claim will be included in the bundle",
-              "<span class='govuk-body govuk-!-font-weight-bold'> Previous appeal:</span> If you made a previous appeal that was dismissed, any documents related to this appeal may be included in the bundle",
-              "<span class='govuk-body govuk-!-font-weight-bold'> Decision letter:</span> This is the letter that explains why the Home Office refused your claim. A decision letter is sent to you by post and you should have a copy"
+            "title": "Documents about your case",
+            "content": [
+              "Your bundle will include some or all of the following documents:",
+              "<ul class='govuk-list govuk-list--bullet'><li><span class='govuk-!-font-weight-bold'> Visa Application Form:</span> If you made a Visa application, the application form and any evidence relevant to the decision to refuse you claim will be included in the bundle</li><li><span class='govuk-!-font-weight-bold'> Screening Interview:</span> If you have claimed asylum, the Screening Interview is the first interview that takes place. The bundle will include a written record of the interview</li><li><span class='govuk-!-font-weight-bold'> Asylum Interview Record:</span> If you have claimed asylum, the Asylum Interview (also known as the Asylum Substantive Interview) is when the Home Office asks you in detail about your reasons for claiming asylum. The bundle will include a written record of the interview</li><li><span class='govuk-!-font-weight-bold'> Documents submitted by appellant in support of claim:</span> This is any supporting evidence that you gave to the Home Office as part of your claim. This could be a witness statement, medical records or official documents such as a birth certificate</li><li><span class='govuk-!-font-weight-bold'> Previous refusal:</span> If you made a previous claim that was refused, any documents related to this claim will be included in the bundle</li><li><span class='govuk-!-font-weight-bold'> Previous appeal:</span> If you made a previous appeal that was dismissed, any documents related to this appeal may be included in the bundle</li><li><span class='govuk-!-font-weight-bold'> Decision letter:</span> This is the letter that explains why the Home Office refused your claim. A decision letter is sent to you by post and you should have a copy</li></ul>"
             ]
           },
           {
-            "smallTitle": "Where to find your Home Office bundle",
-            "desc": "Your Home Office bundle is accessible from the Overview page. <a class=\"govuk-link\" href=\"/appeal-overview\">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. "
+            "title": "Where to find your Home Office bundle",
+            "content": [
+              "Your Home Office bundle is accessible from the Overview page. <a class=\"govuk-link\" href=\"/appeal-overview\">Return to your Overview page</a> and click Home Office documents about your case to access your Home Office bundle. "
+            ]
           },
           {
-            "smallTitle": "Contact us for help",
-            "desc": "If you need help understanding your Home Office documents, you can call <span class='govuk-body govuk-!-font-weight-bold'>0300 123 1711 </span>or email <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>"
+            "title": "Contact us for help",
+            "content": [
+              "If you need help understanding your Home Office documents, you can call <span class='govuk-body govuk-!-font-weight-bold'>0300 123 1711 </span>or email <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>"
+            ]
           }
         ]
       },
       "helpWithAppeal": {
         "title": "Get help with your appeal",
-        "titleText": "There are a number of ways to get advice on appealing an asylum or immigration decision.",
-        "textAndBullets": [
+        "description": "There are a number of ways to get advice on appealing an asylum or immigration decision.",
+        "sections": [
           {
-            "smallTitle": "Asylum helplines",
-            "title": "Get advice over the phone on the asylum process, including appealing an asylum decision.",
-            "textLink": "https://www.gov.uk/asylum-helplines"
+            "title": "Asylum helplines",
+            "content": [
+              "Get advice over the phone on the asylum process, including appealing an asylum decision.",
+              "<a class='govuk-link' href='https://www.gov.uk/asylum-helplines'>https://www.gov.uk/asylum-helplines</a> "
+            ]
           },
           {
-            "smallTitle": "Find an immigration adviser",
-            "title": "Find registered immigration advisers in your area who may be able to help with your appeal.",
-            "textLink": "https://www.gov.uk/find-an-immigration-adviser"
+            "title": "Find an immigration adviser",
+            "content": [
+              "Find registered immigration advisers in your area who may be able to help with your appeal.",
+              "<a class='govuk-link' href='https://www.gov.uk/find-an-immigration-adviser'>https://www.gov.uk/find-an-immigration-adviser</a>"
+            ]
           },
           {
-            "smallTitle": "Find a legal aid adviser",
-            "title": "Legal aid can help pay for legal advice. <a class=\"govuk-link\" href=\"https://www.gov.uk/check-legal-aid\">Check if you qualify for legal aid.</a>",
-            "text": "If you do qualify, you can search for a legal adviser with a legal aid contract in England and Wales.",
-            "textLink": "https://find-legal-advice.justice.gov.uk/"
+            "title": "Find a legal aid adviser",
+            "content": [
+              "Legal aid can help pay for legal advice. <a class=\"govuk-link\" href=\"https://www.gov.uk/check-legal-aid\">Check if you qualify for legal aid.</a>",
+              "If you do qualify, you can search for a legal adviser with a legal aid contract in England and Wales.",
+              "<a class='govuk-link' href='https://find-legal-advice.justice.gov.uk/'>https://find-legal-advice.justice.gov.uk/</a>"
+            ]
           },
           {
-            "smallTitle": "Citizens Advice ",
-            "title": "Get free, confidential help from your local Citizens Advice on a range of immigration issues. Please note that Citizens Advice does not currently offer advice on asylum issues.",
-            "link": "https://www.citizensadvice.org.uk/immigration/get-help/get-immigration-advice/"
+            "title": "Citizens Advice ",
+            "content": [
+              "Get free, confidential help from your local Citizens Advice on a range of immigration issues. Please note that Citizens Advice does not currently offer advice on asylum issues.",
+              "<a class='govuk-link' href='https://www.citizensadvice.org.uk/immigration/get-help/get-immigration-advice/'>https://www.citizensadvice.org.uk/immigration/get-help/get-immigration-advice/</a>"
+            ]
           }
         ]
       },
       "evidenceToSupportAppeal": {
         "title": "Evidence to support your appeal",
-        "titleText": "Evidence is any information that supports your appeal.",
-        "textAndBullets": [
+        "description": "Evidence is any information that supports your appeal.",
+        "sections": [
           {
             "title": "Anything you tell the Tribunal is evidence. It is likely to help your case if you can provide further relevant evidence to prove what you say is true. For example, if you tell the Tribunal you are a citizen of a particular country, a copy of your passport is further evidence that this is true.",
-            "desc": "Here are some examples of different kinds of evidence that could support your appeal. "
-          },
-          {
-            "smallTitle": "Witness statement",
-            "title": "A witness is someone who comes to a hearing to speak on your behalf. This is known as oral evidence. A witness could be:",
-            "bullets": [
-              "a community leader",
-              "a religious leader",
-              "a social worker",
-              "anybody who knows something relevant about your case"
-            ],
-            "desc": "All witnesses must write a witness statement, which is a written version of their oral evidence. The witness statement should include the appeal reference number as well as the witness’ address, date of birth, signature and photo identification."
-          },
-          {
-            "smallTitle": "Letter of support",
-            "title": "A letter of support is usually written by someone who knows you well such as a friend or family member. The letter normally explains how the writer knows you and describes what kind of person they think you are.",
-            "text": "A letter of support should include the appeal reference number as well as the supporter’s address, date of birth, signature and photo identification."
-          },
-          {
-            "smallTitle": "Country evidence",
-            "title": "You can use information or reports about a country to support anything you have said about that country in your appeal. Examples include:",
-            "bullets": [
-              "official country reports (for example, Home Office or US State Department country reports)",
-              "country expert reports (for example, from an academic specialising in that country)",
-              "<a class=\"govuk-link\" href=\"https://www.gov.uk/government/collections/country-policy-and-information-notes\">UK government country guidance reports</a>",
-              "news reports",
-              "cases the Tribunal has already heard about your country"
+            "content": [
+              "Here are some examples of different kinds of evidence that could support your appeal."
             ]
           },
           {
-            "smallTitle": "Evidence of participation in groups ",
-            "title": "There are a number of ways you can show your connection to a particular group or involvement in public demonstrations. Examples include:",
-            "bullets": [
-              "social media posts",
-              "photos/videos of events",
-              "news reports",
-              "membership information"
+            "title": "Witness statement",
+            "content": [
+              "A witness is someone who comes to a hearing to speak on your behalf. This is known as oral evidence. A witness could be:",
+              "<ul class='govuk-list govuk-list--bullet'><li>a community leader</li><li>a religious leader</li><li>a social worker</li><li>anybody who knows something relevant about your case</li></ul>",
+              "All witnesses must write a witness statement, which is a written version of their oral evidence. The witness statement should include the appeal reference number as well as the witness’ address, date of birth, signature and photo identification."
             ]
           },
           {
-            "smallTitle": "Relationship evidence ",
-            "title": "You may need evidence to prove your relationship with a child, spouse or other family member. Examples include:",
-            "bullets": [
-              "email, text or WhatsApp messages",
-              "school reports",
-              "teachers' letters",
-              "social worker reports"
+            "title": "Letter of support",
+            "content": [
+              "A letter of support is usually written by someone who knows you well such as a friend or family member. The letter normally explains how the writer knows you and describes what kind of person they think you are.",
+              "A letter of support should include the appeal reference number as well as the supporter’s address, date of birth, signature and photo identification."
             ]
           },
           {
-            "smallTitle": "Medical evidence",
-            "title": "You may need evidence for any physical or mental health conditions you want to tell the Tribunal about. Examples include:",
-            "bullets": [
-              "prescriptions",
-              "letters from your doctor",
-              "GP notes",
-              "expert reports",
-              "other medical reports"
+            "title": "Country evidence",
+            "content": [
+              "You can use information or reports about a country to support anything you have said about that country in your appeal. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>official country reports (for example, Home Office or US State Department country reports)</li><li>country expert reports (for example, from an academic specialising in that country)</li><li><a class=\"govuk-link\" href=\"https://www.gov.uk/government/collections/country-policy-and-information-notes\">UK government country guidance reports</a></li><li>news reports</li><li>cases the Tribunal has already heard about your country</li></ul>"
             ]
           },
           {
-            "smallTitle": "Criminal evidence",
-            "title": "You may need evidence to show if you have been arrested or involved in any criminal activity that is relevant to your appeal. This could be from your home country or the UK. Examples include:",
-            "bullets": [
-              "arrest records",
-              "police reports",
-              "court reports",
-              "first instance reports, if your case refers to alleged criminal activity in your home country"
+            "title": "Evidence of participation in groups ",
+            "content": [
+              "There are a number of ways you can show your connection to a particular group or involvement in public demonstrations. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>social media posts</li><li>photos/videos of events</li><li>news reports</li><li>membership information</li></ul>"
             ]
           },
           {
-            "smallTitle": " Official documents",
-            "title": "You may need to provide official documents to prove your nationality or family relationships. Examples include:",
-            "bullets": [
-              "birth certificates",
-              "marriage certificates",
-              "passports",
-              "identity cards"
+            "title": "Relationship evidence ",
+            "content": [
+              "You may need evidence to prove your relationship with a child, spouse or other family member. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>email, text or WhatsApp messages</li><li>school reports</li><li>teachers' letters</li><li>social worker reports</li></ul>"
             ]
           },
           {
-            "smallTitle": "Financial evidence",
-            "title": "You may need to provide evidence to prove your financial situation. Examples include:",
-            "bullets": [
-              "payslips",
-              "bank records",
-              "work records",
-              "no recourse to public funds/local authority letters"
+            "title": "Medical evidence",
+            "content": [
+              "You may need evidence for any physical or mental health conditions you want to tell the Tribunal about. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>prescriptions</li><li>letters from your doctor</li><li>GP notes</li><li>expert reports</li><li>other medical reports</li></ul>"
             ]
           },
           {
-            "smallTitle": "Educational evidence",
-            "title": "You may need to provide evidence of any courses you have taken and awards you have received. Examples include:",
-            "bullets": [
-              "certificates",
-              "evidence of enrollment",
-              "reports"
+            "title": "Criminal evidence",
+            "content": [
+              "You may need evidence to show if you have been arrested or involved in any criminal activity that is relevant to your appeal. This could be from your home country or the UK. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>arrest records</li><li>police reports</li><li>court reports</li><li>first instance reports, if your case refers to alleged criminal activity in your home country</li></ul>"
             ]
           },
           {
-            "smallTitle": "Legal evidence",
-            "title": "It may be helpful to use legal arguments and documents to support your appeal. Examples include:",
-            "bullets": [
-              "legal precedents",
-              "decisions of cases linked to yours (for example, a family member or someone in a similar situation)",
-              "decisions of cases from your home country"
+            "title": " Official documents",
+            "content": [
+              "You may need to provide official documents to prove your nationality or family relationships. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>birth certificates</li><li>marriage certificates</li><li>passports</li><li>identity cards</li></ul>"
+            ]
+          },
+          {
+            "title": "Financial evidence",
+            "content": [
+              "You may need to provide evidence to prove your financial situation. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>payslips</li><li>bank records</li><li>work records</li><li>no recourse to public funds/local authority letters</li></ul>"
+            ]
+          },
+          {
+            "title": "Educational evidence",
+            "content": [
+              "You may need to provide evidence of any courses you have taken and awards you have received. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>certificates</li><li>evidence of enrollment</li><li>reports</li></ul>"
+            ]
+          },
+          {
+            "title": "Legal evidence",
+            "content": [
+              "It may be helpful to use legal arguments and documents to support your appeal. Examples include:",
+              "<ul class='govuk-list govuk-list--bullet'><li>legal precedents</li><li>decisions of cases linked to yours (for example, a family member or someone in a similar situation)</li><li>decisions of cases from your home country</li></ul>"
+            ]
+          }
+        ]
+      },
+      "withdrawDecision": {
+        "title": "What happens if the Home Office withdraw their decision?",
+        "description": "If the Home Office withdraw their decision it is because they have decided to look again at their decision to refuse your application to stay in or enter the UK.",
+        "sections": [
+          {
+            "title": "Why would the Home Office withdraw their decision?",
+            "content": [
+              "There are many reasons the Home Office might withdraw their decision. For example, they might withdraw because you provided new evidence that was not part of your original application."
+            ]
+          },
+          {
+            "title": "How do the Home Office withdraw their decision?",
+            "content": [
+              "The Home Office send the Tribunal a Withdrawal Letter. This includes the reasons the Home Office is withdrawing their decision and details of what will happen next, including any information you need to send to the Home Office.",
+              "The Tribunal will contact you when the Home Office send the Withdrawal Letter. You will be able to sign in to your account to read the letter."
+            ]
+          },
+          {
+            "title": "What happens next?",
+            "content": [
+              "Your appeal  may end. The Home Office Withdrawal Letter should include details about what will happen next with your case. The Home Office may contact you if they need more information",
+              "If you do not want the appeal to end, you must email <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of being notified about the withdrawal to explain why. The Tribunal will consider your reasons and the appeal may continue."
+            ]
+          }
+        ]
+      },
+      "maintainDecision": {
+        "title": "What happens if the Home Office maintain their decision?",
+        "description": "If the Home Office maintain their decision it means they still think they were correct to refuse your application to stay in or enter the UK. Your appeal will continue and will be decided by a Tribunal judge.",
+        "sections": [
+          {
+            "title": "How does the Home Office maintain their decision?",
+            "content": [
+              "If the Home Office decide to maintain their decision, they may send a document to the Tribunal called a Home Office Response.",
+              "The Home Office Response is a reply to the information and evidence that you sent the Tribunal about your appeal."
+            ]
+          },
+          {
+            "title": "How can I read the Home Office Response?",
+            "content": [
+              "The Tribunal will inform you when the Home Office Response is available to view . You can sign in to your account to read it.",
+              "If there is something you don’t agree with in the Home Office Response you can send this information to the Tribunal. Use the “provide more evidence” link on your appeal page to do this.",
+              "<img src='/assets/images/homeOfficeMaintainDecision.svg'>",
+              "Any information or evidence you send to the Tribunal will be considered by the judge when deciding the appeal."
+            ]
+          },
+          {
+            "title": "What happens next?",
+            "content": [
+              "Five days after receiving the Home Office Response, the Tribunal will contact you to ask if there is anything you will need at the hearing, like an interpreter or step-free access.",
+              "The Tribunal will then send you a Notice of Hearing. This includes details of where and when your hearing will take place and what the Tribunal has agreed to provide at the hearing."
+            ]
+          }
+        ]
+      },
+      "whatToExpectAtHearing": {
+        "title": "What to expect at your hearing",
+        "description": "Your hearing is an opportunity to tell the Tribunal why you think the Home Office was wrong to refuse your application to stay in or enter the UK. A Tribunal judge will listen to everything you say and make a decision on your appeal. The Tribunal judge is independent and does not work for the Home Office.",
+        "sections": [
+          {
+            "title": "Before the hearing",
+            "content": [
+               "If the hearing takes place at a hearing centre, you must arrive at least 15 minutes before your hearing is due to start. First go to reception and tell them why you are there. They will check you in and show you where the waiting area is. You may have to wait several hours as the order the hearings take place is decided on the day. ",
+              "If the hearing takes place by video call, be ready at least 20 minutes before the hearing starts. If you do not join the call, the hearing may continue without you."
+            ]
+          },
+          {
+            "title": "The hearing room",
+            "content": [
+              "If the hearing takes place at a hearing centre, someone will take you into the hearing room. The Tribunal judge sits behind a table. You will sit opposite them. If you have someone to support you or to give evidence, they will sit next to you. ",
+              "If the hearing takes place by video call, you will be able to see everyone at the hearing on your screen. If you have someone to support you, they may be in the room with you."
+            ]
+          },
+          {
+            "title": "The people at your hearing",
+            "content": [
+              "The following people will be at a hearing",
+              "<ul class='govuk-list govuk-list--bullet'>",
+              "<li>You</li>",
+              "<li>A Tribunal judge </li>",
+              "<li>A Home Office Presenting Officer will usually be there</li>",
+              "</ul>"
+            ]
+          },
+          {
+            "title": "The following people may also be at a hearing",
+            "content": [
+              "<ul class='govuk-list govuk-list--bullet'>",
+              "<li>People there to support you like family or friends</li>",
+              "<li>Witnesses who will speak either for you or for the Home Office, including expert witnesses like a doctor or social worker </li>",
+              "<li>An interpreter if needed</li>",
+              "<li>Tribunal staff</li>",
+              "<li>Members of the public (if the hearing takes place at a hearing centre)</li>",
+              "</ul>"
+            ]
+          },
+          {
+            "title": "During your hearing",
+            "content": [
+               "The judge will introduce everyone and explain how the hearing will work.  ",
+               "If there is a Home Office Presenting Officer they will tell the judge why they think the Home Office decision is right. The Home Office Presenting Officer may also ask you some questions. ",
+               "If there are any witnesses they will then be asked to speak. The judge and the Home Office Presenting Officer may ask the witnesses some questions. You can also ask witnesses questions."
+            ]
+          },
+          {
+            "title": "Getting a decision",
+            "content": [
+              "The hearing finishes when the judge has heard everything everyone has to say. At the end of the hearing the judge will tell you when you are likely to get a decision about your case. This will usually be within two weeks. If you haven’t received a decision after four weeks, you should contact the Tribunal.  "
+            ]
+          },
+          {
+            "title": "Advice on preparing for a hearing",
+            "content": [
+            "If the hearing takes place at a hearing centre ",
+            
+            "<ul class='govuk-list govuk-list--bullet'>",
+              "<li>If you can, visit the hearing centre before your hearing day </li>",
+              "<li>Go to a hearing during your visit – they are usually open to the public</li>",
+              "<li>Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new window)</a></li>",
+              "<li>Children are not always allowed into the hearing room. If you need to bring children with you, you should bring a responsible adult to take care of them while you are at the hearing </li>",
+              "<li>Bring food and drink and any medication you might need; you may have to wait several hours before your hearing starts.</li>",
+              "<li>Bring family and friends along for support if you can. Supporters will not be able to speak at the hearing unless they are part of your case</li>",
+              "</ul>"
+            ]
+          },
+          {
+            "title": "If the hearing takes place by video call ",
+            "content": [
+            "<ul class='govuk-list govuk-list--bullet'>",
+              "<li>Make sure you have any documents you will need before the day of the hearing</li>",
+              "<li>If you have any electronic documents, make sure you have downloaded them and you are able to easily see them</li>",
+              "<li>Try to be somewhere private and quiet for the hearing </li>",
+              "<li>If you can, you should dress smartly. You are not allowed to wear anything on your head unless it is for religious reasons</li>",
+              "<li>You <strong>must not</strong> make any personal or private recording or publish any part of the hearing. It is a criminal offence to do so.</li>",
+              "</ul>"
             ]
           }
         ]
@@ -1730,7 +1837,7 @@
         "title": "Advice on preparing for an appointment",
         "bullets": [
           "If you can, visit the hearing centre before the day of your appointment",
-          "Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <a href='#' class=\"govuk-link\">See the full list of items you’re not allowed to take in</a>",
+          "Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new window)</a>",
           "Children are not always allowed into the hearing room. If you need to bring children with you, you should bring a responsible adult to take care of them while you’re at the appointment",
           "Bring food and drink and any medication you might need",
           "Bring family and friends along for support if you want to"

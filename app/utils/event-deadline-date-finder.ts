@@ -93,6 +93,10 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       formattedDeadline = getFormattedEventHistoryDate(history, 'submitCmaRequirements', 14);
       break;
     }
+    case 'respondentReview': {
+      formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', 21);
+      break;
+    }
     default: {
       formattedDeadline = 'TBC';
       break;

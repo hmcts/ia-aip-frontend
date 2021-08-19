@@ -149,6 +149,8 @@ const paths = {
     homeOfficeDocuments: '/home-office-documents',
     whatToExpectAtCMA: '/expect-case-management-appointment',
     whatToExpectAtHearing: '/expect-hearing',
+    homeOfficeMaintainDecision: '/home-office-maintain',
+    homeOfficeWithdrawDecision: '/home-office-withdraw',
 
     // Footer links
     cookies: '/cookie-policy',

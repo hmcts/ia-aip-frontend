@@ -172,6 +172,14 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string, pendin
         cta: null,
         allowedAskForMoreTime: false
       };
+    case 'respondentReview':
+      return {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
+          i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
+        ],
+        info: i18n.pages.overviewPage.doThisNext.respondentReview.info
+      };
     case 'awaitingClarifyingQuestionsAnswersPartial':
     case 'awaitingClarifyingQuestionsAnswers':
       descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description];

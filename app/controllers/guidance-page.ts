@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import { getGuidancePageText } from '../utils/guidance-page-utils';
 
@@ -50,6 +49,21 @@ function getHomeOfficeDocumentsPage(req: Request, res: Response, next: NextFunct
 
 function getEvidenceToSupportAppealPage(req: Request, res: Response, next: NextFunction) {
   const text = getGuidancePageText('evidenceToSupportAppeal');
+  try {
+    return res.render('guidance-pages/guidance-page.njk', {
+      showContactUs: true,
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      page: text
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getWhatToExpectAtHearing(req: Request, res: Response, next: NextFunction) {
+  const text = getGuidancePageText('whatToExpectAtHearing');
   try {
     return res.render('guidance-pages/guidance-page.njk', {
       showContactUs: true,
@@ -150,6 +164,7 @@ function setupGuidancePagesController(): Router {
   router.get(paths.common.offlineProcesses, getOfflineProcessesPage);
   router.get(paths.common.guidance, getGuidanceSupportPage);
   router.get(paths.common.gettingStarted, getGettingStartedPage);
+  router.get(paths.common.whatToExpectAtHearing, getWhatToExpectAtHearing);
   return router;
 }
 
@@ -161,11 +176,12 @@ export {
   getCaseworkerPage,
   getWhatIsService,
   getDocumentsPage,
-    getFourStagesPage,
+  getFourStagesPage,
   getNotificationsSupportPage,
   getGiveFeedbackPage,
-  getHowToHelpPage ,
+  getHowToHelpPage,
   getOfflineProcessesPage,
-  getGuidanceSupportPage ,
-  getGettingStartedPage
+  getGuidanceSupportPage,
+  getGettingStartedPage,
+  getWhatToExpectAtHearing
 };

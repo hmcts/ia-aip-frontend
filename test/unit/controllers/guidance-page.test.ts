@@ -1,19 +1,20 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-    getCaseworkerPage,
-    getDocumentsPage,
-    getEvidenceToSupportAppealPage,
-    getFourStagesPage,
-    getGettingStartedPage,
-    getGiveFeedbackPage,
-    getGuidanceSupportPage,
-    getHomeOfficeDocumentsPage,
-    getHowToHelpPage,
-    getMoreHelpPage,
-    getNotificationsSupportPage,
-    getOfflineProcessesPage,
-    getWhatIsService,
-    setupGuidancePagesController
+  getCaseworkerPage,
+  getDocumentsPage,
+  getEvidenceToSupportAppealPage,
+  getFourStagesPage,
+  getGettingStartedPage,
+  getGiveFeedbackPage,
+  getGuidanceSupportPage,
+  getHomeOfficeDocumentsPage,
+  getHowToHelpPage,
+  getMoreHelpPage,
+  getNotificationsSupportPage,
+  getOfflineProcessesPage,
+  getWhatIsService,
+  getWhatToExpectAtHearing,
+  setupGuidancePagesController
 } from '../../../app/controllers/guidance-page';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -86,6 +87,7 @@ describe('Contact details Controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.offlineProcesses);
       expect(routerGetStub).to.have.been.calledWith(paths.common.guidance);
       expect(routerGetStub).to.have.been.calledWith(paths.common.gettingStarted);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.whatToExpectAtHearing);
     });
   });
 
@@ -127,6 +129,17 @@ describe('Contact details Controller', () => {
       const text = getGuidancePageText('evidenceToSupportAppeal');
 
       getEvidenceToSupportAppealPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+        showContactUs: true,
+        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
+        page: text
+      });
+    });
+
+    it('whatToExpectAtHearing should render guidance-pages/guidance-page.njk', () => {
+      const text = getGuidancePageText('whatToExpectAtHearing');
+
+      getWhatToExpectAtHearing(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
         previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },

@@ -221,12 +221,12 @@ describe('application-state-utils', () => {
         'cta': null,
         'deadline': '13 February 2020',
         'descriptionParagraphs': [
-          'Your appeal details have been sent to the Tribunal.',
-          "A Tribunal Caseworker will contact you by <span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span>  to tell you what to do next."
+          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
+          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
         ],
         'info': {
-          'title': 'Helpful Information',
-          'url': "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+          title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
         }
       });
 
@@ -627,6 +627,33 @@ describe('application-state-utils', () => {
       }
     );
     expect(result.hearingCentreEmail).not.to.be.equal(null);
+  });
+
+  it('when application hasn\'t ended and isAppealLate.', () => {
+    req.session.appeal.appealStatus = 'notEnded';
+    req.session.appeal.application.isAppealLate = true;
+    req.session.appeal.outOfTimeDecisionType = 'rejected';
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('lateAppealRejected');
+  });
+
+  it('when application hasn\'t ended and appealStatus === appealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'appealSubmitted';
+    req.session.appeal.application.isAppealLate = true;
+    req.session.appeal.outOfTimeDecisionType = 'approved';
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('lateAppealSubmitted');
+  });
+
+  it('when application hasn\'t ended and appealStatus !== appealSubmitted.', () => {
+    req.session.appeal.appealStatus = 'aappealSubmitted';
+    req.session.appeal.application.isAppealLate = true;
+    req.session.appeal.outOfTimeDecisionType = 'approved';
+    const result = getAppealStatus(req as Request);
+
+    expect(result).to.eql('aappealSubmitted');
   });
 
 });

@@ -148,6 +148,7 @@ const paths = {
     offlineProcesses: '/supporters-guidance/offline-processes',
     homeOfficeDocuments: '/home-office-documents',
     whatToExpectAtCMA: '/expect-case-management-appointment',
+    whatToExpectAtHearing: '/expect-hearing',
 
     // Footer links
     cookies: '/cookie-policy',

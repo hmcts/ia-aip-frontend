@@ -130,10 +130,21 @@ describe('Ask for more time Controller', function () {
       });
     });
 
+    it('getAskForMoreTimePage should be called with reason', () => {
+      const error = new Error('the error');
+      res.render = sandbox.stub().throws(error);
+      req.session.appeal.makeAnApplicationDetails = 'ask for more time';
+      getAskForMoreTimePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
+        previousPage: paths.common.overview,
+        askForMoreTime: 'ask for more time'
+      });
+    });
+
   });
 
   describe('getCancelAskForMoreTime', function () {
-    it('getAskForMoreTimePage redirects to overview and clear ask for more time iun session', () => {
+    it('getAskForMoreTimePage redirects to overview and clear ask for more time in session', () => {
       req.session.appeal.askForMoreTime = {
         reason: 'some reason'
       };

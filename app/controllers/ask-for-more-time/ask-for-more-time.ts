@@ -48,7 +48,7 @@ function getAskForMoreTimePage(req: Request, res: Response, next: NextFunction) 
   try {
     res.render('./ask-for-more-time/ask-for-more-time.njk', {
       previousPage: paths.common.overview,
-      askForMoreTime: req.session.appeal.askForMoreTime.reason
+      askForMoreTime: req.session.appeal.makeAnApplicationDetails
     });
   } catch (e) {
     next(e);

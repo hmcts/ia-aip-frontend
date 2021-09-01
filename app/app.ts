@@ -44,6 +44,7 @@ function createApp() {
   app.locals.paths = paths;
   app.locals.maxFileSizeInMb = config.get('evidenceUpload.maxFileSizeInMb');
   app.locals.supportedFormats = config.get('evidenceUpload.supportedFormats');
+  app.locals.environment = environment;
   if (environment !== 'test') app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(express.json());

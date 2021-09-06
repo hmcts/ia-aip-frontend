@@ -16,6 +16,7 @@ module.exports = {
     });
 
     When(/^Enter "([^"]*)" "([^"]*)" as my Given and Family Name and click Save and continue$/, async (givenName, familyName) => {
+      I.waitForElement('#givenNames', 10);
       I.fillField('#givenNames',givenName);
       I.fillField('#familyName',familyName);
       I.click('Save and continue');

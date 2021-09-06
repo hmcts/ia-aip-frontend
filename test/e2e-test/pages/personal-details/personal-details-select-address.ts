@@ -14,6 +14,7 @@ module.exports = {
     });
 
     When(/^I choose the first address from the dropdown list and click continue$/, async () => {
+      I.waitForElement('#address', 10);
       await I.selectOption('#address', '52526732');
       I.click('Save and continue');
     });

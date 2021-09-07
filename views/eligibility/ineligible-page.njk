@@ -1,12 +1,18 @@
 {% extends "layout.njk" %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% set pageTitleName = i18n.pages.ineligiblePage.title %}
 
 {% block content %}
 <h1 class="govuk-heading-xl">{{ title }}</h1>
 <p>{{ description }}</p>
-  {% for item in optionsList %}
-    <p>{{ item | safe }} </p>
-  {% endfor %}
+{% for item in optionsList %}
+  <p>{{ item | safe }} </p>
+{% endfor %}
+{% if insetText %}
+  {{ govukInsetText({
+    text: insetText
+  }) }}
+{% endif %}
 <h2 class="govuk-heading-m">{{ i18n.pages.ineligiblePage.moreInfo.title }}</h2>
   {% for item in i18n.pages.ineligiblePage.moreInfo.moreInfoList %}
     <p>{{ item | safe }} </p>

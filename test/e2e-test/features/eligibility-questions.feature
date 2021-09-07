@@ -10,6 +10,8 @@ Feature: Eligibility
     When I select Yes and click continue
     Then I should see the "Are you currently in detention" eligibility page
     When I select No and click continue
+    Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
+    When I select No and click continue
     Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
     When I select Yes and click continue
     Then I should see the eligible page

@@ -252,8 +252,7 @@ function getHoEvidenceDetailsViewer(req: Request, res: Response, next: NextFunct
       const respondentDocs = req.session.appeal.respondentDocuments;
 
       documents = respondentDocs.map(document => {
-
-        const urlHtml = toHtmlLink(document.evidence.fileId, document.evidence.name, paths.common.documentViewer);
+        const urlHtml = toHtmlLink(document.fileId, document.name, paths.common.documentViewer);
         const formattedDate = moment(document.dateUploaded).format(dayMonthYearFormat);
         return {
           dateUploaded: formattedDate,
@@ -371,6 +370,30 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
   }
 }
 
+function getHomeOfficeWithdrawLetter(req: Request, res: Response, next: NextFunction) {
+  try {
+    const previousPage: string = paths.common.overview;
+    const homeOfficeResponseDocuments = req.session.appeal.respondentDocuments.filter(doc => doc.tag === 'appealResponse');
+
+    const homeOfficeLetter = homeOfficeResponseDocuments.shift();
+    const data = [
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.dateUploaded, [ moment(homeOfficeLetter.dateUploaded).format(dayMonthYearFormat) ]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.document, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${homeOfficeLetter.fileId}'>${fileNameFormatter(homeOfficeLetter.name)}</a>` ]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.documentDescription, [ homeOfficeLetter.description ])
+    ];
+    homeOfficeResponseDocuments.forEach(document => {
+      data.push(addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.additionalEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatter(document.name)}</a>` ]));
+    });
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
@@ -381,7 +404,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.cmaRequirementsAnswerViewer, getCmaRequirementsViewer);
   router.get(paths.common.noticeEndedAppealViewer, getNoticeEndedAppeal);
   router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
-
+  router.get(paths.common.homeOfficeWithdrawLetter, getHomeOfficeWithdrawLetter);
   return router;
 }
 
@@ -390,6 +413,7 @@ export {
   getReasonsForAppealViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
+  getHomeOfficeWithdrawLetter,
   getNoticeEndedAppeal,
   getTimeExtensionSummaryRows,
   getTimeExtensionViewer,

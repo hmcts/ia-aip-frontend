@@ -115,6 +115,7 @@ const paths = {
     cmaRequirementsAnswerViewer: '/your-appointment-needs',
     noticeEndedAppealViewer: '/notice-ended-appeal',
     outOfTimeDecisionViewer: '/out-of-time-decision',
+    homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

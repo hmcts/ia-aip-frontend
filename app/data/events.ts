@@ -88,5 +88,10 @@ export const Events = {
     id: 'recordOutOfTimeDecision',
     summary: 'Record out of time decision',
     description: 'Record out of time decision'
+  },
+  REQUEST_RESPONSE_REVIEW: {
+    id: 'requestResponseReview',
+    summary: 'Review Home Office response',
+    description: 'Review Home Office response'
   }
 };

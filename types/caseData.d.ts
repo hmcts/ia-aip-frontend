@@ -84,6 +84,11 @@ interface CaseData {
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
   makeAnApplications?: Collection<Application>[];
+  appealReviewDecisionTitle?: any;
+  appealReviewOutcome?: string;
+  homeOfficeAppealResponseDocument?: any;
+  homeOfficeAppealResponseDescription?: string;
+  homeOfficeAppealResponseEvidence?: any;
 }
 
 interface Application {

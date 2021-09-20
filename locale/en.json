@@ -2257,6 +2257,12 @@
       "errorMessage": "Select yes if you are currently in detention"
     },
     {
+      "question": "Are you appealing an EU Settlement Scheme decision?",
+      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
+      "eligibleAnswer": "no",
+      "errorMessage": "Select yes if you appealing an EU Settlement Scheme decision"
+    },
+    {
       "question": "Are you appealing an Asylum and/or Humanitarian Protection decision?",
       "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country. If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "eligibleAnswer": "yes",
@@ -2278,6 +2284,14 @@
         "If you are in an immigration removal centre, you can <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\">use form IAFT-DIA</a> to appeal by post or fax.",
         "If you are in a prison, you can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
       ]
+    },
+    {
+      "title": "You cannot currently use the new service",
+      "description": "You cannot use this service because you are appealing an EU Settlement Scheme decision.",
+      "optionsList": [
+        "<a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead</a> or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+      ],
+      "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
     },
     {
       "title": "You cannot currently use the service",

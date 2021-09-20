@@ -103,7 +103,7 @@ function dateLetterSentValidation(obj: object): boolean | ValidationErrors {
 }
 
 function dateOfBirthValidation(obj: object): boolean | ValidationErrors {
-  return DOBValidation(obj, i18n.validationErrors.dateOfBirth) || dateValidation(obj, i18n.validationErrors.dateOfBirth);
+  return dateValidation(obj, i18n.validationErrors.dateOfBirth);
 }
 
 function dateValidation(obj: any, errors): boolean | ValidationErrors {

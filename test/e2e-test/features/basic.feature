@@ -76,7 +76,7 @@ Scenario: Complete appeal application
   And I see the respond by date is 5 days in the future
 
   # Case Progression
-  Then I sign in as a Case Officer and request HO Bundle
+  # Then I sign in as a Case Officer and request HO Bundle
   # Then I sign in as a Home Office Generic and upload the HO Bundle
   # Then I sign in as a Case Officer and request the reasons for appeal
 

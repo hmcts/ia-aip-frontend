@@ -1,4 +1,3 @@
-import moment from 'moment';
 import {
   appellantNamesValidation,
   askForMoreTimeValidation,
@@ -134,32 +133,8 @@ describe('fields-validations', () => {
       expect(validations).to.deep.equal(null);
     });
 
-    it('date must of a person over 18', () => {
-      const date = moment().subtract(18, 'years').add(1, 'months').add(1, 'days');
-      const notValidDate = {
-        day: date.date().toString(),
-        month: (date.month() + 1).toString(),
-        year: date.year().toString()
-      };
-      const validations = DOBValidation(notValidDate, errors);
-      expect(validations).to.deep.equal(
-        {
-          date: createError('date', errors.underAge)
-        });
-    });
-
     it('date is empty ', () => {
       const notValidDate = { day: '44', month: '22', year: '9999' };
-      const validations = DOBValidation(notValidDate, errors);
-
-      expect(validations).to.deep.equal(
-        {
-          date: createError('date', errors.incorrectFormat)
-        });
-    });
-
-    it('date must of a person over 18 2', () => {
-      const notValidDate = { day: '', month: '', year: '' };
       const validations = DOBValidation(notValidDate, errors);
 
       expect(validations).to.deep.equal(

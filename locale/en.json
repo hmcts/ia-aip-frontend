@@ -345,7 +345,7 @@
           "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+            "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "appealTakenOffline": {
@@ -361,7 +361,7 @@
           "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
+            "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
         "lateAppealRejected": {
@@ -391,11 +391,11 @@
             "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
             "info": {
               "title": "Helpful Information",
-              "url": "<a href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
+              "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeDocuments }}'>Understanding your Home Office documents</a>"
             },
             "usefulDocuments": {
               "title": "Useful documents",
-              "url": "<a href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
+              "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeDocumentsViewer }}'>Home Office documents about your case</a>"
             }
           },
           "partial": {

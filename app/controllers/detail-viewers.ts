@@ -381,6 +381,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.cmaRequirementsAnswerViewer, getCmaRequirementsViewer);
   router.get(paths.common.noticeEndedAppealViewer, getNoticeEndedAppeal);
   router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
+
   return router;
 }
 

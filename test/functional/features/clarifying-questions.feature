@@ -7,7 +7,6 @@ Feature: Clarifying questions
   Background:
     Given I have logged in as an appellant in state "awaitingClarifyingQuestionsAnswers"
     Then I see "Pablo Jimenez" in title
-
     When I click "Continue" button
     Then I see "Questions about your appeal" in title
     Then I see "Answer question 1" item in list
@@ -82,30 +81,24 @@ Feature: Clarifying questions
     And I click "Save for later" button
     Then I am on the overview page
 
-  Scenario: Asking for more time while answering Clarifying questions
+  Scenario: Ask for more time while answering Clarifying questions
     When I click "Answer question 1" link
-    Then I see "Question 1" in title
-
-    When I fill textarea with "my answer"
-    And I click "Save and continue" button
-    Then I see "Do you want to provide supporting evidence?" in title
-
-    When I click "Yes" button
-    And I click "Continue" button
-    Then I see "Provide supporting evidence" in title
-
-    When I click "save your answer and ask for more time" link
+    And I see "Question 1" in title
+    And I fill textarea with "my answer"
+    And I click "Save your answer and ask for more time" button
     Then I see "Ask for more time" in title
-    
-    When I fill textarea with "my reason for asking more time"
-    And I click "Continue" button
-    Then I see "Do you want to provide supporting evidence for why you need more time?" in title
 
-    When I click "Yes" button
+    And I fill textarea with "my reson for more time"
     And I click "Continue" button
-    Then I see "Provide supporting evidence" in title
+    Then I see "Do you want to provide supporting evidence for why you need more time" in title
 
-    When I choose a file that is "VALID" and click the "Upload file" button
+    And I click "No" button
     And I click "Continue" button
     Then I see "Check your answer" in title
 
+    And I click "Send" button
+    Then I see "Your request has been sent to the Tribunal" in title
+
+    And I click "See your appeal progress" button
+    Then I see "Pablo Jimenez" in title
+    And I see "You have saved your answers and asked for more time" on the page

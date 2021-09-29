@@ -6,7 +6,7 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage, nowIsoDate } from '../../utils/utils';
+import { getRedirectPage, hasPendingTimeExtension, nowIsoDate } from '../../utils/utils';
 import { textAreaValidation } from '../../utils/validations/fields-validations';
 
 function getClarifyingQuestionPage(req: Request, res: Response, next: NextFunction) {
@@ -15,6 +15,7 @@ function getClarifyingQuestionPage(req: Request, res: Response, next: NextFuncti
     const questionOrder = parseInt(req.params.id, 10) - 1;
     res.render('clarifying-questions/question-page.njk', {
       previousPage: paths.awaitingClarifyingQuestionsAnswers.questionsList,
+      pendingTimeExtension: hasPendingTimeExtension(req.session.appeal),
       question: {
         ...req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder],
         orderNo: req.params.id
@@ -67,6 +68,10 @@ function postClarifyingQuestionPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
+      if (req.body.saveAndAskMoreTime) {
+        req.session.appeal.application.saveAndAskForTime = true;
+        return res.redirect(paths.common.askForMoreTimeReason);
+      }
       const redirectPage = getRedirectPage(
         editingMode,
         paths.awaitingClarifyingQuestionsAnswers.checkAndSend,

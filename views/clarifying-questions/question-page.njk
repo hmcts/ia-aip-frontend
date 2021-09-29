@@ -39,16 +39,22 @@
           {{ i18n.pages.clarifyingQuestionPage.panel.supportingEvidence }}
         </h2>
         <p>{{ i18n.pages.clarifyingQuestionPage.panel.ableToAddEvidence }}</p>
-        <h2 class="govuk-heading-s">
-          {{ i18n.pages.clarifyingQuestionPage.panel.needMoreTime }}
-        </h2>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>
-            <a href={{ paths.common.askForMoreTimeReason }} class="govuk-link">
-              {{ i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime }}
-            </a>
-          </li>
-        </ul>
+        {% if not pendingTimeExtension %}
+          <h2 class="govuk-heading-s">
+            {{ i18n.pages.clarifyingQuestionPage.panel.needMoreTime }}
+          </h2>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>
+              {{ govukButton({
+                text: i18n.pages.clarifyingQuestionPage.panel.saveAndAskMoreTime,
+                name: "saveAndAskMoreTime",
+                href: saveForLaterCTA,
+                value: "saveAndAskMoreTime",
+                classes: "govuk-link button--link"
+              }) }}
+            </li>
+          </ul>
+        {% endif %}
       </div>
 
       {{ saveButtons() }}

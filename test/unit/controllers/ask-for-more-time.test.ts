@@ -277,14 +277,14 @@ describe('Ask for more time Controller', function () {
   });
 
   describe('postCheckAndSend', () => {
-    let askForMoreReason = 'The reason';
     let appeal: Appeal;
     beforeEach(() => {
       appeal = { ...req.session.appeal };
-      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
         askForMoreTime: {
-          reason: askForMoreReason
-        }
+          inFlight: true
+        },
+        application: {}
       } as Appeal);
     });
     afterEach(() => {
@@ -296,12 +296,6 @@ describe('Ask for more time Controller', function () {
     });
 
     it('submits ask for more time', async () => {
-      appeal.askForMoreTime.reviewTimeExtensionRequired = 'Yes';
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
-        askForMoreTime: {
-          inFlight: true
-        }
-      } as Appeal);
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.MAKE_AN_APPLICATION.TIME_EXTENSION, appeal, 'idamUID', 'atoken');
@@ -318,9 +312,19 @@ describe('Ask for more time Controller', function () {
   });
 
   describe('getConfirmation', () => {
-    it('renders page', () => {
+    it('renders page with afmt query', () => {
       getConfirmation(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('./ask-for-more-time/confirmation.njk', {});
+      expect(res.render).to.have.been.calledWith('./ask-for-more-time/confirmation.njk', {
+        saveAndAskForMoreTime: '?ask-for-more-time'
+      });
+    });
+
+    it('renders page with save and afmt query', () => {
+      req.session.appeal.application.saveAndAskForTime = true;
+      getConfirmation(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('./ask-for-more-time/confirmation.njk', {
+        saveAndAskForMoreTime: '?save-and-ask-for-more-time'
+      });
     });
 
     it('should call next with error', () => {

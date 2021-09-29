@@ -10,14 +10,14 @@ import { getDeadline } from './event-deadline-date-finder';
 /**
  * Determines whether a status is partially completed by looking at the first possible user input property.
  * @param req the request containing the session
- * @param currentAppealStatus the current appeal status.
  */
-function isPartiallySavedAppeal(req: Request, currentAppealStatus: string) {
-  switch (currentAppealStatus) {
-    case 'appealStarted': {
+function isPartiallySavedAppeal(req: Request) {
+  const { appealStatus } = req.session.appeal;
+  switch (appealStatus) {
+    case States.APPEAL_STARTED.id: {
       return _.has(req.session.appeal, 'application.homeOfficeRefNumber');
     }
-    case 'awaitingReasonsForAppeal': {
+    case States.AWAITING_REASONS_FOR_APPEAL.id: {
       return _.has(req.session.appeal, 'reasonsForAppeal.applicationReason');
     }
     default: {
@@ -42,8 +42,7 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string, pendin
         ],
         info: null,
         cta: {
-          url: paths.appealStarted.taskList,
-          respondByText: null
+          url: paths.appealStarted.taskList
         },
         allowedAskForMoreTime: false
       };
@@ -55,8 +54,7 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string, pendin
         ],
         info: null,
         cta: {
-          url: paths.appealStarted.taskList,
-          respondByText: null
+          url: paths.appealStarted.taskList
         },
         allowedAskForMoreTime: false
       };
@@ -174,39 +172,50 @@ function getDoThisNextSectionFromAppealState(currentAppealStatus: string, pendin
         cta: null,
         allowedAskForMoreTime: false
       };
+    case 'awaitingClarifyingQuestionsAnswersPartial':
     case 'awaitingClarifyingQuestionsAnswers':
+      descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
       return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description
-        ],
-        descriptionParagraphsAskForMoreTime: [
-          i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime
-        ],
+        descriptionParagraphs,
         info: null,
         cta: {
           url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
-          respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
-          respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime
+          respondBy
         },
         allowedAskForMoreTime: true
       };
     case 'awaitingCmaRequirements':
+      descriptionParagraphs = [
+        i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description,
+        i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description2
+      ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
       return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description,
-          i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description2
-        ],
-        descriptionParagraphsAskForMoreTime: [
-          i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime
-        ],
+        descriptionParagraphs,
         info: {
           title: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.title,
           url: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.url
         },
         cta: {
           url: paths.awaitingCmaRequirements.taskList,
-          respondByText: i18n.pages.overviewPage.doThisNext.respondByText,
-          respondByTextAskForMoreTime: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime
+          respondBy
         },
         allowedAskForMoreTime: true
       };
@@ -356,7 +365,7 @@ function getMoveAppealOfflineDate(req: Request) {
 function getAppealApplicationNextStep(req: Request) {
   let currentAppealStatus = getAppealStatus(req);
 
-  if (isPartiallySavedAppeal(req, currentAppealStatus)) {
+  if (isPartiallySavedAppeal(req)) {
     currentAppealStatus = currentAppealStatus + 'Partial';
   }
   const pendingTimeExtension = hasPendingTimeExtension(req.session.appeal);
@@ -385,5 +394,6 @@ export {
   getAppealStatus,
   getDoThisNextSectionFromAppealState,
   getMoveAppealOfflineReason,
-  getMoveAppealOfflineDate
+  getMoveAppealOfflineDate,
+  isPartiallySavedAppeal
 };

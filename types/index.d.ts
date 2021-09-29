@@ -184,6 +184,7 @@ interface AppealApplication {
     result?: any;
   };
   isEdit?: boolean;
+  saveAndAskForTime?: boolean; 
 }
 
 interface CmaRequirements {

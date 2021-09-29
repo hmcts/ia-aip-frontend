@@ -32,9 +32,14 @@
             <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.answersBeenSaved }}</p>
           </div>
         {% endif %}
-        {% if askForMoreTimeInFlight %}
+        {% if saveAndAskForMoreTime or askForMoreTime %}
+          {% if saveAndAskForMoreTime %}
+            {% set askForMoreTimeCopy = i18n.pages.overviewPage.savedAndAskedForMoreTime %}
+          {% else %}
+            {% set askForMoreTimeCopy = i18n.pages.overviewPage.askedForMoreTime %}
+          {% endif %}
           <div class="ask-for-more-time-banner">
-            <p class="govuk-!-padding-left-3">{{ i18n.pages.overviewPage.askedForMoreTime }}</p>
+            <p class="govuk-!-padding-left-3">{{ askForMoreTimeCopy }}</p>
           </div>
         {% endif %}
         <div class="overview-banner govuk-!-margin-top-0">
@@ -74,7 +79,7 @@
                 {% else %}
                   {{ applicationNextStep.cta.respondByText | eval | safe }}
                 {% endif %}
-                {% if askForMoreTimeFeatureEnabled and applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
+                {% if applicationNextStep.allowedAskForMoreTime and not askForMoreTimeInFlight %}
                   <a href='{{ paths.common.askForMoreTimeReason }}' class='govuk-link'>{{ i18n.common.askForMoreTime.text }}</a>
                 {% endif %}
               </p>

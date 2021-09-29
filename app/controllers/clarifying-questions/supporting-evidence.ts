@@ -107,6 +107,10 @@ function postSupportingEvidenceSubmit(req: Request, res: Response, next: NextFun
     if (req.body.saveForLater) {
       return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
     }
+    if (req.body.saveAndAskMoreTime) {
+      req.session.appeal.application.saveAndAskForTime = true;
+      return res.redirect(paths.common.askForMoreTimeReason);
+    }
     const redirectPage = getRedirectPage(
       req.session.appeal.application.isEdit || false,
       paths.awaitingClarifyingQuestionsAnswers.checkAndSend,

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
@@ -163,7 +164,11 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.MAKE_AN_APPLICATION.TIME_EXTENSION, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
-        ...appealUpdated
+        ...appealUpdated,
+        application: {
+          ...req.session.appeal.application,
+          ...appealUpdated.application
+        }
       };
       return res.redirect(paths.common.askForMoreTimeConfirmation);
     } catch (e) {
@@ -174,7 +179,11 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
 
 function getConfirmation(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('./ask-for-more-time/confirmation.njk', {});
+    const saveAndAskForMoreTime = req.session.appeal.application.saveAndAskForTime || false ? '?save-and-ask-for-more-time' : '?ask-for-more-time';
+    req.session.appeal.application.saveAndAskForTime = false;
+    res.render('./ask-for-more-time/confirmation.njk', {
+      saveAndAskForMoreTime
+    });
   } catch (e) {
     next(e);
   }

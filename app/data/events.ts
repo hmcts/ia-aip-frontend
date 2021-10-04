@@ -19,6 +19,11 @@ export const Events = {
     summary: 'Submits Reasons for appeal case AIP',
     description: 'Submits Reasons for appeal case AIP'
   },
+  REQUEST_RESPONDENT_REVIEW: {
+    id: 'requestRespondentReview',
+    summary: 'Request respondent review',
+    description: 'Request respondent review'
+  },
   // TODO: remove event once make an application is fully working
   SUBMIT_TIME_EXTENSION: {
     id: 'submitTimeExtension',

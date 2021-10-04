@@ -83,10 +83,10 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
   req.session.appeal.history = history;
 
-  const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
+  const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
   const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
 
-  const appealArgumentSection = constructSection(appealArgumentSectionEvents, history, [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.ENDED.id ], req);
+  const appealArgumentSection = constructSection(appealArgumentSectionEvents, history, [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.RESPONDENT_REVIEW.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.ENDED.id ], req);
   const appealDetailsSection = constructSection(appealDetailsSectionEvents, history, null, req);
 
   const timeExtensions = getTimeExtensionsEvents(req.session.appeal.makeAnApplications);

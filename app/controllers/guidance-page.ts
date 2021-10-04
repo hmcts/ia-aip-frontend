@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import i18n from '../../locale/en.json';
 import { paths } from '../paths';
+import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { getGuidancePageText } from '../utils/guidance-page-utils';
 
 function getCaseworkerPage(req: Request, res: Response, next: NextFunction) {
@@ -74,6 +76,35 @@ function getWhatToExpectAtHearing(req: Request, res: Response, next: NextFunctio
     });
   } catch (e) {
     next(e);
+  }
+}
+
+function getHomeOfficeWithdrawDecision(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/guidance-page.njk', {
+      showContactUs: true,
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      hearingCentreEmail: getHearingCentreEmail(req),
+      page: i18n.pages.guidancePages.withdrawDecision
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function getHomeOfficeMaintainDecision(req: Request, res: Response, next: NextFunction) {
+  try {
+    return res.render('guidance-pages/guidance-page.njk', {
+      showContactUs: true,
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      page: i18n.pages.guidancePages.maintainDecision
+    });
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -165,6 +196,8 @@ function setupGuidancePagesController(): Router {
   router.get(paths.common.guidance, getGuidanceSupportPage);
   router.get(paths.common.gettingStarted, getGettingStartedPage);
   router.get(paths.common.whatToExpectAtHearing, getWhatToExpectAtHearing);
+  router.get(paths.common.homeOfficeWithdrawDecision, getHomeOfficeWithdrawDecision);
+  router.get(paths.common.homeOfficeMaintainDecision, getHomeOfficeMaintainDecision);
   return router;
 }
 
@@ -172,6 +205,8 @@ export {
   setupGuidancePagesController,
   getEvidenceToSupportAppealPage,
   getHomeOfficeDocumentsPage,
+  getHomeOfficeMaintainDecision,
+  getHomeOfficeWithdrawDecision,
   getMoreHelpPage,
   getCaseworkerPage,
   getWhatIsService,

@@ -128,7 +128,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.common.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and IDAM name @only', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',

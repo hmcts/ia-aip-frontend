@@ -27,6 +27,10 @@ export const States = {
     id: 'clarifyingQuestionsAnswersSubmitted',
     name: 'Clarifying Questions submitted'
   },
+  RESPONDENT_REVIEW: {
+    id: 'respondentReview',
+    name: 'Respondent review'
+  },
   AWAITING_CMA_REQUIREMENTS: {
     id: 'awaitingCmaRequirements',
     name: 'Awaiting CMA Requirements'

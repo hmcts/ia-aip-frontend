@@ -532,5 +532,7 @@
 "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10225210921130928.js_GET": "ignore",
 "90027_Cookie Slack Detector_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10225210921130928.js_GET": "ignore",
 "10027_Information Disclosure - Suspicious Comments_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10225210921130928.js_GET": "ignore",
-"10109_Modern Web Application_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10225210921130928.js_GET": "ignore"
+"10109_Modern Web Application_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10225210921130928.js_GET": "ignore",
+"40012_Cross Site Scripting (Reflected)_https://immigration-appeal.aat.platform.hmcts.net/not-eligible?id=javascript%3Aalert%281%29%3B_GET": "ignore",
+"10021_X-Content-Type-Options Header Missing_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10225210921130928.js_GET": "ignore"
 }

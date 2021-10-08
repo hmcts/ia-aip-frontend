@@ -123,7 +123,7 @@
 
 {% block head %}
   <link href="/main.css" rel="stylesheet" />
-  {{ environment | dump }}
+  env is: {{ environment | dump }}
   {% if environment == 'prod' %}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-159574540-1"></script>

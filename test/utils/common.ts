@@ -46,10 +46,7 @@ export async function startBrowser() {
   }
 
   const opts: LaunchOptions = {
-    args,
-    headless: true,
-    timeout: 10000,
-    ignoreHTTPSErrors: true
+    timeout: 10000
   };
 
   browser = await puppeteer.launch(opts);

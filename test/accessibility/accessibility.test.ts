@@ -1,94 +1,76 @@
-import puppeteer, { LaunchOptions, Page } from 'puppeteer';
-import { IndexPage } from '../page-objects/IndexPage';
-const { bootstrap, teardown } = require('../functional/bootstrap');
-import { paths } from '../../app/paths';
-import { expect } from '../utils/testUtils';
-import { pa11yConfig } from './config/common';
-
-const testUrl = require('config').get('testUrl');
+import * as fs from 'fs';
+import puppeteer, { Browser } from 'puppeteer';
 const pa11y = require('pa11y');
+const html = require('pa11y-reporter-html');
+const { bootstrap, teardown } = require('../functional/bootstrap');
 
-const pathsToIgnore = [
-  paths.common.health, paths.common.liveness, paths.common.healthLiveness, paths.common.healthReadiness, paths.common.logout, paths.common.redirectUrl, paths.common.start,
-  paths.appealStarted.deleteEvidence, paths.appealStarted.uploadEvidence, paths.appealStarted.checkAndSend
-];
-const errorTitles = ['Page not found', 'Service unavailable'];
-
-describe('Home page ', () => {
-  let page: Page;
-  let indexPage: IndexPage;
-
-  before('start service', async () => {
-    bootstrap(() => {
-      // tslint:disable-next-line:no-console
-      console.log('Started server');
-    });
-    const browser = await startBrowser();
-    page = await browser.newPage();
-    indexPage = new IndexPage(page);
-    pa11yConfig.browser = browser;
-    pa11yConfig.page = page;
-    await indexPage.gotoPage();
-  });
-
-  async function startBrowser() {
-
-    const args = ['--no-sandbox', '--start-maximized', '--ignore-certificate-errors'];
-
-    const opts: LaunchOptions = {
-      args,
-      headless: false,
-      timeout: 20000,
-      ignoreHTTPSErrors: true
-    };
-
-    const browser = await puppeteer.launch(opts);
-
-    // If browser crashes try to reconnect
-    browser.on('disconnected', startBrowser);
-    return browser;
-  }
-
-  after(async () => {
-    if (page && page.close) {
-      await page.close();
+describe('Test accessibility', async function() {
+  // tslint:disable:no-console
+  const path = 'functional-output/accessibility';
+  let browser: Browser;
+  let pages;
+  this.retries(3);
+  before('launch browser and pages', async function() {
+    try {
+      bootstrap(() => {
+        console.log('Started server');
+      });
+      browser = await puppeteer.launch({
+        timeout: 20000,
+        ignoreHTTPSErrors: true
+      });
+    } catch (error) {
+      console.log('error');
     }
+  });
+  // beforeEach(async () => {
+  //   pages = [
+  //     await browser.newPage(),
+  //     await browser.newPage()
+  //   ];
+  // })
+  after('close browser and pages', async function() {
+    // for (const page of pages) {
+    //   await page.close();
+    // }
+    await browser.close();
     await teardown(() => {
-      // tslint:disable-next-line:no-console
       console.log('Shutdown completed');
     });
   });
+  it('should test page', async function() {
+    try {
+      const options = {
+        log: {
+          debug: console.log,
+          error: console.error,
+          info: console.log
+        },
+        browser,
+        standard: 'WCAG2AAA'
+      };
+      const appealOverviewActions = [
+        'set field #username to setupcase@example.com',
+        'click element #login'
+      ];
+      const aboutAppealActions = [
+        ...appealOverviewActions,
+        'navigate to https://localhost:3000/about-appeal'
+      ];
+      const results = await Promise.all([
+        pa11y('https://localhost:3000', options),
+        pa11y('https://localhost:3000/appeal-overview', { ...options, actions: appealOverviewActions }),
+        pa11y('https://localhost:3000/about-appeal', { ...options, actions: aboutAppealActions })
+      ]);
 
-  it('checks "/" does not have issues ', async function () {
-    await indexPage.verifyPage();
-    const result = await pa11y(`${testUrl}${indexPage.pagePath}`, pa11yConfig);
-    expect(result.issues).to.eql([]);
-  });
-
-  async function checkPath(pathsToCheck, errors) {
-    for (const path of Object.values(pathsToCheck)) {
-      if (typeof path === 'string') {
-        if (pathsToIgnore.indexOf(path) === -1) {
-          // tslint:disable-next-line:no-console
-          console.log(`Checking [${path}]`);
-          const result = await pa11y(`https://localhost:3000${path}`, pa11yConfig);
-
-          if (result.issues.length > 0 || errorTitles.some(title => result.documentTitle.includes(title))) {
-            errors.push(result);
-          }
-        }
-      } else {
-        errors = await checkPath(path, errors);
-      }
+      if (!fs.existsSync(path)) { fs.mkdirSync(path); }
+      results.map(async result => {
+        const htmlResults = await html.results(result);
+        const fileName = result.pageUrl.split('/').pop();
+        fs.writeFileSync(`${path}/${fileName}.html`, htmlResults);
+      });
+    } catch (error) {
+      console.log(error);
     }
-
-    return errors;
-  }
-
-  it('checks pages does not have issues', async function () {
-    this.timeout(50000);
-    await indexPage.login();
-    const errors = await checkPath(paths, []);
-    expect(errors).to.eql([]);
   });
 });

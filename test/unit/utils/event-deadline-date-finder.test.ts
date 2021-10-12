@@ -51,6 +51,14 @@ describe('event-deadline-date-finder', () => {
             {
               'id': 'submitReasonsForAppeal',
               'createdDate': '2020-02-18T16:00:00.000'
+            },
+            {
+              'id': 'requestRespondentReview',
+              'createdDate': '2020-02-18T16:00:00.000'
+            },
+            {
+              'id': 'decisionWithdrawn',
+              'createdDate': '2020-02-19T16:00:00.000'
             }
           ]
         }
@@ -129,6 +137,22 @@ describe('event-deadline-date-finder', () => {
       const result = getDeadline(currentAppealStatus, req as Request);
 
       expect(result).to.be.equal('21 May 2020');
+    });
+
+    it('should return a formatted date for decisionWithdrawn state @thisONes', () => {
+
+      const currentAppealStatus = 'decisionWithdrawn';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('03 March 2020');
+    });
+
+    it('should return a formatted date for respondentReview state', () => {
+
+      const currentAppealStatus = 'respondentReview';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('03 March 2020');
     });
 
     it('cmaListed should return the formatted date', () => {

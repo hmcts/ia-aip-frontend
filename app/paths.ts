@@ -128,6 +128,9 @@ const paths = {
     askForMoreTimeCheckAndSend: '/check-answer-more-time',
     askForMoreTimeConfirmation: '/request-more-time-sent',
 
+    // Payments
+    finishPayment: '/finish-payment',
+
     // Session extension
     extendSession: '/extend-session',
     sessionExpired: '/session-ended',

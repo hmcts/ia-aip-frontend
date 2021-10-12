@@ -6,5 +6,8 @@
   },
   "evidenceUpload": {
     "maxFileSizeInMb": 6
+  },
+  "payments": {
+    "apiUrl": "http://localhost:8083"
   }
 }

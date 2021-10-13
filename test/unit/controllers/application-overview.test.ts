@@ -134,7 +134,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'anId',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -184,7 +185,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'anId',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -233,7 +235,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -283,7 +286,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -346,7 +350,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';

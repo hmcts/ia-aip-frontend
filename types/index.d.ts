@@ -189,7 +189,9 @@ interface AppealApplication {
     result?: any;
   };
   isEdit?: boolean;
-  saveAndAskForTime?: boolean; 
+  saveAndAskForTime?: boolean;
+  rpDcAppealHearingOption?: string;
+  decisionHearingFeeOption?: string;
 }
 
 interface CmaRequirements {

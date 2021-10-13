@@ -5,44 +5,47 @@ import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
 import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';
 import { paths } from '../../paths';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
-function createSummaryRowsFrom(appealApplication: AppealApplication) {
-  const appealTypeNames: string[] = appealApplication.appealType.split(',').map(appealType => {
+async function createSummaryRowsFrom(req: Request) {
+  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+  const { application } = req.session.appeal;
+  const appealTypeNames: string[] = application.appealType.split(',').map(appealType => {
     return i18n.appealTypes[appealType].name;
   });
-  const nationality = appealApplication.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === appealApplication.personalDetails.nationality).name;
+  const nationality = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const editParameter = '?edit';
   const rows = [
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,
-      [ appealApplication.homeOfficeRefNumber ],
+      [ application.homeOfficeRefNumber ],
       paths.appealStarted.details + editParameter
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
-      [ appealApplication.dateLetterSent.day, moment.months(parseInt(appealApplication.dateLetterSent.month, 10) - 1), appealApplication.dateLetterSent.year ],
+      [ application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year ],
       paths.appealStarted.letterSent + editParameter,
       Delimiter.SPACE
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
-      appealApplication.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
+      application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
       paths.appealStarted.homeOfficeDecisionLetter + editParameter,
       Delimiter.BREAK_LINE
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.name,
-      [ appealApplication.personalDetails.givenNames, appealApplication.personalDetails.familyName ],
+      [ application.personalDetails.givenNames, application.personalDetails.familyName ],
       paths.appealStarted.name + editParameter,
       Delimiter.SPACE
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.dob,
-      [ appealApplication.personalDetails.dob.day, moment.months(parseInt(appealApplication.personalDetails.dob.month, 10) - 1), appealApplication.personalDetails.dob.year ],
+      [ application.personalDetails.dob.day, moment.months(parseInt(application.personalDetails.dob.month, 10) - 1), application.personalDetails.dob.year ],
       paths.appealStarted.dob + editParameter,
       Delimiter.SPACE
     ),
@@ -53,13 +56,13 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.addressDetails,
-      [ ...Object.values(appealApplication.personalDetails.address) ],
+      [ ...Object.values(application.personalDetails.address) ],
       paths.appealStarted.enterAddress + editParameter,
       Delimiter.BREAK_LINE
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.contactDetails,
-      [ appealApplication.contactDetails.email, appealApplication.contactDetails.phone ],
+      [ application.contactDetails.email, application.contactDetails.phone ],
       paths.appealStarted.contactDetails + editParameter,
       Delimiter.BREAK_LINE
     ),
@@ -70,22 +73,32 @@ function createSummaryRowsFrom(appealApplication: AppealApplication) {
     )
   ];
 
-  if (appealApplication.isAppealLate) {
-    const lateAppealValue = [ formatTextForCYA(appealApplication.lateAppeal.reason) ];
-    if (appealApplication.lateAppeal.evidence) {
-      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${appealApplication.lateAppeal.evidence.fileId}'>${appealApplication.lateAppeal.evidence.name}</a>`;
+  if (application.isAppealLate) {
+    const lateAppealValue = [ formatTextForCYA(application.lateAppeal.reason) ];
+    if (application.lateAppeal.evidence) {
+      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(urlHtml);
     }
     const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);
     rows.push(lateAppealRow);
   }
+
+  if (paymentsFlag) {
+    let decisionType: string;
+    if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
+      decisionType = req.session.appeal.application.rpDcAppealHearingOption;
+    } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(application.appealType)) {
+      decisionType = req.session.appeal.application.decisionHearingFeeOption;
+    }
+    const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers[decisionType] ], paths.appealStarted.decisionType);
+    rows.push(decisionTypeRow);
+  }
   return rows;
 }
 
-function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
+async function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const { application } = req.session.appeal;
-    const summaryRows = createSummaryRowsFrom(application);
+    const summaryRows = await createSummaryRowsFrom(req);
     return res.render('appeal-application/check-and-send.njk', {
       summaryRows,
       previousPage: paths.appealStarted.taskList
@@ -101,7 +114,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
     const request = req.body;
     try {
       const { application } = req.session.appeal;
-      const summaryRows = createSummaryRowsFrom(application);
+      const summaryRows = await createSummaryRowsFrom(req);
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {
         return res.render('appeal-application/check-and-send.njk', {

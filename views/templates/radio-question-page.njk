@@ -18,8 +18,9 @@
       question.options,
       question.title,
       question.titleIsheading or true,
-      question.hint,
-      error[question.name].text
+      question.hint | safe,
+      error[question.name].text,
+      question.inline
     ) }}
 
     {% if saveAndContinueOnly %}

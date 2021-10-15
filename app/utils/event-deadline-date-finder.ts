@@ -55,8 +55,8 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
   let formattedDeadline;
 
   switch (currentAppealStatus) {
-    case 'appealStartedPartial':
-    case 'appealStarted': {
+    case 'appealStarted':
+    case 'appealStartedPartial': {
       formattedDeadline = null;
       break;
     }
@@ -93,8 +93,9 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       formattedDeadline = getFormattedEventHistoryDate(history, 'submitCmaRequirements', 14);
       break;
     }
+    case 'decisionWithdrawn':
     case 'respondentReview': {
-      formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', 21);
+      formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', 14);
       break;
     }
     default: {

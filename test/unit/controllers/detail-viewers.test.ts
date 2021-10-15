@@ -4,6 +4,7 @@ import {
   getCmaRequirementsViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
+  getHomeOfficeWithdrawLetter,
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
   getReasonsForAppealViewer,
@@ -19,7 +20,6 @@ import * as summaryUtils from '../../../app/utils/summary-list';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithCmaRequirements } from '../mockData/events/expectation/expected-history-cma-requirements';
-import { expectedMultipleEventsData } from '../mockData/events/expectation/expected-multiple-events';
 
 const express = require('express');
 
@@ -78,11 +78,12 @@ describe('Detail viewer Controller', () => {
 
       setupDetailViewersController(documentManagementService as DocumentManagementService);
       expect(routerGetStub).to.have.been.calledWith(paths.common.documentViewer + '/:documentId');
-      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeDocumentsViewer);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawLetter);
       expect(routerGetStub).to.have.been.calledWith(paths.common.appealDetailsViewer);
       expect(routerGetStub).to.have.been.calledWith(paths.common.reasonsForAppealViewer);
       expect(routerGetStub).to.have.been.calledWith(paths.common.timeExtensionViewer + '/:id');
       expect(routerGetStub).to.have.been.calledWith(paths.common.cmaRequirementsAnswerViewer);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawLetter);
     });
   });
 
@@ -101,10 +102,8 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.respondentDocuments = [
         {
           dateUploaded: '2020-02-21',
-          evidence: {
-            fileId: 'someUUID',
-            name: 'evidence_file.png'
-          }
+          fileId: 'someUUID',
+          name: 'evidence_file.png'
         }
       ];
 
@@ -122,6 +121,53 @@ describe('Detail viewer Controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getHomeOfficeWithdrawLetter', () => {
+    beforeEach(() => {
+      req.session.appeal.respondentDocuments = [
+        {
+          fileId: 'uuid',
+          name: 'filename',
+          description: 'description here',
+          dateUploaded: '2020-02-21',
+          id: '2',
+          tag: 'appealResponse'
+        }
+      ];
+    });
+    it('should render details-viewer template', () => {
+      getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
+        data: sinon.match.array,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render details-viewer template with additional evidences', () => {
+      req.session.appeal.respondentDocuments.push({
+        fileId: 'uuid',
+        name: 'filename',
+        description: 'description here',
+        dateUploaded: '2020-02-21',
+        id: '2',
+        tag: 'appealResponse'
+      });
+      getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
+        data: sinon.match.array,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('getHoEvidenceDetailsViewer should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

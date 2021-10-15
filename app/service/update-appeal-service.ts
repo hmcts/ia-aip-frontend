@@ -112,7 +112,7 @@ export default class UpdateAppealService {
 
     const subscriptions = caseData.subscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
-    let respondentDocuments: RespondentDocument[] = null;
+    // let respondentDocuments: RespondentDocument[] = null;
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
@@ -167,21 +167,21 @@ export default class UpdateAppealService {
       });
     }
 
-    if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
-      respondentDocuments = [];
-      caseData.respondentDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
+    // if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
+    //   respondentDocuments = [];
+    //   caseData.respondentDocuments.forEach(document => {
+    //     const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
 
-        let evidence = {
-          dateUploaded: document.value.dateUploaded,
-          evidence: {
-            fileId: documentMapperId,
-            name: document.value.document.document_filename
-          }
-        };
-        respondentDocuments.push(evidence);
-      });
-    }
+    //     let evidence = {
+    //       dateUploaded: document.value.dateUploaded,
+    //       evidence: {
+    //         fileId: documentMapperId,
+    //         name: document.value.document.document_filename
+    //       }
+    //     };
+    //     respondentDocuments.push(evidence);
+    //   });
+    // }
 
     if (caseData.directions) {
       directions = caseData.directions.map((ccdDirection: Collection<CcdDirection>): Direction => {
@@ -372,7 +372,7 @@ export default class UpdateAppealService {
         evidences: reasonsForAppealDocumentUploads,
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
-      ...respondentDocuments && { respondentDocuments },
+      // ...respondentDocuments && { respondentDocuments },
       ...(_.has(caseData, 'directions')) && { directions },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
@@ -387,11 +387,17 @@ export default class UpdateAppealService {
         time: listCmaHearingLength,
         date: listCmaHearingDate
       },
+      ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
       ...caseData.makeAnApplications && { makeAnApplications: caseData.makeAnApplications },
+      ...caseData.appealReviewDecisionTitle && { appealReviewDecisionTitle: caseData.appealReviewDecisionTitle },
+      ...caseData.appealReviewOutcome && { appealReviewOutcome: caseData.appealReviewOutcome },
+      ...caseData.homeOfficeAppealResponseDocument && { homeOfficeAppealResponseDocument: caseData.homeOfficeAppealResponseDocument },
+      ...caseData.homeOfficeAppealResponseDescription && { homeOfficeAppealResponseDescription: caseData.homeOfficeAppealResponseDescription },
+      ...caseData.homeOfficeAppealResponseEvidence && { homeOfficeAppealResponseEvidence: caseData.homeOfficeAppealResponseEvidence },
       hearingCentre: caseData.hearingCentre || null,
       documentMap
     };

@@ -393,6 +393,14 @@
             "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a><a class='govuk-link' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a>"
           }
         },
+        "decisionWithdrawn": {
+          "detailsSent": "The Home Office has reviewed your appeal and decided to withdraw their decision to refuse your application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeWithdrawLetter }}'>Home Office Withdrawal Letter</a>.",
+          "dueDate": "Your appeal may end. If you do not want the appeal to end, you must email <a class='govuk-link' href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a> by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to explain why.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a>"
+          }
+        },
         "awaitingReasonsForAppeal": {
           "new": {
             "description": "Tell us why you think the Home Office decision to refuse your claim is wrong.",
@@ -703,6 +711,13 @@
           "approved": "The appeal is out of time but can proceed",
           "inTime": "The appeal is in time"
         }
+      },
+      "homeOfficeWithdrawLetter": {
+        "title": "Home Office Withdrawal Letter",
+        "dateUploaded": "Date uploaded",
+        "document": "Document",
+        "documentDescription": "Document description",
+        "additionalEvidence": "Additional evidence"
       }
     },
     "guidancePages": {
@@ -910,7 +925,7 @@
           {
             "title": "What happens next?",
             "content": [
-              "Your appeal  may end. The Home Office Withdrawal Letter should include details about what will happen next with your case. The Home Office may contact you if they need more information",
+              "Your appeal  may end. The Home Office Withdrawal Letter should include details about what will happen next with your case. The Home Office may contact you if they need more information.",
               "If you do not want the appeal to end, you must email <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of being notified about the withdrawal to explain why. The Tribunal will consider your reasons and the appeal may continue."
             ]
           }

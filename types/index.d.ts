@@ -85,7 +85,7 @@ interface Appeal {
   application: AppealApplication;
   reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;
-  respondentDocuments?: RespondentDocument[];
+  respondentDocuments?: Evidence[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
@@ -104,6 +104,11 @@ interface Appeal {
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
   makeAnApplications?: Collection<Application>[];
+  appealReviewDecisionTitle?: any;
+  appealReviewOutcome?: string;
+  homeOfficeAppealResponseDocument?: any;
+  homeOfficeAppealResponseDescription?: string;
+  homeOfficeAppealResponseEvidence?: any;
 }
 
 interface Hearing {
@@ -259,6 +264,7 @@ interface IdamDetails {
   name: string;
   given_name: string;
   family_name: string;
+  sub: string;
 }
 
 interface TimeExtension {

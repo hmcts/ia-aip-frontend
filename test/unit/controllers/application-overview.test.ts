@@ -134,7 +134,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'anId',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -184,7 +185,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'anId',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -233,7 +235,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -283,7 +286,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -292,10 +296,16 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    expectedNextStep.descriptionParagraphs = [
-      'You need to finish telling us about your appeal.',
-      'You will need to have your Home Office decision letter with you to answer some questions.'
-    ];
+    const expectedNextStep = {
+      allowedAskForMoreTime: false,
+      cta: { url: '/about-appeal' },
+      deadline: null,
+      descriptionParagraphs: [
+        'You need to finish telling us about your appeal.',
+        'You will need to have your Home Office decision letter with you to answer some questions.'
+      ],
+      info: null
+    };
 
     const expectedStages = [ {
       active: true,
@@ -322,6 +332,7 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
+      // applicationNextStep: sinon.match.any,
       applicationNextStep: expectedNextStep,
       history: expectedHistory,
       stages: expectedStages,
@@ -339,7 +350,8 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer'
+        family_name: 'Developer',
+        sub: 'email@test.com'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -350,10 +362,16 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    expectedNextStep.descriptionParagraphs = [
-      'You need to finish telling us about your appeal.',
-      'You will need to have your Home Office decision letter with you to answer some questions.'
-    ];
+    const expectedNextStep = {
+      allowedAskForMoreTime: false,
+      cta: { url: '/about-appeal' },
+      deadline: null,
+      descriptionParagraphs: [
+        'You need to finish telling us about your appeal.',
+        'You will need to have your Home Office decision letter with you to answer some questions.'
+      ],
+      info: null
+    };
 
     const expectedStages = [ {
       active: true,

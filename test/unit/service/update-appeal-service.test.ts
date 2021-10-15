@@ -191,11 +191,11 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.reasonsForAppeal.uploadDate).eq('2020-01-02');
       expect(req.session.appeal.reasonsForAppeal.evidences).to.exist;
       expect(req.session.appeal.documentMap).to.exist;
-      expect(req.session.appeal.respondentDocuments).to.exist;
-      expect(req.session.appeal.respondentDocuments[0].dateUploaded).to.be.eq('2020-02-21');
-      expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
-      validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
-      expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
+      // expect(req.session.appeal.respondentDocuments).to.exist;
+      // expect(req.session.appeal.respondentDocuments[0].dateUploaded).to.be.eq('2020-02-21');
+      // expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
+      // validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
+      // expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
       expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
       expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
@@ -948,15 +948,15 @@ describe('update-appeal-service', () => {
                 }
               ] as Evidence[]
             },
-            respondentDocuments: [
-              {
-                dateUploaded: '2020-02-21',
-                evidence: {
-                  fileId: '75d96b97-f453-4084-aecf-3f73738e4ded',
-                  name: 'Screenshot 2020-02-21 at 11.49.28.png'
-                }
-              }
-            ],
+            // respondentDocuments: [
+            //   {
+            //     dateUploaded: '2020-02-21',
+            //     evidence: {
+            //       fileId: '75d96b97-f453-4084-aecf-3f73738e4ded',
+            //       name: 'Screenshot 2020-02-21 at 11.49.28.png'
+            //     }
+            //   }
+            // ],
             documentMap: [
               {
                 id: '00000000-0000-0000-0000-000000000000',

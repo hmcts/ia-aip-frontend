@@ -44,6 +44,9 @@
     "webUrl": "IDAM_WEB_URL",
     "secret": "IDAM_SECRET"
   },
+  "launchDarkly": {
+    "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
+  },
   "ccd": {
     "apiUrl": "CCD_API_URL"
   },

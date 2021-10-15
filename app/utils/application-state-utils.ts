@@ -1,308 +1,12 @@
 import { Request } from 'express';
 import _ from 'lodash';
 import i18n from '../../locale/en.json';
+import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import { hasPendingTimeExtension } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
-
-/**
- * Determines whether a status is partially completed by looking at the first possible user input property.
- * @param req the request containing the session
- */
-function isPartiallySavedAppeal(req: Request) {
-  const { appealStatus } = req.session.appeal;
-  switch (appealStatus) {
-    case States.APPEAL_STARTED.id: {
-      return _.has(req.session.appeal, 'application.homeOfficeRefNumber');
-    }
-    case States.AWAITING_REASONS_FOR_APPEAL.id: {
-      return _.has(req.session.appeal, 'reasonsForAppeal.applicationReason');
-    }
-    default: {
-      return false;
-    }
-  }
-}
-
-/**
- * Pulls do this next content based on status
- * @param currentAppealStatus the status the appeal is currently in
- */
-function getDoThisNextSectionFromAppealState(currentAppealStatus: string, pendingTimeExtension: boolean, decisionGranted: boolean, decisionRefused: boolean) {
-  let descriptionParagraphs;
-  let respondBy;
-  switch (currentAppealStatus) {
-    case 'appealStarted':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions,
-          i18n.pages.overviewPage.doThisNext.appealStarted.needHomeOfficeDecision
-        ],
-        info: null,
-        cta: {
-          url: paths.appealStarted.taskList
-        },
-        allowedAskForMoreTime: false
-      };
-    case 'appealStartedPartial':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.appealStarted.finishQuestions,
-          i18n.pages.overviewPage.doThisNext.appealStarted.needHomeOfficeDecision
-        ],
-        info: null,
-        cta: {
-          url: paths.appealStarted.taskList
-        },
-        allowedAskForMoreTime: false
-      };
-    case 'appealSubmitted':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.appealSubmitted.dueDate
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
-          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
-    case 'lateAppealSubmitted':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.dueDate
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
-          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
-    case 'awaitingRespondentEvidence':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
-          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
-          url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
-    case 'lateAppealRejected':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description,
-          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description2
-        ],
-        cta: {
-          url: null,
-          respondByText: null
-        },
-        allowedAskForMoreTime: false
-      };
-    case 'awaitingReasonsForAppeal':
-      descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
-      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
-      if (pendingTimeExtension) {
-        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime ];
-        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
-      } else if (decisionGranted) {
-        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
-      } else if (decisionRefused) {
-        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
-      }
-      return {
-        descriptionParagraphs,
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
-          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
-        },
-        usefulDocuments: {
-          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
-          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
-        },
-        cta: {
-          url: paths.awaitingReasonsForAppeal.decision,
-          respondBy
-        },
-        allowedAskForMoreTime: true
-      };
-    case 'awaitingReasonsForAppealPartial':
-      descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description ];
-      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
-      if (pendingTimeExtension) {
-        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime ];
-        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
-      } else if (decisionGranted) {
-        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
-      } else if (decisionRefused) {
-        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
-      }
-      return {
-        descriptionParagraphs,
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.title,
-          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.url
-        },
-        usefulDocuments: {
-          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.title,
-          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.url
-        },
-        cta: {
-          url: paths.awaitingReasonsForAppeal.decision,
-          respondBy
-        },
-        allowedAskForMoreTime: true
-      };
-    case 'reasonsForAppealSubmitted':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
-        ],
-        cta: null,
-        allowedAskForMoreTime: false
-      };
-    case 'respondentReview':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
-          i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
-        ],
-        info: i18n.pages.overviewPage.doThisNext.respondentReview.info
-      };
-    case 'awaitingClarifyingQuestionsAnswersPartial':
-    case 'awaitingClarifyingQuestionsAnswers':
-      descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description];
-      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
-      if (pendingTimeExtension) {
-        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime ];
-        respondBy = i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime;
-      } else if (decisionGranted) {
-        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
-      } else if (decisionRefused) {
-        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
-      }
-      return {
-        descriptionParagraphs,
-        info: null,
-        cta: {
-          url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
-          respondBy
-        },
-        allowedAskForMoreTime: true
-      };
-    case 'awaitingCmaRequirements':
-      descriptionParagraphs = [
-        i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description,
-        i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description2
-      ];
-      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
-      if (pendingTimeExtension) {
-        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime ];
-        respondBy = i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime;
-      } else if (decisionGranted) {
-        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
-      } else if (decisionRefused) {
-        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
-      }
-      return {
-        descriptionParagraphs,
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.title,
-          url: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.url
-        },
-        cta: {
-          url: paths.awaitingCmaRequirements.taskList,
-          respondBy
-        },
-        allowedAskForMoreTime: true
-      };
-    case 'clarifyingQuestionsAnswersSubmitted':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.description,
-          i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.dueDate
-        ],
-        cta: null,
-        allowedAskForMoreTime: false
-      };
-    case 'cmaAdjustmentsAgreed':
-    case 'cmaRequirementsSubmitted':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description,
-          i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description2
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.title,
-          url: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
-    case 'cmaListed':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.cmaListed.description,
-          i18n.pages.overviewPage.doThisNext.cmaListed.date,
-          i18n.pages.overviewPage.doThisNext.cmaListed.time,
-          i18n.pages.overviewPage.doThisNext.cmaListed.hearingCentre,
-          i18n.pages.overviewPage.doThisNext.cmaListed.respondByTextAskForMoreTime
-        ],
-        usefulDocuments: {
-          title: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDoc.title,
-          url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDoc.url
-        },
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.title,
-          url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
-    case 'ended':
-      return {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
-          i18n.pages.overviewPage.doThisNext.ended.ctaReview,
-          i18n.pages.overviewPage.doThisNext.ended.ctaContact,
-          i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackTitle,
-          i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackDescription
-        ],
-        cta: {
-          url: null,
-          ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
-        },
-        allowedAskForMoreTime: false
-      };
-    case 'appealTakenOffline':
-      return {
-        descriptionParagraphs: [
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.title,
-          url: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.description
-        }
-      };
-    default:
-      // default message to avoid app crashing on events that are to be implemented.
-      return {
-        descriptionParagraphs: [
-          `Description for appeal status <b>${currentAppealStatus}</b> not found`
-        ]
-      };
-  }
-}
 
 interface DoThisNextSection {
   descriptionParagraphs: string[];
@@ -315,7 +19,8 @@ interface DoThisNextSection {
     url: string;
   };
   cta?: {
-    url: string;
+    url?: string;
+    respondBy?: string,
     respondByText?: string,
     respondByTextAskForMoreTime?: string;
     ctaTitle?: string;
@@ -335,12 +40,23 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== 'ended') {
+  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== States.ENDED.id) {
     if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
       return 'lateAppealRejected';
     }
     if (req.session.appeal.appealStatus === 'appealSubmitted') {
       return 'lateAppealSubmitted';
+    }
+    return req.session.appeal.appealStatus;
+  } else if (req.session.appeal.appealStatus === States.APPEAL_STARTED.id) {
+    return _.has(req.session.appeal, 'application.homeOfficeRefNumber') ? `${req.session.appeal.appealStatus}Partial` : req.session.appeal.appealStatus;
+  } else if (req.session.appeal.appealStatus === States.AWAITING_REASONS_FOR_APPEAL.id) {
+    return _.has(req.session.appeal, 'reasonsForAppeal.applicationReason') ? `${req.session.appeal.appealStatus}Partial` : req.session.appeal.appealStatus;
+  } else if (req.session.appeal.appealStatus === States.RESPONDENT_REVIEW.id) {
+    if (req.session.appeal.history.find(event => event.id === Events.REQUEST_RESPONSE_REVIEW.id)) {
+      const { appealReviewOutcome } = req.session.appeal;
+      if (appealReviewOutcome === 'decisionWithdrawn') return 'decisionWithdrawn';
+      else if (appealReviewOutcome === 'decisionAccepted') return 'decisionAccepted';
     }
     return req.session.appeal.appealStatus;
   } else {
@@ -371,37 +87,325 @@ function getMoveAppealOfflineDate(req: Request) {
  * @param req the request containing the session and appeal status
  */
 function getAppealApplicationNextStep(req: Request) {
-  let currentAppealStatus = getAppealStatus(req);
-
-  if (isPartiallySavedAppeal(req)) {
-    currentAppealStatus = currentAppealStatus + 'Partial';
-  }
+  const currentAppealStatus = getAppealStatus(req);
   const pendingTimeExtension = hasPendingTimeExtension(req.session.appeal);
-  const lastDecisionTimeExtensionGranted = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Granted' || null;
-  const lastDecisionTimeExtensionRefused = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Refused' || null;
-  let doThisNextSection: DoThisNextSection = getDoThisNextSectionFromAppealState(currentAppealStatus, pendingTimeExtension, lastDecisionTimeExtensionGranted, lastDecisionTimeExtensionRefused);
+  const decisionGranted = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Granted' || null;
+  const decisionRefused = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Refused' || null;
+  let doThisNextSection: DoThisNextSection;
 
+  let descriptionParagraphs;
+  let respondBy;
+  switch (currentAppealStatus) {
+    case 'appealStarted':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.appealStarted.fewQuestions,
+          i18n.pages.overviewPage.doThisNext.appealStarted.needHomeOfficeDecision
+        ],
+        info: null,
+        cta: {
+          url: paths.appealStarted.taskList
+        },
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'appealStartedPartial':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.appealStarted.finishQuestions,
+          i18n.pages.overviewPage.doThisNext.appealStarted.needHomeOfficeDecision
+        ],
+        info: null,
+        cta: {
+          url: paths.appealStarted.taskList
+        },
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'appealSubmitted':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent,
+          i18n.pages.overviewPage.doThisNext.appealSubmitted.dueDate
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
+          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'lateAppealSubmitted':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.detailsSent,
+          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.dueDate
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
+          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'awaitingRespondentEvidence':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.detailsSent,
+          i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.dueDate
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingRespondentEvidence.info.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'lateAppealRejected':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description,
+          i18n.pages.overviewPage.doThisNext.lateAppealRejected.description2
+        ],
+        cta: {
+          url: null,
+          respondByText: null
+        },
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'awaitingReasonsForAppeal':
+      descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
+      doThisNextSection = {
+        descriptionParagraphs,
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.info.url
+        },
+        usefulDocuments: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.usefulDocuments.url
+        },
+        cta: {
+          url: paths.awaitingReasonsForAppeal.decision,
+          respondBy
+        },
+        allowedAskForMoreTime: true
+      };
+      break;
+    case 'awaitingReasonsForAppealPartial':
+      descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
+      doThisNextSection = {
+        descriptionParagraphs,
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.info.url
+        },
+        usefulDocuments: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.usefulDocuments.url
+        },
+        cta: {
+          url: paths.awaitingReasonsForAppeal.decision,
+          respondBy
+        },
+        allowedAskForMoreTime: true
+      };
+      break;
+    case 'reasonsForAppealSubmitted':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.detailsSent,
+          i18n.pages.overviewPage.doThisNext.reasonsForAppealSubmitted.dueDate
+        ],
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'respondentReview':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.respondentReview.detailsSent,
+          i18n.pages.overviewPage.doThisNext.respondentReview.dueDate
+        ],
+        info: i18n.pages.overviewPage.doThisNext.respondentReview.info
+      };
+      break;
+    case 'decisionWithdrawn':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.decisionWithdrawn.detailsSent,
+          i18n.pages.overviewPage.doThisNext.decisionWithdrawn.dueDate
+        ],
+        info: i18n.pages.overviewPage.doThisNext.decisionWithdrawn.info,
+        cta: {},
+        hearingCentreEmail: getHearingCentreEmail(req)
+      };
+      break;
+    case 'awaitingClarifyingQuestionsAnswersPartial':
+    case 'awaitingClarifyingQuestionsAnswers':
+      descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
+      doThisNextSection = {
+        descriptionParagraphs,
+        info: null,
+        cta: {
+          url: paths.awaitingClarifyingQuestionsAnswers.questionsList,
+          respondBy
+        },
+        allowedAskForMoreTime: true
+      };
+      break;
+    case 'awaitingCmaRequirements':
+      descriptionParagraphs = [
+        i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description,
+        i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.description2
+      ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
+      doThisNextSection = {
+        descriptionParagraphs,
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.title,
+          url: i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.info.url
+        },
+        cta: {
+          url: paths.awaitingCmaRequirements.taskList,
+          respondBy
+        },
+        allowedAskForMoreTime: true
+      };
+      break;
+    case 'clarifyingQuestionsAnswersSubmitted':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.description,
+          i18n.pages.overviewPage.doThisNext.clarifyingQuestionsAnswersSubmitted.dueDate
+        ],
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'cmaAdjustmentsAgreed':
+    case 'cmaRequirementsSubmitted':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description,
+          i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.description2
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.title,
+          url: i18n.pages.overviewPage.doThisNext.cmaRequirementsSubmitted.info.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'cmaListed':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.cmaListed.description,
+          i18n.pages.overviewPage.doThisNext.cmaListed.date,
+          i18n.pages.overviewPage.doThisNext.cmaListed.time,
+          i18n.pages.overviewPage.doThisNext.cmaListed.hearingCentre,
+          i18n.pages.overviewPage.doThisNext.cmaListed.respondByTextAskForMoreTime
+        ],
+        usefulDocuments: {
+          title: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDoc.title,
+          url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDoc.url
+        },
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.title,
+          url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false,
+        date: getHearingDate(req),
+        time: getHearingTime(req),
+        hearingCentre: getHearingCentre(req)
+      };
+      break;
+    case 'ended':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
+          i18n.pages.overviewPage.doThisNext.ended.ctaReview,
+          i18n.pages.overviewPage.doThisNext.ended.ctaContact,
+          i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackTitle,
+          i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackDescription
+        ],
+        cta: {
+          url: null,
+          ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
+        },
+        allowedAskForMoreTime: false,
+        hearingCentreEmail: getHearingCentreEmail(req)
+      };
+      break;
+    case 'appealTakenOffline':
+      doThisNextSection = {
+        descriptionParagraphs: [
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.title,
+          url: i18n.pages.overviewPage.doThisNext.appealTakenOffline.info.description
+        },
+        removeAppealFromOnlineReason: getMoveAppealOfflineReason(req),
+        removeAppealFromOnlineDate: getMoveAppealOfflineDate(req)
+      };
+      break;
+    default:
+      // default message to avoid app crashing on events that are to be implemented.
+      doThisNextSection = {
+        descriptionParagraphs: [
+          `Description for appeal status <b>${currentAppealStatus}</b> not found`
+        ]
+      };
+      break;
+  }
   doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
-  if (currentAppealStatus === 'appealTakenOffline') {
-    doThisNextSection.removeAppealFromOnlineReason = getMoveAppealOfflineReason(req);
-    doThisNextSection.removeAppealFromOnlineDate = getMoveAppealOfflineDate(req);
-  }
-  if (currentAppealStatus === States.CMA_LISTED.id) {
-    doThisNextSection.date = getHearingDate(req);
-    doThisNextSection.time = getHearingTime(req);
-    doThisNextSection.hearingCentre = getHearingCentre(req);
-  }
-  if (currentAppealStatus === 'ended') {
-    doThisNextSection.hearingCentreEmail = getHearingCentreEmail(req);
-  }
   return doThisNextSection;
 }
 
 export {
   getAppealApplicationNextStep,
   getAppealStatus,
-  getDoThisNextSectionFromAppealState,
   getMoveAppealOfflineReason,
-  getMoveAppealOfflineDate,
-  isPartiallySavedAppeal
+  getMoveAppealOfflineDate
 };

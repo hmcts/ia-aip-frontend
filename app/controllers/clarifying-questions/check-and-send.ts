@@ -50,7 +50,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
     });
     if (anythingElseQuestion.value.answer && anythingElseQuestion.value.answer !== CQ_NOTHING_ELSE) {
       const summaryRows: SummaryRow[] = [
-        addSummaryRow(i18n.common.cya.answerRowTitle, [ `<pre>${anythingElseQuestion.value.answer}</pre>` ], paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage + editParameter)
+        addSummaryRow(i18n.common.cya.answerRowTitle, [ `<pre>${anythingElseQuestion.value.answer}</pre>` ], paths.awaitingClarifyingQuestionsAnswers.anythingElseAnswerPage)
       ];
       if (anythingElseQuestion.value.supportingEvidence && anythingElseQuestion.value.supportingEvidence.length) {
         const evidencesList = buildEvidencesList(anythingElseQuestion.value.supportingEvidence);

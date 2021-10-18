@@ -392,7 +392,7 @@ describe('Detail viewer Controller', () => {
 
   describe('getTimeExtensionViewer', () => {
     it('should render detail-viewers/time-extension-details-viewer.njk with no evidences', () => {
-      const timeExtension: Collection<Application> = {
+      const timeExtension: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -475,7 +475,7 @@ describe('Detail viewer Controller', () => {
   describe('getTimeExtensionSummaryRows', () => {
     it('should get rows', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const timeExtensionPendingDecision = {
+      const timeExtensionPendingDecision: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',

@@ -104,7 +104,7 @@ interface Appeal {
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
   makeAnApplicationEvidence?: Evidence[];
-  makeAnApplications?: Collection<Application>[];
+  makeAnApplications?: Collection<Application<Evidence>>[];
   appealReviewDecisionTitle?: any;
   appealReviewOutcome?: string;
   homeOfficeAppealResponseDocument?: any;

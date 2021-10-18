@@ -831,7 +831,7 @@ describe('update-appeal-service', () => {
         'journeyType': 'aip',
         'makeAnApplicationEvidence': [
           {
-            'id': 'fileId',
+            'id': 'id',
             'value': {
               'document_binary_url': 'someurl/binary',
               'document_filename': 'name',

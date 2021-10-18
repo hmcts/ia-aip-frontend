@@ -395,7 +395,7 @@ export default class UpdateAppealService {
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
-      ...caseData.makeAnApplications && { makeAnApplications: caseData.makeAnApplications },
+      ...caseData.makeAnApplications && { makeAnApplications: this.mapMakeApplicationsToSession(caseData.makeAnApplications, documentMap) },
       ...caseData.appealReviewDecisionTitle && { appealReviewDecisionTitle: caseData.appealReviewDecisionTitle },
       ...caseData.appealReviewOutcome && { appealReviewOutcome: caseData.appealReviewOutcome },
       ...caseData.homeOfficeAppealResponseDocument && { homeOfficeAppealResponseDocument: caseData.homeOfficeAppealResponseDocument },
@@ -653,7 +653,7 @@ export default class UpdateAppealService {
     return evidences.map((evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
       return {
-         ...evidence.id && { id: evidence.id },
+        ...evidence.id && { id: evidence.id },
         value: {
           document_filename: evidence.name,
           document_url: documentLocationUrl,
@@ -789,5 +789,17 @@ export default class UpdateAppealService {
       };
     });
     return evidences;
+  }
+
+  private mapMakeApplicationsToSession = (makeAnApplications: Collection<Application<Collection<SupportingDocument>>>[], documentMap: DocumentMap[]): Collection<Application<Evidence>>[] => {
+    return makeAnApplications.map((application) => {
+      return {
+        id: application.id,
+        value: {
+          ...application.value,
+          ...application.value.evidence && { evidence: application.value.evidence.map(e => this.mapSupportingDocumentToEvidence(e, documentMap)) }
+        }
+      };
+    });
   }
 }

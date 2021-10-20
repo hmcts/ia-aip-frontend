@@ -64,7 +64,7 @@ Feature: Home office reference page
     And I click "Save and continue" button
 
     Then I see "Tell us about your appeal" in title
-    And I click "Type of appeal" link
+    And I click "Appeal and decision type" link
 
     Then I see "What is your appeal type?" in title
     And I check "Protection (You will be persecuted or harmed in some way if you are returned to your home country)" option

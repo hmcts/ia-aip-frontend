@@ -3,7 +3,7 @@ import { paths } from '../../../app/paths';
 const textToId = {
   'Your personal details': '#personalDetailsLink',
   'Your contact details': '#contactDetailsLink',
-  'Type of appeal': '#typeOfAppealLink',
+  'Appeal and decision type': '#typeOfAppealLink',
   'Check and send your appeal': '#checkAndSendLink'
 };
 

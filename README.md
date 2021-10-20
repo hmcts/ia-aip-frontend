@@ -13,7 +13,7 @@ To run the project you will need to have the following installed:
 
 * Node.js
 * Yarn
-
+* trigger ci
 For information about the software versions used to build this application and a complete list of it's dependencies see package.json
 
 ### Running the application

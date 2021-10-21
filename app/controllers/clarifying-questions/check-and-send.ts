@@ -100,7 +100,7 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
         ...appealUpdated
       };
       delete req.session.appeal.draftClarifyingQuestionsAnswers;
-      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.clarifyingQuestionsAnswersSubmitted.confirmation));
+      return getConditionalRedirectUrl(req, res, getNextPage(req.body, paths.common.clarifyingQuestionsAnswersSentConfirmation));
     } catch (e) {
       next(e);
     }

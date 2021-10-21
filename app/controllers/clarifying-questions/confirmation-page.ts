@@ -17,7 +17,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 
 function setupClarifyingQuestionsConfirmationPage(middleware: Middleware[]): Router {
   const router: Router = Router();
-  router.get(paths.clarifyingQuestionsAnswersSubmitted.confirmation, middleware, getConfirmationPage);
+  router.get(paths.common.clarifyingQuestionsAnswersSentConfirmation, middleware, getConfirmationPage);
   return router;
 }
 

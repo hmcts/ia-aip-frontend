@@ -39,6 +39,12 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: contactDetails.completed
   };
 
+  const typeOfAppealAndDecision: Task = {
+    saved: !!_.get(appeal.application, 'appealType'),
+    completed: !!_.get(appeal.application, 'appealType'),
+    active: contactDetails.completed
+  };
+
   const checkAndSend: Task = {
     saved: false,
     completed: false,
@@ -50,6 +56,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     personalDetails,
     contactDetails,
     typeOfAppeal,
+    typeOfAppealAndDecision,
     checkAndSend
   };
 }

@@ -1,4 +1,3 @@
-import config from 'config';
 import { NextFunction, Request, Response } from 'express';
 import {
   checkAppealEnded, getAppealRefNumber,
@@ -10,7 +9,6 @@ import { AuthenticationService } from '../../../app/service/authentication-servi
 import { CcdService } from '../../../app/service/ccd-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
-import { asBooleanValue } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedMultipleEventsData } from '../mockData/events/expectations';
 
@@ -134,8 +132,7 @@ describe('Confirmation Page Controller', () => {
         uid: 'anId',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
+        family_name: 'Developer'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -185,8 +182,7 @@ describe('Confirmation Page Controller', () => {
         uid: 'anId',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
+        family_name: 'Developer'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -235,8 +231,7 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
+        family_name: 'Developer'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -286,8 +281,7 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
+        family_name: 'Developer'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';
@@ -350,8 +344,7 @@ describe('Confirmation Page Controller', () => {
         uid: 'user-id',
         name: 'Alex Developer',
         given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
+        family_name: 'Developer'
       }
     };
     req.session.appeal.appealStatus = 'appealStarted';

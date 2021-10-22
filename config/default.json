@@ -50,9 +50,6 @@
     "jurisdictionId": "IA",
     "caseType": "Asylum"
   },
-  "launchDarkly": {
-    "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
-  },
   "documentManagement": {
     "apiUrl": "DOC_MANAGEMENT_URL"
   },

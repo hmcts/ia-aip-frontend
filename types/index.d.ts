@@ -264,6 +264,7 @@ interface IdamDetails {
   name: string;
   given_name: string;
   family_name: string;
+  sub: string;
 }
 
 interface TimeExtension {

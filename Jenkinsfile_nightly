@@ -22,7 +22,6 @@ def secrets = [
     'ia-${env}': [
         secret('s2s-secret', 'S2S_SECRET'),
         secret('idam-secret', 'IDAM_SECRET'),
-        secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
         secret('saucelabs', 'SAUCELABS_SECRET'),
         secret('dm-url', 'DOC_MANAGEMENT_URL'),
         secret('addressLookupToken', 'ADDRESS_LOOKUP_TOKEN'),

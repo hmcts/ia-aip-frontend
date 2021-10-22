@@ -18,8 +18,6 @@ import { paths } from './paths';
 import { router } from './routes';
 import { setupSession } from './session';
 import { getUrl } from './utils/url-utils';
-const featurePolicy = require('feature-policy');
-const noCache = require('nocache');
 
 const uuid = require('uuid');
 
@@ -56,8 +54,8 @@ function createApp() {
   app.post('*', filterRequest);
 
   if (environment === 'development' || environment === 'test') {
-    const [serverDevConfig, clientDevConfig] = webpackDevConfig;
-    const compiler = webpack([serverDevConfig, clientDevConfig]);
+    const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
+    const compiler = webpack([ serverDevConfig, clientDevConfig ]);
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);
@@ -84,14 +82,11 @@ function configureHelmet(app) {
   // Helmet referrer policy
   app.use(helmet.referrerPolicy({ policy: 'origin' }));
 
-  const crypto = require('crypto');
-  let cspNonce = crypto.randomBytes(16).toString('hex');
-
   // Helmet content security policy (CSP) to allow only assets from same domain.
   app.use(helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ['\'self\''],
-      fontSrc: ['\'self\' data:'],
+      defaultSrc: [ '\'self\'' ],
+      fontSrc: [ '\'self\' data:' ],
       scriptSrc: [
         '\'self\'',
         '\'unsafe-inline\'',
@@ -106,10 +101,10 @@ function configureHelmet(app) {
         (req, res) =>
           req.url.includes('/view/document/')
             ? `'unsafe-inline'`
-            : `'nonce-${cspNonce}'`
+            : `'nonce-${res.locals.nonce}'`
       ],
-      connectSrc: ['\'self\'', 'www.gov.uk', 'www.google-analytics.com'],
-      mediaSrc: ['\'self\''],
+      connectSrc: [ '\'self\'', 'www.gov.uk', 'www.google-analytics.com' ],
+      mediaSrc: [ '\'self\'' ],
       frameSrc: [
         '\'self\'',
         'www.googletagmanager.com',
@@ -132,23 +127,23 @@ function configureHelmet(app) {
 
   app.use(helmet.permittedCrossDomainPolicies());
   app.use(expectCt({ enforce: true, maxAge: 60 }));
-  app.use(featurePolicy({
+  app.use(helmet.featurePolicy({
     features: {
-      accelerometer: ['\'none\''],
-      ambientLightSensor: ['\'none\''],
-      autoplay: ['\'none\''],
-      camera: ['\'none\''],
-      geolocation: ['\'none\''],
-      gyroscope: ['\'none\''],
-      magnetometer: ['\'none\''],
-      microphone: ['\'none\''],
-      payment: ['\'none\''],
-      speaker: ['\'none\''],
-      usb: ['\'none\''],
-      vibrate: ['\'none\'']
+      accelerometer: [ '\'none\'' ],
+      ambientLightSensor: [ '\'none\'' ],
+      autoplay: [ '\'none\'' ],
+      camera: [ '\'none\'' ],
+      geolocation: [ '\'none\'' ],
+      gyroscope: [ '\'none\'' ],
+      magnetometer: [ '\'none\'' ],
+      microphone: [ '\'none\'' ],
+      payment: [ '\'none\'' ],
+      speaker: [ '\'none\'' ],
+      usb: [ '\'none\'' ],
+      vibrate: [ '\'none\'' ]
     }
   }));
-  app.use(noCache());
+  app.use(helmet.noCache());
 }
 
 export {

@@ -12,6 +12,7 @@ import { typeOfAppealValidation } from '../../utils/validations/fields-validatio
 function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+
     const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
     const types = appealTypes.map(type => {
       type.checked = appealType.includes(type.value);

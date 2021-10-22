@@ -23,6 +23,7 @@ def secrets = [
         secret('s2s-secret', 'S2S_SECRET'),
         secret('idam-secret', 'IDAM_SECRET'),
         secret('saucelabs', 'SAUCELABS_SECRET'),
+        secret('launch-darkly-sdk-key', 'LAUNCH_DARKLY_SDK_KEY'),
         secret('dm-url', 'DOC_MANAGEMENT_URL'),
         secret('addressLookupToken', 'ADDRESS_LOOKUP_TOKEN'),
         secret('test-caseofficer-username', 'TEST_CASEOFFICER_USERNAME'),

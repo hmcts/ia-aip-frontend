@@ -15,7 +15,6 @@ const setupSecrets = () => {
   setSecret('secrets.ia.idam-secret', 'idam.secret');
   setSecret('secrets.ia.addressLookupToken', 'addressLookup.token');
   setSecret('secrets.ia.s2s-secret', 's2s.secret');
-  setSecret('secrets.ia.launch-darkly-sdk-key', 'launchDarkly.sdkKey');
   setSecret('secrets.ia.ia-redis-connection-string', 'session.redis.url');
   setSecret('secrets.ia.ia-redis-access-key', 'session.redis.secret');
   setSecret('secrets.ia.AppInsightsInstrumentationKey', 'appInsights.instrumentationKey');

@@ -41,6 +41,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
 
   const typeOfAppealAndDecision: Task = {
     saved: !!_.get(appeal.application, 'appealType'),
+    // TODO: it also would need decisionType to be completed for the stage to be completed
     completed: !!_.get(appeal.application, 'appealType'),
     active: contactDetails.completed
   };

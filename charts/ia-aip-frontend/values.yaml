@@ -1,5 +1,5 @@
 nodejs:
-  image: 'https://hmctspublic.azurecr.io/ia/aip-frontend:latest'
+  image: "https://hmctspublic.azurecr.io/ia/aip-frontend:latest"
   ingressHost: "ia-aip-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal" # override in public facing environments
   applicationPort: 3000
   memoryRequests: 256Mi
@@ -8,7 +8,7 @@ nodejs:
   cpuLimits: 1
   environment:
     HTTP_PROTOCOL: http
-    NODE_ENV: {{ .Values.global.environment }}
+    NODE_ENV: "{{ .Values.global.environment }}"
     S2S_MICROSERVICE_NAME: iac
     MICROSERVICE: iac
     S2S_URL: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"

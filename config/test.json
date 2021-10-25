@@ -8,5 +8,6 @@
   },
   "features": {
     "timelineEnabled": true
-  }
+  },
+  "trackingScripts": false
 }

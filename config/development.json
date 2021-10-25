@@ -6,5 +6,6 @@
   },
   "evidenceUpload": {
     "maxFileSizeInMb": 6
-  }
+  },
+  "trackingScripts": false
 }

@@ -4,6 +4,7 @@
   "appInsights": {
     "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
   },
+  "trackingScripts": "TRACKING_SCRIPTS",
   "node": {
     "protocol": "HTTP_PROTOCOL",
     "hostname": "EXTERNAL_HOSTNAME",

@@ -3,24 +3,29 @@ import _ from 'lodash';
 import { appealTypes } from '../../data/appeal-types';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { typeOfAppealValidation } from '../../utils/validations/fields-validations';
 
-function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
+async function getAppealTypes(req: Request) {
+  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+  const types = paymentsFlag ? appealTypes : appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection');
+  const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
+  return types.map(type => {
+    type.checked = appealType.includes(type.value);
+    return type;
+  });
+}
+
+async function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
-    const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
-    const types = appealTypes.map(type => {
-      type.checked = appealType.includes(type.value);
-      return type;
-    });
-
     return res.render('appeal-application/type-of-appeal.njk', {
-      types,
+      types: await getAppealTypes(req),
       previousPage: paths.appealStarted.taskList
     });
   } catch (error) {
@@ -37,9 +42,9 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
       const validation = typeOfAppealValidation(req.body);
       if (validation) {
         return res.render('appeal-application/type-of-appeal.njk', {
-          types: appealTypes,
           errors: validation,
           errorList: Object.values(validation),
+          types: await getAppealTypes(req),
           previousPage: paths.appealStarted.taskList
         });
       }

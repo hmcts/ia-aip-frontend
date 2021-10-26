@@ -7,6 +7,7 @@ import {
 import { appealTypes } from '../../../app/data/appeal-types';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -73,18 +74,32 @@ describe('Type of appeal Controller', () => {
   });
 
   describe('getTypeOfAppeal', () => {
-    it('should render type-of-appeal.njk', () => {
-      getTypeOfAppeal(req as Request, res as Response, next);
+    afterEach(() => {
+      sandbox.restore();
+      LaunchDarklyService.close();
+    });
+    it('should render type-of-appeal.njk with payments feature flag OFF', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(false);
+      await getTypeOfAppeal(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
+        types: appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection'),
+        previousPage: paths.appealStarted.taskList
+      });
+    });
+
+    it('should render type-of-appeal.njk with payments feature flag ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      await getTypeOfAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
         previousPage: paths.appealStarted.taskList
       });
     });
 
-    it('when called with edit param should render type-of-appeal.njk and update session ', () => {
+    it('when called with edit param should render type-of-appeal.njk and update session and payments feature flag ON', async () => {
       req.query = { 'edit': '' };
-
-      getTypeOfAppeal(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      await getTypeOfAppeal(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
@@ -93,10 +108,10 @@ describe('Type of appeal Controller', () => {
       });
     });
 
-    it('getTypeOfAppeal should catch exception and call next with the error', () => {
+    it('getTypeOfAppeal should catch exception and call next with the error', async () => {
       const error = new Error('an error');
-      res.render = sandbox.stub().throws(error);
-      getTypeOfAppeal(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
+      await getTypeOfAppeal(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -130,7 +145,7 @@ describe('Type of appeal Controller', () => {
 
       expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
-        types: appealTypes,
+        types: sinon.match.any,
         errors: { appealType: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.appealStarted.taskList

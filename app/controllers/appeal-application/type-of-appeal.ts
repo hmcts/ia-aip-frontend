@@ -56,14 +56,20 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
           appealType: req.body['appealType']
         }
       };
-
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const defaultRedirect = paymentsFlag ? paths.appealStarted.decisionType : paths.appealStarted.taskList;
+      let editingModeRedirect = paths.appealStarted.checkAndSend;
+      if (paymentsFlag && editingMode) {
+        editingModeRedirect = req.body['appealType'] === req.session.appeal.application.appealType ? paths.appealStarted.checkAndSend : paths.appealStarted.decisionType;
+      }
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
-      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
+
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);

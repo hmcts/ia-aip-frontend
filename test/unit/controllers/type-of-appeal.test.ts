@@ -133,6 +133,24 @@ describe('Type of appeal Controller', () => {
         }
       } as Appeal);
     });
+
+    it('should validate and redirect to the task-list page', async () => {
+      req.body['appealType'] = 'human-rights';
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+    });
+
+    it('should validate and redirect to the task-list page and payments feature flag ON', async () => {
+      req.body['appealType'] = 'human-rights';
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.decisionType);
+    });
+
     it('should fail validation and render type-of-appeal.njk with a validation error', async () => {
       req.body = { 'button': 'save-and-continue' };
       const expectedError: ValidationError = {
@@ -170,14 +188,6 @@ describe('Type of appeal Controller', () => {
 
       expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-    });
-
-    it('should validate and redirect to the task-list page', async () => {
-      req.body['appealType'] = 'human-rights';
-      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
     it('when in edit mode should validate and redirect to the CYA page and reset isEdit flag', async () => {

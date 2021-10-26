@@ -89,6 +89,8 @@ interface CaseData {
   homeOfficeAppealResponseDocument?: any;
   homeOfficeAppealResponseDescription?: string;
   homeOfficeAppealResponseEvidence?: any;
+  rpDcAppealHearingOption?: string;
+  decisionHearingFeeOption?: string;
 }
 
 interface Application {

@@ -19,5 +19,4 @@ nodejs:
         - idam-secret
         - addressLookupToken
         - s2s-secret
-        - launch-darkly-sdk-key
         - AppInsightsInstrumentationKey

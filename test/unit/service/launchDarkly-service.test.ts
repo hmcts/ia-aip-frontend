@@ -6,7 +6,6 @@ describe('launchDarkly-service', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
-
   });
 
   afterEach(() => {

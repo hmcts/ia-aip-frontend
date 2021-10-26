@@ -548,5 +548,6 @@
 "10109_Modern Web Application_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10227211007093412.js_GET:": "ignore",
 "10095_Backup File Disclosure_https://immigration-appeal.aat.platform.hmcts.net/Copy%20(3)%20of%20ruxitagentjs_ICA27QVfqrux_10227211007093412.js_GET": "ignore",
 "10109_Modern Web Application_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10227211007093412.js_GET": "ignore",
-"10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/all.js_GET": "ignore"
+"10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/all.js_GET": "ignore",
+"10104_User Agent Fuzzer_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27QVfqrux_10227211007093412.js_GET": "ignore"
 }

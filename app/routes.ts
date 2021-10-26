@@ -68,6 +68,7 @@ import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
 
+import './controllers/appeal-application/decision-type';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
 
 const config = setupSecrets();

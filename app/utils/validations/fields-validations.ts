@@ -299,6 +299,16 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function decisionTypeValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.decisionType
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 function reasonForAppealDecisionValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     applicationReason: Joi.string().required()
@@ -395,5 +405,6 @@ export {
   DOBValidation,
   askForMoreTimeValidation,
   selectedRequiredValidation,
-  isDateInRange
+  isDateInRange,
+  decisionTypeValidation
 };

@@ -19,7 +19,7 @@ function serverErrorHandler(err: any, req: Request, res: Response, next: NextFun
   logger.exception(err, logLabel);
 
   res.status(INTERNAL_SERVER_ERROR);
-  res.render('errors/500.njk');
+  res.render('errors/500.njk', { err });
 }
 
 export { pageNotFoundHandler, serverErrorHandler };

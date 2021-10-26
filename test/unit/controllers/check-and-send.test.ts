@@ -6,10 +6,12 @@ import {
   setupCheckAndSendController
 } from '../../../app/controllers/appeal-application/check-and-send';
 import { paths } from '../../../app/paths';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
 import { formatTextForCYA } from '../../../app/utils/utils';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
@@ -60,31 +62,50 @@ function getMockedSummaryRows(): SummaryRow[] {
 }
 
 describe('createSummaryRowsFrom', () => {
+  let req: Partial<Request>;
+  let sandbox: sinon.SinonSandbox;
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    req = {
+      body: {},
+      query: {},
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
+      session: {
+        appeal: createDummyAppealApplication()
+      } as Partial<Express.Session>
+    } as Partial<Request>;
+  });
 
-  it('should create rows', () => {
-    const appeal: Appeal = createDummyAppealApplication();
-    const rows: any[] = createSummaryRowsFrom(appeal.application);
+  afterEach(() => {
+    sandbox.restore();
+  });
+
+  it('should create rows', async () => {
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+
     expect(rows).to.be.deep.equal(getMockedSummaryRows());
   });
 
-  it('should create rows when appeal is late', () => {
-    const appeal: Appeal = createDummyAppealApplication();
-    appeal.application.isAppealLate = true;
-    appeal.application.lateAppeal = {
+  it('should create rows when appeal is late', async () => {
+    req.session.appeal.application.isAppealLate = true;
+    req.session.appeal.application.lateAppeal = {
       reason: 'The reason why I am late'
     };
 
-    const rows: any[] = createSummaryRowsFrom(appeal.application);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(appeal.application.lateAppeal.reason) ], paths.appealStarted.appealLate);
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(req.session.appeal.application.lateAppeal.reason) ], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
   });
 
-  it('should create rows when appeal is late with evidence', () => {
-    const appeal: Appeal = createDummyAppealApplication();
-    appeal.application.isAppealLate = true;
-    appeal.application.lateAppeal = {
+  it('should create rows when appeal is late with evidence', async () => {
+    req.session.appeal.application.isAppealLate = true;
+    req.session.appeal.application.lateAppeal = {
       reason: 'The reason why I am late',
       evidence: {
         fileId: 'fileId',
@@ -92,8 +113,19 @@ describe('createSummaryRowsFrom', () => {
       }
     };
 
-    const rows: any[] = createSummaryRowsFrom(appeal.application);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(appeal.application.lateAppeal.reason), `<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/fileId'>filename</a>` ], paths.appealStarted.appealLate);
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(req.session.appeal.application.lateAppeal.reason), `<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/fileId'>filename</a>` ], paths.appealStarted.appealLate);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows();
+    mockedRows.push(appealLateRow);
+    expect(rows).to.be.deep.equal(mockedRows);
+  });
+
+  it('should create rows when payments flag is ON', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+    req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const appealLateRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
@@ -157,9 +189,9 @@ describe('Check and Send Controller', () => {
     expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
   });
 
-  it('getCheckAndSend should render check-and-send-page.njk', () => {
+  it('getCheckAndSend should render check-and-send-page.njk', async () => {
     req.session.appeal = createDummyAppealApplication();
-    getCheckAndSend(req as Request, res as Response, next);
+    await getCheckAndSend(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk');
   });
 
@@ -200,11 +232,11 @@ describe('Check and Send Controller', () => {
     expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.confirmation);
   });
 
-  it('getCheckAndSend should catch exception and call next with the error', () => {
+  it('getCheckAndSend should catch exception and call next with the error', async () => {
     req.session.appeal = createDummyAppealApplication();
     const error = new Error('an error');
     res.render = sandbox.stub().throws(error);
-    getCheckAndSend(req as Request, res as Response, next);
+    await getCheckAndSend(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
   });
 

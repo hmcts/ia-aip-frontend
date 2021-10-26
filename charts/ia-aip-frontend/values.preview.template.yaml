@@ -13,7 +13,6 @@ nodejs:
     S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
     CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
     REDIS_URL: redis://{{ .Release.Name }}-redis-master
-    TRACKING_SCRIPTS: false
   keyVaults:
     ia:
       secrets:

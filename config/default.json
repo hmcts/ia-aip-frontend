@@ -8,7 +8,7 @@
   "appInsights": {
     "instrumentationKey": ""
   },
-  "trackingScripts": true,
+  "trackingScripts": false,
   "node": {
     "protocol": "http",
     "hostname": "localhost",

@@ -15,7 +15,7 @@ nodejs:
     CCD_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     DOC_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     SECURE_SESSION: true
-    TRACKING_SCRIPTS: true
+    TRACKING_SCRIPTS: false
   aadIdentityName: ia
   keyVaults:
     ia:

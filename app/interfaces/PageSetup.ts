@@ -3,7 +3,7 @@ import { DocumentManagementService } from '../service/document-management-servic
 import UpdateAppealService from '../service/update-appeal-service';
 
 interface PageSetup {
-  initialise(middleware: Middleware[], updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService): Router;
+  initialise(middleware: Middleware[], updateAppealService: UpdateAppealService, documentManagementService?: DocumentManagementService): Router;
 }
 
 export namespace PageSetup {

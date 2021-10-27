@@ -560,7 +560,7 @@ describe('update-appeal-service', () => {
     it('converts empty application', () => {
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({
+      expect(caseData).contains({
         journeyType: 'aip'
       });
     });
@@ -569,7 +569,7 @@ describe('update-appeal-service', () => {
       emptyApplication.application.homeOfficeRefNumber = 'ref';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({
+      expect(caseData).contains({
         journeyType: 'aip',
         homeOfficeReferenceNumber: 'ref'
       });
@@ -581,7 +581,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({
+        expect(caseData).contains({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-12-11',
           submissionOutOfTime: 'Yes',
@@ -594,7 +594,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({
+        expect(caseData).contains({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-01',
           submissionOutOfTime: 'Yes',
@@ -606,7 +606,7 @@ describe('update-appeal-service', () => {
         emptyApplication.application.dateLetterSent = { year: '2019', month: '2', day: '3' };
         emptyApplication.application.isAppealLate = true;
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
-        expect(caseData).eql({
+        expect(caseData).contains({
           journeyType: 'aip',
           homeOfficeDecisionDate: '2019-02-03',
           submissionOutOfTime: 'Yes',
@@ -619,7 +619,7 @@ describe('update-appeal-service', () => {
       emptyApplication.application.personalDetails.givenNames = 'givenNames';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({
+      expect(caseData).contains({
         journeyType: 'aip',
         appellantGivenNames: 'givenNames'
       });
@@ -629,7 +629,7 @@ describe('update-appeal-service', () => {
       emptyApplication.application.personalDetails.familyName = 'familyName';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({
+      expect(caseData).contains({
         journeyType: 'aip',
         appellantFamilyName: 'familyName'
       });
@@ -642,7 +642,7 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({
+        expect(caseData).contains({
           journeyType: 'aip',
           appellantDateOfBirth: '2019-12-11'
         });
@@ -654,7 +654,7 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({
+        expect(caseData).contains({
           journeyType: 'aip',
           appellantDateOfBirth: '2019-02-01'
         });
@@ -666,7 +666,7 @@ describe('update-appeal-service', () => {
         };
         const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-        expect(caseData).eql({
+        expect(caseData).contains({
           journeyType: 'aip',
           appellantDateOfBirth: '2019-02-03'
         });
@@ -676,7 +676,7 @@ describe('update-appeal-service', () => {
       emptyApplication.application.appealType = 'appealType';
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql({
+      expect(caseData).contains({
         journeyType: 'aip',
         appealType: 'appealType'
       });
@@ -763,7 +763,7 @@ describe('update-appeal-service', () => {
 
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
-      expect(caseData).eql(
+      expect(caseData).contains(
         {
           journeyType: 'aip'
         }

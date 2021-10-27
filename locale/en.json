@@ -121,6 +121,23 @@
       "pageHint": "<p>Select one appeal type. If you are unsure, the first page of your decision letter should include the type of decision you are appealing.</p><p>If you think more than one appeal type applies to your appeal, you will have the chance to tell us about that later.</p>",
       "exampleSummaryText": "Reasons to select "
     },
+    "decisionType": {
+      "title": "How do you want your appeal to be decided",
+      "hint": {
+        "withoutFee": "<p>You can choose to have a judge decide your appeal without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you and any witnesses and supporters can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
+        "withFee": "<p>You can choose to have a judge decide your appeal without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you and any witnesses and supporters can attend. The fee for this is £140(hardcoded)</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80. (hardcoded)</p><p>Select an option</p>"
+      },
+      "options": {
+        "withHearing": {
+          "value": "decisionWithHearing",
+          "text": "I want the appeal to be decided with a hearing"
+        },
+        "withoutHearing": {
+          "value": "decisionWithoutHearing",
+          "text": "I want the appeal to be decided without a hearing"
+        }
+      }
+    },
     "DOB": {
       "title": "What is your date of birth? ",
       "hint": "For example, 31 3 1980"
@@ -152,7 +169,11 @@
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence"
       },
-      "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>"
+      "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
+      "decisionType": "Decision Type",
+      "decisionWithHearing": "Decision with a hearing",
+      "decisionWithoutHearing": "Decision without a hearing"
+
     },
     "name": {
       "title": "What is your name?",
@@ -2088,6 +2109,7 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
+    "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
@@ -2269,13 +2291,13 @@
       "title": "Protection (You will be persecuted or harmed in some way if you are returned to your home country)",
       "examples": "You might be afraid of the government, police or other groups in your home country because of your nationality, race, religion, political opinion or other reason."
     },
-    "humanRights": {
+    "refusalOfHumanRights": {
       "value": "refusalOfHumanRights",
       "name": "Human Rights",
       "title": "Human Rights (You have a family and/or private life in the UK, or a serious medical condition)",
       "examples": "You might have a partner or children living in the UK, have lived or worked in the UK for a long time or have serious medical needs."
     },
-    "europeanEconomicArea": {
+    "refusalOfEu": {
       "value": "refusalOfEu",
       "name": "European Economic Area",
       "title": "European Economic Area (EEA) (You are, or a family member is, an EEA/Swiss national)",
@@ -2287,7 +2309,7 @@
       "title": "Revocation of Protection Status (Your protection status was taken away)",
       "examples": "Your protection status might have been taken away if it is believed you no longer need it, you didn’t tell the truth in your claim or you have committed a serious crime."
     },
-    "deprivationCitizenship": {
+    "deprivation": {
       "value": "deprivation",
       "name": "Deprivation of Citizenship",
       "title": "Deprivation of Citizenship (Your British citizenship was taken away)",

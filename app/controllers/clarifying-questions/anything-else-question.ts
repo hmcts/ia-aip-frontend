@@ -3,7 +3,7 @@ import i18n from '../../../locale/en.json';
 import { CQ_NOTHING_ELSE } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
+import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { nowIsoDate } from '../../utils/utils';
 import { yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';

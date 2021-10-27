@@ -6,6 +6,7 @@ import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
+import LaunchDarklyService from './launchDarkly-service';
 import S2SService from './s2s-service';
 
 enum Subscriber {
@@ -65,9 +66,9 @@ export default class UpdateAppealService {
   // TODO: remove submitEvent when all app is refactored using new submitEvent
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
-
+    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
     const currentUserId = req.idam.userDetails.uid;
-    const caseData = this.convertToCcdCaseData(req.session.appeal);
+    const caseData = this.convertToCcdCaseData(req.session.appeal, paymentsFlag);
 
     const updatedCcdCase = {
       id: req.session.ccdCaseId,
@@ -79,12 +80,12 @@ export default class UpdateAppealService {
     return updatedAppeal;
   }
 
-  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string): Promise<Appeal> {
+  async submitEventRefactored(event, appeal: Appeal, uid: string, userToken: string, paymentsFlag = false): Promise<Appeal> {
     const securityHeaders: SecurityHeaders = {
       userToken: `Bearer ${userToken}`,
       serviceToken: await this._s2sService.getServiceToken()
     };
-    const caseData: CaseData = this.convertToCcdCaseData(appeal);
+    const caseData: CaseData = this.convertToCcdCaseData(appeal, paymentsFlag);
     const updatedCcdCase: CcdCaseDetails = {
       id: appeal.ccdCaseId,
       state: appeal.appealStatus,
@@ -365,7 +366,9 @@ export default class UpdateAppealService {
           address: appellantAddress
         },
         addressLookup: {},
-        ...caseData.uploadTheNoticeOfDecisionDocs && { homeOfficeLetter: this.mapCaseDataDocumentsToAppealEvidences(caseData.uploadTheNoticeOfDecisionDocs, documentMap) }
+        ...caseData.uploadTheNoticeOfDecisionDocs && { homeOfficeLetter: this.mapCaseDataDocumentsToAppealEvidences(caseData.uploadTheNoticeOfDecisionDocs, documentMap) },
+        ...caseData.rpDcAppealHearingOption && { rpDcAppealHearingOption: caseData.rpDcAppealHearingOption },
+        ...caseData.decisionHearingFeeOption && { decisionHearingFeeOption: caseData.decisionHearingFeeOption }
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -404,7 +407,7 @@ export default class UpdateAppealService {
     return appeal;
   }
 
-  convertToCcdCaseData(appeal: Appeal) {
+  convertToCcdCaseData(appeal: Appeal, paymentsFlag = false) {
     let caseData = {
       journeyType: 'aip'
     } as CaseData;
@@ -628,6 +631,8 @@ export default class UpdateAppealService {
     caseData = {
       ...caseData,
       ...appeal.application.personalDetails.stateless && { appellantStateless: appeal.application.personalDetails.stateless },
+      ...paymentsFlag && { rpDcAppealHearingOption: appeal.application.rpDcAppealHearingOption || null },
+      ...paymentsFlag && { decisionHearingFeeOption: appeal.application.decisionHearingFeeOption || null },
       ...appeal.draftClarifyingQuestionsAnswers && {
         draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
       },

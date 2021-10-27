@@ -96,7 +96,8 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      const defaultRedirect = req.session.appeal.application.appealType === 'protection' ? paths.appealStarted.payNow : paths.appealStarted.taskList;
+      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);

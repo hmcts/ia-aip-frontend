@@ -2,7 +2,7 @@ import { getGuidancePageText } from '../../../app/utils/guidance-page-utils';
 import i18n from '../../../locale/en.json';
 import { expect } from '../../utils/testUtils';
 
-describe('guidance-page-utils @thisOnes', () => {
+describe('guidance-page-utils', () => {
   it('When I enter caseworker I get the text for caseworker Page', () => {
     const result = getGuidancePageText('caseworker');
     expect(result).to.deep.equal(i18n.pages.guidancePages.caseWorker);

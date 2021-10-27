@@ -19,7 +19,7 @@ import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
 const express = require('express');
 
-function getMockedSummaryRows(): SummaryRow[] {
+function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   return [ {
     actions: { items: [ { href: '/home-office-reference-number?edit', text: 'Change' } ] },
     key: { text: 'Home Office reference number' },
@@ -59,7 +59,7 @@ function getMockedSummaryRows(): SummaryRow[] {
   }, {
     actions: { items: [ { href: paths.appealStarted.typeOfAppeal + '?edit', text: 'Change' } ] },
     key: { text: 'Appeal type' },
-    value: { html: 'Protection' }
+    value: { html: i18n.appealTypes[appealType].name }
   } ];
 }
 
@@ -122,14 +122,40 @@ describe('createSummaryRowsFrom', () => {
     expect(rows).to.be.deep.equal(mockedRows);
   });
 
+  it('should create rows when appeal type is deprivation payments flag is ON', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+    req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
+    req.session.appeal.application.appealType = 'deprivation';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows('deprivation');
+    mockedRows.push(decisionType);
+    expect(rows).to.be.deep.equal(mockedRows);
+  });
+
   it('should create rows when payments flag is ON', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
     req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const appealLateRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
-    mockedRows.push(appealLateRow);
+    mockedRows.push(decisionType);
+    expect(rows).to.be.deep.equal(mockedRows);
+  });
+
+  it('should create rows when paynow and payments flag is ON', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+    req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
+    const paymentType = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [ i18n.pages.checkYourAnswers['payNow'] ], `${paths.appealStarted.payNow}?edit`);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows();
+    mockedRows.push(decisionType);
+    mockedRows.push(paymentType);
     expect(rows).to.be.deep.equal(mockedRows);
   });
 });
@@ -252,13 +278,43 @@ describe('Check and Send Controller', () => {
     expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.confirmation);
   });
 
-  it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', async () => {
+  it('should initiatePayment for protection and payNow', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+    req.session.appeal = createDummyAppealApplication();
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+    req.body = { statement: 'acceptance' };
+    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+    expect(paymentService.initiatePayment).to.have.been.called;
+  });
+
+  it('should initiatePayment for protection and payLater', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+    req.session.appeal = createDummyAppealApplication();
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+    req.body = { statement: 'acceptance' };
+    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+    expect(updateAppealService.submitEventRefactored).to.have.been.called;
+  });
+
+  it('should initiatePayment for refusalOfHumanRights', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+    req.session.appeal = createDummyAppealApplication();
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+    req.body = { statement: 'acceptance' };
+    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+    expect(updateAppealService.submitEventRefactored).to.have.been.called;
+  });
+
+  it('should initiatePayment for revocationOfProtection', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
     req.session.appeal = createDummyAppealApplication();
     req.body = { statement: 'acceptance' };
     await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-    expect(paymentService.initiatePayment).to.have.been.called;
+    expect(updateAppealService.submitEventRefactored).to.have.been.called;
   });
 
   it('postCheckAndSend should catch exception and call next with the error', async () => {

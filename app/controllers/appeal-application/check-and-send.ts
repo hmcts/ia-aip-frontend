@@ -12,6 +12,15 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
+function payForApplicationNeeded(req: Request): boolean {
+  const { appealType } = req.session.appeal.application;
+  const { paAppealTypeAipPaymentOption } = req.session.appeal;
+  let payNow = false;
+  payNow = payNow || appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow';
+  payNow = payNow || ['refusalOfEu', 'refusalOfHumanRights'].includes(appealType);
+  return payNow;
+}
+
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
   const { application } = req.session.appeal;
@@ -93,6 +102,16 @@ async function createSummaryRowsFrom(req: Request) {
     }
     const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers[decisionType] ], paths.appealStarted.decisionType);
     rows.push(decisionTypeRow);
+
+    const { paAppealTypeAipPaymentOption = null } = req.session.appeal;
+    if (paAppealTypeAipPaymentOption) {
+      const payNowRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.paymentType,
+        [ i18n.pages.checkYourAnswers[paAppealTypeAipPaymentOption]],
+        paths.appealStarted.payNow + editParameter
+      );
+      rows.push(payNowRow);
+    }
   }
   return rows;
 }
@@ -111,12 +130,11 @@ async function getCheckAndSend(req: Request, res: Response, next: NextFunction) 
 
 function postCheckAndSend(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-
     const request = req.body;
     try {
-      const summaryRows = await createSummaryRowsFrom(req);
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {
+        const summaryRows = await createSummaryRowsFrom(req);
         return res.render('appeal-application/check-and-send.njk', {
           summaryRows: summaryRows,
           error: validationResult,
@@ -125,7 +143,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
         });
       }
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
-      if (paymentsFlag) {
+      if (paymentsFlag && payForApplicationNeeded(req)) {
         return await paymentService.initiatePayment(req, res, 'theFee');
       }
       const { appeal } = req.session;

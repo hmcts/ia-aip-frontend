@@ -70,7 +70,7 @@ describe('timeline-utils', () => {
 
   describe('getTimeExtensionsEvents @timeExtensions', () => {
     it('should get timeExtensions', () => {
-      const makeAnApplications: Collection<Application>[] = [
+      const makeAnApplications: Collection<Application<Evidence>>[] = [
         {
           id: '2',
           value: {

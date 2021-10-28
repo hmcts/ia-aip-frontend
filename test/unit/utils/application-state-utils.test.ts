@@ -267,12 +267,12 @@ describe('application-state-utils', () => {
       });
 
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a pending time extension', () => {
-        const timeExtensionApplication: Collection<Partial<Application>> = {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application> ];
+        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         const result = getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
@@ -299,12 +299,12 @@ describe('application-state-utils', () => {
       });
 
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a granted time extension', () => {
-        const timeExtensionApplication: Collection<Partial<Application>> = {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Granted'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application> ];
+        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         const result = getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
@@ -331,12 +331,12 @@ describe('application-state-utils', () => {
       });
 
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a refused time extension', () => {
-        const timeExtensionApplication: Collection<Partial<Application>> = {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Refused'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application> ];
+        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         const result = getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
@@ -416,12 +416,12 @@ describe('application-state-utils', () => {
       });
 
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and pending time extension', () => {
-        const timeExtensionApplication: Collection<Partial<Application>> = {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application> ];
+        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = getAppealApplicationNextStep(req as Request);
@@ -450,12 +450,12 @@ describe('application-state-utils', () => {
       });
 
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and granted time extension', () => {
-        const timeExtensionApplication: Collection<Partial<Application>> = {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Granted'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application> ];
+        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = getAppealApplicationNextStep(req as Request);
@@ -484,12 +484,12 @@ describe('application-state-utils', () => {
       });
 
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and refused time extension', () => {
-        const timeExtensionApplication: Collection<Partial<Application>> = {
+        const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Refused'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application> ];
+        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = getAppealApplicationNextStep(req as Request);

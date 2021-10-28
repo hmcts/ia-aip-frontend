@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
@@ -21,7 +20,7 @@ import {
   postUploadFile
 } from '../upload-evidence/upload-evidence-controller';
 
-const askForMoreTimeEvidenceUploadConfig: EvidenceUploadConfig = {
+export const askForMoreTimeEvidenceUploadConfig: EvidenceUploadConfig = {
   evidenceYesNoPath: paths.common.askForMoreTimeSupportingEvidence,
   evidenceUploadPath: paths.common.askForMoreTimeSupportingEvidenceUpload,
   evidenceDeletePath: paths.common.askForMoreTimeSupportingEvidenceDelete,
@@ -29,18 +28,18 @@ const askForMoreTimeEvidenceUploadConfig: EvidenceUploadConfig = {
   cancelPath: paths.common.askForMoreTimeCancel,
   nextPath: paths.common.askForMoreTimeCheckAndSend,
   askForMoreTimeFeatureEnabled: false,
-  updateCcdEvent: Events.EDIT_TIME_EXTENSION,
+  updateCcdEvent: Events.MAKE_AN_APPLICATION.TIME_EXTENSION,
   addEvidenceToSessionFunction: function (evidences, req: Request) {
-    if (!req.session.appeal.askForMoreTime.evidence) {
-      req.session.appeal.askForMoreTime.evidence = [];
+    if (!req.session.appeal.makeAnApplicationEvidence) {
+      req.session.appeal.makeAnApplicationEvidence = [];
     }
-    req.session.appeal.askForMoreTime.evidence.push(evidences);
+    req.session.appeal.makeAnApplicationEvidence.push(evidences);
   },
   getEvidenceFromSessionFunction: function (req) {
-    return req.session.appeal.askForMoreTime.evidence || [];
+    return req.session.appeal.makeAnApplicationEvidence || [];
   },
   removeEvidenceFromSessionFunction: function (fileId: string, req: Request) {
-    req.session.appeal.askForMoreTime.evidence = req.session.appeal.askForMoreTime.evidence
+    req.session.appeal.makeAnApplicationEvidence = req.session.appeal.makeAnApplicationEvidence
       .filter((evidence: Evidence) => evidence.fileId !== fileId);
   }
 };
@@ -81,7 +80,22 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       req.session.appeal = {
         ...req.session.appeal,
-        makeAnApplicationTypes: 'Time extension',
+        makeAnApplicationTypes: {
+          'value': {
+            'code': 'timeExtension',
+            'label': 'Time extension'
+          },
+          'list_items': [
+            {
+              'code': 'judgeReview',
+              'label': 'Judge\'s review of application decision'
+            },
+            {
+              'code': 'timeExtension',
+              'label': 'Time extension'
+            }
+          ]
+        },
         makeAnApplicationDetails: req.body.askForMoreTime
       };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.common.askForMoreTimeSupportingEvidence);

@@ -44,7 +44,7 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
   return filteredEvents.map(event => constructEventObject(event, req));
 }
 
-function getTimeExtensionsEvents(makeAnApplications: Collection<Application>[]): any[] {
+function getTimeExtensionsEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
   const makeDirectionsFlatMap = makeAnApplications ? makeAnApplications.flatMap(application => {
     const request = {
       id: application.id,

@@ -671,7 +671,8 @@
           "whatYouAskedFor": "What you asked for",
           "wantMoreTime": "I want more time",
           "reason": "Why you need it",
-          "date": "Date requested"
+          "date": "Date requested",
+          "evidence": "Supporting evidence"
         },
         "response": {
           "title": "Decision details",

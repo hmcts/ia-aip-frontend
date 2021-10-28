@@ -239,7 +239,7 @@ describe('Ask for more time Controller', function () {
 
     it('should render check and send page with evidence', () => {
       req.session.appeal.makeAnApplicationDetails = 'some reasons';
-      req.session.appeal.askForMoreTime.evidence = [
+      req.session.appeal.makeAnApplicationEvidence = [
         {
           fileId: 'fileId',
           name: 'name.txt'

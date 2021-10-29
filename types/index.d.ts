@@ -103,7 +103,8 @@ interface Appeal {
   outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
-  makeAnApplications?: Collection<Application>[];
+  makeAnApplicationEvidence?: Evidence[];
+  makeAnApplications?: Collection<Application<Evidence>>[];
   appealReviewDecisionTitle?: any;
   appealReviewOutcome?: string;
   homeOfficeAppealResponseDocument?: any;

@@ -60,11 +60,17 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   return array;
 }
 
-function getTimeExtensionSummaryRows(timeExtensionEvent: Collection<Application>) {
+function getTimeExtensionSummaryRows(timeExtensionEvent: Collection<Application<Evidence>>) {
   const request = [];
   const data = timeExtensionEvent.value;
   request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]));
   request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.reason, [ data.details ]));
+  if (data.evidence.length) {
+    const evidenceText = data.evidence.map((evidence) => {
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+    });
+    request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.evidence, evidenceText, null, Delimiter.BREAK_LINE));
+  }
   request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.date, [ moment(data.date).format(dayMonthYearFormat) ]));
 
   if (data.decision !== 'Pending') {
@@ -293,7 +299,7 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
 function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
   try {
     const timeExtensionId = req.params.id;
-    const timeExtension: Collection<Application> = req.session.appeal.makeAnApplications.find(application => application.id === timeExtensionId);
+    const timeExtension = req.session.appeal.makeAnApplications.find(application => application.id === timeExtensionId);
     const previousPage: string = paths.common.overview;
     const { request, response = null } = getTimeExtensionSummaryRows(timeExtension);
     const hearingCentreEmail = getHearingCentreEmail(req);

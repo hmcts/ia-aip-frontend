@@ -83,7 +83,8 @@ interface CaseData {
   outOfTimeDecisionMaker?: string;
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
-  makeAnApplications?: Collection<Application>[];
+  makeAnApplicationEvidence?: Collection<SupportingDocument>[];
+  makeAnApplications?: Collection<Application<Collection<SupportingDocument>>>[];
   appealReviewDecisionTitle?: any;
   appealReviewOutcome?: string;
   homeOfficeAppealResponseDocument?: any;
@@ -93,13 +94,13 @@ interface CaseData {
   decisionHearingFeeOption?: string;
 }
 
-interface Application {
+interface Application<T> {
   date: string;
   type: string;
   state: string;
   details: string;
   decision: string;
-  evidence: any[]; // TODO: change any for appropiate type for evidences
+  evidence: T[];
   applicant: string;
   applicantRole: string;
   decisionDate?: string;

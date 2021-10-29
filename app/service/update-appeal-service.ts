@@ -395,7 +395,7 @@ export default class UpdateAppealService {
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
-      ...caseData.makeAnApplications && { makeAnApplications: caseData.makeAnApplications },
+      ...caseData.makeAnApplications && { makeAnApplications: this.mapMakeApplicationsToSession(caseData.makeAnApplications, documentMap) },
       ...caseData.appealReviewDecisionTitle && { appealReviewDecisionTitle: caseData.appealReviewDecisionTitle },
       ...caseData.appealReviewOutcome && { appealReviewOutcome: caseData.appealReviewOutcome },
       ...caseData.homeOfficeAppealResponseDocument && { homeOfficeAppealResponseDocument: caseData.homeOfficeAppealResponseDocument },
@@ -640,23 +640,38 @@ export default class UpdateAppealService {
         clarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.clarifyingQuestionsAnswers, appeal.documentMap)
       },
       ...appeal.application.homeOfficeLetter && {
-        uploadTheNoticeOfDecisionDocs: this.mapAppealEvidencesToDocumentsCaseData(appeal.application.homeOfficeLetter, appeal.documentMap)
+        uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
       ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
-      ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails }
+      ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
+      ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) }
     };
     return caseData;
   }
 
-  mapAppealEvidencesToDocumentsCaseData = (evidences: Evidence[], documentMap: DocumentMap[]): Collection<DocumentWithMetaData>[] => {
-    return evidences.map((evidence: Evidence) => {
+  mapAppealEvidencesToDocumentsCaseData = (evidences: Evidence[], documentMap: DocumentMap[]): Collection<SupportingDocument>[] => {
+    return evidences.map((evidence) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
       return {
         ...evidence.id && { id: evidence.id },
         value: {
+          document_filename: evidence.name,
+          document_url: documentLocationUrl,
+          document_binary_url: `${documentLocationUrl}/binary`
+        } as SupportingDocument
+      } as Collection<SupportingDocument>;
+    });
+  }
+
+  mapUploadTheNoticeOfDecisionDocs = (evidences: Evidence[], documentMap: DocumentMap[], tag: string = null): Collection<DocumentWithMetaData>[] => {
+    return evidences.map((evidence: Evidence) => {
+      const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+      return {
+        ...evidence.fileId && { id: evidence.fileId },
+        value: {
           ...evidence.description && { description: evidence.description },
           ...evidence.dateUploaded && { dateUploaded: evidence.dateUploaded },
-          tag: 'additionalEvidence',
+          ...tag && { tag: 'additionalEvidence' },
           document: {
             document_filename: evidence.name,
             document_url: documentLocationUrl,
@@ -774,5 +789,17 @@ export default class UpdateAppealService {
       };
     });
     return evidences;
+  }
+
+  private mapMakeApplicationsToSession = (makeAnApplications: Collection<Application<Collection<SupportingDocument>>>[], documentMap: DocumentMap[]): Collection<Application<Evidence>>[] => {
+    return makeAnApplications.map((application) => {
+      return {
+        id: application.id,
+        value: {
+          ...application.value,
+          ...application.value.evidence && { evidence: application.value.evidence.map(e => this.mapSupportingDocumentToEvidence(e, documentMap)) }
+        }
+      };
+    });
   }
 }

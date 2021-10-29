@@ -99,7 +99,8 @@ export function postUploadFile(documentManagementService: DocumentManagementServ
           name: evidenceStored.name
         };
         evidenceUploadConfig.addEvidenceToSessionFunction(evidences, req);
-        await updateAppealService.submitEvent(evidenceUploadConfig.updateCcdEvent, req);
+        // TODO: confirm submitEvent not needed here
+        // await updateAppealService.submitEvent(evidenceUploadConfig.updateCcdEvent, req);
         return res.redirect(evidenceUploadConfig.evidenceUploadPath);
       } else {
         let validationError;
@@ -157,8 +158,8 @@ export function postSupportingEvidence(updateAppealService: UpdateAppealService,
           }
         });
       }
-
-      await updateAppealService.submitEvent(evidenceUploadConfig.updateCcdEvent, req);
+      // TODO: confirm submitEvent not needed here
+      // await updateAppealService.submitEvent(evidenceUploadConfig.updateCcdEvent, req);
       return getConditionalRedirectUrl(req, res, evidenceUploadConfig.nextPath);
     } catch (e) {
       next(e);

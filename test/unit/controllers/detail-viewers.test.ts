@@ -392,7 +392,7 @@ describe('Detail viewer Controller', () => {
 
   describe('getTimeExtensionViewer', () => {
     it('should render detail-viewers/time-extension-details-viewer.njk with no evidences', () => {
-      const timeExtension: Collection<Application> = {
+      const timeExtension: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -413,7 +413,15 @@ describe('Detail viewer Controller', () => {
       },
       req.session.appeal.hearingCentre = 'taylorHouse';
       req.session.appeal.makeAnApplications = [ timeExtension ];
-
+      req.session.appeal.makeAnApplicationEvidence = [{
+        id: 'id',
+        fileId: '123456',
+        name: 'name',
+        tag  : 'test-tag',
+        suppliedBy  : 'test-supplied',
+        description  : 'test-description',
+        dateUploaded  : 'test-date'
+      }];
       getTimeExtensionViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-viewer.njk', {
         previousPage: paths.common.overview,
@@ -467,7 +475,7 @@ describe('Detail viewer Controller', () => {
   describe('getTimeExtensionSummaryRows', () => {
     it('should get rows', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const timeExtensionPendingDecision = {
+      const timeExtensionPendingDecision: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -475,13 +483,22 @@ describe('Detail viewer Controller', () => {
           'state': 'awaitingReasonsForAppeal',
           'details': 'My reason',
           'decision': 'Pending',
-          'evidence': [],
+          'evidence': [{
+            id: 'id',
+            fileId: '123456',
+            name: 'name',
+            tag  : 'test-tag',
+            suppliedBy  : 'test-supplied',
+            description  : 'test-description',
+            dateUploaded  : 'test-date'
+          }],
           'applicant': 'Appellant',
           'applicantRole': 'citizen'
         }
       };
+
       getTimeExtensionSummaryRows(timeExtensionPendingDecision);
-      expect(addSummaryRowStub).to.have.been.callCount(3);
+      expect(addSummaryRowStub).to.have.been.callCount(4);
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]);
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.reason, [ 'My reason' ]);
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.date, [ '15 July 2021' ]);
@@ -497,16 +514,26 @@ describe('Detail viewer Controller', () => {
           'state': 'awaitingReasonsForAppeal',
           'details': 'My reason',
           'decision': 'Refused',
-          'evidence': [],
+          'evidence': [{
+            id: 'id',
+            fileId: '123456',
+            name: 'name',
+            tag  : 'test-tag',
+            suppliedBy  : 'test-supplied',
+            description  : 'test-description',
+            dateUploaded  : 'test-date'
+          }],
           'applicant': 'Appellant',
           'decisionDate': '2021-07-14',
+
           'applicantRole': 'citizen',
           'decisionMaker': 'Tribunal Caseworker',
           'decisionReason': 'Reason not enough'
         }
       };
+
       getTimeExtensionSummaryRows(timeExtensionPendingDecision);
-      expect(addSummaryRowStub).to.have.been.callCount(7);
+      expect(addSummaryRowStub).to.have.been.callCount(8);
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]);
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.reason, [ 'My reason' ]);
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.date, [ '14 July 2021' ]);

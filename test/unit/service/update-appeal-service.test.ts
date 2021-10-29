@@ -816,7 +816,63 @@ describe('update-appeal-service', () => {
         }
       );
     });
+    it('converts time extension to makeAnApplicationEvidence', () => {
+      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
+      emptyApplication.makeAnApplicationEvidence = [
+        {
+          id: 'id',
+          fileId: 'fileId',
+          name: 'name'
+        }
+      ];
 
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      expect(caseData).to.deep.eq({
+        'journeyType': 'aip',
+        'makeAnApplicationEvidence': [
+          {
+            'id': 'id',
+            'value': {
+              'document_binary_url': 'someurl/binary',
+              'document_filename': 'name',
+              'document_url': 'someurl'
+            }
+          }
+        ]
+      });
+    });
+    it('converts uploadTheNoticeOfDecisionDocs', () => {
+      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
+      emptyApplication.application.homeOfficeLetter = [
+        {
+          'id': 'id',
+          'fileId': 'fileId',
+          'name': 'name',
+          'description': 'description',
+          'dateUploaded': '2021-06-01'
+        }
+      ];
+
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+      expect(caseData).to.deep.eq({
+        'journeyType': 'aip',
+        'uploadTheNoticeOfDecisionDocs': [
+          {
+            'id': 'fileId',
+            'value': {
+              'dateUploaded': '2021-06-01',
+              'description': 'description',
+              'document': {
+                'document_binary_url': 'someurl/binary',
+                'document_filename': 'name',
+                'document_url': 'someurl'
+              },
+              'tag': 'additionalEvidence'
+            }
+          }
+        ]
+      });
+    });
     describe('legalRepresentativeDocuments @legal', () => {
       const caseData: Partial<CaseData> = {
         'tribunalDocuments': [

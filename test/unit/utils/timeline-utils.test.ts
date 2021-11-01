@@ -6,7 +6,7 @@ import { constructSection, getTimeExtensionsEvents } from '../../../app/utils/ti
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
-describe.only('timeline-utils', () => {
+describe('timeline-utils', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   const logger: Logger = new Logger();

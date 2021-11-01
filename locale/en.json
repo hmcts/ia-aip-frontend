@@ -525,6 +525,26 @@
             }
           ]
         },
+        "uploadHomeOfficeAppealResponse": {
+          "text": "The Home Office sent its response to your appeal.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "",
+              "href": ""
+            }
+          ],
+          "status": {
+            "decisionMaintained": {
+              "text": "Home Office Response",
+              "href": "{{ paths.common.homeOfficeResponse }}"
+            },
+            "decisionWithdrawn": {
+              "text": "Home Office Withdrawal letter",
+              "href": "{{ paths.common.homeOfficeWithdrawLetter }}"
+            }
+          }
+        },
         "requestRespondentReview": {
           "text": "Your appeal was sent to the Home Office to review."
         },
@@ -741,6 +761,13 @@
       },
       "homeOfficeWithdrawLetter": {
         "title": "Home Office Withdrawal Letter",
+        "dateUploaded": "Date uploaded",
+        "document": "Document",
+        "documentDescription": "Document description",
+        "additionalEvidence": "Additional evidence"
+      },
+      "homeOfficeResponse": {
+        "title": "HO Respomse",
         "dateUploaded": "Date uploaded",
         "document": "Document",
         "documentDescription": "Document description",

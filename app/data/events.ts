@@ -24,6 +24,11 @@ export const Events = {
     summary: 'Request respondent review',
     description: 'Request respondent review'
   },
+  UPLOAD_HOME_OFFICE_APPEAL_RESPONSE: {
+    id: 'uploadHomeOfficeAppealResponse',
+    summary: 'Home Office sent its response',
+    description: 'Home Office sent its response'
+  },
   // TODO: remove event once make an application is fully working
   SUBMIT_TIME_EXTENSION: {
     id: 'submitTimeExtension',

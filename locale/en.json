@@ -24,7 +24,8 @@
       "uploadFile": "Upload file",
       "send": "Send",
       "cancel": "Cancel",
-      "seeProgress": "See your appeal progress"
+      "seeProgress": "See your appeal progress",
+      "continueUseNewService": "Continue to use the new service"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -2316,25 +2317,29 @@
     {
       "question": "Are you currently living in the United Kingdom?",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are currently living in the United Kingdom"
+      "errorMessage": "Select yes if you are currently living in the United Kingdom",
+      "modal": null
     },
     {
       "question": "Are you currently in detention?",
       "description": "This could be a prison or an immigration removal centre.",
       "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you are currently in detention"
+      "errorMessage": "Select yes if you are currently in detention",
+      "modal": null
     },
     {
       "question": "Are you appealing an EU Settlement Scheme decision?",
       "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you appealing an EU Settlement Scheme decision"
+      "errorMessage": "Select yes if you appealing an EU Settlement Scheme decision",
+      "modal": null
     },
     {
       "question": "Are you appealing an Asylum and/or Humanitarian Protection decision?",
       "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country. If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision"
+      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision",
+      "modal": null
     }
   ],
   "ineligible": [
@@ -2366,7 +2371,63 @@
       "description": "You cannot use the new online service because you are not appealing an Asylum and/or Humanitarian Protection decision.",
       "optionsList": [
         "You can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+      ],
+      "cta": "link",
+      "hideMoreInfo": true,
+      "showHelp": true
+    }
+  ],
+  "eligibilityPaymentsFlag": [
+    {
+      "question": "Are you currently living in the United Kingdom?",
+      "eligibleAnswer": "yes",
+      "errorMessage": "Select yes if you are currently living in the United Kingdom",
+      "modal": null
+    },
+    {
+      "question": "Are you currently in detention?",
+      "description": "This could be a prison or an immigration removal centre.",
+      "eligibleAnswer": "no",
+      "errorMessage": "Select yes if you are currently in detention",
+      "modal": null
+    },
+    {
+      "question": "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?",
+      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
+      "modal": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Revocation of Protection Status?</h3> <p>This is when your protection status has been taken away because it is believed you no longer need it, didn‘t tell the truth in your claim or have committed a serious crime.</p> <h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Deprivation of British Citizenship?</h3> <p>This is when your British citizenship has been taken away because It is believed you didn't tell the truth when claiming citizenship or have been involved in behaviours including terrorism or serious organised crime.</p>",
+      "eligibleAnswer": "yes",
+      "errorMessage": "Select yes if you are appealing a Revocation of Protection Status or Deprivation of Citizenship decision"
+    }
+  ],
+  "ineligiblePaymentsFlag": [
+    {
+      "title": "You cannot currently use the service",
+      "description": "You cannot use this service because you are appealing from outside the UK.",
+      "optionsList": [
+        "<a target=\"_blank\" href=\"https://www.gov.uk/immigration-asylum-tribunal/appeal-from-outside-the-uk/\">Find out more about appealing from outside the UK</a>"
       ]
+    },
+    {
+      "title": "You cannot currently use the service",
+      "description": "You cannot use this service because you are in detention.",
+      "optionsList": [
+        "If you are in an immigration removal centre, you can <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\">use form IAFT-DIA</a> to appeal by post or fax.",
+        "If you are in a prison, you can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+      ]
+    },
+      {
+      "title": "There is a fee for this appeal",
+      "description": "It costs:",
+      "optionsList": [
+        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+        "<a target=\"_blank\" href=\"https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/880647/t495-eng.pdf\">Read more about tribunal fees (opens in a new window)</a> ",
+        "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
+        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
+        "In all other cases, you should use the new service."
+      ],
+      "cta": "link",
+      "hideMoreInfo": true,
+      "showHelp": true
     }
   ]
 }

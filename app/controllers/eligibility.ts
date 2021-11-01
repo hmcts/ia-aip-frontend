@@ -2,16 +2,21 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
+import LaunchDarklyService from '../service/launchDarkly-service';
 import { yesOrNoRequiredValidation } from '../utils/validations/fields-validations';
 
 function getPreviousPageLink(questionId) {
   return questionId === '0' ? paths.common.start : `${paths.common.questions}?id=${_.toNumber(questionId) - 1}`;
 }
 
-function getModel(nextId, answer) {
+async function getModel(nextId, answer) {
+
+  const i18nEligibility = await getI18nEligibility();
+
   return {
-    question: i18n.eligibility[nextId].question,
-    description: i18n.eligibility[nextId].description,
+    question: i18nEligibility[nextId].question,
+    description: i18nEligibility[nextId].description,
+    modal: i18nEligibility[nextId].modal,
     questionId: nextId,
     previousPage: getPreviousPageLink(nextId),
     answer,
@@ -20,7 +25,7 @@ function getModel(nextId, answer) {
   };
 }
 
-function eligibilityQuestionGet(req: Request, res: Response, next: NextFunction) {
+async function eligibilityQuestionGet(req: Request, res: Response, next: NextFunction) {
   try {
     let nextId = _.get(req.query, 'id', '0');
     if (!req.session.eligibility) {
@@ -30,25 +35,27 @@ function eligibilityQuestionGet(req: Request, res: Response, next: NextFunction)
 
     const answer = _.get(req.session.eligibility, nextId + '.answer', '');
 
-    return res.render('eligibility/eligibility-question.njk', getModel(nextId, answer));
+    return res.render('eligibility/eligibility-question.njk', await getModel(nextId, answer));
   } catch (error) {
     next(error);
   }
 }
 
-function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction) {
+async function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction) {
   try {
     const questionId = req.body.questionId;
     const answer = req.body.answer;
-    const validation = yesOrNoRequiredValidation(req.body, i18n.eligibility[questionId].errorMessage);
+    const i18nEligibility = await getI18nEligibility();
+    const validation = yesOrNoRequiredValidation(req.body, i18nEligibility[questionId].errorMessage);
 
     if (validation) {
-      const model = getModel(questionId, answer);
+      const model = await getModel(questionId, answer);
       model.errors = validation;
       model.errorList = Object.values(validation);
       return res.render('eligibility/eligibility-question.njk', {
-        question: i18n.eligibility[questionId].question,
-        description: i18n.eligibility[questionId].description,
+        question: i18nEligibility[questionId].question,
+        description: i18nEligibility[questionId].description,
+        modal: i18nEligibility[questionId].modal,
         questionId: questionId,
         previousPage: getPreviousPageLink(questionId),
         answer,
@@ -63,11 +70,11 @@ function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction
     req.session.eligibility[questionId] = { answer };
 
     let nextQuestionId = _.toNumber(questionId) + 1;
-    const isLastQuestion = nextQuestionId === i18n.eligibility.length;
+    const isLastQuestion = nextQuestionId === i18nEligibility.length;
 
-    const nextPage = isEligibilityQuestion(questionId, answer) ?
-    isLastQuestion ? `${paths.common.eligible}?id=${_.toNumber(questionId)}` : `${paths.common.questions}?id=${nextQuestionId}` :
-    `${paths.common.ineligible}?id=${_.toNumber(questionId)}`;
+    const nextPage = await isEligibilityQuestion(questionId, answer, i18nEligibility) ?
+      isLastQuestion ? `${paths.common.eligible}?id=${_.toNumber(questionId)}` : `${paths.common.questions}?id=${nextQuestionId}` :
+      `${paths.common.ineligible}?id=${_.toNumber(questionId)}`;
 
     return res.redirect(nextPage);
   } catch (error) {
@@ -89,11 +96,12 @@ function getEligible(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getIneligible(req: Request, res: Response, next: NextFunction) {
+async function getIneligible(req: Request, res: Response, next: NextFunction) {
   try {
+    const i18nIneligible = await getI18nIneligible();
     const questionId: string = req.query.id as string;
     res.render('eligibility/ineligible-page.njk', {
-      ...i18n.ineligible[questionId],
+      ...i18nIneligible[questionId],
       previousPage: `${paths.common.questions}?id=${req.query.id}`
     });
   } catch (e) {
@@ -111,10 +119,34 @@ function setupEligibilityController(): Router {
   return router;
 }
 
-function isEligibilityQuestion(questionId: string, answer: string) {
-  return _.isString(i18n.eligibility[questionId].eligibleAnswer) ?
-      answer === i18n.eligibility[questionId].eligibleAnswer :
-      i18n.eligibility[questionId].eligibleAnswer.indexOf(answer) > -1;
+async function isEligibilityQuestion(questionId: string, answer: string, i18nEligibility: any) {
+  return _.isString(i18nEligibility[questionId].eligibleAnswer) ?
+    answer === i18nEligibility[questionId].eligibleAnswer :
+    i18nEligibility[questionId].eligibleAnswer.indexOf(answer) > -1;
+}
+
+async function onlineCardPaymentsFeature() {
+  return LaunchDarklyService.getInstance().getVariation(null, 'online-card-payments-feature', false);
+}
+
+async function getI18nEligibility() {
+  const paymentsFlag = await onlineCardPaymentsFeature();
+
+  if (paymentsFlag) {
+    return i18n.eligibilityPaymentsFlag;
+  } else {
+    return i18n.eligibility;
+  }
+}
+
+async function getI18nIneligible() {
+  const paymentsFlag = await onlineCardPaymentsFeature();
+
+  if (paymentsFlag) {
+    return i18n.ineligiblePaymentsFlag;
+  } else {
+    return i18n.ineligible;
+  }
 }
 
 export {

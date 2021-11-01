@@ -18,9 +18,10 @@ export default class CookiesBanner implements ICookies {
   init() {
     this.cookieBanner = document.querySelector('#cookie-banner');
     if (isNull(this.cookieBanner)) { return; }
+    // tslint:disable-next-line
+    if (!window.gtag) window.gtag = () => {};
     this.acceptCookiesButton = document.querySelector('#acceptCookies');
     this.rejectCookiesButton = document.querySelector('#rejectCookies');
-    this.removeDynaCookies();
     this.addEventListeners();
     this.initAnalyticsCookie();
   }
@@ -41,7 +42,6 @@ export default class CookiesBanner implements ICookies {
         'analytics_storage': 'denied'
       });
       this.hideCookieBanner();
-      this.removeDynaCookies();
     });
   }
 
@@ -54,10 +54,9 @@ export default class CookiesBanner implements ICookies {
         'ad_storage': consent === 'yes' ? 'granted' : 'denied',
         'analytics_storage': consent === 'yes' ? 'granted' : 'denied'
       });
-      consent === 'no' ? this.removeDynaCookies() : this.enableDynaCookies();
+      if (consent === 'yes') this.enableDynaCookies();
     } else {
       this.showCookieBanner();
-      this.removeDynaCookies();
     }
   }
 
@@ -66,21 +65,6 @@ export default class CookiesBanner implements ICookies {
       window.dtrum.enable();
       window.dtrum.enableSessionReplay();
     }
-  }
-
-  removeDynaCookies() {
-    if (window.dtrum !== undefined) {
-      // tslint:disable:no-console
-      console.log('disabling sessionReplay and dyna');
-      window.dtrum.disableSessionReplay();
-      window.dtrum.disable();
-    }
-    this.removeCookie('dtCookie');
-    this.removeCookie('dtLatC');
-    this.removeCookie('dtPC');
-    this.removeCookie('dtSa');
-    this.removeCookie('rxVisitor');
-    this.removeCookie('rxvt');
   }
 
   addCookie(name, value) {

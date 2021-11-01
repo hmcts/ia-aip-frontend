@@ -5,6 +5,7 @@ import {
   postPayNow,
   SetupPayNowController
 } from '../../../app/controllers/appeal-application/pay-now';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
@@ -123,13 +124,13 @@ describe('Pay now Controller @payNow', () => {
 
   describe('getPayNow', () => {
     it('should redirect to overview page when feature flag OFF', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(false);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getPayNow(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
     });
 
     it('should render radio-question-page.njk template with payments feature flag ON', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getPayNow(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
         previousPage: paths.appealStarted.decisionType,
@@ -156,7 +157,7 @@ describe('Pay now Controller @payNow', () => {
       };
 
       updateAppealService.submitEventRefactored = sandbox.stub();
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
     });
 
     it('should fail validation and call render with errors', async () => {

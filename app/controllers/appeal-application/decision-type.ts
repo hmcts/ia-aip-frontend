@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
-import { appealTypes } from '../../data/appeal-types';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
@@ -12,15 +12,15 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { decisionTypeValidation } from '../../utils/validations/fields-validations';
 
-function getDecisionTypeQuestion(application: AppealApplication) {
+function getDecisionTypeQuestion(appeal: Appeal) {
   let hint: string;
   let decision: string;
-  if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
+  if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
     hint = i18n.pages.decisionType.hint.withoutFee;
-    decision = application.rpDcAppealHearingOption || null;
-  } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(application.appealType)) {
+    decision = appeal.application.rpDcAppealHearingOption || null;
+  } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(appeal.application.appealType)) {
     hint = i18n.pages.decisionType.hint.withFee;
-    decision = application.decisionHearingFeeOption || null;
+    decision = appeal.application.decisionHearingFeeOption || null;
   }
   const question = {
     title: i18n.pages.decisionType.title,
@@ -44,7 +44,7 @@ function getDecisionTypeQuestion(application: AppealApplication) {
 
 async function getDecisionType(req: Request, res: Response, next: NextFunction) {
   try {
-    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     if (!paymentsFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -52,7 +52,7 @@ async function getDecisionType(req: Request, res: Response, next: NextFunction) 
       previousPage: paths.appealStarted.typeOfAppeal,
       pageTitle: i18n.pages.decisionType.title,
       formAction: paths.appealStarted.decisionType,
-      question: getDecisionTypeQuestion(req.session.appeal.application),
+      question: getDecisionTypeQuestion(req.session.appeal),
       saveAndContinue: true
     });
   } catch (error) {
@@ -63,7 +63,7 @@ async function getDecisionType(req: Request, res: Response, next: NextFunction) 
 function postDecisionType(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       if (!paymentsFlag) return res.redirect(paths.common.overview);
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -77,7 +77,7 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.typeOfAppeal,
           pageTitle: i18n.pages.decisionType.title,
           formAction: paths.appealStarted.decisionType,
-          question: getDecisionTypeQuestion(req.session.appeal.application),
+          question: getDecisionTypeQuestion(req.session.appeal),
           saveAndContinue: true
         });
       }

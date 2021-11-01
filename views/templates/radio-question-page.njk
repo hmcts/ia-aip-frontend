@@ -18,7 +18,7 @@
       question.options,
       question.title,
       question.titleIsheading or true,
-      question.hint | safe,
+      question.hint | eval | safe if question.hint,
       error[question.name].text,
       question.inline
     ) }}

@@ -525,7 +525,7 @@
             }
           ]
         },
-        "uploadHomeOfficeAppealResponse": {
+        "requestResponseReview": {
           "text": "The Home Office sent its response to your appeal.",
           "links": [
             {
@@ -767,7 +767,7 @@
         "additionalEvidence": "Additional evidence"
       },
       "homeOfficeResponse": {
-        "title": "HO Respomse",
+        "title": "HO Response",
         "dateUploaded": "Date uploaded",
         "document": "Document",
         "documentDescription": "Document description",

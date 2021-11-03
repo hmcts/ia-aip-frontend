@@ -25,7 +25,7 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
     eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
   }
-  if (event.id === Events.UPLOAD_HOME_OFFICE_APPEAL_RESPONSE.id) {
+  if (event.id === Events.REQUEST_RESPONSE_REVIEW.id) {
     eventObject.links[0].text = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].text;
     eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].href;
   }
@@ -86,7 +86,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
-  const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.UPLOAD_HOME_OFFICE_APPEAL_RESPONSE.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
+  const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONSE_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
   const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
 
   const appealArgumentSection = constructSection(appealArgumentSectionEvents, req.session.appeal.history, [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.RESPONDENT_REVIEW.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.ENDED.id ], req);

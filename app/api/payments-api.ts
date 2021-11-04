@@ -7,8 +7,8 @@ function createCardPayment(headers, body, returnUrl): Promise<any> {
     headers: {
       Authorization: headers.userToken,
       ServiceAuthorization: headers.serviceToken,
-      'return-url': 'https://localhost:3000/finish-payment',
-      'service-callback-url': 'http://localhost:8096/payment-update'
+      'return-url': returnUrl,
+      'service-callback-url': `${config.get('iaPayments.apiUrl')}/payment-update`
     },
     body,
     json: true

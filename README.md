@@ -118,3 +118,6 @@ The pipeline build has the following steps
 | yarn sonar-scan | |
 | yarn test:smoke | Hits the health endpoint of the deployed service. |
 | yarn test:functional| End to end test that runs against a deployed service. |
+
+
+

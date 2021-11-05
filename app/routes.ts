@@ -52,6 +52,7 @@ import { setupFooterController } from './controllers/footer';
 import { setupForbiddenController } from './controllers/forbidden';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
+import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
 import { setupIdamController } from './controllers/idam';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
@@ -141,6 +142,7 @@ const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonContr
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
+const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController(middleware);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
@@ -188,6 +190,7 @@ router.use(clarifyingQuestionsAnythingElseQuestionController);
 router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
+router.use(submitHearingRequirementsTaskListController);
 router.use(cmaRequirementsTaskListController);
 router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsAccessNeedsController);

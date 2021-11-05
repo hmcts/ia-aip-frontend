@@ -48,6 +48,12 @@ describe('application-state-utils', () => {
               'tag': 'respondentEvidence',
               'dateDue': '2020-04-28',
               'dateSent': '2020-04-14'
+            },
+            {
+              'id': 4,
+              'tag': 'legalRepresentativeHearingRequirements',
+              'dateDue': '2020-07-28',
+              'dateSent': '2020-07-14'
             }
           ],
           history: [
@@ -694,6 +700,29 @@ describe('application-state-utils', () => {
           }
         }
       );
+    });
+    it('when application status is submitHearingRequirements should get correct Do this next section.', () => {
+      req.session.appeal.appealStatus = 'submitHearingRequirements';
+      const result = getAppealApplicationNextStep(req as Request);
+
+      const expected = {
+        allowedAskForMoreTime: true,
+        cta: {
+          respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
+          url: '/hearing-requirements-needs'
+        },
+        deadline: '28 July 2020',
+        descriptionParagraphs: [
+          'Your appeal is going to hearing.',
+          'Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access'
+        ],
+        info: {
+          title: 'Helpful Information',
+          url: "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+        }
+      };
+
+      expect(result).to.eql(expected);
     });
 
     it('when application status is cmaListed should get correct Do this next section.', () => {

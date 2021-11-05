@@ -62,6 +62,54 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   };
 }
 
+function submitHearingRequirementsStatus(appeal: Appeal) {
+
+  const witnesses: boolean = !!_.get(appeal, 'hearingRequirements.witnesses');
+
+  const witnessesTask: Task = {
+    saved: witnesses,
+    completed: _.has(appeal, 'hearingRequirements.witnesses'),
+    active: true
+  };
+
+  const accessNeeds: boolean = !!_.get(appeal, 'hearingRequirements.accessNeeds');
+
+  const accessNeedsTask: Task = {
+    saved: accessNeeds,
+    completed: _.has(appeal, 'hearingRequirements.accessNeeds.isHearingLoopNeeded'),
+    active: false
+  };
+  const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
+
+  const otherNeedsTask: Task = {
+    saved: otherNeeds,
+    completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
+    active: accessNeedsTask.completed
+  };
+
+  const datesToAvoid: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
+
+  const datesToAvoidTask: Task = {
+    saved: datesToAvoid,
+    completed: datesToAvoid,
+    active: otherNeedsTask.completed
+  };
+
+  const checkAndSend: Task = {
+    saved: false,
+    completed: false,
+    active: datesToAvoidTask.completed
+  };
+
+  return {
+    witnesses: witnessesTask,
+    accessNeeds: accessNeedsTask,
+    otherNeeds: otherNeedsTask,
+    datesToAvoid: datesToAvoidTask,
+    checkAndSend
+  };
+}
+
 function cmaRequirementsStatus(appeal: Appeal) {
   const accessNeeds: boolean = !!_.get(appeal, 'cmaRequirements.accessNeeds');
 
@@ -132,5 +180,6 @@ function buildSectionObject(sectionId: string, taskIds: string[], status: Applic
 export {
   appealApplicationStatus,
   buildSectionObject,
-  cmaRequirementsStatus
+  cmaRequirementsStatus,
+  submitHearingRequirementsStatus
 };

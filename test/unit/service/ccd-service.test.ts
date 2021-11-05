@@ -158,60 +158,54 @@ describe('idam-service', () => {
 
   describe('calls ccd api', () => {
     const ccdService = new CcdService();
-    const getRequest = sinon.stub(rp, 'get');
-    const expectedResultGet = new Promise((resolve) => {
-      resolve();
-    });
-    const postRequest = sinon.stub(rp, 'post');
-    const expectedResultPost = new Promise((resolve) => {
-      resolve();
-    });
+    let getRequest: sinon.SinonStub;
+    let postRequest: sinon.SinonStub;
+    let sandbox: sinon.SinonSandbox;
 
-    before(async () => {
-      getRequest.returns(expectedResultGet);
-      postRequest.returns(expectedResultPost);
+    beforeEach(() => {
+      sandbox = sinon.createSandbox();
+      getRequest = sandbox.stub(rp, 'get').resolves({});
+      postRequest = sandbox.stub(rp, 'post').resolves({});
     });
 
-    it('startCreateCase', () => {
-      const createCase = ccdService.startCreateCase(userId, headers);
-
-      expect(createCase).eq(expectedResultGet);
+    afterEach(() => {
+      sandbox.restore();
     });
 
-    it('submitCreateCase', () => {
-      const submitCreateCase = ccdService.submitCreateCase(userId, headers, {} as any);
+    it('startCreateCase', async () => {
+      await ccdService.startCreateCase(userId, headers);
 
-      expect(submitCreateCase).eq(expectedResultPost);
+      expect(getRequest).to.have.been.called;
     });
 
-    it('loadCasesForUser', () => {
-      const createCase = ccdService.loadCasesForUser(userId, headers);
+    it('submitCreateCase', async () => {
+      await ccdService.submitCreateCase(userId, headers, {} as any);
 
-      expect(createCase).eq(expectedResultGet);
+      expect(postRequest).to.have.been.called;
     });
 
-    it('startUpdateCase with "editAppeal"', () => {
-      const updateCase = ccdService.startUpdateAppeal(userId, caseId, Events.EDIT_APPEAL.id, headers);
+    it('loadCasesForUser', async () => {
+      await ccdService.loadCasesForUser(userId, headers);
 
-      expect(updateCase).eq(expectedResultGet);
+      expect(getRequest).to.have.been.called;
     });
 
-    it('startUpdateCase with "submitAppeal', () => {
-      const updateCase = ccdService.startUpdateAppeal(userId, caseId, Events.SUBMIT_APPEAL.id, headers);
+    it('startUpdateAppeal with "editAppeal"', async () => {
+      await ccdService.startUpdateAppeal(userId, caseId, Events.EDIT_APPEAL.id, headers);
 
-      expect(updateCase).eq(expectedResultGet);
+      expect(getRequest).to.have.been.called;
     });
 
-    it('submitUpdateCase', () => {
-      const submitCreateCase = ccdService.submitUpdateAppeal(userId, caseId, headers, {} as any);
+    it('submitUpdateCase', async () => {
+      await ccdService.submitUpdateAppeal(userId, caseId, headers, {} as any);
 
-      expect(submitCreateCase).eq(expectedResultPost);
+      expect(postRequest).to.have.been.called;
     });
 
-    it('retrieveCaseHistoryV2', () => {
-      const retrieveCaseHistory = ccdService.retrieveCaseHistoryV2(userId, caseId, headers);
+    it('retrieveCaseHistoryV2', async () => {
+      await ccdService.retrieveCaseHistoryV2(userId, caseId, headers);
 
-      expect(retrieveCaseHistory).eq(expectedResultGet);
+      expect(getRequest).to.have.been.called;
     });
   });
 });

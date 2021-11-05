@@ -401,6 +401,10 @@ export default class UpdateAppealService {
       ...caseData.homeOfficeAppealResponseDocument && { homeOfficeAppealResponseDocument: caseData.homeOfficeAppealResponseDocument },
       ...caseData.homeOfficeAppealResponseDescription && { homeOfficeAppealResponseDescription: caseData.homeOfficeAppealResponseDescription },
       ...caseData.homeOfficeAppealResponseEvidence && { homeOfficeAppealResponseEvidence: caseData.homeOfficeAppealResponseEvidence },
+      ...caseData.paymentReference && { paymentReference: caseData.paymentReference },
+      ...caseData.paymentStatus && { paymentStatus: caseData.paymentStatus },
+      ...caseData.paymentDate && { paymentDate: caseData.paymentDate },
+      ...caseData.isFeePaymentEnabled && { isFeePaymentEnabled: caseData.isFeePaymentEnabled },
       hearingCentre: caseData.hearingCentre || null,
       documentMap
     };
@@ -633,6 +637,10 @@ export default class UpdateAppealService {
       ...appeal.application.personalDetails.stateless && { appellantStateless: appeal.application.personalDetails.stateless },
       ...paymentsFlag && { rpDcAppealHearingOption: appeal.application.rpDcAppealHearingOption || null },
       ...paymentsFlag && { decisionHearingFeeOption: appeal.application.decisionHearingFeeOption || null },
+      ...appeal.paymentReference && { paymentReference: appeal.paymentReference },
+      ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
+      ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
+      ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
       ...appeal.draftClarifyingQuestionsAnswers && {
         draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
       },

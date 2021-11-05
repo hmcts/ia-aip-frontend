@@ -45,6 +45,9 @@
     "webUrl": "IDAM_WEB_URL",
     "secret": "IDAM_SECRET"
   },
+  "payments": {
+    "apiUrl": "PAYMENTS_API_URL"
+  },
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
   },

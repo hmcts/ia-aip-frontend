@@ -64,6 +64,7 @@ import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
 import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
+import PaymentService from './service/payments-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
@@ -77,6 +78,7 @@ const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
+const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 
 const router = express.Router();
@@ -95,7 +97,7 @@ const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware,
 const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
 const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
 const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
-const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService);
+const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
 const confirmationController = setConfirmationController(middleware);
 const outOfTimeController = setupOutOfTimeController(middleware, { updateAppealService, documentManagementService });
 const reasonsForAppealController = setupReasonsForAppealController(middleware, { updateAppealService, documentManagementService });

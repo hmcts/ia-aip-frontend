@@ -2,11 +2,13 @@ import { NextFunction, Request, Response } from 'express';
 import {
   createSummaryRowsFrom,
   getCheckAndSend,
+  getFinishPayment,
   postCheckAndSend,
   setupCheckAndSendController
 } from '../../../app/controllers/appeal-application/check-and-send';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import PaymentService from '../../../app/service/payments-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
@@ -137,6 +139,7 @@ describe('Check and Send Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
+  let paymentService: Partial<PaymentService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -165,6 +168,15 @@ describe('Check and Send Controller', () => {
         case_data: { appealReferenceNumber: 'PA/1234567' }
       })
     };
+    const statusHistories = [{
+      status: 'Success',
+      date_created: 'aDate'
+    }];
+    paymentService = {
+      createPayment: sandbox.stub(),
+      initiatePayment: sandbox.stub().resolves(),
+      getPaymentDetails: sandbox.stub().resolves(JSON.stringify({ status: 'Success', status_histories: statusHistories }))
+    } as Partial<PaymentService>;
 
     res = {
       render: sandbox.stub(),
@@ -184,7 +196,7 @@ describe('Check and Send Controller', () => {
     const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
     const middleware = [];
 
-    setupCheckAndSendController(middleware, updateAppealService as UpdateAppealService);
+    setupCheckAndSendController(middleware, updateAppealService as UpdateAppealService, paymentService as PaymentService);
     expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
     expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
   });
@@ -195,11 +207,19 @@ describe('Check and Send Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk');
   });
 
+  it('getCheckAndSend should catch exception and call next with the error', async () => {
+    req.session.appeal = createDummyAppealApplication();
+    const error = new Error('an error');
+    res.render = sandbox.stub().throws(error);
+    await getCheckAndSend(req as Request, res as Response, next);
+    expect(next).to.have.been.calledOnce.calledWith(error);
+  });
+
   it('postCheckAndSend should fail validation when statement of truth not checked', async () => {
     req.session.appeal = createDummyAppealApplication();
     req.body = { 'button': 'save-and-continue', 'data': [] };
 
-    await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
     const expectedError = {
       statement: {
@@ -225,19 +245,20 @@ describe('Check and Send Controller', () => {
       appealStatus: 'appealSubmitted',
       appealReferenceNumber: 'PA/1234567'
     } as Appeal);
-    await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
     expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
     expect(req.session.appeal.appealReferenceNumber).to.be.equal('PA/1234567');
     expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.confirmation);
   });
 
-  it('getCheckAndSend should catch exception and call next with the error', async () => {
+  it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
     req.session.appeal = createDummyAppealApplication();
-    const error = new Error('an error');
-    res.render = sandbox.stub().throws(error);
-    await getCheckAndSend(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce.calledWith(error);
+    req.body = { statement: 'acceptance' };
+    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+    expect(paymentService.initiatePayment).to.have.been.called;
   });
 
   it('postCheckAndSend should catch exception and call next with the error', async () => {
@@ -249,7 +270,35 @@ describe('Check and Send Controller', () => {
       appealStatus: 'appealSubmitted',
       appealReferenceNumber: 'PA/1234567'
     } as Appeal);
-    await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
+  });
+
+  describe('getFinishPayment', () => {
+    it('should finish a payment', async () => {
+      req.session.appeal.paymentReference = 'aReference';
+      updateAppealService.submitEventRefactored = sandbox.stub().resolves({
+        paymentStatus: 'Paid',
+        paymentDate: 'aDate',
+        isFeePaymentEnabled: 'Yes'
+      } as Partial<Appeal>);
+
+      await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
+      expect(req.session.appeal.paymentDate).to.be.eql('aDate');
+      expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
+      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.confirmation);
+    });
+
+    it('should atch exception and call next with the error', async () => {
+      const error = new Error('an error');
+      req.session.appeal.paymentReference = 'aReference';
+      updateAppealService.submitEventRefactored = sandbox.stub().throws(error);
+
+      await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
   });
 });

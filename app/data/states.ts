@@ -51,6 +51,11 @@ export const States = {
     id: 'appealTakenOffline',
     name: 'Appeal taken offline'
   },
+  SUBMIT_HEARING_REQUIREMENTS: {
+    id: 'submitHearingRequirements',
+    name: 'Submit Hearing Requirements'
+  },
+
   ENDED: {
     id: 'ended',
     name: 'Ended'

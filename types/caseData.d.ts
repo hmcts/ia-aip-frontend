@@ -92,6 +92,10 @@ interface CaseData {
   homeOfficeAppealResponseEvidence?: any;
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
+  paymentReference?: string;
+  paymentStatus?: string;
+  paymentDate?: string;
+  isFeePaymentEnabled?: string;
 }
 
 interface Application<T> {

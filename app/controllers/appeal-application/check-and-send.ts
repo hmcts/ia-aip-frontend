@@ -6,6 +6,7 @@ import { Events } from '../../data/events';
 import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
+import PaymentService from '../../service/payments-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
@@ -108,12 +109,11 @@ async function getCheckAndSend(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-function postCheckAndSend(updateAppealService: UpdateAppealService) {
+function postCheckAndSend(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
   return async (req: Request, res: Response, next: NextFunction) => {
 
     const request = req.body;
     try {
-      const { application } = req.session.appeal;
       const summaryRows = await createSummaryRowsFrom(req);
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {
@@ -123,6 +123,10 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
           errorList: Object.values(validationResult),
           previousPage: paths.appealStarted.taskList
         });
+      }
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+      if (paymentsFlag) {
+        return await paymentService.initiatePayment(req, res, 'theFee');
       }
       const { appeal } = req.session;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -137,10 +141,37 @@ function postCheckAndSend(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupCheckAndSendController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function getFinishPayment(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const paymentDetails = JSON.parse(await paymentService.getPaymentDetails(req, req.session.appeal.paymentReference));
+
+      if (paymentDetails.status === 'Success') {
+        const appeal: Appeal = {
+          ...req.session.appeal,
+          paymentStatus: 'Paid',
+          paymentDate: paymentDetails.status_histories.filter(event => event.status === 'Success')[0].date_created,
+          isFeePaymentEnabled: 'Yes'
+        };
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.appeal = {
+          ...req.session.appeal,
+          ...appealUpdated
+        };
+        res.redirect(paths.appealSubmitted.confirmation);
+      }
+      // TODO: deal with appeal if payment not succeeded
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+function setupCheckAndSendController(middleware: Middleware[], updateAppealService: UpdateAppealService, paymentService: PaymentService): Router {
   const router = Router();
   router.get(paths.appealStarted.checkAndSend, middleware, appealOutOfTimeMiddleware, getCheckAndSend);
-  router.post(paths.appealStarted.checkAndSend, middleware, postCheckAndSend(updateAppealService));
+  router.post(paths.appealStarted.checkAndSend, middleware, postCheckAndSend(updateAppealService, paymentService));
+  router.get(paths.common.finishPayment, middleware, getFinishPayment(updateAppealService, paymentService));
   return router;
 }
 
@@ -148,5 +179,6 @@ export {
   createSummaryRowsFrom,
   setupCheckAndSendController,
   getCheckAndSend,
+  getFinishPayment,
   postCheckAndSend
 };

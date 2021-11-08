@@ -1,5 +1,5 @@
 nodejs:
-  image: 'https://hmctspublic.azurecr.io/ia/aip-frontend:latest'
+  image: "https://hmctspublic.azurecr.io/ia/aip-frontend:latest"
   ingressHost: "ia-aip-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal" # override in public facing environments
   applicationPort: 3000
   memoryRequests: 256Mi
@@ -15,6 +15,7 @@ nodejs:
     CCD_API_URL: "http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     DOC_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     SECURE_SESSION: true
+    TRACKING_SCRIPTS: false
   aadIdentityName: ia
   keyVaults:
     ia:

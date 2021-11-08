@@ -110,6 +110,10 @@ interface Appeal {
   homeOfficeAppealResponseDocument?: any;
   homeOfficeAppealResponseDescription?: string;
   homeOfficeAppealResponseEvidence?: any;
+  paymentReference?: string;
+  paymentStatus?: string;
+  paymentDate?: string;
+  isFeePaymentEnabled?: string;
 }
 
 interface Hearing {

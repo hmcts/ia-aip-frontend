@@ -4,6 +4,7 @@
   "appInsights": {
     "instrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY"
   },
+  "trackingScripts": "TRACKING_SCRIPTS",
   "node": {
     "protocol": "HTTP_PROTOCOL",
     "hostname": "EXTERNAL_HOSTNAME",
@@ -43,6 +44,9 @@
     "apiUrl": "IDAM_API_URL",
     "webUrl": "IDAM_WEB_URL",
     "secret": "IDAM_SECRET"
+  },
+  "payments": {
+    "apiUrl": "PAYMENTS_API_URL"
   },
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"

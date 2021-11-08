@@ -41,6 +41,11 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
       }
       const validation = typeOfAppealValidation(req.body);
       if (validation) {
+        let finalAppealTypes = appealTypes;
+        const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+        if (!paymentsFlag) {
+          finalAppealTypes = appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection');
+        }
         return res.render('appeal-application/type-of-appeal.njk', {
           errors: validation,
           errorList: Object.values(validation),

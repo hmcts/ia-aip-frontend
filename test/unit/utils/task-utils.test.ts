@@ -89,6 +89,11 @@ describe('getStatus', () => {
       completed: false,
       active: false
     },
+    typeOfAppealAndDecision: {
+      saved: false,
+      completed: false,
+      active: false
+    },
     checkAndSend: {
       saved: false,
       completed: false,
@@ -138,6 +143,7 @@ describe('getStatus', () => {
       saved: true
     };
     status.typeOfAppeal.active = true;
+    status.typeOfAppealAndDecision.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
@@ -161,6 +167,11 @@ describe('getStatus', () => {
   it('should update status typeOfAppeal as completed', () => {
     appeal.application.appealType = 'protection';
     status.typeOfAppeal = {
+      ...status.typeOfAppeal,
+      completed: true,
+      saved: true
+    };
+    status.typeOfAppealAndDecision = {
       ...status.typeOfAppeal,
       completed: true,
       saved: true

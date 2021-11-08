@@ -96,6 +96,11 @@
         "title": "Type of appeal",
         "path": "appealStarted.typeOfAppeal"
       },
+      "typeOfAppealAndDecision": {
+        "id": "typeOfAppealLink",
+        "title": "Appeal and decision type",
+        "path": "appealStarted.typeOfAppeal"
+      },
       "checkAndSend": {
         "id": "checkAndSendLink",
         "title": "Check and send your appeal details",

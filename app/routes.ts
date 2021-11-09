@@ -52,6 +52,9 @@ import { setupFooterController } from './controllers/footer';
 import { setupForbiddenController } from './controllers/forbidden';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
+import { setupWitnessesOutsideUkQuestionController } from './controllers/hearing-requirements/hearing-outside-uk';
+import { setupWitnessNamesController } from './controllers/hearing-requirements/hearing-witness-names';
+import { setupWitnessesOnHearingQuestionController } from './controllers/hearing-requirements/hearing-witnesses';
 import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
 import { setupIdamController } from './controllers/idam';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
@@ -143,6 +146,9 @@ const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAdd
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
 const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController(middleware);
+const witnessesOnHearingQuestionController = setupWitnessesOnHearingQuestionController(middleware);
+const witnessesOutsideUkQuestionController = setupWitnessesOutsideUkQuestionController(middleware);
+const witnessNamesController = setupWitnessNamesController(middleware);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
@@ -191,6 +197,9 @@ router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
 router.use(submitHearingRequirementsTaskListController);
+router.use(witnessesOnHearingQuestionController);
+router.use(witnessesOutsideUkQuestionController);
+router.use(witnessNamesController);
 router.use(cmaRequirementsTaskListController);
 router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsAccessNeedsController);

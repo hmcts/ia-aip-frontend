@@ -177,6 +177,13 @@ function appellantNamesValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function witnessNameValidation(obj: object) {
+  const schema = Joi.object({
+    witnessName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessName })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function contactDetailsValidation(obj: object) {
   const schema = Joi.object({
     selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
@@ -393,6 +400,7 @@ export {
   dateOfBirthValidation,
   dropdownValidation,
   appellantNamesValidation,
+  witnessNameValidation,
   postcodeValidation,
   nationalityValidation,
   emailValidation,

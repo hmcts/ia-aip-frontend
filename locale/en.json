@@ -1842,7 +1842,7 @@
         "witnesses": {
           "id": "witnessesLink",
           "title": "Will any witnesses come to the hearing?",
-          "path": "submitHearingRequirements.witnessNeeds"
+          "path": "submitHearingRequirements.witnesses"
         },
         "accessNeeds": {
           "id": "accessNeedsLink",
@@ -1863,6 +1863,23 @@
           "id": "checkAndSendLink",
           "title": "Check and send your answers",
           "path": "submitHearingRequirements.checkAndSend"
+        }
+      },
+      "witnessesSection": {
+        "hearingWitnesses": {
+          "pageTitle": "Will any witnesses come to the hearing?",
+          "title": "Will any witnesses come to the hearing?",
+          "text": "A witness is someone who will speak on your behalf on the hearing."
+        },
+        "hearingWitnessNames": {
+          "pageTitle": "Add witnesses names",
+          "title": "Add witnesses names",
+          "text": "Witnesses name"
+        },
+        "witnessOutsideUk": {
+          "pageTitle": "Will you or any witnesses take part in the hearing from outside the UK?",
+          "title": "Will you or any witnesses take part in the hearing from outside the UK?",
+          "text": "If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where you or any witnesses will be for the hearing."
         }
       }
     },
@@ -2169,6 +2186,7 @@
     },
     "givenNames": "Enter your given name or names",
     "familyName": "Enter your family name or names",
+    "witnessName": "Enter a witness name",
     "dateOfBirth": {
       "missing": "Your date of birth must include a day, month and year",
       "incorrectFormat": "Enter the date in the correct format",
@@ -2255,6 +2273,11 @@
           "missing": "Enter a date you cannot go to the appointment",
           "incorrectFormat": "Enter the date in the correct format"
         }
+      }
+    },
+    "hearingRequirements": {
+      "witnessesSection": {
+        "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing"
       }
     }
   },

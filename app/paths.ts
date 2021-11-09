@@ -52,11 +52,13 @@ const paths = {
   },
   submitHearingRequirements: {
     taskList: '/hearing-requirements-needs',
-    witnesses: '/hearing-requirements-witnesses',
+    witnesses: '/hearing-witnesses',
     accessNeeds: '/hearing-requirements-access-needs',
     otherNeeds: '/hearing-requirements-other-needs',
     datesToAvoidQuestion: '/hearing-requirements-dates-avoid',
-    checkAndSend: '/hearing-requirements-check-answers'
+    checkAndSend: '/hearing-requirements-check-answers',
+    hearingWitnessNames: '/hearing-witness-names',
+    witnessOutsideUK: '/hearing-outside-uk'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',

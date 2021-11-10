@@ -28,7 +28,7 @@ function getWitnessesOutsideUkQuestion(req: Request, res: Response, next: NextFu
 function postWitnessesOutsideUkQuestion() {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.witnessesSection.witnessesOnHearingRequired;
+      const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.witnessesSection.witnessesOutsideUKRequired;
       const pageContent = {
         previousPage,
         pageTitle,

@@ -2277,7 +2277,8 @@
     },
     "hearingRequirements": {
       "witnessesSection": {
-        "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing"
+        "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing",
+        "witnessesOutsideUKRequired": "Select Yes if you or any witnesses will take part in the hearing from outside the UK"
       }
     }
   },

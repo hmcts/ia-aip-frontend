@@ -26,11 +26,15 @@ function postWitnessNamesPage() {
       const validation = witnessNameValidation(req.body);
       console.log('validation::' + JSON.stringify(validation));
       if (validation) {
-        // TODO: populate the table here
-        console.log('req.body::' + JSON.stringify(req.body));
-        return res.redirect(paths.submitHearingRequirements.witnessOutsideUK);
+        return res.render('hearing-requirements/hearing-witness-names.njk', {
+          error: validation,
+          errorList: Object.values(validation),
+          previousPage: paths.submitHearingRequirements.witnesses
+        });
       }
-      return res.redirect(paths.submitHearingRequirements.hearingWitnessNames);
+      console.log('req.body::' + JSON.stringify(req.body));
+      // TODO: populate the table here
+      return res.redirect(paths.submitHearingRequirements.witnessOutsideUK);
     } catch (e) {
       next(e);
     }

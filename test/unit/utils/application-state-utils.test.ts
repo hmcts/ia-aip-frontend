@@ -709,7 +709,7 @@ describe('application-state-utils', () => {
         allowedAskForMoreTime: true,
         cta: {
           respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-          url: '/hearing-requirements-needs'
+          url: '/hearing-needs'
         },
         deadline: '28 July 2020',
         descriptionParagraphs: [
@@ -740,7 +740,7 @@ describe('application-state-utils', () => {
           allowedAskForMoreTime: true,
           cta: {
             respondBy: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
-            url: '/hearing-requirements-needs'
+            url: '/hearing-needs'
           },
           deadline: '28 July 2020',
           descriptionParagraphs: [

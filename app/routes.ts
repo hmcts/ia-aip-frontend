@@ -55,6 +55,7 @@ import { setupFooterController } from './controllers/footer';
 import { setupForbiddenController } from './controllers/forbidden';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
+import { setupHearingRequirementsAccessNeedsController } from './controllers/hearing-requirements/access-needs';
 import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
 import { setupIdamController } from './controllers/idam';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
@@ -63,6 +64,7 @@ import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
 import { setupProvideMoreEvidenceController } from './controllers/upload-evidence/provide-more-evidence-controller';
 import { PageSetup } from './interfaces/PageSetup';
+import { hearingRequirementsMiddleware } from './middleware/hearing-requirements-middleware';
 import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middleware/journeyAllowed-middleware';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -144,7 +146,8 @@ const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAdd
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
 const provideMoreEvidence = setupProvideMoreEvidenceController(middleware, updateAppealService, documentManagementService);
-const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController(middleware);
+const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController([hearingRequirementsMiddleware]);
+const submitHearingRequirementsAccessNeedsController = setupHearingRequirementsAccessNeedsController([hearingRequirementsMiddleware], updateAppealService);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
@@ -193,6 +196,7 @@ router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
 router.use(submitHearingRequirementsTaskListController);
+router.use(submitHearingRequirementsAccessNeedsController);
 router.use(cmaRequirementsTaskListController);
 router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsAccessNeedsController);

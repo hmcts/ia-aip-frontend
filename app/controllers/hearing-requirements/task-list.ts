@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../../paths';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import { buildSectionObject, submitHearingRequirementsStatus } from '../../utils/tasks-utils';
 
 function getSubmitHearingRequirementsStatus(status: ApplicationStatus) {
@@ -18,11 +19,15 @@ function getSubmitHearingRequirementsStatus(status: ApplicationStatus) {
   ];
 }
 
-function getTaskList(req: Request, res: Response, next: NextFunction) {
+async function getTaskList(req: Request, res: Response, next: NextFunction) {
   try {
     const status: ApplicationStatus = submitHearingRequirementsStatus(req.session.appeal);
     const statusOverview = getSubmitHearingRequirementsStatus(status);
-
+    const hearingRequirementsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'aip-hearing-requirements-feature', false);
+    // redirect to overview page , when the feature flag is disabled
+    if (!hearingRequirementsFlag) {
+      return res.redirect(paths.common.overview);
+    }
     return res.render('hearing-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: statusOverview

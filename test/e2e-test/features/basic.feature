@@ -20,60 +20,65 @@ Scenario: Complete appeal application
   When I click continue
   Then I should see the Create an account page
   When I click Sign in to your account
-  Then I should see the sign in page
-  When I enter creds and click sign in
-  Then I should see the appeal overview page
-  And I should see the 'do this next section' for 'New - Appeal started'
-  When I click continue
-  Then I should see the task-list page
-  When I click on Home office details
-  Then I should be taken to the home office ref number page
-  Then I enter a home office reference "123456789"
-  And I click "Save and continue" button
-  Then I should see letter sent page
-  When I enter an on time letter sent date
-  Then I click "Save and continue" button
-  When I upload a Home Office decision letter
-  Then I click "Save and continue" button
-  Then I expect to be redirect back to the task-list
-  When I click Your personal details
-  Then I should be taken to the enter your name page
-  When Enter "Random" "User" as my Given and Family Name and click Save and continue
-  Then I click "Save and continue" button
-  Then I should be taken to the DOB page
-  When I enter "11" "11" "1999" as my DOB and click Save and continue
-  Then I should be taken to nationality page
-  When I pick "Angola" from the Nationalities drop down and click continue
-  Then I should be taken to the enter your postcode page
-  When I type "W1W 7RT" as my postcode and click Find address
-  Then I should be taken to the what is your address page
-  When I choose the first address from the dropdown list and click continue
-  Then I should be taken to the confirm address page
-  And I click "Save and continue" button
-  Then I should be taken to the task-list page
-  Given I click the contact details link
-  Then I should be taken to the contact-details page
-  And I check the "Text message" option
-  Then I click "Save and continue" button
-  And I enter text message number "07899999999"
-  Then I click "Save and continue" button
-  Then I should be taken to the task-list page
+    Then I should see the sign in page
+    When I enter creds and click sign in
+    Then I should see the appeal overview page
+    And I should see the 'do this next section' for 'New - Appeal started'
+    When I click continue
+    Then I should see the task-list page
+    When I click on Home office details
+    Then I should be taken to the home office ref number page
+    Then I enter a home office reference "123456789"
+    And I click "Save and continue" button
+    Then I should see letter sent page
+    When I enter an on time letter sent date
+    Then I click "Save and continue" button
+    When I upload a Home Office decision letter
+    Then I click "Save and continue" button
+    Then I expect to be redirect back to the task-list
+    When I click Your personal details
+    Then I should be taken to the enter your name page
+    When Enter "Random" "User" as my Given and Family Name and click Save and continue
+    Then I click "Save and continue" button
+    Then I should be taken to the DOB page
+    When I enter "11" "11" "1999" as my DOB and click Save and continue
+    Then I should be taken to nationality page
+    When I pick "Angola" from the Nationalities drop down and click continue
+    Then I should be taken to the enter your postcode page
+    When I type "W1W 7RT" as my postcode and click Find address
+    Then I should be taken to the what is your address page
+    When I choose the first address from the dropdown list and click continue
+    Then I should be taken to the confirm address page
+    And I click "Save and continue" button
+    Then I should be taken to the task-list page
+    Given I click the contact details link
+    Then I should be taken to the contact-details page
+    And I check the "Text message" option
+    Then I click "Save and continue" button
+    And I enter text message number "07899999999"
+    Then I click "Save and continue" button
+    Then I should be taken to the task-list page
 
-  When I click on the type-of-appeal link
-  Then I should be taken to the appeal page
+    When I click on the type-of-appeal link
+    Then I should be taken to the appeal page
 
-  When I select appeal type Protection
-  And I click "Save and continue" button
-  Then I should see the task-list page
+    When I click on Protection as my type of appeal and click Save and continue
+    Then I should be taken to the hearing decision page
 
-  When I click on the check and send your appeal link
-  Then I should be taken to the check-and-send page
+    When I click on I want the appeal to be decided with a hearing and click Save and continue
+    Then I should see the task-list page
 
-  When I check the statement of truth
-  And I click send
-  Then I am on the appeal details sent page
-  And I see "Your appeal details have been sent" in title
-  And I see the respond by date is 5 days in the future
+    When I click on the check and send your appeal link
+    Then I should be taken to the check-and-send page
+
+    When I check the statement of truth
+    And I click send
+    Then I should be taken to the payment page
+    When I enter successful card details and confirm payment
+
+    Then I am on the appeal details sent page
+    And I see "Your appeal details have been sent" in title
+    And I see the respond by date is 5 days in the future
 
   # Case Progression
   # Then I sign in as a Case Officer and request HO Bundle

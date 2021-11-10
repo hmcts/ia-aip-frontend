@@ -6,13 +6,20 @@ const testUrl = config.get('testUrl');
 module.exports = {
   typeOfAppeal(I) {
     When(/^I click on the type\-of\-appeal link$/, async () => {
-      await I.click('Type of appeal');
+      await I.click('Appeal and decision type');
     });
     Then(/^I should be taken to the appeal page$/, async () => {
       await I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });
     When(/^I click on Protection as my type of appeal and click Save and continue$/, async () => {
       await I.checkOption('Protection');
+      await I.click('Save and continue');
+    });
+    Then(/^I should be taken to the hearing decision page$/, async () => {
+      await I.seeInCurrentUrl(paths.appealStarted.decisionType);
+    });
+    When(/^I click on I want the appeal to be decided with a hearing and click Save and continue$/, async () => {
+      await I.checkOption('I want the appeal to be decided with a hearing');
       await I.click('Save and continue');
     });
 

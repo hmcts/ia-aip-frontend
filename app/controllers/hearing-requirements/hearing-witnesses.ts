@@ -40,10 +40,10 @@ function postWitnessesOnHearingQuestion() {
       const onSuccess = async (answer: boolean) => {
         console.log('answer::' + answer);
         if (answer) {
-          // req.session.appeal.hearingRequirements.witnessesOnHearing = true;
+          req.session.appeal.hearingRequirements.witnessesOnHearing = true;
           return res.redirect(paths.submitHearingRequirements.hearingWitnessNames);
         } else {
-          // req.session.appeal.hearingRequirements.witnessesOnHearing = false;
+          req.session.appeal.hearingRequirements.witnessesOnHearing = false;
           return res.redirect(paths.submitHearingRequirements.witnessOutsideUK);
         }
       };

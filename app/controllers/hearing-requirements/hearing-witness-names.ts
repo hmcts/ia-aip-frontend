@@ -24,7 +24,6 @@ function postWitnessNamesPage() {
         return getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.taskList + '?saved');
       }
       const validation = witnessNameValidation(req.body);
-      console.log('validation::' + JSON.stringify(validation));
       if (validation) {
         return res.render('hearing-requirements/hearing-witness-names.njk', {
           error: validation,
@@ -32,8 +31,10 @@ function postWitnessNamesPage() {
           previousPage: paths.submitHearingRequirements.witnesses
         });
       }
-      console.log('req.body::' + JSON.stringify(req.body));
       // TODO: populate the table here
+      let witnessNames: string [] = req.session.appeal.hearingRequirements.witnessNames || [];
+      witnessNames.push(req.body['witnessName']);
+      req.session.appeal.hearingRequirements.witnessNames = witnessNames;
       return res.redirect(paths.submitHearingRequirements.witnessOutsideUK);
     } catch (e) {
       next(e);

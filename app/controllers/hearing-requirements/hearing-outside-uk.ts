@@ -38,7 +38,7 @@ function postWitnessesOutsideUkQuestion() {
       };
 
       const onSuccess = async (answer: boolean) => {
-        // req.session.appeal.hearingRequirements.witnessesOnHearing = answer;
+        req.session.appeal.hearingRequirements.witnessesOutsideUK = answer;
         return res.redirect(paths.submitHearingRequirements.taskList);
       };
 

@@ -118,6 +118,7 @@ export default class UpdateAppealService {
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
     let cmaRequirements: CmaRequirements = {};
+    let hearingRequirements: HearingRequirements = {};
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasPendingTimeExtension = false;
@@ -381,6 +382,7 @@ export default class UpdateAppealService {
       ...clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
       ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
       cmaRequirements,
+      hearingRequirements,
       askForMoreTime: {
         ...(_.has(caseData, 'submitTimeExtensionReason')) && { reason: caseData.submitTimeExtensionReason },
         inFlight: hasPendingTimeExtension

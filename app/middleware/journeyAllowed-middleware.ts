@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { paths } from '../paths';
+import LaunchDarklyService from '../service/launchDarkly-service';
 import { hasPendingTimeExtension } from '../utils/utils';
 
-const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const isJourneyAllowedMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const currentPath: string = req.path;
   const appealStatusPathsCopy = { ...paths[req.session.appeal.appealStatus] } || {};
   const appealStatusPaths = Object.values(appealStatusPathsCopy).map((path: string) => {
@@ -26,6 +27,15 @@ const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunct
     ...appealStatusPaths,
     ...commonPaths
   ];
+
+  const isHearingRequirementsEndpoint = currentPath.match(/(.*)\/hearing-(.*)$/);
+  if (isHearingRequirementsEndpoint) {
+    const hearingRequirementsEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, 'aip-hearing-requirements-feature', false);
+    if (!hearingRequirementsEnabled) {
+      return res.redirect(paths.common.overview);
+    }
+  }
+
   const allowed: boolean = allowedPaths.includes(currentPath) ||
     currentPath.startsWith(paths.common.documentViewer);
   if (allowed) { return next(); }

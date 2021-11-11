@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
+import { any } from 'joi';
 import {
   isJourneyAllowedMiddleware,
   isTimeExtensionsInProgress
 } from '../../../app/middleware/journeyAllowed-middleware';
 import { paths } from '../../../app/paths';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('isJourneyAllowedMiddleware', () => {
@@ -32,7 +34,7 @@ describe('isJourneyAllowedMiddleware', () => {
 
     res = {
       render: sandbox.stub(),
-      redirect: sandbox.spy(),
+      redirect: sinon.spy(),
       clearCookie: sandbox.stub(),
       send: sandbox.stub()
     } as Partial<Response>;
@@ -102,6 +104,22 @@ describe('isJourneyAllowedMiddleware', () => {
     req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
     req.session.appeal.askForMoreTime = { inFlight: false };
     isTimeExtensionsInProgress(req as Request, res as Response, next);
+    expect(next).to.have.been.called;
+  });
+
+  it('should redirect to overview page if the hearing requirements is disabled', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(false);
+    req.session.appeal.appealStatus = 'submitHearingRequirements';
+    req.path = paths.submitHearingRequirements.taskList;
+    await isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    expect(res.redirect).to.have.been.called.calledWith(paths.common.overview);
+  });
+
+  it('should redirect to taskList page if the hearing requirements is enabled', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(true);
+    req.session.appeal.appealStatus = 'submitHearingRequirements';
+    req.path = paths.submitHearingRequirements.taskList;
+    await isJourneyAllowedMiddleware(req as Request, res as Response, next);
     expect(next).to.have.been.called;
   });
 });

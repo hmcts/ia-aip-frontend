@@ -4,7 +4,6 @@ import {
   setupSubmitHearingRequirementsTaskListController
 } from '../../../../app/controllers/hearing-requirements/task-list';
 import { paths } from '../../../../app/paths';
-import LaunchDarklyService from '../../../../app/service/launchDarkly-service';
 import Logger from '../../../../app/utils/logger';
 import { expect, sinon } from '../../../utils/testUtils';
 
@@ -69,9 +68,7 @@ describe('Submit Hearing Requirements Task List Controller', () => {
     } as Partial<Request>;
 
     res = {
-      render: sandbox.stub(),
-      send: sandbox.stub(),
-      redirect: sinon.spy()
+      render: sandbox.stub()
     } as Partial<Response>;
 
     next = sandbox.stub() as NextFunction;
@@ -81,28 +78,19 @@ describe('Submit Hearing Requirements Task List Controller', () => {
     sandbox.restore();
   });
 
-  it('should redirect to overview page when feature flag OFF', async () => {
-    const middleware = [];
-    const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(false);
-    await getTaskList(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
-  });
-
-  it('should setup the routes', async() => {
+  it('should setup the routes', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     const middleware = [];
     setupSubmitHearingRequirementsTaskListController(middleware);
     expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
   });
 
-  it('getTaskList should render task-list.njk', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(true);
-    await getTaskList(req as Request, res as Response, next);
+  it('getTaskList should render task-list.njk', () => {
+    getTaskList(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/task-list.njk');
   });
 
-  it('getTaskList should render task-list.njk with status data', async () => {
+  it('getTaskList should render task-list.njk with status data', () => {
     const mockData = [ {
       'sectionId': 'witnesses',
       'tasks': [ { 'id': 'witnesses', 'saved': false, 'completed': false, 'active': true }]
@@ -120,19 +108,17 @@ describe('Submit Hearing Requirements Task List Controller', () => {
       'tasks': [ { 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false } ]
     } ];
 
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(true);
-    await getTaskList(req as Request, res as Response, next);
+    getTaskList(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: mockData
     });
   });
 
-  it('getTaskList should catch an exception and call next()', async () => {
+  it('getTaskList should catch an exception and call next()', () => {
     const error = new Error('the error');
-    res.redirect = sandbox.stub().throws(error);
-    await getTaskList(req as Request, res as Response, next);
+    res.render = sandbox.stub().throws(error);
+    getTaskList(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
   });
-
 });

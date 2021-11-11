@@ -51,12 +51,12 @@ const paths = {
     confirmation: '/clarifying-questions-sent'
   },
   submitHearingRequirements: {
-    taskList: '/hearing-requirements-needs',
-    witnesses: '/hearing-requirements-witnesses',
-    accessNeeds: '/hearing-requirements-access-needs',
-    otherNeeds: '/hearing-requirements-other-needs',
-    datesToAvoidQuestion: '/hearing-requirements-dates-avoid',
-    checkAndSend: '/hearing-requirements-check-answers'
+    taskList: '/hearing-needs',
+    witnesses: '/hearing-witnesses',
+    accessNeeds: '/hearing-access-needs',
+    otherNeeds: '/hearing-other-needs',
+    datesToAvoidQuestion: '/hearing-dates-avoid',
+    checkAndSend: '/hearing-check-answers'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',

@@ -58,6 +58,8 @@ const paths = {
     datesToAvoidQuestion: '/hearing-requirements-dates-avoid',
     checkAndSend: '/hearing-requirements-check-answers',
     hearingWitnessNames: '/hearing-witness-names',
+    hearingWitnessNamesAdd: '/hearing-witness-names/add',
+    hearingWitnessNamesRemove: '/hearing-witness-names/remove',
     witnessOutsideUK: '/hearing-outside-uk'
   },
   awaitingCmaRequirements: {

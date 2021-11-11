@@ -24,7 +24,8 @@
       "uploadFile": "Upload file",
       "send": "Send",
       "cancel": "Cancel",
-      "seeProgress": "See your appeal progress"
+      "seeProgress": "See your appeal progress",
+      "addAnotherWitness": "Add another witness"
     },
     "requirements": {
       "heading": "You will need to:"

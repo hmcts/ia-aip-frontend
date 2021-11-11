@@ -31,6 +31,31 @@
         } if error["witnessName"]
     }) }}
 
+        {{ govukButton({
+            text: i18n.common.buttons.addAnotherWitness,
+            name: 'addAnotherWitness',
+            classes: "govuk-button--secondary",
+            attributes: {
+                formaction: addWitnessAction + '?_csrf=' + csrfToken
+            }
+        }) }}
+
+        {% if witnessNames %}
+        <div class="panel">
+            <h2>Added witnesses</h2>
+
+            <table width="100vw">
+                {% for name in witnessNames %}
+                    <tr style="border-bottom:1pt solid black;">
+                        <td >{{ name }}</td>
+                        <td align="right"><a class="govuk-link app-contact-panel__link"
+                               href="{{ removeWitnessAction + '?_csrf=' + csrfToken + '&name=' + name | escape }}">Remove</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
     {{ saveButtons() }}
     {% endcall %}
 </form>

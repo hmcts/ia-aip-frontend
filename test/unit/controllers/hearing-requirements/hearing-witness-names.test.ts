@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getWitnessNamesPage, postWitnessNamesPage,
+  addMoreWitnessPostAction,
+  getWitnessNamesPage, postWitnessNamesPage, removeWitnessPostAction,
   setupWitnessNamesController
 } from '../../../../app/controllers/hearing-requirements/hearing-witness-names';
 import { paths } from '../../../../app/paths';
@@ -52,7 +53,10 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
     it('should render template', () => {
 
       const expectedArgs = {
-        previousPage: '/hearing-witnesses'
+        previousPage: '/hearing-witnesses',
+        witnessNames: [ 'My witness' ],
+        addWitnessAction: '/hearing-witness-names/add',
+        removeWitnessAction: '/hearing-witness-names/remove'
       };
 
       getWitnessNamesPage(req as Request, res as Response, next);
@@ -70,8 +74,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
 
   describe('postWitnessNamesPage', () => {
     it('should fail validation and render template with errors', async () => {
+      req.session.appeal.hearingRequirements.witnessNames = [];
       await postWitnessNamesPage()(req as Request, res as Response, next);
-
       const expectedError = {
         witnessName: {
           href: '#witnessName',
@@ -83,7 +87,10 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: '/hearing-witnesses'
+        previousPage: '/hearing-witnesses',
+        witnessNames: [],
+        addWitnessAction: '/hearing-witness-names/add',
+        removeWitnessAction: '/hearing-witness-names/remove'
       };
       expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
 
@@ -96,6 +103,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
     });
 
     it('should catch error and call next with error', async () => {
+      req.session.appeal.hearingRequirements.witnessNames = [];
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
@@ -104,4 +112,63 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
     });
   });
 
+  describe('addMoreWitnessPostAction', () => {
+    it('should fail validation and render template with errors', async () => {
+      req.session.appeal.hearingRequirements.witnessNames = [];
+      await addMoreWitnessPostAction()(req as Request, res as Response, next);
+      const expectedError = {
+        witnessName: {
+          href: '#witnessName',
+          key: 'witnessName',
+          text: '"witnessName" is required'
+        }
+      };
+
+      const expectedArgs = {
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        previousPage: '/hearing-witnesses',
+        witnessNames: [],
+        addWitnessAction: '/hearing-witness-names/add',
+        removeWitnessAction: '/hearing-witness-names/remove'
+      };
+      expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
+
+    });
+
+    it('should add name in session and redirect to names page', async () => {
+      req.body['witnessName'] = 'My witness name';
+      await addMoreWitnessPostAction()(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.witnessNames).to.contain('My witness name');
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
+    });
+
+    it('should catch error and call next with error', async () => {
+      req.session.appeal.hearingRequirements.witnessNames = [];
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+
+      await postWitnessNamesPage()(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('removeWitnessPostAction', () => {
+
+    it('should remove witness name from session and redirect to names page', async () => {
+      req.query = { name : 'My witness' };
+      await removeWitnessPostAction()(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.witnessNames).to.not.contain('My witness');
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
+    });
+
+    it('should catch error and call next with error', async () => {
+      req.session.appeal.hearingRequirements.witnessNames = [];
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+
+      await postWitnessNamesPage()(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
 });

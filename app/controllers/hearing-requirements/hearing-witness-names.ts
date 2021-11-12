@@ -31,9 +31,11 @@ function postWitnessNamesPage() {
       if (validation) {
         return renderPage(res, validation, witnessNames);
       }
-
-      witnessNames.push(req.body['witnessName']);
-      req.session.appeal.hearingRequirements.witnessNames = witnessNames;
+      const witnessName: string = req.body['witnessName'] as string;
+      if (!witnessName) {
+        witnessNames.push();
+        req.session.appeal.hearingRequirements.witnessNames = witnessNames;
+      }
       return res.redirect(paths.submitHearingRequirements.witnessOutsideUK);
     } catch (e) {
       next(e);
@@ -98,12 +100,10 @@ function buildWitnessNamesList(witnessNames: string[]): SummaryList[] {
         )
     );
   });
-
   witnessNamesSummaryLists.push({
     summaryRows: witnessNamesRows,
     title: 'Added witnesses'
   });
-
   return witnessNamesSummaryLists;
 }
 

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../../paths';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
   witnessNameValidation
@@ -11,9 +12,8 @@ function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
     let witnessNames: string [] = req.session.appeal.hearingRequirements.witnessNames || [];
     return res.render('hearing-requirements/hearing-witness-names.njk', {
       previousPage: paths.submitHearingRequirements.witnesses,
-      witnessNames: witnessNames,
-      addWitnessAction: paths.submitHearingRequirements.hearingWitnessNamesAdd,
-      removeWitnessAction: paths.submitHearingRequirements.hearingWitnessNamesRemove
+      summaryList: buildWitnessNamesList(witnessNames),
+      addWitnessAction: paths.submitHearingRequirements.hearingWitnessNamesAdd
     });
   } catch (e) {
     next(e);
@@ -46,9 +46,8 @@ function renderPage (res: Response, validation: ValidationErrors, witnessNames: 
     error: validation,
     errorList: Object.values(validation),
     previousPage: paths.submitHearingRequirements.witnesses,
-    witnessNames: witnessNames,
-    addWitnessAction: paths.submitHearingRequirements.hearingWitnessNamesAdd,
-    removeWitnessAction: paths.submitHearingRequirements.hearingWitnessNamesRemove
+    summaryList: buildWitnessNamesList(witnessNames),
+    addWitnessAction: paths.submitHearingRequirements.hearingWitnessNamesAdd
   });
 }
 
@@ -83,6 +82,29 @@ function removeWitnessPostAction() {
       next(e);
     }
   };
+}
+
+function buildWitnessNamesList(witnessNames: string[]): SummaryList[] {
+  const witnessNamesSummaryLists: SummaryList[] = [];
+  const witnessNamesRows: SummaryRow[] = [];
+  witnessNames.map((name: string) => {
+    witnessNamesRows.push(
+        addSummaryRow(
+            name,
+            [],
+            `${paths.submitHearingRequirements.hearingWitnessNamesRemove}?name=${encodeURIComponent(name)}`,
+            null,
+            'Remove'
+        )
+    );
+  });
+
+  witnessNamesSummaryLists.push({
+    summaryRows: witnessNamesRows,
+    title: 'Added witnesses'
+  });
+
+  return witnessNamesSummaryLists;
 }
 
 function setupWitnessNamesController(middleware: Middleware[]): Router {

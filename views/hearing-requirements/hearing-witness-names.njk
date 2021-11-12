@@ -1,63 +1,57 @@
 {% set pageTitleName = i18n.pages.name.title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "components/summary-list.njk" import govukSummaryList %}
 
 {% block content %}
-  {% if errorList %}
-      {{ govukErrorSummary({
-          titleText: i18n.error.summary.title,
-          errorList: errorList
-      }) }}
-  {% endif %}
-
-<form method="post" action="{{ formAction }}" type="submit">
-    {% call govukFieldset({
-        legend: {
-            text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.title,
-            classes: "govuk-fieldset__legend--xl",
-            isPageHeading: true
-        }
-    }) %}
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {{ govukInput({
-        label: {
-            text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.text
-        },
-        classes: "govuk-input--width-20",
-        id: "witnessName",
-        name: "witnessName",
-        errorMessage: {
-            text: error["witnessName"].text
-        } if error["witnessName"]
-    }) }}
-
-        {{ govukButton({
-            text: i18n.common.buttons.addAnotherWitness,
-            name: 'addAnotherWitness',
-            classes: "govuk-button--secondary",
-            attributes: {
-                formaction: addWitnessAction + '?_csrf=' + csrfToken
-            }
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.error.summary.title,
+            errorList: errorList
         }) }}
+    {% endif %}
 
-        {% if witnessNames %}
-        <div class="panel">
-            <h2>Added witnesses</h2>
+    <form method="post" action="{{ formAction }}" type="submit">
+        {% call govukFieldset({
+            legend: {
+                text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.title,
+                classes: "govuk-fieldset__legend--xl",
+                isPageHeading: true
+            }
+        }) %}
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            {{ govukInput({
+                label: {
+                    text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.text
+                },
+                classes: "govuk-input--width-20",
+                id: "witnessName",
+                name: "witnessName",
+                errorMessage: {
+                    text: error["witnessName"].text
+                } if error["witnessName"]
+            }) }}
 
-            <table width="100vw">
-                {% for name in witnessNames %}
-                    <tr style="border-bottom:1pt solid black;">
-                        <td >{{ name }}</td>
-                        <td align="right"><a class="govuk-link app-contact-panel__link"
-                               href="{{ removeWitnessAction + '?_csrf=' + csrfToken + '&name=' + name | escape }}">Remove</a>
-                        </td>
-                    </tr>
+            {{ govukButton({
+                text: i18n.common.buttons.addAnotherWitness,
+                name: 'addAnotherWitness',
+                classes: "govuk-button--secondary",
+                attributes: {
+                    formaction: addWitnessAction
+                }
+            }) }}
+
+            {% if summaryList[0].summaryRows|length %}
+                <h2>{{ summaryList[0].title }}</h2>
+                {% for row in summaryList %}
+                    {{ govukSummaryList({
+                        rows: row.summaryRows
+                    }) }}
                 {% endfor %}
-            </table>
-        </div>
-        {% endif %}
-    {{ saveButtons() }}
-    {% endcall %}
-</form>
-{{ contactUs() }}
+            {% endif %}
+
+            {{ saveButtons() }}
+        {% endcall %}
+    </form>
+    {{ contactUs() }}
 {% endblock %}

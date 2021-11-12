@@ -12,7 +12,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
-
+  let summaryList = [{ summaryRows: [{ key: { text: 'My witness' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=My%20witness' , text : 'Remove' }] } } ], title: 'Added witnesses' } ];
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -54,9 +54,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
 
       const expectedArgs = {
         previousPage: '/hearing-witnesses',
-        witnessNames: [ 'My witness' ],
         addWitnessAction: '/hearing-witness-names/add',
-        removeWitnessAction: '/hearing-witness-names/remove'
+        summaryList: summaryList
       };
 
       getWitnessNamesPage(req as Request, res as Response, next);
@@ -88,9 +87,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         error: expectedError,
         errorList: Object.values(expectedError),
         previousPage: '/hearing-witnesses',
-        witnessNames: [],
         addWitnessAction: '/hearing-witness-names/add',
-        removeWitnessAction: '/hearing-witness-names/remove'
+        summaryList: [ { summaryRows: [], title: 'Added witnesses' } ]
       };
       expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
 
@@ -128,9 +126,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         error: expectedError,
         errorList: Object.values(expectedError),
         previousPage: '/hearing-witnesses',
-        witnessNames: [],
         addWitnessAction: '/hearing-witness-names/add',
-        removeWitnessAction: '/hearing-witness-names/remove'
+        summaryList: [ { summaryRows: [], title: 'Added witnesses' } ]
       };
       expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
 

@@ -438,7 +438,7 @@ describe('Check and Send Controller', () => {
       expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
       expect(req.session.appeal.paymentDate).to.be.eql('aDate');
       expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.confirmation);
+      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayLater);
     });
 
     it('should finish a payment and redirect to confirmation pay later', async () => {

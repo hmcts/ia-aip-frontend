@@ -117,6 +117,7 @@ const paths = {
     noticeEndedAppealViewer: '/notice-ended-appeal',
     outOfTimeDecisionViewer: '/out-of-time-decision',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
+    homeOfficeResponse: '/home-office-response',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

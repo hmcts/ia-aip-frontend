@@ -5,11 +5,8 @@ import i18n from '../../locale/en.json';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import {
-  docStoreUrlToHtmlLink,
   documentIdToDocStoreUrl,
-  DocumentManagementService,
-  documentToHtmlLink,
-  fileNameFormatter,
+  DocumentManagementService, fileNameFormatter,
   toHtmlLink
 } from '../service/document-management-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
@@ -400,6 +397,30 @@ function getHomeOfficeWithdrawLetter(req: Request, res: Response, next: NextFunc
   }
 }
 
+function getHomeOfficeResponse(req: Request, res: Response, next: NextFunction) {
+  try {
+    const previousPage: string = paths.common.overview;
+    const homeOfficeResponseDocuments = req.session.appeal.respondentDocuments.filter(doc => doc.tag === 'appealResponse');
+
+    const homeOfficeLetter = homeOfficeResponseDocuments.shift();
+    const data = [
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.dateUploaded, [moment(homeOfficeLetter.dateUploaded).format(dayMonthYearFormat)]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${homeOfficeLetter.fileId}'>${fileNameFormatter(homeOfficeLetter.name)}</a>`]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.documentDescription, [homeOfficeLetter.description])
+    ];
+    homeOfficeResponseDocuments.forEach(document => {
+      data.push(addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.additionalEvidence, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatter(document.name)}</a>`]));
+    });
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.homeOfficeResponse.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
@@ -411,6 +432,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.noticeEndedAppealViewer, getNoticeEndedAppeal);
   router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
   router.get(paths.common.homeOfficeWithdrawLetter, getHomeOfficeWithdrawLetter);
+  router.get(paths.common.homeOfficeResponse, getHomeOfficeResponse);
   return router;
 }
 
@@ -426,5 +448,6 @@ export {
   setupDetailViewersController,
   setupCmaRequirementsViewer,
   getCmaRequirementsViewer,
-  getOutOfTimeDecisionViewer
+  getOutOfTimeDecisionViewer,
+  getHomeOfficeResponse
 };

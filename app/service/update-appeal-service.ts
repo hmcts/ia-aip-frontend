@@ -405,6 +405,7 @@ export default class UpdateAppealService {
       ...caseData.paymentStatus && { paymentStatus: caseData.paymentStatus },
       ...caseData.paymentDate && { paymentDate: caseData.paymentDate },
       ...caseData.isFeePaymentEnabled && { isFeePaymentEnabled: caseData.isFeePaymentEnabled },
+      ...caseData.paAppealTypeAipPaymentOption && { paAppealTypeAipPaymentOption: caseData.paAppealTypeAipPaymentOption },
       hearingCentre: caseData.hearingCentre || null,
       documentMap
     };
@@ -641,6 +642,7 @@ export default class UpdateAppealService {
       ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
+      ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
       ...appeal.draftClarifyingQuestionsAnswers && {
         draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
       },

@@ -71,6 +71,7 @@ import { setupSecrets } from './setupSecrets';
 
 import './controllers/appeal-application/decision-type';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
+import './controllers/appeal-application/pay-now';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');

@@ -1,37 +1,41 @@
 {% extends './layout.njk' %}
 {% set pageTitleName = i18n.pages.successPage.title %}
 {% block content %}
- {% from "govuk/components/panel/macro.njk" import govukPanel %}
-    {% if late %}
-    {{ govukPanel({
-        titleText: i18n.pages.successPage.outOfTime.panel,
-        classes: mainClasses
-    }) }}
-    {%  else %}
-        {{ govukPanel({
-            titleText: i18n.pages.successPage.inTime.panel,
-            classes: mainClasses
-        }) }}
-    {%  endif %}
-    <h2 class="govuk-heading-m">{{i18n.pages.successPage.whatHappensNext}}</h2>
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+  {% if payLater %}
+    {% set panelTitle = i18n.pages.successPage.payLater.panel %}
+  {% elif late %}
+    {% set panelTitle = i18n.pages.successPage.outOfTime.panel %}
+  {% else %}
+    {% set panelTitle = i18n.pages.successPage.inTime.panel %}
+  {% endif %}
+  {{ govukPanel({
+    titleText: panelTitle,
+    classes: mainClasses
+  }) }}
+  <h2 class="govuk-heading-m">{{i18n.pages.successPage.whatHappensNext}}</h2>
+  {% if payLater %}
+    {{ i18n.pages.successPage.payLater.whatHappensNextContent }}
+  {% elif late %}
     <ul class="govuk-list govuk-list--bullet">
-    {% if late %}
-        <li>{{ i18n.pages.successPage.outOfTime.askHomeOffice }}</li>
-        <li>{{ i18n.pages.successPage.outOfTime.whatToDoNext }}</li>
-        <li>{{ i18n.pages.successPage.outOfTime.timescale | eval | safe }}</li>
-    {%  else %}
-        <li>{{ i18n.pages.successPage.askHomeOffice }}</li>
-        <li>{{ i18n.pages.successPage.whatToDoNext }}</li>
-        <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
-    {%  endif %}
+      <li>{{ i18n.pages.successPage.outOfTime.askHomeOffice }}</li>
+      <li>{{ i18n.pages.successPage.outOfTime.whatToDoNext }}</li>
+      <li>{{ i18n.pages.successPage.outOfTime.timescale | eval | safe }}</li>
     </ul>
-        <div class="panel-background">
-            <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>
-            <ul class="govuk-list govuk-list--bullet">
-                <li><a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/immigration-asylum-tribunal"> {{ i18n.pages.successPage.readMore | safe }}</a></li>
-                <li><a class="govuk-link govuk-link--no-visited-state" href="{{ paths.common.moreHelp }}">{{ i18n.pages.successPage.findOutMore | safe }}</a></li>
-            </ul>
-         </div>
+  {% else %}
+    <ul class="govuk-list govuk-list--bullet">
+      <li>{{ i18n.pages.successPage.askHomeOffice }}</li>
+      <li>{{ i18n.pages.successPage.whatToDoNext }}</li>
+      <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
+    </ul>
+  {% endif %}
+  <div class="panel-background">
+      <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>
+      <ul class="govuk-list govuk-list--bullet">
+          <li><a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/immigration-asylum-tribunal"> {{ i18n.pages.successPage.readMore | safe }}</a></li>
+          <li><a class="govuk-link govuk-link--no-visited-state" href="{{ paths.common.moreHelp }}">{{ i18n.pages.successPage.findOutMore | safe }}</a></li>
+      </ul>
+    </div>
     {{ govukButton({
         text: i18n.pages.successPage.seeProgress,
         href: paths.common.overview

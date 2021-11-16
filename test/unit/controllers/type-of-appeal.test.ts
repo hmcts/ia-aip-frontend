@@ -121,6 +121,7 @@ describe('Type of appeal Controller', () => {
     beforeEach(() => {
       appeal = {
         ...req.session.appeal,
+        paAppealTypeAipPaymentOption: '',
         application: {
           ...req.session.appeal.application,
           appealType: 'human-rights'
@@ -134,12 +135,21 @@ describe('Type of appeal Controller', () => {
       } as Appeal);
     });
 
-    it('should validate and redirect to the task-list page', async () => {
+    it('should validate and redirect to the task-list page with payments flag OFF', async () => {
       req.body['appealType'] = 'human-rights';
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+    });
+
+    it('should validate and redirect to the task-list page with payments flag ON', async () => {
+      req.body['appealType'] = 'human-rights';
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.decisionType);
     });
 
     it('should validate and redirect to the task-list page and payments feature flag ON', async () => {
@@ -147,7 +157,7 @@ describe('Type of appeal Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.decisionType);
     });
 
@@ -196,7 +206,7 @@ describe('Type of appeal Controller', () => {
       appeal.application.isEdit = true;
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
@@ -205,7 +215,7 @@ describe('Type of appeal Controller', () => {
       req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
@@ -215,7 +225,7 @@ describe('Type of appeal Controller', () => {
       req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
 

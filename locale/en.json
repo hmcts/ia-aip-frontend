@@ -121,6 +121,20 @@
       "pageHint": "<p>Select one appeal type. If you are unsure, the first page of your decision letter should include the type of decision you are appealing.</p><p>If you think more than one appeal type applies to your appeal, you will have the chance to tell us about that later.</p>",
       "exampleSummaryText": "Reasons to select "
     },
+    "payNow": {
+      "title": "Do you want to pay for the appeal now?",
+      "hint": "You can use any valid credit or debit card to pay.",
+      "options": {
+        "now": {
+          "value": "payNow",
+          "text": "Yes"
+        },
+        "later": {
+          "value": "payLater",
+          "text": "No, I will pay later"
+        }
+      }
+    },
     "decisionType": {
       "title": "How do you want your appeal to be decided",
       "hint": {
@@ -167,13 +181,15 @@
         "addressDetails": "Address",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
-        "supportingEvidence": "Supporting evidence"
+        "supportingEvidence": "Supporting evidence",
+        "paymentType": "Payment type"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
       "decisionWithHearing": "Decision with a hearing",
-      "decisionWithoutHearing": "Decision without a hearing"
-
+      "decisionWithoutHearing": "Decision without a hearing",
+      "payNow": "Pay now",
+      "payLater": "Pay later"
     },
     "name": {
       "title": "What is your name?",
@@ -282,6 +298,10 @@
       },
       "inTime": {
         "panel": "Your appeal details have been sent"
+      },
+      "payLater": {
+        "panel": "You have sent your appeal details",
+        "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
       }
     },
     "reasonForAppeal": {
@@ -2137,6 +2157,7 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
+    "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",

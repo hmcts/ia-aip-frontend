@@ -114,6 +114,7 @@ interface Appeal {
   paymentStatus?: string;
   paymentDate?: string;
   isFeePaymentEnabled?: string;
+  paAppealTypeAipPaymentOption?: string;
 }
 
 interface Hearing {

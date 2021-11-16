@@ -96,6 +96,7 @@ interface CaseData {
   paymentStatus?: string;
   paymentDate?: string;
   isFeePaymentEnabled?: string;
+  paAppealTypeAipPaymentOption?: string;
 }
 
 interface Application<T> {

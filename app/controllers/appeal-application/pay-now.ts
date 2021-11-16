@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
@@ -34,7 +35,7 @@ function getPayNowQuestion(appeal: Appeal) {
 
 async function getPayNow(req: Request, res: Response, next: NextFunction) {
   try {
-    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     if (!paymentsFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
@@ -53,7 +54,7 @@ async function getPayNow(req: Request, res: Response, next: NextFunction) {
 function postPayNow(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       if (!paymentsFlag) return res.redirect(paths.common.overview);
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');

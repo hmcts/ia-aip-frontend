@@ -115,6 +115,12 @@ interface Appeal {
   paymentDate?: string;
   isFeePaymentEnabled?: string;
   paAppealTypeAipPaymentOption?: string;
+  feeWithHearing?: string;
+  feeWithoutHearing?: string;
+  feeCode?: string;
+  feeDescription?: string;
+  feeVersion?: string;
+  feeAmountGbp?: string;
 }
 
 interface Hearing {

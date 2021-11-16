@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import { appealTypes } from '../../data/appeal-types';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
@@ -11,7 +12,7 @@ import { getRedirectPage } from '../../utils/utils';
 import { typeOfAppealValidation } from '../../utils/validations/fields-validations';
 
 async function getAppealTypes(req: Request) {
-  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const types = paymentsFlag ? appealTypes : appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection');
   const appealType = req.session.appeal.application && req.session.appeal.application.appealType || [];
   return types.map(type => {
@@ -42,7 +43,7 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
       const validation = typeOfAppealValidation(req.body);
       if (validation) {
         let finalAppealTypes = appealTypes;
-        const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+        const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
         if (!paymentsFlag) {
           finalAppealTypes = appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection');
         }
@@ -62,7 +63,7 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
           appealType: req.body['appealType']
         }
       };
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       let defaultRedirect = paths.appealStarted.taskList;
       let editingModeRedirect = paths.appealStarted.checkAndSend;

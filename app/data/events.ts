@@ -108,5 +108,9 @@ export const Events = {
     id: 'editDocuments',
     summary: 'Edit additional evidence for AIP',
     description: 'Edit additional evidence for AIP'
+  },
+  REQUEST_HEARING_REQUIREMENTS_FEATURE: {
+    id: 'requestHearingRequirementsFeature',
+    description: 'Request Hearing Requirements'
   }
 };

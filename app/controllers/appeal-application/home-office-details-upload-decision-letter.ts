@@ -1,12 +1,11 @@
 
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
-
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
-import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
+import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 

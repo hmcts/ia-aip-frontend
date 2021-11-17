@@ -67,7 +67,7 @@ const paths = {
     otherNeedsAllMaleAppointment: '/appointment-single-sex-type-male',
     otherNeedsAllFemaleAppointment: '/appointment-single-sex-type-female',
     otherNeedsPrivateAppointment: '/appointment-private',
-    otherNeedsPrivateAppointmentReason : '/appointment-private-reasons',
+    otherNeedsPrivateAppointmentReason: '/appointment-private-reasons',
     otherNeedsHealthConditions: '/appointment-physical-mental-health',
     otherNeedsHealthConditionsReason: '/appointment-physical-mental-health-reasons',
     otherNeedsPastExperiences: '/appointment-past-experiences',
@@ -106,6 +106,12 @@ const paths = {
     ineligible: '/not-eligible',
     questions: '/eligibility',
     eligible: '/eligible',
+
+    provideMoreEvidenceForm: '/provide-more-evidence',
+    provideMoreEvidenceUploadFile: '/provide-more-evidence/upload/file',
+    provideMoreEvidenceDeleteFile: '/provide-more-evidence/delete/file',
+    provideMoreEvidenceCheck: '/provide-more-evidence-check',
+    provideMoreEvidenceConfirmation: '/provide-more-evidence-sent',
 
     // Viewers endpoints
     documentViewer: '/view/document',

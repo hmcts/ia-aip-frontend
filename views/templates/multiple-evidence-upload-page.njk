@@ -41,6 +41,11 @@
         {% endfor %}
       {% endif %}
 
+
+      {% if moreInfo %}
+        <p>{{ moreInfo | safe }} </p>
+      {% endif %}
+
       <div class="govuk-inset-text">
         {{ govukFileUpload({
           id: "file-upload",
@@ -67,7 +72,12 @@
       {% if askForMoreTimeFeatureEnabled %}
         {% include "components/ask-for-more-time-panel.njk" %}
       {% endif %}
-      {{ saveButtons() }}
+      {% if continueCancelButtons %} 
+        {{ continueToUrlButton() }}
+        {{ canelButton() }}
+        {% else %}
+        {{ saveButtons() }}
+      {% endif %}
     {% endcall %}
   </form>
   {{ contactUs() }}

@@ -1,6 +1,5 @@
 import { Address, Point } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response } from 'express';
-import * as _ from 'lodash';
 import {
   deleteHomeOfficeDecisionLetter,
   getHomeOfficeDecisionLetter,
@@ -9,15 +8,13 @@ import {
   uploadHomeOfficeDecisionLetter,
   validate
 } from '../../../app/controllers/appeal-application/home-office-details-upload-decision-letter';
-
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
-import { expect, sinon } from '../../utils/testUtils';
-
 import { createStructuredError } from '../../../app/utils/validations/fields-validations';
 import i18n from '../../../locale/en.json';
+import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 

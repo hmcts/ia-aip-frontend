@@ -93,5 +93,9 @@ export const Events = {
     id: 'requestResponseReview',
     summary: 'Review Home Office response',
     description: 'Review Home Office response'
+  },
+  REQUEST_HEARING_REQUIREMENTS_FEATURE: {
+    id: 'requestHearingRequirementsFeature',
+    description: 'Request Hearing Requirements'
   }
 };

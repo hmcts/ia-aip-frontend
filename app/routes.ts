@@ -73,7 +73,6 @@ import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
 
-
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 

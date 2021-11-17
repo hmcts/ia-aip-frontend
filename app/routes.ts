@@ -146,9 +146,9 @@ const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAdd
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
 const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController(middleware);
-const witnessesOnHearingQuestionController = setupWitnessesOnHearingQuestionController(middleware);
-const witnessesOutsideUkQuestionController = setupWitnessesOutsideUkQuestionController(middleware);
-const witnessNamesController = setupWitnessNamesController(middleware);
+const witnessesOnHearingQuestionController = setupWitnessesOnHearingQuestionController(middleware, updateAppealService);
+const witnessesOutsideUkQuestionController = setupWitnessesOutsideUkQuestionController(middleware, updateAppealService);
+const witnessNamesController = setupWitnessNamesController(middleware, updateAppealService);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 

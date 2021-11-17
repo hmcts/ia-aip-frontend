@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
+import UpdateAppealService from '../../service/update-appeal-service';
 import { postHearingRequirementsYesNoHandler } from './common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
@@ -25,7 +27,7 @@ function getWitnessesOnHearingQuestion(req: Request, res: Response, next: NextFu
   }
 }
 
-function postWitnessesOnHearingQuestion() {
+function postWitnessesOnHearingQuestion(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.witnessesSection.witnessesOnHearingRequired;
@@ -38,12 +40,16 @@ function postWitnessesOnHearingQuestion() {
       };
 
       const onSuccess = async (answer: boolean) => {
-        console.log('answer::' + answer);
+        req.session.appeal.hearingRequirements.witnessesOnHearing = answer;
+
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.appeal = {
+          ...req.session.appeal,
+          ...appealUpdated
+        };
         if (answer) {
-          req.session.appeal.hearingRequirements.witnessesOnHearing = true;
           return res.redirect(paths.submitHearingRequirements.hearingWitnessNames);
         } else {
-          req.session.appeal.hearingRequirements.witnessesOnHearing = false;
           return res.redirect(paths.submitHearingRequirements.witnessOutsideUK);
         }
       };
@@ -55,10 +61,10 @@ function postWitnessesOnHearingQuestion() {
   };
 }
 
-function setupWitnessesOnHearingQuestionController(middleware: Middleware[]): Router {
+function setupWitnessesOnHearingQuestionController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.submitHearingRequirements.witnesses, middleware, getWitnessesOnHearingQuestion);
-  router.post(paths.submitHearingRequirements.witnesses, middleware, postWitnessesOnHearingQuestion());
+  router.post(paths.submitHearingRequirements.witnesses, middleware, postWitnessesOnHearingQuestion(updateAppealService));
 
   return router;
 }

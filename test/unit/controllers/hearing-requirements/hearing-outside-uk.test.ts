@@ -4,18 +4,28 @@ import {
   setupWitnessesOutsideUkQuestionController
 } from '../../../../app/controllers/hearing-requirements/hearing-outside-uk';
 import { paths } from '../../../../app/paths';
+import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../utils/testUtils';
 
 describe('Hearing Requirements - Witness Needs - Witnesses outside UK question controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
       params: {},
       session: {
         appeal: {
@@ -29,6 +39,9 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
+
+    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
+
     next = sandbox.stub() as NextFunction;
   });
 
@@ -42,7 +55,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupWitnessesOutsideUkQuestionController(middleware);
+      setupWitnessesOutsideUkQuestionController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.witnessOutsideUK);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.witnessOutsideUK);
     });
@@ -80,7 +93,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
 
   describe('postWitnessesOutsideUkQuestion', () => {
     it('should fail validation and render template with errors', async () => {
-      await postWitnessesOutsideUkQuestion()(req as Request, res as Response, next);
+      await postWitnessesOutsideUkQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         answer: {
@@ -107,14 +120,14 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
 
     it('should validate and redirect to task list page if answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postWitnessesOutsideUkQuestion()(req as Request, res as Response, next);
+      await postWitnessesOutsideUkQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postWitnessesOutsideUkQuestion()(req as Request, res as Response, next);
+      await postWitnessesOutsideUkQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
     });
@@ -123,7 +136,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postWitnessesOutsideUkQuestion()(req as Request, res as Response, next);
+      await postWitnessesOutsideUkQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

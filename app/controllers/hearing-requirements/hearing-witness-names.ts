@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { Events } from '../../data/events';
 import { paths } from '../../paths';
+import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -20,7 +22,7 @@ function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postWitnessNamesPage() {
+function postWitnessNamesPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'witnessName')) {
@@ -36,6 +38,11 @@ function postWitnessNamesPage() {
         witnessNames.push();
         req.session.appeal.hearingRequirements.witnessNames = witnessNames;
       }
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
       return res.redirect(paths.submitHearingRequirements.witnessOutsideUK);
     } catch (e) {
       next(e);
@@ -107,10 +114,10 @@ function buildWitnessNamesList(witnessNames: string[]): SummaryList[] {
   return witnessNamesSummaryLists;
 }
 
-function setupWitnessNamesController(middleware: Middleware[]): Router {
+function setupWitnessNamesController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.submitHearingRequirements.hearingWitnessNames, middleware, getWitnessNamesPage);
-  router.post(paths.submitHearingRequirements.hearingWitnessNames, middleware, postWitnessNamesPage());
+  router.post(paths.submitHearingRequirements.hearingWitnessNames, middleware, postWitnessNamesPage(updateAppealService));
   router.post(paths.submitHearingRequirements.hearingWitnessNamesAdd, middleware, addMoreWitnessPostAction());
   router.get(paths.submitHearingRequirements.hearingWitnessNamesRemove, middleware, removeWitnessPostAction());
 

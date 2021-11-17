@@ -341,6 +341,18 @@ export default class UpdateAppealService {
       };
     }
 
+    if (caseData.isWitnessesAttending) {
+      hearingRequirements.witnessesOnHearing = yesNoToBool(caseData.isWitnessesAttending);
+    }
+    if (caseData.isEvidenceFromOutsideUkInCountry) {
+      hearingRequirements.witnessesOutsideUK = yesNoToBool(caseData.isEvidenceFromOutsideUkInCountry);
+    }
+    if (caseData.witnessDetails && caseData.witnessDetails.length) {
+      hearingRequirements.witnessNames = caseData.witnessDetails.map((witnessDetail) => {
+        return witnessDetail.value.witnessName;
+      });
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -627,6 +639,26 @@ export default class UpdateAppealService {
             );
           }
         }
+      }
+    }
+
+    if (_.has(appeal, 'hearingRequirements')) {
+      if (_.has(appeal.hearingRequirements, 'witnessesOnHearing')) {
+        caseData.isWitnessesAttending = boolToYesNo(appeal.hearingRequirements.witnessesOnHearing);
+      }
+
+      if (_.has(appeal.hearingRequirements, 'witnessesOutsideUK')) {
+        caseData.isEvidenceFromOutsideUkInCountry = boolToYesNo(appeal.hearingRequirements.witnessesOutsideUK);
+      }
+
+      if (_.has(appeal.hearingRequirements, 'witnessNames')) {
+        caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(witnessName => {
+          return {
+            value: {
+              witnessName: witnessName
+            } as WitnessDetails
+          } as Collection<WitnessDetails>;
+        });
       }
     }
 

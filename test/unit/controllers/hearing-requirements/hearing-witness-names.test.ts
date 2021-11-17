@@ -5,18 +5,28 @@ import {
   setupWitnessNamesController
 } from '../../../../app/controllers/hearing-requirements/hearing-witness-names';
 import { paths } from '../../../../app/paths';
+import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../utils/testUtils';
 
 describe('Hearing Requirements - Witness Section: Witness names controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
+  let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   let summaryList = [{ summaryRows: [{ key: { text: 'My witness' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=My%20witness' , text : 'Remove' }] } } ], title: 'Added witnesses' } ];
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
       body: {},
+      cookies: {
+        '__auth-token': 'atoken'
+      },
+      idam: {
+        userDetails: {
+          uid: 'idamUID'
+        }
+      },
       params: {},
       session: {
         appeal: {
@@ -30,6 +40,9 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
+
+    updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
+
     next = sandbox.stub() as NextFunction;
   });
 
@@ -43,7 +56,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupWitnessNamesController(middleware);
+      setupWitnessNamesController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
     });
@@ -74,7 +87,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   describe('postWitnessNamesPage', () => {
     it('should fail validation and render template with errors', async () => {
       req.session.appeal.hearingRequirements.witnessNames = [];
-      await postWitnessNamesPage()(req as Request, res as Response, next);
+      await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedError = {
         witnessName: {
           href: '#witnessName',
@@ -96,7 +109,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
 
     it('should validate and redirect to next page', async () => {
       req.body['witnessName'] = 'My witness name';
-      await postWitnessNamesPage()(req as Request, res as Response, next);
+      await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.witnessOutsideUK);
     });
 
@@ -105,7 +118,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postWitnessNamesPage()(req as Request, res as Response, next);
+      await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -145,7 +158,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postWitnessNamesPage()(req as Request, res as Response, next);
+      await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -164,7 +177,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postWitnessNamesPage()(req as Request, res as Response, next);
+      await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

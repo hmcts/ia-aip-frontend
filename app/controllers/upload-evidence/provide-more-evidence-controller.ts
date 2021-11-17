@@ -205,5 +205,6 @@ export {
   setupProvideMoreEvidenceController,
   submitUploadAdditionalEvidenceEvent,
   getConfirmation,
+  buildAdditionalEvidenceDocumentsSummaryList,
   validate
 };

@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { deleteProvideMoreEvidence, getConfirmation, getProvideMoreEvidence, postProvideMoreEvidence, setupProvideMoreEvidenceController, submitUploadAdditionalEvidenceEvent, uploadProvideMoreEvidence } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
+import { buildAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getConfirmation, getProvideMoreEvidence, postProvideMoreEvidence, setupProvideMoreEvidenceController, submitUploadAdditionalEvidenceEvent, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -41,7 +41,8 @@ describe('Provide more evidence controller', () => {
     } as Partial<Request>;
     res = {
       render: sandbox.stub(),
-      redirect: sandbox.spy()
+      redirect: sandbox.spy(),
+      locals: {}
     } as Partial<Response>;
     next = sandbox.stub() as NextFunction;
     updateAppealService = {
@@ -167,6 +168,71 @@ describe('Provide more evidence controller', () => {
       getConfirmation(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/confirmation-page.njk');
+    });
+  });
+
+  describe('buildAdditionalEvidenceDocumentsSummaryList', () => {
+
+    it('should build a list in correct format', () => {
+      const mockEvidenceDocuments: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName'
+        }
+      ];
+
+      const expectedSummaryList: SummaryList[] = [
+        {
+          'summaryRows': [
+            {
+              'actions': {
+                'items': [
+                  {
+                    'href': 'provide-more-evidence',
+                    'text': 'Change'
+                  }
+                ]
+              },
+              'key': {
+                'text': 'Supporting evidence'
+              },
+              'value': {
+                'html': '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/aFileId\'>fileName</a>'
+              }
+            }
+          ]
+        }
+      ];
+
+      const result = buildAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+
+      expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
+      expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
+    });
+  });
+
+  describe('validate', function () {
+    it('should call next if no multer errors', () => {
+      validate(req as Request, res as Response, next);
+
+      expect(next).to.have.been.called;
+    });
+
+    it('should redirect to \'/provide-more-evidence\' with error code', async () => {
+      res.locals.errorCode = 'anError';
+      validate(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should catch error and call next with error', async () => {
+      res.locals.errorCode = 'anError';
+      const error = new Error('the error');
+      res.redirect = sandbox.stub().throws(error);
+
+      validate(req as Request, res as Response, next);
+
+      expect(next).to.have.been.calledWith(error);
     });
   });
 });

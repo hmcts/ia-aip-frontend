@@ -543,6 +543,16 @@
           "description": "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.",
           "dueDate": "This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that."
         },
+        "submitHearingRequirements": {
+          "description": "Your appeal is going to hearing.",
+          "description2": "Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access",
+          "descriptionAskForMoreTime": "You need to respond by by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
+        },
         "ended": {
           "description": "ended desc",
           "dueDate": "ended  should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that.",
@@ -1918,6 +1928,44 @@
       "info": {
         "title": "Helpful Information",
         "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+      }
+    },
+    "hearingRequirements": {
+      "taskList": {
+        "title": "Tell us what you will need at the hearing",
+        "header": "Tell us what you will need at the hearing",
+        "sections": {
+          "witnesses": "Witnesses",
+          "accessNeeds": "Access needs",
+          "otherNeeds": "Other needs",
+          "datesToAvoid": "Dates to avoid",
+          "checkAndSend": "Check and send"
+        },
+        "witnesses": {
+          "id": "witnessesLink",
+          "title": "Will any witnesses come to the hearing?",
+          "path": "submitHearingRequirements.witnessNeeds"
+        },
+        "accessNeeds": {
+          "id": "accessNeedsLink",
+          "title": "Will you or any witnesses need an interpreter,step-free access or a hearing loop at the hearing?",
+          "path": "submitHearingRequirements.accessNeeds"
+        },
+        "otherNeeds": {
+          "id": "otherNeedsLink",
+          "title": "Will you need anything else at the hearing?",
+          "path": "submitHearingRequirements.otherNeeds"
+        },
+        "datesToAvoid": {
+          "id": "datesToAvoidLink",
+          "title": "Are there any dates you or any witnesses cannot go to the hearing?",
+          "path": "submitHearingRequirements.datesToAvoidQuestion"
+        },
+        "checkAndSend": {
+          "id": "checkAndSendLink",
+          "title": "Check and send your answers",
+          "path": "submitHearingRequirements.checkAndSend"
+        }
       }
     },
     "clarifyingQuestionPage": {

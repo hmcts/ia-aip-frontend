@@ -24,7 +24,8 @@ function buildProgressBarStages(state: string) {
       ]
     },
     yourHearingDetails: {
-      activeStatus: []
+      activeStatus: [
+        States.SUBMIT_HEARING_REQUIREMENTS.id]
     },
     yourAppealDecision: {
       activeStatus: []

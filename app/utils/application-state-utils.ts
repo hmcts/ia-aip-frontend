@@ -312,6 +312,33 @@ function getAppealApplicationNextStep(req: Request) {
         allowedAskForMoreTime: true
       };
       break;
+    case 'submitHearingRequirements':
+      descriptionParagraphs = [
+        i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description,
+        i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description2
+      ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.submitHearingRequirements.descriptionAskForMoreTime ];
+        respondBy = i18n.pages.overviewPage.doThisNext.submitHearingRequirements.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
+      doThisNextSection = {
+        descriptionParagraphs,
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.submitHearingRequirements.info.title,
+          url: i18n.pages.overviewPage.doThisNext.submitHearingRequirements.info.url
+        },
+        cta: {
+          url: paths.submitHearingRequirements.taskList,
+          respondBy
+        },
+        allowedAskForMoreTime: true
+      };
+      break;
     case 'clarifyingQuestionsAnswersSubmitted':
       doThisNextSection = {
         descriptionParagraphs: [

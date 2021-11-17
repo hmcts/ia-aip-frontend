@@ -179,7 +179,8 @@ function setupProvideMoreEvidenceController(middleware: Middleware[], updateAppe
 function buildAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments: Evidence[]): SummaryList[] {
   const additionalEvidenceSummaryLists: SummaryList[] = [];
   const additionalEvidenceRows: SummaryRow[] = [];
-  additionalEvidenceDocuments.map((evidence: Evidence) => {
+
+  additionalEvidenceDocuments.forEach((evidence: Evidence) => {
     additionalEvidenceRows.push(
       addSummaryRow(
         'Supporting evidence',

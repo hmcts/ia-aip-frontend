@@ -52,6 +52,7 @@ import { setupFooterController } from './controllers/footer';
 import { setupForbiddenController } from './controllers/forbidden';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
+import { setupHearingRequirementsAccessNeedsController } from './controllers/hearing-requirements/access-needs';
 import { setupWitnessesOutsideUkQuestionController } from './controllers/hearing-requirements/hearing-outside-uk';
 import { setupWitnessNamesController } from './controllers/hearing-requirements/hearing-witness-names';
 import { setupWitnessesOnHearingQuestionController } from './controllers/hearing-requirements/hearing-witnesses';
@@ -62,6 +63,7 @@ import { setupReasonsForAppealController } from './controllers/reasons-for-appea
 import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
 import { PageSetup } from './interfaces/PageSetup';
+import { hearingRequirementsMiddleware } from './middleware/hearing-requirements-middleware';
 import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middleware/journeyAllowed-middleware';
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
@@ -75,6 +77,7 @@ import { setupSecrets } from './setupSecrets';
 
 import './controllers/appeal-application/decision-type';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
+import './controllers/appeal-application/pay-now';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
@@ -145,7 +148,8 @@ const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonContr
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
-const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController(middleware);
+const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController([hearingRequirementsMiddleware]);
+const submitHearingRequirementsAccessNeedsController = setupHearingRequirementsAccessNeedsController([hearingRequirementsMiddleware], updateAppealService);
 const witnessesOnHearingQuestionController = setupWitnessesOnHearingQuestionController(middleware, updateAppealService);
 const witnessesOutsideUkQuestionController = setupWitnessesOutsideUkQuestionController(middleware, updateAppealService);
 const witnessNamesController = setupWitnessNamesController(middleware, updateAppealService);
@@ -197,6 +201,7 @@ router.use(clarifyingQuestionsAnythingElseAnswerController);
 router.use(clarifyingQuestionsCYAController);
 router.use(clarifyingQuestionsConfirmationPageController);
 router.use(submitHearingRequirementsTaskListController);
+router.use(submitHearingRequirementsAccessNeedsController);
 router.use(witnessesOnHearingQuestionController);
 router.use(witnessesOutsideUkQuestionController);
 router.use(witnessNamesController);

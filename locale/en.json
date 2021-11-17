@@ -25,6 +25,7 @@
       "send": "Send",
       "cancel": "Cancel",
       "seeProgress": "See your appeal progress",
+      "payNow": "Submit and continue to pay £{{ fee }} by debit or credit card",
       "addAnotherWitness": "Add another witness"
     },
     "requirements": {
@@ -122,11 +123,25 @@
       "pageHint": "<p>Select one appeal type. If you are unsure, the first page of your decision letter should include the type of decision you are appealing.</p><p>If you think more than one appeal type applies to your appeal, you will have the chance to tell us about that later.</p>",
       "exampleSummaryText": "Reasons to select "
     },
+    "payNow": {
+      "title": "Do you want to pay for the appeal now?",
+      "hint": "You can use any valid credit or debit card to pay.",
+      "options": {
+        "now": {
+          "value": "payNow",
+          "text": "Yes"
+        },
+        "later": {
+          "value": "payLater",
+          "text": "No, I will pay later"
+        }
+      }
+    },
     "decisionType": {
       "title": "How do you want your appeal to be decided",
       "hint": {
         "withoutFee": "<p>You can choose to have a judge decide your appeal without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you and any witnesses and supporters can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
-        "withFee": "<p>You can choose to have a judge decide your appeal without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you and any witnesses and supporters can attend. The fee for this is £140(hardcoded)</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80. (hardcoded)</p><p>Select an option</p>"
+        "withFee": "<p>You can choose to have a judge decide your appeal without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you and any witnesses and supporters can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
       },
       "options": {
         "withHearing": {
@@ -168,13 +183,15 @@
         "addressDetails": "Address",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
-        "supportingEvidence": "Supporting evidence"
+        "supportingEvidence": "Supporting evidence",
+        "paymentType": "Payment type"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
       "decisionWithHearing": "Decision with a hearing",
-      "decisionWithoutHearing": "Decision without a hearing"
-
+      "decisionWithoutHearing": "Decision without a hearing",
+      "payNow": "Pay now",
+      "payLater": "Pay later"
     },
     "name": {
       "title": "What is your name?",
@@ -283,6 +300,10 @@
       },
       "inTime": {
         "panel": "Your appeal details have been sent"
+      },
+      "payLater": {
+        "panel": "You have sent your appeal details",
+        "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
       }
     },
     "reasonForAppeal": {
@@ -536,6 +557,26 @@
             }
           ]
         },
+        "requestResponseReview": {
+          "text": "The Home Office sent its response to your appeal.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "",
+              "href": ""
+            }
+          ],
+          "status": {
+            "decisionMaintained": {
+              "text": "Home Office Response",
+              "href": "{{ paths.common.homeOfficeResponse }}"
+            },
+            "decisionWithdrawn": {
+              "text": "Home Office Withdrawal letter",
+              "href": "{{ paths.common.homeOfficeWithdrawLetter }}"
+            }
+          }
+        },
         "requestRespondentReview": {
           "text": "Your appeal was sent to the Home Office to review."
         },
@@ -752,6 +793,13 @@
       },
       "homeOfficeWithdrawLetter": {
         "title": "Home Office Withdrawal Letter",
+        "dateUploaded": "Date uploaded",
+        "document": "Document",
+        "documentDescription": "Document description",
+        "additionalEvidence": "Additional evidence"
+      },
+      "homeOfficeResponse": {
+        "title": "HO Response",
         "dateUploaded": "Date uploaded",
         "document": "Document",
         "documentDescription": "Document description",
@@ -2176,6 +2224,7 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
+    "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",

@@ -15,6 +15,7 @@ const paths = {
     uploadEvidence: '/home-office/upload-evidence',
     deleteEvidence: '/home-office/delete-evidence',
     typeOfAppeal: '/appeal-type',
+    payNow: '/pay-now',
     decisionType: '/decision-type',
     contactDetails: '/contact-preferences',
     checkAndSend: '/check-answers',
@@ -51,12 +52,12 @@ const paths = {
     confirmation: '/clarifying-questions-sent'
   },
   submitHearingRequirements: {
-    taskList: '/hearing-requirements-needs',
+    taskList: '/hearing-needs',
     witnesses: '/hearing-witnesses',
-    accessNeeds: '/hearing-requirements-access-needs',
-    otherNeeds: '/hearing-requirements-other-needs',
-    datesToAvoidQuestion: '/hearing-requirements-dates-avoid',
-    checkAndSend: '/hearing-requirements-check-answers',
+    accessNeeds: '/hearing-access-needs',
+    otherNeeds: '/hearing-other-needs',
+    datesToAvoidQuestion: '/hearing-dates-avoid',
+    checkAndSend: '/hearing-check-answers',
     hearingWitnessNames: '/hearing-witness-names',
     hearingWitnessNamesAdd: '/hearing-witness-names/add',
     hearingWitnessNamesRemove: '/hearing-witness-names/remove',
@@ -129,6 +130,7 @@ const paths = {
     noticeEndedAppealViewer: '/notice-ended-appeal',
     outOfTimeDecisionViewer: '/out-of-time-decision',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
+    homeOfficeResponse: '/home-office-response',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

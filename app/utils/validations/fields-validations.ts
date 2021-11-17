@@ -306,6 +306,16 @@ function typeOfAppealValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function payNowValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.payNow
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 function decisionTypeValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     answer: Joi.string().required().messages({
@@ -394,6 +404,7 @@ function isDateInRange(dateFrom: string, dateTo: string, obj): boolean | Validat
 export {
   createStructuredError,
   contactDetailsValidation,
+  payNowValidation,
   homeOfficeNumberValidation,
   dateValidation,
   dateLetterSentValidation,

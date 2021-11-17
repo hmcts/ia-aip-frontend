@@ -145,6 +145,14 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.equal('21 May 2020');
     });
 
+    it('should return a formatted date for decisionWithdrawn state', () => {
+
+      const currentAppealStatus = 'decisionWithdrawn';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('03 March 2020');
+    });
+
     it('submitHearingRequirements should return a formatted  date with the legalRepresentativeHearingRequirements direction due date', () => {
 
       const currentAppealStatus = 'submitHearingRequirements';

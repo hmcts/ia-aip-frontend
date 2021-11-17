@@ -96,6 +96,13 @@ interface CaseData {
   paymentStatus?: string;
   paymentDate?: string;
   isFeePaymentEnabled?: string;
+  paAppealTypeAipPaymentOption?: string;
+  feeWithHearing?: string;
+  feeWithoutHearing?: string;
+  feeCode?: string;
+  feeDescription?: string;
+  feeVersion?: string;
+  feeAmountGbp?: string;
 
   isWitnessesAttending?: 'Yes' | 'No';
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';

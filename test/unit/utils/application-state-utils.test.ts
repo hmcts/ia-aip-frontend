@@ -571,7 +571,7 @@ describe('application-state-utils', () => {
       expect(result).to.eql(expected);
     });
 
-    it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section. @thisOneONly', () => {
+    it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', () => {
       req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
       const result = getAppealApplicationNextStep(req as Request);
 
@@ -709,7 +709,7 @@ describe('application-state-utils', () => {
         allowedAskForMoreTime: true,
         cta: {
           respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
-          url: '/hearing-requirements-needs'
+          url: '/hearing-needs'
         },
         deadline: '28 July 2020',
         descriptionParagraphs: [
@@ -723,6 +723,35 @@ describe('application-state-utils', () => {
       };
 
       expect(result).to.eql(expected);
+    });
+
+    it('should return \'Do This next section\' when application status is submitHearingRequirements and a pending time extension', () => {
+      const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+        value: {
+          decision: 'Pending'
+        }
+      };
+      req.session.appeal.appealStatus = 'submitHearingRequirements';
+      req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql(
+        {
+          allowedAskForMoreTime: true,
+          cta: {
+            respondBy: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+            url: '/hearing-needs'
+          },
+          deadline: '28 July 2020',
+          descriptionParagraphs: [
+            'You need to respond by by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.'
+          ],
+          info: {
+            title: 'Helpful Information',
+            url: "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
+        }
+      );
     });
 
     it('when application status is cmaListed should get correct Do this next section.', () => {

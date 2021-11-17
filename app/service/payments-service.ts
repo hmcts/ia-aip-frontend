@@ -18,7 +18,7 @@ export default class PaymentService {
   async createCardPayment(req: Request, fee) {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const body = {
-      amount: 215,
+      amount: fee.calculated_amount,
       case_reference: 'aCaseRef',
       ccd_case_number: req.session.appeal.ccdCaseId,
       channel: 'online',
@@ -26,14 +26,9 @@ export default class PaymentService {
       description: 'a test card payment',
       service: 'CMC',
       site_id: 'AA101',
-      fees: [
-        {
-          calculated_amount: 215,
-          code: 'FEE0123',
-          version: '1'
-        }
-      ]
+      fees: [ fee ]
     };
+    req.app.locals.logger.trace(`Creating Card Payment with fee ${JSON.stringify(fee)}`, 'Payments Service');
     const results = await paymentApi.createCardPayment(securityHeaders, body, '');
     const appeal: Appeal = {
       ...req.session.appeal,
@@ -58,12 +53,12 @@ export default class PaymentService {
     if (paymentReference) {
       const paymentDetails = JSON.parse(await this.getPaymentDetails(req, req.session.appeal.paymentReference));
       if (paymentDetails.status === 'Initiated') {
-        // TODO: try to cancel initiated payment
+        req.app.locals.logger.trace(`Payment already initiated, cancel payment should go here`, 'Payments Service');
       } else if (paymentDetails.status === 'Success') {
         return res.redirect(paths.common.finishPayment);
       }
     }
-    const response = await this.createCardPayment(req, 'theFee');
+    const response = await this.createCardPayment(req, fee);
     return res.redirect(response._links.next_url.href);
   }
 }

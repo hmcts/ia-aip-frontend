@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { Events } from '../../../app/data/events';
-import { States } from '../../../app/data/states';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import { constructSection, getTimeExtensionsEvents } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
@@ -40,13 +40,14 @@ describe('timeline-utils', () => {
 
   afterEach(() => {
     sandbox.restore();
+    LaunchDarklyService.close();
   });
 
   describe('constructSection', () => {
 
     it('Should construct the appeal details section', () => {
       req.session.appeal.timeExtensionEventsMap = [];
-      const appealDetailsSection = [ Events.SUBMIT_APPEAL.id ];
+      const appealDetailsSection = [Events.SUBMIT_APPEAL.id];
 
       const result = constructSection(appealDetailsSection, expectedEventsWithTimeExtensionsData, null, req as Request);
       expect(result).to.deep.eq(
@@ -54,7 +55,7 @@ describe('timeline-utils', () => {
           'date': '14 April 2020',
           'dateObject': new Date('2020-04-14T14:53:26.099'),
           'text': 'You sent your appeal details to the Tribunal.',
-          'links': [ {
+          'links': [{
             'title': 'What you sent',
             'text': 'Your appeal details',
             'href': '{{ paths.common.appealDetailsViewer }}'
@@ -62,8 +63,8 @@ describe('timeline-utils', () => {
             'title': 'Helpful information',
             'text': 'What is a Tribunal Caseworker?',
             'href': '{{ paths.common.tribunalCaseworker }}'
-          } ]
-        } ]
+          }]
+        }]
       );
     });
   });

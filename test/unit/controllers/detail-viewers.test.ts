@@ -4,6 +4,7 @@ import {
   getCmaRequirementsViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
+  getHomeOfficeResponse,
   getHomeOfficeWithdrawLetter,
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
@@ -168,6 +169,54 @@ describe('Detail viewer Controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       getHomeOfficeWithdrawLetter(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getHomeOfficeResponse', () => {
+    beforeEach(() => {
+      req.session.appeal.respondentDocuments = [
+        {
+          fileId: 'uuid',
+          name: 'filename',
+          description: 'description here',
+          dateUploaded: '2020-02-21',
+          id: '2',
+          tag: 'appealResponse'
+        }
+      ];
+    });
+    it('should render details-viewer template', () => {
+      getHomeOfficeResponse(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.homeOfficeResponse.title,
+        data: sinon.match.array,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render details-viewer template with additional evidences', () => {
+      req.session.appeal.respondentDocuments.push({
+        fileId: 'uuid',
+        name: 'filename',
+        description: 'description here',
+        dateUploaded: '2020-02-21',
+        id: '2',
+        tag: 'appealResponse'
+      });
+
+      getHomeOfficeResponse(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.homeOfficeResponse.title,
+        data: sinon.match.array,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('getHoEvidenceDetailsViewer should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getHomeOfficeResponse(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
 import { appealOutOfTimeMiddleware } from '../../middleware/outOfTime-middleware';
@@ -12,8 +13,17 @@ import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
 
+function payForApplicationNeeded(req: Request): boolean {
+  const { appealType } = req.session.appeal.application;
+  const { paAppealTypeAipPaymentOption } = req.session.appeal;
+  let payNow = false;
+  payNow = payNow || appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow';
+  payNow = payNow || ['refusalOfEu', 'refusalOfHumanRights'].includes(appealType);
+  return payNow;
+}
+
 async function createSummaryRowsFrom(req: Request) {
-  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const { application } = req.session.appeal;
   const appealTypeNames: string[] = application.appealType.split(',').map(appealType => {
     return i18n.appealTypes[appealType].name;
@@ -93,30 +103,62 @@ async function createSummaryRowsFrom(req: Request) {
     }
     const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers[decisionType] ], paths.appealStarted.decisionType);
     rows.push(decisionTypeRow);
+
+    const { paAppealTypeAipPaymentOption = null } = req.session.appeal;
+    if (paAppealTypeAipPaymentOption) {
+      const payNowRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.paymentType,
+        [ i18n.pages.checkYourAnswers[paAppealTypeAipPaymentOption]],
+        paths.appealStarted.payNow + editParameter
+      );
+      rows.push(payNowRow);
+    }
   }
   return rows;
 }
 
 async function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
+    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     const summaryRows = await createSummaryRowsFrom(req);
+    const { appealType, decisionHearingFeeOption } = req.session.appeal.application;
+    const { paAppealTypeAipPaymentOption = null, feeWithHearing = null, feeWithoutHearing = null } = req.session.appeal;
+    let fee;
+    let payNow;
+    if (paymentsFlag && payForApplicationNeeded(req)) {
+      payNow = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' ? false : true;
+      fee = getFee(req);
+    }
     return res.render('appeal-application/check-and-send.njk', {
       summaryRows,
-      previousPage: paths.appealStarted.taskList
+      previousPage: paths.appealStarted.taskList,
+      ...(paymentsFlag && payForApplicationNeeded(req)) && { fee: fee.calculated_amount },
+      ...paymentsFlag && { payNow }
     });
   } catch (error) {
     next(error);
   }
 }
 
+function getFee(req: Request) {
+  let fee;
+  const { decisionHearingFeeOption } = req.session.appeal.application;
+  const { feeWithHearing = null, feeWithoutHearing = null } = req.session.appeal;
+  fee = decisionHearingFeeOption === 'decisionWithHearing' ? feeWithHearing : feeWithoutHearing;
+  return {
+    calculated_amount: fee,
+    code: req.session.appeal.feeCode,
+    version: req.session.appeal.feeVersion
+  };
+}
+
 function postCheckAndSend(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-
     const request = req.body;
     try {
-      const summaryRows = await createSummaryRowsFrom(req);
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {
+        const summaryRows = await createSummaryRowsFrom(req);
         return res.render('appeal-application/check-and-send.njk', {
           summaryRows: summaryRows,
           error: validationResult,
@@ -124,9 +166,10 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
           previousPage: paths.appealStarted.taskList
         });
       }
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
-      if (paymentsFlag) {
-        return await paymentService.initiatePayment(req, res, 'theFee');
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+      if (paymentsFlag && payForApplicationNeeded(req)) {
+        const fee = getFee(req);
+        return await paymentService.initiatePayment(req, res, fee);
       }
       const { appeal } = req.session;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -153,14 +196,16 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           paymentDate: paymentDetails.status_histories.filter(event => event.status === 'Success')[0].date_created,
           isFeePaymentEnabled: 'Yes'
         };
+        req.app.locals.logger.trace(`Payment success`, 'Finishing payment');
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
         };
         res.redirect(paths.appealSubmitted.confirmation);
+      } else {
+        req.app.locals.logger.exception(`Payment error with status ${paymentDetails.status}`, 'Finishing payment');
       }
-      // TODO: deal with appeal if payment not succeeded
     } catch (error) {
       next(error);
     }

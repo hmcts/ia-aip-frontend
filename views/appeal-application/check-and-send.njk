@@ -44,9 +44,8 @@
         text: i18n.validationErrors.acceptanceStatement
       } if error['statement']
     }) }}
-
     {{ govukButton({
-      text: i18n.common.buttons.send,
+      text: i18n.common.buttons.payNow | eval if payNow else i18n.common.buttons.send,
       preventDoubleClick: true
     }) }}
   </form>

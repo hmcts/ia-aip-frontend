@@ -96,7 +96,7 @@ function removeWitnessPostAction() {
 function buildWitnessNamesList(witnessNames: string[]): SummaryList[] {
   const witnessNamesSummaryLists: SummaryList[] = [];
   const witnessNamesRows: SummaryRow[] = [];
-  witnessNames.map((name: string) => {
+  witnessNames.forEach((name: string) => {
     witnessNamesRows.push(
         addSummaryRow(
             name,

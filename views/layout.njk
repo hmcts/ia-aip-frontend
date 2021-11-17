@@ -106,9 +106,20 @@
   }) }}
 {% endmacro %}
 
+{% macro canelButton() %}
+  <a class="cancel-button" href="{{ previousPage }}">{{ i18n.common.buttons.cancel }}</a>
+{% endmacro %}
+
 {% macro saveAndContinueButton() %}
   {{ govukButton({
     text: "Save and continue"
+  }) }}
+{% endmacro %}
+
+{% macro continueToUrlButton() %}
+  {{ govukButton({
+    text: "Continue",
+    href: paths.common.provideMoreEvidenceCheck
   }) }}
 {% endmacro %}
 

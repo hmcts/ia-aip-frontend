@@ -93,5 +93,15 @@ export const Events = {
     id: 'requestResponseReview',
     summary: 'Review Home Office response',
     description: 'Review Home Office response'
+  },
+  UPLOAD_ADDITIONAL_EVIDENCE: {
+    id: 'uploadAdditionalEvidence',
+    summary: 'Upload additional evidence for AIP',
+    description: 'Upload additional evidence for AIP'
+  },
+  EDIT_DOCUMENTS: {
+    id: 'editDocuments',
+    summary: 'Edit additional evidence for AIP',
+    description: 'Edit additional evidence for AIP'
   }
 };

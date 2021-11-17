@@ -26,7 +26,8 @@
       "cancel": "Cancel",
       "seeProgress": "See your appeal progress",
       "continueUseNewService": "Continue to use the new service",
-      "payNow": "Submit and continue to pay £{{ fee }} by debit or credit card"
+      "payNow": "Submit and continue to pay £{{ fee }} by debit or credit card",
+      "confirmAndSend": "Confirm and send"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -335,6 +336,30 @@
     "reasonsForAppealUploadQuestion": {
       "title": "Do you want to provide supporting evidence?",
       "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
+    },
+    "provideMoreEvidence": {
+      "form": {
+        "title": "Provide more evidence",
+        "content": [
+          {
+            "description": "Upload any evidence that will support your appeal such as letters, photos or documents. If you are taking a photo of a document, place it on a flat surface and take the photo from above."
+          },
+          {
+            "description": "Both the Tribunal and the Home Office will be able to see any evidence you provide."
+          }
+        ],
+        "moreInfo": "<a target=\"_blank\" href=\"/supporting-evidence\">Find out more about evidence to support your appeal</a>"
+      },
+      "checkYourAnswers": {
+        "title": "Check your answers"
+      },
+      "confirmation": {
+        "title": "You have provided more evidence",
+        "whatNextListItems": [
+          "The evidence is now part of your appeal and can be seen by the Tribunal and the Home Office",
+          "If your appeal goes to a hearing, the judge will consider this evidence when deciding your appeal"
+        ]
+      }
     },
     "reasonsForAppealUpload": {
       "title": "Provide supporting evidence",

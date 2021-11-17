@@ -12,6 +12,11 @@ interface DocumentWithMetaData {
   document: SupportingDocument;
 }
 
+interface Document {
+  description?: string;
+  document: SupportingDocument;
+}
+
 interface CcdCaseDetails {
   id: string;
   state: string;
@@ -75,6 +80,8 @@ interface CaseData {
   listCaseHearingLength: string;
   listCaseHearingDate: string;
   uploadTheNoticeOfDecisionDocs: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  additionalEvidence: Collection<Document>[];
+  additionalEvidenceDocuments: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   recordedOutOfTimeDecision: string;
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];

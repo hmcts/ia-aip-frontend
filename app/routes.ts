@@ -5,8 +5,11 @@ import { setupIndexController } from './controllers';
 import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
 import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
 import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
+import './controllers/appeal-application/decision-type';
 import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
+import './controllers/appeal-application/home-office-details-upload-decision-letter';
 import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
+import './controllers/appeal-application/pay-now';
 import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
@@ -57,6 +60,7 @@ import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendControl
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
 import { setupStartController } from './controllers/startController';
+import { setupProvideMoreEvidenceController } from './controllers/upload-evidence/provide-more-evidence-controller';
 import { PageSetup } from './interfaces/PageSetup';
 import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middleware/journeyAllowed-middleware';
 import { logSession } from './middleware/session-middleware';
@@ -68,9 +72,6 @@ import PaymentService from './service/payments-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
-
-import './controllers/appeal-application/decision-type';
-import './controllers/appeal-application/home-office-details-upload-decision-letter';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
@@ -141,6 +142,7 @@ const cmaRequirementsDatesToAvoidReasonController = setupDatesToAvoidReasonContr
 const cmaRequirementsDatesToAvoidAddAnotherDateController = setupDatesToAvoidAddAnotherDateController(middleware);
 const cmaRequirementsCYAController = setupCmaRequirementsCYAController(middleware, updateAppealService);
 const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPage(middleware);
+const provideMoreEvidence = setupProvideMoreEvidenceController(middleware, updateAppealService, documentManagementService);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
@@ -213,6 +215,7 @@ router.use(cmaRequirementsDatesToAvoidAddAnotherDateController);
 router.use(cmaRequirementsCYAController);
 router.use(cmaRequirementsConfirmationController);
 router.use(whatToExpectAtCmaNextController);
+router.use(provideMoreEvidence);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

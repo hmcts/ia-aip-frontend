@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
+import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
 import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
@@ -66,7 +67,7 @@ export default class UpdateAppealService {
   // TODO: remove submitEvent when all app is refactored using new submitEvent
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
-    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     const currentUserId = req.idam.userDetails.uid;
     const caseData = this.convertToCcdCaseData(req.session.appeal, paymentsFlag);
 
@@ -392,6 +393,8 @@ export default class UpdateAppealService {
       },
       ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
+      // leaving this in until we rebase with RIA-4650 & RIA-4707
+      // ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.additionalEvidenceDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
@@ -405,6 +408,13 @@ export default class UpdateAppealService {
       ...caseData.paymentStatus && { paymentStatus: caseData.paymentStatus },
       ...caseData.paymentDate && { paymentDate: caseData.paymentDate },
       ...caseData.isFeePaymentEnabled && { isFeePaymentEnabled: caseData.isFeePaymentEnabled },
+      ...caseData.paAppealTypeAipPaymentOption && { paAppealTypeAipPaymentOption: caseData.paAppealTypeAipPaymentOption },
+      ...caseData.feeWithHearing && { feeWithHearing: caseData.feeWithHearing },
+      ...caseData.feeWithoutHearing && { feeWithoutHearing: caseData.feeWithoutHearing },
+      ...caseData.feeCode && { feeCode: caseData.feeCode },
+      ...caseData.feeDescription && { feeDescription: caseData.feeDescription },
+      ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
+      ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
       hearingCentre: caseData.hearingCentre || null,
       documentMap
     };
@@ -641,6 +651,7 @@ export default class UpdateAppealService {
       ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
+      ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
       ...appeal.draftClarifyingQuestionsAnswers && {
         draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
       },
@@ -650,11 +661,33 @@ export default class UpdateAppealService {
       ...appeal.application.homeOfficeLetter && {
         uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
+      // leaving this in until we rebase with RIA-4650 & RIA-4707
+      // ...appeal.additionalEvidence && {
+      //   additionalEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)
+      // },
       ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
       ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
       ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) }
     };
     return caseData;
+  }
+
+  mapAdditionalEvidenceDocumentsToDocumentsCaseData = (evidences: AdditionalEvidenceDocument[], documentMap: DocumentMap[]): Collection<Document>[] => {
+    return evidences.map((evidence: AdditionalEvidenceDocument) => {
+      const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+      return {
+        id: evidence.fileId,
+        value: {
+          description: 'additionalEvidenceDocument',
+          document: {
+            document_filename: evidence.name,
+            document_url: documentLocationUrl,
+            document_binary_url: `${documentLocationUrl}/binary`
+          }
+        }
+      // } as Document;
+      } as Collection<Document>;
+    });
   }
 
   mapAppealEvidencesToDocumentsCaseData = (evidences: Evidence[], documentMap: DocumentMap[]): Collection<SupportingDocument>[] => {

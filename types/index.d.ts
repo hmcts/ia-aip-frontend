@@ -4,7 +4,7 @@ interface Href {
 }
 
 interface SummarySection {
-  title: string;
+  title?: string;
   summaryLists: SummaryList[];
 }
 
@@ -69,6 +69,12 @@ interface Evidence {
   dateUploaded?: string;
 }
 
+interface AdditionalEvidenceDocument {
+  name: string;
+  fileId: string;
+  description?: string;
+}
+
 interface DocumentUploadResponse {
   fileId: string;
   name: string;
@@ -114,6 +120,15 @@ interface Appeal {
   paymentStatus?: string;
   paymentDate?: string;
   isFeePaymentEnabled?: string;
+  paAppealTypeAipPaymentOption?: string;
+  feeWithHearing?: string;
+  feeWithoutHearing?: string;
+  feeCode?: string;
+  feeDescription?: string;
+  feeVersion?: string;
+  feeAmountGbp?: string;
+  additionalEvidenceDocuments?: Evidence[];
+  additionalEvidence?: AdditionalEvidenceDocument[];
 }
 
 interface Hearing {

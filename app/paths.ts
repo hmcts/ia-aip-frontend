@@ -15,6 +15,7 @@ const paths = {
     uploadEvidence: '/home-office/upload-evidence',
     deleteEvidence: '/home-office/delete-evidence',
     typeOfAppeal: '/appeal-type',
+    payNow: '/pay-now',
     decisionType: '/decision-type',
     contactDetails: '/contact-preferences',
     checkAndSend: '/check-answers',
@@ -66,7 +67,7 @@ const paths = {
     otherNeedsAllMaleAppointment: '/appointment-single-sex-type-male',
     otherNeedsAllFemaleAppointment: '/appointment-single-sex-type-female',
     otherNeedsPrivateAppointment: '/appointment-private',
-    otherNeedsPrivateAppointmentReason : '/appointment-private-reasons',
+    otherNeedsPrivateAppointmentReason: '/appointment-private-reasons',
     otherNeedsHealthConditions: '/appointment-physical-mental-health',
     otherNeedsHealthConditionsReason: '/appointment-physical-mental-health-reasons',
     otherNeedsPastExperiences: '/appointment-past-experiences',
@@ -106,6 +107,12 @@ const paths = {
     questions: '/eligibility',
     eligible: '/eligible',
 
+    provideMoreEvidenceForm: '/provide-more-evidence',
+    provideMoreEvidenceUploadFile: '/provide-more-evidence/upload/file',
+    provideMoreEvidenceDeleteFile: '/provide-more-evidence/delete/file',
+    provideMoreEvidenceCheck: '/provide-more-evidence-check',
+    provideMoreEvidenceConfirmation: '/provide-more-evidence-sent',
+
     // Viewers endpoints
     documentViewer: '/view/document',
     homeOfficeDocumentsViewer: '/view/home-office-documents',
@@ -117,6 +124,7 @@ const paths = {
     noticeEndedAppealViewer: '/notice-ended-appeal',
     outOfTimeDecisionViewer: '/out-of-time-decision',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
+    homeOfficeResponse: '/home-office-response',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

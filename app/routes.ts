@@ -56,10 +56,18 @@ import { setupForbiddenController } from './controllers/forbidden';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupHearingAccessNeedsController } from './controllers/hearing-requirements/access-needs';
-import { setupHearingRequirementsFeatureToggleController } from './controllers/hearing-requirements/feature-toggle';
+import { setupHearingRequirementsFeatureEnabledController } from './controllers/hearing-requirements/enable-feature';
 import { setupWitnessesOutsideUkQuestionController } from './controllers/hearing-requirements/hearing-outside-uk';
 import { setupWitnessNamesController } from './controllers/hearing-requirements/hearing-witness-names';
 import { setupWitnessesOnHearingQuestionController } from './controllers/hearing-requirements/hearing-witnesses';
+import { setupHearingAnythingElseQuestionController } from './controllers/hearing-requirements/other-needs/anything-else-question';
+import { setupHearingHealthConditionsQuestionController } from './controllers/hearing-requirements/other-needs/health-conditions-question';
+import { setupJoinByVideoCallAppointmentQuestionController } from './controllers/hearing-requirements/other-needs/joinby-video-call-question';
+import { setupHearingMultimediaEvidenceQuestionController } from './controllers/hearing-requirements/other-needs/multimedia-evidence-question';
+import { setupHearingPastExperiencesQuestionController } from './controllers/hearing-requirements/other-needs/past-experiences-question';
+import { setupPrivateHearingQuestionController } from './controllers/hearing-requirements/other-needs/private-hearing-question';
+import { setupHearingSingleSexAppointmentQuestionController } from './controllers/hearing-requirements/other-needs/single-sex-hearing-question';
+import { setupHearingRequirementsStartPageController } from './controllers/hearing-requirements/other-needs/start-page';
 import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
 import { setupIdamController } from './controllers/idam';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
@@ -97,7 +105,7 @@ const healthController = setupHealthController();
 const notFoundController = setupNotFoundController();
 const idamController = setupIdamController();
 
-const middleware = [ isJourneyAllowedMiddleware ];
+const middleware = [isJourneyAllowedMiddleware];
 
 const applicationOverview = setupApplicationOverviewController(updateAppealService);
 const taskListController = setupTaskListController(middleware);
@@ -116,7 +124,7 @@ const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
 const sessionController = setupSessionController();
 const forbiddenController = setupForbiddenController();
-const askForMoreTime = setupAskForMoreTimeController([ isTimeExtensionsInProgress ], { updateAppealService, documentManagementService });
+const askForMoreTime = setupAskForMoreTimeController([isTimeExtensionsInProgress], { updateAppealService, documentManagementService });
 const clarifyingQuestionsListController = setupClarifyingQuestionsListController(middleware);
 const clarifyingQuestionPageController = setupClarifyingQuestionPageController(middleware, updateAppealService);
 const clarifyingQuestionsSupportingEvidenceController = setupSupportingEvidenceQuestionController(middleware, { updateAppealService, documentManagementService });
@@ -156,7 +164,14 @@ const submitHearingRequirementsAccessNeedsController = setupHearingAccessNeedsCo
 const witnessesOnHearingQuestionController = setupWitnessesOnHearingQuestionController(middleware, updateAppealService);
 const witnessesOutsideUkQuestionController = setupWitnessesOutsideUkQuestionController(middleware, updateAppealService);
 const witnessNamesController = setupWitnessNamesController(middleware, updateAppealService);
-
+const hearingRequirementsOtherNeedsStartPageController = setupHearingRequirementsStartPageController(middleware);
+const hearingRequirementsOtherNeedsAnythingElseQuestionController = setupHearingAnythingElseQuestionController(middleware, updateAppealService);
+const hearingRequirementsOtherNeedsHealthConditionsQuestionController = setupHearingHealthConditionsQuestionController(middleware, updateAppealService);
+const hearingRequirementsOtherNeedsJoinByVideoCallAppointmentQuestionController = setupJoinByVideoCallAppointmentQuestionController(middleware, updateAppealService);
+const hearingRequirementsOtherNeedsMultimediaEvidenceQuestionController = setupHearingMultimediaEvidenceQuestionController(middleware, updateAppealService);
+const hearingRequirementsOtherNeedsPastExperiencesQuestionController = setupHearingPastExperiencesQuestionController(middleware, updateAppealService);
+const hearingRequirementsOtherNeedsPrivateHearingQuestionController = setupPrivateHearingQuestionController(middleware, updateAppealService);
+const hearingRequirementsOtherNeedsSingleSexHearingQuestionController = setupHearingSingleSexAppointmentQuestionController(middleware, updateAppealService);
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
 // not protected by idam
@@ -209,6 +224,15 @@ router.use(witnessesOnHearingQuestionController);
 router.use(witnessesOutsideUkQuestionController);
 router.use(witnessNamesController);
 router.use(submitHearingRequirementsAccessNeedsController);
+router.use(hearingRequirementsOtherNeedsStartPageController);
+router.use(hearingRequirementsOtherNeedsAnythingElseQuestionController);
+router.use(hearingRequirementsOtherNeedsHealthConditionsQuestionController);
+router.use(hearingRequirementsOtherNeedsJoinByVideoCallAppointmentQuestionController);
+router.use(hearingRequirementsOtherNeedsMultimediaEvidenceQuestionController);
+router.use(hearingRequirementsOtherNeedsPastExperiencesQuestionController);
+router.use(hearingRequirementsOtherNeedsPrivateHearingQuestionController);
+router.use(hearingRequirementsOtherNeedsSingleSexHearingQuestionController);
+
 router.use(cmaRequirementsTaskListController);
 router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsAccessNeedsController);

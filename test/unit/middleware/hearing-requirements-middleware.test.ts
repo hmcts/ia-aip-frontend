@@ -48,16 +48,21 @@ describe('hearingRequirementsMiddleware', () => {
   it('should redirect to overview page if the hearing requirements is disabled', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(false);
     req.session.appeal.appealStatus = 'submitHearingRequirements';
-    req.path = paths.submitHearingRequirements.taskList;
-    await hearingRequirementsMiddleware(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.called.calledWith(paths.common.overview);
+    for (let hearingRequirementEndPoint in paths.submitHearingRequirements) {
+      req.path = hearingRequirementEndPoint;
+      await hearingRequirementsMiddleware(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.called.calledWith(paths.common.overview);
+    }
   });
 
-  it('should redirect to taskList page if the hearing requirements is enabled', async () => {
+  it('should redirect to respective hearing requirements page if the hearing requirements is enabled', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'submitHearingRequirements';
-    req.path = paths.submitHearingRequirements.taskList;
-    await hearingRequirementsMiddleware(req as Request, res as Response, next);
-    expect(next).to.have.been.called;
+
+    for (let hearingRequirementEndPoint in paths.submitHearingRequirements) {
+      req.path = hearingRequirementEndPoint;
+      await hearingRequirementsMiddleware(req as Request, res as Response, next);
+      expect(next).to.have.been.called;
+    }
   });
 });

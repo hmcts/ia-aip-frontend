@@ -75,6 +75,7 @@ interface CaseData {
   additionalRequests: 'Yes' | 'No';
   additionalRequestsDescription: string;
   datesToAvoidYesNo: 'Yes' | 'No';
+  remoteVideoCall: 'Yes' | 'No';
   datesToAvoid: Collection<DateToAvoid>[];
   listCaseHearingCentre: string;
   listCaseHearingLength: string;

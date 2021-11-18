@@ -37,7 +37,7 @@
                 name: 'addAnotherWitness',
                 classes: "govuk-button--secondary",
                 attributes: {
-                    formaction: addWitnessAction
+                    formaction: witnessAction + '/add'
                 }
             }) }}
 
@@ -50,7 +50,24 @@
                 {% endfor %}
             {% endif %}
 
-            {{ saveButtons() }}
+            <div class="save-buttons__container">
+                {{ govukButton({
+                    name: button1.name if button1.name else 'saveAndContinue',
+                    text: button1.text if button1.text else i18n.common.buttons.saveAndContinue,
+                    classes: "govuk-!-margin-right-1",
+                    attributes: {
+                        formaction: witnessAction
+                    }
+                }) }}
+
+                {{ govukButton({
+                    text: button2.text if button2.text else i18n.common.buttons.saveForLater,
+                    name: button2.name if button2.name else "saveForLater",
+                    href: saveForLaterCTA,
+                    value: "saveForLater",
+                    classes: "govuk-button--secondary"
+                }) }}
+            </div>
         {% endcall %}
     </form>
     {{ contactUs() }}

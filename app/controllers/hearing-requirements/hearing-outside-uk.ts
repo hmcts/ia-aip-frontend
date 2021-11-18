@@ -5,7 +5,7 @@ import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { postHearingRequirementsYesNoHandler } from './common';
 
-const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+const previousPage = paths.submitHearingRequirements.hearingWitnessNames;
 const pageTitle = i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.title;
 const formAction = paths.submitHearingRequirements.witnessOutsideUK;
 const question = {

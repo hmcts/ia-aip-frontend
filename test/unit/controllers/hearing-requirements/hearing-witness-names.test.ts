@@ -67,7 +67,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
 
       const expectedArgs = {
         previousPage: '/hearing-witnesses',
-        addWitnessAction: '/hearing-witness-names/add',
+        witnessAction: '/hearing-witness-names',
         summaryList: summaryList
       };
 
@@ -100,7 +100,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         error: expectedError,
         errorList: Object.values(expectedError),
         previousPage: '/hearing-witnesses',
-        addWitnessAction: '/hearing-witness-names/add',
+        witnessAction: '/hearing-witness-names',
         summaryList: [ { summaryRows: [], title: 'Added witnesses' } ]
       };
       expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
@@ -139,7 +139,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         error: expectedError,
         errorList: Object.values(expectedError),
         previousPage: '/hearing-witnesses',
-        addWitnessAction: '/hearing-witness-names/add',
+        witnessAction: '/hearing-witness-names',
         summaryList: [ { summaryRows: [], title: 'Added witnesses' } ]
       };
       expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);

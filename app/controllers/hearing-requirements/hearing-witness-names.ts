@@ -16,7 +16,7 @@ function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
     return res.render('hearing-requirements/hearing-witness-names.njk', {
       previousPage: paths.submitHearingRequirements.witnesses,
       summaryList: buildWitnessNamesList(witnessNames),
-      addWitnessAction: paths.submitHearingRequirements.hearingWitnessNamesAdd
+      witnessAction: paths.submitHearingRequirements.hearingWitnessNames
     });
   } catch (e) {
     next(e);
@@ -50,7 +50,7 @@ function renderPage (res: Response, validation: ValidationErrors, witnessNames: 
     errorList: Object.values(validation),
     previousPage: paths.submitHearingRequirements.witnesses,
     summaryList: buildWitnessNamesList(witnessNames),
-    addWitnessAction: paths.submitHearingRequirements.hearingWitnessNamesAdd
+    witnessAction: paths.submitHearingRequirements.hearingWitnessNames
   });
 }
 

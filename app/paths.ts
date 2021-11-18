@@ -68,6 +68,14 @@ const paths = {
     hearingLanguageDetailsRemove: '/hearing-language-details/remove',
     hearingStepFreeAccess: '/hearing-step-free-access',
     hearingLoop: '/hearing-hearing-loop'
+
+    otherNeedsVideoAppointment: '/hearing-video-appointment',
+    otherNeedsMultimediaEvidenceQuestion: '/hearing-multimedia-evidence',
+    otherNeedsSingleSexHearingQuestion: '/hearing-single-sex',
+    otherNeedsPrivateHearingQuestion: '/hearing-private',
+    otherNeedsHealthConditions: '/hearing-physical-mental-health',
+    otherNeedsPastExperiences: '/hearing-past-experiences',
+    otherNeedsAnythingElse: '/hearing-anything-else'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',

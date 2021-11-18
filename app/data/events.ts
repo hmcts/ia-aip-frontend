@@ -113,10 +113,6 @@ export const Events = {
     id: 'requestHearingRequirementsFeature',
     description: 'Request Hearing Requirements'
   },
-  REQUEST_HEARING_REQUIREMENTS_FEATURE: {
-    id: 'requestHearingRequirementsFeature',
-    description: 'Request Hearing Requirements'
-  },
   EDIT_AIP_HEARING_REQUIREMENTS: {
     id: 'editAipHearingRequirements',
     description: 'Save Draft Hearing Requirements AIP'

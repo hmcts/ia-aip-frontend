@@ -1983,6 +1983,53 @@
           "title": "Will you or any witnesses take part in the hearing from outside the UK?",
           "text": "If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where you or any witnesses will be for the hearing."
         }
+      },
+      "otherNeedsSection": {
+        "startPage": {
+          "title": "Other needs",
+          "description": "If you have any other needs, they will be considered but it might not be possible to provide for them at the appointment."
+        },
+        "joinHearingByVideoCall": {
+          "title": "Would you be able to join the hearing by video call?",
+          "question": "Would you be able to join the hearing by video call?",
+          "description": "<p>The Tribunal may decide to have the hearing by video call.  Answer no if there are reasons<br>you would not be able to join a video call.</p>",
+
+          "hintsTitle": "Why you might not be able to join a video call?",
+          "hintDescription": "For example, if you:",
+          "hints": [
+            "have a disability that would make it difficult to join a video call, like being blind or deaf",
+            "do not have a computer or mobile device you can use to join the video call",
+            "do not have a good internet connection",
+            "do not have a quiet, private room to use for the hearing"
+          ]
+        },
+        "multimediaEvidence": {
+          "title": "Will you bring any video or audio evidence to the hearing?",
+          "question": "Will you bring any video or audio evidence to the hearing?",
+          "description": "For example, video or sound recordings."
+        },
+        "singleSexHearing": {
+          "title": "Will you need an all-female or all-male hearing?",
+          "question": "Will you need an all-female or all-male hearing?"
+        },
+        "privateHearing": {
+          "title": "Will you need a private hearing?",
+          "question": "Will you need a private hearing?",
+          "description": "A private hearing means the public will not be allowed to attend."
+        },
+        "healthConditions": {
+          "title": "Do you have any physical or mental health conditions that may affect you at the hearing?",
+          "question": "Do you have any physical or mental health conditions that may affect you at the hearing?"
+        },
+        "pastExperiences": {
+          "title": "Have you had any past experiences that may affect you at the hearing?",
+          "question": "Have you had any past experiences that may affect you at the hearing?",
+          "description": "This might be experience of physical or sexual abuse, trafficking or torture."
+        },
+        "anythingElse": {
+          "title": "Will you need anything else at the hearing?",
+          "question": "Will you need anything else at the hearing?"
+        }
       }
     },
     "clarifyingQuestionPage": {
@@ -2382,6 +2429,15 @@
       "witnessesSection": {
         "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing",
         "witnessesOutsideUKRequired": "Select Yes if you or any witnesses will take part in the hearing from outside the UK"
+      },
+      "otherNeeds": {
+        "joinHearingByVideoCallRequired": "Select Yes if you would be able to join the hearing by video call",
+        "multimediaEvidenceAnswerRequired": "Select yes if you will bring any audio or video evidence",
+        "singleSexAppointmentRequired": "Select yes if you need an all-female or all-male hearing",
+        "privateAppointmentAnswerRequired": "Select yes if you need a private hearing",
+        "healthConditionsAnswerRequired": "Select yes if you have any physical or mental health conditions that may affect you at the hearing",
+        "pastExperiencesAnswerRequired": "Select yes if you have had any past experiences that may affect you at the hearing",
+        "anythingElseAnswerRequired": "Select yes if you need anything else at the hearing"
       }
     }
   },

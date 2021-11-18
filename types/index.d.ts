@@ -248,6 +248,10 @@ interface OtherNeeds {
   anythingElseReason: string;
 }
 
+interface HearingOtherNeeds extends OtherNeeds {
+  remoteVideoCall: boolean
+}
+
 interface DatesToAvoid {
   isDateCannotAttend: boolean;
   dates?: CmaDateToAvoid[];
@@ -269,6 +273,7 @@ interface HearingRequirements {
   witnessesOnHearing?: boolean;
   witnessNames?: string[];
   witnessesOutsideUK?: boolean;
+  otherNeeds?: HearingOtherNeeds;
   [key: string]: any;
 }
 

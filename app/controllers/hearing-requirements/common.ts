@@ -4,7 +4,7 @@ import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
-function handleHearingRequirementsYesNo (onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, res: Response, next: NextFunction) {
+function handleHearingRequirementsYesNo(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, res: Response, next: NextFunction) {
   try {
     if (!shouldValidateWhenSaveForLater(req.body, 'reason')) {
       return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -20,20 +20,29 @@ function handleHearingRequirementsYesNo (onValidationError, onValidationErrorMes
   }
 }
 
-export function postHearingRequirementsYesNoHandler (pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
+export function postHearingRequirementsYesNoHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
+  postHearingRequirementsYesNoHandlerWithTemplate(pageContent, onValidationErrorMessage, onSuccess, req, res, next, 'templates/radio-question-page.njk');
+}
 
-  const onValidationError = (validations) => res.render('templates/radio-question-page.njk', {
+export function postHearingRequirementsYesNoHandlerWithTemplate(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction, template: string) {
+
+  const onValidationError = (validations) => res.render(template, {
     ...pageContent,
     errorList: Object.values(validations),
     error: validations
   });
 
   return handleHearingRequirementsYesNo(
-        onValidationError,
-        onValidationErrorMessage,
-        onSuccess,
-        req,
-        res,
-        next
-    );
+    onValidationError,
+    onValidationErrorMessage,
+    onSuccess,
+    req,
+    res,
+    next
+  );
+}
+
+export function setCheckedAttributeToQuestion(question, resultFound: boolean) {
+  question.options[0] = Object.assign(question.options[0], { checked: resultFound === true });
+  question.options[1] = Object.assign(question.options[1], { checked: resultFound === false });
 }

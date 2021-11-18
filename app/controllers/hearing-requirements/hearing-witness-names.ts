@@ -6,6 +6,7 @@ import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
+  witnessNamesValidation,
   witnessNameValidation
 } from '../../utils/validations/fields-validations';
 
@@ -25,19 +26,12 @@ function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
 function postWitnessNamesPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!shouldValidateWhenSaveForLater(req.body, 'witnessName')) {
-        return getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.taskList + '?saved');
-      }
       let witnessNames: string [] = req.session.appeal.hearingRequirements.witnessNames || [];
-      const validation = witnessNames.length < 1 ? witnessNameValidation(req.body) : null;
+      const validation = witnessNamesValidation(witnessNames);
       if (validation) {
         return renderPage(res, validation, witnessNames);
       }
-      const witnessName: string = req.body['witnessName'] as string;
-      if (!witnessName) {
-        witnessNames.push();
-        req.session.appeal.hearingRequirements.witnessNames = witnessNames;
-      }
+
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,

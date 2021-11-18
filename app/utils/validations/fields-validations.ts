@@ -184,6 +184,13 @@ function witnessNameValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function witnessNamesValidation(obj: object) {
+  const schema = Joi.object({
+    witnessName: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.witnessName })
+  }).unknown();
+  return validate({ witnessName: obj }, schema);
+}
+
 function contactDetailsValidation(obj: object) {
   const schema = Joi.object({
     selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
@@ -411,6 +418,7 @@ export {
   dateOfBirthValidation,
   dropdownValidation,
   appellantNamesValidation,
+  witnessNamesValidation,
   witnessNameValidation,
   postcodeValidation,
   nationalityValidation,

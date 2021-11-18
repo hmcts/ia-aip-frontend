@@ -92,7 +92,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         witnessName: {
           href: '#witnessName',
           key: 'witnessName',
-          text: '"witnessName" is required'
+          text: 'Enter a witness name'
         }
       };
 

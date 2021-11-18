@@ -61,7 +61,15 @@ const paths = {
     hearingWitnessNames: '/hearing-witness-names',
     hearingWitnessNamesAdd: '/hearing-witness-names/add',
     hearingWitnessNamesRemove: '/hearing-witness-names/remove',
-    witnessOutsideUK: '/hearing-outside-uk'
+    witnessOutsideUK: '/hearing-outside-uk',
+
+    otherNeedsVideoAppointment: '/hearing-video-appointment',
+    otherNeedsMultimediaEvidenceQuestion: '/hearing-multimedia-evidence',
+    otherNeedsSingleSexHearingQuestion: '/hearing-single-sex',
+    otherNeedsPrivateHearingQuestion: '/hearing-private',
+    otherNeedsHealthConditions: '/hearing-physical-mental-health',
+    otherNeedsPastExperiences: '/hearing-past-experiences',
+    otherNeedsAnythingElse: '/hearing-anything-else'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',
@@ -79,7 +87,7 @@ const paths = {
     otherNeedsAllMaleAppointment: '/appointment-single-sex-type-male',
     otherNeedsAllFemaleAppointment: '/appointment-single-sex-type-female',
     otherNeedsPrivateAppointment: '/appointment-private',
-    otherNeedsPrivateAppointmentReason : '/appointment-private-reasons',
+    otherNeedsPrivateAppointmentReason: '/appointment-private-reasons',
     otherNeedsHealthConditions: '/appointment-physical-mental-health',
     otherNeedsHealthConditionsReason: '/appointment-physical-mental-health-reasons',
     otherNeedsPastExperiences: '/appointment-past-experiences',

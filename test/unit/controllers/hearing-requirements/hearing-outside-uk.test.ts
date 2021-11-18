@@ -69,10 +69,11 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
       const expectedArgs = {
         formAction: '/hearing-outside-uk',
         pageTitle: 'Will you or any witnesses take part in the hearing from outside the UK?',
-        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: '/hearing-witness-names',
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you or any witnesses take part in the hearing from outside the UK?'
+          title: 'Will you or any witnesses take part in the hearing from outside the UK?',
+          hint: 'If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where you or any witnesses will be for the hearing.'
         },
         saveAndContinue: true
 
@@ -108,10 +109,11 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
         errorList: Object.values(expectedError),
         formAction: '/hearing-outside-uk',
         pageTitle: 'Will you or any witnesses take part in the hearing from outside the UK?',
-        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: '/hearing-witness-names',
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will you or any witnesses take part in the hearing from outside the UK?'
+          title: 'Will you or any witnesses take part in the hearing from outside the UK?',
+          hint: 'If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where you or any witnesses will be for the hearing.'
         },
         saveAndContinue: true
       };

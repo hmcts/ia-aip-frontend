@@ -72,7 +72,8 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will any witnesses come to the hearing?'
+          title: 'Will any witnesses come to the hearing?',
+          hint: 'A witness is someone who will speak on your behalf on the hearing.'
         },
         saveAndContinue: true
 
@@ -111,7 +112,8 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
           options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
-          title: 'Will any witnesses come to the hearing?'
+          title: 'Will any witnesses come to the hearing?',
+          hint: 'A witness is someone who will speak on your behalf on the hearing.'
         },
         saveAndContinue: true
 

@@ -10,6 +10,7 @@ const pageTitle = i18n.pages.hearingRequirements.witnessesSection.witnessOutside
 const formAction = paths.submitHearingRequirements.witnessOutsideUK;
 const question = {
   title: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.title,
+  hint: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.text,
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
 };
 

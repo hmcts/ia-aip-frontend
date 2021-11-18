@@ -10,6 +10,7 @@ const pageTitle = i18n.pages.hearingRequirements.witnessesSection.hearingWitness
 const formAction = paths.submitHearingRequirements.witnesses;
 const question = {
   title: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.title,
+  hint: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.text,
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
 };
 

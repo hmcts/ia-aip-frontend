@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as paymentApi from '../api/payments-api';
 import { Events } from '../data/events';
 import { paths } from '../paths';
+import { getUrl } from '../utils/url-utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import UpdateAppealService from './update-appeal-service';
 
@@ -29,7 +30,7 @@ export default class PaymentService {
       fees: [ fee ]
     };
     req.app.locals.logger.trace(`Creating Card Payment with fee ${JSON.stringify(fee)}`, 'Payments Service');
-    const results = await paymentApi.createCardPayment(securityHeaders, body, '');
+    const results = await paymentApi.createCardPayment(securityHeaders, body, getUrl(req.protocol, req.hostname, '/finish-payment'));
     const appeal: Appeal = {
       ...req.session.appeal,
       paymentReference: results.reference

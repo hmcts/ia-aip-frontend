@@ -184,7 +184,8 @@
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence",
-        "paymentType": "Payment type"
+        "paymentType": "Payment type",
+        "feeAmount": "Fee amount"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",

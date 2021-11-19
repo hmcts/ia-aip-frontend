@@ -9,6 +9,7 @@ import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import PaymentService from '../../service/payments-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { getFee } from '../../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
@@ -127,7 +128,7 @@ async function getCheckAndSend(req: Request, res: Response, next: NextFunction) 
     let payNow;
     if (paymentsFlag && payForApplicationNeeded(req)) {
       payNow = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' ? false : true;
-      fee = getFee(req);
+      fee = getFee(req.session.appeal);
     }
     return res.render('appeal-application/check-and-send.njk', {
       summaryRows,
@@ -138,18 +139,6 @@ async function getCheckAndSend(req: Request, res: Response, next: NextFunction) 
   } catch (error) {
     next(error);
   }
-}
-
-function getFee(req: Request) {
-  let fee;
-  const { decisionHearingFeeOption } = req.session.appeal.application;
-  const { feeWithHearing = null, feeWithoutHearing = null } = req.session.appeal;
-  fee = decisionHearingFeeOption === 'decisionWithHearing' ? feeWithHearing : feeWithoutHearing;
-  return {
-    calculated_amount: fee,
-    code: req.session.appeal.feeCode,
-    version: req.session.appeal.feeVersion
-  };
 }
 
 function postCheckAndSend(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
@@ -168,7 +157,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
       }
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       if (paymentsFlag && payForApplicationNeeded(req)) {
-        const fee = getFee(req);
+        const fee = getFee(req.session.appeal);
         return await paymentService.initiatePayment(req, res, fee);
       }
       const { appeal } = req.session;

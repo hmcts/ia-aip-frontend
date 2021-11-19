@@ -565,7 +565,7 @@ describe('application-state-utils', () => {
       expect(result).to.eql(expected);
     });
 
-    it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section. @thisOneONly', () => {
+    it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', () => {
       req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
       const result = getAppealApplicationNextStep(req as Request);
 

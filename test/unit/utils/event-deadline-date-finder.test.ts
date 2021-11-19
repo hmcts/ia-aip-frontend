@@ -139,7 +139,7 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.equal('21 May 2020');
     });
 
-    it('should return a formatted date for decisionWithdrawn state @thisONes', () => {
+    it('should return a formatted date for decisionWithdrawn state', () => {
 
       const currentAppealStatus = 'decisionWithdrawn';
       const result = getDeadline(currentAppealStatus, req as Request);

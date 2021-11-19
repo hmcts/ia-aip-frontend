@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../locale/en.json';
+import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
 import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
@@ -66,7 +67,7 @@ export default class UpdateAppealService {
   // TODO: remove submitEvent when all app is refactored using new submitEvent
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
-    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
+    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
     const currentUserId = req.idam.userDetails.uid;
     const caseData = this.convertToCcdCaseData(req.session.appeal, paymentsFlag);
 
@@ -405,6 +406,13 @@ export default class UpdateAppealService {
       ...caseData.paymentStatus && { paymentStatus: caseData.paymentStatus },
       ...caseData.paymentDate && { paymentDate: caseData.paymentDate },
       ...caseData.isFeePaymentEnabled && { isFeePaymentEnabled: caseData.isFeePaymentEnabled },
+      ...caseData.paAppealTypeAipPaymentOption && { paAppealTypeAipPaymentOption: caseData.paAppealTypeAipPaymentOption },
+      ...caseData.feeWithHearing && { feeWithHearing: caseData.feeWithHearing },
+      ...caseData.feeWithoutHearing && { feeWithoutHearing: caseData.feeWithoutHearing },
+      ...caseData.feeCode && { feeCode: caseData.feeCode },
+      ...caseData.feeDescription && { feeDescription: caseData.feeDescription },
+      ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
+      ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
       hearingCentre: caseData.hearingCentre || null,
       documentMap
     };
@@ -641,6 +649,7 @@ export default class UpdateAppealService {
       ...appeal.paymentStatus && { paymentStatus: appeal.paymentStatus },
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
+      ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
       ...appeal.draftClarifyingQuestionsAnswers && {
         draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
       },

@@ -48,6 +48,9 @@
   "payments": {
     "apiUrl": "PAYMENTS_API_URL"
   },
+  "iaPayments": {
+    "apiUrl": "IA_CASE_PAYMENTS_API_URL"
+  },
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
   },

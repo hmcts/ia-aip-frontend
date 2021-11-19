@@ -2,18 +2,19 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
+import { FEATURE_FLAGS } from '../data/constants';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import {
-  docStoreUrlToHtmlLink,
   documentIdToDocStoreUrl,
   DocumentManagementService,
-  documentToHtmlLink,
   fileNameFormatter,
   toHtmlLink
 } from '../service/document-management-service';
+import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
+import { getFee } from '../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import { boolToYesNo, toIsoDate } from '../utils/utils';
 
@@ -22,14 +23,15 @@ const getAppealApplicationData = (eventId: string, req: Request) => {
   return history.filter(h => h.id === eventId);
 };
 
-function getAppealDetails(req: Request): Array<any> {
+async function getAppealDetails(req: Request): Promise<Array<any>> {
+  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const { application } = req.session.appeal;
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
 
-  return [
+  const rows = [
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [ application.homeOfficeRefNumber ], null),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [ formatDate(toIsoDate(application.dateLetterSent)) ], null),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE),
@@ -45,6 +47,30 @@ function getAppealDetails(req: Request): Array<any> {
     application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ application.lateAppeal.reason ], null),
     application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>` ])
   ];
+
+  if (paymentsFlag) {
+    let decisionType: string;
+    let feeAmountRow;
+    let paymentTypeRow;
+    let fee;
+    const { paAppealTypeAipPaymentOption = null } = req.session.appeal;
+    if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
+      decisionType = req.session.appeal.application.rpDcAppealHearingOption;
+    } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(application.appealType)) {
+      decisionType = req.session.appeal.application.decisionHearingFeeOption;
+      if (paAppealTypeAipPaymentOption === 'payLater') {
+        paymentTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [ i18n.pages.checkYourAnswers.payLater ]);
+      } else {
+        fee = getFee(req.session.appeal);
+        feeAmountRow = fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [ `£${fee.calculated_amount}` ]) : null;
+      }
+    }
+    const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers[decisionType] ]);
+    if (decisionType) rows.push(decisionTypeRow);
+    if (paymentTypeRow) rows.push(paymentTypeRow);
+    if (fee) rows.push(feeAmountRow);
+  }
+  return rows;
 }
 
 function setupAnswersReasonsForAppeal(req: Request): Array<any> {
@@ -223,9 +249,9 @@ function setupCmaRequirementsViewer(req: Request) {
   };
 }
 
-function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
+async function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    const data = getAppealDetails(req);
+    const data = await getAppealDetails(req);
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.appealDetails.title,
       previousPage: paths.common.overview,
@@ -400,6 +426,30 @@ function getHomeOfficeWithdrawLetter(req: Request, res: Response, next: NextFunc
   }
 }
 
+function getHomeOfficeResponse(req: Request, res: Response, next: NextFunction) {
+  try {
+    const previousPage: string = paths.common.overview;
+    const homeOfficeResponseDocuments = req.session.appeal.respondentDocuments.filter(doc => doc.tag === 'appealResponse');
+
+    const homeOfficeLetter = homeOfficeResponseDocuments.shift();
+    const data = [
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.dateUploaded, [moment(homeOfficeLetter.dateUploaded).format(dayMonthYearFormat)]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${homeOfficeLetter.fileId}'>${fileNameFormatter(homeOfficeLetter.name)}</a>`]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.documentDescription, [homeOfficeLetter.description])
+    ];
+    homeOfficeResponseDocuments.forEach(document => {
+      data.push(addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.additionalEvidence, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatter(document.name)}</a>`]));
+    });
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.homeOfficeResponse.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
@@ -411,6 +461,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.noticeEndedAppealViewer, getNoticeEndedAppeal);
   router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
   router.get(paths.common.homeOfficeWithdrawLetter, getHomeOfficeWithdrawLetter);
+  router.get(paths.common.homeOfficeResponse, getHomeOfficeResponse);
   return router;
 }
 
@@ -426,5 +477,6 @@ export {
   setupDetailViewersController,
   setupCmaRequirementsViewer,
   getCmaRequirementsViewer,
-  getOutOfTimeDecisionViewer
+  getOutOfTimeDecisionViewer,
+  getHomeOfficeResponse
 };

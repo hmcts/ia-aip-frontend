@@ -5,6 +5,7 @@ import {
   setupTypeOfAppealController
 } from '../../../app/controllers/appeal-application/type-of-appeal';
 import { appealTypes } from '../../../app/data/appeal-types';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
@@ -79,7 +80,7 @@ describe('Type of appeal Controller', () => {
       LaunchDarklyService.close();
     });
     it('should render type-of-appeal.njk with payments feature flag OFF', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(false);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getTypeOfAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection'),
@@ -88,7 +89,7 @@ describe('Type of appeal Controller', () => {
     });
 
     it('should render type-of-appeal.njk with payments feature flag ON', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getTypeOfAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
@@ -98,7 +99,7 @@ describe('Type of appeal Controller', () => {
 
     it('when called with edit param should render type-of-appeal.njk and update session and payments feature flag ON', async () => {
       req.query = { 'edit': '' };
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getTypeOfAppeal(req as Request, res as Response, next);
 
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
@@ -121,6 +122,7 @@ describe('Type of appeal Controller', () => {
     beforeEach(() => {
       appeal = {
         ...req.session.appeal,
+        paAppealTypeAipPaymentOption: '',
         application: {
           ...req.session.appeal.application,
           appealType: 'human-rights'
@@ -134,20 +136,29 @@ describe('Type of appeal Controller', () => {
       } as Appeal);
     });
 
-    it('should validate and redirect to the task-list page', async () => {
+    it('should validate and redirect to the task-list page with payments flag OFF', async () => {
       req.body['appealType'] = 'human-rights';
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+    });
+
+    it('should validate and redirect to the task-list page with payments flag ON', async () => {
+      req.body['appealType'] = 'human-rights';
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.decisionType);
     });
 
     it('should validate and redirect to the task-list page and payments feature flag ON', async () => {
       req.body['appealType'] = 'human-rights';
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.decisionType);
     });
 
@@ -196,7 +207,7 @@ describe('Type of appeal Controller', () => {
       appeal.application.isEdit = true;
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
@@ -205,7 +216,7 @@ describe('Type of appeal Controller', () => {
       req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
@@ -215,7 +226,7 @@ describe('Type of appeal Controller', () => {
       req.body = { 'button': 'save-and-continue', 'appealType': 'human-rights' };
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.checkAndSend);
       expect(req.session.appeal.application.isEdit).to.be.undefined;
 

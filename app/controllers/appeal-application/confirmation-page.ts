@@ -1,6 +1,5 @@
 import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
-import moment from 'moment';
 
 const daysToWaitAfterSubmission: number = config.get('daysToWait.afterSubmission');
 
@@ -9,12 +8,14 @@ import { addDaysToDate } from '../../utils/date-utils';
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const { application } = req.session.appeal;
-    const isLate = () => application.isAppealLate ;
+    const { application, paAppealTypeAipPaymentOption = null } = req.session.appeal;
+    const isLate = () => application.isAppealLate;
+    const payLater = paAppealTypeAipPaymentOption === 'payLater';
 
     res.render('confirmation-page.njk', {
       date: addDaysToDate(daysToWaitAfterSubmission),
-      late: isLate()
+      late: isLate(),
+      payLater
     });
   } catch (e) {
     next(e);

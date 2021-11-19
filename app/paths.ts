@@ -15,6 +15,7 @@ const paths = {
     uploadEvidence: '/home-office/upload-evidence',
     deleteEvidence: '/home-office/delete-evidence',
     typeOfAppeal: '/appeal-type',
+    payNow: '/pay-now',
     decisionType: '/decision-type',
     contactDetails: '/contact-preferences',
     checkAndSend: '/check-answers',
@@ -117,6 +118,7 @@ const paths = {
     noticeEndedAppealViewer: '/notice-ended-appeal',
     outOfTimeDecisionViewer: '/out-of-time-decision',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
+    homeOfficeResponse: '/home-office-response',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

@@ -6,6 +6,7 @@ import {
   postCheckAndSend,
   setupCheckAndSendController
 } from '../../../app/controllers/appeal-application/check-and-send';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import PaymentService from '../../../app/service/payments-service';
@@ -19,7 +20,7 @@ import { createDummyAppealApplication } from '../mockData/mock-appeal';
 
 const express = require('express');
 
-function getMockedSummaryRows(): SummaryRow[] {
+function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   return [ {
     actions: { items: [ { href: '/home-office-reference-number?edit', text: 'Change' } ] },
     key: { text: 'Home Office reference number' },
@@ -59,7 +60,7 @@ function getMockedSummaryRows(): SummaryRow[] {
   }, {
     actions: { items: [ { href: paths.appealStarted.typeOfAppeal + '?edit', text: 'Change' } ] },
     key: { text: 'Appeal type' },
-    value: { html: 'Protection' }
+    value: { html: i18n.appealTypes[appealType].name }
   } ];
 }
 
@@ -122,14 +123,40 @@ describe('createSummaryRowsFrom', () => {
     expect(rows).to.be.deep.equal(mockedRows);
   });
 
+  it('should create rows when appeal type is deprivation payments flag is ON', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+    req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
+    req.session.appeal.application.appealType = 'deprivation';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows('deprivation');
+    mockedRows.push(decisionType);
+    expect(rows).to.be.deep.equal(mockedRows);
+  });
+
   it('should create rows when payments flag is ON', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
     req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const appealLateRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
-    mockedRows.push(appealLateRow);
+    mockedRows.push(decisionType);
+    expect(rows).to.be.deep.equal(mockedRows);
+  });
+
+  it('should create rows when paynow and payments flag is ON', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+    req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
+    const paymentType = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [ i18n.pages.checkYourAnswers['payNow'] ], `${paths.appealStarted.payNow}?edit`);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows();
+    mockedRows.push(decisionType);
+    mockedRows.push(paymentType);
     expect(rows).to.be.deep.equal(mockedRows);
   });
 });
@@ -201,77 +228,144 @@ describe('Check and Send Controller', () => {
     expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
   });
 
-  it('getCheckAndSend should render check-and-send-page.njk', async () => {
-    req.session.appeal = createDummyAppealApplication();
-    await getCheckAndSend(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk');
-  });
+  describe('getCheckAndSend', () => {
 
-  it('getCheckAndSend should catch exception and call next with the error', async () => {
-    req.session.appeal = createDummyAppealApplication();
-    const error = new Error('an error');
-    res.render = sandbox.stub().throws(error);
-    await getCheckAndSend(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce.calledWith(error);
-  });
+    it('should render check-and-send-page.njk and Payments flag is OFF', async () => {
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '80';
+      req.session.appeal.feeWithoutHearing = '140';
+      await getCheckAndSend(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList
+      });
+    });
 
-  it('postCheckAndSend should fail validation when statement of truth not checked', async () => {
-    req.session.appeal = createDummyAppealApplication();
-    req.body = { 'button': 'save-and-continue', 'data': [] };
+    it('getCheckAndSend should render check-and-send-page.njk, pay now and decision with hearing applicationCheckAndSend with Payments flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '80';
+      req.session.appeal.feeWithoutHearing = '140';
+      await getCheckAndSend(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        fee: '80',
+        payNow: true
+      });
+    });
 
-    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+    it('getCheckAndSend should render check-and-send-page.njk, pay now and decision without hearing applicationCheckAndSend with Payments flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithoutHearing';
+      req.session.appeal.feeWithHearing = '80';
+      req.session.appeal.feeWithoutHearing = '140';
+      await getCheckAndSend(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        fee: '140',
+        payNow: true
+      });
+    });
 
-    const expectedError = {
-      statement: {
-        href: '#statement',
-        key: 'statement',
-        text: 'Select if you believe the information you have given is true.'
-      }
-    };
-
-    const summaryRows = getMockedSummaryRows();
-    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
-      error: expectedError,
-      errorList: Object.values(expectedError),
-      summaryRows: summaryRows,
-      previousPage: paths.appealStarted.taskList
+    it('getCheckAndSend should catch exception and call next with the error', async () => {
+      req.session.appeal = createDummyAppealApplication();
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      await getCheckAndSend(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', async () => {
-    req.session.appeal = createDummyAppealApplication();
-    req.body = { statement: 'acceptance' };
-    updateAppealService.submitEventRefactored = sandbox.stub().returns({
-      appealStatus: 'appealSubmitted',
-      appealReferenceNumber: 'PA/1234567'
-    } as Appeal);
-    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+  describe('postCheckAndSend', () => {
+    it('should fail validation when statement of truth not checked', async () => {
+      req.session.appeal = createDummyAppealApplication();
+      req.body = { 'button': 'save-and-continue', 'data': [] };
 
-    expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
-    expect(req.session.appeal.appealReferenceNumber).to.be.equal('PA/1234567');
-    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.confirmation);
-  });
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-  it('postCheckAndSend when accepted statement and clicked send should redirect to the next page', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
-    req.session.appeal = createDummyAppealApplication();
-    req.body = { statement: 'acceptance' };
-    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+      const expectedError = {
+        statement: {
+          href: '#statement',
+          key: 'statement',
+          text: 'Select if you believe the information you have given is true.'
+        }
+      };
 
-    expect(paymentService.initiatePayment).to.have.been.called;
-  });
+      const summaryRows = getMockedSummaryRows();
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        error: expectedError,
+        errorList: Object.values(expectedError),
+        summaryRows: summaryRows,
+        previousPage: paths.appealStarted.taskList
+      });
+    });
 
-  it('postCheckAndSend should catch exception and call next with the error', async () => {
-    req.session.appeal = createDummyAppealApplication();
-    const error = new Error('an error');
-    req.body = { statement: 'acceptance' };
-    res.redirect = sandbox.stub().throws(error);
-    updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
-      appealStatus: 'appealSubmitted',
-      appealReferenceNumber: 'PA/1234567'
-    } as Appeal);
-    await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
-    expect(next).to.have.been.calledOnce.calledWith(error);
+    it('should submit application and redirect when accepted statement and clicked send', async () => {
+      req.session.appeal = createDummyAppealApplication();
+      req.body = { statement: 'acceptance' };
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        appealStatus: 'appealSubmitted',
+        appealReferenceNumber: 'PA/1234567'
+      } as Appeal);
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.appealStatus).to.be.equal('appealSubmitted');
+      expect(req.session.appeal.appealReferenceNumber).to.be.equal('PA/1234567');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.confirmation);
+    });
+
+    it('should submit application and redirect if no payment needed', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.appealType = 'deprivation';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should initiate payment for "protection" appeal type and payNow', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(paymentService.initiatePayment).to.have.been.called;
+    });
+
+    it('should submit appeal for "protection" appeal type and payLater', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should catch exception and call next with the error', async () => {
+      req.session.appeal = createDummyAppealApplication();
+      const error = new Error('an error');
+      req.body = { statement: 'acceptance' };
+      res.redirect = sandbox.stub().throws(error);
+      updateAppealService.mapCcdCaseToAppeal = sandbox.stub().returns({
+        appealStatus: 'appealSubmitted',
+        appealReferenceNumber: 'PA/1234567'
+      } as Appeal);
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
   });
 
   describe('getFinishPayment', () => {

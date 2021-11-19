@@ -4,9 +4,10 @@ import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import PaymentService from '../../../app/service/payments-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
+import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('payments-api', () => {
+describe('Payments Service', () => {
   let authenticationService: Partial<AuthenticationService>;
   let updateAppealService: Partial<UpdateAppealService>;
   let paymentService: PaymentService;
@@ -16,6 +17,7 @@ describe('payments-api', () => {
   let paymentDetailsStub: sinon.SinonStub;
   let sandbox: sinon.SinonSandbox;
   const createCardPaymentResponse = { reference: 'thePaymentReference', _links: { next_url: { href: 'http://govPaymentPayment' } } };
+  const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -28,6 +30,11 @@ describe('payments-api', () => {
     paymentService = new PaymentService(authenticationService as AuthenticationService, updateAppealService as UpdateAppealService);
     createCardPaymentStub = sandbox.stub(paymentsApi, 'createCardPayment').resolves(createCardPaymentResponse);
     req = {
+      app: {
+        locals: {
+          logger
+        }
+      } as any,
       idam: {
         userDetails: {
           uid: 'theUID'

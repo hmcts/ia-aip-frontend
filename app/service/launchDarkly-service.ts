@@ -1,7 +1,7 @@
 import { Request } from 'express';
+import _ from 'lodash';
 import { setupSecrets } from '../setupSecrets';
 import Logger from '../utils/logger';
-
 const logger: Logger = new Logger();
 const launchDarklyLabel: string = 'LaunchDarkly service';
 const LaunchDarkly = require('launchdarkly-node-server-sdk');
@@ -34,7 +34,8 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
   }
 
   async getVariation(req: Request, flag: string, defaultReturn: boolean) {
-    return ldClient.variation(flag, { key: req.idam.userDetails.sub }, defaultReturn);
+    const username = _.get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
+    return ldClient.variation(flag, { key: username }, defaultReturn);
   }
 
   public static close() {

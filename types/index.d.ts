@@ -258,6 +258,7 @@ interface DatesToAvoid {
   dates?: CmaDateToAvoid[];
 }
 
+// the same interface is used for hearingDate to avoid as well
 interface CmaDateToAvoid {
   date: AppealDate;
   reason?: string;
@@ -280,6 +281,14 @@ interface HearingRequirements {
   isHearingLoopNeeded?: boolean;
   otherNeeds?: HearingOtherNeeds;
   [key: string]: any;
+  isEdit?: boolean;
+  tasks?: {
+    [key: string]: Task;
+  };
+  accessNeeds?: AccessNeeds;
+  otherNeeds?: OtherNeeds;
+  datesToAvoid?: DatesToAvoid;
+  // [key: string]: any;
 }
 
 interface RespondentDocument {

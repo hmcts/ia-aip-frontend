@@ -2056,7 +2056,7 @@
         "bringEquipmentReason": {
           "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
           "heading": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it"
-        },       
+        },
         "singleSexHearing": {
           "title": "Will you need an all-female or all-male hearing?",
           "question": "Will you need an all-female or all-male hearing?"
@@ -2064,7 +2064,7 @@
         "singleSexTypeHearing": {
           "title": "What type of hearing will you need?",
           "question": "What type of hearing will you need?"
-        },        
+        },
         "singleSexHearingAllMale": {
           "title": "Tell us why you need an all-male hearing",
           "heading": "Tell us why you need an all-male hearing"
@@ -2072,7 +2072,7 @@
         "singleSexHearingAllFemale": {
           "title": "Tell us why you need an all-female hearing",
           "heading": "Tell us why you need an all-female hearing"
-        },        
+        },
         "privateHearing": {
           "title": "Will you need a private hearing?",
           "question": "Will you need a private hearing?",
@@ -2091,7 +2091,7 @@
           "title": "Will you need anything else at the hearing?",
           "question": "Will you need anything else at the hearing?"
         },
-        
+
         "privateHearingReason": {
           "title": "Tell us why you need a private hearing",
           "heading": "Tell us why you need a private hearing"
@@ -2110,6 +2110,27 @@
           "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
         }
 
+      },
+      "datesToAvoidSection": {
+        "questionPage": {
+          "title": "Are there any dates that you or any witnesses cannot go to the hearing?",
+          "question": "Are there any dates between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?",
+          "description": "You will need to tell us why you or any witnesses cannot go to the hearing on the dates you include."
+        },
+        "enterADatePage": {
+          "title": "Enter the date you or any witnesses cannot go to the hearing",
+          "heading": "Enter the date you or any witnesses cannot go the hearing",
+          "description": "Only include dates from {{ availableHearingDates.from }} to {{ availableHearingDates.to }}.",
+          "hint": "For example, 12 11 2020"
+        },
+        "reason": {
+          "title": "Why can you or any witnesses not go to the hearing on this date?",
+          "heading": "Why can you or any witnesses not go to the hearing on this date?"
+        },
+        "addAnotherDateQuestion": {
+          "title": "Is there another date that you or any witnesses cannot go to the hearing?",
+          "heading": "Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?"
+        }
       }
     },
     "clarifyingQuestionPage": {
@@ -2527,12 +2548,12 @@
         "pastExperiencesAnswerRequired": "Select yes if you have had any past experiences that may affect you at the hearing",
         "anythingElseAnswerRequired": "Select yes if you need anything else at the hearing",
         "singleSexHearingAllMaleReasonRequired": "Enter the reasons you need an all-male hearing",
-        "singleSexHearingAllFemaleReasonRequired": "Enter the reasons you need an all-female hearing",    
+        "singleSexHearingAllFemaleReasonRequired": "Enter the reasons you need an all-female hearing",
         "singleSexTypeHearingRequired": "Select if you need an all-female or all-male hearing",
         "privateHearingReasonRequired": "Enter the reasons you need a private hearing",
         "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the hearing",
         "pastExperiencesReasonRequired": "Enter details of how any past experiences may affect you at the hearing",
-        "anythingElseReasonRequired": "Enter details of what you will need and why you need it"        
+        "anythingElseReasonRequired": "Enter details of what you will need and why you need it"
       }
     }
   },

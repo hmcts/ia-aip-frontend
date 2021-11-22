@@ -57,6 +57,10 @@ import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupHearingAccessNeedsController } from './controllers/hearing-requirements/access-needs';
 import { setupHearingRequirementsFeatureToggleController } from './controllers/hearing-requirements/feature-toggle';
+import { setupHearingDatesToAvoidAddAnotherDateController } from './controllers/hearing-requirements/dates-to-avoid/add-another-date';
+import { setupHearingDatesToAvoidEnterADateController } from './controllers/hearing-requirements/dates-to-avoid/enter-a-date';
+import { setupHearingDatesToAvoidQuestionController } from './controllers/hearing-requirements/dates-to-avoid/question';
+import { setupHearingDatesToAvoidReasonController } from './controllers/hearing-requirements/dates-to-avoid/reason';
 import { setupWitnessesOutsideUkQuestionController } from './controllers/hearing-requirements/hearing-outside-uk';
 import { setupWitnessNamesController } from './controllers/hearing-requirements/hearing-witness-names';
 import { setupWitnessesOnHearingQuestionController } from './controllers/hearing-requirements/hearing-witnesses';
@@ -192,6 +196,11 @@ const hearingRequirementsOtherNeedsHealthConditionsReasonController = setupHeari
 const hearingRequirementsOtherNeedsPastExperiencesReasonController = setupHearingPastExperiencesReasonController(middleware, updateAppealService);
 const hearingRequirementsOtherNeedsPrivateHearingReasonController = setupPrivateHearingReasonController(middleware, updateAppealService);
 const hearingRequirementsOtherNeedsAnythingElseReasonController = setupHearingAnythingElseReasonController(middleware, updateAppealService);
+const hearingDatesToAvoidQuestionController = setupHearingDatesToAvoidQuestionController(middleware, updateAppealService);
+const hearingDatesToAvoidEnterADateController = setupHearingDatesToAvoidEnterADateController(middleware, updateAppealService);
+const hearingDatesToAvoidReasonsController = setupHearingDatesToAvoidReasonController(middleware, updateAppealService);
+const hearingDatesToAvoidAddAnotherDateController = setupHearingDatesToAvoidAddAnotherDateController(middleware);
+
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
 // not protected by idam
@@ -262,6 +271,10 @@ router.use(hearingRequirementsOtherNeedsHealthConditionsReasonController);
 router.use(hearingRequirementsOtherNeedsPastExperiencesReasonController);
 router.use(hearingRequirementsOtherNeedsPrivateHearingReasonController);
 router.use(hearingRequirementsOtherNeedsAnythingElseReasonController);
+router.use(hearingDatesToAvoidQuestionController);
+router.use(hearingDatesToAvoidEnterADateController);
+router.use(hearingDatesToAvoidReasonsController);
+router.use(hearingDatesToAvoidAddAnotherDateController);
 router.use(cmaRequirementsTaskListController);
 router.use(cmaRequirementsStartPageController);
 router.use(cmaRequirementsAccessNeedsController);

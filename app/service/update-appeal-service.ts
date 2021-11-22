@@ -304,6 +304,8 @@ export default class UpdateAppealService {
       };
     }
 
+    // TODO: How do you ensure the ccdData is rightly mapped to either CMA or CMA and hearing requirement fields
+    //  as they use the common fields. What do you assign it to??
     // Other Needs section
     if (caseData.datesToAvoid) {
       let isDateCannotAttend: boolean = null;
@@ -321,6 +323,28 @@ export default class UpdateAppealService {
       }
 
       cmaRequirements.datesToAvoid = {
+        isDateCannotAttend,
+        dates
+      };
+    }
+
+    // hearing dates to avoid section
+    if (caseData.datesToAvoid) {
+      let isDateCannotAttend: boolean = null;
+      let dates: CmaDateToAvoid[] = null;
+      if (caseData.datesToAvoid.length) {
+        isDateCannotAttend = true;
+        dates = caseData.datesToAvoid.map((d) => {
+          return {
+            date: this.getDate(d.value.dateToAvoid),
+            reason: d.value.dateToAvoidReason
+          };
+        }
+        );
+
+      }
+
+      hearingRequirements.datesToAvoid = {
         isDateCannotAttend,
         dates
       };
@@ -709,6 +733,27 @@ export default class UpdateAppealService {
 
       if (_.has(appeal, 'hearingRequirements.otherNeeds')) {
         this.mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData);
+      }
+
+      // Dates To avoid Section
+      if (_.has(appeal, 'hearingRequirements.datesToAvoid')) {
+        const { datesToAvoid } = appeal.hearingRequirements;
+
+        if (_.has(datesToAvoid, 'isDateCannotAttend')) {
+          caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
+
+          if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
+            caseData.datesToAvoid = datesToAvoid.dates.map(date => {
+
+              return {
+                value: {
+                  dateToAvoid: toIsoDate(date.date),
+                  dateToAvoidReason: date.reason
+                } as DateToAvoid
+              } as Collection<DateToAvoid>;
+            });
+          }
+        }
       }
     }
 

@@ -84,3 +84,40 @@ export function handleHearingRequirementsSaveForLater(req: Request, res: Respons
   }
   return res.redirect(paths.common.overview + '?saved');
 }
+
+function handleHearingRequirementsReason(onValidationError, onValidationErrorMessage: string, onSuccess, req: Request, next: NextFunction) {
+  try {
+    const { reason } = req.body;
+    const validations = textAreaValidation(reason, 'reason', onValidationErrorMessage);
+    if (validations) {
+      return onValidationError(validations);
+    }
+    return onSuccess();
+  } catch (e) {
+    next(e);
+  }
+}
+
+export function getHearingRequirementsReasonHandler(pageContent, onValidationErrorMessage: string, onSuccess: Function, req: Request, res: Response, next: NextFunction) {
+  const onValidationError = (validations) => res.render('templates/textarea-question-page.njk', {
+    ...pageContent,
+    errorList: Object.values(validations),
+    error: validations
+  });
+
+  return handleHearingRequirementsReason(
+    onValidationError,
+    onValidationErrorMessage,
+    onSuccess,
+    req,
+    next
+  );
+}
+
+export function handleHearingRequirementsSaveForLater(req: Request, res: Response) {
+  if (_.has(req.session, 'appeal.hearingRequirements.isEdit')
+    && req.session.appeal.hearingRequirements.isEdit === true) {
+    req.session.appeal.hearingRequirements.isEdit = false;
+  }
+  return res.redirect(paths.common.overview + '?saved');
+}

@@ -22,6 +22,10 @@ import { getSingleSexHearingAllMaleReason } from './other-needs/single-sex-heari
 import { getSingleSexHearingQuestion } from './other-needs/single-sex-hearing-question';
 import { getSingleSexTypeHearingQuestion } from './other-needs/single-sex-type-hearing-question';
 import { getHearingRequirementsStartPage } from './other-needs/start-page';
+import { getAddAnotherDateQuestionPage } from './dates-to-avoid/add-another-date';
+import { getEnterADatePage, getEnterADatePageWithId } from './dates-to-avoid/enter-a-date';
+import { getDatesToAvoidQuestion } from './dates-to-avoid/question';
+import { getDatesToAvoidReason, getDatesToAvoidReasonWithId } from './dates-to-avoid/reason';
 import { getTaskList } from './task-list';
 
 function setupHearingRequirementsFeatureToggleController(middleware: Middleware[]): Router {
@@ -50,6 +54,14 @@ function setupHearingRequirementsFeatureToggleController(middleware: Middleware[
   router.get(paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing, middleware, hearingRequirementsMiddleware, getSingleSexTypeHearingQuestion);
   router.get(paths.submitHearingRequirements.otherNeedsAllMaleHearing, middleware, hearingRequirementsMiddleware, getSingleSexHearingAllMaleReason);
   router.get(paths.submitHearingRequirements.otherNeedsAllFemaleHearing, middleware, hearingRequirementsMiddleware, getSingleSexHearingAllFemaleReason);
+
+  router.get(paths.submitHearingRequirements.hearingDatesToAvoidQuestion, middleware, hearingRequirementsMiddleware, getDatesToAvoidQuestion);
+  router.get(paths.submitHearingRequirements.hearingDatesToAvoidEnterDate, middleware, hearingRequirementsMiddleware, getEnterADatePage);
+  router.get(paths.submitHearingRequirements.hearingDatesToAvoidEnterDateWithId, middleware, hearingRequirementsMiddleware, getEnterADatePageWithId);
+  router.get(paths.submitHearingRequirements.hearingDateToAvoidReasons, middleware, hearingRequirementsMiddleware, getDatesToAvoidReason);
+  router.get(paths.submitHearingRequirements.hearingDateToAvoidReasonsWithId, middleware, hearingRequirementsMiddleware, getDatesToAvoidReasonWithId);
+  router.get(paths.submitHearingRequirements.hearingDateToAvoidNew, middleware, hearingRequirementsMiddleware, getAddAnotherDateQuestionPage);
+
   return router;
 }
 

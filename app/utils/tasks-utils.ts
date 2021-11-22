@@ -109,7 +109,7 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
 
   const datesToAvoidTask: Task = {
     saved: datesToAvoid,
-    completed: datesToAvoid,
+    completed: _.has(appeal, 'hearingRequirements.datesToAvoid'),
     active: otherNeedsTask.completed
   };
 

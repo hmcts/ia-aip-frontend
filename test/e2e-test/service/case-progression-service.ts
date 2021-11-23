@@ -106,6 +106,50 @@ module.exports = {
       await updateAppeal(requestRespondentEvidence, userId, caseDetails[0], securityHeaders);
     });
 
+    Then(/^I sign in as a Case Officer and request HO data to match appellant details$/, async () => {
+      let caseDetails: any = await fetchAipUserCaseData();
+
+      const userToken = await authenticationService.signInAsHomeOfficeOfficer();
+      const userId = await getUserId(userToken);
+      const serviceToken = await getS2sToken();
+      const securityHeaders = { userToken, serviceToken };
+
+      // load case
+      caseDetails[0].case_data = {
+        'homeOfficeReferenceNumber': '1234-1111-5678-1111',
+        'homeOfficeSearchResponse': '"{"messageHeader":{"eventDateTime":"2020-08-25T08:30:29.305206Z","correlationId":"bbd96db3-090d-41c9-beda-f5c1763013b3","consumer":{"code":"HMCTS","description":"HM Courts and Tribunal Service"}},"messageType":"RESPONSE_RIGHT_OF_APPEAL_DETAILS","status":[{"person":{"givenName":null,"familyName":"TestSix","fullName":"Asylumcase TestSix","gender":{"code":"F","description":"Female"},"dayOfBirth":4,"monthOfBirth":4,"yearOfBirth":1995,"nationality":{"code":"CHL","description":"Chile"}},"applicationStatus":{"documentReference":"1212-0099-0062-8083","roleType":{"code":"SPOUSE","description":"Spouse"},"roleSubType":null,"applicationType":{"code":"ASYLUM","description":"Asylum and Protection"},"claimReasonType":null,"decisionType":{"code":"REFUSE","description":"SD outcome"},"decisionDate":"2020-07-30T00:00:00Z","decisionCommunication":null,"rejectionReasons":[{"reason":"Refused asylum"}],"metadata":null}}]}',
+        'homeOfficeAppellantsList': {
+          'value': {
+            'code': 'NoMatch',
+            'label': 'No Match'
+          },
+          'list_items': [
+            {
+              'code': 'AsylumcaseTestFive',
+              'label': 'AsylumcaseTestFive-040495'
+            },
+            {
+              'code': 'NoMatch',
+              'label': 'No Match'
+            }
+          ]
+        },
+        ...caseDetails[0].case_data
+      };
+
+      const requestHomeOfficeData = {
+        id: 'requestHomeOfficeData',
+        summary: 'Request Home office data',
+        description: 'Request Home office data'
+      };
+
+      const { data_classification, security_classifications, ...caseDetailsData } = caseDetails[0];
+
+      console.log('match appellant details with body', JSON.stringify(caseDetailsData, null, 2));
+
+      await updateAppeal(requestHomeOfficeData, userId, caseDetails[0], securityHeaders);
+    });
+
     Then(/^I sign in as a Home Office Generic and upload the HO Bundle$/, async () => {
       let caseDetails: any = await fetchAipUserCaseData();
 

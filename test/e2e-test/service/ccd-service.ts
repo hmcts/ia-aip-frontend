@@ -15,58 +15,62 @@ const httpProxyEnabled = asBooleanValue(config.get('httpProxy'));
 
 // tslint:disable:no-console
 async function updateAppeal(event, userId: string, caseDetails: CcdCaseDetails, headers: SecurityHeaders) {
-  const caseId = caseDetails.id;
+  try {
+    const caseId = caseDetails.id;
 
-  console.info('======================');
-  console.info(`Updating Case Id ${caseId} to ${event.id}`);
-  console.info('======================');
+    console.info('======================');
+    console.info(`Updating Case Id ${caseId} to ${event.id}`);
+    console.info('======================');
 
-  let startUpdateAppealResponse = null;
-  const startUpdateAppealOptions = {
-    uri: `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${event.id}/token`,
-    headers: {
-      Authorization: headers.userToken,
-      ServiceAuthorization: headers.serviceToken,
-      'content-type': 'application/json'
-    },
-    json: true
-  };
+    let startUpdateAppealResponse = null;
+    const startUpdateAppealOptions = {
+      uri: `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/event-triggers/${event.id}/token`,
+      headers: {
+        Authorization: headers.userToken,
+        ServiceAuthorization: headers.serviceToken,
+        'content-type': 'application/json'
+      },
+      json: true
+    };
 
-  console.info('->',`Start ${event.id} event`);
-  if (httpProxyEnabled) {
-    const proxy = `http://${proxyUrl}:${proxyPort}`;
-    const proxiedRequest = rp.defaults({ 'proxy': proxy });
-    startUpdateAppealResponse = await proxiedRequest.get(startUpdateAppealOptions);
-  } else {
-    startUpdateAppealResponse = await rp.get(startUpdateAppealOptions);
+    console.info('->',`Start ${event.id} event`);
+    if (httpProxyEnabled) {
+      const proxy = `http://${proxyUrl}:${proxyPort}`;
+      const proxiedRequest = rp.defaults({ 'proxy': proxy });
+      startUpdateAppealResponse = await proxiedRequest.get(startUpdateAppealOptions);
+    } else {
+      startUpdateAppealResponse = await rp.get(startUpdateAppealOptions);
+    }
+
+    let submitUpdateAppealResponse = null;
+    const submitUpdateAppealOptions = {
+      uri: `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`,
+      headers: {
+        Authorization: headers.userToken,
+        ServiceAuthorization: headers.serviceToken,
+        'content-type': 'application/json'
+      },
+      body: {
+        event,
+        data: caseDetails.case_data,
+        event_token: startUpdateAppealResponse.token,
+        ignore_warning: true
+      },
+      json: true
+    };
+
+    console.info('->',`Submit ${event.id} event`);
+    if (httpProxyEnabled) {
+      const proxy = `http://${proxyUrl}:${proxyPort}`;
+      const proxiedRequest = rp.defaults({ 'proxy': proxy });
+      submitUpdateAppealResponse = await proxiedRequest.post(submitUpdateAppealOptions);
+    } else {
+      submitUpdateAppealResponse = await rp.post(submitUpdateAppealOptions);
+    }
+    return submitUpdateAppealResponse;
+  } catch (error) {
+    console.log('updateAppeal failed with error', error);
   }
-
-  let submitUpdateAppealResponse = null;
-  const submitUpdateAppealOptions = {
-    uri: `${ccdBaseUrl}/caseworkers/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases/${caseId}/events`,
-    headers: {
-      Authorization: headers.userToken,
-      ServiceAuthorization: headers.serviceToken,
-      'content-type': 'application/json'
-    },
-    body: {
-      event,
-      data: caseDetails.case_data,
-      event_token: startUpdateAppealResponse.token,
-      ignore_warning: true
-    },
-    json: true
-  };
-
-  console.info('->',`Submit ${event.id} event`);
-  if (httpProxyEnabled) {
-    const proxy = `http://${proxyUrl}:${proxyPort}`;
-    const proxiedRequest = rp.defaults({ 'proxy': proxy });
-    submitUpdateAppealResponse = await proxiedRequest.post(submitUpdateAppealOptions);
-  } else {
-    submitUpdateAppealResponse = await rp.post(submitUpdateAppealOptions);
-  }
-  return submitUpdateAppealResponse;
 }
 
 export {

@@ -17,11 +17,11 @@ Scenario: Complete appeal application
   Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
   When I select Yes and click continue
   Then I should see the eligible page
-  When I click continue
-  Then I should see the Create an account page
-  When I click Sign in to your account
-  Then I should see the sign in page
-  When I enter creds and click sign in
+  # When I click continue
+  # Then I should see the Create an account page
+  # When I click Sign in to your account
+  # Then I should see the sign in page
+  When I am authenticated as a valid appellant
   Then I should see the appeal overview page
   And I should see the 'do this next section' for 'New - Appeal started'
   When I click continue

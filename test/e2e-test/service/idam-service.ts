@@ -24,19 +24,24 @@ async function createUser() {
   aipCurrentUser.password = 'Apassword123';
   aipCurrentUser.forename = 'ATestForename';
   aipCurrentUser.surname = 'ATestSurname';
+
   const options = {
     url: `${idamUrl}/testing-support/accounts`,
     json: true,
     body: {
       email: aipCurrentUser.email,
       forename: aipCurrentUser.forename,
+      id: randomNumber.toString(),
       password: aipCurrentUser.password,
-      surname: aipCurrentUser.surname,
       roles: [
         {
           code: 'citizen'
         }
-      ]
+      ],
+      surname: aipCurrentUser.surname,
+      userGroup: {
+        code: 'citizen'
+      }
     },
     insecure: true,
     timeout: 10000,

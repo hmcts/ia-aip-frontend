@@ -129,7 +129,8 @@ function getCheckAndSend(paymentService: PaymentService) {
         summaryRows,
         previousPage: paths.appealStarted.taskList,
         ...(paymentsFlag && payNowForApplicationNeeded(req)) && { fee: fee.calculated_amount },
-        ...(paymentsFlag && !appealPaid) && { payNow }
+        ...(paymentsFlag && !appealPaid) && { payNow },
+        ...(paymentsFlag && appealPaid) && { appealPaid }
       });
     } catch (error) {
       next(error);

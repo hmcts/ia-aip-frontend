@@ -27,7 +27,8 @@
       "seeProgress": "See your appeal progress",
       "payNow": "Submit and continue to pay £{{ fee }} by debit or credit card",
       "confirmAndSend": "Confirm and send",
-      "continueUseNewService": "Continue to use the new service"
+      "continueUseNewService": "Continue to use the new service",
+      "submitYourAppeal": "Submit your appeal"
     },
     "requirements": {
       "heading": "You will need to:"

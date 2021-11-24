@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { buildAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getConfirmation, getProvideMoreEvidence, postProvideMoreEvidence, setupProvideMoreEvidenceController, submitUploadAdditionalEvidenceEvent, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
+import { buildAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getConfirmation, getProvideMoreEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -127,7 +127,7 @@ describe('Provide more evidence controller', () => {
     });
   });
 
-  describe('submitUploadAdditionalEvidenceEvent', () => {
+  describe('postProvideMoreEvidenceCheckAndSend', () => {
 
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
@@ -138,7 +138,7 @@ describe('Provide more evidence controller', () => {
       };
       req.file = file as Express.Multer.File;
 
-      await submitUploadAdditionalEvidenceEvent(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });

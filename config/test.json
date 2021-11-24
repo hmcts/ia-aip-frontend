@@ -11,5 +11,8 @@
   },
   "payments": {
     "apiUrl": "http://testUrl"
+  },
+  "iaPayments": {
+    "apiUrl": "http://iaPaymentsTestUrl"
   }
 }

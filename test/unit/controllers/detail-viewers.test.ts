@@ -14,8 +14,10 @@ import {
   setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import * as summaryUtils from '../../../app/utils/summary-list';
 import i18n from '../../../locale/en.json';
@@ -315,8 +317,9 @@ describe('Detail viewer Controller', () => {
   });
 
   describe('getAppealDetailsViewer', () => {
-    beforeEach(() => {
+    let expectedSummaryRows;
 
+    beforeEach(() => {
       req.session.appeal = {
         ccdCaseId: '1623767014596745',
         appealStatus: 'appealSubmitted',
@@ -405,11 +408,8 @@ describe('Detail viewer Controller', () => {
           }
         ]
       };
-    });
 
-    it('should render detail-viewers/appeal-details-viewer.njk @detailsViewer', () => {
-
-      const expectedSummaryRows = [
+      expectedSummaryRows = [
         { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
         { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
         { key: { text: 'Home Office decision letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>" } },
@@ -422,8 +422,10 @@ describe('Detail viewer Controller', () => {
         { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
         { key: { text: 'Supporting evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>" } }
       ];
+    });
 
-      getAppealDetailsViewer(req as Request, res as Response, next);
+    it('should render detail-viewers/appeal-details-viewer.njk', async () => {
+      await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
         previousPage: paths.common.overview,
@@ -431,10 +433,65 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('getAppealDetailsViewer should catch exception and call next with the error', () => {
+    it('should render detail-viewers/appeal-details-viewer.njk payments NOW flag ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      expectedSummaryRows.push(
+        { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
+        { key: { text: 'Fee amount' }, value: { html: '£140' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
+    it('should render detail-viewers/appeal-details-viewer.njk payments LATER flag ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      expectedSummaryRows.push(
+        { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
+        { key: { text: 'Payment type' }, value: { html: 'Pay later' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
+    it('should render detail-viewers/appeal-details-viewer.njk deprivation appeal type, payments flag ON @detailsViewer', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      expectedSummaryRows[8].value.html = 'Deprivation of Citizenship';
+      expectedSummaryRows.push(
+        { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } }
+      );
+      req.session.appeal.application.appealType = 'deprivation';
+      req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
+    it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      getAppealDetailsViewer(req as Request, res as Response, next);
+      await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

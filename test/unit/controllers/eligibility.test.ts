@@ -1,21 +1,26 @@
 import { NextFunction, Request, Response } from 'express';
-import { eligibilityQuestionGet, eligibilityQuestionPost, getEligible, getIneligible } from '../../../app/controllers/eligibility';
+import { eligibilityQuestionGet, eligibilityQuestionPost, getEligible, getIneligible, setupEligibilityController } from '../../../app/controllers/eligibility';
 import { paths } from '../../../app/paths';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe('Eligibility Controller', () => {
-  let sandbox: sinon.SinonSandbox;
+const express = require('express');
 
+describe('Type of appeal Controller', () => {
+  let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
   let next: NextFunction;
+  const logger: Logger = new Logger();
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
       session: {} as any
     };
+
     res = {
       render: sandbox.stub(),
       redirect: sinon.spy()
@@ -26,16 +31,32 @@ describe('Eligibility Controller', () => {
 
   afterEach(() => {
     sandbox.restore();
+    LaunchDarklyService.close();
+  });
+
+  describe('setupEligibilityController', () => {
+    it('should setup the routes', () => {
+      const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
+      const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
+
+      setupEligibilityController();
+      expect(routerGetStub).to.have.been.calledWith(paths.common.questions);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.common.questions);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.eligible);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.ineligible);
+    });
   });
 
   describe('load first question', () => {
-    it('loads first question', () => {
+    it('loads first question', async () => {
+
       req.session.eligibility = {};
-      eligibilityQuestionGet(req as Request, res as Response, next);
+      await eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[0].question,
         description: i18n.eligibility[0].description,
+        modal: i18n.eligibility[0].modal,
         questionId: '0',
         previousPage: paths.common.start,
         answer: '',
@@ -44,15 +65,34 @@ describe('Eligibility Controller', () => {
       });
     });
 
-    it('loads another question', () => {
+    it('loads first question feature flag', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'online-card-payments-feature', false).resolves(false);
+
+      req.session.eligibility = {};
+      await eligibilityQuestionGet(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
+        question: i18n.eligibilityPaymentsFlag[0].question,
+        description: i18n.eligibilityPaymentsFlag[0].description,
+        modal: i18n.eligibilityPaymentsFlag[0].modal,
+        questionId: '0',
+        previousPage: paths.common.start,
+        answer: '',
+        errors: undefined,
+        errorList: undefined
+      });
+    });
+
+    it('loads another question', async () => {
       req.query = { id: '2' };
       req.session.eligibility = {};
 
-      eligibilityQuestionGet(req as Request, res as Response, next);
+      await eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[2].question,
         description: i18n.eligibility[2].description,
+        modal: i18n.eligibility[2].modal,
         questionId: '2',
         previousPage: `${paths.common.questions}?id=1`,
         answer: '',
@@ -61,7 +101,7 @@ describe('Eligibility Controller', () => {
       });
     });
 
-    it('loads answer', () => {
+    it('loads answer', async () => {
       req.query = { id: '1' };
       req.session.eligibility = {
         '1': {
@@ -69,11 +109,12 @@ describe('Eligibility Controller', () => {
         }
       };
 
-      eligibilityQuestionGet(req as Request, res as Response, next);
+      await eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[1].question,
         description: i18n.eligibility[1].description,
+        modal: i18n.eligibility[1].modal,
         questionId: '1',
         previousPage: `${paths.common.questions}?id=0`,
         answer: 'yes',
@@ -82,14 +123,15 @@ describe('Eligibility Controller', () => {
       });
     });
 
-    it('cannot skip eligibility questions', () => {
+    it('cannot skip eligibility questions', async () => {
       req.query = { id: '3' };
 
-      eligibilityQuestionGet(req as Request, res as Response, next);
+      await eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         question: i18n.eligibility[0].question,
         description: i18n.eligibility[0].description,
+        modal: i18n.eligibility[0].modal,
         questionId: '0',
         previousPage: paths.common.start,
         answer: '',
@@ -100,31 +142,31 @@ describe('Eligibility Controller', () => {
   });
 
   describe('handles an answer', () => {
-    it('redirects to next question if answer eligible', () => {
+    it('redirects to next question if answer eligible', async () => {
       req.body = {
         questionId: '0',
         answer: i18n.eligibility[0].eligibleAnswer
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response, next);
+      await eligibilityQuestionPost(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.common.questions}?id=1`);
     });
 
-    it('redirects to ineligible page if answer ineligible', () => {
+    it('redirects to ineligible page if answer ineligible', async () => {
       req.body = {
         questionId: '0',
         answer: opposite(i18n.eligibility[0].eligibleAnswer)
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response, next);
+      await eligibilityQuestionPost(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.common.ineligible}?id=0`);
     });
 
-    it('redirects to eligible page if all answers eligible', () => {
+    it('redirects to eligible page if all answers eligible', async () => {
       const finalQuestionId = i18n.eligibility.length - 1;
       req.body = {
         questionId: finalQuestionId + '',
@@ -132,39 +174,40 @@ describe('Eligibility Controller', () => {
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response, next);
+      await eligibilityQuestionPost(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.common.eligible}?id=${finalQuestionId}`);
     });
 
-    it('stores answer in session', () => {
+    it('stores answer in session', async () => {
       req.body = {
         questionId: '0',
         answer: 'yes'
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response, next);
+      await eligibilityQuestionPost(req as Request, res as Response, next);
 
       expect(req.session.eligibility['0']).to.eql({ answer: 'yes' });
     });
 
-    it('reload page if no option selected', () => {
+    it('reload page if no option selected', async () => {
       req.body = {
         questionId: '2'
       };
       req.session.eligibility = {};
 
-      eligibilityQuestionPost(req as Request, res as Response, next);
+      await eligibilityQuestionPost(req as Request, res as Response, next);
 
       const error = { href: '#answer', key: 'answer', text: i18n.eligibility[2].errorMessage };
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
         answer: undefined,
-        errorList: [ error ],
+        errorList: [error],
         errors: { answer: error },
         previousPage: '/eligibility?id=1',
         question: i18n.eligibility[2].question,
         description: i18n.eligibility[2].description,
+        modal: i18n.eligibility[0].modal,
         questionId: '2'
       });
     });
@@ -182,6 +225,7 @@ describe('Eligibility Controller', () => {
         }
       );
     });
+
     it('should catch exception and call next with the error', function () {
       req.session.eligibility = {};
       const error = new TypeError('Cannot read property \'id\' of undefined');
@@ -199,10 +243,10 @@ describe('Eligibility Controller', () => {
   });
 
   describe('getIneligible', () => {
-    it('should render the view', () => {
+    it('should render the view', async () => {
       req.query = { id: '1' };
       const questionId: string = req.query.id as string;
-      getIneligible(req as Request, res as Response, next);
+      await getIneligible(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('eligibility/ineligible-page.njk',
         {
           title: i18n.ineligible[questionId].title,
@@ -213,12 +257,12 @@ describe('Eligibility Controller', () => {
       );
     });
 
-    it('should catch exception and call next with the error', function () {
+    it('should catch exception and call next with the error', async function () {
       const error = new TypeError('Cannot read property \'id\' of undefined');
 
       const expectedErr = sinon.match.instanceOf(TypeError)
         .and(sinon.match.has('message', 'Cannot read property \'id\' of undefined'));
-      getIneligible(req as Request, res as Response, next);
+      await getIneligible(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });
   });

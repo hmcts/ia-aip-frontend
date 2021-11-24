@@ -93,25 +93,22 @@ function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
   };
 }
 
-function submitUploadAdditionalEvidenceEvent(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
+function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (req.file) {
-        const additionalEvidence: AdditionalEvidenceDocument[] = [ ...(req.session.appeal.additionalEvidence || []) ];
+      const additionalEvidence: AdditionalEvidenceDocument[] = [ ...(req.session.appeal.additionalEvidence || []) ];
 
-        const appeal: Appeal = {
-          ...req.session.appeal,
-          additionalEvidence:  [ ...additionalEvidence ]
-        };
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        additionalEvidence:  [ ...additionalEvidence ]
+      };
 
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDITIONAL_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-        req.session.appeal = {
-          ...req.session.appeal,
-          ...appealUpdated
-        };
-        return res.redirect(paths.common.provideMoreEvidenceForm);
-      }
-      return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDITIONAL_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      return res.redirect(paths.common.provideMoreEvidenceConfirmation);
     } catch (e) {
       next(e);
     }
@@ -171,7 +168,7 @@ function setupProvideMoreEvidenceController(middleware: Middleware[], updateAppe
   router.post(paths.common.provideMoreEvidenceUploadFile, middleware, validate, uploadProvideMoreEvidence(updateAppealService, documentManagementService));
   router.get(paths.common.provideMoreEvidenceDeleteFile, middleware, deleteProvideMoreEvidence(updateAppealService, documentManagementService));
   router.get(paths.common.provideMoreEvidenceCheck, getProvideMoreEvidenceCheckAndSend);
-  router.post(paths.common.provideMoreEvidenceCheck, middleware, validate, submitUploadAdditionalEvidenceEvent(updateAppealService, documentManagementService));
+  router.post(paths.common.provideMoreEvidenceCheck, middleware, validate, postProvideMoreEvidenceCheckAndSend(updateAppealService, documentManagementService));
   router.get(paths.common.provideMoreEvidenceConfirmation, getConfirmation);
   return router;
 }
@@ -204,7 +201,7 @@ export {
   deleteProvideMoreEvidence,
   getProvideMoreEvidenceCheckAndSend,
   setupProvideMoreEvidenceController,
-  submitUploadAdditionalEvidenceEvent,
+  postProvideMoreEvidenceCheckAndSend,
   getConfirmation,
   buildAdditionalEvidenceDocumentsSummaryList,
   validate

@@ -109,6 +109,11 @@
         "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
         "path": "appealStarted.checkAndSend"
+      },
+      "checkAndSendWithPayments": {
+        "id": "checkAndSendLink",
+        "title": "Check and send your appeal details",
+        "path": "appealStarted.checkAndSend"
       }
     },
     "contactDetails": {

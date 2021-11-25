@@ -144,10 +144,25 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
     try {
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {
+        const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+        const { appealType } = req.session.appeal.application;
+        const { paAppealTypeAipPaymentOption = null, paymentReference = null } = req.session.appeal;
         const summaryRows = await createSummaryRowsFrom(req);
+        let fee;
+        let payNow;
+        let appealPaid;
+        if (paymentsFlag && payNowForApplicationNeeded(req)) {
+          const paymentDetails = paymentReference ? JSON.parse(await paymentService.getPaymentDetails(req, paymentReference)) : null;
+          payNow = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' ? false : true;
+          fee = getFee(req.session.appeal);
+          appealPaid = paymentDetails && paymentDetails.status === 'Success';
+        }
         return res.render('appeal-application/check-and-send.njk', {
           summaryRows: summaryRows,
           error: validationResult,
+          ...(paymentsFlag && payNowForApplicationNeeded(req)) && { fee: fee.calculated_amount },
+          ...(paymentsFlag && !appealPaid) && { payNow },
+          ...(paymentsFlag && appealPaid) && { appealPaid },
           errorList: Object.values(validationResult),
           previousPage: paths.appealStarted.taskList
         });

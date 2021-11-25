@@ -20,4 +20,7 @@ export const idamConfig = {
 
 export function setupIdamConfig(logger: Logger) {
   idamConfig.logger = logger;
+
+  logger.trace('_____setupIdamConfig', JSON.stringify(idamConfig));
+  logger.trace('_____setupSecrets', JSON.stringify(config));
 }

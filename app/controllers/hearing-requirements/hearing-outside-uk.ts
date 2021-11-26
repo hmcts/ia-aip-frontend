@@ -9,6 +9,7 @@ const previousPage = paths.submitHearingRequirements.hearingWitnessNames;
 const pageTitle = i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.title;
 const formAction = paths.submitHearingRequirements.witnessOutsideUK;
 const question = {
+  name: 'answer',
   title: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.title,
   hint: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.text,
   options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]

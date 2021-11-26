@@ -109,14 +109,14 @@ module.exports = {
     Then(/^I sign in as a Case Officer and request HO data to match appellant details$/, async () => {
       let caseDetails: any = await fetchAipUserCaseData();
 
-      const userToken = await authenticationService.signInAsHomeOfficeOfficer();
+      const userToken = await authenticationService.signInAsCaseOfficer();
       const userId = await getUserId(userToken);
       const serviceToken = await getS2sToken();
       const securityHeaders = { userToken, serviceToken };
 
       // load case
       caseDetails[0].case_data = {
-        'homeOfficeReferenceNumber': '1234-1111-5678-1111',
+        // 'homeOfficeReferenceNumber': '1212-0099-0062-8083',
         'homeOfficeSearchResponse': '"{"messageHeader":{"eventDateTime":"2020-08-25T08:30:29.305206Z","correlationId":"bbd96db3-090d-41c9-beda-f5c1763013b3","consumer":{"code":"HMCTS","description":"HM Courts and Tribunal Service"}},"messageType":"RESPONSE_RIGHT_OF_APPEAL_DETAILS","status":[{"person":{"givenName":null,"familyName":"TestSix","fullName":"Asylumcase TestSix","gender":{"code":"F","description":"Female"},"dayOfBirth":4,"monthOfBirth":4,"yearOfBirth":1995,"nationality":{"code":"CHL","description":"Chile"}},"applicationStatus":{"documentReference":"1212-0099-0062-8083","roleType":{"code":"SPOUSE","description":"Spouse"},"roleSubType":null,"applicationType":{"code":"ASYLUM","description":"Asylum and Protection"},"claimReasonType":null,"decisionType":{"code":"REFUSE","description":"SD outcome"},"decisionDate":"2020-07-30T00:00:00Z","decisionCommunication":null,"rejectionReasons":[{"reason":"Refused asylum"}],"metadata":null}}]}',
         'homeOfficeAppellantsList': {
           'value': {
@@ -164,8 +164,8 @@ module.exports = {
             'id': '1',
             'value': {
               'document': {
-                'document_url': `${docStoreUrl}/documents/BBB`,
-                'document_binary_url': `${docStoreUrl}/documents/BBB/binary`,
+                'document_url': `${docStoreUrl}/documents/193b760d-bb26-45fa-8446-70bdf758e30f`,
+                'document_binary_url': `${docStoreUrl}/documents/193b760d-bb26-45fa-8446-70bdf758e30f/binary`,
                 'document_filename': 'some-new-evidence.pdf'
               },
               'description': 'Some new evidence'
@@ -175,8 +175,8 @@ module.exports = {
             'id': '2',
             'value': {
               'document': {
-                'document_url': `${docStoreUrl}/documents/CCC`,
-                'document_binary_url': `${docStoreUrl}/documents/CCC/binary`,
+                'document_url': `${docStoreUrl}/documents/b3efa0a3-84d7-4d7c-8dbf-bd081169e066`,
+                'document_binary_url': `${docStoreUrl}/documents/b3efa0a3-84d7-4d7c-8dbf-bd081169e066/binary`,
                 'document_filename': 'some-more-new-evidence.pdf'
               },
               'description': 'Some more new evidence'

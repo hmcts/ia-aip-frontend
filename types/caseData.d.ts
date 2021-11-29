@@ -107,6 +107,7 @@ interface CaseData {
   isWitnessesAttending?: 'Yes' | 'No';
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
   witnessDetails?: Collection<WitnessDetails>[];
+  interpreterLanguage?: Collection<InterpreterLanguage>[];
 }
 
 interface Application<T> {
@@ -141,6 +142,11 @@ interface Nationality {
 
 interface WitnessDetails {
   witnessName?: string;
+}
+
+interface InterpreterLanguage {
+  language?: string;
+  languageDialect?: string;
 }
 
 interface CCDAddress {

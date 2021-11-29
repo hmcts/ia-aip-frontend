@@ -354,6 +354,26 @@ export default class UpdateAppealService {
       });
     }
 
+    if (caseData.isHearingLoopNeeded) {
+      hearingRequirements.isHearingLoopNeeded = yesNoToBool(caseData.isHearingLoopNeeded);
+    }
+
+    if (caseData.isHearingRoomNeeded) {
+      hearingRequirements.isHearingRoomNeeded = yesNoToBool(caseData.isHearingRoomNeeded);
+    }
+
+    if (caseData.isInterpreterServicesNeeded) {
+      hearingRequirements.isInterpreterServicesNeeded = yesNoToBool(caseData.isInterpreterServicesNeeded);
+    }
+
+    if (caseData.interpreterLanguage) {
+      hearingRequirements.interpreterLanguages = caseData.interpreterLanguage.map(additionalLanguage => {
+        return {
+          language: additionalLanguage.value.language,
+          languageDialect: additionalLanguage.value.languageDialect
+        } as InterpreterLanguage;
+      });
+    }
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -667,6 +687,29 @@ export default class UpdateAppealService {
             } as WitnessDetails
           } as Collection<WitnessDetails>;
         });
+      }
+
+      if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
+        caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);
+
+        if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {
+          caseData.interpreterLanguage = appeal.hearingRequirements.interpreterLanguages.map(interpreterLanguage => {
+            return {
+              value: {
+                language: interpreterLanguage.language,
+                languageDialect: interpreterLanguage.languageDialect || null
+              } as AdditionalLanguage
+            } as Collection<AdditionalLanguage>;
+          });
+        }
+      }
+
+      if (_.has(appeal.hearingRequirements, 'isHearingRoomNeeded')) {
+        caseData.isHearingRoomNeeded = boolToYesNo(appeal.hearingRequirements.isHearingRoomNeeded);
+      }
+
+      if (_.has(appeal.hearingRequirements, 'isHearingLoopNeeded')) {
+        caseData.isHearingLoopNeeded = boolToYesNo(appeal.hearingRequirements.isHearingLoopNeeded);
       }
     }
 

@@ -1,0 +1,96 @@
+{% set pageTitleName = i18n.pages.hearingRequirements.accessNeedsSection.additionalLanguagePage.pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "components/summary-list.njk" import govukSummaryList %}
+
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+    {% call govukFieldset({
+        legend: {
+            text: i18n.pages.hearingRequirements.accessNeedsSection.additionalLanguagePage.title ,
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+        }
+    })
+    %}
+    <p><div>Add details of each language you or any witnesses will need an interpreter for at the hearing.</div></p>
+
+{#        <form action="{{ paths.submitHearingRequirements.hearingLanguageDetails }}?_csrf={{ csrfToken }}" method="post">#}
+
+   <form method="post" action="{{ formAction }}" type="submit">
+
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+{{ govukSelect({
+            id: "language",
+            name: "language",
+            value: language,
+            label: {
+                text: "Language"
+            },
+            items: items,
+            errorMessage: errorList[0].text
+        }) }}
+        {{ govukInput({
+            label: {
+                text: i18n.pages.hearingRequirements.accessNeedsSection.additionalLanguagePage.hint
+            },
+            classes: "govuk-!-width-three-quarters",
+            id: "dialect",
+            name: "dialect",
+            value: languageDialect,
+            hint: {
+            text: i18n.pages.cmaRequirements.hearingRequirements.additionalLanguagePage.text
+            }
+
+        }) }}
+
+    {{ govukButton({
+        text: i18n.common.buttons.addAnotherLanguage,
+        name: 'addAnotherLanguage',
+        classes: "govuk-button--secondary",
+        attributes: {
+            formaction: languageAction + '/add'
+        }
+    }) }}
+
+    {% if summaryList[0].summaryRows|length %}
+        <h2>{{ summaryList[0].title }}</h2>
+        {% for row in summaryList %}
+            {{ govukSummaryList({
+                rows: row.summaryRows
+            }) }}
+        {% endfor %}
+    {% endif %}
+
+    <div class="save-buttons__container">
+        {{ govukButton({
+            name: button1.name if button1.name else 'saveAndContinue',
+            text: button1.text if button1.text else i18n.common.buttons.saveAndContinue,
+            classes: "govuk-!-margin-right-1",
+            attributes: {
+                formaction: languageAction
+            }
+        }) }}
+
+        {{ govukButton({
+            text: button2.text if button2.text else i18n.common.buttons.saveForLater,
+            name: button2.name if button2.name else "saveForLater",
+            href: saveForLaterCTA,
+            value: "saveForLater",
+            classes: "govuk-button--secondary"
+        }) }}
+    </div>
+</form>
+    {% endcall %}
+    {{ contactUs() }}
+{% endblock %}

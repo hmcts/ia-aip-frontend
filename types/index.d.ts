@@ -261,6 +261,10 @@ interface HearingRequirements {
   witnessesOnHearing?: boolean;
   witnessNames?: string[];
   witnessesOutsideUK?: boolean;
+  isInterpreterServicesNeeded?: boolean;
+  interpreterLanguages?: InterpreterLanguage[];
+  isHearingRoomNeeded?: boolean;
+  isHearingLoopNeeded?: boolean;
   [key: string]: any;
 }
 

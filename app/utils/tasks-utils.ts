@@ -79,7 +79,7 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
   const accessNeedsTask: Task = {
     saved: accessNeeds,
     completed: _.has(appeal, 'hearingRequirements.accessNeeds.isHearingLoopNeeded'),
-    active: false
+    active: witnessesTask.completed
   };
   const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
 

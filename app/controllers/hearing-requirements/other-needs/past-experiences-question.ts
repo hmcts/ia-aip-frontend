@@ -27,6 +27,7 @@ function getHearingPastExperiencesQuestion(req: Request, res: Response, next: Ne
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.otherNeeds.pastExperiences') || null;
   const question = {
+    name: 'answer',
     title: i18n.pages.hearingRequirements.otherNeedsSection.pastExperiences.question,
     hint: i18n.pages.hearingRequirements.otherNeedsSection.pastExperiences.description,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
@@ -62,7 +63,12 @@ function postHearingPastExperiencesQuestion(updateAppealService: UpdateAppealSer
           ...req.session.appeal,
           ...appealUpdated
         };
-        return res.redirect(paths.submitHearingRequirements.otherNeedsAnythingElse);
+
+        if (answer) {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsPastExperiencesReasons);
+        } else {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsAnythingElse);
+        }
       };
 
       return postHearingRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);

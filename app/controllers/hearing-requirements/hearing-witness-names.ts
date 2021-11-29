@@ -10,11 +10,12 @@ import {
   witnessNameValidation
 } from '../../utils/validations/fields-validations';
 
+const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
   try {
     let witnessNames: string [] = req.session.appeal.hearingRequirements.witnessNames || [];
     return res.render('hearing-requirements/hearing-witness-names.njk', {
-      previousPage: paths.submitHearingRequirements.witnesses,
+      previousPage: previousPage,
       summaryList: buildWitnessNamesList(witnessNames),
       witnessAction: paths.submitHearingRequirements.hearingWitnessNames
     });
@@ -48,7 +49,7 @@ function renderPage (res: Response, validation: ValidationErrors, witnessNames: 
   return res.render('hearing-requirements/hearing-witness-names.njk', {
     error: validation,
     errorList: Object.values(validation),
-    previousPage: paths.submitHearingRequirements.witnesses,
+    previousPage: previousPage,
     summaryList: buildWitnessNamesList(witnessNames),
     witnessAction: paths.submitHearingRequirements.hearingWitnessNames
   });

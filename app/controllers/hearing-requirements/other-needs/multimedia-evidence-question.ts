@@ -6,9 +6,10 @@ import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { postHearingRequirementsYesNoHandler, setCheckedAttributeToQuestion } from '../common';
 
-const previousPage = paths.submitHearingRequirements.otherNeedsVideoAppointment;
 const pageTitle = i18n.pages.hearingRequirements.otherNeedsSection.multimediaEvidence.title;
 const formAction = paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion;
+const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+
 function getHearingMultimediaEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
   try {
     const question = getQuestion(req.session.appeal);
@@ -27,6 +28,7 @@ function getHearingMultimediaEvidenceQuestion(req: Request, res: Response, next:
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.otherNeeds.multimediaEvidence') || null;
   const question = {
+    name: 'answer',
     title: i18n.pages.hearingRequirements.otherNeedsSection.multimediaEvidence.question,
     hint: i18n.pages.hearingRequirements.otherNeedsSection.multimediaEvidence.description,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
@@ -62,7 +64,11 @@ function postHearingMultimediaEvidenceQuestion(updateAppealService: UpdateAppeal
           ...req.session.appeal,
           ...appealUpdated
         };
-        return res.redirect(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion);
+        if (answer) {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion);
+        } else {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion);
+        }
       };
 
       return postHearingRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);

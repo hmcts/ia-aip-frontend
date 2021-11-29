@@ -71,6 +71,7 @@ describe('Hearing Requirements - Other Needs Section: Private Hearing Question c
         pageTitle: 'Will you need a private hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           title: 'Will you need a private hearing?',
           hint: 'A private hearing means the public will not be allowed to attend.',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
@@ -111,6 +112,7 @@ describe('Hearing Requirements - Other Needs Section: Private Hearing Question c
         pageTitle: 'Will you need a private hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           title: 'Will you need a private hearing?',
           hint: 'A private hearing means the public will not be allowed to attend.',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
@@ -126,7 +128,7 @@ describe('Hearing Requirements - Other Needs Section: Private Hearing Question c
       await postPrivateHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsHealthConditions);
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsPrivateHearingReason);
       expect(req.session.appeal.hearingRequirements.otherNeeds.privateAppointment).to.be.true;
     });
 

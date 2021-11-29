@@ -753,7 +753,7 @@ export default class UpdateAppealService {
             document_binary_url: `${documentLocationUrl}/binary`
           }
         }
-      // } as Document;
+        // } as Document;
       } as Collection<Document>;
     });
   }
@@ -920,76 +920,131 @@ export default class UpdateAppealService {
 
     if (caseData.multimediaEvidence) {
       hearingRequirements.otherNeeds.multimediaEvidence = yesNoToBool(caseData.multimediaEvidence);
+      if (caseData.bringOwnMultimediaEquipment) {
+        hearingRequirements.otherNeeds.bringOwnMultimediaEquipment = yesNoToBool(caseData.bringOwnMultimediaEquipment);
+        if (caseData.multimediaEvidenceDescription) {
+          hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason = caseData.multimediaEvidenceDescription;
+        }
+      }
     }
 
     if (caseData.singleSexCourt) {
       hearingRequirements.otherNeeds.singleSexAppointment = yesNoToBool(caseData.singleSexCourt);
+      if (caseData.singleSexCourtType) {
+        hearingRequirements.otherNeeds.singleSexTypeAppointment = caseData.singleSexCourtType;
+        hearingRequirements.otherNeeds.singleSexAppointmentReason = caseData.singleSexCourtTypeDescription;
+      }
     }
 
     if (caseData.inCameraCourt) {
       hearingRequirements.otherNeeds.privateAppointment = yesNoToBool(caseData.inCameraCourt);
+      if (caseData.inCameraCourtDescription) {
+        hearingRequirements.otherNeeds.privateAppointmentReason = caseData.inCameraCourtDescription;
+      }
     }
 
     if (caseData.physicalOrMentalHealthIssues) {
       hearingRequirements.otherNeeds.healthConditions = yesNoToBool(caseData.physicalOrMentalHealthIssues);
+      if (caseData.physicalOrMentalHealthIssuesDescription) {
+        hearingRequirements.otherNeeds.healthConditionsReason = caseData.physicalOrMentalHealthIssuesDescription;
+      }
     }
 
     if (caseData.pastExperiences) {
       hearingRequirements.otherNeeds.pastExperiences = yesNoToBool(caseData.pastExperiences);
+      if (caseData.pastExperiencesDescription) {
+        hearingRequirements.otherNeeds.pastExperiencesReason = caseData.pastExperiencesDescription;
+      }
     }
 
     if (caseData.additionalRequests) {
       hearingRequirements.otherNeeds.anythingElse = yesNoToBool(caseData.additionalRequests);
+      if (caseData.additionalRequestsDescription) {
+        hearingRequirements.otherNeeds.anythingElseReason = caseData.additionalRequestsDescription;
+      }
     }
 
     if (caseData.remoteVideoCall) {
       hearingRequirements.otherNeeds.remoteVideoCall = yesNoToBool(caseData.remoteVideoCall);
+      if (caseData.remoteVideoCallDescription) {
+        hearingRequirements.otherNeeds.remoteVideoCallDescription = caseData.remoteVideoCallDescription;
+      }
     }
   }
 
   private mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData) {
     const { otherNeeds } = appeal.hearingRequirements;
 
+    caseData.multimediaEvidence = null;
+    caseData.bringOwnMultimediaEquipment = null;
+    caseData.multimediaEvidenceDescription = null;
+    caseData.singleSexCourt = null;
+    caseData.singleSexCourtType = null;
+    caseData.singleSexCourtTypeDescription = null;
+    caseData.inCameraCourt = null;
+    caseData.inCameraCourtDescription = null;
+    caseData.physicalOrMentalHealthIssues = null;
+    caseData.physicalOrMentalHealthIssuesDescription = null;
+    caseData.pastExperiences = null;
+    caseData.pastExperiencesDescription = null;
+    caseData.additionalRequests = null;
+    caseData.additionalRequestsDescription = null;
+    caseData.remoteVideoCall = null;
+    caseData.remoteVideoCallDescription = null;
+
     if (otherNeeds.multimediaEvidence != null) {
       caseData.multimediaEvidence = boolToYesNo(otherNeeds.multimediaEvidence);
-    } else {
-      caseData.multimediaEvidence = null;
+      if (otherNeeds.bringOwnMultimediaEquipment != null) {
+        caseData.bringOwnMultimediaEquipment = boolToYesNo(otherNeeds.bringOwnMultimediaEquipment);
+        if (!otherNeeds.bringOwnMultimediaEquipment && !isEmpty(otherNeeds.bringOwnMultimediaEquipmentReason)) {
+          caseData.multimediaEvidenceDescription = otherNeeds.bringOwnMultimediaEquipmentReason;
+        }
+      }
     }
 
     if (otherNeeds.singleSexAppointment != null) {
       caseData.singleSexCourt = boolToYesNo(otherNeeds.singleSexAppointment);
-    } else {
-      caseData.singleSexCourt = null;
+      if (otherNeeds.singleSexAppointment && otherNeeds.singleSexTypeAppointment) {
+        caseData.singleSexCourtType = otherNeeds.singleSexTypeAppointment;
+        if (!isEmpty(otherNeeds.singleSexAppointmentReason)) {
+          caseData.singleSexCourtTypeDescription = otherNeeds.singleSexAppointmentReason;
+        }
+      }
     }
 
     if (otherNeeds.privateAppointment != null) {
       caseData.inCameraCourt = boolToYesNo(otherNeeds.privateAppointment);
-    } else {
-      caseData.inCameraCourt = null;
+      if (otherNeeds.privateAppointment && !isEmpty(otherNeeds.privateAppointmentReason)) {
+        caseData.inCameraCourtDescription = otherNeeds.privateAppointmentReason;
+      }
     }
 
     if (otherNeeds.healthConditions != null) {
       caseData.physicalOrMentalHealthIssues = boolToYesNo(otherNeeds.healthConditions);
-    } else {
-      caseData.physicalOrMentalHealthIssues = null;
+      if (otherNeeds.healthConditions && !isEmpty(otherNeeds.healthConditionsReason)) {
+        caseData.physicalOrMentalHealthIssuesDescription = otherNeeds.healthConditionsReason;
+      }
     }
 
     if (otherNeeds.pastExperiences != null) {
       caseData.pastExperiences = boolToYesNo(otherNeeds.pastExperiences);
-    } else {
-      caseData.pastExperiences = null;
+      if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.pastExperiencesReason)) {
+        caseData.pastExperiencesDescription = otherNeeds.pastExperiencesReason;
+      }
     }
 
     if (otherNeeds.anythingElse != null) {
       caseData.additionalRequests = boolToYesNo(otherNeeds.anythingElse);
-    } else {
-      caseData.additionalRequests = null;
+      if (otherNeeds.anythingElse && !isEmpty(otherNeeds.anythingElseReason)) {
+        caseData.additionalRequestsDescription = otherNeeds.anythingElseReason;
+      }
     }
 
     if (otherNeeds.remoteVideoCall != null) {
       caseData.remoteVideoCall = boolToYesNo(otherNeeds.remoteVideoCall);
-    } else {
-      caseData.remoteVideoCall = null;
+      if (!otherNeeds.remoteVideoCall && !isEmpty(otherNeeds.remoteVideoCallDescription)) {
+        caseData.remoteVideoCallDescription = otherNeeds.remoteVideoCallDescription;
+      }
     }
   }
 }

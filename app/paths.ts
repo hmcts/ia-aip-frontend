@@ -67,15 +67,27 @@ const paths = {
     hearingLanguageDetailsAdd: '/hearing-language-details/add',
     hearingLanguageDetailsRemove: '/hearing-language-details/remove',
     hearingStepFreeAccess: '/hearing-step-free-access',
-    hearingLoop: '/hearing-hearing-loop'
+    hearingLoop: '/hearing-hearing-loop',
 
     otherNeedsVideoAppointment: '/hearing-video-appointment',
+    otherNeedsVideoAppointmentReason: '/hearing-video-appointment-reasons',
     otherNeedsMultimediaEvidenceQuestion: '/hearing-multimedia-evidence',
+    otherNeedsMultimediaEquipmentQuestion: '/hearing-multimedia-evidence-equipment',
+    otherNeedsMultimediaEquipmentReason: '/hearing-multimedia-evidence-equipment-reasons',
+
     otherNeedsSingleSexHearingQuestion: '/hearing-single-sex',
+    otherNeedsSingleSexTypeHearing: '/hearing-single-sex-type',
+    otherNeedsAllMaleHearing: '/hearing-single-sex-type-male',
+    otherNeedsAllFemaleHearing: '/hearing-single-sex-type-female',
+
     otherNeedsPrivateHearingQuestion: '/hearing-private',
     otherNeedsHealthConditions: '/hearing-physical-mental-health',
     otherNeedsPastExperiences: '/hearing-past-experiences',
-    otherNeedsAnythingElse: '/hearing-anything-else'
+    otherNeedsAnythingElse: '/hearing-anything-else',
+    otherNeedsPrivateHearingReason: '/hearing-private-reason',
+    otherNeedsHealthConditionsReason: '/hearing-physical-mental-health-reasons',
+    otherNeedsPastExperiencesReasons: '/hearing-past-experiences-reasons',
+    otherNeedsAnythingElseReasons: '/hearing-anything-else-reasons'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',

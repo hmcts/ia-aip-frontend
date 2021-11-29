@@ -1211,6 +1211,82 @@ describe('update-appeal-service', () => {
 
     it('submits hearingRequirements with ccd', async () => {
 
+      expectedCaseData = {
+        ...expectedCaseData,
+        datesToAvoid: [{
+          value: {
+            dateToAvoid: '2020-06-23',
+            dateToAvoidReason: 'I have an important appointment on this day'
+          }
+        }, {
+          value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
+        }],
+        datesToAvoidYesNo: 'Yes',
+        inCameraCourt: 'Yes',
+        inCameraCourtDescription: 'The reason why I would need a private appointment',
+        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
+        isHearingLoopNeeded: 'Yes',
+        isHearingRoomNeeded: 'Yes',
+        remoteVideoCall: 'Yes',
+        remoteVideoCallDescription: 'Join Hearing by video call',
+        isInterpreterServicesNeeded: 'Yes',
+        multimediaEvidence: 'Yes',
+        bringOwnMultimediaEquipment: 'No',
+        multimediaEvidenceDescription: 'I do not own the equipment',
+        pastExperiences: 'Yes',
+        pastExperiencesDescription: 'Past experiences description',
+        physicalOrMentalHealthIssues: 'Yes',
+        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
+        singleSexCourt: 'Yes',
+        singleSexCourtType: 'All female',
+        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
+        additionalRequests: 'Yes',
+        additionalRequestsDescription: 'Anything else description'
+      };
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'submitHearingRequirements',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+
+      const expectedHearingRequirements = {
+        'interpreterLanguages': [
+          {
+            'language': 'Afar',
+            'languageDialect': 'A dialect'
+          }
+        ],
+        'isHearingLoopNeeded': true,
+        'isHearingRoomNeeded': true,
+        'isInterpreterServicesNeeded': true,
+        'otherNeeds': {
+          'anythingElse': true,
+          'anythingElseReason': 'Anything else description',
+          'bringOwnMultimediaEquipment': false,
+          'bringOwnMultimediaEquipmentReason': 'I do not own the equipment',
+          'healthConditions': true,
+          'healthConditionsReason': 'Reason for mental health conditions',
+          'multimediaEvidence': true,
+          'pastExperiences': true,
+          'pastExperiencesReason': 'Past experiences description',
+          'privateAppointment': true,
+          'privateAppointmentReason': 'The reason why I would need a private appointment',
+          'singleSexAppointment': true,
+          'singleSexAppointmentReason': 'The reason why I will need an all-female',
+          'singleSexTypeAppointment': 'All female',
+          'remoteVideoCall': true,
+          'remoteVideoCallDescription': 'Join Hearing by video call'
+        }
+      };
+      expect(req.session.appeal.hearingRequirements).to.be.eql(expectedHearingRequirements);
+    });
+
+    it('submits hearingRequirements with otherNeeds', async () => {
+
       req.session.appeal.appealStatus = 'submitHearingRequirements';
       req.session.appeal.hearingRequirements = {
 
@@ -1229,7 +1305,8 @@ describe('update-appeal-service', () => {
           pastExperiencesReason: 'Past experiences description',
           anythingElse: true,
           anythingElseReason: 'Anything else description',
-          remoteVideoCall: true
+          remoteVideoCall: true,
+          remoteVideoCallDescription: 'Why you are not able to join ?'
         }
 
       } as HearingRequirements;
@@ -1241,8 +1318,6 @@ describe('update-appeal-service', () => {
       expect(caseData.singleSexCourt).to.be.equals('Yes');
       expect(caseData.additionalRequests).to.be.equals('Yes');
       expect(caseData.remoteVideoCall).to.be.equals('Yes');
-
     });
-
   });
 });

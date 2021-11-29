@@ -4,6 +4,24 @@ import { paths } from '../../paths';
 import { getWitnessesOutsideUkQuestion } from './hearing-outside-uk';
 import { getWitnessNamesPage } from './hearing-witness-names';
 import { getWitnessesOnHearingQuestion } from './hearing-witnesses';
+import { getHearingAnythingElseQuestion } from './other-needs/anything-else-question';
+import { getHearingAnythingElseReason } from './other-needs/anything-else-reason';
+import { getHearingMultimediaEquipmentQuestion } from './other-needs/bring-equipment-question';
+import { getHearingMultimediaEquipmentReason } from './other-needs/bring-equipment-reason';
+import { getHearingHealthConditionsQuestion } from './other-needs/health-conditions-question';
+import { getHearingHealthConditionsReason } from './other-needs/health-conditions-reason';
+import { getJoinHearingByVideoCallQuestion } from './other-needs/joinby-video-call-question';
+import { getJoinByVideoCallReason } from './other-needs/joinby-video-call-reason';
+import { getHearingMultimediaEvidenceQuestion } from './other-needs/multimedia-evidence-question';
+import { getHearingPastExperiencesQuestion } from './other-needs/past-experiences-question';
+import { getHearingPastExperiencesReason } from './other-needs/past-experiences-reason';
+import { getPrivateHearingQuestion } from './other-needs/private-hearing-question';
+import { getPrivateHearingReason } from './other-needs/private-hearing-reason';
+import { getSingleSexHearingAllFemaleReason } from './other-needs/single-sex-hearing-all-female-reason';
+import { getSingleSexHearingAllMaleReason } from './other-needs/single-sex-hearing-all-male-reason';
+import { getSingleSexHearingQuestion } from './other-needs/single-sex-hearing-question';
+import { getSingleSexTypeHearingQuestion } from './other-needs/single-sex-type-hearing-question';
+import { getHearingRequirementsStartPage } from './other-needs/start-page';
 import { getTaskList } from './task-list';
 
 function setupHearingRequirementsFeatureToggleController(middleware: Middleware[]): Router {
@@ -12,7 +30,26 @@ function setupHearingRequirementsFeatureToggleController(middleware: Middleware[
   router.get(paths.submitHearingRequirements.witnesses, middleware, hearingRequirementsMiddleware, getWitnessesOnHearingQuestion);
   router.get(paths.submitHearingRequirements.hearingWitnessNames, middleware, hearingRequirementsMiddleware, getWitnessNamesPage);
   router.get(paths.submitHearingRequirements.witnessOutsideUK, middleware, hearingRequirementsMiddleware, getWitnessesOutsideUkQuestion);
-  // Supply all the pages that requires access control such as witnesses, access needs, other needs and dates to avoid  pages
+
+  router.get(paths.submitHearingRequirements.otherNeeds, middleware, hearingRequirementsMiddleware, getHearingRequirementsStartPage);
+  router.get(paths.submitHearingRequirements.otherNeedsAnythingElse, middleware, hearingRequirementsMiddleware, getHearingAnythingElseQuestion);
+  router.get(paths.submitHearingRequirements.otherNeedsHealthConditions, middleware, hearingRequirementsMiddleware, getHearingHealthConditionsQuestion);
+  router.get(paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion, middleware, hearingRequirementsMiddleware, getHearingMultimediaEvidenceQuestion);
+  router.get(paths.submitHearingRequirements.otherNeedsPastExperiences, middleware, hearingRequirementsMiddleware, getHearingPastExperiencesQuestion);
+  router.get(paths.submitHearingRequirements.otherNeedsPrivateHearingQuestion, middleware, hearingRequirementsMiddleware, getPrivateHearingQuestion);
+  router.get(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion, middleware, hearingRequirementsMiddleware, getSingleSexHearingQuestion);
+  router.get(paths.submitHearingRequirements.otherNeedsVideoAppointment, middleware, hearingRequirementsMiddleware, getJoinHearingByVideoCallQuestion);
+
+  router.get(paths.submitHearingRequirements.otherNeedsAnythingElseReasons, middleware, hearingRequirementsMiddleware, getHearingAnythingElseReason);
+  router.get(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion, middleware, hearingRequirementsMiddleware, getHearingMultimediaEquipmentQuestion);
+  router.get(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentReason, middleware, hearingRequirementsMiddleware, getHearingMultimediaEquipmentReason);
+  router.get(paths.submitHearingRequirements.otherNeedsVideoAppointmentReason, middleware, hearingRequirementsMiddleware, getJoinByVideoCallReason);
+  router.get(paths.submitHearingRequirements.otherNeedsHealthConditionsReason, middleware, hearingRequirementsMiddleware, getHearingHealthConditionsReason);
+  router.get(paths.submitHearingRequirements.otherNeedsPastExperiencesReasons, middleware, hearingRequirementsMiddleware, getHearingPastExperiencesReason);
+  router.get(paths.submitHearingRequirements.otherNeedsPrivateHearingReason, middleware, hearingRequirementsMiddleware, getPrivateHearingReason);
+  router.get(paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing, middleware, hearingRequirementsMiddleware, getSingleSexTypeHearingQuestion);
+  router.get(paths.submitHearingRequirements.otherNeedsAllMaleHearing, middleware, hearingRequirementsMiddleware, getSingleSexHearingAllMaleReason);
+  router.get(paths.submitHearingRequirements.otherNeedsAllFemaleHearing, middleware, hearingRequirementsMiddleware, getSingleSexHearingAllFemaleReason);
   return router;
 }
 

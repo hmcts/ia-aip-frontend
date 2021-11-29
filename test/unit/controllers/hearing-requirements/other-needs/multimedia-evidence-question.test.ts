@@ -69,8 +69,9 @@ describe('Hearing Requirements - Other Needs Section: Multimedia Evidence Questi
       const expectedArgs = {
         pageTitle: 'Will you bring any video or audio evidence to the hearing?',
         formAction: '/hearing-multimedia-evidence',
-        previousPage: '/hearing-video-appointment',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           title: 'Will you bring any video or audio evidence to the hearing?',
           hint: 'For example, video or sound recordings.',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
@@ -97,9 +98,9 @@ describe('Hearing Requirements - Other Needs Section: Multimedia Evidence Questi
 
       const expectedError = {
         answer: {
-          href: '#answer',
           key: 'answer',
-          text: 'Select yes if you will bring any audio or video evidence'
+          text: 'Select yes if you will bring any audio or video evidence',
+          href: '#answer'
         }
       };
 
@@ -108,8 +109,9 @@ describe('Hearing Requirements - Other Needs Section: Multimedia Evidence Questi
         errorList: Object.values(expectedError),
         pageTitle: 'Will you bring any video or audio evidence to the hearing?',
         formAction: '/hearing-multimedia-evidence',
-        previousPage: '/hearing-video-appointment',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           title: 'Will you bring any video or audio evidence to the hearing?',
           hint: 'For example, video or sound recordings.',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
@@ -125,7 +127,7 @@ describe('Hearing Requirements - Other Needs Section: Multimedia Evidence Questi
       await postHearingMultimediaEvidenceQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion);
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion);
       expect(req.session.appeal.hearingRequirements.otherNeeds.multimediaEvidence).to.be.true;
     });
 

@@ -13,6 +13,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
+  const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -69,7 +70,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
       const expectedArgs = {
         formAction: '/hearing-outside-uk',
         pageTitle: 'Will you or any witnesses take part in the hearing from outside the UK?',
-        previousPage: '/hearing-witness-names',
+        previousPage: previousPage,
         question: {
           name: 'answer',
           options: [{ checked: false, text: 'Yes', value: 'yes' }, {
@@ -114,7 +115,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
         errorList: Object.values(expectedError),
         formAction: '/hearing-outside-uk',
         pageTitle: 'Will you or any witnesses take part in the hearing from outside the UK?',
-        previousPage: '/hearing-witness-names',
+        previousPage: previousPage,
         question: {
           name: 'answer',
           options: [{ checked: false, text: 'Yes', value: 'yes' }, {

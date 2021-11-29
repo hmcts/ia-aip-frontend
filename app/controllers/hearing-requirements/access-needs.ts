@@ -35,7 +35,7 @@ function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction)
   try {
     const answer = req.session.appeal.hearingRequirements.isInterpreterServicesNeeded || null;
     return res.render('templates/radio-question-page.njk', {
-      previousPage: paths.submitHearingRequirements.accessNeeds,
+      previousPage: previousPage,
       formAction: paths.submitHearingRequirements.hearingInterpreter,
       pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.pageTitle,
       saveAndContinue: true,
@@ -56,7 +56,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.accessNeeds.selectInterpreter;
       const pageContent = {
-        previousPage: paths.submitHearingRequirements.accessNeeds,
+        previousPage: previousPage,
         formAction: paths.submitHearingRequirements.hearingInterpreter,
         pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.pageTitle,
         question: {
@@ -93,7 +93,7 @@ function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) 
   try {
     let interpreterLanguages: InterpreterLanguage [] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
     return res.render('hearing-requirements/language-details.njk', {
-      previousPage: paths.submitHearingRequirements.hearingInterpreter,
+      previousPage: previousPage,
       items: isoLanguages,
       summaryList: buildLanguageList(interpreterLanguages),
       languageAction: paths.submitHearingRequirements.hearingLanguageDetails
@@ -134,7 +134,7 @@ function renderPage (res: Response, validation: ValidationErrors, interpreterLan
     items: isoLanguages,
     error: validation,
     errorList: Object.values(validation),
-    previousPage: paths.submitHearingRequirements.hearingInterpreter,
+    previousPage: previousPage,
     summaryList: buildLanguageList(interpreterLanguages),
     languageAction: paths.submitHearingRequirements.hearingLanguageDetails
   });
@@ -206,7 +206,7 @@ function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) 
     const backButton = req.session.appeal.hearingRequirements.isInterpreterServicesNeeded === true ? paths.submitHearingRequirements.hearingLanguageDetails : paths.submitHearingRequirements.hearingInterpreter;
     const answer = req.session.appeal.hearingRequirements.isHearingRoomNeeded;
     return res.render('templates/radio-question-page.njk', {
-      previousPage: backButton,
+      previousPage: previousPage,
       formAction: paths.submitHearingRequirements.hearingStepFreeAccess,
       pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.stepFreeAccessPage.pageTitle,
       question: {

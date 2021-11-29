@@ -71,6 +71,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
         pageTitle: 'Would you be able to join the hearing by video call?',
         previousPage: '/hearing-other-needs',
         question: {
+          name: 'answer',
           title: 'Would you be able to join the hearing by video call?',
           hint: '<p>The Tribunal may decide to have the hearing by video call.  Answer no if there are reasons<br>you would not be able to join a video call.</p>',
           options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
@@ -110,6 +111,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
         pageTitle: 'Would you be able to join the hearing by video call?',
         formAction: '/hearing-video-appointment',
         question: {
+          name: 'answer',
           title: 'Would you be able to join the hearing by video call?',
           hint: '<p>The Tribunal may decide to have the hearing by video call.  Answer no if there are reasons<br>you would not be able to join a video call.</p>',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
@@ -134,7 +136,7 @@ describe('Hearing Requirements - Other Needs Section: Join By VideoCall Question
       await postJoinHearingByVideoCallQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion);
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsVideoAppointmentReason);
       expect(req.session.appeal.hearingRequirements.otherNeeds.remoteVideoCall).to.be.false;
     });
 

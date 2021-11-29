@@ -249,7 +249,8 @@ interface OtherNeeds {
 }
 
 interface HearingOtherNeeds extends OtherNeeds {
-  remoteVideoCall: boolean
+  remoteVideoCall: boolean,
+  remoteVideoCallDescription: string
 }
 
 interface DatesToAvoid {

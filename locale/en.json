@@ -2015,8 +2015,8 @@
           "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
         },
         "hearingLoopPage": {
-          "pageTitle": "Will you or any witnesses need need a hearing loop?",
-          "title": "Will you or any witnesses need need a hearing loop?",
+          "pageTitle": "Will you or any witnesses need a hearing loop?",
+          "title": "Will you or any witnesses need a hearing loop?",
           "text": "If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing."
         }
       },
@@ -2039,15 +2039,40 @@
             "do not have a quiet, private room to use for the hearing"
           ]
         },
+        "joinHearingByVideoCallReason": {
+           "title": "Tell us the reasons you would not be able to join a video call",
+           "heading": "Tell us the reasons you would not be able to join a video call"
+        },
         "multimediaEvidence": {
           "title": "Will you bring any video or audio evidence to the hearing?",
           "question": "Will you bring any video or audio evidence to the hearing?",
           "description": "For example, video or sound recordings."
         },
+        "bringEquipment": {
+          "title": "Will you bring the equipment to play this evidence?",
+          "question": "Will you bring the equipment to play this evidence?",
+          "description" : "For example, a laptop computer or DVD player"
+        },
+        "bringEquipmentReason": {
+          "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
+          "heading": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it"
+        },       
         "singleSexHearing": {
           "title": "Will you need an all-female or all-male hearing?",
           "question": "Will you need an all-female or all-male hearing?"
         },
+        "singleSexTypeHearing": {
+          "title": "What type of hearing will you need?",
+          "question": "What type of hearing will you need?"
+        },        
+        "singleSexHearingAllMale": {
+          "title": "Tell us why you need an all-male hearing",
+          "heading": "Tell us why you need an all-male hearing"
+        },
+        "singleSexHearingAllFemale": {
+          "title": "Tell us why you need an all-female hearing",
+          "heading": "Tell us why you need an all-female hearing"
+        },        
         "privateHearing": {
           "title": "Will you need a private hearing?",
           "question": "Will you need a private hearing?",
@@ -2065,7 +2090,26 @@
         "anythingElse": {
           "title": "Will you need anything else at the hearing?",
           "question": "Will you need anything else at the hearing?"
+        },
+        
+        "privateHearingReason": {
+          "title": "Tell us why you need a private hearing",
+          "heading": "Tell us why you need a private hearing"
+        },
+        "healthConditionsReason": {
+          "title": "Tell us how any physical or mental health conditions you have may affect you at the hearing",
+          "heading": "Tell us how any physical or mental health conditions you have may affect you at the hearing"
+        },
+        "pastExperiencesReasons": {
+          "title": "Tell us how any past experiences may affect you at the hearing",
+          "heading": "Tell us how any past experiences may affect you at the hearing"
+        },
+        "anythingElseReasons": {
+          "title": "Tell us what you will need and why you need it",
+          "heading": "Tell us what you will need and why you need it",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
         }
+
       }
     },
     "clarifyingQuestionPage": {
@@ -2474,12 +2518,21 @@
       },
       "otherNeeds": {
         "joinHearingByVideoCallRequired": "Select Yes if you would be able to join the hearing by video call",
+        "joinHearingByVideoCallReasonRequired": "Enter the reasons you would not be able to join a video call",
+        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it",
         "multimediaEvidenceAnswerRequired": "Select yes if you will bring any audio or video evidence",
         "singleSexAppointmentRequired": "Select yes if you need an all-female or all-male hearing",
         "privateAppointmentAnswerRequired": "Select yes if you need a private hearing",
         "healthConditionsAnswerRequired": "Select yes if you have any physical or mental health conditions that may affect you at the hearing",
         "pastExperiencesAnswerRequired": "Select yes if you have had any past experiences that may affect you at the hearing",
-        "anythingElseAnswerRequired": "Select yes if you need anything else at the hearing"
+        "anythingElseAnswerRequired": "Select yes if you need anything else at the hearing",
+        "singleSexHearingAllMaleReasonRequired": "Enter the reasons you need an all-male hearing",
+        "singleSexHearingAllFemaleReasonRequired": "Enter the reasons you need an all-female hearing",    
+        "singleSexTypeHearingRequired": "Select if you need an all-female or all-male hearing",
+        "privateHearingReasonRequired": "Enter the reasons you need a private hearing",
+        "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the hearing",
+        "pastExperiencesReasonRequired": "Enter details of how any past experiences will affect you at the hearing",
+        "anythingElseReasonRequired": "Enter details of what you will need and why you need it"        
       }
     }
   },

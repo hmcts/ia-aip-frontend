@@ -15,6 +15,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
   let summaryList = [{ summaryRows: [{ key: { text: 'My witness' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=My%20witness' , text : 'Remove' }] } } ], title: 'Added witnesses' } ];
+  const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
@@ -66,7 +68,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
     it('should render template', () => {
 
       const expectedArgs = {
-        previousPage: '/hearing-witnesses',
+        previousPage: previousPage,
         witnessAction: '/hearing-witness-names',
         summaryList: summaryList
       };
@@ -99,7 +101,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: '/hearing-witnesses',
+        previousPage: previousPage,
         witnessAction: '/hearing-witness-names',
         summaryList: [ { summaryRows: [], title: 'Added witnesses' } ]
       };
@@ -138,7 +140,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        previousPage: '/hearing-witnesses',
+        previousPage: previousPage,
         witnessAction: '/hearing-witness-names',
         summaryList: [ { summaryRows: [], title: 'Added witnesses' } ]
       };

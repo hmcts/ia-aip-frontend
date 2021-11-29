@@ -71,6 +71,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex appointment Que
         pageTitle: 'Will you need an all-female or all-male hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Will you need an all-female or all-male hearing?'
         },
@@ -109,6 +110,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex appointment Que
         pageTitle: 'Will you need an all-female or all-male hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Will you need an all-female or all-male hearing?'
         },
@@ -122,7 +124,7 @@ describe('Hearing Requirements - Other Needs Section: Single sex appointment Que
       await postSingleSexHearingQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsPrivateHearingQuestion);
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing);
       expect(req.session.appeal.hearingRequirements.otherNeeds.singleSexAppointment).to.be.true;
     });
 

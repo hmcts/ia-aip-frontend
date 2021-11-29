@@ -64,28 +64,32 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
 
 function submitHearingRequirementsStatus(appeal: Appeal) {
 
-  const witnesses: boolean = !!_.get(appeal, 'hearingRequirements.witnesses');
-  const accessNeeds: boolean = !!_.get(appeal, 'hearingRequirements.accessNeeds');
-  const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
-  const datesToAvoid: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
+  const witnessesOnHearing: boolean = _.has(appeal, 'hearingRequirements.witnessesOnHearing');
+  const witnessesOutsideUK: boolean = _.has(appeal, 'hearingRequirements.witnessesOutsideUK');
+  const witnessNames: boolean = !!_.get(appeal, 'hearingRequirements.witnessNames');
 
   const witnessesTask: Task = {
-    saved: witnesses,
-    completed: _.has(appeal, 'hearingRequirements.witnesses'),
+    saved: witnessesOnHearing || witnessesOutsideUK || witnessNames,
+    completed: witnessesOnHearing && witnessesOutsideUK && witnessNames,
     active: true
   };
+
+  const accessNeeds: boolean = !!_.get(appeal, 'hearingRequirements.accessNeeds');
 
   const accessNeedsTask: Task = {
     saved: accessNeeds,
     completed: _.has(appeal, 'hearingRequirements.accessNeeds.isHearingLoopNeeded'),
     active: false
   };
+  const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
 
   const otherNeedsTask: Task = {
     saved: otherNeeds,
     completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
     active: accessNeedsTask.completed
   };
+
+  const datesToAvoid: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
 
   const datesToAvoidTask: Task = {
     saved: datesToAvoid,

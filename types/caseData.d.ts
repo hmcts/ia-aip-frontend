@@ -110,6 +110,10 @@ interface CaseData {
   feeDescription?: string;
   feeVersion?: string;
   feeAmountGbp?: string;
+
+  isWitnessesAttending?: 'Yes' | 'No';
+  isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
+  witnessDetails?: Collection<WitnessDetails>[];
 }
 
 interface Application<T> {
@@ -140,6 +144,10 @@ interface Nationality {
   value: {
     code: string;
   };
+}
+
+interface WitnessDetails {
+  witnessName?: string;
 }
 
 interface CCDAddress {

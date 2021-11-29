@@ -28,6 +28,7 @@ function getPrivateHearingQuestion(req: Request, res: Response, next: NextFuncti
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.otherNeeds.privateAppointment') || null;
   const question = {
+    name: 'answer',
     title: i18n.pages.hearingRequirements.otherNeedsSection.privateHearing.question,
     hint: i18n.pages.hearingRequirements.otherNeedsSection.privateHearing.description,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
@@ -62,7 +63,11 @@ function postPrivateHearingQuestion(updateAppealService: UpdateAppealService) {
           ...req.session.appeal,
           ...appealUpdated
         };
-        return res.redirect(paths.submitHearingRequirements.otherNeedsHealthConditions);
+        if (answer) {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsPrivateHearingReason);
+        } else {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsHealthConditions);
+        }
       };
 
       return postHearingRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);

@@ -7,10 +7,10 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { postHearingRequirementsYesNoHandler, setCheckedAttributeToQuestion } from '../common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-const pageTitle = i18n.pages.hearingRequirements.otherNeedsSection.singleSexHearing.title;
-const formAction = paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion;
+const pageTitle = i18n.pages.hearingRequirements.otherNeedsSection.bringEquipment.title;
+const formAction = paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion;
 
-function getSingleSexHearingQuestion(req: Request, res: Response, next: NextFunction) {
+function getHearingMultimediaEquipmentQuestion(req: Request, res: Response, next: NextFunction) {
   try {
     const question = getQuestion(req.session.appeal);
     return res.render('templates/radio-question-page.njk', {
@@ -26,24 +26,25 @@ function getSingleSexHearingQuestion(req: Request, res: Response, next: NextFunc
 }
 
 function getQuestion(appeal: Appeal) {
-  const present = _.has(appeal, 'hearingRequirements.otherNeeds.singleSexAppointment') || null;
+  const present = _.has(appeal, 'hearingRequirements.otherNeeds.bringOwnMultimediaEquipment') || null;
   const question = {
     name: 'answer',
-    title: i18n.pages.hearingRequirements.otherNeedsSection.singleSexHearing.question,
+    title: i18n.pages.hearingRequirements.otherNeedsSection.bringEquipment.question,
+    hint: i18n.pages.hearingRequirements.otherNeedsSection.bringEquipment.description,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
   };
 
   if (present) {
-    const singleSexHearingAnswered = appeal.hearingRequirements.otherNeeds.singleSexAppointment;
-    setCheckedAttributeToQuestion(question, singleSexHearingAnswered);
+    const bringOwnMultimediaEquipment = appeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment;
+    setCheckedAttributeToQuestion(question, bringOwnMultimediaEquipment);
   }
   return question;
 }
 
-function postSingleSexHearingQuestion(updateAppealService: UpdateAppealService) {
+function postHearingMultimediaEquipmentQuestion(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.otherNeeds.singleSexAppointmentRequired;
+      const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.otherNeeds.multimediaEvidenceAnswerRequired;
       const question = getQuestion(req.session.appeal);
       const pageContent = {
         previousPage,
@@ -52,11 +53,10 @@ function postSingleSexHearingQuestion(updateAppealService: UpdateAppealService) 
         question,
         saveAndContinue: true
       };
-
       const onSuccess = async (answer: boolean) => {
         req.session.appeal.hearingRequirements.otherNeeds = {
           ...req.session.appeal.hearingRequirements.otherNeeds,
-          singleSexAppointment: answer
+          bringOwnMultimediaEquipment: answer
         };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
@@ -64,9 +64,9 @@ function postSingleSexHearingQuestion(updateAppealService: UpdateAppealService) 
           ...appealUpdated
         };
         if (answer) {
-          return res.redirect(paths.submitHearingRequirements.otherNeedsSingleSexTypeHearing);
+          return res.redirect(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion);
         } else {
-          return res.redirect(paths.submitHearingRequirements.otherNeedsPrivateHearingQuestion);
+          return res.redirect(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentReason);
         }
       };
 
@@ -76,16 +76,16 @@ function postSingleSexHearingQuestion(updateAppealService: UpdateAppealService) 
     }
   };
 }
-function setupHearingSingleSexAppointmentQuestionController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupHearingMultimediaEquipmentQuestionController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion, middleware, getSingleSexHearingQuestion);
-  router.post(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion, middleware, postSingleSexHearingQuestion(updateAppealService));
+  router.get(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion, middleware, getHearingMultimediaEquipmentQuestion);
+  router.post(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion, middleware, postHearingMultimediaEquipmentQuestion(updateAppealService));
 
   return router;
 }
 
 export {
-  setupHearingSingleSexAppointmentQuestionController,
-  getSingleSexHearingQuestion,
-  postSingleSexHearingQuestion
+  getHearingMultimediaEquipmentQuestion,
+  postHearingMultimediaEquipmentQuestion,
+  setupHearingMultimediaEquipmentQuestionController
 };

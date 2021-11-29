@@ -1,7 +1,7 @@
 import { Express, NextFunction, Request, Response } from 'express';
 import {
-  setupHearingRequirementsFeatureEnabledController
-} from '../../../../app/controllers/hearing-requirements/enable-feature';
+  setupHearingRequirementsFeatureToggleController
+} from '../../../../app/controllers/hearing-requirements/feature-toggle';
 import {
   hearingRequirementsMiddleware
 } from '../../../../app/middleware/hearing-requirements-middleware';
@@ -11,7 +11,7 @@ import { expect, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
 
-describe('setupHearingRequirementsFeatureEnabledController', () => {
+describe('setupHearingRequirementsFeatureToggleController', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -53,7 +53,7 @@ describe('setupHearingRequirementsFeatureEnabledController', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'submitHearingRequirements';
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-    setupHearingRequirementsFeatureEnabledController([hearingRequirementsMiddleware]);
+    setupHearingRequirementsFeatureToggleController([hearingRequirementsMiddleware]);
     expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
   });
 });

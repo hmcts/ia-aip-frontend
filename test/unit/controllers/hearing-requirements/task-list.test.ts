@@ -99,7 +99,7 @@ describe('Submit Hearing Requirements Task List Controller', () => {
       'tasks': [ { 'id': 'accessNeeds', 'saved': false, 'completed': false, 'active': false } ]
     }, {
       'sectionId': 'otherNeeds',
-      'tasks': [ { 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': true } ]
+      'tasks': [ { 'id': 'otherNeeds', 'saved': false, 'completed': false, 'active': false } ]
     }, {
       'sectionId': 'datesToAvoid',
       'tasks': [ { 'id': 'datesToAvoid', 'saved': false, 'completed': false, 'active': false } ]

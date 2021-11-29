@@ -8,7 +8,6 @@
   <ol class="task-list">
     {% for section in data %}
       <li>
-      {% set outer_loop = loop %}
         <h2 class="govuk-heading-m">{{ i18n.pages.hearingRequirements.taskList.sections[section.sectionId] }}</h2>
         <ul class="govuk-list">
           {% for task in section.tasks %}
@@ -26,16 +25,6 @@
                 {{ govukTag({
                   text: "Saved"
                 }) }}
-              {% else %}
-                 {% if (outer_loop.index <= 1) %}
-                   {{ govukTag({
-                     text: "TODO"
-                   }) }}
-                   {% else %}
-                     {{ govukTag({
-                       text: "CANNOTSTARTYET"
-                     }) }}
-                 {% endif %}
               {% endif %}
             </li>
           {% endfor %}

@@ -70,6 +70,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Question con
         pageTitle: 'Will you need anything else at the hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Will you need anything else at the hearing?'
         },
@@ -109,6 +110,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Question con
         pageTitle: 'Will you need anything else at the hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Will you need anything else at the hearing?'
         },
@@ -122,7 +124,7 @@ describe('Hearing Requirements - Other Needs Section: Anything Else Question con
       req.body['answer'] = 'yes';
       await postHearingAnythingElseQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsAnythingElseReasons);
       expect(req.session.appeal.hearingRequirements.otherNeeds.anythingElse).to.be.true;
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
     });

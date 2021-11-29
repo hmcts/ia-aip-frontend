@@ -71,6 +71,7 @@ describe('Hearing Requirements - Other Needs Section: Health Conditions Question
         pageTitle: 'Do you have any physical or mental health conditions that may affect you at the hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Do you have any physical or mental health conditions that may affect you at the hearing?'
         },
@@ -109,6 +110,7 @@ describe('Hearing Requirements - Other Needs Section: Health Conditions Question
         pageTitle: 'Do you have any physical or mental health conditions that may affect you at the hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           title: 'Do you have any physical or mental health conditions that may affect you at the hearing?',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
         },
@@ -123,7 +125,7 @@ describe('Hearing Requirements - Other Needs Section: Health Conditions Question
       await postHearingHealthConditionsQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsPastExperiences);
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsHealthConditionsReason);
       expect(req.session.appeal.hearingRequirements.otherNeeds.healthConditions).to.be.true;
     });
 

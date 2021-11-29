@@ -78,102 +78,6 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
 
 function submitHearingRequirementsStatus(appeal: Appeal) {
 
-  const witnesses: boolean = !!_.get(appeal, 'hearingRequirements.witnesses');
-  const accessNeeds: boolean = !!_.get(appeal, 'hearingRequirements.accessNeeds');
-  const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
-  const datesToAvoid: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
-
-  const witnessesTask: Task = {
-    saved: witnesses,
-    completed: _.has(appeal, 'hearingRequirements.witnesses'),
-    active: true
-  };
-
-  const accessNeedsTask: Task = {
-    saved: accessNeeds,
-    completed: _.has(appeal, 'hearingRequirements.accessNeeds.isHearingLoopNeeded'),
-    active: false
-  };
-
-  const otherNeedsTask: Task = {
-    saved: otherNeeds,
-    completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
-    active: accessNeedsTask.completed
-  };
-
-  const datesToAvoidTask: Task = {
-    saved: datesToAvoid,
-    completed: datesToAvoid,
-    active: otherNeedsTask.completed
-  };
-
-  const checkAndSend: Task = {
-    saved: false,
-    completed: false,
-    active: datesToAvoidTask.completed
-  };
-
-  return {
-    witnesses: witnessesTask,
-    accessNeeds: accessNeedsTask,
-    otherNeeds: otherNeedsTask,
-    datesToAvoid: datesToAvoidTask,
-    checkAndSend
-  };
-}
-
-function submitHearingRequirementsStatus(appeal: Appeal) {
-
-  const witnessesOnHearing: boolean = _.has(appeal, 'hearingRequirements.witnessesOnHearing');
-  const witnessesOutsideUK: boolean = _.has(appeal, 'hearingRequirements.witnessesOutsideUK');
-  const witnessNames: boolean = !!_.get(appeal, 'hearingRequirements.witnessNames');
-
-  const witnessesTask: Task = {
-    saved: witnessesOnHearing || witnessesOutsideUK || witnessNames,
-    completed: witnessesOnHearing && witnessesOutsideUK && witnessNames,
-    active: true
-  };
-
-  const accessNeeds: boolean = !!_.get(appeal, 'hearingRequirements.accessNeeds');
-
-  const accessNeedsTask: Task = {
-    saved: accessNeeds,
-    completed: _.has(appeal, 'hearingRequirements.accessNeeds.isHearingLoopNeeded'),
-    active: witnessesTask.completed
-  };
-  const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
-
-  const otherNeedsTask: Task = {
-    saved: otherNeeds,
-    completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
-    active: true
-  };
-
-  const datesToAvoid: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
-
-  const datesToAvoidTask: Task = {
-    saved: datesToAvoid,
-    completed: datesToAvoid,
-    active: otherNeedsTask.completed
-  };
-
-  const checkAndSend: Task = {
-    saved: false,
-    completed: false,
-    active: datesToAvoidTask.completed
-  };
-
-  return {
-    witnesses: witnessesTask,
-    accessNeeds: accessNeedsTask,
-    otherNeeds: otherNeedsTask,
-    datesToAvoid: datesToAvoidTask,
-    checkAndSend
-  };
-}
-
-function submitHearingRequirementsStatus(appeal: Appeal) {
-
   const witnessesOnHearing: boolean = _.has(appeal, 'hearingRequirements.witnessesOnHearing');
   const witnessesOutsideUK: boolean = _.has(appeal, 'hearingRequirements.witnessesOutsideUK');
   const witnessNames: boolean = !!_.get(appeal, 'hearingRequirements.witnessNames');
@@ -184,14 +88,13 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
     active: true
   };
 
-  const accessNeeds: boolean = !!_.get(appeal, 'hearingRequirements.accessNeeds');
   const isHearingLoopNeeded: boolean = _.has(appeal, 'hearingRequirements.isHearingLoopNeeded');
   const isHearingRoomNeeded: boolean = _.has(appeal, 'hearingRequirements.isHearingRoomNeeded');
   const isInterpreterServicesNeeded: boolean = !!_.get(appeal, 'hearingRequirements.isInterpreterServicesNeeded');
 
   const accessNeedsTask: Task = {
-    saved: accessNeeds || isHearingLoopNeeded || isHearingRoomNeeded || isInterpreterServicesNeeded,
-    completed: accessNeeds && isHearingLoopNeeded && isHearingRoomNeeded && isInterpreterServicesNeeded,
+    saved: isHearingLoopNeeded || isHearingRoomNeeded || isInterpreterServicesNeeded,
+    completed: isHearingLoopNeeded,
     active: witnessesTask.completed
   };
   const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');

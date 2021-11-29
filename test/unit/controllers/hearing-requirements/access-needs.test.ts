@@ -10,7 +10,7 @@ import {
   postHearingLoopPage,
   postNeedInterpreterPage,
   postStepFreeAccessPage, removeLanguagePostAction,
-  setupAccessNeedsController
+  setupHearingAccessNeedsController
 } from '../../../../app/controllers/hearing-requirements/access-needs';
 
 import { isoLanguages } from '../../../../app/data/isoLanguages';
@@ -67,13 +67,13 @@ describe('Hearing requirements access needs controller', () => {
     sandbox.restore();
   });
 
-  describe('setupAccessNeedsController', () => {
+  describe('setupHearingAccessNeedsController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupAccessNeedsController(middleware, updateAppealService as UpdateAppealService);
+      setupHearingAccessNeedsController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.accessNeeds);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreter);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetails);
@@ -102,7 +102,7 @@ describe('Hearing requirements access needs controller', () => {
       req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = null;
       getNeedInterpreterPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
-        previousPage: '/hearing-access-needs',
+        previousPage: previousPage,
         formAction: '/hearing-interpreter',
         pageTitle: 'Will you or any witnesses need an interpreter at the hearing?',
         saveAndContinue: true,
@@ -126,7 +126,7 @@ describe('Hearing requirements access needs controller', () => {
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
         errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
         error: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
-        previousPage: '/hearing-access-needs',
+        previousPage: previousPage,
         formAction: '/hearing-interpreter',
         pageTitle: 'Will you or any witnesses need an interpreter at the hearing?',
         question: {
@@ -158,7 +158,7 @@ describe('Hearing requirements access needs controller', () => {
       getAdditionalLanguage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/language-details.njk', {
         items: isoLanguages,
-        previousPage: '/hearing-interpreter',
+        previousPage: previousPage,
         summaryList: [{ 'summaryRows': [],'title': 'Languages' }],
         languageAction: '/hearing-language-details'
       });
@@ -181,7 +181,7 @@ describe('Hearing requirements access needs controller', () => {
         items: isoLanguages,
         error: { language: { key: 'language', text: 'Select a language', href: '#language' } },
         errorList: [ { key: 'language', text: 'Select a language', href: '#language' } ],
-        previousPage: '/hearing-interpreter',
+        previousPage: previousPage,
         summaryList: [{ 'summaryRows': [],'title': 'Languages' }],
         languageAction: '/hearing-language-details'
       });
@@ -223,7 +223,7 @@ describe('Hearing requirements access needs controller', () => {
             href: '#language'
           }
         ],
-        previousPage: '/hearing-interpreter',
+        previousPage: previousPage,
         summaryList: [ { summaryRows: [], title: 'Languages' } ],
         languageAction: '/hearing-language-details'
       };
@@ -247,7 +247,7 @@ describe('Hearing requirements access needs controller', () => {
     it('getStepFreeAccessPage should render getStepFreeAccessPage', () => {
       getStepFreeAccessPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
-        previousPage: '/hearing-language-details',
+        previousPage: previousPage,
         formAction: '/hearing-step-free-access',
         pageTitle: 'Will you or any witnesses need step-free access?',
         question: {
@@ -305,7 +305,7 @@ describe('Hearing requirements access needs controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
         previousPage: previousPage,
         formAction: '/hearing-hearing-loop',
-        pageTitle: 'Will you or any witnesses need need a hearing loop?',
+        pageTitle: 'Will you or any witnesses need a hearing loop?',
         question: {
           hint: 'If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
           name: 'answer',
@@ -314,7 +314,7 @@ describe('Hearing requirements access needs controller', () => {
             text: 'No',
             value: 'no'
           }],
-          title: 'Will you or any witnesses need need a hearing loop?'
+          title: 'Will you or any witnesses need a hearing loop?'
         },
         saveAndContinue: true
       });
@@ -329,14 +329,14 @@ describe('Hearing requirements access needs controller', () => {
         error: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
         previousPage: previousPage,
         formAction: '/hearing-hearing-loop',
-        pageTitle: 'Will you or any witnesses need need a hearing loop?',
+        pageTitle: 'Will you or any witnesses need a hearing loop?',
         question: {
           options: [{ checked: false, text: 'Yes', value: 'yes' }, {
             checked: false,
             text: 'No',
             value: 'no'
           }],
-          title: 'Will you or any witnesses need need a hearing loop?',
+          title: 'Will you or any witnesses need a hearing loop?',
           hint: 'If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
           name: 'answer'
         },

@@ -13,6 +13,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
+  const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -67,7 +68,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
       getWitnessesOnHearingQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: previousPage,
         pageTitle: 'Will any witnesses come to the hearing?',
         formAction: '/hearing-witnesses',
         question: {
@@ -112,7 +113,7 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
       const expectedArgs = {
         errorList: Object.values(expectedError),
         error: expectedError,
-        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: previousPage,
         pageTitle: 'Will any witnesses come to the hearing?',
         formAction: '/hearing-witnesses',
         question: {

@@ -1,15 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getHearingPastExperiencesQuestion,
-  postHearingPastExperiencesQuestion,
-  setupHearingPastExperiencesQuestionController
-} from '../../../../../app/controllers/hearing-requirements/other-needs/past-experiences-question';
+  getHearingMultimediaEquipmentQuestion,
+  postHearingMultimediaEquipmentQuestion,
+  setupHearingMultimediaEquipmentQuestionController
+} from '../../../../../app/controllers/hearing-requirements/other-needs/bring-equipment-question';
 import { Events } from '../../../../../app/data/events';
 import { paths } from '../../../../../app/paths';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
-describe('Hearing Requirements - Other Needs Section: Past Experiences Question controller', () => {
+describe('Hearing Requirements - Other Needs Section: Bring Equipment Question controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -49,32 +49,32 @@ describe('Hearing Requirements - Other Needs Section: Past Experiences Question 
     sandbox.restore();
   });
 
-  describe('setupHearingPastExperiencesQuestionController', () => {
+  describe('setupHearingMultimediaEquipmentQuestionController', () => {
     it('should setup routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupHearingPastExperiencesQuestionController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsPastExperiences);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsPastExperiences);
+      setupHearingMultimediaEquipmentQuestionController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion);
+      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentQuestion);
     });
   });
 
-  describe('getHearingPastExperiencesQuestion', () => {
+  describe('getHearingMultimediaEquipmentQuestion', () => {
     it('should render question page', () => {
 
-      getHearingPastExperiencesQuestion(req as Request, res as Response, next);
+      getHearingMultimediaEquipmentQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        formAction: '/hearing-past-experiences',
-        pageTitle: 'Have you had any past experiences that may affect you at the hearing?',
+        formAction: '/hearing-multimedia-evidence-equipment',
+        pageTitle: 'Will you bring the equipment to play this evidence?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
           name: 'answer',
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
-          title: 'Have you had any past experiences that may affect you at the hearing?',
-          hint: 'This might be experience of physical or sexual abuse, trafficking or torture.'
+          title: 'Will you bring the equipment to play this evidence?',
+          hint: 'For example, a laptop computer or DVD player'
         },
         saveAndContinue: true
 
@@ -88,34 +88,34 @@ describe('Hearing Requirements - Other Needs Section: Past Experiences Question 
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      getHearingPastExperiencesQuestion(req as Request, res as Response, next);
+      getHearingMultimediaEquipmentQuestion(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postHearingPastExperiencesQuestion', () => {
+  describe('postHearingMultimediaEquipmentQuestion', () => {
     it('should fail validation and render template with errors', async () => {
-      await postHearingPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHearingMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       const expectedError = {
         answer: {
-          href: '#answer',
           key: 'answer',
-          text: 'Select yes if you have had any past experiences that may affect you at the hearing'
+          text: 'Select yes if you will bring any audio or video evidence',
+          href: '#answer'
         }
       };
 
       const expectedArgs = {
         error: expectedError,
         errorList: Object.values(expectedError),
-        formAction: '/hearing-past-experiences',
-        pageTitle: 'Have you had any past experiences that may affect you at the hearing?',
+        formAction: '/hearing-multimedia-evidence-equipment',
+        pageTitle: 'Will you bring the equipment to play this evidence?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
           name: 'answer',
-          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
-          title: 'Have you had any past experiences that may affect you at the hearing?',
-          hint: 'This might be experience of physical or sexual abuse, trafficking or torture.'
+          title: 'Will you bring the equipment to play this evidence?',
+          hint: 'For example, a laptop computer or DVD player',
+          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
         },
         saveAndContinue: true
 
@@ -123,29 +123,29 @@ describe('Hearing Requirements - Other Needs Section: Past Experiences Question 
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', expectedArgs);
     });
 
-    it('should validate and redirect to next page if appellant answer yes', async () => {
+    it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postHearingPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHearingMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsPastExperiencesReasons);
-      expect(req.session.appeal.hearingRequirements.otherNeeds.pastExperiences).to.be.true;
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsSingleSexHearingQuestion);
+      expect(req.session.appeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.true;
     });
 
-    it('should validate if appellant answers no and redirect to next page', async () => {
+    it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postHearingPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHearingMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsAnythingElse);
-      expect(req.session.appeal.hearingRequirements.otherNeeds.pastExperiences).to.be.false;
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.otherNeedsMultimediaEquipmentReason);
+      expect(req.session.appeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.false;
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postHearingPastExperiencesQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postHearingMultimediaEquipmentQuestion(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

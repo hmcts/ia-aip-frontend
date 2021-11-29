@@ -28,6 +28,7 @@ function getHearingHealthConditionsQuestion(req: Request, res: Response, next: N
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.otherNeeds.healthConditions') || null;
   const question = {
+    name: 'answer',
     title: i18n.pages.hearingRequirements.otherNeedsSection.healthConditions.question,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
   };
@@ -61,7 +62,11 @@ function postHearingHealthConditionsQuestion(updateAppealService: UpdateAppealSe
           ...req.session.appeal,
           ...appealUpdated
         };
-        return res.redirect(paths.submitHearingRequirements.otherNeedsPastExperiences);
+        if (answer) {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsHealthConditionsReason);
+        } else {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsPastExperiences);
+        }
       };
 
       return postHearingRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);

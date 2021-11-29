@@ -28,6 +28,7 @@ function getJoinHearingByVideoCallQuestion(req: Request, res: Response, next: Ne
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.otherNeeds.remoteVideoCall') || null;
   const question = {
+    name: 'answer',
     title: i18n.pages.hearingRequirements.otherNeedsSection.joinHearingByVideoCall.question,
     hint: i18n.pages.hearingRequirements.otherNeedsSection.joinHearingByVideoCall.description,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
@@ -63,7 +64,11 @@ function postJoinHearingByVideoCallQuestion(updateAppealService: UpdateAppealSer
           ...req.session.appeal,
           ...appealUpdated
         };
-        return res.redirect(paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion);
+        if (answer) {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsMultimediaEvidenceQuestion);
+        } else {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsVideoAppointmentReason);
+        }
       };
 
       return postHearingRequirementsYesNoHandlerWithTemplate(pageContent, onValidationErrorMessage, onSuccess, req, res, next, 'hearing-requirements/other-needs/join-hearing-by-videocall.njk');

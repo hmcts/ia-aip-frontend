@@ -28,6 +28,7 @@ function getHearingAnythingElseQuestion(req: Request, res: Response, next: NextF
 function getQuestion(appeal: Appeal) {
   const present = _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse') || null;
   const question = {
+    name: 'answer',
     title: i18n.pages.hearingRequirements.otherNeedsSection.anythingElse.question,
     options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
   };
@@ -62,7 +63,11 @@ function postHearingAnythingElseQuestion(updateAppealService: UpdateAppealServic
           ...req.session.appeal,
           ...appealUpdated
         };
-        return res.redirect(paths.submitHearingRequirements.taskList);
+        if (answer) {
+          return res.redirect(paths.submitHearingRequirements.otherNeedsAnythingElseReasons);
+        } else {
+          return res.redirect(paths.submitHearingRequirements.taskList);
+        }
       };
       return postHearingRequirementsYesNoHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);
     } catch (e) {

@@ -63,6 +63,7 @@ interface CaseData {
   isHearingLoopNeeded?: string;
   multimediaEvidence: 'Yes' | 'No';
   multimediaEvidenceDescription: string;
+  bringOwnMultimediaEquipment: 'Yes' | 'No';
   singleSexCourt: 'Yes' | 'No';
   singleSexCourtType: 'All male' | 'All female';
   singleSexCourtTypeDescription: string;
@@ -76,6 +77,7 @@ interface CaseData {
   additionalRequestsDescription: string;
   datesToAvoidYesNo: 'Yes' | 'No';
   remoteVideoCall: 'Yes' | 'No';
+  remoteVideoCallDescription: string;
   datesToAvoid: Collection<DateToAvoid>[];
   listCaseHearingCentre: string;
   listCaseHearingLength: string;

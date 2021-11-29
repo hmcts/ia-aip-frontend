@@ -113,7 +113,7 @@ Scenario: Complete appeal application
    And I see the respond by date is 2 weeks in the future
 
 #   # Case Progression
-#   Then I sign in as a Case Officer and send directions with Clarifying Questions
+   Then I sign in as a Case Officer and send directions with Clarifying Questions
 
 #   # Appellant
 #   Given I sign in as the Appellant

@@ -31,7 +31,11 @@ module.exports = {
   caseProgression(I) {
 
     Given(/^I sign in as the Appellant$/, async () => {
+      console.log('logout signing in as appellant?????   ia_citizen9894270@hmcts.net  / Apassword123');
+      console.log(testUrl + paths.common.logout);
       await I.amOnPage(testUrl + paths.common.logout);
+      console.log('login in as appellant????? ');
+      console.log(testUrl + paths.common.login);
       I.amOnPage(testUrl + paths.common.login);
       await I.seeInTitle('Sign in - HMCTS Access');
       I.fillField('#username', aipCurrentUser.email);

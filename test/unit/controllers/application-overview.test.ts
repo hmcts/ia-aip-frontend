@@ -14,7 +14,7 @@ import { expectedMultipleEventsData } from '../mockData/events/expectations';
 
 const express = require('express');
 
-describe.only('Confirmation Page Controller', () => {
+describe('Confirmation Page Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

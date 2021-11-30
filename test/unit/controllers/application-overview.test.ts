@@ -173,7 +173,8 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false
     });
   });
 
@@ -223,7 +224,8 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false
     });
   });
 
@@ -274,7 +276,8 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false
     });
   });
 
@@ -338,7 +341,8 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false
     });
   });
 
@@ -403,7 +407,8 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false
     });
   });
 

@@ -31,6 +31,10 @@ export const States = {
     id: 'respondentReview',
     name: 'Respondent review'
   },
+  SUBMIT_HEARING_REQUIREMENTS: {
+    id: 'submitHearingRequirements',
+    name: 'Submit hearing requirements'
+  },
   AWAITING_CMA_REQUIREMENTS: {
     id: 'awaitingCmaRequirements',
     name: 'Awaiting CMA Requirements'
@@ -43,13 +47,41 @@ export const States = {
     id: 'cmaAdjustmentsAgreed',
     name: 'CMA Requirements listed'
   },
+  LISTING: {
+    id: 'listing',
+    name: 'Listing'
+  },
   CMA_LISTED: {
     id: 'cmaListed',
     name: 'CMA Requirements listed'
   },
+  PREPARE_FOR_HEARING: {
+    id: 'prepareForHearing',
+    name: 'Prepare for hearing'
+  },
   REMOVE_APPEAL_FROM_ONLINE: {
     id: 'appealTakenOffline',
     name: 'Appeal taken offline'
+  },
+  FINAL_BUNDLING: {
+    id: 'finalBundling',
+    name: 'Final bundling'
+  },
+  PRE_HEARING: {
+    id: 'preHearing',
+    name: 'Pre hearing'
+  },
+  DECISION: {
+    id: 'decision',
+    name: 'Decision'
+  },
+  DECIDED: {
+    id: 'decided',
+    name: 'Decided'
+  },
+  ADJOURNED: {
+    id: 'adjourned',
+    name: 'Adjourned'
   },
   ENDED: {
     id: 'ended',

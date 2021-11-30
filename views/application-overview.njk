@@ -7,16 +7,16 @@
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <div class="banner-line">
-          <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ name }}</h1>
-          {% if appealRefNumber %}
-            <p class="govuk-!-margin-top-1">{{ i18n.pages.overviewPage.appealRef }} {{ appealRefNumber }}</p>
-          {% endif %}
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ name }}</h1>
+        {% if appealRefNumber %}
+          <p class="govuk-!-margin-top-1">{{ i18n.pages.overviewPage.appealRef }} {{ appealRefNumber }}</p>
+        {% endif %}
         </div>
       </div>
     </div>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
+        <div class="banner-line"></div>
         {% if ended %}
         <div class="govuk-inset-text inset-bold">
           {{ i18n.pages.overviewPage.endedInsert }}
@@ -96,25 +96,33 @@
         {{ timeline(history) }}
       </div>
       <div class="govuk-grid-column-one-third">
-        <div class="contact-us-component">
-          <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.contactUs }}</h2>
-          <p>{{ i18n.pages.overviewPage.askAQuestion }}</p>
-          <p>
-            {{ i18n.pages.overviewPage.telephone }}<br>
-            {{ i18n.pages.overviewPage.telephoneNumber }}
-          </p>
-          <p>
-            {{ i18n.pages.overviewPage.time }}
-            <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer"
-               class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a></br>
-            {{ i18n.pages.overviewPage.newWindow }}
-          </p>
-          <p>
-            {{ i18n.pages.overviewPage.email | safe }}<br>
-            <a href='mailto:{{ i18n.pages.overviewPage.emailLink }}'
-               class="govuk-link">{{ i18n.pages.overviewPage.emailLink }}</a>
-          </p>
-          <p>{{ i18n.pages.overviewPage.weAimTo }}</p>
+        <div class="side-menu">
+          {% if provideMoreEvidenceSection %}
+            <div class="side-menu__section">
+              <h2 class="govuk-heading-s">I want to...</h2>
+              <p><a class="govuk-link" href='#'>Provide more evidence</a></p>
+            </div>
+          {% endif %}
+          <div class="side-menu__section">
+            <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.contactUs }}</h2>
+            <p>{{ i18n.pages.overviewPage.askAQuestion }}</p>
+            <p>
+              {{ i18n.pages.overviewPage.telephone }}<br>
+              {{ i18n.pages.overviewPage.telephoneNumber }}
+            </p>
+            <p>
+              {{ i18n.pages.overviewPage.time }}
+              <a href='https://www.gov.uk/call-charges' target='_blank' rel="noopener noreferrer"
+                class='govuk-link'>{{ i18n.pages.overviewPage.charges }}</a></br>
+              {{ i18n.pages.overviewPage.newWindow }}
+            </p>
+            <p>
+              {{ i18n.pages.overviewPage.email | safe }}<br>
+              <a href='mailto:{{ i18n.pages.overviewPage.emailLink }}'
+                class="govuk-link">{{ i18n.pages.overviewPage.emailLink }}</a>
+            </p>
+            <p>{{ i18n.pages.overviewPage.weAimTo }}</p>
+          </div>
         </div>
       </div>
     </div>

@@ -1,12 +1,12 @@
-import config from 'config';
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
+import { States } from '../data/states';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
 import { getAppealApplicationNextStep } from '../utils/application-state-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
-import { asBooleanValue, hasPendingTimeExtension } from '../utils/utils';
+import { hasPendingTimeExtension } from '../utils/utils';
 
 function getAppealRefNumber(appealRef: string) {
   if (appealRef && appealRef.toUpperCase() === 'DRAFT') {
@@ -43,6 +43,22 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(req.session.appeal.appealStatus);
+      const provideMoreEvidenceStates = [
+        States.RESPONDENT_REVIEW.id,
+        States.SUBMIT_HEARING_REQUIREMENTS.id,
+        States.LISTING.id,
+        States.PREPARE_FOR_HEARING.id,
+        States.FINAL_BUNDLING.id,
+        States.PRE_HEARING.id,
+        States.DECISION.id,
+        States.DECIDED.id,
+        States.REASONS_FOR_APPEAL_SUBMITTED.id,
+        States.AWAITING_CMA_REQUIREMENTS.id,
+        States.CMA_REQUIREMENTS_SUBMITTED.id,
+        States.CMA_ADJUSTMENTS_AGREED.id,
+        States.CMA_LISTED.id,
+        States.ADJOURNED.id
+      ];
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -54,7 +70,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         ended: appealEnded,
         askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal),
         askForMoreTime,
-        saveAndAskForMoreTime
+        saveAndAskForMoreTime,
+        provideMoreEvidenceSection: provideMoreEvidenceStates.includes(req.session.appeal.appealStatus)
       });
     } catch (e) {
       next(e);

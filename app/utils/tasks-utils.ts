@@ -75,10 +75,13 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
   };
 
   const accessNeeds: boolean = !!_.get(appeal, 'hearingRequirements.accessNeeds');
+  const isHearingLoopNeeded: boolean = _.has(appeal, 'hearingRequirements.isHearingLoopNeeded');
+  const isHearingRoomNeeded: boolean = _.has(appeal, 'hearingRequirements.isHearingRoomNeeded');
+  const isInterpreterServicesNeeded: boolean = !!_.get(appeal, 'hearingRequirements.isInterpreterServicesNeeded');
 
   const accessNeedsTask: Task = {
-    saved: accessNeeds,
-    completed: _.has(appeal, 'hearingRequirements.accessNeeds.isHearingLoopNeeded'),
+    saved: accessNeeds || isHearingLoopNeeded || isHearingRoomNeeded || isInterpreterServicesNeeded,
+    completed: accessNeeds && isHearingLoopNeeded && isHearingRoomNeeded && isInterpreterServicesNeeded,
     active: witnessesTask.completed
   };
   const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');

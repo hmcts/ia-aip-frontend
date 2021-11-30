@@ -147,6 +147,14 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.equal('03 March 2020');
     });
 
+    it('should return a formatted date for decisionMaintained state', () => {
+
+      const currentAppealStatus = 'decisionMaintained';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('23 February 2020');
+    });
+
     it('should return a formatted date for respondentReview state', () => {
 
       const currentAppealStatus = 'respondentReview';

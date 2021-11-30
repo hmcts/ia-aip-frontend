@@ -565,6 +565,25 @@ describe('application-state-utils', () => {
       expect(result).to.eql(expected);
     });
 
+    it('should return \'Do This next section\' when application status is decisionMaintained', () => {
+      req.session.appeal.appealStatus = 'decisionMaintained';
+      const result = getAppealApplicationNextStep(req as Request);
+
+      const expected = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.decisionMaintained.description,
+          i18n.pages.overviewPage.doThisNext.decisionMaintained.description2,
+          i18n.pages.overviewPage.doThisNext.decisionMaintained.dueDate
+        ],
+        info: i18n.pages.overviewPage.doThisNext.decisionMaintained.info,
+        deadline: null,
+        cta: {},
+        hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
+      };
+
+      expect(result).to.eql(expected);
+    });
+
     it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', () => {
       req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
       const result = getAppealApplicationNextStep(req as Request);

@@ -54,9 +54,7 @@ function getAppealStatus(req: Request) {
     return _.has(req.session.appeal, 'reasonsForAppeal.applicationReason') ? `${req.session.appeal.appealStatus}Partial` : req.session.appeal.appealStatus;
   } else if (req.session.appeal.appealStatus === States.RESPONDENT_REVIEW.id) {
     if (req.session.appeal.history.find(event => event.id === Events.REQUEST_RESPONSE_REVIEW.id)) {
-      const { appealReviewOutcome } = req.session.appeal;
-      if (appealReviewOutcome === 'decisionWithdrawn') return 'decisionWithdrawn';
-      else if (appealReviewOutcome === 'decisionAccepted') return 'decisionAccepted';
+      return req.session.appeal.appealReviewOutcome;
     }
     return req.session.appeal.appealStatus;
   } else {
@@ -259,6 +257,18 @@ function getAppealApplicationNextStep(req: Request) {
           i18n.pages.overviewPage.doThisNext.decisionWithdrawn.dueDate
         ],
         info: i18n.pages.overviewPage.doThisNext.decisionWithdrawn.info,
+        cta: {},
+        hearingCentreEmail: getHearingCentreEmail(req)
+      };
+      break;
+    case 'decisionMaintained':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.decisionMaintained.description,
+          i18n.pages.overviewPage.doThisNext.decisionMaintained.description2,
+          i18n.pages.overviewPage.doThisNext.decisionMaintained.dueDate
+        ],
+        info: i18n.pages.overviewPage.doThisNext.decisionMaintained.info,
         cta: {},
         hearingCentreEmail: getHearingCentreEmail(req)
       };

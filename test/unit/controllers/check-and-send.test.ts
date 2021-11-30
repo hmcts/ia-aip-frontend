@@ -3,6 +3,7 @@ import {
   createSummaryRowsFrom,
   getCheckAndSend,
   getFinishPayment,
+  getPayLater,
   postCheckAndSend,
   setupCheckAndSendController
 } from '../../../app/controllers/appeal-application/check-and-send';
@@ -175,7 +176,8 @@ describe('Check and Send Controller', () => {
     req = {
       session: {
         appeal: {
-          status: 'appealStarted'
+          status: 'appealStarted',
+          application: {}
         }
       } as any,
       cookies: {},
@@ -225,6 +227,8 @@ describe('Check and Send Controller', () => {
 
     setupCheckAndSendController(middleware, updateAppealService as UpdateAppealService, paymentService as PaymentService);
     expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
+    expect(routerGetStub).to.have.been.calledWith(paths.common.finishPayment, middleware);
+    expect(routerGetStub).to.have.been.calledWith(paths.common.payLater, middleware);
     expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.checkAndSend, middleware);
   });
 
@@ -382,7 +386,7 @@ describe('Check and Send Controller', () => {
       expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
       expect(req.session.appeal.paymentDate).to.be.eql('aDate');
       expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.confirmation);
+      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayLater);
     });
 
     it('should atch exception and call next with the error', async () => {
@@ -391,6 +395,33 @@ describe('Check and Send Controller', () => {
       updateAppealService.submitEventRefactored = sandbox.stub().throws(error);
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getPayLater', () => {
+    beforeEach(() => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+    });
+
+    it('should init a later payment @paylater', async () => {
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.feeCode = 'aCode';
+      await getPayLater(paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(paymentService.initiatePayment).to.have.been.called;
+    });
+
+    it('should atch exception and call next with the error', async () => {
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
+      const error = new Error('an error');
+      paymentService.initiatePayment = sandbox.stub().throws(error);
+      updateAppealService.submitEventRefactored = sandbox.stub().throws(error);
+
+      await getPayLater(paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

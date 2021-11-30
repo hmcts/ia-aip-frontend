@@ -169,22 +169,6 @@ export default class UpdateAppealService {
       });
     }
 
-    // if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
-    //   respondentDocuments = [];
-    //   caseData.respondentDocuments.forEach(document => {
-    //     const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
-
-    //     let evidence = {
-    //       dateUploaded: document.value.dateUploaded,
-    //       evidence: {
-    //         fileId: documentMapperId,
-    //         name: document.value.document.document_filename
-    //       }
-    //     };
-    //     respondentDocuments.push(evidence);
-    //   });
-    // }
-
     if (caseData.directions) {
       directions = caseData.directions.map((ccdDirection: Collection<CcdDirection>): Direction => {
         const direction: Direction = {
@@ -376,7 +360,6 @@ export default class UpdateAppealService {
         evidences: reasonsForAppealDocumentUploads,
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
-      // ...respondentDocuments && { respondentDocuments },
       ...(_.has(caseData, 'directions')) && { directions },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },

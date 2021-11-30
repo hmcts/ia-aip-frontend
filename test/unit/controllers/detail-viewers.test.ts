@@ -206,7 +206,6 @@ describe('Detail viewer Controller', () => {
         id: '2',
         tag: 'appealResponse'
       });
-
       getHomeOfficeResponse(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.homeOfficeResponse.title,

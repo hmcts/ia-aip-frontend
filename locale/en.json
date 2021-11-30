@@ -472,7 +472,16 @@
           "dueDate": "Your appeal may end. If you do not want the appeal to end, you must email <a class='govuk-link' href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a> by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to explain why.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a>"
+            "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a>"
+          }
+        },
+        "decisionMaintained": {
+          "description": "The Home Office has reviewed your appeal and decided to maintain their decision to refuse your application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeResponse }}'>Home Office Response</a>.",
+          "description2": "If you want to respond, you can <a class='govuk-link' href='#'>provide more evidence</a> at any time.",
+          "dueDate": "Your appeal will be decided at a hearing. A Tribunal Caseworker will contact you by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to ask if there is anything you will need at the hearing.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -815,7 +824,7 @@
         "additionalEvidence": "Additional evidence"
       },
       "homeOfficeResponse": {
-        "title": "HO Response",
+        "title": "Home Office Response",
         "dateUploaded": "Date uploaded",
         "document": "Document",
         "documentDescription": "Document description",

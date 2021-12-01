@@ -42,7 +42,7 @@
   "dependencies": {
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "^1.1.2",
-    "@hmcts/properties-volume": "^0.0.9",
+    "@hmcts/properties-volume": "^0.0.13",
     "applicationinsights": "^1.8.10",
     "codeceptjs": "^2.6.11",
     "config": "^3.3.6",

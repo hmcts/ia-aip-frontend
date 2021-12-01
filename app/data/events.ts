@@ -9,6 +9,11 @@ export const Events = {
     summary: 'Submit appeal case AIP',
     description: 'Submit Appeal case AIP'
   },
+  PAYMENT_APPEAL: {
+    id: 'paymentAppeal',
+    summary: 'Make a payment',
+    description: 'Make a payment'
+  },
   EDIT_REASONS_FOR_APPEAL: {
     id: 'editReasonsForAppeal',
     summary: 'Edit reasons for appeal case AIP',

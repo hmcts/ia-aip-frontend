@@ -53,12 +53,12 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     let feeAmountRow;
     let paymentTypeRow;
     let fee;
-    const { paAppealTypeAipPaymentOption = null } = req.session.appeal;
+    const { paAppealTypeAipPaymentOption = null, paymentStatus = null } = req.session.appeal;
     if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
       decisionType = req.session.appeal.application.rpDcAppealHearingOption;
     } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(application.appealType)) {
       decisionType = req.session.appeal.application.decisionHearingFeeOption;
-      if (paAppealTypeAipPaymentOption === 'payLater') {
+      if (paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid') {
         paymentTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [ i18n.pages.checkYourAnswers.payLater ]);
       } else {
         fee = getFee(req.session.appeal);

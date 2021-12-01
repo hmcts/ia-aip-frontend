@@ -4,6 +4,7 @@ import { States } from '../data/states';
 import { paths } from '../paths';
 import UpdateAppealService from '../service/update-appeal-service';
 import { getAppealApplicationNextStep } from '../utils/application-state-utils';
+import { payLaterForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
 import { hasPendingTimeExtension } from '../utils/utils';
@@ -59,6 +60,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         States.CMA_LISTED.id,
         States.ADJOURNED.id
       ];
+      const payLater = payLaterForApplicationNeeded(req);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -71,7 +73,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal),
         askForMoreTime,
         saveAndAskForMoreTime,
-        provideMoreEvidenceSection: provideMoreEvidenceStates.includes(req.session.appeal.appealStatus)
+        provideMoreEvidenceSection: provideMoreEvidenceStates.includes(req.session.appeal.appealStatus),
+        payLater
       });
     } catch (e) {
       next(e);

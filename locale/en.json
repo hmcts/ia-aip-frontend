@@ -308,6 +308,12 @@
         "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
       }
     },
+    "confirmationPayLater": {
+      "title": "You have paid for the appeal",
+      "content": [
+        "Your appeal will continue"
+      ]
+    },
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
@@ -404,6 +410,8 @@
       "askedForMoreTime": "You have asked for more time",
       "savedAndAskedForMoreTime": "You have saved your answers and asked for more time",
       "weAimTo": "We aim to get back to you within 5 days.",
+      "iWantTo": "I want to...",
+      "payForAppeal": "Pay for this appeal",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
@@ -710,6 +718,16 @@
               "title": "What the Tribunal said",
               "text": "Reasons for decision",
               "href": "{{ paths.common.outOfTimeDecisionViewer }}"
+            }
+          ]
+        },
+        "paymentAppeal": {
+          "text": "You paid for your appeal",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
             }
           ]
         }

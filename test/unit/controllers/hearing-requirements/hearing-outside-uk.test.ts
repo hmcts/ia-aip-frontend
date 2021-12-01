@@ -71,7 +71,12 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
         pageTitle: 'Will you or any witnesses take part in the hearing from outside the UK?',
         previousPage: '/hearing-witness-names',
         question: {
-          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
+          name: 'answer',
+          options: [{ checked: false, text: 'Yes', value: 'yes' }, {
+            checked: false,
+            text: 'No',
+            value: 'no'
+          }],
           title: 'Will you or any witnesses take part in the hearing from outside the UK?',
           hint: 'If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where you or any witnesses will be for the hearing.'
         },
@@ -111,7 +116,12 @@ describe('Hearing Requirements - Witness Needs - Witnesses outside UK question c
         pageTitle: 'Will you or any witnesses take part in the hearing from outside the UK?',
         previousPage: '/hearing-witness-names',
         question: {
-          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
+          name: 'answer',
+          options: [{ checked: false, text: 'Yes', value: 'yes' }, {
+            checked: false,
+            text: 'No',
+            value: 'no'
+          }],
           title: 'Will you or any witnesses take part in the hearing from outside the UK?',
           hint: 'If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where you or any witnesses will be for the hearing.'
         },

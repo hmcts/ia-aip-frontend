@@ -307,7 +307,7 @@ describe('Hearing requirements access needs controller', () => {
         formAction: '/hearing-hearing-loop',
         pageTitle: 'Will you or any witnesses need need a hearing loop?',
         question: {
-          hint: 'A hearing loop is a sound system designed to help people who use hearing aids.',
+          hint: 'If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
           name: 'answer',
           options: [{ checked: false, text: 'Yes', value: 'yes' }, {
             checked: false,
@@ -337,7 +337,7 @@ describe('Hearing requirements access needs controller', () => {
             value: 'no'
           }],
           title: 'Will you or any witnesses need need a hearing loop?',
-          hint: 'A hearing loop is a sound system designed to help people who use hearing aids.',
+          hint: 'If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
           name: 'answer'
         },
         saveAndContinue: true

@@ -491,7 +491,7 @@
         },
         "decisionMaintained": {
           "description": "The Home Office has reviewed your appeal and decided to maintain their decision to refuse your application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeResponse }}'>Home Office Response</a>.",
-          "description2": "If you want to respond, you can <a class='govuk-link' href='#'>provide more evidence</a> at any time.",
+          "description2": "If you want to respond, you can <a class='govuk-link' href='{{ paths.common.provideMoreEvidenceForm }}'>provide more evidence</a> at any time.",
           "dueDate": "Your appeal will be decided at a hearing. A Tribunal Caseworker will contact you by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to ask if there is anything you will need at the hearing.",
           "info": {
             "title": "Helpful Information",

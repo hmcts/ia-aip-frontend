@@ -70,7 +70,7 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
 
   const witnessesTask: Task = {
     saved: witnessesOnHearing || witnessesOutsideUK || witnessNames,
-    completed: witnessesOnHearing && witnessesOutsideUK && witnessNames,
+    completed: witnessesOnHearing && witnessesOutsideUK,
     active: true
   };
 

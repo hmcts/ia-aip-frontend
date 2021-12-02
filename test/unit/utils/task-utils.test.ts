@@ -98,6 +98,11 @@ describe('getStatus', () => {
       saved: false,
       completed: false,
       active: false
+    },
+    checkAndSendWithPayments: {
+      saved: false,
+      completed: false,
+      active: false
     }
   };
 
@@ -173,10 +178,57 @@ describe('getStatus', () => {
     };
     status.typeOfAppealAndDecision = {
       ...status.typeOfAppeal,
-      completed: true,
+      completed: false,
       saved: true
     };
     status.checkAndSend.active = true;
+    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+  });
+
+  it('should update status typeOfAppealAndDecision as completed', () => {
+    appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+    status.typeOfAppealAndDecision = {
+      ...status.typeOfAppeal,
+      completed: false,
+      saved: true
+    };
+    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+  });
+
+  it('should update status typeOfAppealAndDecision as completed', () => {
+    appeal.paAppealTypeAipPaymentOption = 'payLater';
+    status.typeOfAppealAndDecision = {
+      ...status.typeOfAppeal,
+      completed: true,
+      saved: true
+    };
+    status.checkAndSendWithPayments.active = true;
+    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+  });
+
+  it('should update status typeOfAppealAndDecision as completed', () => {
+    appeal.application.appealType = 'refusalOfHumanRights';
+    appeal.application.decisionHearingFeeOption = null;
+    appeal.paAppealTypeAipPaymentOption = null;
+    status.typeOfAppealAndDecision = {
+      ...status.typeOfAppeal,
+      completed: false,
+      saved: true
+    };
+    status.checkAndSendWithPayments.active = false;
+    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+  });
+
+  it('should update status typeOfAppealAndDecision as completed', () => {
+    appeal.application.appealType = 'refusalOfHumanRights';
+    appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+    appeal.paAppealTypeAipPaymentOption = null;
+    status.typeOfAppealAndDecision = {
+      ...status.typeOfAppeal,
+      completed: true,
+      saved: true
+    };
+    status.checkAndSendWithPayments.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 });

@@ -72,9 +72,6 @@ describe('Task List Controller', () => {
     res = {
       render: sandbox.stub()
     } as Partial<Response>;
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'online-card-payments-feature', false)
-        .resolves(true);
     next = sandbox.stub() as NextFunction;
   });
 
@@ -94,7 +91,30 @@ describe('Task List Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/task-list.njk');
   });
 
-  it('getTaskList should render task-list.njk with status data', async () => {
+  it('getTaskList should render task-list.njk with status data payments flag OFF', async () => {
+    const mockData = [
+      {
+        'sectionId': 'yourDetails',
+        'tasks': [
+          { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': true },
+          { 'id': 'personalDetails', 'saved': false, 'completed': false, 'active': false },
+          { 'id': 'contactDetails', 'saved': false, 'completed': false, 'active': false } ]
+      },
+      {
+        'sectionId': 'appealDetails',
+        'tasks': [ { 'id': 'typeOfAppeal', 'saved': false, 'completed': false, 'active': false } ]
+      },
+      {
+        'sectionId': 'checkAndSend',
+        'tasks': [ { 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false } ]
+      } ];
+
+    await getTaskList(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/task-list.njk', { data: mockData });
+  });
+
+  it('getTaskList should render task-list.njk with status data payments flag ON', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(true);
     const mockData = [
       {
         'sectionId': 'yourDetails',
@@ -109,7 +129,7 @@ describe('Task List Controller', () => {
       },
       {
         'sectionId': 'checkAndSend',
-        'tasks': [ { 'id': 'checkAndSend', 'saved': false, 'completed': false, 'active': false } ]
+        'tasks': [ { 'id': 'checkAndSendWithPayments', 'saved': false, 'completed': false, 'active': false } ]
       } ];
 
     await getTaskList(req as Request, res as Response, next);

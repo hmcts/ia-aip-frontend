@@ -29,19 +29,3 @@ export function payLaterForApplicationNeeded(req: Request): boolean {
   const payLater = appealStatus !== 'appealStarted' && appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid';
   return payLater;
 }
-
-export function payNowForApplicationNeeded(req: Request): boolean {
-  const { appealType } = req.session.appeal.application;
-  const { paAppealTypeAipPaymentOption } = req.session.appeal;
-  let payNow = false;
-  payNow = payNow || appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow';
-  payNow = payNow || ['refusalOfEu', 'refusalOfHumanRights'].includes(appealType);
-  return payNow;
-}
-
-export function payLaterForApplicationNeeded(req: Request): boolean {
-  const { appealType } = req.session.appeal.application;
-  const { paAppealTypeAipPaymentOption = null, paymentStatus = null } = req.session.appeal;
-  const payLater = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid';
-  return payLater;
-}

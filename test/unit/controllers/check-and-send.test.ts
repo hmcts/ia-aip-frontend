@@ -176,7 +176,7 @@ describe('Check and Send Controller', () => {
     req = {
       session: {
         appeal: {
-          status: 'appealStarted',
+          appealStatus: 'appealStarted',
           application: {}
         }
       } as any,
@@ -240,21 +240,21 @@ describe('Check and Send Controller', () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
-      await getCheckAndSend(req as Request, res as Response, next);
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList
       });
     });
 
-    it('getCheckAndSend should render check-and-send-page.njk, pay now and decision with hearing applicationCheckAndSend with Payments flag is ON', async () => {
+    it('should render check-and-send-page.njk, pay now and decision with hearing applicationCheckAndSend with Payments flag is ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
-      await getCheckAndSend(req as Request, res as Response, next);
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
@@ -263,14 +263,32 @@ describe('Check and Send Controller', () => {
       });
     });
 
-    it('getCheckAndSend should render check-and-send-page.njk, pay now and decision without hearing applicationCheckAndSend with Payments flag is ON', async () => {
+    it('should render check-and-send-page.njk, pay now and decision without hearing applicationCheckAndSend with Payments flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paymentReference = 'aReference';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithoutHearing';
+      req.session.appeal.feeWithHearing = '80';
+      req.session.appeal.feeWithoutHearing = '140';
+
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        fee: '140',
+        appealPaid: true
+      });
+    });
+
+    it('should render check-and-send-page.njk, pay now and decision without hearing applicationCheckAndSend with Payments flag is ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithoutHearing';
       req.session.appeal.feeWithHearing = '80';
       req.session.appeal.feeWithoutHearing = '140';
-      await getCheckAndSend(req as Request, res as Response, next);
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
@@ -279,11 +297,11 @@ describe('Check and Send Controller', () => {
       });
     });
 
-    it('getCheckAndSend should catch exception and call next with the error', async () => {
+    it('should catch exception and call next with the error', async () => {
       req.session.appeal = createDummyAppealApplication();
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      await getCheckAndSend(req as Request, res as Response, next);
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -309,6 +327,27 @@ describe('Check and Send Controller', () => {
         errorList: Object.values(expectedError),
         summaryRows: summaryRows,
         previousPage: paths.appealStarted.taskList
+      });
+    });
+
+    it('should render check-and-send-page.njk, error messages and payment details with Payments flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '80';
+      req.session.appeal.feeWithoutHearing = '140';
+      req.body = { 'button': 'save-and-continue', 'data': [] };
+
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        error: sinon.match.any,
+        errorList: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        fee: req.session.appeal.feeWithHearing,
+        payNow: true
       });
     });
 
@@ -341,6 +380,8 @@ describe('Check and Send Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
@@ -358,6 +399,17 @@ describe('Check and Send Controller', () => {
       expect(res.redirect).to.have.been.called;
     });
 
+    it('should catch exception if no fee present', async () => {
+      const error = new Error('Fee is not available');
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(next).to.have.been.called;
+    });
+
     it('should catch exception and call next with the error', async () => {
       req.session.appeal = createDummyAppealApplication();
       const error = new Error('an error');
@@ -373,8 +425,25 @@ describe('Check and Send Controller', () => {
   });
 
   describe('getFinishPayment', () => {
-    it('should finish a payment', async () => {
+    it('should finish a payment and redirect to confirmation', async () => {
       req.session.appeal.paymentReference = 'aReference';
+      updateAppealService.submitEventRefactored = sandbox.stub().resolves({
+        paymentStatus: 'Paid',
+        paymentDate: 'aDate',
+        isFeePaymentEnabled: 'Yes'
+      } as Partial<Appeal>);
+
+      await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
+      expect(req.session.appeal.paymentDate).to.be.eql('aDate');
+      expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
+      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.confirmation);
+    });
+
+    it('should finish a payment and redirect to confirmation pay later', async () => {
+      req.session.appeal.paymentReference = 'aReference';
+      req.session.appeal.appealStatus = 'appealSubmitted';
       updateAppealService.submitEventRefactored = sandbox.stub().resolves({
         paymentStatus: 'Paid',
         paymentDate: 'aDate',
@@ -389,7 +458,16 @@ describe('Check and Send Controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayLater);
     });
 
-    it('should atch exception and call next with the error', async () => {
+    it('should redirect to check your answers page if payment has failed @finish', async () => {
+      req.session.appeal.paymentReference = 'aReference';
+      paymentService.getPaymentDetails = sandbox.stub().resolves(JSON.stringify({ status: 'Failed' }));
+
+      await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
+    });
+
+    it('should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.session.appeal.paymentReference = 'aReference';
       updateAppealService.submitEventRefactored = sandbox.stub().throws(error);
@@ -405,7 +483,7 @@ describe('Check and Send Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
     });
 
-    it('should init a later payment @paylater', async () => {
+    it('should init a later payment', async () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.feeCode = 'aCode';

@@ -11,7 +11,7 @@ export function getFee(appeal: Appeal) {
       version: appeal.feeVersion
     };
   }
-  return null;
+  throw new Error('Fee is not available');
 }
 
 export function payNowForApplicationNeeded(req: Request): boolean {

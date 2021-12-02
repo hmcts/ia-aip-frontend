@@ -330,6 +330,27 @@ describe('Check and Send Controller', () => {
       });
     });
 
+    it('should render check-and-send-page.njk, error messages and payment details with Payments flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '80';
+      req.session.appeal.feeWithoutHearing = '140';
+      req.body = { 'button': 'save-and-continue', 'data': [] };
+
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        error: sinon.match.any,
+        errorList: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        fee: req.session.appeal.feeWithHearing,
+        payNow: true
+      });
+    });
+
     it('should submit application and redirect when accepted statement and clicked send', async () => {
       req.session.appeal = createDummyAppealApplication();
       req.body = { statement: 'acceptance' };

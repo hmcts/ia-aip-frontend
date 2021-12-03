@@ -20,13 +20,13 @@ export default class PaymentService {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const body = {
       amount: fee.calculated_amount,
-      case_reference: 'aCaseRef',
+      case_reference: req.session.appeal.ccdCaseId,
       ccd_case_number: req.session.appeal.ccdCaseId,
       channel: 'online',
       currency: 'GBP',
       description: 'Appealing an immigration or asylum decision',
-      service: 'CMC',
-      site_id: 'AA101',
+      service: 'IAC',
+      case_type: 'Asylum',
       fees: [ fee ]
     };
     req.app.locals.logger.trace(`Creating Card Payment with fee ${JSON.stringify(fee)}`, 'Payments Service');

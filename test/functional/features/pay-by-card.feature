@@ -26,18 +26,18 @@ Feature: Pay by card Appeal submission.
 
 #    Payment steps
     Given I am on the type of appeal page
-    When I select appeal type Protection
-    And I click "Save and continue" button
+    When I click on Protection as my type of appeal and click Save and continue
     Then I should see the decision type page
     Then I select decision type with hearing
     And I click "Save and continue" button
     Then I should be taken to the payment options page
-    Then I select Yes for pay for the appeal now
+    When I select Yes for pay for the appeal now
     And I click "Save and continue" button
-#    Then I should be taken to the payment page
-
     Then I see "Tell us about your appeal" in title
     And I should be able to click "Check and send your appeal"
+
+#    Then I should be taken to the payment page
+
 
 #    Then I should see the task-list page
 

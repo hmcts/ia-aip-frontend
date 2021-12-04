@@ -14,6 +14,10 @@ module.exports = {
       await I.checkOption('#answer');
     });
 
+    When('I select No for pay for the appeal now', async () => {
+      await I.checkOption('#answer-2');
+    });
+
     Then('I should be taken to the payment options page', async () => {
       await I.seeInCurrentUrl(paths.appealStarted.payNow);
     });

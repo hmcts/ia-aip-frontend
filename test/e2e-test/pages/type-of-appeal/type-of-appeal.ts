@@ -31,6 +31,14 @@ module.exports = {
       I.checkOption('#appealType');
     });
 
+    When('I select appeal type Human Rights', async () => {
+      await I.checkOption('#appealType-2');
+    });
+
+    When('I select appeal type European Economic Area', async () => {
+      await I.checkOption('#appealType-3');
+    });
+
     Then('I should see the type of appeal page', async () => {
       I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });

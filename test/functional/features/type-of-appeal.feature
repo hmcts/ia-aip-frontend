@@ -1,9 +1,9 @@
-#@typeOfAppeal
-#Feature: Type iof appeal
-#  In order complete my appeal
-#  As a citizen
-#  I want to be able to enter my type of appeal
-#
+@typeOfAppeal
+Feature: Type iof appeal
+  In order complete my appeal
+  As a citizen
+  I want to be able to enter my type of appeal
+
 #  Scenario: Home office reference page
 #    Given I have an appeal with home office details, personal details and contact details
 #    And I have logged in

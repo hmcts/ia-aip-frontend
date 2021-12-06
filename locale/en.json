@@ -27,7 +27,8 @@
       "seeProgress": "See your appeal progress",
       "payNow": "Submit and continue to pay £{{ fee }} by debit or credit card",
       "confirmAndSend": "Confirm and send",
-      "continueUseNewService": "Continue to use the new service"
+      "continueUseNewService": "Continue to use the new service",
+      "submitYourAppeal": "Submit your appeal"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -105,6 +106,11 @@
         "path": "appealStarted.typeOfAppeal"
       },
       "checkAndSend": {
+        "id": "checkAndSendLink",
+        "title": "Check and send your appeal details",
+        "path": "appealStarted.checkAndSend"
+      },
+      "checkAndSendWithPayments": {
         "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
         "path": "appealStarted.checkAndSend"
@@ -308,6 +314,12 @@
         "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
       }
     },
+    "confirmationPayLater": {
+      "title": "You have paid for the appeal",
+      "content": [
+        "Your appeal will continue"
+      ]
+    },
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
@@ -404,6 +416,8 @@
       "askedForMoreTime": "You have asked for more time",
       "savedAndAskedForMoreTime": "You have saved your answers and asked for more time",
       "weAimTo": "We aim to get back to you within 5 days.",
+      "iWantTo": "I want to...",
+      "payForAppeal": "Pay for this appeal",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
@@ -472,7 +486,16 @@
           "dueDate": "Your appeal may end. If you do not want the appeal to end, you must email <a class='govuk-link' href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a> by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to explain why.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a>"
+            "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a>"
+          }
+        },
+        "decisionMaintained": {
+          "description": "The Home Office has reviewed your appeal and decided to maintain their decision to refuse your application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeResponse }}'>Home Office Response</a>.",
+          "description2": "If you want to respond, you can <a class='govuk-link' href='{{ paths.common.provideMoreEvidenceForm }}'>provide more evidence</a> at any time.",
+          "dueDate": "Your appeal will be decided at a hearing. A Tribunal Caseworker will contact you by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to ask if there is anything you will need at the hearing.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -703,6 +726,16 @@
               "href": "{{ paths.common.outOfTimeDecisionViewer }}"
             }
           ]
+        },
+        "paymentAppeal": {
+          "text": "You paid for your appeal",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
+            }
+          ]
         }
       }
     },
@@ -815,7 +848,7 @@
         "additionalEvidence": "Additional evidence"
       },
       "homeOfficeResponse": {
-        "title": "HO Response",
+        "title": "Home Office Response",
         "dateUploaded": "Date uploaded",
         "document": "Document",
         "documentDescription": "Document description",

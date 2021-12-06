@@ -39,10 +39,17 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: contactDetails.completed
   };
 
+  const appealType: boolean = !!_.get(appeal.application, 'appealType');
+  let decisionType: boolean;
+  if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
+    decisionType = !!_.get(appeal.application, 'rpDcAppealHearingOption');
+  } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(appeal.application.appealType)) {
+    decisionType = !!_.get(appeal.application, 'decisionHearingFeeOption');
+  }
+  const payNow = _.get(appeal.application, 'appealType') === 'protection' && !!_.get(appeal, 'paAppealTypeAipPaymentOption');
   const typeOfAppealAndDecision: Task = {
-    saved: !!_.get(appeal.application, 'appealType'),
-    // TODO: it also would need decisionType to be completed for the stage to be completed
-    completed: !!_.get(appeal.application, 'appealType'),
+    saved: appealType || decisionType || payNow,
+    completed: _.get(appeal.application, 'appealType') === 'protection' ? appealType && decisionType && payNow : appealType && decisionType,
     active: contactDetails.completed
   };
 
@@ -52,13 +59,20 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: typeOfAppeal.completed
   };
 
+  const checkAndSendWithPayments: Task = {
+    saved: false,
+    completed: false,
+    active: typeOfAppealAndDecision.completed
+  };
+
   return {
     homeOfficeDetails,
     personalDetails,
     contactDetails,
     typeOfAppeal,
     typeOfAppealAndDecision,
-    checkAndSend
+    checkAndSend,
+    checkAndSendWithPayments
   };
 }
 

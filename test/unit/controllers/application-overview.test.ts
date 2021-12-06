@@ -173,7 +173,9 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      payLater: false
     });
   });
 
@@ -223,7 +225,9 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      payLater: false
     });
   });
 
@@ -274,7 +278,9 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      payLater: false
     });
   });
 
@@ -330,7 +336,6 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
       appealRefNumber: 'RP/50004/2020',
-      // applicationNextStep: sinon.match.any,
       applicationNextStep: expectedNextStep,
       history: expectedHistory,
       stages: expectedStages,
@@ -338,7 +343,9 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      payLater: false
     });
   });
 
@@ -403,7 +410,9 @@ describe('Confirmation Page Controller', () => {
       ended: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
-      saveAndAskForMoreTime: false
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      payLater: false
     });
   });
 

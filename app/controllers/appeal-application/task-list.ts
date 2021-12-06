@@ -6,10 +6,11 @@ import { appealApplicationStatus, buildSectionObject } from '../../utils/tasks-u
 async function getAppealStageStatus(req: Request) {
   const status = appealApplicationStatus(req.session.appeal);
   const paymentsFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
-  const taskId = paymentsFlag ? 'typeOfAppealAndDecision' : 'typeOfAppeal';
+  const typeOfAppealTask = paymentsFlag ? 'typeOfAppealAndDecision' : 'typeOfAppeal';
+  const checkAndSendTask = paymentsFlag ? 'checkAndSendWithPayments' : 'checkAndSend';
   const yourDetails = buildSectionObject('yourDetails', [ 'homeOfficeDetails', 'personalDetails', 'contactDetails' ], status);
-  const appealDetails = buildSectionObject('appealDetails', [ taskId ], status);
-  const checkAndSend = buildSectionObject('checkAndSend', [ 'checkAndSend' ], status);
+  const appealDetails = buildSectionObject('appealDetails', [ typeOfAppealTask ], status);
+  const checkAndSend = buildSectionObject('checkAndSend', [ checkAndSendTask ], status);
 
   return [
     yourDetails,

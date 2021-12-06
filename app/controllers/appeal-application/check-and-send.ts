@@ -9,19 +9,10 @@ import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import PaymentService from '../../service/payments-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getFee } from '../../utils/payments-utils';
+import { getFee, payNowForApplicationNeeded } from '../../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
-
-function payForApplicationNeeded(req: Request): boolean {
-  const { appealType } = req.session.appeal.application;
-  const { paAppealTypeAipPaymentOption } = req.session.appeal;
-  let payNow = false;
-  payNow = payNow || appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow';
-  payNow = payNow || ['refusalOfEu', 'refusalOfHumanRights'].includes(appealType);
-  return payNow;
-}
 
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
@@ -118,27 +109,33 @@ async function createSummaryRowsFrom(req: Request) {
   return rows;
 }
 
-async function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
-  try {
-    const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
-    const summaryRows = await createSummaryRowsFrom(req);
-    const { appealType, decisionHearingFeeOption } = req.session.appeal.application;
-    const { paAppealTypeAipPaymentOption = null, feeWithHearing = null, feeWithoutHearing = null } = req.session.appeal;
-    let fee;
-    let payNow;
-    if (paymentsFlag && payForApplicationNeeded(req)) {
-      payNow = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' ? false : true;
-      fee = getFee(req.session.appeal);
+function getCheckAndSend(paymentService: PaymentService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+      const summaryRows = await createSummaryRowsFrom(req);
+      const { appealType } = req.session.appeal.application;
+      const { paAppealTypeAipPaymentOption = null, paymentReference = null } = req.session.appeal;
+      let fee;
+      let payNow;
+      let appealPaid;
+      if (paymentsFlag && payNowForApplicationNeeded(req)) {
+        const paymentDetails = paymentReference ? JSON.parse(await paymentService.getPaymentDetails(req, paymentReference)) : null;
+        payNow = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' ? false : true;
+        fee = getFee(req.session.appeal);
+        appealPaid = paymentDetails && paymentDetails.status === 'Success';
+      }
+      return res.render('appeal-application/check-and-send.njk', {
+        summaryRows,
+        previousPage: paths.appealStarted.taskList,
+        ...(paymentsFlag && payNowForApplicationNeeded(req)) && { fee: fee.calculated_amount },
+        ...(paymentsFlag && !appealPaid) && { payNow },
+        ...(paymentsFlag && appealPaid) && { appealPaid }
+      });
+    } catch (error) {
+      next(error);
     }
-    return res.render('appeal-application/check-and-send.njk', {
-      summaryRows,
-      previousPage: paths.appealStarted.taskList,
-      ...(paymentsFlag && payForApplicationNeeded(req)) && { fee: fee.calculated_amount },
-      ...paymentsFlag && { payNow }
-    });
-  } catch (error) {
-    next(error);
-  }
+  };
 }
 
 function postCheckAndSend(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
@@ -147,16 +144,31 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
     try {
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {
+        const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+        const { appealType } = req.session.appeal.application;
+        const { paAppealTypeAipPaymentOption = null, paymentReference = null } = req.session.appeal;
         const summaryRows = await createSummaryRowsFrom(req);
+        let fee;
+        let payNow;
+        let appealPaid;
+        if (paymentsFlag && payNowForApplicationNeeded(req)) {
+          const paymentDetails = paymentReference ? JSON.parse(await paymentService.getPaymentDetails(req, paymentReference)) : null;
+          payNow = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' ? false : true;
+          fee = getFee(req.session.appeal);
+          appealPaid = paymentDetails && paymentDetails.status === 'Success';
+        }
         return res.render('appeal-application/check-and-send.njk', {
           summaryRows: summaryRows,
           error: validationResult,
+          ...(paymentsFlag && payNowForApplicationNeeded(req)) && { fee: fee.calculated_amount },
+          ...(paymentsFlag && !appealPaid) && { payNow },
+          ...(paymentsFlag && appealPaid) && { appealPaid },
           errorList: Object.values(validationResult),
           previousPage: paths.appealStarted.taskList
         });
       }
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
-      if (paymentsFlag && payForApplicationNeeded(req)) {
+      if (paymentsFlag && payNowForApplicationNeeded(req)) {
         const fee = getFee(req.session.appeal);
         return await paymentService.initiatePayment(req, res, fee);
       }
@@ -173,9 +185,24 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
   };
 }
 
+function getPayLater(paymentService: PaymentService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+      if (!paymentsFlag) return res.redirect(paths.common.overview);
+      const fee = getFee(req.session.appeal);
+      return await paymentService.initiatePayment(req, res, fee);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
 function getFinishPayment(updateAppealService: UpdateAppealService, paymentService: PaymentService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      let event;
+      let redirectUrl;
       const paymentDetails = JSON.parse(await paymentService.getPaymentDetails(req, req.session.appeal.paymentReference));
 
       if (paymentDetails.status === 'Success') {
@@ -186,14 +213,23 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           isFeePaymentEnabled: 'Yes'
         };
         req.app.locals.logger.trace(`Payment success`, 'Finishing payment');
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        if (req.session.appeal.appealStatus === 'appealStarted') {
+          event = Events.SUBMIT_APPEAL;
+          redirectUrl = paths.appealSubmitted.confirmation;
+        } else {
+          event = Events.PAYMENT_APPEAL;
+          redirectUrl = paths.common.confirmationPayLater;
+        }
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
           ...req.session.appeal,
           ...appealUpdated
         };
-        res.redirect(paths.appealSubmitted.confirmation);
+        return res.redirect(redirectUrl);
       } else {
         req.app.locals.logger.exception(`Payment error with status ${paymentDetails.status}`, 'Finishing payment');
+        const url = req.session.appeal.appealStatus === 'appealStarted' ? paths.appealStarted.checkAndSend : paths.common.overview;
+        return res.redirect(url);
       }
     } catch (error) {
       next(error);
@@ -203,9 +239,10 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
 
 function setupCheckAndSendController(middleware: Middleware[], updateAppealService: UpdateAppealService, paymentService: PaymentService): Router {
   const router = Router();
-  router.get(paths.appealStarted.checkAndSend, middleware, appealOutOfTimeMiddleware, getCheckAndSend);
+  router.get(paths.appealStarted.checkAndSend, middleware, appealOutOfTimeMiddleware, getCheckAndSend(paymentService));
   router.post(paths.appealStarted.checkAndSend, middleware, postCheckAndSend(updateAppealService, paymentService));
   router.get(paths.common.finishPayment, middleware, getFinishPayment(updateAppealService, paymentService));
+  router.get(paths.common.payLater, middleware, getPayLater(paymentService));
   return router;
 }
 
@@ -214,5 +251,6 @@ export {
   setupCheckAndSendController,
   getCheckAndSend,
   getFinishPayment,
+  getPayLater,
   postCheckAndSend
 };

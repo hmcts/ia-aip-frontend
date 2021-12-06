@@ -53,8 +53,16 @@ img {
 }
 
 .banner-line {
-  border-bottom: 0.2rem solid #1d70b8;
+  border-top: 0.2rem solid govuk-colour("blue");
+}
 
+.side-menu {
+  border-top: 0.4rem solid govuk-colour("blue");
+
+  &__section {
+    padding-top: 2rem;
+    border-bottom: 1px solid black;
+  }
 }
 
 .contact-us-component{

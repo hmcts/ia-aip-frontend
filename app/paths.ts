@@ -138,6 +138,8 @@ const paths = {
 
     // Payments
     finishPayment: '/finish-payment',
+    payLater: '/pay-later',
+    confirmationPayLater: '/confirmation-payment',
 
     // Session extension
     extendSession: '/extend-session',

@@ -39,6 +39,14 @@ module.exports = {
       await I.checkOption('#appealType-3');
     });
 
+    When('I select appeal type Revocation of Protection Status', async () => {
+      await I.checkOption('#appealType-4');
+    });
+
+    When('I select appeal type Deprivation of Citizenship', async () => {
+      await I.checkOption('#appealType-5');
+    });
+
     Then('I should see the type of appeal page', async () => {
       I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });

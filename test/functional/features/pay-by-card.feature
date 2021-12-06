@@ -22,11 +22,12 @@ Feature: Pay by card Appeal submission.
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue
-    And I should be able to click "Check and send your appeal"
+    And I shouldnt be able to click "Check and send your appeal"
 
 #    Payment steps
     Given I am on the type of appeal page
-    When I click on Protection as my type of appeal and click Save and continue
+    When I select appeal type Protection
+    And I click "Save and continue" button
     Then I should see the decision type page
     Then I select decision type without hearing
     And I click "Save and continue" button
@@ -35,11 +36,11 @@ Feature: Pay by card Appeal submission.
     And I click "Save and continue" button
     Then I see "Tell us about your appeal" in title
     And I should be able to click "Check and send your appeal"
-#    When I click on the check and send your appeal link
-#    Then I should be taken to the check-and-send page
-#    Then I check the statement of truth
-#    When I click send
-#    TODO: Confirmation screen, currently failing in my local
+    When I click on the check and send your appeal link
+    Then I should be taken to the check-and-send page
+    Then I check the statement of truth
+    When I click send
+    Then I see confirmation page
 
   Scenario: Pay by card - Protection Appeal - Pay Now
     Given I have an appeal with home office details, personal details and contact details
@@ -59,7 +60,7 @@ Feature: Pay by card Appeal submission.
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue
-    And I should be able to click "Check and send your appeal"
+    And I shouldnt be able to click "Check and send your appeal"
 
 #    Payment steps
     Given I am on the type of appeal page
@@ -72,11 +73,13 @@ Feature: Pay by card Appeal submission.
     And I click "Save and continue" button
     Then I see "Tell us about your appeal" in title
     And I should be able to click "Check and send your appeal"
+    When I click on the check and send your appeal link
+    Then I should be taken to the check-and-send page
+    Then I check the statement of truth
+    When Submit and continue to pay by debit or credit card
+#    Then I should be taken to the Enter card details
 
-#    TODO: Check and send page and then payment pages to add here
-#    Then I should be taken to the payment page
-
-  Scenario: Pay by card - Human Rights
+  Scenario: Pay by card - Revocation of Protection Status
     Given I have an appeal with home office details, personal details and contact details
     And I have logged in
     And I am on the type of appeal page
@@ -94,23 +97,24 @@ Feature: Pay by card Appeal submission.
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue
-    And I should be able to click "Check and send your appeal"
+    And I shouldnt be able to click "Check and send your appeal"
 
-#    Payment steps
     Given I am on the type of appeal page
-    When I select appeal type Human Rights
+    When I select appeal type Revocation of Protection Status
     And I click "Save and continue" button
     Then I should see the decision type page
     Then I select decision type with hearing
     And I click "Save and continue" button
     Then I see "Tell us about your appeal" in title
     And I should be able to click "Check and send your appeal"
+    When I click on the check and send your appeal link
+    Then I should be taken to the check-and-send page
+    Then I check the statement of truth
+    When I click send
+    Then I see confirmation page your appeal details have been sent
 
-#    TODO: Check and send page and then payment pages to add here
-#    Then I should be taken to the payment page
 
-
-  Scenario: Pay by card - European Economic Area (EEA)
+  Scenario: Pay by card - Deprivation of Citizenship
     Given I have an appeal with home office details, personal details and contact details
     And I have logged in
     And I am on the type of appeal page
@@ -128,19 +132,18 @@ Feature: Pay by card Appeal submission.
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue
-    And I should be able to click "Check and send your appeal"
+    And I shouldnt be able to click "Check and send your appeal"
 
-#    Payment steps
     Given I am on the type of appeal page
-    When I select appeal type European Economic Area
+    When I select appeal type Deprivation of Citizenship
     And I click "Save and continue" button
     Then I should see the decision type page
     Then I select decision type with hearing
     And I click "Save and continue" button
     Then I see "Tell us about your appeal" in title
     And I should be able to click "Check and send your appeal"
-
-#    TODO: Check and send page and then payment pages to add here
-#    Then I should be taken to the payment page
-
-
+    When I click on the check and send your appeal link
+    Then I should be taken to the check-and-send page
+    Then I check the statement of truth
+    When I click send
+    Then I see confirmation page your appeal details have been sent

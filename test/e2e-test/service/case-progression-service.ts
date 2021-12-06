@@ -31,7 +31,11 @@ module.exports = {
   caseProgression(I) {
 
     Given(/^I sign in as the Appellant$/, async () => {
+      console.log('logout signing in as appellant?????   ia_citizen9894270@hmcts.net  / Apassword123');
+      console.log(testUrl + paths.common.logout);
       await I.amOnPage(testUrl + paths.common.logout);
+      console.log('login in as appellant????? ');
+      console.log(testUrl + paths.common.login);
       I.amOnPage(testUrl + paths.common.login);
       await I.seeInTitle('Sign in - HMCTS Access');
       I.fillField('#username', aipCurrentUser.email);
@@ -106,6 +110,50 @@ module.exports = {
       await updateAppeal(requestRespondentEvidence, userId, caseDetails[0], securityHeaders);
     });
 
+    Then(/^I sign in as a Case Officer and request HO data to match appellant details$/, async () => {
+      let caseDetails: any = await fetchAipUserCaseData();
+
+      const userToken = await authenticationService.signInAsCaseOfficer();
+      const userId = await getUserId(userToken);
+      const serviceToken = await getS2sToken();
+      const securityHeaders = { userToken, serviceToken };
+
+      // load case
+      caseDetails[0].case_data = {
+        // 'homeOfficeReferenceNumber': '1212-0099-0062-8083',
+        'homeOfficeSearchResponse': '"{"messageHeader":{"eventDateTime":"2020-08-25T08:30:29.305206Z","correlationId":"bbd96db3-090d-41c9-beda-f5c1763013b3","consumer":{"code":"HMCTS","description":"HM Courts and Tribunal Service"}},"messageType":"RESPONSE_RIGHT_OF_APPEAL_DETAILS","status":[{"person":{"givenName":null,"familyName":"TestSix","fullName":"Asylumcase TestSix","gender":{"code":"F","description":"Female"},"dayOfBirth":4,"monthOfBirth":4,"yearOfBirth":1995,"nationality":{"code":"CHL","description":"Chile"}},"applicationStatus":{"documentReference":"1212-0099-0062-8083","roleType":{"code":"SPOUSE","description":"Spouse"},"roleSubType":null,"applicationType":{"code":"ASYLUM","description":"Asylum and Protection"},"claimReasonType":null,"decisionType":{"code":"REFUSE","description":"SD outcome"},"decisionDate":"2020-07-30T00:00:00Z","decisionCommunication":null,"rejectionReasons":[{"reason":"Refused asylum"}],"metadata":null}}]}',
+        'homeOfficeAppellantsList': {
+          'value': {
+            'code': 'NoMatch',
+            'label': 'No Match'
+          },
+          'list_items': [
+            {
+              'code': 'AsylumcaseTestFive',
+              'label': 'AsylumcaseTestFive-040495'
+            },
+            {
+              'code': 'NoMatch',
+              'label': 'No Match'
+            }
+          ]
+        },
+        ...caseDetails[0].case_data
+      };
+
+      const requestHomeOfficeData = {
+        id: 'requestHomeOfficeData',
+        summary: 'Request Home office data',
+        description: 'Request Home office data'
+      };
+
+      const { data_classification, security_classifications, ...caseDetailsData } = caseDetails[0];
+
+      console.log('match appellant details with body', JSON.stringify(caseDetailsData, null, 2));
+
+      await updateAppeal(requestHomeOfficeData, userId, caseDetails[0], securityHeaders);
+    });
+
     Then(/^I sign in as a Home Office Generic and upload the HO Bundle$/, async () => {
       let caseDetails: any = await fetchAipUserCaseData();
 
@@ -120,8 +168,8 @@ module.exports = {
             'id': '1',
             'value': {
               'document': {
-                'document_url': `${docStoreUrl}/documents/BBB`,
-                'document_binary_url': `${docStoreUrl}/documents/BBB/binary`,
+                'document_url': `${docStoreUrl}/documents/193b760d-bb26-45fa-8446-70bdf758e30f`,
+                'document_binary_url': `${docStoreUrl}/documents/193b760d-bb26-45fa-8446-70bdf758e30f/binary`,
                 'document_filename': 'some-new-evidence.pdf'
               },
               'description': 'Some new evidence'
@@ -131,8 +179,8 @@ module.exports = {
             'id': '2',
             'value': {
               'document': {
-                'document_url': `${docStoreUrl}/documents/CCC`,
-                'document_binary_url': `${docStoreUrl}/documents/CCC/binary`,
+                'document_url': `${docStoreUrl}/documents/b3efa0a3-84d7-4d7c-8dbf-bd081169e066`,
+                'document_binary_url': `${docStoreUrl}/documents/b3efa0a3-84d7-4d7c-8dbf-bd081169e066/binary`,
                 'document_filename': 'some-more-new-evidence.pdf'
               },
               'description': 'Some more new evidence'

@@ -191,6 +191,13 @@ function witnessNamesValidation(obj: object) {
   return validate({ witnessName: obj }, schema);
 }
 
+function interpreterLanguagesValidation(obj: object) {
+  const schema = Joi.object({
+    language: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.hearingRequirements.accessNeeds.addLanguage })
+  }).unknown();
+  return validate({ language: obj }, schema);
+}
+
 function contactDetailsValidation(obj: object) {
   const schema = Joi.object({
     selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
@@ -433,5 +440,6 @@ export {
   askForMoreTimeValidation,
   selectedRequiredValidation,
   isDateInRange,
-  decisionTypeValidation
+  decisionTypeValidation,
+  interpreterLanguagesValidation
 };

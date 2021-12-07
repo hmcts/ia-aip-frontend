@@ -14,9 +14,9 @@ Scenario: Complete appeal application
   When I select No and click continue
   Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
   When I select No and click continue
-  Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
-  When I select Yes and click continue
-  Then I should see the eligible page
+  Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?" eligibility page
+  When I select No and click continue
+  Then I see There is a fee for this appeal page
   # When I click continue
   # Then I should see the Create an account page
   # When I click Sign in to your account
@@ -59,8 +59,33 @@ Scenario: Complete appeal application
   Then I click "Save and continue" button
   Then I should be taken to the task-list page
 
-  When I click on the type-of-appeal link
-  Then I should be taken to the appeal page
+  When I click on Appeal and decision type link
+
+  Then I see "What is your appeal type?" in title
+  And I check "Protection (You will be persecuted or harmed in some way if you are returned to your home country)" option
+  And I click "Save and continue" button   
+  Then I should see the decision type page
+  Then I select decision type without hearing
+  And I click "Save and continue" button
+  Then I should be taken to the payment options page
+  When I select Yes for pay for the appeal now
+  And I click "Save and continue" button
+  
+  Then I see "Tell us about your appeal" in title
+  And I should be able to click "Check and send your appeal"
+  When I click on the check and send your appeal link
+  Then I should be taken to the check-and-send page
+  Then I check the statement of truth
+  When Submit and continue to pay by debit or credit card
+
+  Then I should be taken to the Enter card details
+  When I enter payment details
+  And I click "Continue" button
+
+  Then I see Confirm your payment page
+  When I click "Confirm payment" button
+  Then I am on the appeal details sent page
+  And I see "Your appeal details have been sent" in title
 
   When I select appeal type Protection
 #  // introduce new payment steps

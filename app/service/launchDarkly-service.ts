@@ -8,7 +8,7 @@ const launchDarklyLabel: string = 'LaunchDarkly service';
 const LaunchDarkly = require('launchdarkly-node-server-sdk');
 const config = setupSecrets();
 const ldKey: string = config.get('launchDarkly.sdkKey');
-const ldClient = LaunchDarkly.init(ldKey);
+const ldClient = LaunchDarkly.init('sdk-adb35234-dc38-4f53-9473-33c4af87b995');
 
 interface ILaunchDarklyService {
   getVariation: (req: Request, flag: string, defaultReturn: boolean) => {};
@@ -39,13 +39,14 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
     let defaultValue = 'user-is-not-logged-in';
     const username = _.get(req, 'idam.userDetails.sub', defaultValue);
     let variation = ldClient.variation(flag, { key: username }, defaultReturn);
-    console.log('flag::' , flag);
-    console.log('username::' , username);
-    variation.then(res => console.log('flag value:::', res));
-    if (process.env.NODE_ENV !== 'production' && FEATURE_FLAGS.CARD_PAYMENTS === flag && username === defaultValue) {
-      console.log(`Overriding the feature flag ${flag} for the environment ${process.env.NODE_ENV} to be true`);
-      return true;
-    }
+    console.log('flag ===> ', flag);
+    console.log('username ===> ' , username);
+    console.log('Feature flag value ===> ', variation);
+    // variation.then(res => console.log('flag value:::', res));
+    // if (process.env.NODE_ENV !== 'production' && FEATURE_FLAGS.CARD_PAYMENTS === flag && username === defaultValue) {
+    //   console.log(`Overriding the feature flag ${flag} for the environment ${process.env.NODE_ENV} to be true`);
+    //   return true;
+    // }
     return variation;
   }
 

@@ -36,12 +36,13 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
 
   // tslint:disable:no-console
   async getVariation(req: Request, flag: string, defaultReturn: boolean) {
-    const username = _.get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
+    let defaultValue = 'user-is-not-logged-in';
+    const username = _.get(req, 'idam.userDetails.sub', defaultValue);
     let variation = ldClient.variation(flag, { key: username }, defaultReturn);
     console.log('flag::' , flag);
     console.log('username::' , username);
     variation.then(res => console.log('falg value:::', res));
-    if (process.env.NODE_ENV !== 'production' && FEATURE_FLAGS.CARD_PAYMENTS === flag) {
+    if (process.env.NODE_ENV !== 'production' && FEATURE_FLAGS.CARD_PAYMENTS === flag && username === defaultValue) {
       return true;
     }
     return variation;

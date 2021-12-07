@@ -38,10 +38,10 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
   async getVariation(req: Request, flag: string, defaultReturn: boolean) {
     let defaultValue = 'user-is-not-logged-in';
     const username = _.get(req, 'idam.userDetails.sub', defaultValue);
-    let variation = ldClient.variation(flag, { key: username }, defaultReturn);
+    let variation = ldClient.variation(flag, { key: username }, false);
     console.log('flag ===> ', flag);
     console.log('username ===> ' , username);
-    console.log('Feature flag value ===> ', variation);
+    console.log('Feature flag value ===> ', variation.getFlagValue(flag));
     // variation.then(res => console.log('flag value:::', res));
     // if (process.env.NODE_ENV !== 'production' && FEATURE_FLAGS.CARD_PAYMENTS === flag && username === defaultValue) {
     //   console.log(`Overriding the feature flag ${flag} for the environment ${process.env.NODE_ENV} to be true`);

@@ -14,9 +14,9 @@ Scenario: Complete appeal application
   When I select No and click continue
   Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
   When I select No and click continue
-  Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
+  Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?" eligibility page
   When I select Yes and click continue
-  Then I should see the eligible page
+  Then I should see the "You can use the new service" eligibility page
   # When I click continue
   # Then I should see the Create an account page
   # When I click Sign in to your account
@@ -65,6 +65,12 @@ Scenario: Complete appeal application
   When I select appeal type Protection
 #  // introduce new payment steps
   And I click "Save and continue" button
+  Then I should be taken to the appeal decided page
+
+  When I click on I want the appeal to be decided without a hearing and click Save and continue
+  Then I should be taken to the pay now page
+  
+  When I click on Yes and click Save and continue
   Then I should see the task-list page
 
   When I click on the check and send your appeal link

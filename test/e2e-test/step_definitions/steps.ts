@@ -30,6 +30,7 @@ const { clarifyingQuestions } = require('../pages/clarifying-questions/clarifyin
 const { cmaRequirements } = require('../pages/cma-requirements/cma-requirements');
 const { decisionType } = require('../pages/decision-type/decision-type');
 const { paymentType } = require('../pages/payment-type/payment-type');
+const { payNow } = require('../pages/pay-now/pay-now');
 
 const { I } = inject();
 
@@ -67,3 +68,4 @@ clarifyingQuestions(I);
 cmaRequirements(I);
 decisionType(I);
 paymentType(I);
+payNow(I);

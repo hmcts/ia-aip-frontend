@@ -74,7 +74,7 @@ Feature: Pay by card Appeal submission.
     When I click on the check and send your appeal link
     Then I should be taken to the check-and-send page
     Then I check the statement of truth
-    When Submit and continue to £140 pay by debit or credit card
+    When I click Submit and continue to pay £140 by debit or credit card
 #    Then I should be taken to the Enter card details
 
   Scenario: Pay by card - Revocation of Protection Status

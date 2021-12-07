@@ -76,7 +76,7 @@ Scenario: Complete appeal application
   When I click on the check and send your appeal link
   Then I should be taken to the check-and-send page
   Then I check the statement of truth
-  When Submit and continue to pay £80 by debit or credit card
+  When I click Submit and continue to pay £80 by debit or credit card
 
   Then I should be taken to the Enter card details
   When I enter payment details

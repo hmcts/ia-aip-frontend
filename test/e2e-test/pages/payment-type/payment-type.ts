@@ -30,8 +30,12 @@ module.exports = {
       await I.click('Check and send your appeal details');
     });
 
-    When('Submit and continue to pay by debit or credit card', async () => {
+    When('Submit and continue to pay £80 by debit or credit card', async () => {
       await I.click('Submit and continue to pay £80 by debit or credit card');
+    });
+
+    When('Submit and continue to pay £140 by debit or credit card', async () => {
+      await I.click('Submit and continue to pay £140 by debit or credit card');
     });
 
     Then('I should be taken to the Enter card details', async () => {

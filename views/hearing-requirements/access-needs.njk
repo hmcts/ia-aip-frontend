@@ -1,0 +1,17 @@
+{% set pageTitleName = i18n.pages.cmaRequirements.accessNeedsSection.accessNeedsPage.pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% block content %}
+            <h1  class="govuk-heading-xl">{{  i18n.pages.hearingRequirements.accessNeedsSection.accessNeedsPage.title | eval }}</h1>
+            <p class="govuk-body-m">{{ i18n.pages.hearingRequirements.accessNeedsSection.accessNeedsPage.text }}</p>
+
+            {{ govukButton({
+                text: i18n.common.buttons.continue,
+                href: paths.submitHearingRequirements.hearingInterpreter
+            }) }}
+    {{ contactUs() }}
+{% endblock %}

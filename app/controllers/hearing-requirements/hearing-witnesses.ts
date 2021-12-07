@@ -8,15 +8,21 @@ import { postHearingRequirementsYesNoHandler } from './common';
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 const pageTitle = i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.title;
 const formAction = paths.submitHearingRequirements.witnesses;
-const question = {
-  name: 'answer',
-  title: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.title,
-  hint: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.text,
-  options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
-};
+const yesOrNoOption = (answer: boolean) => [
+  { text: 'Yes', value: 'yes', checked: answer === true },
+  { text: 'No', value: 'no', checked: answer === false }
+];
 
 function getWitnessesOnHearingQuestion(req: Request, res: Response, next: NextFunction) {
   try {
+    const answer = req.session.appeal.hearingRequirements.witnessesOnHearing;
+    const question = {
+      name: 'answer',
+      title: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.title,
+      hint: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.text,
+      options: yesOrNoOption(answer)
+    };
+
     return res.render('templates/radio-question-page.njk', {
       previousPage,
       pageTitle,
@@ -37,7 +43,12 @@ function postWitnessesOnHearingQuestion(updateAppealService: UpdateAppealService
         previousPage,
         pageTitle,
         formAction,
-        question,
+        question: {
+          name: 'answer',
+          title: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.title,
+          hint: i18n.pages.hearingRequirements.witnessesSection.hearingWitnesses.text,
+          options: yesOrNoOption(null)
+        },
         saveAndContinue: true
       };
 

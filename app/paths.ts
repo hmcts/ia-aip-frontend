@@ -61,7 +61,13 @@ const paths = {
     hearingWitnessNames: '/hearing-witness-names',
     hearingWitnessNamesAdd: '/hearing-witness-names/add',
     hearingWitnessNamesRemove: '/hearing-witness-names/remove',
-    witnessOutsideUK: '/hearing-outside-uk'
+    witnessOutsideUK: '/hearing-outside-uk',
+    hearingInterpreter: '/hearing-interpreter',
+    hearingLanguageDetails: '/hearing-language-details',
+    hearingLanguageDetailsAdd: '/hearing-language-details/add',
+    hearingLanguageDetailsRemove: '/hearing-language-details/remove',
+    hearingStepFreeAccess: '/hearing-step-free-access',
+    hearingLoop: '/hearing-hearing-loop'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',

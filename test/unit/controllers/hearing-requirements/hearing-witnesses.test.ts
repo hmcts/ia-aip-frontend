@@ -67,11 +67,16 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
       getWitnessesOnHearingQuestion(req as Request, res as Response, next);
 
       const expectedArgs = {
-        formAction: '/hearing-witnesses',
-        pageTitle: 'Will any witnesses come to the hearing?',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        pageTitle: 'Will any witnesses come to the hearing?',
+        formAction: '/hearing-witnesses',
         question: {
-          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
+          name: 'answer',
+          options: [{ checked: false, text: 'Yes', value: 'yes' }, {
+            checked: false,
+            text: 'No',
+            value: 'no'
+          }],
           title: 'Will any witnesses come to the hearing?',
           hint: 'A witness is someone who will speak on your behalf on the hearing.'
         },
@@ -105,13 +110,18 @@ describe('Hearing Requirements - Witness Needs - Witnesses on hearing question c
       };
 
       const expectedArgs = {
-        error: expectedError,
         errorList: Object.values(expectedError),
-        formAction: '/hearing-witnesses',
-        pageTitle: 'Will any witnesses come to the hearing?',
+        error: expectedError,
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        pageTitle: 'Will any witnesses come to the hearing?',
+        formAction: '/hearing-witnesses',
         question: {
-          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ],
+          name: 'answer',
+          options: [{ checked: false, text: 'Yes', value: 'yes' }, {
+            checked: false,
+            text: 'No',
+            value: 'no'
+          }],
           title: 'Will any witnesses come to the hearing?',
           hint: 'A witness is someone who will speak on your behalf on the hearing.'
         },

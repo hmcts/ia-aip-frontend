@@ -8,15 +8,20 @@ import { postHearingRequirementsYesNoHandler } from './common';
 const previousPage = paths.submitHearingRequirements.hearingWitnessNames;
 const pageTitle = i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.title;
 const formAction = paths.submitHearingRequirements.witnessOutsideUK;
-const question = {
-  name: 'answer',
-  title: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.title,
-  hint: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.text,
-  options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
-};
+const yesOrNoOption = (answer: boolean) => [
+  { text: 'Yes', value: 'yes', checked: answer === true },
+  { text: 'No', value: 'no', checked: answer === false }
+];
 
 function getWitnessesOutsideUkQuestion(req: Request, res: Response, next: NextFunction) {
   try {
+    const answer = req.session.appeal.hearingRequirements.witnessesOutsideUK;
+    const question = {
+      name: 'answer',
+      title: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.title,
+      hint: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.text,
+      options: yesOrNoOption(answer)
+    };
     return res.render('templates/radio-question-page.njk', {
       previousPage,
       pageTitle,
@@ -34,10 +39,15 @@ function postWitnessesOutsideUkQuestion(updateAppealService: UpdateAppealService
     try {
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.witnessesSection.witnessesOutsideUKRequired;
       const pageContent = {
-        previousPage,
-        pageTitle,
-        formAction,
-        question,
+        previousPage: previousPage,
+        pageTitle: pageTitle,
+        formAction: formAction,
+        question: {
+          name: 'answer',
+          title: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.title,
+          hint: i18n.pages.hearingRequirements.witnessesSection.witnessOutsideUk.text,
+          options: yesOrNoOption(null)
+        },
         saveAndContinue: true
       };
 

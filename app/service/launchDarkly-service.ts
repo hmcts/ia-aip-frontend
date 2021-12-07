@@ -35,7 +35,11 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
 
   async getVariation(req: Request, flag: string, defaultReturn: boolean) {
     const username = _.get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
-    return ldClient.variation(flag, { key: username }, defaultReturn);
+    let variation = ldClient.variation(flag, { key: username }, defaultReturn);
+    console.log('flag::' , flag);
+    console.log('username::' , username);
+    variation.then(res => console.log('falg value:::', res));
+    return variation;
   }
 
   public static close() {

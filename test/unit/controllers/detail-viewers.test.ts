@@ -51,7 +51,9 @@ describe('Detail viewer Controller', () => {
       } as Partial<Express.Session>,
       cookies: {},
       idam: {
-        userDetails: {}
+        userDetails: {
+          sub: 'some-user'
+        }
       },
       app: {
         locals: {

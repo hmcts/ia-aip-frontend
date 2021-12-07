@@ -64,10 +64,17 @@ Feature: Home office reference page
     And I click "Save and continue" button
 
     Then I see "Tell us about your appeal" in title
-    And I click "Type of appeal" link
+    And I click on Appeal and decision type link
 
     Then I see "What is your appeal type?" in title
     And I check "Protection (You will be persecuted or harmed in some way if you are returned to your home country)" option
+    And I click "Save and continue" button
+
+    Then I should see the decision type page
+    Then I select decision type without hearing
+    And I click "Save and continue" button
+    Then I should be taken to the payment options page
+    When I select No for pay for the appeal now
     And I click "Save and continue" button
 
     Then I see "Tell us about your appeal" in title
@@ -78,7 +85,7 @@ Feature: Home office reference page
   Scenario: Submit an on time new appeal
     And I check "I believe the information I have given is true" option
     And I click "Send" button
-    Then I see "Your appeal details have been sent" in title
+    Then I see "You have sent your appeal details" in title
 
   Scenario: Submit an out of time appeal
     And I click "Date letter sent" change link
@@ -96,5 +103,5 @@ Feature: Home office reference page
     Then I see "Check your answer" in title
     And I check "I believe the information I have given is true" option
     And I click "Send" button
-    Then I see "Your late appeal details have been sent" in title
+    Then I see "You have sent your appeal details" in title
 

@@ -65,7 +65,7 @@ Scenario: Complete appeal application
   When I select appeal type Protection
 #  // introduce new payment steps
   And I click "Save and continue" button
-  Then I should be taken to the appeal decided page
+  Then I should see the decision type page
 
   When I click on I want the appeal to be decided without a hearing and click Save and continue
   Then I should be taken to the pay now page

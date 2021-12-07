@@ -24,9 +24,8 @@ module.exports = {
 
     Then('I should be taken to the payment options page', async () => {
       await I.seeInCurrentUrl(paths.appealStarted.payNow);
-    Then(/^I should be taken to the appeal decided page$/, async () => {
-      await I.seeInCurrentUrl(paths.appealStarted.decisionType);
     });
+
     When(/^I click on I want the appeal to be decided without a hearing and click Save and continue$/, async () => {
       await I.checkOption('decisionWithoutHearing');
       await I.click('Save and continue');

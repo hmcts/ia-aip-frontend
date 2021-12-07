@@ -8,6 +8,11 @@ module.exports = {
     When(/^I click on the type\-of\-appeal link$/, async () => {
       await I.click('Type of appeal');
     });
+
+    When(/^I click on Appeal and decision type link$/, async () => {
+      await I.click('Appeal and decision type');
+    });
+
     Then(/^I should be taken to the appeal page$/, async () => {
       await I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });

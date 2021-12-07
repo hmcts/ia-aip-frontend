@@ -22,7 +22,6 @@ Feature: Pay by card Appeal submission.
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue
-    And I shouldnt be able to click "Check and send your appeal"
 
 #    Payment steps
     Given I am on the type of appeal page
@@ -60,7 +59,6 @@ Feature: Pay by card Appeal submission.
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue
-    And I shouldnt be able to click "Check and send your appeal"
 
 #    Payment steps
     Given I am on the type of appeal page
@@ -97,7 +95,6 @@ Feature: Pay by card Appeal submission.
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue
-    And I shouldnt be able to click "Check and send your appeal"
 
     Given I am on the type of appeal page
     When I select appeal type Revocation of Protection Status

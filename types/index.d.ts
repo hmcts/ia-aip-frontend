@@ -266,6 +266,9 @@ interface ReasonsForAppeal {
 }
 
 interface HearingRequirements {
+  witnessesOnHearing?: boolean;
+  witnessNames?: string[];
+  witnessesOutsideUK?: boolean;
   [key: string]: any;
 }
 

@@ -42,8 +42,7 @@ describe('update-appeal-service', () => {
           uid: userId,
           name: 'name',
           given_name: 'given',
-          family_name: 'family',
-          sub: 'email@example.net'
+          family_name: 'family'
         }
       },
       session: {
@@ -900,8 +899,7 @@ describe('update-appeal-service', () => {
       req = {
         idam: {
           userDetails: {
-            uid: userId,
-            sub: 'email@example.net'
+            uid: userId
           }
         },
         session: {

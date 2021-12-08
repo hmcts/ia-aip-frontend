@@ -37,7 +37,8 @@ describe('Type of appeal Controller', () => {
       },
       idam: {
         userDetails: {
-          uid: 'idamUID'
+          uid: 'idamUID',
+          sub: 'some-user'
         }
       },
       app: {

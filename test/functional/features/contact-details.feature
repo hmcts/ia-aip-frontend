@@ -1,3 +1,4 @@
+@ContactDetails
 Feature: Contact details
   In order complete my appeal
   As a citizen
@@ -12,7 +13,6 @@ Feature: Contact details
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I shouldnt be able to click "Type of appeal"
 
     Given I am on the contact details page
     And I click "Save and continue" button
@@ -24,7 +24,7 @@ Feature: Contact details
     Then I am on the overview page
     Then I click continue
     Then I should see the task-list page
-    And I should be able to click "Type of appeal"
+    And I click on Appeal and decision type link
 
     Given I am on the contact details page
     When I enter text message number "07899999999"

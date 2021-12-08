@@ -8,6 +8,11 @@ module.exports = {
     When(/^I click on the type\-of\-appeal link$/, async () => {
       await I.click('Type of appeal');
     });
+
+    When(/^I click on Appeal and decision type link$/, async () => {
+      await I.click('Appeal and decision type');
+    });
+
     Then(/^I should be taken to the appeal page$/, async () => {
       await I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });
@@ -29,6 +34,22 @@ module.exports = {
     });
     When('I select appeal type Protection', async () => {
       I.checkOption('#appealType');
+    });
+
+    When('I select appeal type Human Rights', async () => {
+      await I.checkOption('#appealType-2');
+    });
+
+    When('I select appeal type European Economic Area', async () => {
+      await I.checkOption('#appealType-3');
+    });
+
+    When('I select appeal type Revocation of Protection Status', async () => {
+      await I.checkOption('#appealType-4');
+    });
+
+    When('I select appeal type Deprivation of Citizenship', async () => {
+      await I.checkOption('#appealType-5');
     });
 
     Then('I should see the type of appeal page', async () => {

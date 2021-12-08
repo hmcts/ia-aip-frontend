@@ -63,6 +63,7 @@ Scenario: Complete appeal application
   Then I should be taken to the appeal page
 
   When I select appeal type Protection
+#  // introduce new payment steps
   And I click "Save and continue" button
   Then I should see the task-list page
 

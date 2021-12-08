@@ -42,10 +42,6 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
     console.log('Flag::' , flag);
     console.log('username::' , username);
     variation.then(res => console.log(`Feature flag ${flag} =`, res));
-    if (process.env.NODE_ENV !== 'production' && FEATURE_FLAGS.CARD_PAYMENTS === flag) {
-      console.log(`Overriding the feature flag ${flag} for the environment ${process.env.NODE_ENV} to be true`);
-      return true;
-    }
     return variation;
   }
 

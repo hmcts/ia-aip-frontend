@@ -1,4 +1,3 @@
-@Eligibility
 Feature: Eligibility
   In know if can use the service
   As a citizen
@@ -13,11 +12,11 @@ Feature: Eligibility
     When I select No and click continue
     Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
     When I select No and click continue
-    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision? - Appeal an immigration or asylum decision - HMCTS" eligibility page
+    Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
     When I select Yes and click continue
     Then I should see the eligible page
     When I click "Back" button
-    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision? - Appeal an immigration or asylum decision - HMCTS" eligibility page
+    Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
 
   Scenario: Citizen is ineligible to use the service
     Given I am on home page

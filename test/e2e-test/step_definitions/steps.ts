@@ -28,8 +28,6 @@ const { askForMoreTime } = require('../pages/ask-for-more-time/ask-for-more-time
 const { caseProgression } = require('../service/case-progression-service');
 const { clarifyingQuestions } = require('../pages/clarifying-questions/clarifying-questions');
 const { cmaRequirements } = require('../pages/cma-requirements/cma-requirements');
-const { decisionType } = require('../pages/decision-type/decision-type');
-const { paymentType } = require('../pages/payment-type/payment-type');
 
 const { I } = inject();
 
@@ -65,5 +63,3 @@ askForMoreTime(I);
 caseProgression(I);
 clarifyingQuestions(I);
 cmaRequirements(I);
-decisionType(I);
-paymentType(I);

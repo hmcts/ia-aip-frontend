@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import _ from 'lodash';
-import { FEATURE_FLAGS } from '../data/constants';
 import { setupSecrets } from '../setupSecrets';
 import Logger from '../utils/logger';
 const logger: Logger = new Logger();
@@ -34,18 +33,9 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
     });
   }
 
-  // tslint:disable:no-console
   async getVariation(req: Request, flag: string, defaultReturn: boolean) {
-    let defaultValue = 'user-is-not-logged-in';
-    const username = _.get(req, 'idam.userDetails.sub', defaultValue);
-    let variation = ldClient.variation(flag, { key: username }, defaultReturn);
-    console.log('flag::' , flag);
-    console.log('username::' , username);
-    variation.then(res => console.log('falg value:::', res));
-    if (process.env.NODE_ENV !== 'production' && FEATURE_FLAGS.CARD_PAYMENTS === flag && username === defaultValue) {
-      return true;
-    }
-    return variation;
+    const username = _.get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
+    return ldClient.variation(flag, { key: username }, defaultReturn);
   }
 
   public static close() {

@@ -159,17 +159,6 @@ module.exports = {
         appellantGivenNames: 'givenName',
         appellantFamilyName: 'familyName',
         appellantDateOfBirth: '1981-01-01',
-        uploadTheNoticeOfDecisionDocs: [{
-          id: 'c71032fa-9414-4eec-a43a-caf6ffa8bb73',
-          value: {
-            document: {
-              document_url: 'some url',
-              document_filename: 'some file.pdf'
-            }
-          }
-        }],
-        feeWithHearing: '140',
-        feeWithoutHearing: '80',
         appellantNationalities: [
           {
             id: '1',

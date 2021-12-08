@@ -20,3 +20,4 @@ nodejs:
         - addressLookupToken
         - s2s-secret
         - AppInsightsInstrumentationKey
+        - launch-darkly-sdk-key

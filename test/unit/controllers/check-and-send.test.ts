@@ -75,8 +75,7 @@ describe('createSummaryRowsFrom', () => {
       query: {},
       idam: {
         userDetails: {
-          uid: 'idamUID',
-          sub: 'some-user'
+          uid: 'idamUID'
         }
       },
       session: {
@@ -183,9 +182,7 @@ describe('Check and Send Controller', () => {
       } as any,
       cookies: {},
       idam: {
-        userDetails: {
-          sub: 'some-user'
-        }
+        userDetails: {}
       },
       app: {
         locals: {

@@ -60,9 +60,7 @@ describe('Task List Controller', () => {
       sectionStatuses: {},
       cookies: {},
       idam: {
-        userDetails: {
-          sub: 'some-user'
-        } as Partial<IdamDetails>
+        userDetails: {} as Partial<IdamDetails>
       },
       app: {
         locals: {

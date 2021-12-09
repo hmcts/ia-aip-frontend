@@ -46,7 +46,9 @@ loadVaultSecrets(secrets)
 //  enableAksStagingDeployment()
 //  disableLegacyDeployment()
 
+env.TIMELINE_ENABLED='true'
 env.S2S_MICROSERVICE_NAME = 'iac'
+env.LAUNCH_DARKLY_SDK_KEY = 'sdk-adb35234-dc38-4f53-9473-33c4af87b995'
 env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
 env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
 

@@ -693,17 +693,23 @@ export default class UpdateAppealService {
         }
       }
 
+      caseData.isHearingRoomNeeded = null;
       if (_.has(appeal.hearingRequirements, 'isHearingRoomNeeded')) {
-        caseData.isHearingRoomNeeded = boolToYesNo(appeal.hearingRequirements.isHearingRoomNeeded);
+        if (appeal.hearingRequirements.isHearingRoomNeeded != null) {
+          caseData.isHearingRoomNeeded = boolToYesNo(appeal.hearingRequirements.isHearingRoomNeeded);
+        }
       }
 
+      caseData.isHearingLoopNeeded = null;
       if (_.has(appeal.hearingRequirements, 'isHearingLoopNeeded')) {
-        caseData.isHearingLoopNeeded = boolToYesNo(appeal.hearingRequirements.isHearingLoopNeeded);
+        if (appeal.hearingRequirements.isHearingLoopNeeded != null) {
+          caseData.isHearingLoopNeeded = boolToYesNo(appeal.hearingRequirements.isHearingLoopNeeded);
+        }
       }
-    }
 
-    if (_.has(appeal, 'hearingRequirements.otherNeeds')) {
-      this.mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData);
+      if (_.has(appeal, 'hearingRequirements.otherNeeds')) {
+        this.mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData);
+      }
     }
 
     const askForMoreTime = appeal.askForMoreTime;

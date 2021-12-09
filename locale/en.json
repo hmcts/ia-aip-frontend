@@ -2531,7 +2531,7 @@
         "singleSexTypeHearingRequired": "Select if you need an all-female or all-male hearing",
         "privateHearingReasonRequired": "Enter the reasons you need a private hearing",
         "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the hearing",
-        "pastExperiencesReasonRequired": "Enter details of how any past experiences will affect you at the hearing",
+        "pastExperiencesReasonRequired": "Enter details of how any past experiences may affect you at the hearing",
         "anythingElseReasonRequired": "Enter details of what you will need and why you need it"        
       }
     }

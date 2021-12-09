@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { isoLanguages } from '../../data/isoLanguages';
@@ -14,12 +15,21 @@ import {
 } from '../../utils/validations/fields-validations';
 import { postHearingRequirementsYesNoHandler } from './common';
 
-const yesOrNoOption = (answer: boolean) => [
-  { text: 'Yes', value: 'yes', checked: answer === true },
-  { text: 'No', value: 'no', checked: answer === false }
-];
-
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+function getOptions(selectionPresent, answer) {
+
+  if (selectionPresent == null) {
+    return [
+      { text: 'Yes', value: 'yes' },
+      { text: 'No', value: 'no' }
+    ];
+  } else {
+    return [
+      { text: 'Yes', value: 'yes', checked: answer === true },
+      { text: 'No', value: 'no', checked: answer === false }
+    ];
+  }
+}
 
 function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
   try {
@@ -33,16 +43,16 @@ function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
 
 function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const answer = req.session.appeal.hearingRequirements.isInterpreterServicesNeeded || null;
+    const selectionPresent = _.has(req.session.appeal, 'hearingRequirements.isInterpreterServicesNeeded') || null;
     return res.render('templates/radio-question-page.njk', {
       previousPage: previousPage,
       formAction: paths.submitHearingRequirements.hearingInterpreter,
       pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.pageTitle,
       saveAndContinue: true,
       question: {
-        options: yesOrNoOption(answer),
+        options: getOptions(selectionPresent, req.session.appeal.hearingRequirements.isInterpreterServicesNeeded),
         title: i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.title,
-        hint:  i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.text,
+        hint: i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.text,
         name: 'answer'
       }
     });
@@ -60,9 +70,9 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
         formAction: paths.submitHearingRequirements.hearingInterpreter,
         pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.pageTitle,
         question: {
-          options: yesOrNoOption(null),
+          options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }],
           title: i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.title,
-          hint:  i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.text,
+          hint: i18n.pages.hearingRequirements.accessNeedsSection.needInterpreterPage.text,
           name: 'answer'
         },
         saveAndContinue: true
@@ -91,7 +101,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
 
 function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) {
   try {
-    let interpreterLanguages: InterpreterLanguage [] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+    let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
     return res.render('hearing-requirements/language-details.njk', {
       previousPage: previousPage,
       items: isoLanguages,
@@ -109,7 +119,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
-      let interpreterLanguages: InterpreterLanguage [] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+      let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const validation = interpreterLanguagesValidation(interpreterLanguages);
       if (validation) {
         return renderPage(res, validation, interpreterLanguages);
@@ -128,7 +138,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function renderPage (res: Response, validation: ValidationErrors, interpreterLanguages: InterpreterLanguage []) {
+function renderPage(res: Response, validation: ValidationErrors, interpreterLanguages: InterpreterLanguage[]) {
 
   return res.render('hearing-requirements/language-details.njk', {
     items: isoLanguages,
@@ -145,19 +155,19 @@ function buildLanguageList(interpreterLanguages: InterpreterLanguage[]): Summary
   const languageRows: SummaryRow[] = [];
   interpreterLanguages.forEach((interpreterLanguage: InterpreterLanguage) => {
     languageRows.push(
-        addSummaryRow(
-            'Language',
-            [interpreterLanguage.language],
-            `${paths.submitHearingRequirements.hearingLanguageDetailsRemove}?name=${encodeURIComponent(interpreterLanguage.language)}`,
-            null,
-            'Remove'
-        )
+      addSummaryRow(
+        'Language',
+        [interpreterLanguage.language],
+        `${paths.submitHearingRequirements.hearingLanguageDetailsRemove}?name=${encodeURIComponent(interpreterLanguage.language)}`,
+        null,
+        'Remove'
+      )
     );
     languageRows.push(
-        addSummaryRow(
-            'Dialect',
-            [interpreterLanguage.languageDialect]
-        )
+      addSummaryRow(
+        'Dialect',
+        [interpreterLanguage.languageDialect]
+      )
     );
   });
   languagesSummaryLists.push({
@@ -170,7 +180,7 @@ function buildLanguageList(interpreterLanguages: InterpreterLanguage[]): Summary
 function addMoreLanguagePostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let interpreterLanguages: InterpreterLanguage [] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+      let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const validation = selectedRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguage);
       if (validation) {
         return renderPage(res, validation, interpreterLanguages);
@@ -191,7 +201,7 @@ function addMoreLanguagePostAction() {
 function removeLanguagePostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let interpreterLanguages: InterpreterLanguage [] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+      let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const nameToRemove: string = req.query.name as string;
       req.session.appeal.hearingRequirements.interpreterLanguages = interpreterLanguages.filter(interpreterLanguage => interpreterLanguage.language !== nameToRemove);
       return res.redirect(paths.submitHearingRequirements.hearingLanguageDetails);
@@ -203,14 +213,13 @@ function removeLanguagePostAction() {
 
 function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const backButton = req.session.appeal.hearingRequirements.isInterpreterServicesNeeded === true ? paths.submitHearingRequirements.hearingLanguageDetails : paths.submitHearingRequirements.hearingInterpreter;
-    const answer = req.session.appeal.hearingRequirements.isHearingRoomNeeded;
+    const selectionPresent = _.has(req.session.appeal, 'hearingRequirements.isHearingRoomNeeded') || null;
     return res.render('templates/radio-question-page.njk', {
       previousPage: previousPage,
       formAction: paths.submitHearingRequirements.hearingStepFreeAccess,
       pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.stepFreeAccessPage.pageTitle,
       question: {
-        options: yesOrNoOption(answer),
+        options: getOptions(selectionPresent, req.session.appeal.hearingRequirements.isHearingLoopNeeded),
         title: i18n.pages.hearingRequirements.accessNeedsSection.stepFreeAccessPage.title,
         hint: i18n.pages.hearingRequirements.accessNeedsSection.stepFreeAccessPage.text,
         name: 'answer'
@@ -231,7 +240,7 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
         formAction: paths.submitHearingRequirements.hearingStepFreeAccess,
         pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.stepFreeAccessPage.pageTitle,
         question: {
-          options: yesOrNoOption(null),
+          options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }],
           title: i18n.pages.hearingRequirements.accessNeedsSection.stepFreeAccessPage.title,
           hint: i18n.pages.hearingRequirements.accessNeedsSection.stepFreeAccessPage.text,
           name: 'answer'
@@ -257,15 +266,14 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
 
 function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
   try {
-    const isHearingLoopNeeded: boolean = req.session.appeal.hearingRequirements.isHearingLoopNeeded;
-    const answer = isHearingLoopNeeded;
+    const selectionPresent = _.has(req.session.appeal, 'hearingRequirements.isHearingLoopNeeded') || null;
     return res.render('templates/radio-question-page.njk', {
       previousPage: previousPage,
       formAction: paths.submitHearingRequirements.hearingLoop,
       pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.hearingLoopPage.pageTitle,
       saveAndContinue: true,
       question: {
-        options: yesOrNoOption(answer),
+        options: getOptions(selectionPresent, req.session.appeal.hearingRequirements.isHearingLoopNeeded),
         title: i18n.pages.hearingRequirements.accessNeedsSection.hearingLoopPage.title,
         hint: i18n.pages.hearingRequirements.accessNeedsSection.hearingLoopPage.text,
         name: 'answer'
@@ -279,14 +287,14 @@ function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
 function postHearingLoopPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const answer: boolean = req.session.appeal.hearingRequirements.isHearingLoopNeeded;
+      const selectionPresent = _.has(req.session.appeal, 'hearingRequirements.isHearingLoopNeeded') || null;
       const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.accessNeeds.hearingLoop;
       const pageContent = {
         previousPage: previousPage,
         formAction: paths.submitHearingRequirements.hearingLoop,
         pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.hearingLoopPage.pageTitle,
         question: {
-          options: yesOrNoOption(answer),
+          options: getOptions(selectionPresent, req.session.appeal.hearingRequirements.isHearingLoopNeeded),
           title: i18n.pages.hearingRequirements.accessNeedsSection.hearingLoopPage.title,
           hint: i18n.pages.hearingRequirements.accessNeedsSection.hearingLoopPage.text,
           name: 'answer'

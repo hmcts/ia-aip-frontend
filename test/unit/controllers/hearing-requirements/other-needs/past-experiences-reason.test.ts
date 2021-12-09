@@ -118,7 +118,7 @@ describe('Hearing Requirements - Other Needs Section: Past Experiences Reason co
         reason: {
           href: '#reason',
           key: 'reason',
-          text: 'Enter details of how any past experiences will affect you at the hearing'
+          text: 'Enter details of how any past experiences may affect you at the hearing'
         }
       };
 

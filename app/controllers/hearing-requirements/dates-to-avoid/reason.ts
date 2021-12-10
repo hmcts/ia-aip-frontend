@@ -8,7 +8,6 @@ import { getHearingRequirementsReasonHandler, handleHearingRequirementsSaveForLa
 
 const formAction = paths.submitHearingRequirements.hearingDateToAvoidReasons;
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-// const previousPage = paths.submitHearingRequirements.hearingDatesToAvoidEnterDate;
 
 let pageContent = {
   formAction,
@@ -60,7 +59,7 @@ function postDatesToAvoidReasonWithId(updateAppealService: UpdateAppealService) 
 
       const dateId = req.params.id;
 
-      const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.datesToAvoid.reasonRequired;
+      const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.datesToAvoid.reasonRequired;
 
       const onSuccess = async () => {
 
@@ -71,7 +70,7 @@ function postDatesToAvoidReasonWithId(updateAppealService: UpdateAppealService) 
         await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
         return req.body['saveForLater']
           ? handleHearingRequirementsSaveForLater(req, res)
-          : res.redirect(paths.submitHearingRequirements.checkAndSend);
+          : res.redirect(paths.submitHearingRequirements.taskList);
       };
 
       await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
@@ -87,7 +86,7 @@ function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
 
-      const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.datesToAvoid.reasonRequired;
+      const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.datesToAvoid.reasonRequired;
 
       const onSuccess = async () => {
         const { datesToAvoid } = req.session.appeal.hearingRequirements;
@@ -95,11 +94,11 @@ function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
         dateToEdit.reason = req.body['reason'];
 
         await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
-/*
+
         return req.body['saveForLater']
           ? handleHearingRequirementsSaveForLater(req, res)
           : getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.hearingDateToAvoidNew);
-*/
+
         res.redirect(paths.submitHearingRequirements.hearingDateToAvoidNew);
       };
       await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);

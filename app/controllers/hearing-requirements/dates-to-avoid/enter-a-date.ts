@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
+import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
@@ -8,9 +9,9 @@ import { dayMonthYearFormat } from '../../../utils/date-utils';
 import { getNextPage, shouldValidateWhenSaveForLater } from '../../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../../utils/url-utils';
 import { isDateInRange } from '../../../utils/validations/fields-validations';
+import { getHearingStartDate } from '../common';
 
 const formActionUrl = paths.submitHearingRequirements.hearingDatesToAvoidEnterDate;
-// const previousPage = paths.submitHearingRequirements.hearingDatesToAvoidQuestion;
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
 function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: Request, res: Response) {
@@ -18,12 +19,13 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
     return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
   }
 
-  const availableDates = {
-    from: moment().add(2, 'week').format(dayMonthYearFormat),
-    to: moment().add(12, 'week').format(dayMonthYearFormat)
+  const startDate = getHearingStartDate(req.session.appeal.directions);
+  const availableHearingDates = {
+    from: moment(startDate).format(dayMonthYearFormat),
+    to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
   };
 
-  let validation = isDateInRange(availableDates.from, availableDates.to, req.body);
+  let validation = isDateInRange(availableHearingDates.from, availableHearingDates.to, req.body,i18n.validationErrors.hearingRequirements.datesToAvoid.date.missing);
 
   const savedDates = req.session.appeal.hearingRequirements.datesToAvoid.dates || [];
 
@@ -50,7 +52,7 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
       errors: validation,
       errorList: Object.values(validation),
       date: { ...req.body },
-      availableDates,
+      availableHearingDates,
       previousPage: previousPage
     });
   }
@@ -66,16 +68,16 @@ function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction
     const { datesToAvoid } = req.session.appeal.hearingRequirements;
     if (datesToAvoid && datesToAvoid.dates) {
       const dateToEdit = datesToAvoid.dates[dateId].date;
-
-      const availableDates = {
-        from: moment().add(2, 'week').format(dayMonthYearFormat),
-        to: moment().add(12, 'week').format(dayMonthYearFormat)
+      const startDate = getHearingStartDate(req.session.appeal.directions);
+      const availableHearingDates = {
+        from: moment(startDate).format(dayMonthYearFormat),
+        to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
       };
 
       return res.render('hearing-requirements/dates-to-avoid/enter-a-date.njk', {
         formAction: formActionWithId,
         date: dateToEdit,
-        availableDates,
+        availableHearingDates,
         previousPage: previousPage
       });
     }
@@ -92,10 +94,10 @@ function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
     if (datesToAvoid && datesToAvoid.dates && datesToAvoid.dates.length) {
       lastDate = datesToAvoid.dates[datesToAvoid.dates.length - 1];
     }
-
+    const startDate = getHearingStartDate(req.session.appeal.directions);
     const availableHearingDates = {
-      from: moment().add(2, 'week').format(dayMonthYearFormat),
-      to: moment().add(12, 'week').format(dayMonthYearFormat)
+      from: moment(startDate).format(dayMonthYearFormat),
+      to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
     };
 
     return res.render('hearing-requirements/dates-to-avoid/enter-a-date.njk', {

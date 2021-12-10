@@ -159,7 +159,7 @@ describe('Hearing Requirements - Reason controller', () => {
         reason: {
           href: '#reason',
           key: 'reason',
-          text: 'Enter details of why you cannot go to the appointment on this date'
+          text: 'Enter details of why you cannot go to the hearing on this date'
         }
       };
       const expectedArgs = {
@@ -180,13 +180,13 @@ describe('Hearing Requirements - Reason controller', () => {
       expect(res.render).to.have.been.calledWith('templates/textarea-question-page.njk', expectedArgs);
     });
 
-    it('should validate and redirect to CYA page', async () => {
+    it('should validate and redirect to taskList page', async () => {
       req.params.id = '0';
 
       req.body['reason'] = 'the answer here';
       await postDatesToAvoidReasonWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.checkAndSend);
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
     });
 
     it('should catch error and call next with error', async () => {

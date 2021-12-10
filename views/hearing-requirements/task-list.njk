@@ -25,6 +25,14 @@
                 {{ govukTag({
                   text: "Saved"
                 }) }}
+              {% elif task.active %}
+                 {{ govukTag({
+                   text: "TODO"
+                 }) }}
+              {% else %}
+                {{ govukTag({
+                  text: "CANNOTSTARTYET"
+                }) }}
               {% endif %}
             </li>
           {% endfor %}

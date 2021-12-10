@@ -1254,6 +1254,27 @@ describe('update-appeal-service', () => {
       await updateAppealService.loadAppeal(req as Request);
 
       const expectedHearingRequirements = {
+        'datesToAvoid': {
+          'dates': [
+            {
+              'date': {
+                'day': '23',
+                'month': '6',
+                'year': '2020'
+              },
+              'reason': 'I have an important appointment on this day'
+            },
+            {
+              'date': {
+                'day': '24',
+                'month': '6',
+                'year': '2020'
+              },
+              'reason': 'I need this day off'
+            }
+          ],
+          'isDateCannotAttend': true
+        },
         'interpreterLanguages': [
           {
             'language': 'Afar',

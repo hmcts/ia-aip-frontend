@@ -2119,7 +2119,7 @@
         },
         "enterADatePage": {
           "title": "Enter the date you or any witnesses cannot go to the hearing",
-          "heading": "Enter the date you or any witnesses cannot go the hearing",
+          "heading": "Enter the date you or any witnesses cannot go to the hearing",
           "description": "Only include dates from {{ availableHearingDates.from }} to {{ availableHearingDates.to }}.",
           "hint": "For example, 12 11 2020"
         },
@@ -2554,6 +2554,16 @@
         "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the hearing",
         "pastExperiencesReasonRequired": "Enter details of how any past experiences may affect you at the hearing",
         "anythingElseReasonRequired": "Enter details of what you will need and why you need it"
+      },
+      "datesToAvoid": {
+        "datesToAvoidAnswerRequired": "Select yes if there are any dates you cannot go to the hearing",
+        "dateRequired": "Enter a date you cannot go to the hearing",
+        "reasonRequired": "Enter details of why you cannot go to the hearing on this date",
+        "addAnotherDateAnswerRequired": "Select yes if you want to add another date you cannot go to the hearing",
+        "date": {
+          "missing": "Enter a date you cannot go to the hearing",
+          "incorrectFormat": "Enter the date in the correct format"
+        }
       }
     }
   },

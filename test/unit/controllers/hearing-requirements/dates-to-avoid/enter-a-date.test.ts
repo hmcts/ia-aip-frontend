@@ -27,6 +27,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
       params: {},
       session: {
         appeal: {
+          directions: [],
           hearingRequirements: {
             datesToAvoid: {
               isDateCannotAttend: true
@@ -79,26 +80,24 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
       req.params.id = '0';
 
-      req.session.appeal.hearingRequirements.datesToAvoid.dates = [ {
+      req.session.appeal.hearingRequirements.datesToAvoid.dates = [{
         date: {
           day: '20',
           month: '6',
           year: '2020'
         }
-      } ];
+      }];
 
-      const availableDates = {
-        from: moment().add(2, 'week').format(dayMonthYearFormat),
-        to: moment().add(12, 'week').format(dayMonthYearFormat)
+      const availableHearingDates = {
+        from: moment().add(0, 'week').format(dayMonthYearFormat),
+        to: moment().add(6, 'week').format(dayMonthYearFormat)
       };
 
       const expectedArgs = {
-        availableDates: { from: availableDates.from, to: availableDates.to },
         date: { day: '20', month: '6', year: '2020' },
+        availableHearingDates: { from: availableHearingDates.from, to: availableHearingDates.to },
         formAction: '/hearing-dates-avoid-enter/0',
-        previousPage: {
-          attributes: { onclick: 'history.go(-1); return false;' }
-        }
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } }
 
       };
 
@@ -108,13 +107,13 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
     it('should catch error and call next with error', () => {
       req.params.id = '0';
-      req.session.appeal.hearingRequirements.datesToAvoid.dates = [ {
+      req.session.appeal.hearingRequirements.datesToAvoid.dates = [{
         date: {
           day: '20',
           month: '6',
           year: '2020'
         }
-      } ];
+      }];
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
@@ -131,16 +130,16 @@ describe('Hearing Requirements - Enter A date controller', () => {
       req.body['month'] = invalidDate.month();
       req.body['year'] = invalidDate.year();
 
-      const availableDates = {
-        from: moment().add(2, 'week').format(dayMonthYearFormat),
-        to: moment().add(12, 'week').format(dayMonthYearFormat)
+      const availableHearingDates = {
+        from: moment().add(0, 'week').format(dayMonthYearFormat),
+        to: moment().add(6, 'week').format(dayMonthYearFormat)
       };
 
       const expectedValidationError = {
         date: {
-          href: '#date',
           key: 'date',
-          text: `Enter a date between ${availableDates.from} and ${availableDates.to}`
+          text: `Enter a date between ${availableHearingDates.from} and ${availableHearingDates.to}`,
+          href: '#date'
         }
       };
 
@@ -148,11 +147,9 @@ describe('Hearing Requirements - Enter A date controller', () => {
         errors: expectedValidationError,
         errorList: Object.values(expectedValidationError),
         date: { ...req.body },
-        availableDates,
+        availableHearingDates,
         formAction: '/hearing-dates-avoid-enter',
-        previousPage: {
-          attributes: { onclick: 'history.go(-1); return false;' }
-        }
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } }
       };
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -181,16 +178,16 @@ describe('Hearing Requirements - Enter A date controller', () => {
       req.body['month'] = invalidDate.month();
       req.body['year'] = invalidDate.year();
 
-      const availableDates = {
-        from: moment().add(2, 'week').format(dayMonthYearFormat),
-        to: moment().add(12, 'week').format(dayMonthYearFormat)
+      const availableHearingDates = {
+        from: moment().add(0, 'week').format(dayMonthYearFormat),
+        to: moment().add(6, 'week').format(dayMonthYearFormat)
       };
 
       const expectedValidationError = {
         date: {
           href: '#date',
           key: 'date',
-          text: `Enter a date between ${availableDates.from} and ${availableDates.to}`
+          text: `Enter a date between ${availableHearingDates.from} and ${availableHearingDates.to}`
         }
       };
 
@@ -198,7 +195,7 @@ describe('Hearing Requirements - Enter A date controller', () => {
         errors: expectedValidationError,
         errorList: Object.values(expectedValidationError),
         date: { ...req.body },
-        availableDates,
+        availableHearingDates,
         formAction: '/hearing-dates-avoid-enter/0',
         previousPage: { attributes: { onclick: 'history.go(-1); return false;' } }
       };

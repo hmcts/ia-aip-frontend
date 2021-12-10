@@ -21,7 +21,8 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
       params: {},
       session: {
         appeal: {
-          cmaRequirements: {}
+          directions: [],
+          hearingRequirements: {}
         } as Partial<Appeal>
       }
     } as Partial<Request>;
@@ -54,15 +55,16 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
       getAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
       const availableHearingDates = {
-        from: moment().add(2, 'week').format(dayMonthYearFormat),
-        to: moment().add(12, 'week').format(dayMonthYearFormat)
+        from: moment().add(0, 'week').format(dayMonthYearFormat),
+        to: moment().add(6, 'week').format(dayMonthYearFormat)
       };
 
       const expectedArgs = {
-        previousPage: '/hearing-dates-avoid-reasons',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         pageTitle: 'Is there another date that you or any witnesses cannot go to the hearing?',
         formAction: '/hearing-dates-avoid-new',
         question: {
+          name: 'answer',
           title: `Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?`,
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
         },
@@ -85,21 +87,21 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
 
   describe('postAddAnotherDateQuestionPage', () => {
     it('should fail validation and render template with errors', async () => {
-      await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
+      postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk');
     });
 
     it('should validate and redirect to answer page if appellant answer yes', async () => {
       req.body['answer'] = 'yes';
-      await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
+      postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingDatesToAvoidEnterDate);
     });
 
     it('should validate if appellant answers no and redirect to task list page', async () => {
       req.body['answer'] = 'no';
-      await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
+      postAddAnotherDateQuestionPage(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
     });
@@ -108,7 +110,7 @@ describe('Hearing Requirements - Add Another Date Question controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      await postAddAnotherDateQuestionPage(req as Request, res as Response, next);
+      postAddAnotherDateQuestionPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

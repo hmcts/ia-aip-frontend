@@ -371,7 +371,7 @@ function askForMoreTimeValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function isDateInRange(dateFrom: string, dateTo: string, obj): boolean | ValidationErrors {
+function isDateInRange(dateFrom: string, dateTo: string, obj,dateMissingErrMsg: string): boolean | ValidationErrors {
 
   const errorMessage = `Enter a date between ${dateFrom} and ${dateTo}`;
   const { year, month, day } = obj;
@@ -385,27 +385,27 @@ function isDateInRange(dateFrom: string, dateTo: string, obj): boolean | Validat
 
   const schema = Joi.object({
     day: Joi.number().empty('').required().integer().min(1).max(31).messages({
-      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'any.required': dateMissingErrMsg,
       'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
     }),
     month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
-      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'any.required': dateMissingErrMsg,
       'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
     }),
     year: Joi.number().empty('').required().integer().min(1900).required().messages({
-      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'any.required': dateMissingErrMsg,
       'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
     }),
     date: Joi.date().required().min(dateFrom).max(dateTo).messages({
-      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'any.required': dateMissingErrMsg,
       'date.min': errorMessage,
       'date.max': errorMessage,
       'date.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat

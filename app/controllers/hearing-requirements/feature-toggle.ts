@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import { hearingRequirementsMiddleware } from '../../middleware/hearing-requirements-middleware';
 import { paths } from '../../paths';
+import { getAddAnotherDateQuestionPage } from './dates-to-avoid/add-another-date';
+import { getEnterADatePage, getEnterADatePageWithId } from './dates-to-avoid/enter-a-date';
+import { getDatesToAvoidQuestion } from './dates-to-avoid/question';
+import { getDatesToAvoidReason, getDatesToAvoidReasonWithId } from './dates-to-avoid/reason';
 import { getWitnessesOutsideUkQuestion } from './hearing-outside-uk';
 import { getWitnessNamesPage } from './hearing-witness-names';
 import { getWitnessesOnHearingQuestion } from './hearing-witnesses';
@@ -22,10 +26,6 @@ import { getSingleSexHearingAllMaleReason } from './other-needs/single-sex-heari
 import { getSingleSexHearingQuestion } from './other-needs/single-sex-hearing-question';
 import { getSingleSexTypeHearingQuestion } from './other-needs/single-sex-type-hearing-question';
 import { getHearingRequirementsStartPage } from './other-needs/start-page';
-import { getAddAnotherDateQuestionPage } from './dates-to-avoid/add-another-date';
-import { getEnterADatePage, getEnterADatePageWithId } from './dates-to-avoid/enter-a-date';
-import { getDatesToAvoidQuestion } from './dates-to-avoid/question';
-import { getDatesToAvoidReason, getDatesToAvoidReasonWithId } from './dates-to-avoid/reason';
 import { getTaskList } from './task-list';
 
 function setupHearingRequirementsFeatureToggleController(middleware: Middleware[]): Router {

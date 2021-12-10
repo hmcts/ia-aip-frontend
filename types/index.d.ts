@@ -285,8 +285,6 @@ interface HearingRequirements {
   tasks?: {
     [key: string]: Task;
   };
-  accessNeeds?: AccessNeeds;
-  otherNeeds?: OtherNeeds;
   datesToAvoid?: DatesToAvoid;
   // [key: string]: any;
 }

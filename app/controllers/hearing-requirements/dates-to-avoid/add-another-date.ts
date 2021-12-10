@@ -1,23 +1,26 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
+import { start } from 'repl';
 import i18n from '../../../../locale/en.json';
 import { paths } from '../../../paths';
 import { dayMonthYearFormat } from '../../../utils/date-utils';
-import { postHearingRequirementsYesNoHandler } from '../common';
+import { getHearingStartDate, postHearingRequirementsYesNoHandler } from '../common';
 
-const previousPage = paths.submitHearingRequirements.hearingDateToAvoidReasons;
+const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 const pageTitle = i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestion.title;
 const formAction = paths.submitHearingRequirements.hearingDateToAvoidNew;
 const question = {
+  name: 'answer',
   title: i18n.pages.hearingRequirements.datesToAvoidSection.addAnotherDateQuestion.heading,
-  options: [ { value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' } ]
+  options: [{ value: 'yes', text: 'Yes' }, { value: 'no', text: 'No' }]
 };
 
 function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFunction) {
   try {
+    const startDate = getHearingStartDate(req.session.appeal.directions);
     const availableHearingDates = {
-      from: moment().add(2, 'week').format(dayMonthYearFormat),
-      to: moment().add(12, 'week').format(dayMonthYearFormat)
+      from: moment(startDate).format(dayMonthYearFormat),
+      to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
     };
 
     res.render('templates/radio-question-page.njk', {
@@ -35,14 +38,19 @@ function getAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFu
 }
 
 function postAddAnotherDateQuestionPage(req: Request, res: Response, next: NextFunction) {
-
-  const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.datesToAvoid.addAnotherDateAnswerRequired;
+  const onValidationErrorMessage = i18n.validationErrors.hearingRequirements.datesToAvoid.addAnotherDateAnswerRequired;
+  const startDate = getHearingStartDate(req.session.appeal.directions);
+  const availableHearingDates = {
+    from: moment(startDate).format(dayMonthYearFormat),
+    to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
+  };
 
   const pageContent = {
     previousPage,
     pageTitle,
     formAction,
     question,
+    availableHearingDates,
     saveAndContinueOnly: true
   };
 

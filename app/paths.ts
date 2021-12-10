@@ -89,12 +89,12 @@ const paths = {
     otherNeedsPastExperiencesReasons: '/hearing-past-experiences-reasons',
     otherNeedsAnythingElseReasons: '/hearing-anything-else-reasons',
 
-   hearingDatesToAvoidQuestion: '/hearing-dates-avoid',
-   hearingDatesToAvoidEnterDate: '/hearing-dates-avoid-enter',
-   hearingDatesToAvoidEnterDateWithId: '/hearing-dates-avoid-enter/:id',
-   hearingDateToAvoidReasons: '/hearing-dates-avoid-reasons',
-   hearingDateToAvoidReasonsWithId: '/hearing-dates-avoid-reasons/:id',
-   hearingDateToAvoidNew: '/hearing-dates-avoid-new'
+    hearingDatesToAvoidQuestion: '/hearing-dates-avoid',
+    hearingDatesToAvoidEnterDate: '/hearing-dates-avoid-enter',
+    hearingDatesToAvoidEnterDateWithId: '/hearing-dates-avoid-enter/:id',
+    hearingDateToAvoidReasons: '/hearing-dates-avoid-reasons',
+    hearingDateToAvoidReasonsWithId: '/hearing-dates-avoid-reasons/:id',
+    hearingDateToAvoidNew: '/hearing-dates-avoid-new'
 
   },
   awaitingCmaRequirements: {

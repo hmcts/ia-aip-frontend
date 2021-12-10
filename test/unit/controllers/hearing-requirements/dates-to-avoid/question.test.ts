@@ -10,7 +10,7 @@ import UpdateAppealService from '../../../../../app/service/update-appeal-servic
 import { dayMonthYearFormat } from '../../../../../app/utils/date-utils';
 import { expect, sinon } from '../../../../utils/testUtils';
 
-describe('CMA Requirements - Question controller', () => {
+describe('Hearing Requirements - Question controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -24,7 +24,8 @@ describe('CMA Requirements - Question controller', () => {
       params: {},
       session: {
         appeal: {
-          cmaRequirements: {}
+          directions: [],
+          hearingRequirements: {}
         } as Partial<Appeal>
       }
     } as Partial<Request>;
@@ -59,18 +60,19 @@ describe('CMA Requirements - Question controller', () => {
       getDatesToAvoidQuestion(req as Request, res as Response, next);
 
       const availableHearingDates = {
-        from: moment().add(2, 'week').format(dayMonthYearFormat),
-        to: moment().add(12, 'week').format(dayMonthYearFormat)
+        from: moment().add(0, 'week').format(dayMonthYearFormat),
+        to: moment().add(6, 'week').format(dayMonthYearFormat)
       };
 
       const expectedArgs = {
         formAction: '/hearing-dates-avoid',
         pageTitle: 'Are there any dates that you or any witnesses cannot go to the hearing?',
-        previousPage: '/hearing-needs',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         question: {
+          name: 'answer',
           title: 'Are there any dates between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?',
           hint: 'You will need to tell us why you or any witnesses cannot go to the hearing on the dates you include.',
-          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ]
+          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
         },
         availableHearingDates,
         saveAndContinue: true
@@ -95,25 +97,26 @@ describe('CMA Requirements - Question controller', () => {
 
       const expectedError = {
         answer: {
-          href: '#answer',
           key: 'answer',
-          text: 'Select yes if there are any dates you cannot go to the appointment'
+          text: 'Select yes if there are any dates you cannot go to the hearing',
+          href: '#answer'
         }
       };
 
       const availableHearingDates = {
-        from: moment().add(2, 'week').format(dayMonthYearFormat),
-        to: moment().add(12, 'week').format(dayMonthYearFormat)
+        from: moment().add(0, 'week').format(dayMonthYearFormat),
+        to: moment().add(6, 'week').format(dayMonthYearFormat)
       };
 
       const expectedArgs = {
-        previousPage: '/hearing-needs',
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         pageTitle: 'Are there any dates that you or any witnesses cannot go to the hearing?',
         formAction: '/hearing-dates-avoid',
         question: {
+          name: 'answer',
           title: 'Are there any dates between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?',
           hint: 'You will need to tell us why you or any witnesses cannot go to the hearing on the dates you include.',
-          options: [ { text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' } ]
+          options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }]
         },
         availableHearingDates,
         saveAndContinue: true,

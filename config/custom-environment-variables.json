@@ -88,5 +88,12 @@
     "birminghamEmail": "IA_HEARING_CENTRE_BIRMINGHAM_EMAIL",
     "hattonCrossEmail": "IA_HEARING_CENTRE_HATTON_CROSS_EMAIL",
     "glasgowEmail": "IA_HEARING_CENTRE_GLASGOW_EMAIL"
+  },
+  "pcq": {
+    "url": "PCQ_URL",
+    "health": "/health",
+    "path": "/service-endpoint",
+    "returnUrl": "PCQ_RETURN_URL",
+    "tokenKey": "PCQ_TOKEN_KEY"
   }
 }

@@ -98,8 +98,6 @@ function postDatesToAvoidReason(updateAppealService: UpdateAppealService) {
         return req.body['saveForLater']
           ? handleHearingRequirementsSaveForLater(req, res)
           : getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.hearingDateToAvoidNew);
-
-        res.redirect(paths.submitHearingRequirements.hearingDateToAvoidNew);
       };
       await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
       return getHearingRequirementsReasonHandler(pageContent, onValidationErrorMessage, onSuccess, req, res, next);

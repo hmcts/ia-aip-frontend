@@ -26,6 +26,7 @@ import { getSingleSexHearingAllMaleReason } from './other-needs/single-sex-heari
 import { getSingleSexHearingQuestion } from './other-needs/single-sex-hearing-question';
 import { getSingleSexTypeHearingQuestion } from './other-needs/single-sex-type-hearing-question';
 import { getHearingRequirementsStartPage } from './other-needs/start-page';
+import { getCheckAndSendPage } from './check-and-send';
 import { getTaskList } from './task-list';
 
 function setupHearingRequirementsFeatureToggleController(middleware: Middleware[]): Router {
@@ -61,6 +62,9 @@ function setupHearingRequirementsFeatureToggleController(middleware: Middleware[
   router.get(paths.submitHearingRequirements.hearingDateToAvoidReasons, middleware, hearingRequirementsMiddleware, getDatesToAvoidReason);
   router.get(paths.submitHearingRequirements.hearingDateToAvoidReasonsWithId, middleware, hearingRequirementsMiddleware, getDatesToAvoidReasonWithId);
   router.get(paths.submitHearingRequirements.hearingDateToAvoidNew, middleware, hearingRequirementsMiddleware, getAddAnotherDateQuestionPage);
+
+
+   router.get(paths.submitHearingRequirements.checkAndSend, middleware, hearingRequirementsMiddleware, getCheckAndSendPage);
 
   return router;
 }

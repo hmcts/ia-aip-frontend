@@ -472,7 +472,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
       summaryLists: witnessesSectionList
     });
 
-    const accessNeedsSummaryLists: SummaryList[] = buildAccessNeedsSummaryList(hearingRequirements.accessNeeds);
+    const accessNeedsSummaryLists: SummaryList[] = buildAccessNeedsSummaryList(hearingRequirements);
 
     hearingRequirementsSummarySections.push({
       title: `2. ${i18n.pages.hearingRequirements.taskList.sections.accessNeeds}`,

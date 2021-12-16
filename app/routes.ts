@@ -83,6 +83,7 @@ import { setupHearingSingleSexAppointmentQuestionController } from './controller
 import { setupSingleSexTypeHearingQuestionController } from './controllers/hearing-requirements/other-needs/single-sex-type-hearing-question';
 import { setupHearingRequirementsStartPageController } from './controllers/hearing-requirements/other-needs/start-page';
 import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
+import { setupHearingRequirementsCYAController } from './controllers/hearing-requirements/check-and-send';
 import { setupIdamController } from './controllers/idam';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
@@ -200,6 +201,7 @@ const hearingDatesToAvoidQuestionController = setupHearingDatesToAvoidQuestionCo
 const hearingDatesToAvoidEnterADateController = setupHearingDatesToAvoidEnterADateController(middleware, updateAppealService);
 const hearingDatesToAvoidReasonsController = setupHearingDatesToAvoidReasonController(middleware, updateAppealService);
 const hearingDatesToAvoidAddAnotherDateController = setupHearingDatesToAvoidAddAnotherDateController(middleware);
+const hearingRequirementsCYAController = setupHearingRequirementsCYAController(middleware);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
@@ -271,6 +273,7 @@ router.use(hearingRequirementsOtherNeedsHealthConditionsReasonController);
 router.use(hearingRequirementsOtherNeedsPastExperiencesReasonController);
 router.use(hearingRequirementsOtherNeedsPrivateHearingReasonController);
 router.use(hearingRequirementsOtherNeedsAnythingElseReasonController);
+router.use(hearingRequirementsCYAController);
 router.use(hearingDatesToAvoidQuestionController);
 router.use(hearingDatesToAvoidEnterADateController);
 router.use(hearingDatesToAvoidReasonsController);

@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { hearingRequirementsMiddleware } from '../../middleware/hearing-requirements-middleware';
 import { paths } from '../../paths';
+import { getCheckAndSendPage } from './check-and-send';
+import { getHearingRequirementsConfirmationPage } from './confirmation-page';
 import { getAddAnotherDateQuestionPage } from './dates-to-avoid/add-another-date';
 import { getEnterADatePage, getEnterADatePageWithId } from './dates-to-avoid/enter-a-date';
 import { getDatesToAvoidQuestion } from './dates-to-avoid/question';
@@ -26,7 +28,6 @@ import { getSingleSexHearingAllMaleReason } from './other-needs/single-sex-heari
 import { getSingleSexHearingQuestion } from './other-needs/single-sex-hearing-question';
 import { getSingleSexTypeHearingQuestion } from './other-needs/single-sex-type-hearing-question';
 import { getHearingRequirementsStartPage } from './other-needs/start-page';
-import { getCheckAndSendPage } from './check-and-send';
 import { getTaskList } from './task-list';
 
 function setupHearingRequirementsFeatureToggleController(middleware: Middleware[]): Router {
@@ -63,8 +64,8 @@ function setupHearingRequirementsFeatureToggleController(middleware: Middleware[
   router.get(paths.submitHearingRequirements.hearingDateToAvoidReasonsWithId, middleware, hearingRequirementsMiddleware, getDatesToAvoidReasonWithId);
   router.get(paths.submitHearingRequirements.hearingDateToAvoidNew, middleware, hearingRequirementsMiddleware, getAddAnotherDateQuestionPage);
 
-
-   router.get(paths.submitHearingRequirements.checkAndSend, middleware, hearingRequirementsMiddleware, getCheckAndSendPage);
+  router.get(paths.submitHearingRequirements.checkAndSend, middleware, hearingRequirementsMiddleware, getCheckAndSendPage);
+  router.get(paths.submitHearingRequirements.confirmation, middleware, hearingRequirementsMiddleware, getHearingRequirementsConfirmationPage);
 
   return router;
 }

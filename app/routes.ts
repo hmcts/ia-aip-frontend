@@ -56,6 +56,8 @@ import { setupForbiddenController } from './controllers/forbidden';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupHearingAccessNeedsController } from './controllers/hearing-requirements/access-needs';
+import { setupHearingRequirementsCYAController } from './controllers/hearing-requirements/check-and-send';
+import { setupHearingRequirementsConfirmationPage } from './controllers/hearing-requirements/confirmation-page';
 import { setupHearingDatesToAvoidAddAnotherDateController } from './controllers/hearing-requirements/dates-to-avoid/add-another-date';
 import { setupHearingDatesToAvoidEnterADateController } from './controllers/hearing-requirements/dates-to-avoid/enter-a-date';
 import { setupHearingDatesToAvoidQuestionController } from './controllers/hearing-requirements/dates-to-avoid/question';
@@ -83,7 +85,6 @@ import { setupHearingSingleSexAppointmentQuestionController } from './controller
 import { setupSingleSexTypeHearingQuestionController } from './controllers/hearing-requirements/other-needs/single-sex-type-hearing-question';
 import { setupHearingRequirementsStartPageController } from './controllers/hearing-requirements/other-needs/start-page';
 import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
-import { setupHearingRequirementsCYAController } from './controllers/hearing-requirements/check-and-send';
 import { setupIdamController } from './controllers/idam';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
@@ -201,7 +202,8 @@ const hearingDatesToAvoidQuestionController = setupHearingDatesToAvoidQuestionCo
 const hearingDatesToAvoidEnterADateController = setupHearingDatesToAvoidEnterADateController(middleware, updateAppealService);
 const hearingDatesToAvoidReasonsController = setupHearingDatesToAvoidReasonController(middleware, updateAppealService);
 const hearingDatesToAvoidAddAnotherDateController = setupHearingDatesToAvoidAddAnotherDateController(middleware);
-const hearingRequirementsCYAController = setupHearingRequirementsCYAController(middleware);
+const hearingRequirementsCYAController = setupHearingRequirementsCYAController(middleware, updateAppealService);
+const hearingRequirementConfirmationController = setupHearingRequirementsConfirmationPage(middleware);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
@@ -274,6 +276,7 @@ router.use(hearingRequirementsOtherNeedsPastExperiencesReasonController);
 router.use(hearingRequirementsOtherNeedsPrivateHearingReasonController);
 router.use(hearingRequirementsOtherNeedsAnythingElseReasonController);
 router.use(hearingRequirementsCYAController);
+router.use(hearingRequirementConfirmationController);
 router.use(hearingDatesToAvoidQuestionController);
 router.use(hearingDatesToAvoidEnterADateController);
 router.use(hearingDatesToAvoidReasonsController);

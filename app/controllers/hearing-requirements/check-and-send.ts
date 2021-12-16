@@ -61,8 +61,8 @@ function buildWitnessNamesList(witnessesRows: SummaryRow[], witnessNames: string
     witnessNames.forEach((name: string) => {
       witnessesRows.push(
           addSummaryRow(
-              name,
-              []
+              '',
+              [name]
           )
       );
     });

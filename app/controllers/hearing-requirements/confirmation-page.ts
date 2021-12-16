@@ -3,7 +3,7 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { addDaysToDate } from '../../utils/date-utils';
 
-function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
+function getHearingRequirementsConfirmationPage(req: Request, res: Response, next: NextFunction) {
   try {
     res.render('templates/confirmation-page.njk', {
       title: i18n.pages.hearingRequirements.confirmation.title,
@@ -18,11 +18,11 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 
 function setupHearingRequirementsConfirmationPage(middleware: Middleware[]): Router {
   const router: Router = Router();
-  router.get(paths.submitHearingRequirements.confirmation, middleware, getConfirmationPage);
+  router.get(paths.submitHearingRequirements.confirmation, middleware, getHearingRequirementsConfirmationPage);
   return router;
 }
 
 export {
-  getConfirmationPage,
-  setupHearingRequirementsConfirmationPage
+  setupHearingRequirementsConfirmationPage,
+  getHearingRequirementsConfirmationPage
 };

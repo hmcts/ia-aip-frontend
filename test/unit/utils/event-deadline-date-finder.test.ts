@@ -359,3 +359,4 @@ describe('event-deadline-date-finder', () => {
       });
     });
   });
+});

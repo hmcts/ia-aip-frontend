@@ -108,6 +108,7 @@ function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealSe
         ...req.session.appeal,
         ...appealUpdated
       };
+      req.session.appeal.additionalEvidence = [];
       return res.redirect(paths.common.provideMoreEvidenceConfirmation);
     } catch (e) {
       next(e);

@@ -170,22 +170,6 @@ export default class UpdateAppealService {
       });
     }
 
-    // if (caseData.respondentDocuments && ccdCase.state !== 'awaitingRespondentEvidence') {
-    //   respondentDocuments = [];
-    //   caseData.respondentDocuments.forEach(document => {
-    //     const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
-
-    //     let evidence = {
-    //       dateUploaded: document.value.dateUploaded,
-    //       evidence: {
-    //         fileId: documentMapperId,
-    //         name: document.value.document.document_filename
-    //       }
-    //     };
-    //     respondentDocuments.push(evidence);
-    //   });
-    // }
-
     if (caseData.directions) {
       directions = caseData.directions.map((ccdDirection: Collection<CcdDirection>): Direction => {
         const direction: Direction = {
@@ -389,7 +373,6 @@ export default class UpdateAppealService {
         evidences: reasonsForAppealDocumentUploads,
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
-      // ...respondentDocuments && { respondentDocuments },
       ...(_.has(caseData, 'directions')) && { directions },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
@@ -407,6 +390,8 @@ export default class UpdateAppealService {
       },
       ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
+      // leaving this in until we rebase with RIA-4650 & RIA-4707
+      // ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.additionalEvidenceDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
@@ -693,11 +678,33 @@ export default class UpdateAppealService {
       ...appeal.application.homeOfficeLetter && {
         uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
+      // leaving this in until we rebase with RIA-4650 & RIA-4707
+      ...appeal.additionalEvidence && {
+        additionalEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)
+      },
       ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
       ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
       ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) }
     };
     return caseData;
+  }
+
+  mapAdditionalEvidenceDocumentsToDocumentsCaseData = (evidences: AdditionalEvidenceDocument[], documentMap: DocumentMap[]): Collection<Document>[] => {
+    return evidences.map((evidence: AdditionalEvidenceDocument) => {
+      const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
+      return {
+        id: evidence.fileId,
+        value: {
+          description: 'additionalEvidenceDocument',
+          document: {
+            document_filename: evidence.name,
+            document_url: documentLocationUrl,
+            document_binary_url: `${documentLocationUrl}/binary`
+          }
+        }
+      // } as Document;
+      } as Collection<Document>;
+    });
   }
 
   mapAppealEvidencesToDocumentsCaseData = (evidences: Evidence[], documentMap: DocumentMap[]): Collection<SupportingDocument>[] => {

@@ -94,7 +94,18 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   const timeExtensions = getTimeExtensionsEvents(req.session.appeal.makeAnApplications);
 
-  const argumentSection = appealArgumentSection.concat(timeExtensions)
+  const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
+  let paymentEvent = [];
+  if (paymentStatus === 'Paid' && paAppealTypeAipPaymentOption === 'payLater') {
+    paymentEvent = [{
+      date: moment(paymentDate).format('DD MMMM YYYY'),
+      dateObject: new Date(paymentDate),
+      text: i18n.pages.overviewPage.timeline.paymentAppeal.text || null,
+      links: i18n.pages.overviewPage.timeline.paymentAppeal.links
+    }];
+  }
+
+  const argumentSection = appealArgumentSection.concat(timeExtensions, paymentEvent)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {

@@ -93,6 +93,10 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       formattedDeadline = getFormattedEventHistoryDate(history, 'submitCmaRequirements', 14);
       break;
     }
+    case 'decisionMaintained': {
+      formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', 5);
+      break;
+    }
     case 'decisionWithdrawn':
     case 'respondentReview': {
       formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', 14);

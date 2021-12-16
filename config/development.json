@@ -1,5 +1,5 @@
 {
-  "testUrl": "https://localhost:3000/",
+  "testUrl": "https://localhost:3000",
   "session": {
     "useRedis": true,
     "useLogger": false
@@ -9,5 +9,8 @@
   },
   "payments": {
     "apiUrl": "http://localhost:8083"
+  },
+  "iaPayments": {
+    "apiUrl": "http://localhost:8096"
   }
 }

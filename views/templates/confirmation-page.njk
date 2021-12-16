@@ -9,11 +9,18 @@
   }) }}
   <h2 class="govuk-heading-m">{{ i18n.pages.successPage.whatHappensNext }}</h2>
   <div>
-  <ul class="govuk-list govuk-list--bullet">
-    {% for item in whatNextListItems %}
-      <li>{{ item | eval | safe }}</li>
+  {% if whatNextContent %}
+    {% for item in whatNextContent %}
+      <p>{{ item | eval | safe }}</p>
     {% endfor %}
-  </ul>
+  {% endif %}
+  {% if whatNextListItems %}
+    <ul class="govuk-list govuk-list--bullet">
+      {% for item in whatNextListItems %}
+        <li>{{ item | eval | safe }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
   {% if info %}
     <div class="panel-background">
       <p><span class='govuk-!-font-weight-bold'>{{ info.title }}</span></p>

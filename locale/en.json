@@ -27,6 +27,9 @@
       "seeProgress": "See your appeal progress",
       "payNow": "Submit and continue to pay £{{ fee }} by debit or credit card",
       "addAnotherWitness": "Add another witness"
+      "confirmAndSend": "Confirm and send",
+      "continueUseNewService": "Continue to use the new service",
+      "submitYourAppeal": "Submit your appeal"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -107,6 +110,11 @@
         "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
         "path": "appealStarted.checkAndSend"
+      },
+      "checkAndSendWithPayments": {
+        "id": "checkAndSendLink",
+        "title": "Check and send your appeal details",
+        "path": "appealStarted.checkAndSend"
       }
     },
     "contactDetails": {
@@ -184,7 +192,8 @@
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence",
-        "paymentType": "Payment type"
+        "paymentType": "Payment type",
+        "feeAmount": "Fee amount"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -306,6 +315,12 @@
         "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
       }
     },
+    "confirmationPayLater": {
+      "title": "You have paid for the appeal",
+      "content": [
+        "Your appeal will continue"
+      ]
+    },
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
       "heading": "Why do you think the Home Office decision is wrong?",
@@ -334,6 +349,30 @@
     "reasonsForAppealUploadQuestion": {
       "title": "Do you want to provide supporting evidence?",
       "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
+    },
+    "provideMoreEvidence": {
+      "form": {
+        "title": "Provide more evidence",
+        "content": [
+          {
+            "description": "Upload any evidence that will support your appeal such as letters, photos or documents. If you are taking a photo of a document, place it on a flat surface and take the photo from above."
+          },
+          {
+            "description": "Both the Tribunal and the Home Office will be able to see any evidence you provide."
+          }
+        ],
+        "moreInfo": "<a target=\"_blank\" href=\"/supporting-evidence\">Find out more about evidence to support your appeal</a>"
+      },
+      "checkYourAnswers": {
+        "title": "Check your answers"
+      },
+      "confirmation": {
+        "title": "You have provided more evidence",
+        "whatNextListItems": [
+          "The evidence is now part of your appeal and can be seen by the Tribunal and the Home Office",
+          "If your appeal goes to a hearing, the judge will consider this evidence when deciding your appeal"
+        ]
+      }
     },
     "reasonsForAppealUpload": {
       "title": "Provide supporting evidence",
@@ -378,6 +417,8 @@
       "askedForMoreTime": "You have asked for more time",
       "savedAndAskedForMoreTime": "You have saved your answers and asked for more time",
       "weAimTo": "We aim to get back to you within 5 days.",
+      "iWantTo": "I want to...",
+      "payForAppeal": "Pay for this appeal",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
@@ -446,7 +487,16 @@
           "dueDate": "Your appeal may end. If you do not want the appeal to end, you must email <a class='govuk-link' href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a> by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to explain why.",
           "info": {
             "title": "Helpful Information",
-            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a>"
+            "url": "<a class='govuk-link' href='{{ paths.common.homeOfficeWithdrawDecision }}'>What happens if the Home Office withdraw their decision</a>"
+          }
+        },
+        "decisionMaintained": {
+          "description": "The Home Office has reviewed your appeal and decided to maintain their decision to refuse your application to stay in or enter the UK. Read the <a class='govuk-link' href='{{ paths.common.homeOfficeResponse }}'>Home Office Response</a>.",
+          "description2": "If you want to respond, you can <a class='govuk-link' href='{{ paths.common.provideMoreEvidenceForm }}'>provide more evidence</a> at any time.",
+          "dueDate": "Your appeal will be decided at a hearing. A Tribunal Caseworker will contact you by <span class='govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> to ask if there is anything you will need at the hearing.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link govuk-!-margin-bottom-2 --display-block' href='{{ paths.common.homeOfficeMaintainDecision }}'>What happens if the Home Office maintain their decision</a><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
           }
         },
         "awaitingReasonsForAppeal": {
@@ -687,6 +737,16 @@
               "href": "{{ paths.common.outOfTimeDecisionViewer }}"
             }
           ]
+        },
+        "paymentAppeal": {
+          "text": "You paid for your appeal",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
+            }
+          ]
         }
       }
     },
@@ -799,7 +859,7 @@
         "additionalEvidence": "Additional evidence"
       },
       "homeOfficeResponse": {
-        "title": "HO Response",
+        "title": "Home Office Response",
         "dateUploaded": "Date uploaded",
         "document": "Document",
         "documentDescription": "Document description",
@@ -2443,25 +2503,29 @@
     {
       "question": "Are you currently living in the United Kingdom?",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are currently living in the United Kingdom"
+      "errorMessage": "Select yes if you are currently living in the United Kingdom",
+      "modal": null
     },
     {
       "question": "Are you currently in detention?",
       "description": "This could be a prison or an immigration removal centre.",
       "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you are currently in detention"
+      "errorMessage": "Select yes if you are currently in detention",
+      "modal": null
     },
     {
       "question": "Are you appealing an EU Settlement Scheme decision?",
       "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you appealing an EU Settlement Scheme decision"
+      "errorMessage": "Select yes if you appealing an EU Settlement Scheme decision",
+      "modal": null
     },
     {
       "question": "Are you appealing an Asylum and/or Humanitarian Protection decision?",
       "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country. If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision"
+      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision",
+      "modal": null
     }
   ],
   "ineligible": [
@@ -2493,7 +2557,78 @@
       "description": "You cannot use the new online service because you are not appealing an Asylum and/or Humanitarian Protection decision.",
       "optionsList": [
         "You can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+      ],
+      "cta": "link",
+      "hideMoreInfo": true,
+      "showHelp": true
+    }
+  ],
+  "eligibilityPaymentsFlag": [
+    {
+      "question": "Are you currently living in the United Kingdom?",
+      "eligibleAnswer": "yes",
+      "errorMessage": "Select yes if you are currently living in the United Kingdom",
+      "modal": null
+    },
+    {
+      "question": "Are you currently in detention?",
+      "description": "This could be a prison or an immigration removal centre.",
+      "eligibleAnswer": "no",
+      "errorMessage": "Select yes if you are currently in detention",
+      "modal": null
+    },
+    {
+      "question": "Are you appealing an EU Settlement Scheme decision?",
+      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
+      "eligibleAnswer": "no",
+      "errorMessage": "Select yes if you appealing an EU Settlement Scheme decision",
+      "modal": null
+    },
+    {
+      "question": "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?",
+      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
+      "modal": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Revocation of Protection Status?</h3> <p>This is when your protection status has been taken away because it is believed you no longer need it, didn‘t tell the truth in your claim or have committed a serious crime.</p> <h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Deprivation of British Citizenship?</h3> <p>This is when your British citizenship has been taken away because It is believed you didn't tell the truth when claiming citizenship or have been involved in behaviours including terrorism or serious organised crime.</p>",
+      "eligibleAnswer": "yes",
+      "errorMessage": "Select yes if you are appealing a Revocation of Protection Status or Deprivation of Citizenship decision"
+    }
+  ],
+  "ineligiblePaymentsFlag": [
+    {
+      "title": "You cannot currently use the service",
+      "description": "You cannot use this service because you are appealing from outside the UK.",
+      "optionsList": [
+        "<a target=\"_blank\" href=\"https://www.gov.uk/immigration-asylum-tribunal/appeal-from-outside-the-uk/\">Find out more about appealing from outside the UK</a>"
       ]
+    },
+    {
+      "title": "You cannot currently use the service",
+      "description": "You cannot use this service because you are in detention.",
+      "optionsList": [
+        "If you are in an immigration removal centre, you can <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\">use form IAFT-DIA</a> to appeal by post or fax.",
+        "If you are in a prison, you can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+      ]
+    },
+    {
+      "title": "You cannot currently use the new service",
+      "description": "You cannot use this service because you are appealing an EU Settlement Scheme decision.",
+      "optionsList": [
+        "<a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead</a> or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
+      ],
+      "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
+    },
+    {
+    "title": "There is a fee for this appeal",
+    "description": "It costs:",
+    "optionsList": [
+      "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+      "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
+      "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
+      "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
+      "In all other cases, you should use the new service."
+    ],
+    "cta": "link",
+    "hideMoreInfo": true,
+    "showHelp": true
     }
   ]
 }

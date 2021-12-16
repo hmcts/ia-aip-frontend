@@ -13,6 +13,10 @@ module.exports = {
       await I.seeInCurrentUrl(paths.awaitingReasonsForAppeal.decision);
     });
 
+    Then(/^I should see the "supporting evidence question" page$/, async () => {
+      await I.seeInCurrentUrl(paths.awaitingReasonsForAppeal.supportingEvidence);
+    });
+
     Then(/^I enter "([^"]*)" into the reason for appeal text area$/, async (text: string) => {
       await I.fillField('#applicationReason', text);
     });

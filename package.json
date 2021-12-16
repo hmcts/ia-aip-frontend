@@ -29,7 +29,7 @@
     "test:crossbrowser": "cross-env NODE_ENV=ci IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run-multiple -c test/crossbrowser/saucelabs.config.js --all --steps",
     "codecept:functional": "TEST_URL=https://localhost:3000 USE_REDIS=false IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 ADDRESS_LOOKUP_URL=http://localhost:20002 DOC_MANAGEMENT_URL=http://localhost:20003 cross-env NODE_ENV=test codeceptjs run -c codecept.functional.js --verbose",
     "codecept:e2e": "IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run -c codecept.e2e.js --verbose --debug",
-    "codecept:e2e-local": "TEST_URL=https://localhost:3000 IDAM_API_URL=http://localhost:5000 cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.e2e.js --verbose --debug",
+    "codecept:e2e-local": "IDAM_API_URL=http://localhost:5000 codeceptjs run -c codecept.e2e.js --verbose --debug",
     "setupUser": "cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.setup.js --verbose --debug | grep ia_citizen",
     "test:mutation": "echo 'not implemented'",
     "test:mutation-local": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js"
@@ -42,7 +42,7 @@
   "dependencies": {
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "^1.1.2",
-    "@hmcts/properties-volume": "^0.0.9",
+    "@hmcts/properties-volume": "^0.0.13",
     "applicationinsights": "^1.8.10",
     "codeceptjs": "^2.6.11",
     "config": "^3.3.6",

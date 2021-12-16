@@ -16,19 +16,19 @@
     <form action="/eligibility" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <input type="hidden" name="questionId" value="{{ questionId }}">
+
+
+<legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">{{ question }}</h1>
+     {% if description %}
+        <div id="answer-hint" class="govuk-hint">{{ description }}</div>
+    {% endif %}
+</legend>
+
         {{ govukRadios({
             classes: "govuk-radios--inline",
             name: "answer",
-            fieldset: {
-                legend: {
-                    text: question,
-                    isPageHeading: true,
-                    classes: "govuk-fieldset__legend--xl"
-                }
-            },
-            hint: {
-                text: description
-            },
+
             items: [
                 {
                     value: "yes",
@@ -45,6 +45,13 @@
                 text:  errors['answer'].text
             } if errors['answer']
         }) }}
+
+
+    {% if modal %}
+    <div class="overview-banner govuk-!-margin-top-0">
+        {{ modal | safe  }}
+    </div>
+    {% endif %}
 
         <div class="save-buttons__container">
             {{ govukButton({

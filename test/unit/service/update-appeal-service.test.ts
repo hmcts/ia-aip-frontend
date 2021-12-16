@@ -191,11 +191,6 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.reasonsForAppeal.uploadDate).eq('2020-01-02');
       expect(req.session.appeal.reasonsForAppeal.evidences).to.exist;
       expect(req.session.appeal.documentMap).to.exist;
-      // expect(req.session.appeal.respondentDocuments).to.exist;
-      // expect(req.session.appeal.respondentDocuments[0].dateUploaded).to.be.eq('2020-02-21');
-      // expect(req.session.appeal.respondentDocuments[0].evidence).to.exist;
-      // validateUuid(req.session.appeal.respondentDocuments[0].evidence.fileId);
-      // expect(req.session.appeal.respondentDocuments[0].evidence.name).to.be.eq('Screenshot.png');
       expect(req.session.appeal.askForMoreTime).to.deep.eq({ inFlight: false });
       expect(req.session.appeal.cmaRequirements.accessNeeds.isInterpreterServicesNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
@@ -391,38 +386,6 @@ describe('update-appeal-service', () => {
       ];
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.deep.equal(appealClarifyingQuestions);
     });
-
-    // TODO: review this test and delete if not needed
-    // it('load time extensions when time extension in flight', async () => {
-    //   expectedCaseData.timeExtensions = [ {
-    //     id: '1',
-    //     value: {
-    //       requestDate: '2020-01-02',
-    //       reason: 'some reason',
-    //       status: 'submitted',
-    //       state: 'awaitingReasonsForAppeal',
-    //       evidence: [ {
-    //         value: {
-    //           'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
-    //           'document_filename': 'expected_time_extension_evidence.png',
-    //           'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
-    //         }
-    //       } ]
-    //     }
-    //   } ];
-
-    //   ccdServiceMock.expects('loadOrCreateCase')
-    //     .withArgs(userId, { userToken, serviceToken })
-    //     .resolves({
-    //       id: caseId,
-    //       state: 'awaitingReasonsForAppeal',
-    //       case_data: expectedCaseData
-    //     });
-    //   await updateAppealService.loadAppeal(req as Request);
-
-    //   expect(req.session.appeal.askForMoreTime).to.be.eql(
-    //     { inFlight: true });
-    // });
 
     it('load cmaRequirements', async () => {
 
@@ -1004,15 +967,6 @@ describe('update-appeal-service', () => {
                 }
               ] as Evidence[]
             },
-            // respondentDocuments: [
-            //   {
-            //     dateUploaded: '2020-02-21',
-            //     evidence: {
-            //       fileId: '75d96b97-f453-4084-aecf-3f73738e4ded',
-            //       name: 'Screenshot 2020-02-21 at 11.49.28.png'
-            //     }
-            //   }
-            // ],
             documentMap: [
               {
                 id: '00000000-0000-0000-0000-000000000000',

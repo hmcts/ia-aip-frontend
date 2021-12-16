@@ -1984,7 +1984,8 @@
         "hearingWitnessNames": {
           "pageTitle": "Add witnesses names",
           "title": "Add witnesses names",
-          "text": "Witnesses name"
+          "text": "Witnesses name",
+          "cya": "Witnesses names"
         },
         "witnessOutsideUk": {
           "pageTitle": "Will you or any witnesses take part in the hearing from outside the UK?",
@@ -2007,6 +2008,9 @@
           "pageTitle": "Add language details",
           "title": "Add language details",
           "text": "Dialect (Optional)",
+          "languages": "Languages",
+          "language": "Language",
+          "dialect": "Dialect",
           "hint": "A dialect is a form of a language spoken in a part of a country or by groups of people in a country."
         },
         "stepFreeAccessPage": {
@@ -2130,6 +2134,18 @@
         "addAnotherDateQuestion": {
           "title": "Is there another date that you or any witnesses cannot go to the hearing?",
           "heading": "Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?"
+        }
+      },
+      "confirmation": {
+        "title": "You have told us what you will need at the hearing",
+        "whatNextListItems": [
+          "A Tribunal Caseworker will look at your appointment needs. If you have asked for an interpreter, step-free access or a hearing loop, these will be provided. If you have asked for anything else, it will be considered but may not be provided",
+          "A Tribunal Caseworker will then contact you to tell you where and when the appointment will take place and what will be provided",
+          "This should be by <b>{{ date }}</b> but may take longer than that"
+        ],
+        "info": {
+          "title": "Helpful Information",
+          "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
         }
       }
     },

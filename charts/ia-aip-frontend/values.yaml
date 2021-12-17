@@ -16,6 +16,9 @@ nodejs:
     DOC_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     IA_CASE_PAYMENTS_API_URL: "http://ia-case-payments-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     PAYMENTS_API_URL: "http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    PAYMENTS_API_URL: "http://payments-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    PCQ_URL: "https://pcq.aat.platform.hmcts.net"
+    PCQ_RETURN_URL: "immigration-appeal.aat.platform.hmcts.net/about-appeal"
     SECURE_SESSION: true
     TRACKING_SCRIPTS: false
   aadIdentityName: ia
@@ -37,6 +40,7 @@ nodejs:
         - hearing-centre-birmingham-email
         - hearing-centre-hatton-cross-email
         - hearing-centre-glasgow-email
+        - pcq-token-key 
 redis:
   cluster:
     enabled: false

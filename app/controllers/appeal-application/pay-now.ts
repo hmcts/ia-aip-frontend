@@ -87,7 +87,19 @@ function postPayNow(updateAppealService: UpdateAppealService) {
       };
       let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
 
+    //   if (['protection'].includes(appeal.application.appealType)) {
+    //     const pcqFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.PCQ, false);
+    //     if (!pcqFlag) return res.redirect(redirectPage);
+    //     let isPcqUp: boolean = await checkPcqHealth();
+    //     if (isPcqUp) {
+    //       invokePcq(res, appeal);
+    //     } else {
+    //       return res.redirect(redirectPage);
+    //     }
+    //   } else {
       return res.redirect(redirectPage);
+    //   }
+
     } catch (error) {
       next(error);
     }
@@ -105,8 +117,8 @@ class SetupPayNowController {
 }
 
 export {
-  SetupPayNowController,
-  getPayNow,
-  getPayNowQuestion,
-  postPayNow
+    SetupPayNowController,
+    getPayNow,
+    getPayNowQuestion,
+    postPayNow
 };

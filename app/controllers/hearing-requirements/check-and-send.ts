@@ -462,7 +462,6 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.submitHearingRequirements.taskList;
     const hearingRequirements: HearingRequirements = req.session.appeal.hearingRequirements;
-
     const hearingRequirementsSummarySections: SummarySection[] = [];
 
     const witnessesSectionList: SummaryList[] = buildWitnessesSectionSummaryList(hearingRequirements);
@@ -504,7 +503,7 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
     res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.cmaRequirementsCYA.title,
       formAction: paths.submitHearingRequirements.checkAndSend,
-      previousPage,
+      previousPage: paths.submitHearingRequirements.taskList,
       summarySections: hearingRequirementsSummarySections
     });
   } catch (e) {

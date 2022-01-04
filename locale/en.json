@@ -593,6 +593,17 @@
             "title": "Helpful Information",
             "url": "<a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
           }
+        },
+        "prepareForHearing": {
+          "description": "The Tribunal has set a date for your hearing. Here are the details:",
+          "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
+          "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
+          "hearingCentre": "<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ",
+          "hearingNotice": "You can now access your <a href='{{ paths.common.hearingNoticeViewer }}'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
         }
       },
       "timeline": {
@@ -884,6 +895,9 @@
         "document": "Document",
         "documentDescription": "Document description",
         "additionalEvidence": "Additional evidence"
+      },
+      "hearingNotice" : {
+        "title": "Notice of Hearing"
       }
     },
     "guidancePages": {

@@ -27,7 +27,8 @@ function buildProgressBarStages(state: string) {
       activeStatus: [
         States.SUBMIT_HEARING_REQUIREMENTS.id,
         States.DRAFT_HEARING_REQUIREMENTS.id,
-        States.LISTING.id
+        States.LISTING.id,
+        States.PREPARE_FOR_HEARING.id
       ]
     },
     yourAppealDecision: {

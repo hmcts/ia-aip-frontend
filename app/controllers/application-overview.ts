@@ -42,7 +42,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
       const stagesStatus = buildProgressBarStages(req.session.appeal.appealStatus);
       const history = await getAppealApplicationHistory(req, updateAppealService);
-      const nextSteps = getAppealApplicationNextStep(req);
+      const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(req.session.appeal.appealStatus);
       const provideMoreEvidenceStates = [
         States.RESPONDENT_REVIEW.id,

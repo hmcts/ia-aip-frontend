@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { hearingRequirementsMiddleware } from '../../middleware/hearing-requirements-middleware';
+import { hearingBundleFeatureMiddleware, hearingRequirementsMiddleware } from '../../middleware/hearing-requirements-middleware';
 import { paths } from '../../paths';
+import { getHearingNoticeViewer } from '../detail-viewers';
 import { getCheckAndSendPage } from './check-and-send';
 import { getHearingRequirementsConfirmationPage } from './confirmation-page';
 import { getAddAnotherDateQuestionPage } from './dates-to-avoid/add-another-date';
@@ -74,7 +75,7 @@ function setupHearingRequirementsFeatureToggleController(middleware: Middleware[
 
 function setupHearingBundleFeatureToggleController(middleware: Middleware[]): Router {
   const router = Router();
-  // Add the paths here for hearing bundles feature e.g., router.get(path,middleware,hearingBundleFeatureMiddleware,getView);
+  router.get(paths.common.hearingNoticeViewer,middleware,hearingBundleFeatureMiddleware,getHearingNoticeViewer);
   return router;
 }
 

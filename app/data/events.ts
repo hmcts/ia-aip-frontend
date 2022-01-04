@@ -122,5 +122,9 @@ export const Events = {
     id: 'draftHearingRequirements',
     summary: 'Submit hearing requirements AIP',
     description: 'Submit hearing requirements AIP'
+  },
+  PREPARE_AIP_HEARING: {
+    id: 'prepareForHearing',
+    description: 'Prepare for hearing '
   }
 };

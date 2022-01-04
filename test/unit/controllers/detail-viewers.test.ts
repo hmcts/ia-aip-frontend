@@ -3,6 +3,7 @@ import {
   getAppealDetailsViewer,
   getCmaRequirementsViewer,
   getDocumentViewer,
+  getHearingNoticeViewer,
   getHoEvidenceDetailsViewer,
   getHomeOfficeResponse,
   getHomeOfficeWithdrawLetter,
@@ -40,7 +41,7 @@ describe('Detail viewer Controller', () => {
       params: {},
       session: {
         appeal: {
-          cmaRequirements:  {
+          cmaRequirements: {
             otherNeeds: {
               bringOwnMultimediaEquipment: false
             }
@@ -112,10 +113,10 @@ describe('Detail viewer Controller', () => {
 
       getHoEvidenceDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('detail-viewers/view-ho-details.njk', {
-        documents: [ {
+        documents: [{
           dateUploaded: '21 February 2020',
           url: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/someUUID'>evidence_file(PNG)</a>"
-        } ],
+        }],
         previousPage: paths.common.overview
       });
     });
@@ -225,7 +226,7 @@ describe('Detail viewer Controller', () => {
   describe('getDocumentViewer', () => {
     it('should display file', async () => {
       req.params.documentId = '1';
-      req.session.appeal.documentMap = [ { id: '1', url: 'documentStoreUrl' } ];
+      req.session.appeal.documentMap = [{ id: '1', url: 'documentStoreUrl' }];
 
       const fetchResponse = {
         headers: { 'content-type': 'image/png' },
@@ -242,7 +243,7 @@ describe('Detail viewer Controller', () => {
 
     it('getDocumentViewer should catch exception and call next with the error', async () => {
       req.params.documentId = '1';
-      req.session.appeal.documentMap = [ { id: '1', url: 'documentStoreUrl' } ];
+      req.session.appeal.documentMap = [{ id: '1', url: 'documentStoreUrl' }];
       const error = new Error('an error');
       documentManagementService.fetchFile = sandbox.stub().throws(error);
       await getDocumentViewer(documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
@@ -265,21 +266,21 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      req.session.appeal.documentMap = [ {
+      req.session.appeal.documentMap = [{
         id: '00000',
         url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
       }, {
         id: '00001',
         url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
-      } ];
+      }];
 
-      const expectedSummaryRows = [ {
+      const expectedSummaryRows = [{
         'key': { 'text': 'Why do you think the Home Office decision is wrong?' },
         'value': { 'html': 'HELLO' }
       }, {
         'key': { 'text': 'Supporting evidence' },
         'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>test.txt</a>" }
-      } ];
+      }];
       getReasonsForAppealViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
         previousPage: paths.common.overview,
@@ -300,13 +301,13 @@ describe('Detail viewer Controller', () => {
           }
         ]
       };
-      req.session.appeal.documentMap = [ {
+      req.session.appeal.documentMap = [{
         id: '00000',
         url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
       }, {
         id: '00001',
         url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
-      } ];
+      }];
 
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
@@ -516,16 +517,16 @@ describe('Detail viewer Controller', () => {
         date: '',
         time: ''
       },
-      req.session.appeal.hearingCentre = 'taylorHouse';
-      req.session.appeal.makeAnApplications = [ timeExtension ];
+        req.session.appeal.hearingCentre = 'taylorHouse';
+      req.session.appeal.makeAnApplications = [timeExtension];
       req.session.appeal.makeAnApplicationEvidence = [{
         id: 'id',
         fileId: '123456',
         name: 'name',
-        tag  : 'test-tag',
-        suppliedBy  : 'test-supplied',
-        description  : 'test-description',
-        dateUploaded  : 'test-date'
+        tag: 'test-tag',
+        suppliedBy: 'test-supplied',
+        description: 'test-description',
+        dateUploaded: 'test-date'
       }];
       getTimeExtensionViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-viewer.njk', {
@@ -548,7 +549,7 @@ describe('Detail viewer Controller', () => {
       dateUploaded: '2021-06-01'
     };
     it('should render templates/details-viewer.njk with ended appeal notice document', () => {
-      req.session.appeal.tribunalDocuments = [ document ];
+      req.session.appeal.tribunalDocuments = [document];
       const expectedSummaryRows = [
         {
           key: { text: i18n.pages.detailViewers.common.dateUploaded },
@@ -557,7 +558,7 @@ describe('Detail viewer Controller', () => {
         {
           key: { text: i18n.pages.detailViewers.common.document },
           value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-perez-NoticeOfEndedAppeal(PDF)</a>` }
-        } ];
+        }];
 
       getNoticeEndedAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
@@ -568,12 +569,50 @@ describe('Detail viewer Controller', () => {
     });
 
     it('should catch error and call next with it', () => {
-      req.session.appeal.tribunalDocuments = [ document ];
+      req.session.appeal.tribunalDocuments = [document];
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
       getNoticeEndedAppeal(req as Request, res as Response, next);
       expect(next).to.have.been.calledWith(error);
+    });
+  });
+
+  describe('should render notice of hearing', () => {
+    const document = {
+      fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
+      name: 'PA 50002 2021-perez-hearing-notice.PDF',
+      id: '1',
+      tag: 'hearingNotice',
+      dateUploaded: '2021-06-01'
+    };
+    it('should render templates/details-viewer.njk with hearing notice document', () => {
+      req.session.appeal.hearingDocuments = [document];
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '01 June 2021' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+        }];
+
+      getHearingNoticeViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingNotice.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', () => {
+        req.session.appeal.hearingDocuments = [document];
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
     });
   });
 
@@ -592,10 +631,10 @@ describe('Detail viewer Controller', () => {
             id: 'id',
             fileId: '123456',
             name: 'name',
-            tag  : 'test-tag',
-            suppliedBy  : 'test-supplied',
-            description  : 'test-description',
-            dateUploaded  : 'test-date'
+            tag: 'test-tag',
+            suppliedBy: 'test-supplied',
+            description: 'test-description',
+            dateUploaded: 'test-date'
           }],
           'applicant': 'Appellant',
           'applicantRole': 'citizen'
@@ -604,9 +643,9 @@ describe('Detail viewer Controller', () => {
 
       getTimeExtensionSummaryRows(timeExtensionPendingDecision);
       expect(addSummaryRowStub).to.have.been.callCount(4);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.reason, [ 'My reason' ]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.date, [ '15 July 2021' ]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [i18n.pages.detailViewers.timeExtension.request.wantMoreTime]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.reason, ['My reason']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.date, ['15 July 2021']);
     });
 
     it('should get rows with decision', () => {
@@ -623,10 +662,10 @@ describe('Detail viewer Controller', () => {
             id: 'id',
             fileId: '123456',
             name: 'name',
-            tag  : 'test-tag',
-            suppliedBy  : 'test-supplied',
-            description  : 'test-description',
-            dateUploaded  : 'test-date'
+            tag: 'test-tag',
+            suppliedBy: 'test-supplied',
+            description: 'test-description',
+            dateUploaded: 'test-date'
           }],
           'applicant': 'Appellant',
           'decisionDate': '2021-07-14',
@@ -639,13 +678,13 @@ describe('Detail viewer Controller', () => {
 
       getTimeExtensionSummaryRows(timeExtensionPendingDecision);
       expect(addSummaryRowStub).to.have.been.callCount(8);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.reason, [ 'My reason' ]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.date, [ '14 July 2021' ]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.decision, [ i18n.pages.detailViewers.timeExtension.response.Refused ]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.reason, [ 'Reason not enough' ]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.date, [ '14 July 2021' ]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.maker, [ 'Tribunal Caseworker' ]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [i18n.pages.detailViewers.timeExtension.request.wantMoreTime]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.reason, ['My reason']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.date, ['14 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.decision, [i18n.pages.detailViewers.timeExtension.response.Refused]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.reason, ['Reason not enough']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.date, ['14 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.maker, ['Tribunal Caseworker']);
     });
   });
 
@@ -658,14 +697,14 @@ describe('Detail viewer Controller', () => {
       dateUploaded: '2021-06-01'
     };
     it('should render details-viewer.njk template', () => {
-      req.session.appeal.tribunalDocuments = [ document ];
+      req.session.appeal.tribunalDocuments = [document];
       getOutOfTimeDecisionViewer(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.called;
     });
 
     it('should catch error', () => {
-      req.session.appeal.tribunalDocuments = [ document ];
+      req.session.appeal.tribunalDocuments = [document];
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       getOutOfTimeDecisionViewer(req as Request, res as Response, next);

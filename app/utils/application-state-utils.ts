@@ -1,9 +1,12 @@
-import { Request } from 'express';
+import { NextFunction, Request } from 'express';
 import _ from 'lodash';
 import i18n from '../../locale/en.json';
+import { FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
+import { hearingBundleFeatureMiddleware } from '../middleware/hearing-requirements-middleware';
 import { paths } from '../paths';
+import LaunchDarklyService from '../service/launchDarkly-service';
 import { hasPendingTimeExtension } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
@@ -84,7 +87,7 @@ function getMoveAppealOfflineDate(req: Request) {
  * e.g 'awaitingReasonsForAppealPartial' which should be defined in APPEAL_STATE.
  * @param req the request containing the session and appeal status
  */
-function getAppealApplicationNextStep(req: Request) {
+async function getAppealApplicationNextStep(req: Request) {
   const currentAppealStatus = getAppealStatus(req);
   const pendingTimeExtension = hasPendingTimeExtension(req.session.appeal);
   const decisionGranted = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Granted' || null;
@@ -406,6 +409,34 @@ function getAppealApplicationNextStep(req: Request) {
           url: i18n.pages.overviewPage.doThisNext.cmaListed.usefulDocuments.url
         },
         cta: null,
+        allowedAskForMoreTime: false,
+        date: getHearingDate(req),
+        time: getHearingTime(req),
+        hearingCentre: getHearingCentre(req)
+      };
+      break;
+    case 'prepareForHearing':
+      const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
+      if (!hearingBundleFeatureEnabled) {
+        return {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.nothingToDo
+          ]
+        };
+      }
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.description,
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.date,
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.time,
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingCentre,
+          i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingNotice
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.prepareForHearing.info.title,
+          url: i18n.pages.overviewPage.doThisNext.prepareForHearing.info.url
+        },
+        cta: {},
         allowedAskForMoreTime: false,
         date: getHearingDate(req),
         time: getHearingTime(req),

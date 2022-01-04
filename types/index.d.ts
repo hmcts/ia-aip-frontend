@@ -104,6 +104,7 @@ interface Appeal {
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
+  hearingDocuments?: Evidence[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;

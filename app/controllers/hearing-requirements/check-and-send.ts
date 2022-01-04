@@ -446,7 +446,7 @@ function buildDatesToAvoidSummaryList(datesToAvoid: DatesToAvoid) {
           `<b>${i18n.common.cya.reason}</b>`,
           Delimiter.BREAK_LINE,
           `<pre>${dateEntry.reason || ''}</pre>` ],
-          `${paths.submitHearingRequirements.datesToAvoidQuestion}/${i}${editParameter}`
+          `${paths.submitHearingRequirements.hearingDatesToAvoidEnterDate}/${i}${editParameter}`
       ));
     });
   }

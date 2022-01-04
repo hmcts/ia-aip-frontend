@@ -628,7 +628,7 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'actions': {
                 'items': [{
-                  'href': '/hearing-dates-avoid/0?edit',
+                  'href': '/hearing-dates-avoid-enter/0?edit',
                   'text': 'Change'
                 }]
               }
@@ -641,7 +641,7 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'actions': {
                 'items': [{
-                  'href': '/hearing-dates-avoid/1?edit',
+                  'href': '/hearing-dates-avoid-enter/1?edit',
                   'text': 'Change'
                 }]
               }

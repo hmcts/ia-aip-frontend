@@ -11,6 +11,7 @@ import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { decisionTypeValidation } from '../../utils/validations/fields-validations';
+import { checkPcqHealth, invokePcq } from '../pcq';
 
 function getDecisionTypeQuestion(appeal: Appeal) {
   let hint: string;
@@ -98,7 +99,15 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
       };
       const defaultRedirect = req.session.appeal.application.appealType === 'protection' ? paths.appealStarted.payNow : paths.appealStarted.taskList;
       let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
-      return res.redirect(redirectPage);
+      if (['protection'].includes(appeal.application.appealType)) return res.redirect(redirectPage);
+      const pcqFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.PCQ, false);
+      if (!pcqFlag) return res.redirect(redirectPage);
+      const isPcqUp: boolean = await checkPcqHealth();
+      if (isPcqUp) {
+        invokePcq(res, appeal);
+      } else {
+        return res.redirect(redirectPage);
+      }
     } catch (error) {
       next(error);
     }

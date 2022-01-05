@@ -6,17 +6,17 @@ As a person
 I want be able to sign in
 
 Scenario: Complete appeal application
-  # Given I am on home page
-  # When I click start now
-  # Then I should see the "Are you currently living in the United Kingdom" eligibility page
-  # When I select Yes and click continue
-  # Then I should see the "Are you currently in detention" eligibility page
-  # When I select No and click continue
-  # Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
-  # When I select No and click continue
-  # Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
-  # When I select Yes and click continue
-  # Then I should see the eligible page
+  Given I am on home page
+  When I click start now
+  Then I should see the "Are you currently living in the United Kingdom" eligibility page
+  When I select Yes and click continue
+  Then I should see the "Are you currently in detention" eligibility page
+  When I select No and click continue
+  Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
+  When I select No and click continue
+  Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?" eligibility page
+  When I select No and click continue
+  Then I see There is a fee for this appeal page
   # When I click continue
   # Then I should see the Create an account page
   # When I click Sign in to your account
@@ -59,61 +59,87 @@ Scenario: Complete appeal application
   Then I click "Save and continue" button
   Then I should be taken to the task-list page
 
-#  When I click on the type-of-appeal link
-#  Then I should be taken to the appeal page
-#
-#  When I select appeal type Protection
-#  And I click "Save and continue" button
-#  Then I should see the task-list page
-#
-#  When I click on the check and send your appeal link
-#  Then I should be taken to the check-and-send page
-#
-#  When I check the statement of truth
-#  And I click send
-#  Then I am on the appeal details sent page
-#  And I see "Your appeal details have been sent" in title
-#  And I see the respond by date is 5 days in the future
-#
-#  # Case Progression
-#  Then I sign in as a Case Officer and request HO data to match appellant details
-#  Then I sign in as a Case Officer and request HO Bundle
-#  Then I sign in as a Home Office Generic and upload the HO Bundle
-#  Then I sign in as a Case Officer and request the reasons for appeal
-#
-#   # Appellant
-#   Given I sign in as the Appellant
-#   When I visit the overview page
-#   Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
-##   #    Reenable when ask for more time flag is on by default
-##   #    Then I should see the 'ask for more time' link
-#
-#    When I click 'ask for more time'
-#    Then I should see the ask-for-more-time page
-#    When I enter a time extensions reason
-#    And I click continue
-#    Then I should see do you want to upload evidence page
-#    When I select No and click continue
-#    Then I should see the ask for more time check you answers page
-#    When I click send
-#    Then I am on the overview page
-#
-#   Then I click continue
-#   Then I should see the reasons for appeal decision page
-#   When I visit reasons for appeal
-#
-#   Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
-#   Then I should see the "supporting evidence question" page
-#
-#   When I select No and click continue
-#   Then I should see the reasons for appeal CYA page
-#
-#   When I click "Send" button
-#   Then I should see the reasons for appeal confirmation page
-#   And I see the respond by date is 2 weeks in the future
-#
-##   # Case Progression
-#   Then I sign in as a Case Officer and send directions with Clarifying Questions
+  When I click on Appeal and decision type link
+
+  Then I see "What is your appeal type?" in title
+  And I check "Protection (You will be persecuted or harmed in some way if you are returned to your home country)" option
+  And I click "Save and continue" button   
+  Then I should see the decision type page
+  Then I select decision type without hearing
+  And I click "Save and continue" button
+  Then I should be taken to the payment options page
+  When I select Yes for pay for the appeal now
+  And I click "Save and continue" button
+  
+  Then I see "Tell us about your appeal" in title
+  And I should be able to click "Check and send your appeal"
+  When I click on the check and send your appeal link
+  Then I should be taken to the check-and-send page
+  Then I check the statement of truth
+  When I click Submit and continue to pay £80 by debit or credit card
+
+  Then I should be taken to the Enter card details
+  When I enter payment details
+  And I click "Continue" button
+
+  Then I see Confirm your payment page
+  When I click "Confirm payment" button
+  Then I am on the appeal details sent page
+  And I see "Your appeal details have been sent" in title
+
+  When I select appeal type Protection
+#  // introduce new payment steps
+  And I click "Save and continue" button
+  Then I should see the task-list page
+
+  When I click on the check and send your appeal link
+  Then I should be taken to the check-and-send page
+
+  When I check the statement of truth
+  And I click send
+  Then I am on the appeal details sent page
+  And I see "Your appeal details have been sent" in title
+  And I see the respond by date is 5 days in the future
+
+  # Case Progression
+  Then I sign in as a Case Officer and request HO data to match appellant details
+  Then I sign in as a Case Officer and request HO Bundle
+  Then I sign in as a Home Office Generic and upload the HO Bundle
+  Then I sign in as a Case Officer and request the reasons for appeal
+
+   # Appellant
+   Given I sign in as the Appellant
+   When I visit the overview page
+   Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
+#   #    Reenable when ask for more time flag is on by default
+#   #    Then I should see the 'ask for more time' link
+
+    When I click 'ask for more time'
+    Then I should see the ask-for-more-time page
+    When I enter a time extensions reason
+    And I click continue
+    Then I should see do you want to upload evidence page
+    When I select No and click continue
+    Then I should see the ask for more time check you answers page
+    When I click send
+    Then I am on the overview page
+
+   Then I click continue
+   Then I should see the reasons for appeal decision page
+   When I visit reasons for appeal
+
+   Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
+   Then I should see the "supporting evidence question" page
+
+   When I select No and click continue
+   Then I should see the reasons for appeal CYA page
+
+   When I click "Send" button
+   Then I should see the reasons for appeal confirmation page
+   And I see the respond by date is 2 weeks in the future
+
+#   # Case Progression
+   Then I sign in as a Case Officer and send directions with Clarifying Questions
 
 #   # Appellant
 #   Given I sign in as the Appellant

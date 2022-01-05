@@ -26,6 +26,7 @@ const setupSecrets = () => {
   setSecret('secrets.ia.hearing-centre-birmingham-email', 'hearingCentres.birminghamEmail');
   setSecret('secrets.ia.hearing-centre-hattoncross-email', 'hearingCentres.hattoncrossEmail');
   setSecret('secrets.ia.hearing-centre-glasgow-email', 'hearingCentres.glasgowEmail');
+  setSecret('secrets.ia.pcq-token-key', 'pcq.tokenKey');
 
   return config;
 };

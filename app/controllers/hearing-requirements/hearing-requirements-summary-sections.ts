@@ -430,7 +430,7 @@ function buildDatesToAvoidSummaryList (datesToAvoid: DatesToAvoid) {
   datesToAvoidRows.push(
         addSummaryRow(i18n.common.cya.answerRowTitle,
             [boolToYesNo(datesToAvoid.isDateCannotAttend)],
-            paths.awaitingCmaRequirements.datesToAvoidQuestion + editParameter)
+            paths.submitHearingRequirements.datesToAvoidQuestion + editParameter)
     );
 
   if (datesToAvoid.isDateCannotAttend) {
@@ -444,7 +444,7 @@ function buildDatesToAvoidSummaryList (datesToAvoid: DatesToAvoid) {
           `<b>${i18n.common.cya.reason}</b>`,
           Delimiter.BREAK_LINE,
           `<pre>${dateEntry.reason || ''}</pre>`],
-                `${paths.awaitingCmaRequirements.datesToAvoidEnterDate}/${i}${editParameter}`
+                `${paths.submitHearingRequirements.hearingDatesToAvoidEnterDate}/${i}${editParameter}`
             ));
     });
   }

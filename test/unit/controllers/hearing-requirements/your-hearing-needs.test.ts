@@ -624,7 +624,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'actions': {
                 'items': [{
-                  'href': '/appointment-dates-avoid?edit',
+                  'href': '/hearing-dates-avoid?edit',
                   'text': 'Change'
                 }]
               }
@@ -637,7 +637,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'actions': {
                 'items': [{
-                  'href': '/appointment-dates-avoid-enter/0?edit',
+                  'href': '/hearing-dates-avoid-enter/0?edit',
                   'text': 'Change'
                 }]
               }
@@ -650,7 +650,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'actions': {
                 'items': [{
-                  'href': '/appointment-dates-avoid-enter/1?edit',
+                  'href': '/hearing-dates-avoid-enter/1?edit',
                   'text': 'Change'
                 }]
               }

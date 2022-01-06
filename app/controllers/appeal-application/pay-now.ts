@@ -11,8 +11,7 @@ import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { payNowValidation } from '../../utils/validations/fields-validations';
-import { checkPcqHealth, invokePcq } from '../pcq';
-
+import { checkPcqHealth, getPcqId, invokePcq } from '../pcq';
 function getPayNowQuestion(appeal: Appeal) {
   const paAppealTypeAipPaymentOption = appeal.paAppealTypeAipPaymentOption || null;
   const question = {
@@ -54,6 +53,14 @@ async function getPayNow(req: Request, res: Response, next: NextFunction) {
 
 function postPayNow(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    async function persistAppeal(appeal: Appeal, paymentsFlag) {
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], paymentsFlag);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+    }
+
     try {
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       if (!paymentsFlag) return res.redirect(paths.common.overview);
@@ -81,18 +88,15 @@ function postPayNow(updateAppealService: UpdateAppealService) {
       let defaultRedirect = paths.appealStarted.taskList;
       let editingModeRedirect = paths.appealStarted.checkAndSend;
 
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], paymentsFlag);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
+      await persistAppeal(appeal, paymentsFlag);
       let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
-
-      if (['protection'].includes(appeal.application.appealType)) {
+      if (['protection'].includes(appeal.application.appealType) && !appeal.pcqId) {
         const pcqFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.PCQ, false);
         if (!pcqFlag) return res.redirect(redirectPage);
         let isPcqUp: boolean = await checkPcqHealth();
         if (isPcqUp) {
+          appeal.pcqId = getPcqId();
+          await persistAppeal(appeal, paymentsFlag);
           invokePcq(res, appeal);
         } else {
           return res.redirect(redirectPage);

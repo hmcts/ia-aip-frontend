@@ -33,14 +33,15 @@ async function checkPcqHealth(): Promise<boolean> {
     return Promise.resolve(false);
   }
 }
-
+function getPcqId() {
+  return uuid.v4();
+}
 function invokePcq(res: Response, appeal: Appeal) {
-  const pcqId = uuid.v4();
   const params: PcqParams = {
     serviceId: 'IAC',
     actor: 'APPELLANT',
     ccdCaseId: appeal.ccdCaseId,
-    pcqId: pcqId,
+    pcqId: appeal.pcqId,
     partyId: 'anonymous',
     returnUrl: `${config.get('pcq.returnUrl')}`,
     language: 'en'
@@ -58,5 +59,6 @@ function invokePcq(res: Response, appeal: Appeal) {
 
 export {
   checkPcqHealth,
-  invokePcq
+  invokePcq,
+  getPcqId
 };

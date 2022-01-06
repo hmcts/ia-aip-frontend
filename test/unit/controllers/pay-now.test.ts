@@ -195,4 +195,42 @@ describe('Pay now Controller @payNow', () => {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
+
+  it('should redirect to the task-list page when payments feature flag ON but PCQ feature flag OFF and appealType is protection', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false);
+    req.body['answer'] = 'decisionWithoutHearing';
+    req.session.appeal.application.appealType = 'protection';
+    await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+  });
+
+  it('should redirect to the task-list page when payments feature flag ON but PCQ feature flag ON and appealType is is protection', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(true);
+    req.body['answer'] = 'decisionWithHearing';
+    req.session.appeal.application.appealType = 'protection';
+    await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+  });
+
+  it('should redirect to the task-list page when payments feature flag ON, PCQ feature flag ON, appealType is protection, but there is pcqId', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(true);
+    req.body['answer'] = 'decisionWithHearing';
+    req.session.appeal.application.appealType = 'protection';
+    req.session.appeal.pcqId = 'AAA';
+    await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+  });
+
+  it('should redirect to overview page when feature flag OFF', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+    await postPayNow(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
+  });
+
 });

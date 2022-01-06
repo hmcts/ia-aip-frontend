@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import rp from 'request-promise';
 import {
-    checkPcqHealth,
-    invokePcq
+  checkPcqHealth, getPcqId,
+  invokePcq
 } from '../../../app/controllers/pcq';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
@@ -98,6 +98,13 @@ describe('PCQ @pcq', () => {
     it('should return invoked when I invoke', async () => {
       invokePcq(res as Response, appeal);
       expect(res.redirect).to.have.been.calledOnce.calledWith();
+    });
+  });
+
+  describe('GetPcqId', () => {
+    it('should return pcqId', async () => {
+      const pcqId = getPcqId();
+      expect(pcqId).not.to.be.empty;
     });
   });
 });

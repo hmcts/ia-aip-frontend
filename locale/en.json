@@ -778,6 +778,17 @@
               "href": "{{ paths.common.appealDetailsViewer }}"
             }
           ]
+        },
+        "listCase": {
+          "text": "Your hearing was listed.",
+          "textForEditListCase" : "Your hearing details were updated.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Notice of Hearing",
+              "href": "{{ paths.common.hearingNoticeViewer }}"
+            }
+          ]
         }
       }
     },

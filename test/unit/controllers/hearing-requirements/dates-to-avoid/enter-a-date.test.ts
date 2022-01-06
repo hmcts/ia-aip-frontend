@@ -124,10 +124,10 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
   describe('postEnterADatePage', () => {
     it('should fail validation and render template with errors', async () => {
-      const invalidDate = moment().add(1, 'week');
+      const invalidDate = moment().add(-1, 'week');
 
       req.body['day'] = invalidDate.date();
-      req.body['month'] = invalidDate.month();
+      req.body['month'] = invalidDate.month() + 1;
       req.body['year'] = invalidDate.year();
 
       const availableHearingDates = {

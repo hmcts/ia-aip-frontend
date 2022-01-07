@@ -14,14 +14,12 @@ import UpdateAppealService from '../service/update-appeal-service';
 function constructEventObject(event: HistoryEvent, req: Request) {
 
   const eventContent = i18n.pages.overviewPage.timeline[event.id];
-
   let eventObject = {
     date: moment(event.createdDate).format('DD MMMM YYYY'),
     dateObject: new Date(event.createdDate),
     text: eventContent.text || null,
     links: eventContent.links
   };
-
   if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
     eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
   }
@@ -40,11 +38,9 @@ function constructEventObject(event: HistoryEvent, req: Request) {
  * @param req the request containing the session to update the timeExtensionsMap
  */
 function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request) {
-
   const filteredEvents = states
     ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
     : events.filter(event => eventsToLookFor.includes(event.id));
-
   return filteredEvents.map(event => constructEventObject(event, req));
 }
 
@@ -86,9 +82,11 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
+  const appealHearingRequirementsSectionEvents = [ Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id ];
   const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONSE_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
   const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
 
+  const appealHearingRequirementsSection = constructSection(appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req);
   const appealArgumentSection = constructSection(appealArgumentSectionEvents, req.session.appeal.history, [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.RESPONDENT_REVIEW.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.SUBMIT_HEARING_REQUIREMENTS.id, States.ENDED.id ], req);
   const appealDetailsSection = constructSection(appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
@@ -109,8 +107,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
+    appealHearingRequirementsSection: appealHearingRequirementsSection,
     appealArgumentSection: argumentSection,
-    appealDetailsSection
+    appealDetailsSection: appealDetailsSection
   };
 }
 

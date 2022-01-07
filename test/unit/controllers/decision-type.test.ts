@@ -126,7 +126,7 @@ describe('Type of appeal Controller', () => {
   });
 
   describe('getDecisionType', () => {
-    it('should redirect to overview page when feature flag OFF', async () => {
+    it('should redirect to overview page when card payment feature flag OFF', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getDecisionType(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
@@ -142,6 +142,35 @@ describe('Type of appeal Controller', () => {
         question: sinon.match.any,
         saveAndContinue: true
       });
+    });
+
+    it('should redirect to the pay-now page when payments feature flag ON and appealType is protection', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.body['answer'] = 'decisionWithHearing';
+      req.session.appeal.application.appealType = 'protection';
+      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.payNow);
+    });
+
+    it('should redirect to the task-list page when payments feature flag ON but PCQ feature flag OFF and appealType is not protection', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false);
+      req.body['answer'] = 'decisionWithoutHearing';
+      req.session.appeal.application.appealType = 'revocationOfProtection';
+      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+    });
+
+    it('should redirect to the task-list page when payments feature flag ON but PCQ feature flag ON and appealType is not protection', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(true);
+      req.body['answer'] = 'decisionWithHearing';
+      req.session.appeal.application.appealType = 'revocationOfProtection';
+      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
     it('getDecisionType should catch exception and call next with the error', async () => {

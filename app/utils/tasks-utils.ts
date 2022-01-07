@@ -105,18 +105,26 @@ function submitHearingRequirementsStatus(appeal: Appeal) {
     active: accessNeedsTask.completed
   };
 
-  const datesToAvoid: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
+  let datesToAvoidCompleted: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
+  if (_.has(appeal, 'hearingRequirements.datesToAvoid')) {
+    const { datesToAvoid } = appeal.hearingRequirements;
+    if (_.has(datesToAvoid, 'isDateCannotAttend')) {
+      if (datesToAvoid.isDateCannotAttend && (!datesToAvoid.dates || datesToAvoid.dates.length === 0)) {
+        datesToAvoidCompleted = false;
+      }
+    }
+  }
 
   const datesToAvoidTask: Task = {
-    saved: datesToAvoid,
-    completed: _.has(appeal, 'hearingRequirements.datesToAvoid'),
+    saved: !!_.get(appeal, 'hearingRequirements.datesToAvoid'),
+    completed: datesToAvoidCompleted,
     active: otherNeedsTask.completed
   };
 
   const checkAndSend: Task = {
     saved: false,
     completed: false,
-    active: datesToAvoidTask.completed
+    active: datesToAvoidCompleted
   };
 
   return {

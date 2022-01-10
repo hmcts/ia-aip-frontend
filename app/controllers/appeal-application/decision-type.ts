@@ -6,12 +6,12 @@ import { Events } from '../../data/events';
 import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
+import PcqService from '../../service/pcq-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { decisionTypeValidation } from '../../utils/validations/fields-validations';
-import { checkPcqHealth, getPcqId, invokePcq } from '../pcq';
 
 function getDecisionTypeQuestion(appeal: Appeal) {
   let hint: string;
@@ -106,11 +106,12 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
       if (['protection'].includes(appeal.application.appealType) || appeal.pcqId) return res.redirect(redirectPage);
       const pcqFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.PCQ, false);
       if (!pcqFlag) return res.redirect(redirectPage);
-      const isPcqUp: boolean = await checkPcqHealth();
+      const pcqService = new PcqService();
+      const isPcqUp: boolean = await pcqService.checkPcqHealth();
       if (isPcqUp) {
-        appeal.pcqId = getPcqId();
+        appeal.pcqId = pcqService.getPcqId();
         await persistAppeal(appeal, paymentsFlag);
-        invokePcq(res, appeal);
+        pcqService.invokePcq(res, appeal);
       } else {
         return res.redirect(redirectPage);
       }

@@ -100,6 +100,7 @@ import { CcdService } from './service/ccd-service';
 import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import PaymentService from './service/payments-service';
+import PcqService from './service/pcq-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
@@ -112,6 +113,7 @@ const updateAppealService: UpdateAppealService = new UpdateAppealService(new Ccd
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
 const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
+const pcqService: PcqService = new PcqService();
 
 const router = express.Router();
 

@@ -9,6 +9,7 @@ import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import PcqService from '../../../app/service/pcq-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import i18n from '../../../locale/en.json';
@@ -21,6 +22,7 @@ describe('Type of appeal Controller', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
+  let pcqService: Partial<PcqService>;
   let next: NextFunction;
   const logger: Logger = new Logger();
 
@@ -49,6 +51,7 @@ describe('Type of appeal Controller', () => {
     } as Partial<Request>;
 
     updateAppealService = { submitEventRefactored: sandbox.stub() };
+    pcqService = { checkPcqHealth: sandbox.stub(), getPcqId: sandbox.stub() };
 
     res = {
       render: sandbox.stub(),
@@ -173,6 +176,31 @@ describe('Type of appeal Controller', () => {
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
+    it('should redirect to the task-list page when payments feature flag ON, PCQ feature flag ON, appealType is protection, but there is pcqId', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(true);
+      req.body['answer'] = 'decisionWithHearing';
+      req.session.appeal.application.appealType = 'decisionWithHearing';
+      req.session.appeal.pcqId = 'AAA';
+      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
+    });
+
+    it('should redirect to the task-list page when payments feature flag ON but PCQ feature flag ON and appealType is not protection, PCQ is Up', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(true);
+      sandbox.stub(PcqService.prototype, 'checkPcqHealth').resolves(true);
+      sandbox.stub(PcqService.prototype, 'getPcqId').resolves('test001');
+
+      req.body['answer'] = 'decisionWithHearing';
+      req.session.appeal.application.appealType = 'revocationOfProtection';
+      await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledOnce;
+    });
+
     it('getDecisionType should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
@@ -237,5 +265,11 @@ describe('Type of appeal Controller', () => {
 
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
+  });
+
+  it('should redirect to overview page when feature flag OFF', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
+    await postDecisionType(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+    expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
   });
 });

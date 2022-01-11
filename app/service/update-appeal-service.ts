@@ -392,6 +392,7 @@ export default class UpdateAppealService {
       ...caseData.paymentDate && { paymentDate: caseData.paymentDate },
       ...caseData.isFeePaymentEnabled && { isFeePaymentEnabled: caseData.isFeePaymentEnabled },
       ...caseData.paAppealTypeAipPaymentOption && { paAppealTypeAipPaymentOption: caseData.paAppealTypeAipPaymentOption },
+      ...caseData.pcqId && { pcqId: caseData.pcqId },
       ...caseData.feeWithHearing && { feeWithHearing: caseData.feeWithHearing },
       ...caseData.feeWithoutHearing && { feeWithoutHearing: caseData.feeWithoutHearing },
       ...caseData.feeCode && { feeCode: caseData.feeCode },
@@ -635,6 +636,7 @@ export default class UpdateAppealService {
       ...appeal.paymentDate && { paymentDate: appeal.paymentDate },
       ...appeal.isFeePaymentEnabled && { isFeePaymentEnabled: appeal.isFeePaymentEnabled },
       ...paymentsFlag && { paAppealTypeAipPaymentOption: appeal.paAppealTypeAipPaymentOption || null },
+      ...paymentsFlag && { pcqId: appeal.pcqId || null },
       ...appeal.draftClarifyingQuestionsAnswers && {
         draftClarifyingQuestionsAnswers: this.mapAppealClarifyingQuestionsToCcd(appeal.draftClarifyingQuestionsAnswers, appeal.documentMap)
       },

@@ -110,6 +110,7 @@ interface CaseData {
   feeDescription?: string;
   feeVersion?: string;
   feeAmountGbp?: string;
+  pcqId?: string;
 }
 
 interface Application<T> {

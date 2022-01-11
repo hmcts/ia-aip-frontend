@@ -6,12 +6,12 @@ import { Events } from '../../data/events';
 import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
+import PcqService from '../../service/pcq-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { payNowValidation } from '../../utils/validations/fields-validations';
-import { checkPcqHealth, invokePcq } from '../pcq';
 
 function getPayNowQuestion(appeal: Appeal) {
   const paAppealTypeAipPaymentOption = appeal.paAppealTypeAipPaymentOption || null;
@@ -53,14 +53,22 @@ async function getPayNow(req: Request, res: Response, next: NextFunction) {
 }
 
 function postPayNow(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (request: Request, res: Response, next: NextFunction) => {
+    async function persistAppeal(appeal: Appeal, paymentsFlag) {
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(
+        Events.EDIT_APPEAL, appeal,
+        request.idam.userDetails.uid, request.cookies['__auth-token'],
+        paymentsFlag);
+      request.session.appeal = { ...request.session.appeal, ...appealUpdated };
+    }
+
     try {
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(request, FEATURE_FLAGS.CARD_PAYMENTS, false);
       if (!paymentsFlag) return res.redirect(paths.common.overview);
-      if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      if (!shouldValidateWhenSaveForLater(request.body, 'answer')) {
+        return getConditionalRedirectUrl(request, res, paths.common.overview + '?saved');
       }
-      const validation = payNowValidation(req.body);
+      const validation = payNowValidation(request.body);
       if (validation) {
         return res.render('templates/radio-question-page.njk', {
           errors: validation,
@@ -68,32 +76,30 @@ function postPayNow(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.decisionType,
           pageTitle: i18n.pages.payNow.title,
           formAction: paths.appealStarted.payNow,
-          question: getPayNowQuestion(req.session.appeal),
+          question: getPayNowQuestion(request.session.appeal),
           saveAndContinue: true
         });
       }
 
       const appeal: Appeal = {
-        ...req.session.appeal,
-        paAppealTypeAipPaymentOption: req.body['answer']
+        ...request.session.appeal,
+        paAppealTypeAipPaymentOption: request.body['answer']
       };
-      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const editingMode: boolean = request.session.appeal.application.isEdit || false;
       let defaultRedirect = paths.appealStarted.taskList;
       let editingModeRedirect = paths.appealStarted.checkAndSend;
 
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], paymentsFlag);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
-      let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
-
-      if (['protection'].includes(appeal.application.appealType)) {
-        const pcqFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.PCQ, false);
+      await persistAppeal(appeal, paymentsFlag);
+      let redirectPage = getRedirectPage(editingMode, editingModeRedirect, request.body.saveForLater, defaultRedirect);
+      if (['protection'].includes(appeal.application.appealType) && !appeal.pcqId) {
+        const pcqFlag = await LaunchDarklyService.getInstance().getVariation(request, FEATURE_FLAGS.PCQ, false);
         if (!pcqFlag) return res.redirect(redirectPage);
-        let isPcqUp: boolean = await checkPcqHealth();
+        const pcqService = new PcqService();
+        let isPcqUp: boolean = await pcqService.checkPcqHealth();
         if (isPcqUp) {
-          invokePcq(res, appeal);
+          appeal.pcqId = pcqService.getPcqId();
+          await persistAppeal(appeal, paymentsFlag);
+          pcqService.invokePcq(res, appeal);
         } else {
           return res.redirect(redirectPage);
         }

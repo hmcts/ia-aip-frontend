@@ -119,6 +119,7 @@ export default class UpdateAppealService {
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let requestClarifyingQuestionsDirection;
     let cmaRequirements: CmaRequirements = {};
+    let hearingRequirements: HearingRequirements = {};
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let clarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasPendingTimeExtension = false;
@@ -199,7 +200,7 @@ export default class UpdateAppealService {
         };
       });
     } else if (requestClarifyingQuestionsDirection && ccdCase.state === 'awaitingClarifyingQuestionsAnswers') {
-      draftClarifyingQuestionsAnswers = [ ...requestClarifyingQuestionsDirection.value.clarifyingQuestions ].map((question) => {
+      draftClarifyingQuestionsAnswers = [...requestClarifyingQuestionsDirection.value.clarifyingQuestions].map((question) => {
         question.value.dateSent = requestClarifyingQuestionsDirection.value.dateSent;
         question.value.dueDate = requestClarifyingQuestionsDirection.value.dateDue;
         return question;
@@ -303,6 +304,8 @@ export default class UpdateAppealService {
       };
     }
 
+    // TODO: How do you ensure the ccdData is rightly mapped to either CMA or CMA and hearing requirement fields
+    //  as they use the common fields. What do you assign it to??
     // Other Needs section
     if (caseData.datesToAvoid) {
       let isDateCannotAttend: boolean = null;
@@ -325,6 +328,64 @@ export default class UpdateAppealService {
       };
     }
 
+    // hearing dates to avoid section
+    if (caseData.datesToAvoid) {
+      let isDateCannotAttend: boolean = null;
+      let dates: CmaDateToAvoid[] = null;
+      if (caseData.datesToAvoid.length) {
+        isDateCannotAttend = true;
+        dates = caseData.datesToAvoid.map((d) => {
+          return {
+            date: this.getDate(d.value.dateToAvoid),
+            reason: d.value.dateToAvoidReason
+          };
+        }
+        );
+
+      }
+
+      hearingRequirements.datesToAvoid = {
+        isDateCannotAttend,
+        dates
+      };
+    }
+
+    if (caseData.isWitnessesAttending) {
+      hearingRequirements.witnessesOnHearing = yesNoToBool(caseData.isWitnessesAttending);
+    }
+    if (caseData.isEvidenceFromOutsideUkInCountry) {
+      hearingRequirements.witnessesOutsideUK = yesNoToBool(caseData.isEvidenceFromOutsideUkInCountry);
+    }
+    if (caseData.witnessDetails && caseData.witnessDetails.length) {
+      hearingRequirements.witnessNames = caseData.witnessDetails.map((witnessDetail) => {
+        return witnessDetail.value.witnessName;
+      });
+    }
+
+    if (caseData.isHearingLoopNeeded) {
+      hearingRequirements.isHearingLoopNeeded = yesNoToBool(caseData.isHearingLoopNeeded);
+    }
+
+    if (caseData.isHearingRoomNeeded) {
+      hearingRequirements.isHearingRoomNeeded = yesNoToBool(caseData.isHearingRoomNeeded);
+    }
+
+    if (caseData.isInterpreterServicesNeeded) {
+      hearingRequirements.isInterpreterServicesNeeded = yesNoToBool(caseData.isInterpreterServicesNeeded);
+    }
+
+    if (caseData.interpreterLanguage) {
+      hearingRequirements.interpreterLanguages = caseData.interpreterLanguage.map(additionalLanguage => {
+        return {
+          language: additionalLanguage.value.language,
+          languageDialect: additionalLanguage.value.languageDialect
+        } as InterpreterLanguage;
+      });
+    }
+
+    if (caseData.remoteVideoCall) {
+      this.mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements);
+    }
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -365,6 +426,7 @@ export default class UpdateAppealService {
       ...clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
       ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers },
       cmaRequirements,
+      hearingRequirements,
       askForMoreTime: {
         ...(_.has(caseData, 'submitTimeExtensionReason')) && { reason: caseData.submitTimeExtensionReason },
         inFlight: hasPendingTimeExtension
@@ -485,7 +547,7 @@ export default class UpdateAppealService {
           subscription.mobileNumber = appeal.application.contactDetails.phone;
           caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
         }
-        caseData.subscriptions = [ { value: subscription } ];
+        caseData.subscriptions = [{ value: subscription }];
       }
     }
 
@@ -529,12 +591,12 @@ export default class UpdateAppealService {
 
         if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
           if (_.has(accessNeeds, 'interpreterLanguage')) {
-            caseData.interpreterLanguage = [ {
+            caseData.interpreterLanguage = [{
               value: {
                 language: accessNeeds.interpreterLanguage.language,
                 languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
               }
-            } ];
+            }];
           }
         }
 
@@ -622,6 +684,80 @@ export default class UpdateAppealService {
       }
     }
 
+    if (_.has(appeal, 'hearingRequirements')) {
+      if (_.has(appeal.hearingRequirements, 'witnessesOnHearing')) {
+        caseData.isWitnessesAttending = boolToYesNo(appeal.hearingRequirements.witnessesOnHearing);
+      }
+
+      if (_.has(appeal.hearingRequirements, 'witnessesOutsideUK')) {
+        caseData.isEvidenceFromOutsideUkInCountry = boolToYesNo(appeal.hearingRequirements.witnessesOutsideUK);
+      }
+
+      if (_.has(appeal.hearingRequirements, 'witnessNames')) {
+        caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(witnessName => {
+          return {
+            value: {
+              witnessName: witnessName
+            } as WitnessDetails
+          } as Collection<WitnessDetails>;
+        });
+      }
+
+      if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
+        caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);
+
+        if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {
+          caseData.interpreterLanguage = appeal.hearingRequirements.interpreterLanguages.map(interpreterLanguage => {
+            return {
+              value: {
+                language: interpreterLanguage.language,
+                languageDialect: interpreterLanguage.languageDialect || null
+              } as AdditionalLanguage
+            } as Collection<AdditionalLanguage>;
+          });
+        }
+      }
+
+      caseData.isHearingRoomNeeded = null;
+      if (_.has(appeal.hearingRequirements, 'isHearingRoomNeeded')) {
+        if (appeal.hearingRequirements.isHearingRoomNeeded != null) {
+          caseData.isHearingRoomNeeded = boolToYesNo(appeal.hearingRequirements.isHearingRoomNeeded);
+        }
+      }
+
+      caseData.isHearingLoopNeeded = null;
+      if (_.has(appeal.hearingRequirements, 'isHearingLoopNeeded')) {
+        if (appeal.hearingRequirements.isHearingLoopNeeded != null) {
+          caseData.isHearingLoopNeeded = boolToYesNo(appeal.hearingRequirements.isHearingLoopNeeded);
+        }
+      }
+
+      if (_.has(appeal, 'hearingRequirements.otherNeeds')) {
+        this.mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData);
+      }
+
+      // Dates To avoid Section
+      if (_.has(appeal, 'hearingRequirements.datesToAvoid')) {
+        const { datesToAvoid } = appeal.hearingRequirements;
+
+        if (_.has(datesToAvoid, 'isDateCannotAttend')) {
+          caseData.datesToAvoidYesNo = boolToYesNo(datesToAvoid.isDateCannotAttend);
+
+          if (datesToAvoid.isDateCannotAttend && datesToAvoid.dates && datesToAvoid.dates.length) {
+            caseData.datesToAvoid = datesToAvoid.dates.map(date => {
+
+              return {
+                value: {
+                  dateToAvoid: toIsoDate(date.date),
+                  dateToAvoidReason: date.reason
+                } as DateToAvoid
+              } as Collection<DateToAvoid>;
+            });
+          }
+        }
+      }
+    }
+
     const askForMoreTime = appeal.askForMoreTime;
     if (askForMoreTime && askForMoreTime.reason) {
       this.addCcdTimeExtension(askForMoreTime, appeal, caseData);
@@ -670,7 +806,7 @@ export default class UpdateAppealService {
             document_binary_url: `${documentLocationUrl}/binary`
           }
         }
-      // } as Document;
+        // } as Document;
       } as Collection<Document>;
     });
   }
@@ -827,5 +963,141 @@ export default class UpdateAppealService {
         }
       };
     });
+  }
+
+  private mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements) {
+
+    if (!_.has(hearingRequirements, 'otherNeeds')) {
+      hearingRequirements.otherNeeds = {};
+    }
+
+    if (caseData.multimediaEvidence) {
+      hearingRequirements.otherNeeds.multimediaEvidence = yesNoToBool(caseData.multimediaEvidence);
+      if (caseData.bringOwnMultimediaEquipment) {
+        hearingRequirements.otherNeeds.bringOwnMultimediaEquipment = yesNoToBool(caseData.bringOwnMultimediaEquipment);
+        if (caseData.multimediaEvidenceDescription) {
+          hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason = caseData.multimediaEvidenceDescription;
+        }
+      }
+    }
+
+    if (caseData.singleSexCourt) {
+      hearingRequirements.otherNeeds.singleSexAppointment = yesNoToBool(caseData.singleSexCourt);
+      if (caseData.singleSexCourtType) {
+        hearingRequirements.otherNeeds.singleSexTypeAppointment = caseData.singleSexCourtType;
+        hearingRequirements.otherNeeds.singleSexAppointmentReason = caseData.singleSexCourtTypeDescription;
+      }
+    }
+
+    if (caseData.inCameraCourt) {
+      hearingRequirements.otherNeeds.privateAppointment = yesNoToBool(caseData.inCameraCourt);
+      if (caseData.inCameraCourtDescription) {
+        hearingRequirements.otherNeeds.privateAppointmentReason = caseData.inCameraCourtDescription;
+      }
+    }
+
+    if (caseData.physicalOrMentalHealthIssues) {
+      hearingRequirements.otherNeeds.healthConditions = yesNoToBool(caseData.physicalOrMentalHealthIssues);
+      if (caseData.physicalOrMentalHealthIssuesDescription) {
+        hearingRequirements.otherNeeds.healthConditionsReason = caseData.physicalOrMentalHealthIssuesDescription;
+      }
+    }
+
+    if (caseData.pastExperiences) {
+      hearingRequirements.otherNeeds.pastExperiences = yesNoToBool(caseData.pastExperiences);
+      if (caseData.pastExperiencesDescription) {
+        hearingRequirements.otherNeeds.pastExperiencesReason = caseData.pastExperiencesDescription;
+      }
+    }
+
+    if (caseData.additionalRequests) {
+      hearingRequirements.otherNeeds.anythingElse = yesNoToBool(caseData.additionalRequests);
+      if (caseData.additionalRequestsDescription) {
+        hearingRequirements.otherNeeds.anythingElseReason = caseData.additionalRequestsDescription;
+      }
+    }
+
+    if (caseData.remoteVideoCall) {
+      hearingRequirements.otherNeeds.remoteVideoCall = yesNoToBool(caseData.remoteVideoCall);
+      if (caseData.remoteVideoCallDescription) {
+        hearingRequirements.otherNeeds.remoteVideoCallDescription = caseData.remoteVideoCallDescription;
+      }
+    }
+  }
+
+  private mapToCCDCaseHearingRequirementsOtherNeeds(appeal, caseData) {
+    const { otherNeeds } = appeal.hearingRequirements;
+
+    caseData.multimediaEvidence = null;
+    caseData.bringOwnMultimediaEquipment = null;
+    caseData.multimediaEvidenceDescription = null;
+    caseData.singleSexCourt = null;
+    caseData.singleSexCourtType = null;
+    caseData.singleSexCourtTypeDescription = null;
+    caseData.inCameraCourt = null;
+    caseData.inCameraCourtDescription = null;
+    caseData.physicalOrMentalHealthIssues = null;
+    caseData.physicalOrMentalHealthIssuesDescription = null;
+    caseData.pastExperiences = null;
+    caseData.pastExperiencesDescription = null;
+    caseData.additionalRequests = null;
+    caseData.additionalRequestsDescription = null;
+    caseData.remoteVideoCall = null;
+    caseData.remoteVideoCallDescription = null;
+
+    if (otherNeeds.multimediaEvidence != null) {
+      caseData.multimediaEvidence = boolToYesNo(otherNeeds.multimediaEvidence);
+      if (otherNeeds.bringOwnMultimediaEquipment != null) {
+        caseData.bringOwnMultimediaEquipment = boolToYesNo(otherNeeds.bringOwnMultimediaEquipment);
+        if (!otherNeeds.bringOwnMultimediaEquipment && !isEmpty(otherNeeds.bringOwnMultimediaEquipmentReason)) {
+          caseData.multimediaEvidenceDescription = otherNeeds.bringOwnMultimediaEquipmentReason;
+        }
+      }
+    }
+
+    if (otherNeeds.singleSexAppointment != null) {
+      caseData.singleSexCourt = boolToYesNo(otherNeeds.singleSexAppointment);
+      if (otherNeeds.singleSexAppointment && otherNeeds.singleSexTypeAppointment) {
+        caseData.singleSexCourtType = otherNeeds.singleSexTypeAppointment;
+        if (!isEmpty(otherNeeds.singleSexAppointmentReason)) {
+          caseData.singleSexCourtTypeDescription = otherNeeds.singleSexAppointmentReason;
+        }
+      }
+    }
+
+    if (otherNeeds.privateAppointment != null) {
+      caseData.inCameraCourt = boolToYesNo(otherNeeds.privateAppointment);
+      if (otherNeeds.privateAppointment && !isEmpty(otherNeeds.privateAppointmentReason)) {
+        caseData.inCameraCourtDescription = otherNeeds.privateAppointmentReason;
+      }
+    }
+
+    if (otherNeeds.healthConditions != null) {
+      caseData.physicalOrMentalHealthIssues = boolToYesNo(otherNeeds.healthConditions);
+      if (otherNeeds.healthConditions && !isEmpty(otherNeeds.healthConditionsReason)) {
+        caseData.physicalOrMentalHealthIssuesDescription = otherNeeds.healthConditionsReason;
+      }
+    }
+
+    if (otherNeeds.pastExperiences != null) {
+      caseData.pastExperiences = boolToYesNo(otherNeeds.pastExperiences);
+      if (otherNeeds.pastExperiences && !isEmpty(otherNeeds.pastExperiencesReason)) {
+        caseData.pastExperiencesDescription = otherNeeds.pastExperiencesReason;
+      }
+    }
+
+    if (otherNeeds.anythingElse != null) {
+      caseData.additionalRequests = boolToYesNo(otherNeeds.anythingElse);
+      if (otherNeeds.anythingElse && !isEmpty(otherNeeds.anythingElseReason)) {
+        caseData.additionalRequestsDescription = otherNeeds.anythingElseReason;
+      }
+    }
+
+    if (otherNeeds.remoteVideoCall != null) {
+      caseData.remoteVideoCall = boolToYesNo(otherNeeds.remoteVideoCall);
+      if (!otherNeeds.remoteVideoCall && !isEmpty(otherNeeds.remoteVideoCallDescription)) {
+        caseData.remoteVideoCallDescription = otherNeeds.remoteVideoCallDescription;
+      }
+    }
   }
 }

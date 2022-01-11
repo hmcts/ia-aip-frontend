@@ -76,6 +76,66 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   };
 }
 
+function submitHearingRequirementsStatus(appeal: Appeal) {
+
+  const witnessesOnHearing: boolean = _.has(appeal, 'hearingRequirements.witnessesOnHearing');
+  const witnessesOutsideUK: boolean = _.has(appeal, 'hearingRequirements.witnessesOutsideUK');
+  const witnessNames: boolean = !!_.get(appeal, 'hearingRequirements.witnessNames');
+
+  const witnessesTask: Task = {
+    saved: witnessesOnHearing || witnessesOutsideUK || witnessNames,
+    completed: witnessesOnHearing && witnessesOutsideUK,
+    active: true
+  };
+
+  const isHearingLoopNeeded: boolean = _.has(appeal, 'hearingRequirements.isHearingLoopNeeded');
+  const isHearingRoomNeeded: boolean = _.has(appeal, 'hearingRequirements.isHearingRoomNeeded');
+  const isInterpreterServicesNeeded: boolean = !!_.get(appeal, 'hearingRequirements.isInterpreterServicesNeeded');
+
+  const accessNeedsTask: Task = {
+    saved: isHearingLoopNeeded || isHearingRoomNeeded || isInterpreterServicesNeeded,
+    completed: isHearingLoopNeeded,
+    active: witnessesTask.completed
+  };
+  const otherNeeds: boolean = !!_.get(appeal, 'hearingRequirements.otherNeeds');
+
+  const otherNeedsTask: Task = {
+    saved: otherNeeds,
+    completed: _.has(appeal, 'hearingRequirements.otherNeeds.anythingElse'),
+    active: accessNeedsTask.completed
+  };
+
+  let datesToAvoidCompleted: boolean = !!_.get(appeal, 'hearingRequirements.datesToAvoid');
+  if (_.has(appeal, 'hearingRequirements.datesToAvoid')) {
+    const { datesToAvoid } = appeal.hearingRequirements;
+    if (_.has(datesToAvoid, 'isDateCannotAttend')) {
+      if (datesToAvoid.isDateCannotAttend && (!datesToAvoid.dates || datesToAvoid.dates.length === 0)) {
+        datesToAvoidCompleted = false;
+      }
+    }
+  }
+
+  const datesToAvoidTask: Task = {
+    saved: !!_.get(appeal, 'hearingRequirements.datesToAvoid'),
+    completed: datesToAvoidCompleted,
+    active: otherNeedsTask.completed
+  };
+
+  const checkAndSend: Task = {
+    saved: false,
+    completed: false,
+    active: datesToAvoidCompleted
+  };
+
+  return {
+    witnesses: witnessesTask,
+    accessNeeds: accessNeedsTask,
+    otherNeeds: otherNeedsTask,
+    datesToAvoid: datesToAvoidTask,
+    checkAndSend
+  };
+}
+
 function cmaRequirementsStatus(appeal: Appeal) {
   const accessNeeds: boolean = !!_.get(appeal, 'cmaRequirements.accessNeeds');
 
@@ -146,5 +206,6 @@ function buildSectionObject(sectionId: string, taskIds: string[], status: Applic
 export {
   appealApplicationStatus,
   buildSectionObject,
-  cmaRequirementsStatus
+  cmaRequirementsStatus,
+  submitHearingRequirementsStatus
 };

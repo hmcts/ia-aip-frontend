@@ -177,6 +177,27 @@ function appellantNamesValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function witnessNameValidation(obj: object) {
+  const schema = Joi.object({
+    witnessName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessName })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function witnessNamesValidation(obj: object) {
+  const schema = Joi.object({
+    witnessName: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.witnessName })
+  }).unknown();
+  return validate({ witnessName: obj }, schema);
+}
+
+function interpreterLanguagesValidation(obj: object) {
+  const schema = Joi.object({
+    language: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.hearingRequirements.accessNeeds.addLanguage })
+  }).unknown();
+  return validate({ language: obj }, schema);
+}
+
 function contactDetailsValidation(obj: object) {
   const schema = Joi.object({
     selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
@@ -350,7 +371,7 @@ function askForMoreTimeValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function isDateInRange(dateFrom: string, dateTo: string, obj): boolean | ValidationErrors {
+function isDateInRange(dateFrom: string, dateTo: string, obj,dateMissingErrMsg: string): boolean | ValidationErrors {
 
   const errorMessage = `Enter a date between ${dateFrom} and ${dateTo}`;
   const { year, month, day } = obj;
@@ -364,27 +385,27 @@ function isDateInRange(dateFrom: string, dateTo: string, obj): boolean | Validat
 
   const schema = Joi.object({
     day: Joi.number().empty('').required().integer().min(1).max(31).messages({
-      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'any.required': dateMissingErrMsg,
       'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
     }),
     month: Joi.number().empty('').required().integer().min(1).max(12).required().messages({
-      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'any.required': dateMissingErrMsg,
       'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.max': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
     }),
     year: Joi.number().empty('').required().integer().min(1900).required().messages({
-      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'any.required': dateMissingErrMsg,
       'number.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.integer': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat,
       'number.min': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
     }),
     date: Joi.date().required().min(dateFrom).max(dateTo).messages({
-      'any.required': i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing,
+      'any.required': dateMissingErrMsg,
       'date.min': errorMessage,
       'date.max': errorMessage,
       'date.base': i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat
@@ -404,6 +425,8 @@ export {
   dateOfBirthValidation,
   dropdownValidation,
   appellantNamesValidation,
+  witnessNamesValidation,
+  witnessNameValidation,
   postcodeValidation,
   nationalityValidation,
   emailValidation,
@@ -417,5 +440,6 @@ export {
   askForMoreTimeValidation,
   selectedRequiredValidation,
   isDateInRange,
-  decisionTypeValidation
+  decisionTypeValidation,
+  interpreterLanguagesValidation
 };

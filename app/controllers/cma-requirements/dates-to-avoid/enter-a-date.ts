@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
+import i18n from '../../../../locale/en.json';
 import { Events } from '../../../data/events';
 import { paths } from '../../../paths';
 import UpdateAppealService from '../../../service/update-appeal-service';
@@ -22,7 +23,7 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
     to: moment().add(12, 'week').format(dayMonthYearFormat)
   };
 
-  let validation = isDateInRange(availableDates.from, availableDates.to, req.body);
+  let validation = isDateInRange(availableDates.from, availableDates.to, req.body,i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing);
 
   const savedDates = req.session.appeal.cmaRequirements.datesToAvoid.dates || [];
 

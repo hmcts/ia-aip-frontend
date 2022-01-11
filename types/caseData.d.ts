@@ -63,6 +63,7 @@ interface CaseData {
   isHearingLoopNeeded?: string;
   multimediaEvidence: 'Yes' | 'No';
   multimediaEvidenceDescription: string;
+  bringOwnMultimediaEquipment: 'Yes' | 'No';
   singleSexCourt: 'Yes' | 'No';
   singleSexCourtType: 'All male' | 'All female';
   singleSexCourtTypeDescription: string;
@@ -75,6 +76,8 @@ interface CaseData {
   additionalRequests: 'Yes' | 'No';
   additionalRequestsDescription: string;
   datesToAvoidYesNo: 'Yes' | 'No';
+  remoteVideoCall: 'Yes' | 'No';
+  remoteVideoCallDescription: string;
   datesToAvoid: Collection<DateToAvoid>[];
   listCaseHearingCentre: string;
   listCaseHearingLength: string;
@@ -111,6 +114,11 @@ interface CaseData {
   feeVersion?: string;
   feeAmountGbp?: string;
   pcqId?: string;
+
+  isWitnessesAttending?: 'Yes' | 'No';
+  isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
+  witnessDetails?: Collection<WitnessDetails>[];
+  interpreterLanguage?: Collection<InterpreterLanguage>[];
 }
 
 interface Application<T> {
@@ -141,6 +149,15 @@ interface Nationality {
   value: {
     code: string;
   };
+}
+
+interface WitnessDetails {
+  witnessName?: string;
+}
+
+interface InterpreterLanguage {
+  language?: string;
+  languageDialect?: string;
 }
 
 interface CCDAddress {

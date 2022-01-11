@@ -28,7 +28,9 @@
       "payNow": "Submit and continue to pay £{{ fee }} by debit or credit card",
       "confirmAndSend": "Confirm and send",
       "continueUseNewService": "Continue to use the new service",
-      "submitYourAppeal": "Submit your appeal"
+      "submitYourAppeal": "Submit your appeal",
+      "addAnotherWitness": "Add another witness",
+      "addAnotherLanguage": "Add another language"
     },
     "requirements": {
       "heading": "You will need to:"
@@ -548,6 +550,16 @@
         "clarifyingQuestionsAnswersSubmitted": {
           "description": "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next.",
           "dueDate": "This should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that."
+        },
+        "submitHearingRequirements": {
+          "description": "Your appeal is going to hearing.",
+          "description2": "Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access",
+          "descriptionAskForMoreTime": "You need to respond by by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.",
+          "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
         },
         "ended": {
           "description": "ended desc",
@@ -1926,6 +1938,217 @@
         "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
       }
     },
+    "hearingRequirements": {
+      "taskList": {
+        "title": "Tell us what you will need at the hearing",
+        "header": "Tell us what you will need at the hearing",
+        "sections": {
+          "witnesses": "Witnesses",
+          "accessNeeds": "Access needs",
+          "otherNeeds": "Other needs",
+          "datesToAvoid": "Dates to avoid",
+          "checkAndSend": "Check and send"
+        },
+        "witnesses": {
+          "id": "witnessesLink",
+          "title": "Will any witnesses come to the hearing?",
+          "path": "submitHearingRequirements.witnesses"
+        },
+        "accessNeeds": {
+          "id": "accessNeedsLink",
+          "title": "Will you or any witnesses need an interpreter,step-free access or a hearing loop at the hearing?",
+          "path": "submitHearingRequirements.accessNeeds"
+        },
+        "otherNeeds": {
+          "id": "otherNeedsLink",
+          "title": "Will you need anything else at the hearing?",
+          "path": "submitHearingRequirements.otherNeeds"
+        },
+        "datesToAvoid": {
+          "id": "datesToAvoidLink",
+          "title": "Are there any dates you or any witnesses cannot go to the hearing?",
+          "path": "submitHearingRequirements.datesToAvoidQuestion"
+        },
+        "checkAndSend": {
+          "id": "checkAndSendLink",
+          "title": "Check and send your answers",
+          "path": "submitHearingRequirements.checkAndSend"
+        }
+      },
+      "witnessesSection": {
+        "hearingWitnesses": {
+          "pageTitle": "Will any witnesses come to the hearing?",
+          "title": "Will any witnesses come to the hearing?",
+          "text": "A witness is someone who will speak on your behalf on the hearing."
+        },
+        "hearingWitnessNames": {
+          "pageTitle": "Add witnesses names",
+          "title": "Add witnesses names",
+          "text": "Witnesses name",
+          "cya": "Witnesses names"
+        },
+        "witnessOutsideUk": {
+          "pageTitle": "Will you or any witnesses take part in the hearing from outside the UK?",
+          "title": "Will you or any witnesses take part in the hearing from outside the UK?",
+          "text": "If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where you or any witnesses will be for the hearing."
+        }
+      },
+      "accessNeedsSection": {
+        "accessNeedsPage": {
+          "pageTitle": "Access needs",
+          "title": "Access needs",
+          "text": "If you or anyone coming with you needs an interpreter, step-free access or a hearing loop, they will be provided at the hearing."
+        },
+        "needInterpreterPage": {
+          "pageTitle": "Will you or any witnesses need an interpreter at the hearing?",
+          "title": "Will you or any witnesses need an interpreter at the hearing?",
+          "text": "We will provide an interpreter if you or any witnesses need one."
+        },
+        "additionalLanguagePage": {
+          "pageTitle": "Add language details",
+          "title": "Add language details",
+          "text": "Dialect (Optional)",
+          "languages": "Languages",
+          "language": "Language",
+          "dialect": "Dialect",
+          "hint": "A dialect is a form of a language spoken in a part of a country or by groups of people in a country."
+        },
+        "stepFreeAccessPage": {
+          "pageTitle": "Will you or any witnesses need step-free access?",
+          "title": "Will you or any witnesses need step-free access?",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
+        },
+        "hearingLoopPage": {
+          "pageTitle": "Will you or any witnesses need a hearing loop?",
+          "title": "Will you or any witnesses need a hearing loop?",
+          "text": "If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing."
+        }
+      },
+      "otherNeedsSection": {
+        "startPage": {
+          "title": "Other needs",
+          "description": "If you have any other needs, they will be considered but it might not be possible to provide for them at the appointment."
+        },
+        "joinHearingByVideoCall": {
+          "title": "Would you be able to join the hearing by video call?",
+          "question": "Would you be able to join the hearing by video call?",
+          "description": "<p>The Tribunal may decide to have the hearing by video call.  Answer no if there are reasons<br>you would not be able to join a video call.</p>",
+
+          "hintsTitle": "Why you might not be able to join a video call?",
+          "hintDescription": "For example, if you:",
+          "hints": [
+            "have a disability that would make it difficult to join a video call, like being blind or deaf",
+            "do not have a computer or mobile device you can use to join the video call",
+            "do not have a good internet connection",
+            "do not have a quiet, private room to use for the hearing"
+          ]
+        },
+        "joinHearingByVideoCallReason": {
+           "title": "Tell us the reasons you would not be able to join a video call",
+           "heading": "Tell us the reasons you would not be able to join a video call"
+        },
+        "multimediaEvidence": {
+          "title": "Will you bring any video or audio evidence to the hearing?",
+          "question": "Will you bring any video or audio evidence to the hearing?",
+          "description": "For example, video or sound recordings."
+        },
+        "bringEquipment": {
+          "title": "Will you bring the equipment to play this evidence?",
+          "question": "Will you bring the equipment to play this evidence?",
+          "description" : "For example, a laptop computer or DVD player"
+        },
+        "bringEquipmentReason": {
+          "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
+          "heading": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it"
+        },
+        "singleSexHearing": {
+          "title": "Will you need an all-female or all-male hearing?",
+          "question": "Will you need an all-female or all-male hearing?"
+        },
+        "singleSexTypeHearing": {
+          "title": "What type of hearing will you need?",
+          "question": "What type of hearing will you need?"
+        },
+        "singleSexHearingAllMale": {
+          "title": "Tell us why you need an all-male hearing",
+          "heading": "Tell us why you need an all-male hearing"
+        },
+        "singleSexHearingAllFemale": {
+          "title": "Tell us why you need an all-female hearing",
+          "heading": "Tell us why you need an all-female hearing"
+        },
+        "privateHearing": {
+          "title": "Will you need a private hearing?",
+          "question": "Will you need a private hearing?",
+          "description": "A private hearing means the public will not be allowed to attend."
+        },
+        "healthConditions": {
+          "title": "Do you have any physical or mental health conditions that may affect you at the hearing?",
+          "question": "Do you have any physical or mental health conditions that may affect you at the hearing?"
+        },
+        "pastExperiences": {
+          "title": "Have you had any past experiences that may affect you at the hearing?",
+          "question": "Have you had any past experiences that may affect you at the hearing?",
+          "description": "This might be experience of physical or sexual abuse, trafficking or torture."
+        },
+        "anythingElse": {
+          "title": "Will you need anything else at the hearing?",
+          "question": "Will you need anything else at the hearing?"
+        },
+
+        "privateHearingReason": {
+          "title": "Tell us why you need a private hearing",
+          "heading": "Tell us why you need a private hearing"
+        },
+        "healthConditionsReason": {
+          "title": "Tell us how any physical or mental health conditions you have may affect you at the hearing",
+          "heading": "Tell us how any physical or mental health conditions you have may affect you at the hearing"
+        },
+        "pastExperiencesReasons": {
+          "title": "Tell us how any past experiences may affect you at the hearing",
+          "heading": "Tell us how any past experiences may affect you at the hearing"
+        },
+        "anythingElseReasons": {
+          "title": "Tell us what you will need and why you need it",
+          "heading": "Tell us what you will need and why you need it",
+          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
+        }
+
+      },
+      "datesToAvoidSection": {
+        "questionPage": {
+          "title": "Are there any dates that you or any witnesses cannot go to the hearing?",
+          "question": "Are there any dates between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?",
+          "description": "You will need to tell us why you or any witnesses cannot go to the hearing on the dates you include."
+        },
+        "enterADatePage": {
+          "title": "Enter the date you or any witnesses cannot go to the hearing",
+          "heading": "Enter the date you or any witnesses cannot go to the hearing",
+          "description": "Only include dates from {{ availableHearingDates.from }} to {{ availableHearingDates.to }}.",
+          "hint": "For example, 12 11 2020"
+        },
+        "reason": {
+          "title": "Why can you or any witnesses not go to the hearing on this date?",
+          "heading": "Why can you or any witnesses not go to the hearing on this date?"
+        },
+        "addAnotherDateQuestion": {
+          "title": "Is there another date that you or any witnesses cannot go to the hearing?",
+          "heading": "Is there another date between {{ availableHearingDates.from }} and {{ availableHearingDates.to }} that you or any witnesses cannot go to the hearing?"
+        }
+      },
+      "confirmation": {
+        "title": "You have told us what you will need at the hearing",
+        "whatNextListItems": [
+          "A Tribunal Caseworker will look at your appointment needs. If you have asked for an interpreter, step-free access or a hearing loop, these will be provided. If you have asked for anything else, it will be considered but may not be provided",
+          "A Tribunal Caseworker will then contact you to tell you where and when the appointment will take place and what will be provided",
+          "This should be by <b>{{ date }}</b> but may take longer than that"
+        ],
+        "info": {
+          "title": "Helpful Information",
+          "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
+        }
+      }
+    },
     "clarifyingQuestionPage": {
       "pageTitle": "Answer question {{ question.orderNo }} about your appeal",
       "title": "Question {{ question.orderNo }}",
@@ -2230,6 +2453,7 @@
     },
     "givenNames": "Enter your given name or names",
     "familyName": "Enter your family name or names",
+    "witnessName": "Enter a witness name",
     "dateOfBirth": {
       "missing": "Your date of birth must include a day, month and year",
       "incorrectFormat": "Enter the date in the correct format",
@@ -2314,6 +2538,46 @@
         "addAnotherDateAnswerRequired": "Select yes if you want to add another date you cannot go to the appointment",
         "date": {
           "missing": "Enter a date you cannot go to the appointment",
+          "incorrectFormat": "Enter the date in the correct format"
+        }
+      }
+    },
+    "hearingRequirements": {
+      "witnessesSection": {
+        "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing",
+        "witnessesOutsideUKRequired": "Select Yes if you or any witnesses will take part in the hearing from outside the UK"
+      },
+      "accessNeeds": {
+        "selectInterpreter": "Select yes if you or any witnesses will need an interpreter at the hearing",
+        "addLanguage": "Select a language",
+        "stepFreeAccess": "Select yes if you or any witnesses will need step-free access",
+        "hearingLoop": "Select yes if you or any witnesses will need a hearing loop"
+      },
+      "otherNeeds": {
+        "joinHearingByVideoCallRequired": "Select Yes if you would be able to join the hearing by video call",
+        "joinHearingByVideoCallReasonRequired": "Enter the reasons you would not be able to join a video call",
+        "bringEquipmentReasonRequired": "Enter the reasons it is not possible to bring the equipment to play this evidence and what you will need to play it",
+        "multimediaEvidenceAnswerRequired": "Select yes if you will bring any audio or video evidence",
+        "singleSexAppointmentRequired": "Select yes if you need an all-female or all-male hearing",
+        "privateAppointmentAnswerRequired": "Select yes if you need a private hearing",
+        "healthConditionsAnswerRequired": "Select yes if you have any physical or mental health conditions that may affect you at the hearing",
+        "pastExperiencesAnswerRequired": "Select yes if you have had any past experiences that may affect you at the hearing",
+        "anythingElseAnswerRequired": "Select yes if you need anything else at the hearing",
+        "singleSexHearingAllMaleReasonRequired": "Enter the reasons you need an all-male hearing",
+        "singleSexHearingAllFemaleReasonRequired": "Enter the reasons you need an all-female hearing",
+        "singleSexTypeHearingRequired": "Select if you need an all-female or all-male hearing",
+        "privateHearingReasonRequired": "Enter the reasons you need a private hearing",
+        "healthConditionsReasonRequired": "Enter details of how any physical or mental health conditions may affect you at the hearing",
+        "pastExperiencesReasonRequired": "Enter details of how any past experiences may affect you at the hearing",
+        "anythingElseReasonRequired": "Enter details of what you will need and why you need it"
+      },
+      "datesToAvoid": {
+        "datesToAvoidAnswerRequired": "Select yes if there are any dates you cannot go to the hearing",
+        "dateRequired": "Enter a date you cannot go to the hearing",
+        "reasonRequired": "Enter details of why you cannot go to the hearing on this date",
+        "addAnotherDateAnswerRequired": "Select yes if you want to add another date you cannot go to the hearing",
+        "date": {
+          "missing": "Enter a date you cannot go to the hearing",
           "incorrectFormat": "Enter the date in the correct format"
         }
       }

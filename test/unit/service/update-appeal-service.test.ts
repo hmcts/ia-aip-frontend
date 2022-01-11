@@ -58,7 +58,7 @@ describe('update-appeal-service', () => {
       'appellantFamilyName': 'Pedro',
       'appellantGivenNames': 'Jimenez',
       'appellantDateOfBirth': '1990-03-21',
-      'appellantNationalities': [ { 'id': '0f583a62-e98a-4a76-abe2-130ad5547726', 'value': { 'code': 'AF' } } ],
+      'appellantNationalities': [{ 'id': '0f583a62-e98a-4a76-abe2-130ad5547726', 'value': { 'code': 'AF' } }],
       'appellantHasFixedAddress': 'Yes',
       'appellantAddress': {
         'County': '',
@@ -75,7 +75,7 @@ describe('update-appeal-service', () => {
         'document_filename': '1580296112615-evidence-file.jpeg',
         'document_binary_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891/binary'
       },
-      'subscriptions': [ {
+      'subscriptions': [{
         'id': '7166f13d-1f99-4323-9459-b22a8325db9d',
         'value': {
           'subscriber': 'appellant',
@@ -84,10 +84,10 @@ describe('update-appeal-service', () => {
           'mobileNumber': '07123456789',
           'wantsEmail': 'Yes'
         }
-      } ],
+      }],
       'reasonsForAppealDecision': 'I\'ve decided to appeal because ...',
       'reasonsForAppealDateUploaded': '2020-01-02',
-      'reasonsForAppealDocuments': [ {
+      'reasonsForAppealDocuments': [{
         'id': 'f29cde8d-e407-4ed1-8137-0eb2f9b3cc42',
         'value': {
           document: {
@@ -133,13 +133,13 @@ describe('update-appeal-service', () => {
             reason: 'some reason',
             status: 'inProgress',
             state: 'awaitingReasonsForAppeal',
-            evidence: [ {
+            evidence: [{
               value: {
                 'document_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2',
                 'document_filename': 'expected_time_extension_evidence.png',
                 'document_binary_url': 'http://dm-store:4506/documents/086bdfd6-b0cc-4405-8332-cf1288f38aa2/binary'
               }
-            } ]
+            }]
           }
         }
       ],
@@ -295,7 +295,7 @@ describe('update-appeal-service', () => {
           }
         }
       ];
-      expectedCaseData.draftClarifyingQuestionsAnswers = [ { ...draftClarifyingQuestion } ];
+      expectedCaseData.draftClarifyingQuestionsAnswers = [{ ...draftClarifyingQuestion }];
       expectedCaseData.directions = [
         {
           id: '3',
@@ -391,18 +391,18 @@ describe('update-appeal-service', () => {
 
       expectedCaseData = {
         ...expectedCaseData,
-        datesToAvoid: [ {
+        datesToAvoid: [{
           value: {
             dateToAvoid: '2020-06-23',
             dateToAvoidReason: 'I have an important appointment on this day'
           }
         }, {
           value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
-        } ],
+        }],
         datesToAvoidYesNo: 'Yes',
         inCameraCourt: 'Yes',
         inCameraCourtDescription: 'The reason why I would need a private appointment',
-        interpreterLanguage: [ { value: { language: 'Afar', languageDialect: 'A dialect' } } ],
+        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
         isHearingLoopNeeded: 'Yes',
         isHearingRoomNeeded: 'Yes',
         isInterpreterServicesNeeded: 'Yes',
@@ -747,7 +747,7 @@ describe('update-appeal-service', () => {
         }
       ];
 
-      emptyApplication.timeExtensions = [ {
+      emptyApplication.timeExtensions = [{
         evidence: [],
         decision: 'granted',
         decisionReason: 'Request has been granted',
@@ -755,9 +755,9 @@ describe('update-appeal-service', () => {
         status: 'granted',
         state: 'awaitingReasonsForAppeal',
         requestDate: '2020-04-21'
-      } ];
+      }];
 
-      emptyApplication.documentMap = [ { id: 'fileId', url: 'someurl' } ] as DocumentMap[];
+      emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
 
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
 
@@ -1171,18 +1171,18 @@ describe('update-appeal-service', () => {
 
       expectedCaseData = {
         ...expectedCaseData,
-        datesToAvoid: [ {
+        datesToAvoid: [{
           value: {
             dateToAvoid: '2020-06-23',
             dateToAvoidReason: 'I have an important appointment on this day'
           }
         }, {
           value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
-        } ],
+        }],
         datesToAvoidYesNo: 'Yes',
         inCameraCourt: 'Yes',
         inCameraCourtDescription: 'The reason why I would need a private appointment',
-        interpreterLanguage: [ { value: { language: 'Afar', languageDialect: 'A dialect' } } ],
+        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
         isHearingLoopNeeded: 'Yes',
         isHearingRoomNeeded: 'Yes',
         isInterpreterServicesNeeded: 'Yes',
@@ -1207,6 +1207,138 @@ describe('update-appeal-service', () => {
           case_data: expectedCaseData
         },
         headers);
+    });
+
+    it('submits hearingRequirements with ccd', async () => {
+
+      expectedCaseData = {
+        ...expectedCaseData,
+        datesToAvoid: [{
+          value: {
+            dateToAvoid: '2020-06-23',
+            dateToAvoidReason: 'I have an important appointment on this day'
+          }
+        }, {
+          value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
+        }],
+        datesToAvoidYesNo: 'Yes',
+        inCameraCourt: 'Yes',
+        inCameraCourtDescription: 'The reason why I would need a private appointment',
+        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
+        isHearingLoopNeeded: 'Yes',
+        isHearingRoomNeeded: 'Yes',
+        remoteVideoCall: 'Yes',
+        remoteVideoCallDescription: 'Join Hearing by video call',
+        isInterpreterServicesNeeded: 'Yes',
+        multimediaEvidence: 'Yes',
+        bringOwnMultimediaEquipment: 'No',
+        multimediaEvidenceDescription: 'I do not own the equipment',
+        pastExperiences: 'Yes',
+        pastExperiencesDescription: 'Past experiences description',
+        physicalOrMentalHealthIssues: 'Yes',
+        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
+        singleSexCourt: 'Yes',
+        singleSexCourtType: 'All female',
+        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
+        additionalRequests: 'Yes',
+        additionalRequestsDescription: 'Anything else description'
+      };
+
+      ccdServiceMock.expects('loadOrCreateCase')
+        .withArgs(userId, { userToken, serviceToken })
+        .resolves({
+          id: caseId,
+          state: 'submitHearingRequirements',
+          case_data: expectedCaseData
+        });
+      await updateAppealService.loadAppeal(req as Request);
+
+      const expectedHearingRequirements = {
+        'datesToAvoid': {
+          'dates': [
+            {
+              'date': {
+                'day': '23',
+                'month': '6',
+                'year': '2020'
+              },
+              'reason': 'I have an important appointment on this day'
+            },
+            {
+              'date': {
+                'day': '24',
+                'month': '6',
+                'year': '2020'
+              },
+              'reason': 'I need this day off'
+            }
+          ],
+          'isDateCannotAttend': true
+        },
+        'interpreterLanguages': [
+          {
+            'language': 'Afar',
+            'languageDialect': 'A dialect'
+          }
+        ],
+        'isHearingLoopNeeded': true,
+        'isHearingRoomNeeded': true,
+        'isInterpreterServicesNeeded': true,
+        'otherNeeds': {
+          'anythingElse': true,
+          'anythingElseReason': 'Anything else description',
+          'bringOwnMultimediaEquipment': false,
+          'bringOwnMultimediaEquipmentReason': 'I do not own the equipment',
+          'healthConditions': true,
+          'healthConditionsReason': 'Reason for mental health conditions',
+          'multimediaEvidence': true,
+          'pastExperiences': true,
+          'pastExperiencesReason': 'Past experiences description',
+          'privateAppointment': true,
+          'privateAppointmentReason': 'The reason why I would need a private appointment',
+          'singleSexAppointment': true,
+          'singleSexAppointmentReason': 'The reason why I will need an all-female',
+          'singleSexTypeAppointment': 'All female',
+          'remoteVideoCall': true,
+          'remoteVideoCallDescription': 'Join Hearing by video call'
+        }
+      };
+      expect(req.session.appeal.hearingRequirements).to.be.eql(expectedHearingRequirements);
+    });
+
+    it('submits hearingRequirements with otherNeeds', async () => {
+
+      req.session.appeal.appealStatus = 'submitHearingRequirements';
+      req.session.appeal.hearingRequirements = {
+
+        otherNeeds: {
+          multimediaEvidence: true,
+          bringOwnMultimediaEquipment: false,
+          bringOwnMultimediaEquipmentReason: 'I do not own the equipment',
+          singleSexAppointment: true,
+          singleSexTypeAppointment: 'All female',
+          singleSexAppointmentReason: 'The reason why I will need an all-female',
+          privateAppointment: true,
+          privateAppointmentReason: 'The reason why I would need a private hearing',
+          healthConditions: true,
+          healthConditionsReason: 'Reason for mental health conditions',
+          pastExperiences: true,
+          pastExperiencesReason: 'Past experiences description',
+          anythingElse: true,
+          anythingElseReason: 'Anything else description',
+          remoteVideoCall: true,
+          remoteVideoCallDescription: 'Why you are not able to join ?'
+        }
+
+      } as HearingRequirements;
+      let caseData = updateAppealServiceBis.convertToCcdCaseData(req.session.appeal);
+      expect(caseData.inCameraCourt).to.be.equals('Yes');
+      expect(caseData.multimediaEvidence).to.be.equals('Yes');
+      expect(caseData.pastExperiences).to.be.equals('Yes');
+      expect(caseData.physicalOrMentalHealthIssues).to.be.equals('Yes');
+      expect(caseData.singleSexCourt).to.be.equals('Yes');
+      expect(caseData.additionalRequests).to.be.equals('Yes');
+      expect(caseData.remoteVideoCall).to.be.equals('Yes');
     });
   });
 });

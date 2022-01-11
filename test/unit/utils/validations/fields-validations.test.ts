@@ -24,6 +24,7 @@ describe('fields-validations', () => {
       text: errorMessage
     };
   }
+  const dateMissingErrorMsg = i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing;
 
   describe('homeOfficeNumberValidation', () => {
     it('should validate a UAN', () => {
@@ -478,13 +479,13 @@ describe('fields-validations', () => {
 
     it('should validate', () => {
       const validDate = { day: '1', month: '1', year: '2020' };
-      const validations = isDateInRange('1-1-2019', '1-1-2021', validDate);
+      const validations = isDateInRange('1-1-2019', '1-1-2021', validDate, dateMissingErrorMsg);
       expect(validations).to.deep.equal(null);
     });
 
     it('fields cannot be empty', () => {
       let notValidDate = { day: '', month: '', year: '' };
-      let validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      let validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
 
       const expectedError = i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing;
       expect(validations).to.deep.equal({
@@ -492,14 +493,14 @@ describe('fields-validations', () => {
       });
 
       notValidDate = { day: '1', month: '', year: '' };
-      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
 
       expect(validations).to.deep.equal({
         month: createError('month', expectedError)
       });
 
       notValidDate = { day: '1', month: '1', year: '' };
-      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
 
       expect(validations).to.deep.equal({
         year: createError('year', expectedError)
@@ -509,7 +510,7 @@ describe('fields-validations', () => {
     it('fields must be numbers', () => {
       let notValidDate = { day: 'a', month: 'b', year: 'c' };
       const expectedError = i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat;
-      let validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      let validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
 
       expect(validations).to.deep.equal(
         {
@@ -517,7 +518,7 @@ describe('fields-validations', () => {
         });
 
       notValidDate = { day: '2', month: 'b', year: 'c' };
-      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
 
       expect(validations).to.deep.equal(
         {
@@ -525,7 +526,7 @@ describe('fields-validations', () => {
         });
 
       notValidDate = { day: '2', month: '1', year: 'c' };
-      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
 
       expect(validations).to.deep.equal(
         {
@@ -535,7 +536,7 @@ describe('fields-validations', () => {
 
     it('fields must be integers', () => {
       const notValidDate = { day: '1.1', month: '2.2', year: '1000.1' };
-      const validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      const validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
       const expectedError = i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat;
 
       expect(validations).to.deep.equal(
@@ -547,7 +548,7 @@ describe('fields-validations', () => {
     it('fields must greater than 0', () => {
       // not sure how we can do this for day and month
       const notValidDate = { day: '0', month: '0', year: '0' };
-      const validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      const validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
       const expectedError = i18n.validationErrors.cmaRequirements.datesToAvoid.date.incorrectFormat;
 
       expect(validations).to.deep.equal(
@@ -558,7 +559,7 @@ describe('fields-validations', () => {
 
     it('date must be within range', () => {
       let notValidDate = { day: '1', month: '1', year: '2022' };
-      let validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      let validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
       let expectedError = 'Enter a date between 1-1-2019 and 1-1-2021';
 
       expect(validations).to.deep.equal(
@@ -567,7 +568,7 @@ describe('fields-validations', () => {
         });
 
       notValidDate = { day: '1', month: '1', year: '2018' };
-      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate);
+      validations = isDateInRange('1-1-2019', '1-1-2021', notValidDate, dateMissingErrorMsg);
       expectedError = 'Enter a date between 1-1-2019 and 1-1-2021';
 
       expect(validations).to.deep.equal(
@@ -576,7 +577,7 @@ describe('fields-validations', () => {
         });
 
       const validDate = { day: '1', month: '6', year: '2020' };
-      validations = isDateInRange('1-1-2019', '1-1-2021', validDate);
+      validations = isDateInRange('1-1-2019', '1-1-2021', validDate, dateMissingErrorMsg);
 
       expect(validations).to.deep.equal(null);
 

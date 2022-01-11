@@ -63,6 +63,10 @@ describe('event-deadline-date-finder', () => {
               'createdDate': '2020-02-18T16:00:00.000'
             },
             {
+              'id': 'reasonsForAppealSubmitted',
+              'createdDate': '2020-02-18T16:00:00.000'
+            },
+            {
               'id': 'decisionWithdrawn',
               'createdDate': '2020-02-19T16:00:00.000'
             }

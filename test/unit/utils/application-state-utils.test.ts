@@ -68,6 +68,10 @@ describe('application-state-utils', () => {
             {
               'id': 'submitCmaRequirements',
               'createdDate': '2020-02-23T16:00:00.000'
+            },
+            {
+              'id': 'draftHearingRequirements',
+              'createdDate': '2022-01-11T16:00:00.000'
             }
           ]
         }
@@ -163,8 +167,27 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is draftHearingRequirements should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'draftHearingRequirements';
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '25 January 2022',
+        descriptionParagraphs: [
+          'A Tribunal Caseworker is looking at your answers and will contact you with the details of your hearing and to tell you what to do next.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
+        ],
+        info: {
+          title: 'Helpful Information',
+          url: "<a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+        },
+        allowedAskForMoreTime: false
+      });
+    });
+
     it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', () => {
-      req.session.appeal.appealStatus = 'appealSubmitted';
+      req.session.appeal.appealStatus = 'lateAppealSubmitted';
       req.session.appeal.application.isAppealLate = true;
       const result = getAppealApplicationNextStep(req as Request);
 

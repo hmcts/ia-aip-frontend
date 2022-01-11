@@ -585,6 +585,14 @@
             "title": "Useful documents",
             "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
           }
+        },
+        "draftHearingRequirements": {
+          "detailsSent": "A Tribunal Caseworker is looking at your answers and will contact you with the details of your hearing and to tell you what to do next.",
+          "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.",
+          "info": {
+            "title": "Helpful Information",
+            "url": "<a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          }
         }
       },
       "timeline": {

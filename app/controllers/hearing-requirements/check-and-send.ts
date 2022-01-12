@@ -3,6 +3,7 @@ import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { handleHearingRequirementsSaveForLater } from './common';
 import { buildHearingRequirementsSummarySections } from './hearing-requirements-summary-sections';
 
 function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
@@ -24,6 +25,10 @@ function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.body['saveForLater']) {
+        await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
+        return handleHearingRequirementsSaveForLater(req,res);
+      }
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,

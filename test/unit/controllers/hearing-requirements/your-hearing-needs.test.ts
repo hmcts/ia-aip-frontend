@@ -144,12 +144,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-witnesses?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -157,12 +151,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Witnesses names'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-witness-names',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -191,12 +179,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-outside-uk?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }]
@@ -217,12 +199,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-interpreter?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -230,12 +206,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Add language details'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-language-details',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -243,12 +213,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<b>Language</b><br><pre>Afar</pre><br><b>Dialect</b><br><pre>fasdfas</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-language-details/?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -256,12 +220,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<b>Language</b><br><pre>Aragonese</pre><br><b>Dialect</b><br><pre>2nd</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-language-details/?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -269,12 +227,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<b>Language</b><br><pre>Bashkir</pre><br><b>Dialect</b><br><pre>3rd</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-language-details/?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -292,12 +244,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-step-free-access?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -315,12 +261,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-hearing-loop?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }]
@@ -341,12 +281,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-multimedia-evidence?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -361,12 +295,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-multimedia-evidence-equipment?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -384,12 +312,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-single-sex?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -404,12 +326,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'All male'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-single-sex-type?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -424,12 +340,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'single sex appointment reason'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-single-sex-type-male?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -447,12 +357,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-private?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -467,12 +371,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<pre>sdfsd fsd fs</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-private-reason?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -490,12 +388,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-physical-mental-health?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -510,12 +402,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<pre>health condition reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-physical-mental-health-reasons?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -533,12 +419,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-past-experiences?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -553,12 +433,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<pre>post expression reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-past-experiences-reasons?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -576,12 +450,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-anything-else?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -596,12 +464,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<pre>anything else reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-anything-else-reasons?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }]
@@ -621,12 +483,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-dates-avoid?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -634,12 +490,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<b>Date</b><br><pre>11 November 2022</pre><br><b>Reason</b><br><pre>some reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-dates-avoid-enter/0?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -647,12 +497,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               },
               'value': {
                 'html': '<b>Date</b><br><pre>12 November 2022</pre><br><b>Reason</b><br><pre>some reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-dates-avoid-enter/1?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }]

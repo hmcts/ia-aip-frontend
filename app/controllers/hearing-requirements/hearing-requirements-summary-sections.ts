@@ -6,7 +6,7 @@ import { boolToYesNo } from '../../utils/utils';
 
 const editParameter: string = '?edit';
 
-function getSummaryRow(visibleChangeLink: boolean,title?: string, values?: (number | string | string[] | any)[], href?: string ) {
+function getSummaryRow(visibleChangeLink: boolean, title?: string, values?: (number | string | string[] | any)[], href?: string) {
   if (visibleChangeLink) {
     return addSummaryRow(title, values, href);
   } else {

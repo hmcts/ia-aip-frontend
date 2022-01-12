@@ -97,7 +97,8 @@ describe('Hearing Requirements - Enter A date controller', () => {
         date: { day: '20', month: '6', year: '2020' },
         availableHearingDates: { from: availableHearingDates.from, to: availableHearingDates.to },
         formAction: '/hearing-dates-avoid-enter/0',
-        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } }
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        saveAndContinueOnly: true
 
       };
 
@@ -124,10 +125,10 @@ describe('Hearing Requirements - Enter A date controller', () => {
 
   describe('postEnterADatePage', () => {
     it('should fail validation and render template with errors', async () => {
-      const invalidDate = moment().add(1, 'week');
+      const invalidDate = moment().add(-1, 'week');
 
       req.body['day'] = invalidDate.date();
-      req.body['month'] = invalidDate.month();
+      req.body['month'] = invalidDate.month() + 1;
       req.body['year'] = invalidDate.year();
 
       const availableHearingDates = {
@@ -149,7 +150,8 @@ describe('Hearing Requirements - Enter A date controller', () => {
         date: { ...req.body },
         availableHearingDates,
         formAction: '/hearing-dates-avoid-enter',
-        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } }
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        saveAndContinueOnly: true
       };
 
       await postEnterADatePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -197,7 +199,8 @@ describe('Hearing Requirements - Enter A date controller', () => {
         date: { ...req.body },
         availableHearingDates,
         formAction: '/hearing-dates-avoid-enter/0',
-        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } }
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        saveAndContinueOnly: true
       };
 
       await postEnterADatePageWithId(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

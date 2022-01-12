@@ -129,6 +129,7 @@ interface Appeal {
   feeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
+  pcqId?: string;
 }
 
 interface Hearing {

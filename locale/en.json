@@ -2158,9 +2158,6 @@
           "title": "Helpful Information",
           "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
         }
-      },
-      "yourHearingNeeds" : {
-        "title": "Your hearing needs"
       }
     },
     "clarifyingQuestionPage": {

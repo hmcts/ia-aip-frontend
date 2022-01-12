@@ -94,6 +94,8 @@ describe('Hearing Requirements Check and Send controller', () => {
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
+    next = sandbox.stub() as NextFunction;
+    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'hearingRequirementsSubmitted' }) } as Partial<UpdateAppealService>;
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
 

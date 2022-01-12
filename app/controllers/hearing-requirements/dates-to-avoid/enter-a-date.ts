@@ -25,7 +25,7 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
     to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
   };
 
-  let validation = isDateInRange(availableHearingDates.from, availableHearingDates.to, req.body,i18n.validationErrors.hearingRequirements.datesToAvoid.date.missing);
+  let validation = isDateInRange(availableHearingDates.from, availableHearingDates.to, req.body, i18n.validationErrors.hearingRequirements.datesToAvoid.date.missing);
 
   const savedDates = req.session.appeal.hearingRequirements.datesToAvoid.dates || [];
 
@@ -53,7 +53,8 @@ function handlePostEnterADatePage(formAction: string, onSuccess: Function, req: 
       errorList: Object.values(validation),
       date: { ...req.body },
       availableHearingDates,
-      previousPage: previousPage
+      previousPage: previousPage,
+      saveAndContinueOnly: true
     });
   }
 
@@ -78,7 +79,8 @@ function getEnterADatePageWithId(req: Request, res: Response, next: NextFunction
         formAction: formActionWithId,
         date: dateToEdit,
         availableHearingDates,
-        previousPage: previousPage
+        previousPage: previousPage,
+        saveAndContinueOnly: true
       });
     }
   } catch (e) {
@@ -104,7 +106,8 @@ function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
       formActionUrl,
       date: lastDate,
       availableHearingDates,
-      previousPage: previousPage
+      previousPage: previousPage,
+      saveAndContinueOnly: true
     });
   } catch (e) {
     next(e);
@@ -116,12 +119,12 @@ function postEnterADatePage(updateAppealService: UpdateAppealService) {
     try {
 
       const onSuccess = async () => {
-        const datesToAvoid: CmaDateToAvoid[] = [ ...(_.get(req.session.appeal.hearingRequirements, 'datesToAvoid.dates', [])) ];
+        const datesToAvoid: CmaDateToAvoid[] = [...(_.get(req.session.appeal.hearingRequirements, 'datesToAvoid.dates', []))];
 
         const find = datesToAvoid.find((saved) =>
-                saved.date.day === req.body.day &&
-                saved.date.month === req.body.month &&
-                saved.date.year === req.body.year
+          saved.date.day === req.body.day &&
+          saved.date.month === req.body.month &&
+          saved.date.year === req.body.year
         );
 
         if (!find) {
@@ -136,7 +139,7 @@ function postEnterADatePage(updateAppealService: UpdateAppealService) {
 
         req.session.appeal.hearingRequirements.datesToAvoid = {
           ...req.session.appeal.hearingRequirements.datesToAvoid,
-          dates: [ ...datesToAvoid ]
+          dates: [...datesToAvoid]
         };
 
         await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
@@ -177,7 +180,7 @@ function postEnterADatePageWithId(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupHearingDatesToAvoidEnterADateController (middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupHearingDatesToAvoidEnterADateController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.submitHearingRequirements.hearingDatesToAvoidEnterDate, middleware, getEnterADatePage);
   router.get(paths.submitHearingRequirements.hearingDatesToAvoidEnterDateWithId, middleware, getEnterADatePageWithId);

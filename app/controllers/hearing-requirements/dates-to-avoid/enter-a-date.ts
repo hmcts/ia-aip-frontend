@@ -102,6 +102,7 @@ function getEnterADatePage(req: Request, res: Response, next: NextFunction) {
       to: moment(startDate).add(6, 'week').format(dayMonthYearFormat)
     };
 
+    const formActionUrl = paths.submitHearingRequirements.hearingDatesToAvoidEnterDate;
     return res.render('hearing-requirements/dates-to-avoid/enter-a-date.njk', {
       formActionUrl,
       date: lastDate,

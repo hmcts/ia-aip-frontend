@@ -46,7 +46,7 @@ function getDatesToAvoidReason(req: Request, res: Response, next: NextFunction) 
     const last: CmaDateToAvoid = datesToAvoid.dates[datesToAvoid.dates.length - 1];
 
     pageContent.question.value = last.reason ? last.reason : '';
-
+    pageContent.formAction = formAction;
     return res.render('templates/textarea-question-page.njk', pageContent);
   } catch (e) {
     next(e);

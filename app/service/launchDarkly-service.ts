@@ -34,6 +34,7 @@ export default class LaunchDarklyService implements ILaunchDarklyService {
   }
 
   async getVariation(req: Request, flag: string, defaultReturn: boolean) {
+    logger.console('Checking launch darkly flag', launchDarklyLabel);
     const username = _.get(req, 'idam.userDetails.sub', 'user-is-not-logged-in');
     return ldClient.variation(flag, { key: username }, defaultReturn);
   }

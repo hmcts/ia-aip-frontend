@@ -31,7 +31,6 @@ import { getHearingRequirementsStartPage } from './other-needs/start-page';
 import { getTaskList } from './task-list';
 import { getYourHearingNeedsPage } from './your-hearing-needs';
 
-
 function setupHearingRequirementsFeatureToggleController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.submitHearingRequirements.taskList, middleware, hearingRequirementsMiddleware, getTaskList);

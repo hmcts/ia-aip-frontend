@@ -8,7 +8,7 @@ import { buildHearingRequirementsSummarySections } from './hearing-requirements-
 function getCheckAndSendPage(req: Request, res: Response, next: NextFunction) {
   try {
     const hearingRequirements: HearingRequirements = req.session.appeal.hearingRequirements;
-    const hearingRequirementsSummarySections = buildHearingRequirementsSummarySections(hearingRequirements);
+    const hearingRequirementsSummarySections = buildHearingRequirementsSummarySections(hearingRequirements,true);
 
     res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.cmaRequirementsCYA.title,

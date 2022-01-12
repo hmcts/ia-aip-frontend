@@ -134,15 +134,15 @@ function getAppealApplicationNextStep(req: Request) {
         allowedAskForMoreTime: false
       };
       break;
-    case 'draftHearingRequirements':
+    case 'listing':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.draftHearingRequirements.detailsSent,
-          i18n.pages.overviewPage.doThisNext.draftHearingRequirements.dueDate
+          i18n.pages.overviewPage.doThisNext.listing.detailsSent,
+          i18n.pages.overviewPage.doThisNext.listing.dueDate
         ],
         info: {
-          title: i18n.pages.overviewPage.doThisNext.draftHearingRequirements.info.title,
-          url: i18n.pages.overviewPage.doThisNext.draftHearingRequirements.info.url
+          title: i18n.pages.overviewPage.doThisNext.listing.info.title,
+          url: i18n.pages.overviewPage.doThisNext.listing.info.url
         },
         cta: null,
         allowedAskForMoreTime: false

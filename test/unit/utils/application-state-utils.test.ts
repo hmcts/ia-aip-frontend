@@ -167,8 +167,8 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is draftHearingRequirements should get correct \'Do This next section\'', () => {
-      req.session.appeal.appealStatus = 'draftHearingRequirements';
+    it('when application status is listing should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'listing';
       const result = getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({

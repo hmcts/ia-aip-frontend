@@ -129,6 +129,7 @@ interface Appeal {
   feeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
+  pcqId?: string;
 }
 
 interface Hearing {
@@ -248,11 +249,17 @@ interface OtherNeeds {
   anythingElseReason: string;
 }
 
+interface HearingOtherNeeds extends OtherNeeds {
+  remoteVideoCall: boolean;
+  remoteVideoCallDescription: string;
+}
+
 interface DatesToAvoid {
   isDateCannotAttend: boolean;
   dates?: CmaDateToAvoid[];
 }
 
+// the same interface is used for hearingDate to avoid as well
 interface CmaDateToAvoid {
   date: AppealDate;
   reason?: string;
@@ -266,7 +273,21 @@ interface ReasonsForAppeal {
 }
 
 interface HearingRequirements {
+  witnessesOnHearing?: boolean;
+  witnessNames?: string[];
+  witnessesOutsideUK?: boolean;
+  isInterpreterServicesNeeded?: boolean;
+  interpreterLanguages?: InterpreterLanguage[];
+  isHearingRoomNeeded?: boolean;
+  isHearingLoopNeeded?: boolean;
+  otherNeeds?: HearingOtherNeeds;
   [key: string]: any;
+  isEdit?: boolean;
+  tasks?: {
+    [key: string]: Task;
+  };
+  datesToAvoid?: DatesToAvoid;
+  // [key: string]: any;
 }
 
 interface RespondentDocument {

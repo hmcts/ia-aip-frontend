@@ -102,6 +102,14 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       formattedDeadline = getFormattedEventHistoryDate(history, 'requestRespondentReview', 14);
       break;
     }
+    case 'listing':
+    case 'draftHearingRequirements': {
+      formattedDeadline = getFormattedEventHistoryDate(history, 'draftHearingRequirements', 14);
+      break;
+    }
+    case 'submitHearingRequirements':
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions,'legalRepresentativeHearingRequirements');
+      break;
     default: {
       formattedDeadline = 'TBC';
       break;

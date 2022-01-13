@@ -1,16 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import rp from 'request-promise';
-import {
-    checkPcqHealth,
-    invokePcq
-} from '../../../app/controllers/pcq';
+import PcqService from '../../../app/service/pcq-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 
-describe('PCQ @pcq', () => {
+describe('PCQ service', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -66,7 +63,8 @@ describe('PCQ @pcq', () => {
   describe('CheckPcqHealth', () => {
     it('should return true when health is up', async () => {
       sandbox.stub(rp, 'get').resolves(JSON.parse('{"status":"UP"}'));
-      const healthCheck = await checkPcqHealth();
+      const pcqService = new PcqService();
+      const healthCheck = await pcqService.checkPcqHealth();
       expect(healthCheck).to.be.equal(true);
     });
   });
@@ -74,7 +72,8 @@ describe('PCQ @pcq', () => {
   describe('CheckPcqHealth', () => {
     it('should return false when health is down', async () => {
       sandbox.stub(rp, 'get').resolves(JSON.parse('{"status":"DOWN"}'));
-      const healthCheck = await checkPcqHealth();
+      const pcqService = new PcqService();
+      const healthCheck = await pcqService.checkPcqHealth();
       expect(healthCheck).to.be.equal(false);
     });
   });
@@ -82,8 +81,8 @@ describe('PCQ @pcq', () => {
   describe('CheckPcqHealth', () => {
     it('should return false when an exception is thrown', async () => {
       const error = new Error('an error');
-      sandbox.stub(rp, 'get').throws(error);
-      const healthCheck = await checkPcqHealth();
+      const pcqService = new PcqService();
+      const healthCheck = await pcqService.checkPcqHealth();
       expect(healthCheck).to.be.equal(false);
     });
   });
@@ -96,8 +95,17 @@ describe('PCQ @pcq', () => {
       };
     });
     it('should return invoked when I invoke', async () => {
-      invokePcq(res as Response, appeal);
+      const pcqService = new PcqService();
+      pcqService.invokePcq(res as Response, appeal);
       expect(res.redirect).to.have.been.calledOnce.calledWith();
+    });
+  });
+
+  describe('GetPcqId', () => {
+    it('should return pcqId', async () => {
+      const pcqService = new PcqService();
+      const pcqId = pcqService.getPcqId();
+      expect(pcqId).not.to.be.empty;
     });
   });
 });

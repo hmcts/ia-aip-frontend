@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  getConfirmationPage,
-  setupReasonsForAppealController
-} from '../../../../app/controllers/reasons-for-appeal/reason-for-appeal';
+  getHearingRequirementsConfirmationPage,
+  setupHearingRequirementsConfirmationPage
+} from '../../../../app/controllers/hearing-requirements/confirmation-page';
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { addDaysToDate } from '../../../../app/utils/date-utils';
 import Logger from '../../../../app/utils/logger';
+import i18n from '../../../../locale/en.json';
 import { expect, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
@@ -58,13 +59,16 @@ describe('Confirmation Page Controller', () => {
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
     const middleware = [];
 
-    setupReasonsForAppealController(middleware, { updateAppealService });
-    expect(routerGetStub).to.have.been.calledWith(paths.reasonsForAppealSubmitted.confirmation, middleware);
+    setupHearingRequirementsConfirmationPage(middleware);
+    expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.confirmation, middleware);
   });
 
   it('getConfirmationPage should render confirmation.njk', () => {
-    getConfirmationPage(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledOnce.calledWith('reasons-for-appeal/confirmation-page.njk', {
+    getHearingRequirementsConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+      title: i18n.pages.hearingRequirements.confirmation.title,
+      whatNextListItems: i18n.pages.hearingRequirements.confirmation.whatNextListItems,
+      info: i18n.pages.hearingRequirements.confirmation.info,
       date: addDaysToDate(14)
     });
   });
@@ -72,7 +76,7 @@ describe('Confirmation Page Controller', () => {
   it('getConfirmationPage should catch an exception and call next()', () => {
     const error = new Error('the error');
     res.render = sandbox.stub().throws(error);
-    getConfirmationPage(req as Request, res as Response, next);
+    getHearingRequirementsConfirmationPage(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
   });
 });

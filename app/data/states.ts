@@ -55,6 +55,10 @@ export const States = {
     id: 'cmaListed',
     name: 'CMA Requirements listed'
   },
+  DRAFT_HEARING_REQUIREMENTS: {
+    id: 'draftHearingRequirements',
+    name: 'Draft hearing requirements for AIP'
+  },
   PREPARE_FOR_HEARING: {
     id: 'prepareForHearing',
     name: 'Prepare for hearing'

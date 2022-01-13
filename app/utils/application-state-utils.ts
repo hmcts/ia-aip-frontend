@@ -134,6 +134,20 @@ function getAppealApplicationNextStep(req: Request) {
         allowedAskForMoreTime: false
       };
       break;
+    case 'listing':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.listing.detailsSent,
+          i18n.pages.overviewPage.doThisNext.listing.dueDate
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.listing.info.title,
+          url: i18n.pages.overviewPage.doThisNext.listing.info.url
+        },
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+      break;
     case 'lateAppealSubmitted':
       doThisNextSection = {
         descriptionParagraphs: [
@@ -176,10 +190,10 @@ function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'awaitingReasonsForAppeal':
-      descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description ];
+      descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.description];
       respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime ];
+        descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.descriptionAskForMoreTime];
         respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.new.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
@@ -204,10 +218,10 @@ function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'awaitingReasonsForAppealPartial':
-      descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description ];
+      descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.description];
       respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime ];
+        descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.descriptionAskForMoreTime];
         respondBy = i18n.pages.overviewPage.doThisNext.awaitingReasonsForAppeal.partial.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
@@ -278,7 +292,7 @@ function getAppealApplicationNextStep(req: Request) {
       descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.clarifyingQuestions.description];
       respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime ];
+        descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.clarifyingQuestions.descriptionAskForMoreTime];
         respondBy = i18n.pages.overviewPage.doThisNext.clarifyingQuestions.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
@@ -302,7 +316,7 @@ function getAppealApplicationNextStep(req: Request) {
       ];
       respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
       if (pendingTimeExtension) {
-        descriptionParagraphs = [ i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime ];
+        descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.descriptionAskForMoreTime];
         respondBy = i18n.pages.overviewPage.doThisNext.awaitingCmaRequirements.respondByTextAskForMoreTime;
       } else if (decisionGranted) {
         respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
@@ -317,6 +331,33 @@ function getAppealApplicationNextStep(req: Request) {
         },
         cta: {
           url: paths.awaitingCmaRequirements.taskList,
+          respondBy
+        },
+        allowedAskForMoreTime: true
+      };
+      break;
+    case 'submitHearingRequirements':
+      descriptionParagraphs = [
+        i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description,
+        i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description2
+      ];
+      respondBy = i18n.pages.overviewPage.doThisNext.respondByText;
+      if (pendingTimeExtension) {
+        descriptionParagraphs = [i18n.pages.overviewPage.doThisNext.submitHearingRequirements.descriptionAskForMoreTime];
+        respondBy = i18n.pages.overviewPage.doThisNext.submitHearingRequirements.respondByTextAskForMoreTime;
+      } else if (decisionGranted) {
+        respondBy = i18n.pages.overviewPage.doThisNext.nowRespondBy;
+      } else if (decisionRefused) {
+        respondBy = i18n.pages.overviewPage.doThisNext.stillRespondBy;
+      }
+      doThisNextSection = {
+        descriptionParagraphs,
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.submitHearingRequirements.info.title,
+          url: i18n.pages.overviewPage.doThisNext.submitHearingRequirements.info.url
+        },
+        cta: {
+          url: paths.submitHearingRequirements.taskList,
           respondBy
         },
         allowedAskForMoreTime: true

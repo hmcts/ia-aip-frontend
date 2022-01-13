@@ -41,6 +41,12 @@ describe('event-deadline-date-finder', () => {
               'tag': 'respondentEvidence',
               'dateDue': '2020-04-28',
               'dateSent': '2020-04-14'
+            },
+            {
+              'id': 4,
+              'tag': 'legalRepresentativeHearingRequirements',
+              'dateDue': '2020-07-28',
+              'dateSent': '2020-07-23'
             }
           ],
           history: [
@@ -54,6 +60,10 @@ describe('event-deadline-date-finder', () => {
             },
             {
               'id': 'requestRespondentReview',
+              'createdDate': '2020-02-18T16:00:00.000'
+            },
+            {
+              'id': 'reasonsForAppealSubmitted',
               'createdDate': '2020-02-18T16:00:00.000'
             },
             {
@@ -140,6 +150,54 @@ describe('event-deadline-date-finder', () => {
     });
 
     it('should return a formatted date for decisionWithdrawn state', () => {
+
+      const currentAppealStatus = 'decisionWithdrawn';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('03 March 2020');
+    });
+
+    it('submitHearingRequirements should return a formatted  date with the legalRepresentativeHearingRequirements direction due date', () => {
+
+      const currentAppealStatus = 'submitHearingRequirements';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('28 July 2020');
+    });
+
+    it('should return a formatted date for decisionWithdrawn state @thisONes', () => {
+
+      const currentAppealStatus = 'decisionWithdrawn';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('03 March 2020');
+    });
+
+    it('submitHearingRequirements should return a formatted  date with the legalRepresentativeHearingRequirements direction due date', () => {
+
+      const currentAppealStatus = 'submitHearingRequirements';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('28 July 2020');
+    });
+
+    it('should return a formatted date for decisionWithdrawn state @thisONes', () => {
+
+      const currentAppealStatus = 'decisionWithdrawn';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('03 March 2020');
+    });
+
+    it('submitHearingRequirements should return a formatted  date with the legalRepresentativeHearingRequirements direction due date', () => {
+
+      const currentAppealStatus = 'submitHearingRequirements';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('28 July 2020');
+    });
+
+    it('should return a formatted date for decisionWithdrawn state @thisONes', () => {
 
       const currentAppealStatus = 'decisionWithdrawn';
       const result = getDeadline(currentAppealStatus, req as Request);

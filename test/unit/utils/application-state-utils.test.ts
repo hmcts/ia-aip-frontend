@@ -48,6 +48,12 @@ describe('application-state-utils', () => {
               'tag': 'respondentEvidence',
               'dateDue': '2020-04-28',
               'dateSent': '2020-04-14'
+            },
+            {
+              'id': 4,
+              'tag': 'legalRepresentativeHearingRequirements',
+              'dateDue': '2020-07-28',
+              'dateSent': '2020-07-14'
             }
           ],
           history: [
@@ -62,6 +68,10 @@ describe('application-state-utils', () => {
             {
               'id': 'submitCmaRequirements',
               'createdDate': '2020-02-23T16:00:00.000'
+            },
+            {
+              'id': 'draftHearingRequirements',
+              'createdDate': '2022-01-11T16:00:00.000'
             }
           ]
         }
@@ -157,8 +167,27 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is listing should get correct \'Do This next section\'', () => {
+      req.session.appeal.appealStatus = 'listing';
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '25 January 2022',
+        descriptionParagraphs: [
+          'A Tribunal Caseworker is looking at your answers and will contact you with the details of your hearing and to tell you what to do next.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
+        ],
+        info: {
+          title: 'Helpful Information',
+          url: "<a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+        },
+        allowedAskForMoreTime: false
+      });
+    });
+
     it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', () => {
-      req.session.appeal.appealStatus = 'appealSubmitted';
+      req.session.appeal.appealStatus = 'lateAppealSubmitted';
       req.session.appeal.application.isAppealLate = true;
       const result = getAppealApplicationNextStep(req as Request);
 
@@ -710,6 +739,58 @@ describe('application-state-utils', () => {
           'usefulDocuments': {
             'title': 'Useful documents',
             'url': "<a href='{{ paths.common.whatToExpectAtCMA }}'>Notice of Case Management Appointment.pdf</a>"
+          }
+        }
+      );
+    });
+    it('when application status is submitHearingRequirements should get correct Do this next section.', () => {
+      req.session.appeal.appealStatus = 'submitHearingRequirements';
+      const result = getAppealApplicationNextStep(req as Request);
+
+      const expected = {
+        allowedAskForMoreTime: true,
+        cta: {
+          respondBy: 'You need to respond by <span class=\'govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span>.',
+          url: '/hearing-needs'
+        },
+        deadline: '28 July 2020',
+        descriptionParagraphs: [
+          'Your appeal is going to hearing.',
+          'Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access'
+        ],
+        info: {
+          title: 'Helpful Information',
+          url: "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+        }
+      };
+
+      expect(result).to.eql(expected);
+    });
+
+    it('should return \'Do This next section\' when application status is submitHearingRequirements and a pending time extension', () => {
+      const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
+        value: {
+          decision: 'Pending'
+        }
+      };
+      req.session.appeal.appealStatus = 'submitHearingRequirements';
+      req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+      const result = getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql(
+        {
+          allowedAskForMoreTime: true,
+          cta: {
+            respondBy: 'It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.',
+            url: '/hearing-needs'
+          },
+          deadline: '28 July 2020',
+          descriptionParagraphs: [
+            'You need to respond by by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.'
+          ],
+          info: {
+            title: 'Helpful Information',
+            url: "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
           }
         }
       );

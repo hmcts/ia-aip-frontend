@@ -115,7 +115,12 @@ export const Events = {
   },
   EDIT_AIP_HEARING_REQUIREMENTS: {
     id: 'editAipHearingRequirements',
+    summary: 'Save Draft Hearing Requirements AIP',
     description: 'Save Draft Hearing Requirements AIP'
+  },
+  SUBMIT_AIP_HEARING_REQUIREMENTS: {
+    id: 'draftHearingRequirements',
+    summary: 'Submit hearing requirements AIP',
+    description: 'Submit hearing requirements AIP'
   }
-
 };

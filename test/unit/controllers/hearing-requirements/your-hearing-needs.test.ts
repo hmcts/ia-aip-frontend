@@ -1,15 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getCheckAndSendPage,
-  postCheckAndSendPage,
-  setupHearingRequirementsCYAController
-} from '../../../../app/controllers/hearing-requirements/check-and-send';
+  getYourHearingNeedsPage,
+  postYourHearingNeedsPage,
+  setupYourHearingNeedsController
+} from '../../../../app/controllers/hearing-requirements/your-hearing-needs';
 
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../utils/testUtils';
 
-describe('Hearing Requirements Check and Send controller', () => {
+describe('Hearing RequirementsYour Hearing Needs controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -94,8 +94,6 @@ describe('Hearing Requirements Check and Send controller', () => {
       render: sandbox.stub(),
       redirect: sandbox.spy()
     } as Partial<Response>;
-    next = sandbox.stub() as NextFunction;
-    updateAppealService = { submitEvent: sandbox.stub().returns({ state: 'hearingRequirementsSubmitted' }) } as Partial<UpdateAppealService>;
 
     updateAppealService = { submitEventRefactored: sandbox.stub() } as Partial<UpdateAppealService>;
 
@@ -106,30 +104,29 @@ describe('Hearing Requirements Check and Send controller', () => {
     sandbox.restore();
   });
 
-  describe('setupCmaRequirementsCYAController', () => {
+  describe('setupYourHearingNeedsController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupHearingRequirementsCYAController(middleware, updateAppealService as UpdateAppealService);
-      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.checkAndSend);
-      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.checkAndSend);
+      setupYourHearingNeedsController(middleware, updateAppealService as UpdateAppealService);
+      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.yourHearingNeeds);
+      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.yourHearingNeeds);
     });
   });
 
-  describe('getCheckAndSendPage', () => {
-    it('should render CYA template page', () => {
-      getCheckAndSendPage(req as Request, res as Response, next);
+  describe('getYourHearingNeedsPage', () => {
+    it('should render getYourHearingNeedsPage', () => {
+      getYourHearingNeedsPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
     });
 
-    it('should render CYA template page with requirements', () => {
+    it('should render getYourHearingNeedsPage with requirements', () => {
 
       const expectedArgs = {
-        pageTitle: 'Check your answers',
-        formAction: paths.submitHearingRequirements.checkAndSend,
-        previousPage: paths.submitHearingRequirements.taskList,
+        pageTitle: 'Your hearing needs',
+        previousPage: paths.common.overview,
         summarySections: [{
           'title': '1. Witnesses',
           'summaryLists': [{
@@ -147,12 +144,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-witnesses?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -160,12 +151,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Witnesses names'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-witness-names',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -194,12 +179,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-outside-uk?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }]
@@ -220,12 +199,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-interpreter?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -233,12 +206,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Add language details'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-language-details',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -246,12 +213,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<b>Language</b><br><pre>Afar</pre><br><b>Dialect</b><br><pre>fasdfas</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-language-details/?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -259,12 +220,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<b>Language</b><br><pre>Aragonese</pre><br><b>Dialect</b><br><pre>2nd</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-language-details/?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -272,12 +227,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<b>Language</b><br><pre>Bashkir</pre><br><b>Dialect</b><br><pre>3rd</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-language-details/?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -295,12 +244,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-step-free-access?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -318,12 +261,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-hearing-loop?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }]
@@ -344,12 +281,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-multimedia-evidence?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -364,12 +295,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-multimedia-evidence-equipment?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -387,12 +312,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-single-sex?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -407,12 +326,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'All male'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-single-sex-type?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -427,12 +340,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'single sex appointment reason'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-single-sex-type-male?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -450,12 +357,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-private?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -470,12 +371,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<pre>sdfsd fsd fs</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-private-reason?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -493,12 +388,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-physical-mental-health?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -513,12 +402,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<pre>health condition reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-physical-mental-health-reasons?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -536,12 +419,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-past-experiences?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -556,12 +433,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<pre>post expression reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-past-experiences-reasons?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }, {
@@ -579,12 +450,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-anything-else?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -599,12 +464,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<pre>anything else reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-anything-else-reasons?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }]
@@ -624,12 +483,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': 'Yes'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-dates-avoid?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -637,12 +490,6 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<b>Date</b><br><pre>11 November 2022</pre><br><b>Reason</b><br><pre>some reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-dates-avoid-enter/0?edit',
-                  'text': 'Change'
-                }]
               }
             }, {
               'key': {
@@ -650,19 +497,13 @@ describe('Hearing Requirements Check and Send controller', () => {
               },
               'value': {
                 'html': '<b>Date</b><br><pre>12 November 2022</pre><br><b>Reason</b><br><pre>some reason</pre>'
-              },
-              'actions': {
-                'items': [{
-                  'href': '/hearing-dates-avoid-enter/1?edit',
-                  'text': 'Change'
-                }]
               }
             }]
           }]
         }]
       };
 
-      getCheckAndSendPage(req as Request, res as Response, next);
+      getYourHearingNeedsPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
     });
@@ -671,26 +512,23 @@ describe('Hearing Requirements Check and Send controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
 
-      getCheckAndSendPage(req as Request, res as Response, next);
+      getYourHearingNeedsPage(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postCheckAndSendPage', () => {
-    it('should submit and redirect to confirmation page', async () => {
-      await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+  describe('postYourHearingNeedsPage', () => {
+    it('should submit and redirect to your hearing page', async () => {
+      await postYourHearingNeedsPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      // expect(req.session.appeal.hearingRequirements).to.eql(hearingRequirements);
-      // expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.SUBMIT_HEARING_REQUIREMENTS, req);
-      // expect(req.session.appeal.appealStatus).to.be.equal('hearingRequirementsSubmitted');
-      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.confirmation);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 
     it('should catch error and call next with error', async () => {
       const error = new Error('an error');
       res.redirect = sandbox.stub().throws(error);
 
-      await postCheckAndSendPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postYourHearingNeedsPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

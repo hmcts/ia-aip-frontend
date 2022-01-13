@@ -598,8 +598,19 @@
       "timeline": {
         "completed": "Completed",
         "sections": {
+          "appealHearingRequirementsSection": "Your hearing details",
           "appealArgumentSection": "Your appeal argument",
           "appealDetailsSection": "Your appeal details"
+        },
+        "draftHearingRequirements": {
+          "text": "You told us your hearing needs.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your hearing needs",
+              "href": "{{ paths.submitHearingRequirements.yourHearingNeeds }}"
+            }
+          ]
         },
         "submitAppeal": {
           "text": "You sent your appeal details to the Tribunal.",
@@ -2155,6 +2166,9 @@
           "title": "Helpful Information",
           "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
         }
+      },
+      "yourHearingNeeds" : {
+        "title": "Your hearing needs"
       }
     },
     "clarifyingQuestionPage": {

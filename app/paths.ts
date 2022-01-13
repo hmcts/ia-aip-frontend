@@ -95,7 +95,8 @@ const paths = {
     hearingDateToAvoidReasons: '/hearing-dates-avoid-reasons',
     hearingDateToAvoidReasonsWithId: '/hearing-dates-avoid-reasons/:id',
     hearingDateToAvoidNew: '/hearing-dates-avoid-new',
-    confirmation: '/hearing-success'
+    confirmation: '/hearing-success',
+    yourHearingNeeds: '/your-hearing-needs'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',

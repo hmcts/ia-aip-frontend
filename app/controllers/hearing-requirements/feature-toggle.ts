@@ -29,6 +29,7 @@ import { getSingleSexHearingQuestion } from './other-needs/single-sex-hearing-qu
 import { getSingleSexTypeHearingQuestion } from './other-needs/single-sex-type-hearing-question';
 import { getHearingRequirementsStartPage } from './other-needs/start-page';
 import { getTaskList } from './task-list';
+import { getYourHearingNeedsPage } from './your-hearing-needs';
 
 function setupHearingRequirementsFeatureToggleController(middleware: Middleware[]): Router {
   const router = Router();
@@ -65,6 +66,7 @@ function setupHearingRequirementsFeatureToggleController(middleware: Middleware[
   router.get(paths.submitHearingRequirements.hearingDateToAvoidNew, middleware, hearingRequirementsMiddleware, getAddAnotherDateQuestionPage);
 
   router.get(paths.submitHearingRequirements.checkAndSend, middleware, hearingRequirementsMiddleware, getCheckAndSendPage);
+  router.get(paths.submitHearingRequirements.yourHearingNeeds, middleware, hearingRequirementsMiddleware, getYourHearingNeedsPage);
   router.get(paths.submitHearingRequirements.confirmation, middleware, hearingRequirementsMiddleware, getHearingRequirementsConfirmationPage);
 
   return router;

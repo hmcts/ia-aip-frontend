@@ -87,18 +87,18 @@ Scenario: Complete appeal application
   Then I am on the appeal details sent page
   And I see "Your appeal details have been sent" in title
 
-  When I select appeal type Protection
-#  // introduce new payment steps
-  And I click "Save and continue" button
-  Then I should see the task-list page
-
-  When I click on the check and send your appeal link
-  Then I should be taken to the check-and-send page
-
-  When I check the statement of truth
-  And I click send
-  Then I am on the appeal details sent page
-  And I see "Your appeal details have been sent" in title
+#  When I select appeal type Protection
+##  // introduce new payment steps
+#  And I click "Save and continue" button
+#  Then I should see the task-list page
+#
+#  When I click on the check and send your appeal link
+#  Then I should be taken to the check-and-send page
+#
+#  When I check the statement of truth
+#  And I click send
+#  Then I am on the appeal details sent page
+#  And I see "Your appeal details have been sent" in title
   And I see the respond by date is 5 days in the future
 
   # Case Progression

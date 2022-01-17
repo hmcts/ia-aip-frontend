@@ -7,6 +7,7 @@ import {
 
 import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
+import Logger from '../../../../app/utils/logger';
 import { expect, sinon } from '../../../utils/testUtils';
 
 describe('Hearing Requirements Check and Send controller', () => {
@@ -15,6 +16,7 @@ describe('Hearing Requirements Check and Send controller', () => {
   let res: Partial<Response>;
   let next: NextFunction;
   let updateAppealService: Partial<UpdateAppealService>;
+  const logger: Logger = new Logger();
   let hearingRequirements: HearingRequirements;
   hearingRequirements = {
     'datesToAvoid': {
@@ -88,7 +90,12 @@ describe('Hearing Requirements Check and Send controller', () => {
         appeal: {
           hearingRequirements: JSON.parse(JSON.stringify(hearingRequirements))
         }
-      }
+      },
+      app: {
+        locals: {
+          logger
+        }
+      } as any
     } as Partial<Request>;
     res = {
       render: sandbox.stub(),

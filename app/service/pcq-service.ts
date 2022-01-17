@@ -56,9 +56,8 @@ export default class PcqService {
       .map(key => `${key}=${params[key]}`)
       .join('&');
 
+    logger.trace(`Invoking PCQ for ccd id ${JSON.stringify(appeal.ccdCaseId)}`, 'PCQ');
+
     res.redirect(`${config.get('pcq.url')}${config.get('pcq.path')}?${qs}`);
-
-    logger.trace('PCQ is INVOKED', 'PCQ');
   }
-
 }

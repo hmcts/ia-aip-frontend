@@ -7,7 +7,7 @@ import { addDaysToDate } from '../../utils/date-utils';
 const daysToWaitAfterSubmission: number = config.get('daysToWait.afterSubmission');
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
-  req.app.locals.logger.trace(`Successful AIP pay later submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
+  req.app.locals.logger.trace(`Successful AIP appeal submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
 
   try {
     const { application, paAppealTypeAipPaymentOption = null } = req.session.appeal;

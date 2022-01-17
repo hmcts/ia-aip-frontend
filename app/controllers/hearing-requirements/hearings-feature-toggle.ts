@@ -72,6 +72,13 @@ function setupHearingRequirementsFeatureToggleController(middleware: Middleware[
   return router;
 }
 
+function setupHearingBundleFeatureToggleController(middleware: Middleware[]): Router {
+  const router = Router();
+  // Add the paths here for hearing bundles feature e.g., router.get(path,middleware,hearingBundleFeatureMiddleware,getView);
+  return router;
+}
+
 export {
-  setupHearingRequirementsFeatureToggleController
+  setupHearingRequirementsFeatureToggleController,
+  setupHearingBundleFeatureToggleController
 };

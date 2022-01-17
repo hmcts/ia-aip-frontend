@@ -34,6 +34,7 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
+      req.app.locals.logger.trace(`Hearing requirements submitted for AIP appeal with ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation Hearing Requirements');
       res.redirect(paths.submitHearingRequirements.confirmation);
     } catch (e) {
       next(e);

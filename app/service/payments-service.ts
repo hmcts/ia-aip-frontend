@@ -29,7 +29,7 @@ export default class PaymentService {
       case_type: 'Asylum',
       fees: [ fee ]
     };
-    req.app.locals.logger.trace(`Creating Card Payment with fee ${JSON.stringify(fee)}`, 'Payments Service');
+    req.app.locals.logger.trace(`Creating Card Payment with fee ${JSON.stringify(fee)} for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Payments Service');
     const event = req.session.appeal.appealStatus === 'appealStarted' ? Events.EDIT_APPEAL : Events.PAYMENT_APPEAL;
     const results = await paymentApi.createCardPayment(securityHeaders, body, getUrl(req.protocol, req.hostname, paths.common.finishPayment));
     const appeal: Appeal = {

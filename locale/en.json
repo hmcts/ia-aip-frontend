@@ -2145,12 +2145,12 @@
         "stepFreeAccessPage": {
           "pageTitle": "Will you or any witnesses need step-free access?",
           "title": "Will you or any witnesses need step-free access?",
-          "text": "We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues."
+          "text": "If you or any witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing."
         },
         "hearingLoopPage": {
           "pageTitle": "Will you or any witnesses need a hearing loop?",
           "title": "Will you or any witnesses need a hearing loop?",
-          "text": "If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing."
+          "text": "A hearing loop is a sound system designed to help people who use hearing aids."
         }
       },
       "otherNeedsSection": {

@@ -845,9 +845,9 @@ describe('application-state-utils', () => {
       );
     });
 
-    it('when application status is preHearing should get correct Do this next section.', () => {
+    it('when application status is preHearing should get the correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'preHearing';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.include(
         {

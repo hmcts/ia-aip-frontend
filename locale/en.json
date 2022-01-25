@@ -612,7 +612,7 @@
         "hearingDateTimeCentre": "<span class='govuk-body govuk-!-font-weight-bold'>Date:</span> {{ hearingDetails.date }}<br /><span class='govuk-body govuk-!-font-weight-bold'>Time:</span> {{ hearingDetails.time }}<br /><span class='govuk-body govuk-!-font-weight-bold'>Location:</span> {{ hearingDetails.hearingCentre }}",
         "info": {
           "title": "Helpful Information",
-          "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+          "url": "<a class='govuk-link' href='{{ paths.common.understandingHearingBundle }}'>Understanding the hearing bundle</a><br /><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
         }
       }
     },

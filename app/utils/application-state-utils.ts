@@ -489,7 +489,7 @@ async function getAppealApplicationNextStep(req: Request) {
       // default message to avoid app crashing on events that are to be implemented.
       doThisNextSection = {
         descriptionParagraphs: [
-          `Description for appeal status <b>${currentAppealStatus}</b> not found`
+          `Nothing to do next`
         ]
       };
       break;

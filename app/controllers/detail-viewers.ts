@@ -471,6 +471,28 @@ function getHomeOfficeResponse(req: Request, res: Response, next: NextFunction) 
   }
 }
 
+function getHearingBundle(req: Request, res: Response, next: NextFunction) {
+  try {
+    const previousPage: string = paths.common.overview;
+    const hearingBundleDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'hearingBundle');
+
+    const hearingBundle = hearingBundleDocuments.shift();
+    const data = [
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.dateUploaded, [moment(hearingBundle.dateUploaded).format(dayMonthYearFormat)]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.documentDescription, [hearingBundle.description])
+    ];
+
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.homeOfficeResponse.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
@@ -484,6 +506,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.homeOfficeWithdrawLetter, getHomeOfficeWithdrawLetter);
   router.get(paths.common.homeOfficeResponse, getHomeOfficeResponse);
   router.get(paths.common.hearingNoticeViewer,getHearingNoticeViewer);
+  router.get(paths.common.hearingBundleViewer,getHearingBundle);
   return router;
 }
 
@@ -501,6 +524,6 @@ export {
   getCmaRequirementsViewer,
   getOutOfTimeDecisionViewer,
   getHomeOfficeResponse,
-  getHearingNoticeViewer
-
+  getHearingNoticeViewer,
+  getHearingBundle
 };

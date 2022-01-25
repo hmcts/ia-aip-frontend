@@ -1,9 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
+import moment from 'moment';
+import { FEATURE_FLAGS } from '../data/constants';
 import { States } from '../data/states';
 import { paths } from '../paths';
+import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import { getAppealApplicationNextStep } from '../utils/application-state-utils';
+import { getHearingCentre } from '../utils/cma-hearing-details';
+import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
@@ -31,9 +36,26 @@ function getAppellantName(req: Request) {
   return name;
 }
 
+function getHearingDetails(req: Request): Hearing {
+  let hearingDetails: Hearing = {
+    hearingCentre: '', time: '', date: ''
+  };
+  if (_.has(req.session.appeal, 'hearing')) {
+    hearingDetails.hearingCentre = getHearingCentre(req);
+    hearingDetails.time = moment(req.session.appeal.hearing.time).format(timeFormat);
+    hearingDetails.date = formatDate(req.session.appeal.hearing.date);
+    return hearingDetails;
+  }
+  return null;
+}
+
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const hearingBundleFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
+      if (req.session.appeal.appealStatus === 'preHearing' || req.session.appeal.appealStatus === 'preHearingOutOfCountryFeatureDisabled') {
+        req.session.appeal.appealStatus = hearingBundleFeatureEnabled ? 'preHearing' : 'preHearingOutOfCountryFeatureDisabled';
+      } // TODO: remove after Feature flag for AIP Hearing (Bundling) is permanently switched on
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
@@ -61,6 +83,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         States.ADJOURNED.id
       ];
       const payLater = payLaterForApplicationNeeded(req);
+      const hearingDetails = getHearingDetails(req);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -74,7 +97,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         askForMoreTime,
         saveAndAskForMoreTime,
         provideMoreEvidenceSection: provideMoreEvidenceStates.includes(req.session.appeal.appealStatus),
-        payLater
+        payLater,
+        hearingDetails
       });
     } catch (e) {
       next(e);
@@ -92,5 +116,6 @@ export {
   setupApplicationOverviewController,
   getApplicationOverview,
   getAppealRefNumber,
-  checkAppealEnded
+  checkAppealEnded,
+  getHearingDetails
 };

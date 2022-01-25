@@ -3,6 +3,7 @@ import {
   getAppealDetailsViewer,
   getCmaRequirementsViewer,
   getDocumentViewer,
+  getHearingBundle,
   getHearingNoticeViewer,
   getHoEvidenceDetailsViewer,
   getHomeOfficeResponse,
@@ -389,6 +390,15 @@ describe('Detail viewer Controller', () => {
             dateUploaded: '2021-06-15'
           }
         ],
+        hearingDocuments: [
+          {
+            fileId: '3d8bf49d-dc3e-412a-b814-19dbe4180ac2',
+            name: 'PA 50001 2022-User-hearing-bundle.pdf',
+            id: '1',
+            tag: 'hearingBundle',
+            dateUploaded: '2021-06-15'
+          }
+        ],
         documentMap: [
           {
             id: '318c373c-dd10-4deb-9590-04282653715d',
@@ -537,7 +547,36 @@ describe('Detail viewer Controller', () => {
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
       });
     });
+  });
 
+  describe('getHearingBundle', () => {
+    beforeEach(() => {
+      req.session.appeal.hearingDocuments = [
+        {
+          fileId: 'uuid',
+          name: 'filename',
+          description: 'description here',
+          dateUploaded: '2020-02-21',
+          id: '2',
+          tag: 'hearingBundle'
+        }
+      ];
+    });
+    it('should render details-viewer template', () => {
+      getHearingBundle(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.homeOfficeResponse.title,
+        data: sinon.match.array,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('getHearingBundle should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getHearingBundle(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
   });
 
   describe('getNoticeEndedAppeal @getNotice', () => {

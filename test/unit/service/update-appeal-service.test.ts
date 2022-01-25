@@ -836,6 +836,7 @@ describe('update-appeal-service', () => {
         ]
       });
     });
+
     describe('legalRepresentativeDocuments @legal', () => {
       const caseData: Partial<CaseData> = {
         'tribunalDocuments': [
@@ -880,6 +881,36 @@ describe('update-appeal-service', () => {
 
         expect(mappedAppeal.tribunalDocuments).to.be.length(1);
         expect(mappedAppeal.legalRepresentativeDocuments).to.be.length(1);
+      });
+    });
+
+    describe('hearingDocuments @legal', () => {
+      const caseData: Partial<CaseData> = {
+        'hearingDocuments': [
+          {
+            'id': '1',
+            'value': {
+              'tag': 'endAppeal',
+              'document': {
+                'document_url': 'http://dm-store:8080/documents/59c0a265-1fd8-4698-9b75-d7438870d6e6',
+                'document_filename': 'PA 50001 2022-User-hearing-bundle.PDF',
+                'document_binary_url': 'http://dm-store:8080/documents/59c0a265-1fd8-4698-9b75-d7438870d6e6/binary'
+              },
+              'suppliedBy': '',
+              'description': '',
+              'dateUploaded': '2021-06-01'
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map docs to hearing documents', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.hearingDocuments).to.be.length(1);
       });
     });
   });

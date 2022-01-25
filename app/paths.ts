@@ -173,6 +173,7 @@ const paths = {
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
     homeOfficeResponse: '/home-office-response',
     hearingNoticeViewer: '/hearing-notice',
+    hearingBundleViewer: '/hearing-bundle',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',
@@ -212,6 +213,7 @@ const paths = {
     homeOfficeDocuments: '/home-office-documents',
     whatToExpectAtCMA: '/expect-case-management-appointment',
     whatToExpectAtHearing: '/expect-hearing',
+    understandingHearingBundle: '/understanding-hearing-bundle',
     homeOfficeMaintainDecision: '/home-office-maintain',
     homeOfficeWithdrawDecision: '/home-office-withdraw',
 

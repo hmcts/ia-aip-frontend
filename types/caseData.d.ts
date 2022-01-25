@@ -50,6 +50,7 @@ interface CaseData {
   reasonsForAppealDateUploaded?: string;
   reasonsForAppealDocuments: Collection<DocumentWithMetaData>[];
   respondentDocuments: Collection<RespondentEvidenceDocument>[];
+  hearingDocuments: Collection<RespondentEvidenceDocument>[];
   timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<CcdDirection>[];

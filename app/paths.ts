@@ -172,6 +172,7 @@ const paths = {
     outOfTimeDecisionViewer: '/out-of-time-decision',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
     homeOfficeResponse: '/home-office-response',
+    hearingNoticeViewer: '/hearing-notice',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

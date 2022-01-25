@@ -26,8 +26,12 @@ function getHearingCentre(req: Request): string {
       return 'Taylor House';
     case 'manchester':
       return 'Manchester';
+    case 'nottingham':
+      return 'Nottingham Justice Centre';
     case 'newport':
       return 'Newport';
+    case 'newcastle':
+      return 'Newcastle Civil & Family Courts and Tribunals Centre';
     case 'bradford':
       return 'Bradford';
     case 'northShields':
@@ -37,7 +41,14 @@ function getHearingCentre(req: Request): string {
     case 'hattonCross':
       return 'Hatton Cross';
     case 'glasgow':
+    case 'glasgowTribunalsCentre':
       return 'Glasgow';
+    case 'belfast':
+      return 'Belfast';
+    case 'coventry':
+      return 'Coventry Magistrates Court';
+    case 'remoteHearing':
+      return 'The hearing will take place by video call';
     default:
       return '';
   }

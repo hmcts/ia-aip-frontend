@@ -1,17 +1,17 @@
 import { Express, NextFunction, Request, Response } from 'express';
 import {
-  setupHearingRequirementsFeatureToggleController
-} from '../../../../app/controllers/hearing-requirements/feature-toggle';
+ setupOutOfCountryFeatureToggleController
+} from '../../../../app/controllers/out-of-country/ooc-feature-toggle';
 import {
-  hearingRequirementsMiddleware
-} from '../../../../app/middleware/hearing-requirements-middleware';
+  outOfCountryFeatureMiddleware
+} from '../../../../app/middleware/outofcountry-feature-middleware';
 import { paths } from '../../../../app/paths';
 import LaunchDarklyService from '../../../../app/service/launchDarkly-service';
 import { expect, sinon } from '../../../utils/testUtils';
 
 const express = require('express');
 
-describe('setupHearingRequirementsFeatureToggleController', () => {
+describe('setupOutOfCountryFeatureToggleController', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -49,11 +49,11 @@ describe('setupHearingRequirementsFeatureToggleController', () => {
     sandbox.restore();
   });
 
-  it('should redirect to overview page if the hearing requirements is disabled', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-requirements-feature', false).resolves(true);
-    req.session.appeal.appealStatus = 'submitHearingRequirements';
+  // there are no paths to write any reasonable tests here
+  it('should redirect to overview page if the hearing bundle feature is disabled', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(false);
     const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
-    setupHearingRequirementsFeatureToggleController([hearingRequirementsMiddleware]);
-    expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.taskList);
+    const router = setupOutOfCountryFeatureToggleController([outOfCountryFeatureMiddleware]);
+    expect(router).not.null;
   });
 });

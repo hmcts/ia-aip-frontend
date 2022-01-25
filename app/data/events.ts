@@ -122,5 +122,10 @@ export const Events = {
     id: 'draftHearingRequirements',
     summary: 'Submit hearing requirements AIP',
     description: 'Submit hearing requirements AIP'
+  },
+  LIST_CASE: {
+    id: 'listCase',
+    summary: 'List Case AIP',
+    description: 'List case AIP'
   }
 };

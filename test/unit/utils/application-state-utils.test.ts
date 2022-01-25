@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { paths } from '../../../app/paths';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import {
   getAppealApplicationNextStep,
   getAppealStatus,
@@ -96,9 +97,9 @@ describe('application-state-utils', () => {
   });
 
   describe('getAppealApplicationNextStep', () => {
-    it('should return default when application status is unknown', () => {
+    it('should return default when application status is unknown', async () => {
       req.session.appeal.appealStatus = 'unknown';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
         {
@@ -110,9 +111,9 @@ describe('application-state-utils', () => {
       );
     });
 
-    it('should return \'Do This next section\' when application status is appealStarted', () => {
+    it('should return \'Do This next section\' when application status is appealStarted', async () => {
       req.session.appeal.appealStatus = 'appealStarted';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.equal({
         cta: {
@@ -128,11 +129,11 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('should return \'Do This next section\' when application status is appealStartedPartial', () => {
+    it('should return \'Do This next section\' when application status is appealStartedPartial', async () => {
       req.session.appeal.appealStatus = 'appealStarted';
       req.session.appeal.application.homeOfficeRefNumber = '12345678';
 
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.equal({
         descriptionParagraphs: [
@@ -148,9 +149,9 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is appealSubmitted should get correct \'Do This next section\'', () => {
+    it('when application status is appealSubmitted should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'appealSubmitted';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
@@ -167,9 +168,9 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is listing should get correct \'Do This next section\'', () => {
+    it('when application status is listing should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'listing';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
@@ -186,10 +187,10 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', () => {
+    it('when application status is lateAppealSubmitted should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'lateAppealSubmitted';
       req.session.appeal.application.isAppealLate = true;
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
@@ -206,9 +207,9 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', () => {
+    it('when application status is awaitingRespondentEvidence should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'awaitingRespondentEvidence';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
@@ -225,12 +226,12 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is lateAppealRejected should get correct \'Do This next section\'', () => {
+    it('when application status is lateAppealRejected should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'appealStarted';
       req.session.appeal.outOfTimeDecisionType = 'rejected';
       req.session.appeal.application.isAppealLate = true;
 
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
@@ -269,8 +270,8 @@ describe('application-state-utils', () => {
         ];
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and no pending time extension', () => {
-        const result = getAppealApplicationNextStep(req as Request);
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and no pending time extension', async () => {
+        const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
           {
@@ -295,14 +296,14 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a pending time extension', () => {
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a pending time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending'
           }
         };
         req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
-        const result = getAppealApplicationNextStep(req as Request);
+        const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
           {
@@ -327,14 +328,14 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a granted time extension', () => {
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a granted time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Granted'
           }
         };
         req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
-        const result = getAppealApplicationNextStep(req as Request);
+        const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
           {
@@ -359,14 +360,14 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a refused time extension', () => {
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a refused time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Refused'
           }
         };
         req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
-        const result = getAppealApplicationNextStep(req as Request);
+        const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
           {
@@ -416,10 +417,10 @@ describe('application-state-utils', () => {
         req.session.appeal.makeAnApplications = null;
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial', () => {
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial', async () => {
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
-        const result = getAppealApplicationNextStep(req as Request);
+        const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
           {
@@ -444,7 +445,7 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and pending time extension', () => {
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and pending time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending'
@@ -453,7 +454,7 @@ describe('application-state-utils', () => {
         req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
-        const result = getAppealApplicationNextStep(req as Request);
+        const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
           {
@@ -478,7 +479,7 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and granted time extension', () => {
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and granted time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Granted'
@@ -487,7 +488,7 @@ describe('application-state-utils', () => {
         req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
-        const result = getAppealApplicationNextStep(req as Request);
+        const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
           {
@@ -512,7 +513,7 @@ describe('application-state-utils', () => {
         );
       });
 
-      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and refused time extension', () => {
+      it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and refused time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Refused'
@@ -521,7 +522,7 @@ describe('application-state-utils', () => {
         req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
-        const result = getAppealApplicationNextStep(req as Request);
+        const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
           {
@@ -547,9 +548,9 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is reasonsForAppealSubmitted should get correct Do this next section.', () => {
+    it('when application status is reasonsForAppealSubmitted should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'reasonsForAppealSubmitted';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         cta: null,
@@ -562,9 +563,9 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('should return \'Do This next section\' when application status is respondentReview', () => {
+    it('should return \'Do This next section\' when application status is respondentReview', async () => {
       req.session.appeal.appealStatus = 'respondentReview';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         descriptionParagraphs: [
@@ -576,9 +577,9 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('should return \'Do This next section\' when application status is decisionWithdrawn', () => {
+    it('should return \'Do This next section\' when application status is decisionWithdrawn', async () => {
       req.session.appeal.appealStatus = 'decisionWithdrawn';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       const expected = {
         descriptionParagraphs: [
@@ -594,9 +595,9 @@ describe('application-state-utils', () => {
       expect(result).to.eql(expected);
     });
 
-    it('should return \'Do This next section\' when application status is decisionMaintained', () => {
+    it('should return \'Do This next section\' when application status is decisionMaintained', async () => {
       req.session.appeal.appealStatus = 'decisionMaintained';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       const expected = {
         descriptionParagraphs: [
@@ -613,9 +614,9 @@ describe('application-state-utils', () => {
       expect(result).to.eql(expected);
     });
 
-    it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', () => {
+    it('when application status is awaitingClarifyingQuestionsAnswers should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'awaitingClarifyingQuestionsAnswers';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       const expected = {
         'allowedAskForMoreTime': true,
@@ -633,9 +634,9 @@ describe('application-state-utils', () => {
       expect(result).to.eql(expected);
     });
 
-    it('when application status is clarifyingQuestionsAnswersSubmitted should get correct Do this next section.', () => {
+    it('when application status is clarifyingQuestionsAnswersSubmitted should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'clarifyingQuestionsAnswersSubmitted';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
         'allowedAskForMoreTime': false,
@@ -648,9 +649,9 @@ describe('application-state-utils', () => {
       });
     });
 
-    it('when application status is awaitingCmaRequirements should get correct Do this next section.', () => {
+    it('when application status is awaitingCmaRequirements should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'awaitingCmaRequirements';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       const expected = {
         allowedAskForMoreTime: true,
@@ -672,9 +673,9 @@ describe('application-state-utils', () => {
       expect(result).to.eql(expected);
     });
 
-    it('when application status is cmaRequirementsSubmitted should get correct Do this next section.', () => {
+    it('when application status is cmaRequirementsSubmitted should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'cmaRequirementsSubmitted';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
         {
@@ -693,9 +694,9 @@ describe('application-state-utils', () => {
       );
     });
 
-    it('when application status is cmaAdjustmentsAgreed should get correct Do this next section.', () => {
+    it('when application status is cmaAdjustmentsAgreed should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'cmaAdjustmentsAgreed';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
         {
@@ -714,9 +715,9 @@ describe('application-state-utils', () => {
       );
     });
 
-    it('when application status is awaitingCmaRequirements should get correct Do this next section.', () => {
+    it('when application status is awaitingCmaRequirements should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'cmaListed';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.include(
         {
@@ -743,9 +744,9 @@ describe('application-state-utils', () => {
         }
       );
     });
-    it('when application status is submitHearingRequirements should get correct Do this next section.', () => {
+    it('when application status is submitHearingRequirements should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'submitHearingRequirements';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       const expected = {
         allowedAskForMoreTime: true,
@@ -767,7 +768,7 @@ describe('application-state-utils', () => {
       expect(result).to.eql(expected);
     });
 
-    it('should return \'Do This next section\' when application status is submitHearingRequirements and a pending time extension', () => {
+    it('should return \'Do This next section\' when application status is submitHearingRequirements and a pending time extension', async () => {
       const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
         value: {
           decision: 'Pending'
@@ -775,7 +776,7 @@ describe('application-state-utils', () => {
       };
       req.session.appeal.appealStatus = 'submitHearingRequirements';
       req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
         {
@@ -796,9 +797,9 @@ describe('application-state-utils', () => {
       );
     });
 
-    it('when application status is cmaListed should get correct Do this next section.', () => {
+    it('when application status is cmaListed should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'cmaListed';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.include(
         {
@@ -826,11 +827,11 @@ describe('application-state-utils', () => {
       );
     });
 
-    it('when application status is appealTakenOffline should get correct Do this next section.', () => {
+    it('when application status is appealTakenOffline should get correct Do this next section.', async () => {
       req.session.appeal.appealStatus = 'appealTakenOffline';
       req.session.appeal.removeAppealFromOnlineReason = 'Reason to move an appeal offline';
       req.session.appeal.removeAppealFromOnlineDate = '2021-06-30';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.include(
         {
@@ -844,9 +845,9 @@ describe('application-state-utils', () => {
       );
     });
 
-    it('when application status is ended should get the correct Do this next section. @ended', () => {
+    it('when application status is ended should get the correct Do this next section. @ended', async () => {
       req.session.appeal.appealStatus = 'ended';
-      const result = getAppealApplicationNextStep(req as Request);
+      const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.deep.include(
         {
@@ -867,6 +868,35 @@ describe('application-state-utils', () => {
         }
       );
     });
+  });
+
+  it('when application status is prepareForHearing should get correct Do this next section.', async () => {
+    req.session.appeal.appealStatus = 'prepareForHearing';
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'allowedAskForMoreTime': false,
+      'cta': {
+      },
+      'date': '11 August 2020',
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'The Tribunal has set a date for your hearing. Here are the details:',
+        '<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}',
+        '<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}',
+        '<span class=\"govuk-!-font-weight-bold\">Location:</span> {{ applicationNextStep.hearingCentre }} ',
+        "You can now access your <a href='{{ paths.common.hearingNoticeViewer }}'>Notice of Hearing</a>.  It includes important<br>details about the hearing and you should read it carefully."
+      ],
+      'info': {
+        'title': 'Helpful Information',
+        'url': "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+      },
+      'hearingCentre': 'Taylor House',
+      'time': '10:00 am'
+    };
+
+    expect(result).to.eql(expected);
   });
 
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {

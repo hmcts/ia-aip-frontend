@@ -1,9 +1,12 @@
 import { Request } from 'express';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
+import { FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
+import { hearingBundleFeatureMiddleware } from '../middleware/hearing-requirements-middleware';
 import { SecurityHeaders } from '../service/authentication-service';
+import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
 
 /**
@@ -86,8 +89,13 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
-  const appealHearingRequirementsSectionEvents = [ Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id ];
-  const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONSE_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
+  let appealHearingRequirementsSectionEvents = [Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id];
+  const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
+  if (hearingBundleFeatureEnabled) {
+    appealHearingRequirementsSectionEvents.push(Events.LIST_CASE.id);
+  }
+
+  const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONSE_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
   const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
 
   const appealHearingRequirementsSection = constructSection(appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req);

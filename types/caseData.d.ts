@@ -88,6 +88,7 @@ interface CaseData {
   recordedOutOfTimeDecision: string;
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];
+  hearingDocuments?: Collection<DocumentWithMetaData>[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;

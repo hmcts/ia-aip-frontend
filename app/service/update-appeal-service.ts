@@ -100,9 +100,9 @@ export default class UpdateAppealService {
     const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
-    const listCmaHearingCentre = caseData.listCaseHearingCentre || '';
-    const listCmaHearingLength = caseData.listCaseHearingLength || '';
-    const listCmaHearingDate = caseData.listCaseHearingDate || '';
+    const listHearingCentre = caseData.listCaseHearingCentre || '';
+    const listHearingLength = caseData.listCaseHearingLength || '';
+    const listHearingDate = caseData.listCaseHearingDate || '';
 
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
@@ -432,15 +432,16 @@ export default class UpdateAppealService {
         inFlight: hasPendingTimeExtension
       },
       hearing: {
-        hearingCentre: listCmaHearingCentre,
-        time: listCmaHearingLength,
-        date: listCmaHearingDate
+        hearingCentre: listHearingCentre,
+        time: listHearingLength,
+        date: listHearingDate
       },
       ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
       // leaving this in until we rebase with RIA-4650 & RIA-4707
       // ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.additionalEvidenceDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
+      ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
       ...caseData.makeAnApplications && { makeAnApplications: this.mapMakeApplicationsToSession(caseData.makeAnApplications, documentMap) },

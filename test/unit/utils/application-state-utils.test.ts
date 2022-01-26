@@ -853,7 +853,7 @@ describe('application-state-utils', () => {
         {
           descriptionParagraphs: [
             'The hearing bundle is ready to view. This is a record of  all the information and evidence about this appeal. You should read it carefully.',
-            '<a class=\"govuk-link\" href=\"{{ paths.common.hearingBundle }}\">View the hearing bundle</a>',
+            '<a class=\"govuk-link\" href=\"{{ paths.common.hearingBundleViewer }}\">View the hearing bundle</a>',
             '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Your hearing details</h3>',
             '<span class=\'govuk-body govuk-!-font-weight-bold\'>Date:</span> {{ hearingDetails.date }}<br /><span class=\'govuk-body govuk-!-font-weight-bold\'>Time:</span> {{ hearingDetails.time }}<br /><span class=\'govuk-body govuk-!-font-weight-bold\'>Location:</span> {{ hearingDetails.hearingCentre }}'
           ],

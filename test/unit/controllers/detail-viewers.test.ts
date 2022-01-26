@@ -565,7 +565,7 @@ describe('Detail viewer Controller', () => {
     it('should render details-viewer template', () => {
       getHearingBundle(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
-        title: i18n.pages.detailViewers.homeOfficeResponse.title,
+        title: i18n.pages.detailViewers.hearingBundle.title,
         data: sinon.match.array,
         previousPage: paths.common.overview
       });

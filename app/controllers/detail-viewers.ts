@@ -478,13 +478,12 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
 
     const hearingBundle = hearingBundleDocuments.shift();
     const data = [
-      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.dateUploaded, [moment(hearingBundle.dateUploaded).format(dayMonthYearFormat)]),
-      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`]),
-      addSummaryRow(i18n.pages.detailViewers.homeOfficeResponse.documentDescription, [hearingBundle.description])
+      addSummaryRow(i18n.pages.detailViewers.hearingBundle.dateUploaded, [moment(hearingBundle.dateUploaded).format(dayMonthYearFormat)]),
+      addSummaryRow(i18n.pages.detailViewers.hearingBundle.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${hearingBundle.fileId}'>${fileNameFormatter(hearingBundle.name)}</a>`])
     ];
 
     return res.render('templates/details-viewer.njk', {
-      title: i18n.pages.detailViewers.homeOfficeResponse.title,
+      title: i18n.pages.detailViewers.hearingBundle.title,
       data,
       previousPage
     });

@@ -403,6 +403,32 @@ function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction)
   }
 }
 
+function getDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const coverLetterDocument = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'decisionAndReasonsCoverLetter');
+    const finalDecisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf');
+
+    const data = [];
+    let fileNameFormatted = fileNameFormatter(coverLetterDocument.name);
+    data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(coverLetterDocument.dateUploaded).format(dayMonthYearFormat)]));
+    data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${coverLetterDocument.fileId}'>${fileNameFormatted}</a>`]));
+
+    fileNameFormatted = fileNameFormatter(finalDecisionAndReasonsPdfDoc.name);
+    data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(finalDecisionAndReasonsPdfDoc.dateUploaded).format(dayMonthYearFormat)]));
+    data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${finalDecisionAndReasonsPdfDoc.fileId}'>${fileNameFormatted}</a>`]));
+
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.decisionsAndReasons.title,
+      description: i18n.pages.detailViewers.decisionsAndReasons.description,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
@@ -506,6 +532,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.homeOfficeResponse, getHomeOfficeResponse);
   router.get(paths.common.hearingNoticeViewer,getHearingNoticeViewer);
   router.get(paths.common.hearingBundleViewer,getHearingBundle);
+  router.get(paths.common.decisionAndReasonsViewer,getDecisionAndReasonsViewer);
   return router;
 }
 
@@ -524,5 +551,7 @@ export {
   getOutOfTimeDecisionViewer,
   getHomeOfficeResponse,
   getHearingNoticeViewer,
-  getHearingBundle
+  getHearingBundle,
+  getDecisionAndReasonsViewer
+
 };

@@ -106,6 +106,7 @@ interface Appeal {
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
   hearingDocuments?: Evidence[];
+  finalDecisionAndReasonsDocuments?: Evidence[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
@@ -132,6 +133,8 @@ interface Appeal {
   additionalEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
+  isDecisionAllowed?: string;
+  appealOutOfCountry?: string;
 }
 
 interface Hearing {

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import {
   getAppealDetailsViewer,
   getCmaRequirementsViewer,
+  getDecisionAndReasonsViewer,
   getDocumentViewer,
   getHearingBundle,
   getHearingNoticeViewer,
@@ -680,6 +681,63 @@ describe('Detail viewer Controller', () => {
         res.render = sandbox.stub().throws(error);
 
         getHearingNoticeViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render final decision and reasons documents', () => {
+    const documents = [
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-FINAL.pdf',
+        id: '2',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2022-01-26'
+      },
+      {
+        fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter.PDF',
+        id: '1',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2022-01-26'
+      }
+    ];
+    it('should render templates/details-viewer.njk with final decision and reasons documents', () => {
+      req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '26 January 2022' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.dateUploaded },
+          value: { html: '26 January 2022' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.common.document },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
+        }
+      ];
+
+      getDecisionAndReasonsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.decisionsAndReasons.title,
+        description: i18n.pages.detailViewers.decisionsAndReasons.description,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', () => {
+        req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        getDecisionAndReasonsViewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
     });

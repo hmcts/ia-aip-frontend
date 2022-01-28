@@ -1371,5 +1371,49 @@ describe('update-appeal-service', () => {
       expect(caseData.additionalRequests).to.be.equals('Yes');
       expect(caseData.remoteVideoCall).to.be.equals('Yes');
     });
+
+    describe('finalDecisionAndReasonsDocuments @legal', () => {
+      const caseData: Partial<CaseData> = {
+        'finalDecisionAndReasonsDocuments': [
+          {
+            'id': '2',
+            'value': {
+              'tag': 'finalDecisionAndReasonsPdf',
+              'document': {
+                'document_url': 'http://dm-store:8080/documents/ba51fff4-b3c8-485b-b847-6c0962aceaaf',
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-FINAL.pdf',
+                'document_binary_url': 'http://dm-store:8080/documents/ba51fff4-b3c8-485b-b847-6c0962aceaaf/binary'
+              },
+              'suppliedBy': '',
+              'description': '',
+              'dateUploaded': '2022-01-26'
+            }
+          },
+          {
+            'id': '1',
+            'value': {
+              'tag': 'decisionAndReasonsCoverLetter',
+              'document': {
+                'document_url': 'http://dm-store:8080/documents/446787de-4b31-43b2-ab40-6d08f1a2934d',
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter.PDF',
+                'document_binary_url': 'http://dm-store:8080/documents/446787de-4b31-43b2-ab40-6d08f1a2934d/binary'
+              },
+              'suppliedBy': '',
+              'description': '',
+              'dateUploaded': '2022-01-26'
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map docs to decision and Reasons documents', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.finalDecisionAndReasonsDocuments).to.be.length(2);
+      });
+    });
+
   });
 });

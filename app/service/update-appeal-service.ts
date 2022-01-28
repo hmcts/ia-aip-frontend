@@ -394,6 +394,8 @@ export default class UpdateAppealService {
       appealReferenceNumber: caseData.appealReferenceNumber,
       removeAppealFromOnlineReason: caseData.removeAppealFromOnlineReason,
       removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
+      isDecisionAllowed: caseData.isDecisionAllowed,
+      appealOutOfCountry: caseData.appealOutOfCountry,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appealType: caseData.appealType || null,
@@ -441,6 +443,7 @@ export default class UpdateAppealService {
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
+      ...caseData.finalDecisionAndReasonsDocuments && { finalDecisionAndReasonsDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.finalDecisionAndReasonsDocuments, documentMap) },
       ...caseData.outOfTimeDecisionType && { outOfTimeDecisionType: caseData.outOfTimeDecisionType },
       ...caseData.outOfTimeDecisionMaker && { outOfTimeDecisionMaker: caseData.outOfTimeDecisionMaker },
       ...caseData.makeAnApplications && { makeAnApplications: this.mapMakeApplicationsToSession(caseData.makeAnApplications, documentMap) },
@@ -755,6 +758,10 @@ export default class UpdateAppealService {
             });
           }
         }
+      }
+
+      if (_.has(appeal, 'isDecisionAllowed')) {
+        caseData.isDecisionAllowed = appeal.isDecisionAllowed;
       }
     }
 

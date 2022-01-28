@@ -174,6 +174,7 @@ const paths = {
     homeOfficeResponse: '/home-office-response',
     hearingNoticeViewer: '/hearing-notice',
     hearingBundleViewer: '/hearing-bundle',
+    decisionAndReasonsViewer: '/decision-reasons',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

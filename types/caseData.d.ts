@@ -90,6 +90,7 @@ interface CaseData {
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];
   hearingDocuments?: Collection<DocumentWithMetaData>[];
+  finalDecisionAndReasonsDocuments?: Collection<DocumentWithMetaData>[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
@@ -121,6 +122,8 @@ interface CaseData {
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
   witnessDetails?: Collection<WitnessDetails>[];
   interpreterLanguage?: Collection<InterpreterLanguage>[];
+  isDecisionAllowed?: string;
+  appealOutOfCountry?: string;
 }
 
 interface Application<T> {

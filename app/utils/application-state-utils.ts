@@ -35,6 +35,7 @@ interface DoThisNextSection {
   hearingCentreEmail?: string;
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
+  decision?: string;
 }
 
 /**
@@ -483,6 +484,23 @@ async function getAppealApplicationNextStep(req: Request) {
           title: i18n.pages.overviewPage.doThisNext.preHearing.info.title,
           url: i18n.pages.overviewPage.doThisNext.preHearing.info.url
         }
+      };
+      break;
+    case 'decided':
+      doThisNextSection = {
+        decision: req.session.appeal.isDecisionAllowed,
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.description,
+          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackTitle,
+          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackDescription
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.decided.info.title,
+          url: i18n.pages.overviewPage.doThisNext.decided.info.url
+        },
+        cta: {},
+        allowedAskForMoreTime: false
       };
       break;
     default:

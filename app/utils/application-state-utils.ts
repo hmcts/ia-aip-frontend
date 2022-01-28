@@ -1,10 +1,9 @@
-import { NextFunction, Request } from 'express';
+import { Request } from 'express';
 import _ from 'lodash';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
-import { hearingBundleFeatureMiddleware } from '../middleware/hearing-requirements-middleware';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { hasPendingTimeExtension } from '../utils/utils';
@@ -472,11 +471,25 @@ async function getAppealApplicationNextStep(req: Request) {
         removeAppealFromOnlineDate: getMoveAppealOfflineDate(req)
       };
       break;
+    case 'preHearing':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.preHearing.hearingBundle,
+          i18n.pages.overviewPage.doThisNext.preHearing.hearingBundleLink,
+          i18n.pages.overviewPage.doThisNext.preHearing.hearingDetails,
+          i18n.pages.overviewPage.doThisNext.preHearing.hearingDateTimeCentre
+        ],
+        info: {
+          title: i18n.pages.overviewPage.doThisNext.preHearing.info.title,
+          url: i18n.pages.overviewPage.doThisNext.preHearing.info.url
+        }
+      };
+      break;
     default:
       // default message to avoid app crashing on events that are to be implemented.
       doThisNextSection = {
         descriptionParagraphs: [
-          `Description for appeal status <b>${currentAppealStatus}</b> not found`
+          `Nothing to do next`
         ]
       };
       break;

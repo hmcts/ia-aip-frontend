@@ -604,8 +604,18 @@
             "title": "Helpful Information",
             "url": "<a href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
           }
+        },
+      "preHearing": {
+        "hearingBundle": "The hearing bundle is ready to view. This is a record of  all the information and evidence about this appeal. You should read it carefully.",
+        "hearingBundleLink": "<a class=\"govuk-link\" href=\"{{ paths.common.hearingBundleViewer }}\">View the hearing bundle</a>",
+        "hearingDetails": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Your hearing details</h3>",
+        "hearingDateTimeCentre": "<span class='govuk-body govuk-!-font-weight-bold'>Date:</span> {{ hearingDetails.date }}<br /><span class='govuk-body govuk-!-font-weight-bold'>Time:</span> {{ hearingDetails.time }}<br /><span class='govuk-body govuk-!-font-weight-bold'>Location:</span> {{ hearingDetails.hearingCentre }}",
+        "info": {
+          "title": "Helpful Information",
+          "url": "<a class='govuk-link' href='{{ paths.common.understandingHearingBundle }}'>Understanding the hearing bundle</a><br /><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
         }
-      },
+      }
+    },
       "timeline": {
         "completed": "Completed",
         "sections": {
@@ -909,6 +919,11 @@
       },
       "hearingNotice" : {
         "title": "Notice of Hearing"
+      },
+      "hearingBundle" : {
+        "title": "Hearing Bundle",
+        "dateUploaded": "Date uploaded",
+        "document": "Document"
       }
     },
     "guidancePages": {
@@ -1231,6 +1246,40 @@
               "<li>If you can, you should dress smartly. You are not allowed to wear anything on your head unless it is for religious reasons</li>",
               "<li>You <strong>must not</strong> make any personal or private recording or publish any part of the hearing. It is a criminal offence to do so.</li>",
               "</ul>"
+            ]
+          }
+        ]
+      },
+      "understandingHearingBundle": {
+        "pageTitle": "Understanding the hearing bundle",
+        "title": "Understanding the hearing bundle",
+        "description": "The hearing bundle is a record of all the information and evidence about this appeal. It includes everything you and the Home Office have sent the Tribunal during the appeal.",
+        "sections": [
+          {
+            "title": "What is in the bundle",
+            "content": [
+              "The hearing bundle is split into four sections. What appears in each section will depend on your case.",
+              "<ul class='govuk-list govuk-list--bullet'>",
+              "<li><strong>Hearing documents</strong>: This section usually includes any hearing notices sent by the Tribunal</li>",
+              "<li><strong>Appellant documents</strong>: This section usually includes any information and evidence you have sent the Tribunal, including the reason you’re appealing and the answers to any questions the Tribunal sent you</li>",
+              "<li><strong>Additional evidence from appellant</strong>: This section usually includes any evidence you sent the Tribunal using the Provide more evidence link on the online service</li>",
+              "<li><strong>Home Office documents</strong>: This section usually includes any information and evidence the Home Office has sent the Tribunal such as the Home Office bundle and the Home Office Response</li>",
+              "</ul>"
+            ]
+          },
+          {
+            "title": "How to access the bundle",
+            "content": [
+              "The hearing bundle is created by the Tribunal 5 working days before the hearing takes place. The Tribunal notifies you and the Home Office that the bundle is ready. You can sign in to your account to access the bundle. ",
+              "You should read the bundle carefully before your hearing. You might want to make a note of the page numbers that you think are important for your case.",
+              "If you bring your own laptop or mobile device to the hearing, you will be able to sign in to your account and access the bundle on the day."
+            ]
+          },
+          {
+            "title": "Evidence submitted after the bundle is created",
+            "content": [
+              "You can still provide evidence to the Tribunal after the bundle is created. You can do this using the Provide more evidence link on the online service.",
+              "You will be asked to include a reason why the evidence was late. A judge will look at the reasons the evidence is late and decide if the evidence can part of your appeal. "
             ]
           }
         ]

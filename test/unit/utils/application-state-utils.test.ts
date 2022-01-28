@@ -105,7 +105,7 @@ describe('application-state-utils', () => {
         {
           deadline: 'TBC',
           descriptionParagraphs: [
-            'Description for appeal status <b>unknown</b> not found'
+            'Nothing to do next'
           ]
         }
       );
@@ -840,6 +840,26 @@ describe('application-state-utils', () => {
           'info': {
             'title': 'What happens next',
             'url': 'Your appeal will continue offline. The Tribunal will contact you soon to tell you what will happen next.'
+          }
+        }
+      );
+    });
+
+    it('when application status is preHearing should get the correct Do this next section.', async () => {
+      req.session.appeal.appealStatus = 'preHearing';
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.deep.include(
+        {
+          descriptionParagraphs: [
+            'The hearing bundle is ready to view. This is a record of  all the information and evidence about this appeal. You should read it carefully.',
+            '<a class=\"govuk-link\" href=\"{{ paths.common.hearingBundleViewer }}\">View the hearing bundle</a>',
+            '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Your hearing details</h3>',
+            '<span class=\'govuk-body govuk-!-font-weight-bold\'>Date:</span> {{ hearingDetails.date }}<br /><span class=\'govuk-body govuk-!-font-weight-bold\'>Time:</span> {{ hearingDetails.time }}<br /><span class=\'govuk-body govuk-!-font-weight-bold\'>Location:</span> {{ hearingDetails.hearingCentre }}'
+          ],
+          'info': {
+            'title': 'Helpful Information',
+            'url': "<a class='govuk-link' href='{{ paths.common.understandingHearingBundle }}'>Understanding the hearing bundle</a><br /><a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
           }
         }
       );

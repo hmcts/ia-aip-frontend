@@ -92,6 +92,7 @@ interface Appeal {
   reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;
   respondentDocuments?: Evidence[];
+  hearingDocuments?: Evidence[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];

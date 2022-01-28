@@ -124,6 +124,28 @@ describe('Guidance page controller', () => {
     });
   });
 
+  it('understandingHearingBundle should render guidance-pages/guidance-page.njk', () => {
+    const text = getGuidancePageText('understandingHearingBundle');
+
+    getUnderstandingHearingBundle(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      showContactUs: true,
+      previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
+      page: text
+    });
+
+    it('understandingHearingBundle should render guidance-pages/guidance-page.njk', () => {
+      const text = getGuidancePageText('understandingHearingBundle');
+
+      getUnderstandingHearingBundle(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+        showContactUs: true,
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        page: text
+      });
+    });
+  });
+
   describe('getCaseworkerPage', () => {
     it('should render guidance-pages/guidance-page.njk', () => {
       const text = getGuidancePageText('caseworker');

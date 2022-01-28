@@ -579,6 +579,36 @@ describe('Detail viewer Controller', () => {
     });
   });
 
+  describe('getHearingBundle', () => {
+    beforeEach(() => {
+      req.session.appeal.hearingDocuments = [
+        {
+          fileId: 'uuid',
+          name: 'filename',
+          description: 'description here',
+          dateUploaded: '2020-02-21',
+          id: '2',
+          tag: 'hearingBundle'
+        }
+      ];
+    });
+    it('should render details-viewer template', () => {
+      getHearingBundle(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.hearingBundle.title,
+        data: sinon.match.array,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('getHearingBundle should catch exception and call next with the error', () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getHearingBundle(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
   describe('getNoticeEndedAppeal @getNotice', () => {
     const document = {
       fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',

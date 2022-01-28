@@ -210,6 +210,7 @@ function setupGuidancePagesController(): Router {
   router.get(paths.common.guidance, getGuidanceSupportPage);
   router.get(paths.common.gettingStarted, getGettingStartedPage);
   router.get(paths.common.whatToExpectAtHearing, getWhatToExpectAtHearing);
+  router.get(paths.common.understandingHearingBundle, getUnderstandingHearingBundle);
   router.get(paths.common.homeOfficeWithdrawDecision, getHomeOfficeWithdrawDecision);
   router.get(paths.common.homeOfficeMaintainDecision, getHomeOfficeMaintainDecision);
   router.get(paths.common.understandingHearingBundle, getUnderstandingHearingBundle);

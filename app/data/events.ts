@@ -127,5 +127,10 @@ export const Events = {
     id: 'listCase',
     summary: 'List Case AIP',
     description: 'List case AIP'
+  },
+  STITCHING_BUNDLE_COMPLETE: {
+    id: 'asyncStitchingComplete',
+    summary: 'Stitching bundle complete',
+    description: 'Stitching bundle complete'
   }
 };

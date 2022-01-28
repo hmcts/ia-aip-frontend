@@ -623,6 +623,16 @@
           "appealArgumentSection": "Your appeal argument",
           "appealDetailsSection": "Your appeal details"
         },
+        "asyncStitchingComplete": {
+          "text": "The hearing bundle is ready to view.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Hearing bundle",
+              "href": "{{ paths.common.hearingBundleViewer }}"
+            }
+          ]
+        },
         "draftHearingRequirements": {
           "text": "You told us your hearing needs.",
           "links": [

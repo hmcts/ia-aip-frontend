@@ -13,7 +13,9 @@ const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
 function extractHistoryDetails(historyEvents: any[]): HistoryEvent[] {
-  return historyEvents.filter(event => event.id !== 'editAppeal')
+  return historyEvents
+      .filter(event => event.id !== 'editAppeal')
+      .filter(event => event.id !== 'editAipHearingRequirements')
   .map(event => ({
     id: event.id,
     event: {

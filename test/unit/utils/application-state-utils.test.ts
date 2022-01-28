@@ -451,7 +451,7 @@ describe('application-state-utils', () => {
             decision: 'Pending'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = await getAppealApplicationNextStep(req as Request);
@@ -485,7 +485,7 @@ describe('application-state-utils', () => {
             decision: 'Granted'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = await getAppealApplicationNextStep(req as Request);
@@ -519,7 +519,7 @@ describe('application-state-utils', () => {
             decision: 'Refused'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         req.session.appeal.appealStatus = 'awaitingReasonsForAppeal';
         req.session.appeal.reasonsForAppeal.applicationReason = 'A text description of why I decided to appeal';
         const result = await getAppealApplicationNextStep(req as Request);

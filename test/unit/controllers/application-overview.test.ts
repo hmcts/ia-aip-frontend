@@ -489,12 +489,12 @@ describe('Confirmation Page Controller', () => {
   it('getHearingDetails with case not ended', () => {
     req.session.appeal.hearing = {
       hearingCentre: 'taylorHouse',
-      date: '2019-04-21T10:00:00.000',
+      date: '2022-02-02T20:30:00.000',
       time: '240'
     };
     const result = getHearingDetails(req as Request);
     expect(result.hearingCentre).to.equal('Taylor House');
-    expect(result.date).to.equal('21 April 2019');
-    expect(result.time).to.equal('12:00 am');
+    expect(result.date).to.equal('02 February 2022');
+    expect(result.time).to.equal('8:30 pm');
   });
 });

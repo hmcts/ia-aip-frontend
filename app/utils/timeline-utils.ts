@@ -95,8 +95,10 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   }
 
   const appealArgumentSectionEvents = [ Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONSE_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
+  const appealDecisionSectionEvents = [ Events.SEND_DECISION_AND_REASONS.id ];
   const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
 
+  const appealDecisionSection = constructSection(appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req);
   const appealArgumentSection = constructSection(appealArgumentSectionEvents, req.session.appeal.history, [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.RESPONDENT_REVIEW.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.SUBMIT_HEARING_REQUIREMENTS.id, States.ENDED.id ], req);
   const appealDetailsSection = constructSection(appealDetailsSectionEvents, req.session.appeal.history, null, req);
@@ -118,6 +120,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
+    ...(appealDecisionSection && appealDecisionSection.length > 0) &&
+    { appealDecisionSection: appealDecisionSection },
     ...(appealHearingRequirementsSection && appealHearingRequirementsSection.length > 0) &&
     { appealHearingRequirementsSection: appealHearingRequirementsSection },
     appealArgumentSection: argumentSection,

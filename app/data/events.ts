@@ -132,5 +132,10 @@ export const Events = {
     id: 'asyncStitchingComplete',
     summary: 'Stitching bundle complete',
     description: 'Stitching bundle complete'
+  },
+  SEND_DECISION_AND_REASONS: {
+    id: 'sendDecisionAndReasons',
+    summary: 'Send decision and reasons',
+    description: 'Send decision and reasons'
   }
 };

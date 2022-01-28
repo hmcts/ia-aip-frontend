@@ -42,7 +42,7 @@ function getHearingDetails(req: Request): Hearing {
   };
   if (_.has(req.session.appeal, 'hearing')) {
     hearingDetails.hearingCentre = getHearingCentre(req);
-    hearingDetails.time = moment(req.session.appeal.hearing.time).format(timeFormat);
+    hearingDetails.time = moment(req.session.appeal.hearing.date).format(timeFormat);
     hearingDetails.date = formatDate(req.session.appeal.hearing.date);
     return hearingDetails;
   }

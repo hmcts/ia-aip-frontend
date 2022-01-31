@@ -28,10 +28,15 @@ describe('getStatus', () => {
         nationality: null
       },
       tasks: {
-        homeOfficeDetails: {
+        typeOfAppeal: {
           saved: false,
           completed: false,
           active: true
+        },
+        homeOfficeDetails: {
+          saved: false,
+          completed: false,
+          active: false
         },
         personalDetails: {
           saved: true,
@@ -43,10 +48,10 @@ describe('getStatus', () => {
           completed: false,
           active: false
         },
-        typeOfAppeal: {
-          saved: false,
+        decisionType: {
+          active: false,
           completed: false,
-          active: false
+          saved: false
         },
         checkAndSend: {
           saved: false,
@@ -69,10 +74,15 @@ describe('getStatus', () => {
   };
 
   const status = {
+    typeOfAppeal: {
+      saved: false,
+      completed: false,
+      active: true
+    },
     homeOfficeDetails: {
       saved: true,
       completed: true,
-      active: true
+      active: false
     },
     personalDetails: {
       saved: true,
@@ -84,10 +94,10 @@ describe('getStatus', () => {
       completed: false,
       active: false
     },
-    typeOfAppeal: {
-      saved: false,
+    decisionType: {
+      active: false,
       completed: false,
-      active: false
+      saved: false
     },
     typeOfAppealAndDecision: {
       saved: false,
@@ -147,7 +157,7 @@ describe('getStatus', () => {
       completed: true,
       saved: true
     };
-    status.typeOfAppeal.active = true;
+    status.decisionType.active = true;
     status.typeOfAppealAndDecision.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
@@ -181,7 +191,8 @@ describe('getStatus', () => {
       completed: false,
       saved: true
     };
-    status.checkAndSend.active = true;
+    status.homeOfficeDetails.active = true;
+    status.decisionType.saved = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
@@ -203,6 +214,8 @@ describe('getStatus', () => {
       saved: true
     };
     status.checkAndSendWithPayments.active = true;
+    status.checkAndSend.active = true;
+    status.decisionType.completed = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
@@ -216,6 +229,8 @@ describe('getStatus', () => {
       saved: true
     };
     status.checkAndSendWithPayments.active = false;
+    status.checkAndSend.active = false;
+    status.decisionType.completed = false;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
@@ -229,6 +244,8 @@ describe('getStatus', () => {
       saved: true
     };
     status.checkAndSendWithPayments.active = true;
+    status.checkAndSend.active = true;
+    status.decisionType.completed = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 });

@@ -6,6 +6,15 @@ Feature: Out of Time appeal @outOfTimeAppeal
 Scenario: Explain the reason why my appeal is late
   Given I am authenticated as a valid appellant
   Then I click continue
+
+  Then I see "Tell us about your appeal" in title
+  And I click on the type-of-appeal link
+
+  Then I should be taken to the appeal page
+  And  I select appeal type Protection
+  And I click "Save and continue" button
+
+  Then I should see the task-list page
   And I click "Your Home Office details" link
   # When I click on Home office details
   And I enter "1234-1234-1234-1234" as the Office ref number and click Save and continue
@@ -26,38 +35,34 @@ Scenario: Explain the reason why my appeal is late
   And I check the "Text message" option
   And I enter text message number "07899999999"
   And I click "Save and continue" button
-  And I click on the type-of-appeal link
-  And I click on Protection as my type of appeal and click Save and continue
-  And I click on the check and send your appeal link
-  Then I should see late appeal page
-
-  When I click "Save and continue" button
-  Then I should see error summary
-
-  When I enter "A reason for being late" as the reason for being late
-  And I choose a file that is "INVALID_TOO_BIG" and click the "Save and continue" button
-  Then I should see error summary
-
-  When I choose a file that is "INVALID_FORMAT" and click the "Save and continue" button
-  Then I should see error summary
-
-  When I choose a file that is "VALID" and click the "Save and continue" button
-  Then I should be taken to the check-and-send page
+#  And I click on the decision-type link
+#  And I select I want the appeal to be decided with a hearing
+#  And I click "Save and continue" button
+#  And I select No, I will pay later
+#  And I click "Save and continue" button
+#
+#  And I click on the check and send your appeal link
+#  Then I should see late appeal page
+#
+#  When I click "Save and continue" button
+#  Then I should see error summary
+#
+#  When I enter "A reason for being late" as the reason for being late
+#  And I choose a file that is "INVALID_TOO_BIG" and click the "Save and continue" button
+#  Then I should see error summary
+#
+#  When I choose a file that is "INVALID_FORMAT" and click the "Save and continue" button
+#  Then I should see error summary
+#
+#  When I choose a file that is "VALID" and click the "Save and continue" button
+#  Then I should be taken to the check-and-send page
 
 Scenario: Delete an evidence changes on reason should persist
-  Given I have an out of time appeal with reason for being late an evidence
-  And I have logged in
-  And I click "Continue" button
-  Then I see "/about-appeal" in current url
-
-  And I click "Check and send your appeal" button
-  Then I see "/check-answers" in current url
-
-  And I click Reason for late appeal change button
-  Then I see "/late-appeal" in current url
-
-  And I enter "reason" as the reason for being late
-  And I click "Delete" button
-  Then I see "reason" as my reason for being late
-  And I dont see Uploaded file list
+#  Given I have an out of time appeal with reason for being late an evidence
+#  And I have logged in
+#  And I click "Continue" button
+#  Then I see "/about-appeal" in current url
+#
+#  And I click "Check and send your appeal" button
+#  Then I see "/late-appeal" in current url
 

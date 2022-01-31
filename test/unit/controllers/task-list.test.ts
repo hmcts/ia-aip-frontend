@@ -96,13 +96,14 @@ describe('Task List Controller', () => {
       {
         'sectionId': 'yourDetails',
         'tasks': [
-          { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': true },
+          { 'id': 'typeOfAppeal', 'saved': false, 'completed': false, 'active': true },
+          { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': false },
           { 'id': 'personalDetails', 'saved': false, 'completed': false, 'active': false },
           { 'id': 'contactDetails', 'saved': false, 'completed': false, 'active': false } ]
       },
       {
-        'sectionId': 'appealDetails',
-        'tasks': [ { 'id': 'typeOfAppeal', 'saved': false, 'completed': false, 'active': false } ]
+        'sectionId': 'decisionType',
+        'tasks': [ { 'id': 'decisionType', 'saved': false, 'completed': false, 'active': false } ]
       },
       {
         'sectionId': 'checkAndSend',
@@ -119,13 +120,14 @@ describe('Task List Controller', () => {
       {
         'sectionId': 'yourDetails',
         'tasks': [
-          { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': true },
+          { 'id': 'typeOfAppeal', 'saved': false, 'completed': false, 'active': true },
+          { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': false },
           { 'id': 'personalDetails', 'saved': false, 'completed': false, 'active': false },
           { 'id': 'contactDetails', 'saved': false, 'completed': false, 'active': false } ]
       },
       {
-        'sectionId': 'appealDetails',
-        'tasks': [ { 'id': 'typeOfAppealAndDecision', 'saved': false, 'completed': false, 'active': false } ]
+        'sectionId': 'decisionType',
+        'tasks': [ { 'id': 'decisionType', 'saved': false, 'completed': false, 'active': false } ]
       },
       {
         'sectionId': 'checkAndSend',

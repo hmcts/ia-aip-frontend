@@ -4,6 +4,7 @@ const textToId = {
   'Your personal details': '#personalDetailsLink',
   'Your contact details': '#contactDetailsLink',
   'Type of appeal': '#typeOfAppealLink',
+  'Decision type': '#typeOfDecisionLink',
   'Check and send your appeal': '#checkAndSendLink'
 };
 

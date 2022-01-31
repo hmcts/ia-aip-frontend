@@ -79,7 +79,7 @@
       "header": "Tell us about your appeal",
       "sections": {
         "yourDetails": "Your details",
-        "appealDetails": "Appeal details",
+        "decisionType": "Decision type",
         "checkAndSend": "Check and send"
       },
       "homeOfficeDetails": {
@@ -99,8 +99,13 @@
       },
       "typeOfAppeal": {
         "id": "typeOfAppealLink",
-        "title": "Type of appeal",
+        "title": "Appeal type",
         "path": "appealStarted.typeOfAppeal"
+      },
+      "decisionType": {
+        "id": "typeOfDecisionLink",
+        "title": "Decision with or without a hearing",
+        "path": "appealStarted.decisionType"
       },
       "typeOfAppealAndDecision": {
         "id": "typeOfAppealLink",
@@ -146,7 +151,7 @@
         }
       }
     },
-    "decisionType": {
+    "decisionTypePage": {
       "title": "How do you want your appeal to be decided",
       "hint": {
         "withoutFee": "<p>You can choose to have a judge decide your appeal without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you and any witnesses and supporters can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
@@ -1274,7 +1279,7 @@
             "title": "Advice on preparing for a hearing",
             "content": [
             "If the hearing takes place at a hearing centre ",
-            
+
             "<ul class='govuk-list govuk-list--bullet'>",
               "<li>If you can, visit the hearing centre before your hearing day </li>",
               "<li>Go to a hearing during your visit – they are usually open to the public</li>",

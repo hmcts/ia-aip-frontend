@@ -1,5 +1,6 @@
 const { checkAndSend } = require('../pages/check-and-send/check-and-send');
 const { typeOfAppeal } = require('../pages/type-of-appeal/type-of-appeal');
+const { decisionType } = require('../pages/decision-type/decision-type');
 const { outOfTimeAppeal } = require('../pages/out-of-time-appeal/out-of-time');
 const { signIn } = require('../pages/sign-in');
 const { common } = require('../pages/common/common');
@@ -37,6 +38,7 @@ fileUploadCommon(I);
 signIn(I);
 
 taskList(I);
+typeOfAppeal(I);
 homeOfficeReferenceNumber(I);
 homeOfficeLetterSent(I);
 namePage(I);
@@ -46,7 +48,7 @@ enterPostcode(I);
 selectAddress(I);
 enterAddress(I);
 contactDetails(I);
-typeOfAppeal(I);
+decisionType(I);
 outOfTimeAppeal(I);
 checkAndSend(I);
 reasonsForAppeal(I);

@@ -8,13 +8,13 @@ async function getAppealStageStatus(req: Request) {
   const paymentsFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
   const typeOfAppealTask = paymentsFlag ? 'typeOfAppealAndDecision' : 'typeOfAppeal';
   const checkAndSendTask = paymentsFlag ? 'checkAndSendWithPayments' : 'checkAndSend';
-  const yourDetails = buildSectionObject('yourDetails', [ 'homeOfficeDetails', 'personalDetails', 'contactDetails' ], status);
-  const appealDetails = buildSectionObject('appealDetails', [ typeOfAppealTask ], status);
+  const yourDetails = buildSectionObject('yourDetails', [ 'typeOfAppeal', 'homeOfficeDetails', 'personalDetails', 'contactDetails' ], status);
+  const decisionType = buildSectionObject('decisionType', [ 'decisionType' ], status);
   const checkAndSend = buildSectionObject('checkAndSend', [ checkAndSendTask ], status);
 
   return [
     yourDetails,
-    appealDetails,
+    decisionType,
     checkAndSend
   ];
 }

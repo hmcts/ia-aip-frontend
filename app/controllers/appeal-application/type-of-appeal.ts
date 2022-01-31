@@ -69,7 +69,7 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
       let editingModeRedirect = paths.appealStarted.checkAndSend;
       if (paymentsFlag) {
         if (editingMode) editingModeRedirect = req.body['appealType'] === req.session.appeal.application.appealType ? paths.appealStarted.checkAndSend : paths.appealStarted.decisionType;
-        defaultRedirect = paths.appealStarted.decisionType;
+        defaultRedirect = paths.appealStarted.taskList;
       }
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], paymentsFlag);
       req.session.appeal = {

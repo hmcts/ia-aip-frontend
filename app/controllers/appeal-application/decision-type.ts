@@ -3,7 +3,6 @@ import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
-import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import PcqService from '../../service/pcq-service';
@@ -17,25 +16,25 @@ function getDecisionTypeQuestion(appeal: Appeal) {
   let hint: string;
   let decision: string;
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
-    hint = i18n.pages.decisionType.hint.withoutFee;
+    hint = i18n.pages.decisionTypePage.hint.withoutFee;
     decision = appeal.application.rpDcAppealHearingOption || null;
   } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(appeal.application.appealType)) {
-    hint = i18n.pages.decisionType.hint.withFee;
+    hint = i18n.pages.decisionTypePage.hint.withFee;
     decision = appeal.application.decisionHearingFeeOption || null;
   }
   const question = {
-    title: i18n.pages.decisionType.title,
+    title: i18n.pages.decisionTypePage.title,
     hint,
     options: [
       {
-        value: i18n.pages.decisionType.options.withHearing.value,
-        text: i18n.pages.decisionType.options.withHearing.text,
-        checked: decision === i18n.pages.decisionType.options.withHearing.value
+        value: i18n.pages.decisionTypePage.options.withHearing.value,
+        text: i18n.pages.decisionTypePage.options.withHearing.text,
+        checked: decision === i18n.pages.decisionTypePage.options.withHearing.value
       },
       {
-        value: i18n.pages.decisionType.options.withoutHearing.value,
-        text: i18n.pages.decisionType.options.withoutHearing.text,
-        checked: decision === i18n.pages.decisionType.options.withoutHearing.value
+        value: i18n.pages.decisionTypePage.options.withoutHearing.value,
+        text: i18n.pages.decisionTypePage.options.withoutHearing.text,
+        checked: decision === i18n.pages.decisionTypePage.options.withoutHearing.value
       }
     ],
     inline: false
@@ -50,8 +49,8 @@ async function getDecisionType(req: Request, res: Response, next: NextFunction) 
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     return res.render('templates/radio-question-page.njk', {
-      previousPage: paths.appealStarted.typeOfAppeal,
-      pageTitle: i18n.pages.decisionType.title,
+      previousPage: paths.appealStarted.taskList,
+      pageTitle: i18n.pages.decisionTypePage.title,
       formAction: paths.appealStarted.decisionType,
       question: getDecisionTypeQuestion(req.session.appeal),
       saveAndContinue: true
@@ -84,7 +83,7 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
           errors: validation,
           errorList: Object.values(validation),
           previousPage: paths.appealStarted.typeOfAppeal,
-          pageTitle: i18n.pages.decisionType.title,
+          pageTitle: i18n.pages.decisionTypePage.title,
           formAction: paths.appealStarted.decisionType,
           question: getDecisionTypeQuestion(req.session.appeal),
           saveAndContinue: true
@@ -121,18 +120,15 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
   };
 }
 
-@PageSetup.register
-class SetupDecisionTypeController {
-  initialise(middleware: any[], updateAppealService): Router {
-    const router = Router();
-    router.get(paths.appealStarted.decisionType, middleware, getDecisionType);
-    router.post(paths.appealStarted.decisionType, middleware, postDecisionType(updateAppealService));
-    return router;
-  }
+function setupDecisionTypeController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+  const router = Router();
+  router.get(paths.appealStarted.decisionType, middleware, getDecisionType);
+  router.post(paths.appealStarted.decisionType, middleware, postDecisionType(updateAppealService));
+  return router;
 }
 
 export {
-  SetupDecisionTypeController,
+  setupDecisionTypeController,
   getDecisionType,
   getDecisionTypeQuestion,
   postDecisionType

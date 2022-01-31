@@ -3,7 +3,7 @@ import {
   getDecisionType,
   getDecisionTypeQuestion,
   postDecisionType,
-  SetupDecisionTypeController
+  setupDecisionTypeController
 } from '../../../app/controllers/appeal-application/decision-type';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
@@ -66,12 +66,12 @@ describe('Type of appeal Controller', () => {
     sandbox.restore();
   });
 
-  describe('SetupDecisionTypeController', () => {
+  describe('setupDecisionTypeController', () => {
     it('should setup the routes', () => {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = [];
-      new SetupDecisionTypeController().initialise(middleware, updateAppealService);
+      setupDecisionTypeController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.decisionType);
       expect(routerPostStub).to.have.been.calledWith(paths.appealStarted.decisionType);
     });
@@ -80,17 +80,17 @@ describe('Type of appeal Controller', () => {
   describe('getDecisionTypeQuestion', () => {
     it('should return the question', () => {
       const expectedQuestion = {
-        title: i18n.pages.decisionType.title,
-        hint: i18n.pages.decisionType.hint.withFee,
+        title: i18n.pages.decisionTypePage.title,
+        hint: i18n.pages.decisionTypePage.hint.withFee,
         options: [
           {
-            value: i18n.pages.decisionType.options.withHearing.value,
-            text: i18n.pages.decisionType.options.withHearing.text,
+            value: i18n.pages.decisionTypePage.options.withHearing.value,
+            text: i18n.pages.decisionTypePage.options.withHearing.text,
             checked: false
           },
           {
-            value: i18n.pages.decisionType.options.withoutHearing.value,
-            text: i18n.pages.decisionType.options.withoutHearing.text,
+            value: i18n.pages.decisionTypePage.options.withoutHearing.value,
+            text: i18n.pages.decisionTypePage.options.withoutHearing.text,
             checked: false
           }
         ],
@@ -104,17 +104,17 @@ describe('Type of appeal Controller', () => {
 
     it('should return the question with option checked', () => {
       const expectedQuestion = {
-        title: i18n.pages.decisionType.title,
-        hint: i18n.pages.decisionType.hint.withoutFee,
+        title: i18n.pages.decisionTypePage.title,
+        hint: i18n.pages.decisionTypePage.hint.withoutFee,
         options: [
           {
-            value: i18n.pages.decisionType.options.withHearing.value,
-            text: i18n.pages.decisionType.options.withHearing.text,
+            value: i18n.pages.decisionTypePage.options.withHearing.value,
+            text: i18n.pages.decisionTypePage.options.withHearing.text,
             checked: true
           },
           {
-            value: i18n.pages.decisionType.options.withoutHearing.value,
-            text: i18n.pages.decisionType.options.withoutHearing.text,
+            value: i18n.pages.decisionTypePage.options.withoutHearing.value,
+            text: i18n.pages.decisionTypePage.options.withoutHearing.text,
             checked: false
           }
         ],
@@ -139,8 +139,8 @@ describe('Type of appeal Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       await getDecisionType(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
-        previousPage: paths.appealStarted.typeOfAppeal,
-        pageTitle: i18n.pages.decisionType.title,
+        previousPage: paths.appealStarted.taskList,
+        pageTitle: i18n.pages.decisionTypePage.title,
         formAction: paths.appealStarted.decisionType,
         question: sinon.match.any,
         saveAndContinue: true

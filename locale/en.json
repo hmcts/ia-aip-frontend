@@ -629,6 +629,7 @@
       "timeline": {
         "completed": "Completed",
         "sections": {
+          "appealDecisionSection": "Your appeal decision",
           "appealHearingRequirementsSection": "Your hearing details",
           "appealArgumentSection": "Your appeal argument",
           "appealDetailsSection": "Your appeal details"
@@ -817,6 +818,17 @@
               "title": "Useful documents",
               "text": "Notice of Hearing",
               "href": "{{ paths.common.hearingNoticeViewer }}"
+            }
+          ]
+        },
+        "sendDecisionAndReasons": {
+          "text": "The Decision and Reasons documents is ready to view.",
+          "textForEditListCase" : "The Decision and Reasons documents is ready to view.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Decision and Reasons",
+              "href": "{{ paths.common.decisionAndReasonsViewer }}"
             }
           ]
         }

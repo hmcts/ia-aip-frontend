@@ -2,6 +2,17 @@
   {% if (history.appealArgumentSection | length > 0) or (history.appealDetailsSection | length > 0) or (history.appealHearingRequirementsSection | length >0)%}
     <h2 class="govuk-heading-m govuk-!-padding-top-8">{{ i18n.pages.overviewPage.timeline.completed }}</h2>
 
+    {% if history.appealDecisionSection | length > 0  %}
+      <div class="govuk-!-margin-bottom-3">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealDecisionSection }}</h3>
+        <div class="timeline-section">
+          {% for event in history.appealDecisionSection %}
+            {% include "components/event-in-timeline.njk" %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
     {% if history.appealHearingRequirementsSection | length > 0  %}
       <div class="govuk-!-margin-bottom-3">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealHearingRequirementsSection }}</h3>

@@ -95,7 +95,8 @@ const paths = {
     hearingDateToAvoidReasons: '/hearing-dates-avoid-reasons',
     hearingDateToAvoidReasonsWithId: '/hearing-dates-avoid-reasons/:id',
     hearingDateToAvoidNew: '/hearing-dates-avoid-new',
-    confirmation: '/hearing-success'
+    confirmation: '/hearing-success',
+    yourHearingNeeds: '/your-hearing-needs'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',
@@ -171,6 +172,9 @@ const paths = {
     outOfTimeDecisionViewer: '/out-of-time-decision',
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
     homeOfficeResponse: '/home-office-response',
+    hearingNoticeViewer: '/hearing-notice',
+    hearingBundleViewer: '/hearing-bundle',
+    decisionAndReasonsViewer: '/decision-reasons',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',
@@ -210,6 +214,7 @@ const paths = {
     homeOfficeDocuments: '/home-office-documents',
     whatToExpectAtCMA: '/expect-case-management-appointment',
     whatToExpectAtHearing: '/expect-hearing',
+    understandingHearingBundle: '/understanding-hearing-bundle',
     homeOfficeMaintainDecision: '/home-office-maintain',
     homeOfficeWithdrawDecision: '/home-office-withdraw',
 

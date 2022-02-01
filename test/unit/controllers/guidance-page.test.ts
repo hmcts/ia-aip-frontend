@@ -1,22 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-    getCaseworkerPage,
-    getDocumentsPage,
-    getEvidenceToSupportAppealPage,
-    getFourStagesPage,
-    getGettingStartedPage,
-    getGiveFeedbackPage,
-    getGuidanceSupportPage,
-    getHomeOfficeDocumentsPage,
-    getHomeOfficeMaintainDecision,
-    getHomeOfficeWithdrawDecision,
-    getHowToHelpPage,
-    getMoreHelpPage,
-    getNotificationsSupportPage,
-    getOfflineProcessesPage,
-    getWhatIsService,
-    getWhatToExpectAtHearing,
-    setupGuidancePagesController
+  getCaseworkerPage,
+  getDocumentsPage,
+  getEvidenceToSupportAppealPage,
+  getFourStagesPage,
+  getGettingStartedPage,
+  getGiveFeedbackPage,
+  getGuidanceSupportPage,
+  getHomeOfficeDocumentsPage,
+  getHomeOfficeMaintainDecision,
+  getHomeOfficeWithdrawDecision,
+  getHowToHelpPage,
+  getMoreHelpPage,
+  getNotificationsSupportPage,
+  getOfflineProcessesPage,
+  getUnderstandingHearingBundle,
+  getWhatIsService,
+  getWhatToExpectAtHearing,
+  setupGuidancePagesController
 } from '../../../app/controllers/guidance-page';
 import { paths } from '../../../app/paths';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -95,6 +96,7 @@ describe('Guidance page controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.guidance);
       expect(routerGetStub).to.have.been.calledWith(paths.common.gettingStarted);
       expect(routerGetStub).to.have.been.calledWith(paths.common.whatToExpectAtHearing);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.understandingHearingBundle);
       expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawDecision);
       expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawDecision);
     });
@@ -106,8 +108,41 @@ describe('Guidance page controller', () => {
     getWhatToExpectAtHearing(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
       showContactUs: true,
+      previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+      page: text
+    });
+
+    it('understandingHearingBundle should render guidance-pages/guidance-page.njk', () => {
+      const text = getGuidancePageText('understandingHearingBundle');
+
+      getUnderstandingHearingBundle(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+        showContactUs: true,
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        page: text
+      });
+    });
+  });
+
+  it('understandingHearingBundle should render guidance-pages/guidance-page.njk', () => {
+    const text = getGuidancePageText('understandingHearingBundle');
+
+    getUnderstandingHearingBundle(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+      showContactUs: true,
       previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
       page: text
+    });
+
+    it('understandingHearingBundle should render guidance-pages/guidance-page.njk', () => {
+      const text = getGuidancePageText('understandingHearingBundle');
+
+      getUnderstandingHearingBundle(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
+        showContactUs: true,
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
+        page: text
+      });
     });
   });
 
@@ -116,9 +151,9 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('caseworker');
 
       getCaseworkerPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk',{
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
-        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
     });
@@ -139,9 +174,9 @@ describe('Guidance page controller', () => {
       const text = getGuidancePageText('homeOfficeDocuments');
 
       getHomeOfficeDocumentsPage(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk',{
+      expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
-        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
     });
@@ -163,7 +198,7 @@ describe('Guidance page controller', () => {
       getMoreHelpPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
-        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
     });
@@ -185,7 +220,7 @@ describe('Guidance page controller', () => {
       getEvidenceToSupportAppealPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
-        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: text
       });
     });
@@ -206,7 +241,7 @@ describe('Guidance page controller', () => {
       getHomeOfficeWithdrawDecision(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
-        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         hearingCentreEmail: getHearingCentreEmail(req as Request),
         page: i18n.pages.guidancePages.withdrawDecision
       });
@@ -228,7 +263,7 @@ describe('Guidance page controller', () => {
       getHomeOfficeMaintainDecision(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('guidance-pages/guidance-page.njk', {
         showContactUs: true,
-        previousPage:  { attributes: { onclick: 'history.go(-1); return false;' } },
+        previousPage: { attributes: { onclick: 'history.go(-1); return false;' } },
         page: i18n.pages.guidancePages.maintainDecision
       });
     });

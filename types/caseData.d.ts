@@ -50,6 +50,7 @@ interface CaseData {
   reasonsForAppealDateUploaded?: string;
   reasonsForAppealDocuments: Collection<DocumentWithMetaData>[];
   respondentDocuments: Collection<RespondentEvidenceDocument>[];
+  hearingDocuments: Collection<RespondentEvidenceDocument>[];
   timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<CcdDirection>[];
@@ -88,6 +89,8 @@ interface CaseData {
   recordedOutOfTimeDecision: string;
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];
+  hearingDocuments?: Collection<DocumentWithMetaData>[];
+  finalDecisionAndReasonsDocuments?: Collection<DocumentWithMetaData>[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
@@ -119,6 +122,8 @@ interface CaseData {
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
   witnessDetails?: Collection<WitnessDetails>[];
   interpreterLanguage?: Collection<InterpreterLanguage>[];
+  isDecisionAllowed?: string;
+  appealOutOfCountry?: string;
 }
 
 interface Application<T> {

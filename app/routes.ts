@@ -62,10 +62,10 @@ import { setupHearingDatesToAvoidAddAnotherDateController } from './controllers/
 import { setupHearingDatesToAvoidEnterADateController } from './controllers/hearing-requirements/dates-to-avoid/enter-a-date';
 import { setupHearingDatesToAvoidQuestionController } from './controllers/hearing-requirements/dates-to-avoid/question';
 import { setupHearingDatesToAvoidReasonController } from './controllers/hearing-requirements/dates-to-avoid/reason';
-import { setupHearingRequirementsFeatureToggleController } from './controllers/hearing-requirements/feature-toggle';
 import { setupWitnessesOutsideUkQuestionController } from './controllers/hearing-requirements/hearing-outside-uk';
 import { setupWitnessNamesController } from './controllers/hearing-requirements/hearing-witness-names';
 import { setupWitnessesOnHearingQuestionController } from './controllers/hearing-requirements/hearing-witnesses';
+import { setupHearingBundleFeatureToggleController, setupHearingRequirementsFeatureToggleController } from './controllers/hearing-requirements/hearings-feature-toggle';
 import { setupHearingAnythingElseQuestionController } from './controllers/hearing-requirements/other-needs/anything-else-question';
 import { setupHearingAnythingElseReasonController } from './controllers/hearing-requirements/other-needs/anything-else-reason';
 import { setupHearingMultimediaEquipmentQuestionController } from './controllers/hearing-requirements/other-needs/bring-equipment-question';
@@ -85,7 +85,9 @@ import { setupHearingSingleSexAppointmentQuestionController } from './controller
 import { setupSingleSexTypeHearingQuestionController } from './controllers/hearing-requirements/other-needs/single-sex-type-hearing-question';
 import { setupHearingRequirementsStartPageController } from './controllers/hearing-requirements/other-needs/start-page';
 import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
+import { setupYourHearingNeedsController } from './controllers/hearing-requirements/your-hearing-needs';
 import { setupIdamController } from './controllers/idam';
+import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
@@ -205,7 +207,11 @@ const hearingDatesToAvoidEnterADateController = setupHearingDatesToAvoidEnterADa
 const hearingDatesToAvoidReasonsController = setupHearingDatesToAvoidReasonController(middleware, updateAppealService);
 const hearingDatesToAvoidAddAnotherDateController = setupHearingDatesToAvoidAddAnotherDateController(middleware);
 const hearingRequirementsCYAController = setupHearingRequirementsCYAController(middleware, updateAppealService);
+const yourHearingNeedsController = setupYourHearingNeedsController(middleware, updateAppealService);
 const hearingRequirementConfirmationController = setupHearingRequirementsConfirmationPage(middleware);
+
+const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
+const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleController(middleware);
 
 const whatToExpectAtCmaNextController = setupcmaGuidancePageController(middleware);
 
@@ -278,6 +284,7 @@ router.use(hearingRequirementsOtherNeedsPastExperiencesReasonController);
 router.use(hearingRequirementsOtherNeedsPrivateHearingReasonController);
 router.use(hearingRequirementsOtherNeedsAnythingElseReasonController);
 router.use(hearingRequirementsCYAController);
+router.use(yourHearingNeedsController);
 router.use(hearingRequirementConfirmationController);
 router.use(hearingDatesToAvoidQuestionController);
 router.use(hearingDatesToAvoidEnterADateController);
@@ -309,6 +316,9 @@ router.use(cmaRequirementsCYAController);
 router.use(cmaRequirementsConfirmationController);
 router.use(whatToExpectAtCmaNextController);
 router.use(provideMoreEvidence);
+
+router.use(hearingBundleFeatureToggleController);
+router.use(outOfCountryFeatureToggleController);
 
 router.use(detailViewersController);
 router.use(forbiddenController);

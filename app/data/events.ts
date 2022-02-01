@@ -115,7 +115,27 @@ export const Events = {
   },
   EDIT_AIP_HEARING_REQUIREMENTS: {
     id: 'editAipHearingRequirements',
+    summary: 'Save Draft Hearing Requirements AIP',
     description: 'Save Draft Hearing Requirements AIP'
+  },
+  SUBMIT_AIP_HEARING_REQUIREMENTS: {
+    id: 'draftHearingRequirements',
+    summary: 'Submit hearing requirements AIP',
+    description: 'Submit hearing requirements AIP'
+  },
+  LIST_CASE: {
+    id: 'listCase',
+    summary: 'List Case AIP',
+    description: 'List case AIP'
+  },
+  STITCHING_BUNDLE_COMPLETE: {
+    id: 'asyncStitchingComplete',
+    summary: 'Stitching bundle complete',
+    description: 'Stitching bundle complete'
+  },
+  SEND_DECISION_AND_REASONS: {
+    id: 'sendDecisionAndReasons',
+    summary: 'Send decision and reasons',
+    description: 'Send decision and reasons'
   }
-
 };

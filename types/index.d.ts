@@ -92,6 +92,7 @@ interface Appeal {
   reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;
   respondentDocuments?: Evidence[];
+  hearingDocuments?: Evidence[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
@@ -104,6 +105,8 @@ interface Appeal {
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
+  hearingDocuments?: Evidence[];
+  finalDecisionAndReasonsDocuments?: Evidence[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
@@ -130,6 +133,8 @@ interface Appeal {
   additionalEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
+  isDecisionAllowed?: string;
+  appealOutOfCountry?: string;
 }
 
 interface Hearing {

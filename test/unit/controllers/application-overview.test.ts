@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import {
   checkAppealEnded, getAppealRefNumber,
   getApplicationOverview,
+  getHearingDetails,
   setupApplicationOverviewController
 } from '../../../app/controllers/application-overview';
 import { paths } from '../../../app/paths';
@@ -175,7 +176,8 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
-      payLater: false
+      payLater: false,
+      hearingDetails: null
     });
   });
 
@@ -227,7 +229,8 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
-      payLater: false
+      payLater: false,
+      hearingDetails: null
     });
   });
 
@@ -280,7 +283,8 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
-      payLater: false
+      payLater: false,
+      hearingDetails: null
     });
   });
 
@@ -345,7 +349,8 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
-      payLater: false
+      payLater: false,
+      hearingDetails: null
     });
   });
 
@@ -412,7 +417,8 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
-      payLater: false
+      payLater: false,
+      hearingDetails: null
     });
   });
 
@@ -478,5 +484,17 @@ describe('Confirmation Page Controller', () => {
     const { appealStatus } = req.session.appeal;
     const result = checkAppealEnded(appealStatus);
     expect(result).to.equal(false);
+  });
+
+  it('getHearingDetails with case not ended', () => {
+    req.session.appeal.hearing = {
+      hearingCentre: 'taylorHouse',
+      date: '2022-02-02T20:30:00.000',
+      time: '240'
+    };
+    const result = getHearingDetails(req as Request);
+    expect(result.hearingCentre).to.equal('Taylor House');
+    expect(result.date).to.equal('02 February 2022');
+    expect(result.time).to.equal('8:30 pm');
   });
 });

@@ -114,5 +114,17 @@ describe('progress-bar utils', () => {
       expectedStages[1].completed = false;
       expect(expectedStages).to.deep.equal(stages);
     });
+
+    it('caseListedByAdminOfficer', () => {
+      const stages = buildProgressBarStages('prepareForHearing');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expectedStages[1].active = false;
+      expectedStages[1].completed = true;
+      expectedStages[2].active = true;
+      expectedStages[2].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
   });
 });

@@ -45,6 +45,18 @@ function getFormattedEventHistoryDate(history: HistoryEvent[], eventTagToLookFor
 }
 
 /**
+ * @param req the request containing the appeal information
+ * @returns deadline for the appeallnt to respond to Judge's decision
+ */
+function getDueDateForAppellantToRespondToJudgeDecision(req: Request) {
+  const finalDecisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf');
+  let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+  // if it's out of country appeal it's 28 days otherwise it's 14 days
+  let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
+  return moment(finalDecisionAndReasonsPdfDoc.dateUploaded).add(noOfDays, 'days').format(dayMonthYearFormat);
+}
+
+/**
  * Given the current case status it retrieves deadlines based on the business logic.
  * @param currentAppealStatus the appeal status
  * @param req the request containing  all the directions in session
@@ -109,6 +121,9 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
     }
     case 'submitHearingRequirements':
       formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions,'legalRepresentativeHearingRequirements');
+      break;
+    case 'decided':
+      formattedDeadline = getDueDateForAppellantToRespondToJudgeDecision(req);
       break;
     default: {
       formattedDeadline = 'TBC';

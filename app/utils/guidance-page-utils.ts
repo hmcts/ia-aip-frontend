@@ -12,6 +12,8 @@ export const getGuidancePageText = (pageText: string) => {
       return i18n.pages.guidancePages.evidenceToSupportAppeal;
     case 'whatToExpectAtHearing':
       return i18n.pages.guidancePages.whatToExpectAtHearing;
+    case 'understandingHearingBundle':
+      return i18n.pages.guidancePages.understandingHearingBundle;
     default:
       return false;
   }

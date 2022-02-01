@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { any } from 'joi';
 import {
+  hearingBundleFeatureMiddleware,
   hearingRequirementsMiddleware
 } from '../../../app/middleware/hearing-requirements-middleware';
 import { paths } from '../../../app/paths';
@@ -27,7 +28,9 @@ describe('hearingRequirementsMiddleware', () => {
         userDetails: {}
       },
       app: {
-        locals: {}
+        locals: {
+          logger: {}
+        }
       } as any
     } as Partial<Request>;
 
@@ -38,6 +41,8 @@ describe('hearingRequirementsMiddleware', () => {
       send: sandbox.stub()
     } as Partial<Response>;
 
+    req.app.locals.logger.trace = function () { // dummy function
+    };
     next = sandbox.stub() as NextFunction;
   });
 
@@ -64,5 +69,19 @@ describe('hearingRequirementsMiddleware', () => {
       await hearingRequirementsMiddleware(req as Request, res as Response, next);
       expect(next).to.have.been.called;
     }
+  });
+
+  it('should redirect to respective hearings page if the hearing bundle feature is enabled', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
+    req.path = paths.common.overview;
+    await hearingBundleFeatureMiddleware(req as Request, res as Response, next);
+    expect(next).to.have.been.called;
+  });
+
+  it('should redirect to overview page if the hearing bundle feature is disabled', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(false);
+    req.path = paths.common.overview;
+    await hearingBundleFeatureMiddleware(req as Request, res as Response, next);
+    expect(res.redirect).to.have.been.called.calledWith(paths.common.overview);
   });
 });

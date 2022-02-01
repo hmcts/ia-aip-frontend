@@ -78,6 +78,20 @@ function getWhatToExpectAtHearing(req: Request, res: Response, next: NextFunctio
     next(e);
   }
 }
+function getUnderstandingHearingBundle(req: Request, res: Response, next: NextFunction) {
+  const text = getGuidancePageText('understandingHearingBundle');
+  try {
+    return res.render('guidance-pages/guidance-page.njk', {
+      showContactUs: true,
+      previousPage: {
+        attributes: { onclick: 'history.go(-1); return false;' }
+      },
+      page: text
+    });
+  } catch (e) {
+    next(e);
+  }
+}
 
 function getHomeOfficeWithdrawDecision(req: Request, res: Response, next: NextFunction) {
   try {
@@ -196,8 +210,10 @@ function setupGuidancePagesController(): Router {
   router.get(paths.common.guidance, getGuidanceSupportPage);
   router.get(paths.common.gettingStarted, getGettingStartedPage);
   router.get(paths.common.whatToExpectAtHearing, getWhatToExpectAtHearing);
+  router.get(paths.common.understandingHearingBundle, getUnderstandingHearingBundle);
   router.get(paths.common.homeOfficeWithdrawDecision, getHomeOfficeWithdrawDecision);
   router.get(paths.common.homeOfficeMaintainDecision, getHomeOfficeMaintainDecision);
+  router.get(paths.common.understandingHearingBundle, getUnderstandingHearingBundle);
   return router;
 }
 
@@ -218,5 +234,6 @@ export {
   getOfflineProcessesPage,
   getGuidanceSupportPage,
   getGettingStartedPage,
-  getWhatToExpectAtHearing
+  getWhatToExpectAtHearing,
+  getUnderstandingHearingBundle
 };

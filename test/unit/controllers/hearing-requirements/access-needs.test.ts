@@ -249,7 +249,7 @@ describe('Hearing requirements access needs controller', () => {
         question: {
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Will you or any witnesses need step-free access?',
-          hint: 'We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues.',
+          hint: 'If you or any witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
           name: 'answer'
         },
         saveAndContinue: true
@@ -269,7 +269,7 @@ describe('Hearing requirements access needs controller', () => {
         question: {
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Will you or any witnesses need step-free access?',
-          hint: 'We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues.',
+          hint: 'If you or any witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
           name: 'answer'
         },
         saveAndContinue: true
@@ -297,7 +297,7 @@ describe('Hearing requirements access needs controller', () => {
         question: {
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
           title: 'Will you or any witnesses need a hearing loop?',
-          hint: 'If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
+          hint: 'A hearing loop is a sound system designed to help people who use hearing aids.',
           name: 'answer'
         },
         saveAndContinue: true
@@ -321,7 +321,7 @@ describe('Hearing requirements access needs controller', () => {
             value: 'no'
           }],
           title: 'Will you or any witnesses need a hearing loop?',
-          hint: 'If you or any other witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
+          hint: 'A hearing loop is a sound system designed to help people who use hearing aids.',
           name: 'answer'
         },
         saveAndContinue: true

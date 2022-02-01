@@ -137,7 +137,7 @@ describe('case management appointment controller', () => {
         previousPage: paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage,
         pageTitle: 'Will you or anyone coming with you need step-free access?',
         question: {
-          hint: 'We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues.',
+          hint: 'If you or any witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
           name: 'answer',
           options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: false, text: 'No', value: 'no' }],
           title: 'Will you or anyone coming with you need step-free access?'
@@ -170,7 +170,7 @@ describe('case management appointment controller', () => {
           formAction: '/appointment-step-free-access',
           pageTitle: 'Will you or anyone coming with you need step-free access?',
           question: {
-            hint: 'We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues.',
+            hint: 'If you or any witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
             name: 'answer',
             options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: false, text: 'No', value: 'no' }],
             title: 'Will you or anyone coming with you need step-free access?'
@@ -312,7 +312,7 @@ describe('case management appointment controller', () => {
         pageTitle: 'Will you or anyone coming with you need step-free access?',
         previousPage: '/appointment-interpreter',
         question: {
-          hint: 'We can provide step-free if you or anyone coming with you is in a wheelchair or has other mobility issues.',
+          hint: 'If you or any witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing.',
           name: 'answer',
           options: [{ checked: false, text: 'Yes', value: 'yes' }, { checked: false, text: 'No', value: 'no' }],
           title: 'Will you or anyone coming with you need step-free access?'

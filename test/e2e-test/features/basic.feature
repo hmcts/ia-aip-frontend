@@ -8,6 +8,7 @@ I want be able to sign in
 Scenario: Complete appeal application
   # Given I am on home page
   # When I click start now
+  # TODO: Remove "Are you currently living in the United Kingdom" step when "Feature flag for Out of Country feature" flag is switched on
   # Then I should see the "Are you currently living in the United Kingdom" eligibility page
   # When I select Yes and click continue
   # Then I should see the "Are you currently in detention" eligibility page

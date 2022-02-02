@@ -329,6 +329,7 @@ describe('Detail viewer Controller', () => {
         appealLastModified: '2021-06-15T14:40:04.384479',
         appealReferenceNumber: 'PA/50008/2021',
         application: {
+          appellantOutOfCountryAddress: '',
           homeOfficeRefNumber: 'A1234567',
           appellantInUk: 'No',
           appealType: 'protection',

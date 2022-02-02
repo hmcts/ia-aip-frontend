@@ -22,11 +22,12 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const familyName: boolean = !!_.get(appeal.application, 'personalDetails.familyName');
   const dob: boolean = !!_.get(appeal.application, 'personalDetails.dob');
   const nationality: boolean = !!_.get(appeal.application, 'personalDetails.nationality');
+  const appellantOutOfCountryAddress: boolean = !!_.get(appeal.application, 'appellantOutOfCountryAddress');
   const postcode: boolean = !!_.get(appeal.application, 'personalDetails.address.postcode');
   const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
   const personalDetails: Task = {
     saved: givenNames || familyName || dob || nationality || postcode || line1,
-    completed: givenNames && familyName && dob && nationality && line1,
+    completed: givenNames && familyName && dob && nationality && (line1 || appellantOutOfCountryAddress),
     active: homeOfficeDetails.completed
   };
 
@@ -48,7 +49,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   }
   const payNow = _.get(appeal.application, 'appealType') === 'protection' && !!_.get(appeal, 'paAppealTypeAipPaymentOption');
   const decisionType: Task = {
-    saved: appealType || decisionTypePage || payNow,
+    saved: decisionTypePage || payNow,
     completed: _.get(appeal.application, 'appealType') === 'protection' ? appealType && decisionTypePage && payNow : appealType && decisionTypePage,
     active: contactDetails.completed
   };

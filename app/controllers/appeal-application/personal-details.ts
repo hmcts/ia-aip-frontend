@@ -2,9 +2,11 @@ import { Address, OSPlacesClient } from '@hmcts/os-places-client';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getAddress } from '../../utils/address-utils';
 import { getNationalitiesOptions } from '../../utils/nationalities';
@@ -17,7 +19,8 @@ import {
   dateOfBirthValidation,
   dropdownValidation,
   nationalityValidation,
-  postcodeValidation
+  postcodeValidation,
+  textAreaValidation
 } from '../../utils/validations/fields-validations';
 
 function getDateOfBirthPage(req: Request, res: Response, next: NextFunction) {
@@ -191,13 +194,89 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
+
+      let ukAddress = _.has(application, 'personalDetails.address.line1') ? paths.appealStarted.enterAddress : paths.appealStarted.enterPostcode;
+      let redirectedPagePath = await isOutOfCountryAppeal(req) ? paths.appealStarted.oocAddress : ukAddress;
+
       let redirectPage = getRedirectPage(
         editingMode,
         paths.appealStarted.checkAndSend,
         req.body.saveForLater,
-        _.has(application, 'personalDetails.address.line1') ? paths.appealStarted.enterAddress : paths.appealStarted.enterPostcode
+        redirectedPagePath
       );
       return res.redirect(redirectPage);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+async function isOutOfCountryAppeal(req: Request) {
+  let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+  let outOfCountryFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.OUT_OF_COUNTRY, false);
+  return (outOfCountryFeatureEnabled && appealOutOfCountry === 'Yes');
+}
+
+function getEnterAddressForOutOfCountryAppeal(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.previousPage = paths.appealStarted.nationality;
+    const oocAddress = req.session.appeal.application.appellantOutOfCountryAddress || null;
+    res.render('templates/textarea-question-page.njk', {
+      previousPage: paths.appealStarted.nationality,
+      formAction: paths.appealStarted.oocAddress,
+      pageTitle: i18n.pages.outOfCountryAddress.title,
+      question: {
+        name: 'outofcountry-address',
+        title: i18n.pages.outOfCountryAddress.title,
+        description: i18n.pages.outOfCountryAddress.description,
+        value: oocAddress ? oocAddress : ''
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postEnterAddressForOutOfCountryAppeal(updateAppealService: UpdateAppealService) {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'outofcountry-address')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      const validationErrors = textAreaValidation(req.body['outofcountry-address'], 'outofcountry-address', i18n.validationErrors.outOfCountryAddress.addressRequired);
+      if (validationErrors) {
+        return res.render('templates/textarea-question-page.njk', {
+          previousPage: paths.appealStarted.nationality,
+          formAction: paths.appealStarted.oocAddress,
+          pageTitle: i18n.pages.outOfCountryAddress.title,
+          question: {
+            name: 'outofcountry-address',
+            title: i18n.pages.outOfCountryAddress.title,
+            description: i18n.pages.outOfCountryAddress.description,
+            value: ''
+          },
+          errorList: Object.values(validationErrors),
+          error: validationErrors
+        });
+      }
+
+      req.session.appeal.application.appellantOutOfCountryAddress = req.body['outofcountry-address'];
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application
+        }
+      };
+      let editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      let redirectPagePath = getRedirectPage(editingMode, paths.appealStarted.checkAndSend,
+        req.body.saveForLater, paths.appealStarted.taskList);
+      return res.redirect(redirectPagePath);
     } catch (e) {
       next(e);
     }
@@ -392,6 +471,8 @@ function setupPersonalDetailsController(middleware: Middleware[], deps?: any): R
   router.post(paths.appealStarted.enterAddress, middleware, postManualEnterAddressPage(deps.updateAppealService));
   router.get(paths.appealStarted.postcodeLookup, middleware, getPostcodeLookupPage(deps.osPlacesClient));
   router.post(paths.appealStarted.postcodeLookup, middleware, postPostcodeLookupPage);
+  router.get(paths.appealStarted.oocAddress, middleware, getEnterAddressForOutOfCountryAppeal);
+  router.post(paths.appealStarted.oocAddress, middleware, postEnterAddressForOutOfCountryAppeal(deps.updateAppealService));
   return router;
 }
 
@@ -408,5 +489,8 @@ export {
   getManualEnterAddressPage,
   postManualEnterAddressPage,
   getPostcodeLookupPage,
-  postPostcodeLookupPage
+  postPostcodeLookupPage,
+  getEnterAddressForOutOfCountryAppeal,
+  postEnterAddressForOutOfCountryAppeal,
+  isOutOfCountryAppeal
 };

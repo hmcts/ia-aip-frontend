@@ -379,6 +379,7 @@ export default class UpdateAppealService {
       isDecisionAllowed: caseData.isDecisionAllowed,
       appealOutOfCountry: caseData.appealOutOfCountry,
       application: {
+        appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appellantInUk: caseData.appellantInUk,
         appealType: caseData.appealType || null,
@@ -512,6 +513,11 @@ export default class UpdateAppealService {
         };
         caseData.appellantHasFixedAddress = 'Yes';
       }
+
+      if (appeal.application.appellantOutOfCountryAddress) {
+        caseData.appellantOutOfCountryAddress = appeal.application.appellantOutOfCountryAddress;
+      }
+
       if (appeal.application.appealType) {
         caseData.appealType = appeal.application.appealType;
       }

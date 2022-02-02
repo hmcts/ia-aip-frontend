@@ -58,12 +58,6 @@ async function createSummaryRowsFrom(req: Request) {
       paths.appealStarted.nationality + editParameter
     ),
     addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.addressDetails,
-      [ ...Object.values(application.personalDetails.address) ],
-      paths.appealStarted.enterAddress + editParameter,
-      Delimiter.BREAK_LINE
-    ),
-    addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.contactDetails,
       [ application.contactDetails.email, application.contactDetails.phone ],
       paths.appealStarted.contactDetails + editParameter,
@@ -75,6 +69,21 @@ async function createSummaryRowsFrom(req: Request) {
       paths.appealStarted.typeOfAppeal + editParameter
     )
   ];
+
+  if (['Yes'].includes(application.appellantInUk)) {
+    const addressInUk = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails,
+          [...Object.values(application.personalDetails.address)],
+          paths.appealStarted.enterAddress + editParameter,
+          Delimiter.BREAK_LINE);
+    rows.push(addressInUk);
+  } else {
+    const addressOutUk = addSummaryRow(
+          i18n.pages.checkYourAnswers.rowTitles.addressDetails,
+          [ ...Object.values(application.appellantOutOfCountryAddress) ],
+          paths.appealStarted.oocAddress + editParameter
+      );
+    rows.push(addressOutUk);
+  }
 
   if (application.isAppealLate) {
     const lateAppealValue = [ formatTextForCYA(application.lateAppeal.reason) ];

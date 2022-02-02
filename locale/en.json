@@ -181,6 +181,10 @@
       "stateless": "I am stateless (A stateless person is not a citizen of any country).",
       "defaultNationality": "Please select a nationality"
     },
+    "outOfCountryAddress": {
+      "title": "What is your address?",
+      "description": "Enter your address"
+    },
     "checkYourAnswers": {
       "title": "Check your answer",
       "header": "Check your answer",
@@ -2651,6 +2655,9 @@
       "line1Required": "Enter a building number and street name",
       "townCityRequired": "Enter a Town or City",
       "postcodeRequired": "Enter your postcode"
+    },
+    "outOfCountryAddress":{
+      "addressRequired": "Enter your address"
     },
     "homeOfficeReference": {
       "required": "Enter the Home Office reference number",

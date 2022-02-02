@@ -193,6 +193,7 @@ interface LateAppeal {
 }
 
 interface AppealApplication {
+  appellantOutOfCountryAddress: string;
   homeOfficeRefNumber: string;
   appellantInUk: string;
   dateLetterSent: AppealDate;

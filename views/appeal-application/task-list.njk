@@ -21,11 +21,13 @@
             {% else %}
               {{ i18n.pages.taskList[task.id].title }}
             {% endif %}
-            {% if task.saved or task.completed %}
+            {% if task.completed %}
+            <!-- if task.saved or task.completed -->
               {{ govukTag({
                   text: "Saved"
               }) }}
-             {% if task.active %}
+              {% else %}
+                {% if task.active %}
                     <a class="govuk-link" id='{{ i18n.pages.taskList[task.id].id }}'
                      href='{{ i18n.pages.taskList[task.id].path | path }}'
                      title='{{ i18n.pages.taskList[task.id].title }}'>
@@ -38,20 +40,6 @@
                       text: "CANNOT START YET"
                     }) }}
                 {% endif %}
-              {% elif task.active %}
-                    <a class="govuk-link" id='{{ i18n.pages.taskList[task.id].id }}'
-                     href='{{ i18n.pages.taskList[task.id].path | path }}'
-                     title='{{ i18n.pages.taskList[task.id].title }}'>
-                        {{ govukTag({
-                          text: "TO DO",
-                          classes: "govuk-tag--blue"
-                        }) }}
-                     </a>
-                {% else %}
-                    {{ govukTag({
-                      text: "CANNOT START YET",
-                      classes: "govuk-tag--grey"
-                    }) }}
             {% endif %}
           </li>
         {% endfor %}

@@ -11,6 +11,7 @@ describe('getStatus', () => {
       time: '10am'
     },
     application: {
+      appellantOutOfCountryAddress: '',
       homeOfficeRefNumber: 'reference no',
       appellantInUk: 'No',
       appealType: null,

@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import * as _ from 'lodash';
+import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
@@ -441,6 +442,7 @@ export default class UpdateAppealService {
       ...caseData.respondentDocuments && { respondentDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.respondentDocuments, documentMap) },
       ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
+      ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.additionalEvidenceDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
       ...caseData.finalDecisionAndReasonsDocuments && { finalDecisionAndReasonsDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.finalDecisionAndReasonsDocuments, documentMap) },
@@ -789,7 +791,6 @@ export default class UpdateAppealService {
       ...appeal.application.homeOfficeLetter && {
         uploadTheNoticeOfDecisionDocs: this.mapUploadTheNoticeOfDecisionDocs(appeal.application.homeOfficeLetter, appeal.documentMap, 'additionalEvidence')
       },
-      // leaving this in until we rebase with RIA-4650 & RIA-4707
       ...appeal.additionalEvidence && {
         additionalEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)
       },
@@ -955,6 +956,21 @@ export default class UpdateAppealService {
         ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
         ...doc.value.description && { description: doc.value.description },
         ...doc.value.dateUploaded && { dateUploaded: doc.value.dateUploaded }
+      };
+    });
+    return evidences;
+  }
+
+  private mapAdditionalEvidenceToDocumentWithDescriptionArray = (docs: AdditionalEvidence[], documentMap: DocumentMap[]): Evidence[] => {
+    const evidences = docs.map((doc: AdditionalEvidence): Evidence => {
+      const fileId = addToDocumentMapper(doc.value.document.document_url, documentMap);
+      return {
+        fileId,
+        name: doc.value.document.document_filename,
+        ...doc.id && { id: doc.id },
+        ...doc.value.tag && { tag: doc.value.tag },
+        ...doc.value.description && { description: doc.value.description },
+        ...doc.value.dateUploaded && { dateUploaded: moment(doc.value.dateUploaded).format('DD MMMM YYYY') }
       };
     });
     return evidences;

@@ -159,6 +159,7 @@ const paths = {
     provideMoreEvidenceDeleteFile: '/provide-more-evidence/delete/file',
     provideMoreEvidenceCheck: '/provide-more-evidence-check',
     provideMoreEvidenceConfirmation: '/provide-more-evidence-sent',
+    yourEvidence: '/your-evidence',
 
     // Viewers endpoints
     documentViewer: '/view/document',

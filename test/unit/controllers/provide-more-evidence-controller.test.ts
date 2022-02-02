@@ -1,8 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { buildAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getConfirmation, getProvideMoreEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
+import { buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getConfirmation, getEvidenceDocuments, getProvideMoreEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Provide more evidence controller', () => {
@@ -68,6 +69,7 @@ describe('Provide more evidence controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.provideMoreEvidenceDeleteFile);
       expect(routerGetStub).to.have.been.calledWith(paths.common.provideMoreEvidenceCheck);
       expect(routerGetStub).to.have.been.calledWith(paths.common.provideMoreEvidenceConfirmation);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.yourEvidence);
     });
   });
 
@@ -171,6 +173,20 @@ describe('Provide more evidence controller', () => {
     });
   });
 
+  describe('getEvidenceDocuments', () => {
+    it('should render', () => {
+      const summaryList: SummaryList[] = [{ summaryRows: [] }];
+      req.session.appeal.additionalEvidenceDocuments = [];
+      getEvidenceDocuments(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk',{
+        pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
+        previousPage: paths.common.overview,
+        summaryLists: summaryList
+      });
+    });
+  });
+
   describe('buildAdditionalEvidenceDocumentsSummaryList', () => {
 
     it('should build a list in correct format', () => {
@@ -205,6 +221,53 @@ describe('Provide more evidence controller', () => {
       ];
 
       const result = buildAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+
+      expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
+      expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
+    });
+  });
+
+  describe('buildUploadedAdditionalEvidenceDocumentsSummaryList', () => {
+
+    it('should build a list in correct format', () => {
+      const mockEvidenceDocuments: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName',
+          dateUploaded: 'dateUploaded'
+        }
+      ];
+
+      const expectedSummaryList: SummaryList[] = [
+        {
+          'summaryRows': [
+            {
+              'actions': {
+                'items': []
+              },
+              'key': {
+                'text': 'Date uploaded'
+              },
+              'value': {
+                'html': '<p>dateUploaded</p>'
+              }
+            },
+            {
+              'actions': {
+                'items': []
+              },
+              'key': {
+                'text': 'Document'
+              },
+              'value': {
+                'html': '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/aFileId\'>fileName</a>'
+              }
+            }
+          ]
+        }
+      ];
+
+      const result = buildUploadedAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments);
 
       expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
       expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);

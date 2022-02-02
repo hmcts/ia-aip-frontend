@@ -75,6 +75,17 @@ interface AdditionalEvidenceDocument {
   description?: string;
 }
 
+interface AdditionalEvidence {
+  id?: string;
+  value: {
+    tag: string;
+    document?: SupportingDocument;
+    description?: string;
+    dateUploaded?: string;
+  };
+}
+
+
 interface DocumentUploadResponse {
   fileId: string;
   name: string;

@@ -5,7 +5,7 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { addSummaryRow } from '../../utils/summary-list';
+import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
 function getProvideMoreEvidence(req: Request, res: Response, next: NextFunction) {
@@ -72,7 +72,7 @@ function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
     try {
       if (req.file) {
         const additionalEvidenceDocument: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-        const additionalEvidence: AdditionalEvidenceDocument[] = [ ...(req.session.appeal.additionalEvidence || []) ];
+        const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
 
         additionalEvidence.push({
           name: additionalEvidenceDocument.name,
@@ -82,7 +82,7 @@ function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
 
         req.session.appeal = {
           ...req.session.appeal,
-          additionalEvidence:  [ ...additionalEvidence ]
+          additionalEvidence: [...additionalEvidence]
         };
         return res.redirect(paths.common.provideMoreEvidenceForm);
       }
@@ -96,11 +96,11 @@ function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
 function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const additionalEvidence: AdditionalEvidenceDocument[] = [ ...(req.session.appeal.additionalEvidence || []) ];
+      const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
 
       const appeal: Appeal = {
         ...req.session.appeal,
-        additionalEvidence:  [ ...additionalEvidence ]
+        additionalEvidence: [...additionalEvidence]
       };
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDITIONAL_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -108,6 +108,7 @@ function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealSe
         ...req.session.appeal,
         ...appealUpdated
       };
+      req.session.appeal.additionalEvidence = [];
       return res.redirect(paths.common.provideMoreEvidenceConfirmation);
     } catch (e) {
       next(e);
@@ -119,8 +120,8 @@ function deleteProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
-        const additionalEvidence: AdditionalEvidenceDocument[] = [ ...(req.session.appeal.additionalEvidence.filter(document => document.fileId !== req.query.id) || []) ];
-        const documentMap: DocumentMap[] = [ ...(req.session.appeal.documentMap.filter(document => document.id !== req.query.id) || []) ];
+        const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence.filter(document => document.fileId !== req.query.id) || [])];
+        const documentMap: DocumentMap[] = [...(req.session.appeal.documentMap.filter(document => document.id !== req.query.id) || [])];
 
         await documentManagementService.deleteFile(req, req.query.id as string);
 
@@ -162,6 +163,21 @@ function getConfirmation(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+  try {
+    const additionalEvidenceDocuments = req.session.appeal.additionalEvidenceDocuments;
+    const summaryList: SummaryList[] = buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments);
+
+    res.render('templates/check-and-send.njk', {
+      pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
+      previousPage: paths.common.overview,
+      summaryLists: summaryList
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
 function setupProvideMoreEvidenceController(middleware: Middleware[], updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService): Router {
   const router: Router = Router();
   router.get(paths.common.provideMoreEvidenceForm, middleware, getProvideMoreEvidence);
@@ -170,6 +186,7 @@ function setupProvideMoreEvidenceController(middleware: Middleware[], updateAppe
   router.get(paths.common.provideMoreEvidenceCheck, getProvideMoreEvidenceCheckAndSend);
   router.post(paths.common.provideMoreEvidenceCheck, middleware, validate, postProvideMoreEvidenceCheckAndSend(updateAppealService, documentManagementService));
   router.get(paths.common.provideMoreEvidenceConfirmation, getConfirmation);
+  router.get(paths.common.yourEvidence, getEvidenceDocuments);
   return router;
 }
 
@@ -194,6 +211,35 @@ function buildAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments
   return additionalEvidenceSummaryLists;
 }
 
+function buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments: Evidence[]): SummaryList[] {
+  const additionalEvidenceSummaryLists: SummaryList[] = [];
+  const additionalEvidenceRows: SummaryRow[] = [];
+
+  if (additionalEvidenceDocuments) {
+
+    additionalEvidenceDocuments.forEach((evidence: Evidence) => {
+      additionalEvidenceRows.push(
+        addSummaryRow(
+          'Date uploaded',
+          [`<p>${evidence.dateUploaded}</p>`]
+        )
+      );
+      additionalEvidenceRows.push(
+        addSummaryRow(
+          'Document',
+          [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`], null, Delimiter.BREAK_LINE
+        )
+      );
+    });
+
+    additionalEvidenceSummaryLists.push({
+      summaryRows: additionalEvidenceRows
+    });
+  }
+
+  return additionalEvidenceSummaryLists;
+}
+
 export {
   getProvideMoreEvidence,
   postProvideMoreEvidence,
@@ -203,6 +249,8 @@ export {
   setupProvideMoreEvidenceController,
   postProvideMoreEvidenceCheckAndSend,
   getConfirmation,
+  getEvidenceDocuments,
   buildAdditionalEvidenceDocumentsSummaryList,
+  buildUploadedAdditionalEvidenceDocumentsSummaryList,
   validate
 };

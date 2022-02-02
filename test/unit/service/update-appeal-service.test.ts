@@ -1,3 +1,4 @@
+
 import { Request } from 'express';
 import { Events } from '../../../app/data/events';
 import { AuthenticationService } from '../../../app/service/authentication-service';
@@ -911,6 +912,36 @@ describe('update-appeal-service', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
         expect(mappedAppeal.hearingDocuments).to.be.length(1);
+      });
+    });
+
+    describe('additionalEvidenceDocuments', () => {
+      const caseData: Partial<CaseData> = {
+        'additionalEvidenceDocuments': [
+          {
+            'id': '1',
+            'value': {
+              'tag': 'endAppeal',
+              'document': {
+                'document_url': 'http://dm-store:8080/documents/59c0a265-1fd8-4698-9b75-d7438870d6e6',
+                'document_filename': 'PA 50002 2021-perez-NoticeOfEndedAppeal.PDF',
+                'document_binary_url': 'http://dm-store:8080/documents/59c0a265-1fd8-4698-9b75-d7438870d6e6/binary'
+              },
+              'suppliedBy': '',
+              'description': '',
+              'dateUploaded': '2021-06-01'
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map docs to hearing documents', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.additionalEvidenceDocuments).to.be.length(1);
       });
     });
   });

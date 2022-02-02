@@ -13,11 +13,11 @@ Feature: Eligibility
     When I select No and click continue
     Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
     When I select No and click continue
-    Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
+    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
     When I select Yes and click continue
     Then I should see the eligible page
     When I click "Back" button
-    Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
+    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
 #    add this when online-card-payments-feature is removed
 #    When I select No and click continue
 #   Then I should see the "There is a fee for this appeal" eligibility page

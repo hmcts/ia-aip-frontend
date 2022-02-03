@@ -110,7 +110,7 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
 function getYourAnswersPage(req: Request, res: Response, next: NextFunction) {
   try {
     const previousPage: string = paths.common.overview;
-    const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.clarifyingQuestionsAnswers ];
+    const clarifyingQuestions: ClarifyingQuestion<Evidence>[] = [ ...req.session.appeal.clarifyingQuestionsAnswers ].filter(question => question.value.directionId ? question.value.directionId === req.params.id : true);
     const anythingElseQuestion: ClarifyingQuestion<Evidence> = clarifyingQuestions.pop();
     const summaryLists: any[] = clarifyingQuestions.map((question: ClarifyingQuestion<Evidence>, index: number) => {
       const summaryRows: SummaryRow[] = [];

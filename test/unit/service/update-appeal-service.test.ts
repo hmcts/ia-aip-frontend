@@ -223,7 +223,8 @@ describe('update-appeal-service', () => {
           value: {
             dateSent: '2020-04-23',
             dueDate: '2020-05-07',
-            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?',
+            directionId: 'directionId'
           }
         }
       ];
@@ -234,14 +235,16 @@ describe('update-appeal-service', () => {
           value: {
             dateSent: '2020-04-23',
             dueDate: '2020-05-07',
-            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?'
+            question: 'Give us some more information about:\n- What are their ages?\n  - What are their names?',
+            directionId: 'directionId'
           }
         },
         {
           value: {
             dateSent: '2020-04-23',
             dueDate: '2020-05-07',
-            question: 'Do you want to tell us anything else about your case?'
+            question: 'Do you want to tell us anything else about your case?',
+            directionId: 'directionId'
           }
         }
       ];
@@ -255,6 +258,7 @@ describe('update-appeal-service', () => {
             dateSent: '2020-04-23',
             explanation: 'You need to answer some questions about your appeal.',
             previousDates: [],
+            uniqueId: 'directionId',
             clarifyingQuestions: directionsClarifyingQuestions
           }
         }
@@ -279,7 +283,8 @@ describe('update-appeal-service', () => {
           dueDate: '2020-05-07',
           question: 'the questions',
           answer: 'draft answer',
-          dateResponded: '2020-05-01'
+          dateResponded: '2020-05-01',
+          directionId: 'directionId'
         }
       };
 
@@ -292,7 +297,8 @@ describe('update-appeal-service', () => {
             question: 'the questions',
             answer: 'draft answer',
             dateResponded: '2020-05-01',
-            supportingEvidence: []
+            supportingEvidence: [],
+            directionId: 'directionId'
           }
         }
       ];
@@ -307,6 +313,7 @@ describe('update-appeal-service', () => {
             dateSent: '2020-04-23',
             explanation: 'You need to answer some questions about your appeal.',
             previousDates: [],
+            uniqueId: 'directionId',
             clarifyingQuestions: [
               {
                 id: '947398d5-bd81-4e7f-b3ed-1be73be5ba56',
@@ -354,7 +361,8 @@ describe('update-appeal-service', () => {
                 }
               }
             ],
-            previousDates: []
+            previousDates: [],
+            uniqueId: 'directionId'
           }
         }
       ];
@@ -374,14 +382,16 @@ describe('update-appeal-service', () => {
           value: {
             dateSent: '2020-04-23',
             dueDate: '2020-05-07',
-            question: 'the questions'
+            question: 'the questions',
+            directionId: 'directionId'
           }
         },
         {
           value: {
             dateSent: '2020-04-23',
             dueDate: '2020-05-07',
-            question: 'Do you want to tell us anything else about your case?'
+            question: 'Do you want to tell us anything else about your case?',
+            directionId: 'directionId'
           }
         }
       ];

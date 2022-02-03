@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { Events } from '../../../app/data/events';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { constructSection, getTimeExtensionsEvents } from '../../../app/utils/timeline-utils';
+import { constructSection, getSubmitClarifyingQuestionsEvents, getTimeExtensionsEvents } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -69,7 +69,7 @@ describe('timeline-utils', () => {
     });
   });
 
-  describe('getTimeExtensionsEvents @timeExtensions', () => {
+  describe('getTimeExtensionsEvents', () => {
     it('should get timeExtensions', () => {
       const makeAnApplications: Collection<Application<Evidence>>[] = [
         {
@@ -105,6 +105,58 @@ describe('timeline-utils', () => {
       const timeExtensions = getTimeExtensionsEvents(makeAnApplications);
 
       expect(timeExtensions.length).to.be.eq(3);
+    });
+  });
+
+  describe('getSubmitClarifyingQuestionsEvents', () => {
+    const history: Partial<HistoryEvent>[] = [
+      {
+        id: 'submitClarifyingQuestionAnswers',
+        createdDate: '2021-08-25T12:23:08.397683',
+        state: {
+          id: 'clarifyingQuestionsAnswersSubmitted',
+          name: ''
+        },
+        event: {
+          eventName: 'Submit clarifying answers',
+          description: ''
+        }
+      }
+    ];
+    const directions = [
+      {
+        id: '0',
+        tag: 'requestClarifyingQuestions',
+        dateDue: '2021-09-22',
+        dateSent: '2021-08-25',
+        uniqueId: 'directionId'
+      }
+    ];
+    it('should get Submit CQ events', () => {
+      const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[]);
+
+      expect(events.length).to.be.eql(1);
+      expect(events[0]).to.contain.keys('date', 'dateObject', 'text', 'links');
+    });
+
+    it('should discard a direction if CQ not yet answered', () => {
+      directions.push({
+        id: '1',
+        tag: 'requestClarifyingQuestions',
+        dateDue: '2021-09-22',
+        dateSent: '2021-08-25',
+        uniqueId: 'directionId'
+      });
+      const events = getSubmitClarifyingQuestionsEvents(history as HistoryEvent[], directions as Direction[]);
+
+      expect(events.length).to.be.eql(1);
+      expect(events[0]).to.contain.keys('date', 'dateObject', 'text', 'links');
+    });
+
+    it('should return empty events array', () => {
+      const events = getSubmitClarifyingQuestionsEvents([], []);
+
+      expect(events.length).to.be.eql(0);
     });
   });
 });

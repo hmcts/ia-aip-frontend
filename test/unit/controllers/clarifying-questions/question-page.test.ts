@@ -23,7 +23,8 @@ describe('Question-page controller', () => {
       value: {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
-        question: 'Tell us more about your children'
+        question: 'Tell us more about your children',
+        directionId: 'directionId'
       }
     },
     {
@@ -31,7 +32,8 @@ describe('Question-page controller', () => {
       value: {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
-        question: 'Tell us more about your health issues'
+        question: 'Tell us more about your health issues',
+        directionId: 'directionId'
       }
     }
   ];

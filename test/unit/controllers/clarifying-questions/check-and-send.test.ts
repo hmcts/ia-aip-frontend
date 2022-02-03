@@ -29,7 +29,8 @@ describe('Clarifying Questions Check and Send controller', () => {
         dueDate: '2020-05-07',
         question: 'Tell us more about your children',
         answer: 'an answer to the question',
-        dateResponded: nowIsoDate()
+        dateResponded: nowIsoDate(),
+        directionId: 'directionId'
       }
     },
     {
@@ -39,7 +40,8 @@ describe('Clarifying Questions Check and Send controller', () => {
         dueDate: '2020-05-07',
         question: 'Tell us more about your health issues',
         answer: 'an answer to the question',
-        dateResponded: nowIsoDate()
+        dateResponded: nowIsoDate(),
+        directionId: 'directionId'
       }
     }
   ];
@@ -178,8 +180,9 @@ describe('Clarifying Questions Check and Send controller', () => {
     beforeEach(() => {
       req.session.appeal.draftClarifyingQuestionsAnswers = null;
       req.session.appeal.clarifyingQuestionsAnswers = clarifyingQuestions;
+      req.params.id = 'directionId';
     });
-    it('should render CYA template page', () => {
+    it('should render CYA template page @thisONe', () => {
       getYourAnswersPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk');
     });

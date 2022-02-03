@@ -227,6 +227,7 @@ interface CcdDirection {
   dateSent: string;
   explanation: string;
   previousDates?: PreviousDateCollection[];
+  uniqueId: string;
   [key: string]: any;
 }
 

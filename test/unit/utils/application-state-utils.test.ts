@@ -257,7 +257,8 @@ describe('application-state-utils', () => {
             'parties': 'appellant',
             'dateDue': '2020-09-01',
             'dateSent': '2020-04-21',
-            'explanation': 'direction explanation'
+            'explanation': 'direction explanation',
+            uniqueId: 'directionId'
           },
           {
             'id': '1',
@@ -265,7 +266,8 @@ describe('application-state-utils', () => {
             'parties': 'respondent',
             'dateDue': '2020-04-28',
             'dateSent': '2020-04-14',
-            'explanation': 'direction explanation'
+            'explanation': 'direction explanation',
+            uniqueId: 'directionId'
           }
         ];
       });
@@ -403,7 +405,8 @@ describe('application-state-utils', () => {
             parties: 'appellant',
             dateDue: '2020-04-21',
             dateSent: '2020-03-24',
-            explanation: 'direction explanation'
+            explanation: 'direction explanation',
+            uniqueId: 'directionId'
           },
           {
             id: '1',
@@ -411,7 +414,8 @@ describe('application-state-utils', () => {
             parties: 'respondent',
             dateDue: '2020-04-07',
             dateSent: '2020-03-24',
-            explanation: 'direction explanation'
+            explanation: 'direction explanation',
+            uniqueId: 'directionId'
           }
         ];
         req.session.appeal.makeAnApplications = null;

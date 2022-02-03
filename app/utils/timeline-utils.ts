@@ -78,8 +78,26 @@ function getTimeExtensionsEvents(makeAnApplications: Collection<Application<Evid
     }
     return [ request ];
   }) : [];
-
   return makeDirectionsFlatMap;
+}
+
+function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions: Direction[]): any[] {
+  const submitCQHistory = history.filter(event => event.id === Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id);
+  const directionsFiltered = directions.filter(direction => direction.tag === 'requestClarifyingQuestions');
+  if (directionsFiltered.length > submitCQHistory.length) directionsFiltered.shift();
+
+  if (!submitCQHistory && !directionsFiltered) return [];
+  return submitCQHistory.map(event => {
+    return {
+      date: moment(event.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(event.createdDate),
+      text: i18n.pages.overviewPage.timeline[event.id].text || null,
+      links: [{
+        ...i18n.pages.overviewPage.timeline[event.id].links[0],
+        href: i18n.pages.overviewPage.timeline[event.id].links[0].href.replace(':id', directionsFiltered.shift().uniqueId)
+      }]
+    };
+  });
 }
 
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
@@ -94,7 +112,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     appealHearingRequirementsSectionEvents.push(Events.LIST_CASE.id);
   }
 
-  const appealArgumentSectionEvents = [ Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.SUBMIT_CLARIFYING_QUESTION_ANSWERS.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONSE_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
+  const appealArgumentSectionEvents = [ Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONSE_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
   const appealDecisionSectionEvents = [ Events.SEND_DECISION_AND_REASONS.id ];
   const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
 
@@ -104,6 +122,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealDetailsSection = constructSection(appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
   const timeExtensions = getTimeExtensionsEvents(req.session.appeal.makeAnApplications);
+  const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
   let paymentEvent = [];
@@ -116,7 +135,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
   }
 
-  const argumentSection = appealArgumentSection.concat(timeExtensions, paymentEvent)
+  const argumentSection = appealArgumentSection.concat(timeExtensions, paymentEvent, submitCQHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
@@ -131,6 +150,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
 export {
   getAppealApplicationHistory,
+  getSubmitClarifyingQuestionsEvents,
   getTimeExtensionsEvents,
   constructSection
 };

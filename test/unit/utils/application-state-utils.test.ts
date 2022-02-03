@@ -304,7 +304,7 @@ describe('application-state-utils', () => {
             decision: 'Pending'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
@@ -336,7 +336,7 @@ describe('application-state-utils', () => {
             decision: 'Granted'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
@@ -368,7 +368,7 @@ describe('application-state-utils', () => {
             decision: 'Refused'
           }
         };
-        req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+        req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
         const result = await getAppealApplicationNextStep(req as Request);
 
         expect(result).to.eql(
@@ -779,7 +779,7 @@ describe('application-state-utils', () => {
         }
       };
       req.session.appeal.appealStatus = 'submitHearingRequirements';
-      req.session.appeal.makeAnApplications = [ timeExtensionApplication as Collection<Application<Evidence>> ];
+      req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql(
@@ -839,8 +839,7 @@ describe('application-state-utils', () => {
 
       expect(result).to.deep.include(
         {
-          descriptionParagraphs: [
-          ],
+          descriptionParagraphs: [],
           'info': {
             'title': 'What happens next',
             'url': 'Your appeal will continue offline. The Tribunal will contact you soon to tell you what will happen next.'
@@ -899,10 +898,24 @@ describe('application-state-utils', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
     const result = await getAppealApplicationNextStep(req as Request);
 
-    const expected = {
-      'allowedAskForMoreTime': false,
-      'cta': {
-      },
+    const expected = getPreHearingAndFinalBundling();
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application status is finalBundling should get correct Do this next section.', async () => {
+    req.session.appeal.appealStatus = 'finalBundling';
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = getPreHearingAndFinalBundling();
+
+    expect(result).to.eql(expected);
+  });
+
+  function getPreHearingAndFinalBundling() {
+    return { 'allowedAskForMoreTime': false,
+      'cta': {},
       'date': '11 August 2020',
       'deadline': 'TBC',
       'descriptionParagraphs': [
@@ -919,9 +932,7 @@ describe('application-state-utils', () => {
       'hearingCentre': 'Taylor House',
       'time': '10:00 am'
     };
-
-    expect(result).to.eql(expected);
-  });
+  }
 
   it('when application status is decided should get correct Do this next section.', async () => {
     req.session.appeal.appealStatus = 'decided';

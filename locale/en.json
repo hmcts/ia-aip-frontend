@@ -772,7 +772,7 @@
             {
               "title": "What you sent",
               "text": "Your answers",
-              "href": "{{ paths.common.yourCQanswers }}"
+              "href": "/your-answers/:id"
             }
           ]
         },

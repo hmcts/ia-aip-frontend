@@ -345,6 +345,7 @@ interface Direction {
   dateDue: string;
   dateSent: string;
   explanation: string;
+  uniqueId: string;
   clarifyingQuestions?: ClarifyingQuestion;
 }
 
@@ -356,6 +357,7 @@ interface ClarifyingQuestion<T> {
     question: string;
     dateResponded?: string;
     answer?: string;
+    directionId: string;
     supportingEvidence?: T[];
   };
 }

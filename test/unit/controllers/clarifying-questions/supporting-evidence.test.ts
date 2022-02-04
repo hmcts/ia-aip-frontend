@@ -32,7 +32,8 @@ describe('Question-page controller', () => {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
         question: 'Tell us more about your children',
-        answer: 'the answer'
+        answer: 'the answer',
+        directionId: 'directionId'
       }
     }
   ];

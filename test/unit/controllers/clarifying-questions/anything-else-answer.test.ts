@@ -18,7 +18,8 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       value: {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
-        question: 'Tell us more about your children'
+        question: 'Tell us more about your children',
+        directionId: 'directionId'
       }
     },
     {
@@ -27,7 +28,8 @@ describe('Clarifying Questions: Anything else answer controller', () => {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
         question: 'Tell us more about your health issues',
-        answer: 'an answer to the question'
+        answer: 'an answer to the question',
+        directionId: 'directionId'
       }
     },
     {
@@ -35,7 +37,8 @@ describe('Clarifying Questions: Anything else answer controller', () => {
       value: {
         dateSent: '2020-04-23',
         dueDate: '2020-05-07',
-        question: 'Anything else question'
+        question: 'Anything else question',
+        directionId: 'directionId'
       }
     }
   ];

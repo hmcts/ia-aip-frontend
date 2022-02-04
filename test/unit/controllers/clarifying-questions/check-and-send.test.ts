@@ -156,7 +156,7 @@ describe('Clarifying Questions Check and Send controller', () => {
       expect(req.session.appeal.clarifyingQuestionsAnswers).to.eql(clarifyingQuestions);
       expect(req.session.appeal.draftClarifyingQuestionsAnswers).to.be.undefined;
       expect(req.session.appeal.appealStatus).to.be.equal('newState');
-      expect(res.redirect).to.have.been.calledWith(paths.clarifyingQuestionsAnswersSubmitted.confirmation);
+      expect(res.redirect).to.have.been.calledWith(paths.common.clarifyingQuestionsAnswersSentConfirmation);
     });
 
     it('should validate and redirect to saveforLater', async () => {

@@ -35,7 +35,7 @@ describe('ClarifyingQuestions Confirmation Controller', () => {
       const middleware: Middleware[] = [];
 
       setupClarifyingQuestionsConfirmationPage(middleware);
-      expect(routerGetStub).to.have.been.calledWith(`${paths.clarifyingQuestionsAnswersSubmitted.confirmation}`);
+      expect(routerGetStub).to.have.been.calledWith(`${paths.common.clarifyingQuestionsAnswersSentConfirmation}`);
     });
   });
 

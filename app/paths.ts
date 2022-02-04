@@ -218,6 +218,7 @@ const paths = {
     understandingHearingBundle: '/understanding-hearing-bundle',
     homeOfficeMaintainDecision: '/home-office-maintain',
     homeOfficeWithdrawDecision: '/home-office-withdraw',
+    clarifyingQuestionsAnswersSentConfirmation: '/clarifying-questions-sent',
 
     // Footer links
     cookies: '/cookie-policy',

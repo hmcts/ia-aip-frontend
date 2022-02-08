@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
 
 function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
+  const appealOutOfCountry: boolean = !!_.get(appeal.application, 'appealOutOfCountry');
+  const appealType: boolean = !!_.get(appeal.application, 'appealType');
   const typeOfAppeal: Task = {
-    saved: !!_.get(appeal.application, 'appealType'),
-    completed: !!_.get(appeal.application, 'appealType'),
+    saved: appealOutOfCountry || appealType,
+    completed: appealOutOfCountry || appealType,
     active: true
   };
 
@@ -38,7 +40,6 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: personalDetails.completed
   };
 
-  const appealType: boolean = !!_.get(appeal.application, 'appealType');
   let decisionTypePage: boolean;
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
     decisionTypePage = !!_.get(appeal.application, 'rpDcAppealHearingOption');

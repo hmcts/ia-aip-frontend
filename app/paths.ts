@@ -19,7 +19,8 @@ const paths = {
     decisionType: '/decision-type',
     contactDetails: '/contact-preferences',
     checkAndSend: '/check-answers',
-    taskList: '/about-appeal'
+    taskList: '/about-appeal',
+    appealOutOfCountry: '/in-the-uk'
   },
   appealSubmitted: {
     confirmation: '/appeals-details-sent'

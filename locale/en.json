@@ -100,7 +100,7 @@
       "typeOfAppeal": {
         "id": "typeOfAppealLink",
         "title": "Appeal type",
-        "path": "appealStarted.typeOfAppeal"
+        "path": "appealStarted.appealOutOfCountry"
       },
       "decisionType": {
         "id": "typeOfDecisionLink",
@@ -171,6 +171,10 @@
     "DOB": {
       "title": "What is your date of birth? ",
       "hint": "For example, 31 3 1980"
+    },
+    "OOC": {
+      "title": "Are you currently living in the United Kingdom?",
+      "hint": "Select yes if you are currently living in the United Kingdom"
     },
     "nationality": {
       "title": "What is your nationality?",
@@ -2591,6 +2595,7 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
+    "appealOutOfCountry": "Select yes if you are currently living in the United Kingdom",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",

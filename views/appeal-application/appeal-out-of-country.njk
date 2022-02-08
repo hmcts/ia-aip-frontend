@@ -1,0 +1,67 @@
+{% set pageTitleName = question %}
+{% extends "../layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% import "components/text-components.njk" as text %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% block content %}
+
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+
+  <form action="{{ paths.appealStarted.appealOutOfCountry }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="questionId" value="{{ questionId }}">
+
+
+<legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">{{ question }}</h1>
+     {% if description %}
+        <div id="answer-hint" class="govuk-hint">{{ description }}</div>
+    {% endif %}
+</legend>
+
+        {{ govukRadios({
+            classes: "govuk-radios--inline",
+            idPrefix: "appealOutOfCountry",
+            id: "appealOutOfCountry",
+            name: "appealOutOfCountry",
+
+            items: [
+                {
+                    value: "Yes",
+                    text: "Yes",
+                    checked: answer == "Yes"
+                },
+                {
+                    value: "No",
+                    text: "No",
+                    checked: answer == "No"
+                }
+            ],
+            errorMessage: {
+                text:  errors['answer'].text
+            } if errors['answer']
+        }) }}
+
+
+    {% if modal %}
+    <div class="overview-banner govuk-!-margin-top-0">
+        {{ modal | safe  }}
+    </div>
+    {% endif %}
+
+        <div class="save-buttons__container">
+            {{ govukButton({
+                name: 'continue',
+                text: i18n.common.buttons.continue
+            }) }}
+        </div>
+    </form>
+
+    {{ contactUs() }}
+{% endblock %}

@@ -380,6 +380,7 @@ export default class UpdateAppealService {
       appealOutOfCountry: caseData.appealOutOfCountry,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
+        appellantInUk: caseData.appellantInUk,
         appealType: caseData.appealType || null,
         contactDetails: {
           ...appellantContactDetails
@@ -480,6 +481,8 @@ export default class UpdateAppealService {
           caseData.applicationOutOfTimeDocument = null;
         }
       }
+
+      caseData.appellantInUk = String(appeal.application.appellantInUk);
 
       if (appeal.application.personalDetails && appeal.application.personalDetails.givenNames) {
         caseData.appellantGivenNames = appeal.application.personalDetails.givenNames;

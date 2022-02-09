@@ -194,6 +194,7 @@ interface LateAppeal {
 
 interface AppealApplication {
   homeOfficeRefNumber: string;
+  appellantInUk: string;
   dateLetterSent: AppealDate;
   homeOfficeLetter?: Evidence[];
   appealType: string;

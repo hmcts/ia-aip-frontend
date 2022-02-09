@@ -130,17 +130,31 @@ function postAppealOutOfCountry(updateAppealService: UpdateAppealService) {
       }
 
       const appealOutOfCountry = req.body['appealOutOfCountry'];
+      // tslint:disable:no-console
+      console.log('postAppealOutOfCountry ', req.body, '_______________________________________________________');
 
       const appeal: Appeal = {
         ...req.session.appeal,
-        appealOutOfCountry: appealOutOfCountry
+        application: {
+          ...req.session.appeal.application,
+          appellantInUk: false,
+          contactDetails: {
+            email: 'test@test.com'
+          }
+        }
       };
+
+        // tslint:disable:no-console
+      console.log('postAppealOutOfCountry appeal', appeal, '_______________________________________________________');
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
+
+        // tslint:disable:no-console
+      console.log('postAppealOutOfCountry appealUpdated', appealUpdated, '_______________________________________________________');
 
       let redirectPage = paths.appealStarted.typeOfAppeal;
 

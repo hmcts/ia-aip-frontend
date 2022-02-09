@@ -56,6 +56,8 @@ Feature: Business rules
     Then I should be taken to the task-list page
 
     When I click on the type-of-appeal link
+    Then I should be taken to the currently living in the United Kingdom page
+    When I select Yes and click continue
     Then I should be taken to the appeal page
 
     When I select appeal type Protection

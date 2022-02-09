@@ -119,9 +119,14 @@ function postNamePage(updateAppealService: UpdateAppealService) {
             ...req.session.appeal.application.personalDetails,
             familyName: req.body.familyName,
             givenNames: req.body.givenNames
-          }
-        }
+          },
+          appellantInUk: false
+        },
+        appealOutOfCountry: false
       };
+
+      // tslint:disable:no-console
+      console.log('postNamePage appeal', appeal, '_______________________________________________________');
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -254,7 +259,7 @@ function buildAddressList(addressLookupResult) {
     {
       value: '',
       text: selectAddresses
-    } ].concat(lookedUpAddresses);
+    }].concat(lookedUpAddresses);
   return addresses;
 }
 
@@ -378,7 +383,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupPersonalDetailsController(middleware: Middleware[] ,deps?: any): Router {
+function setupPersonalDetailsController(middleware: Middleware[], deps?: any): Router {
   const router = Router();
   router.get(paths.appealStarted.name, middleware, getNamePage);
   router.post(paths.appealStarted.name, middleware, postNamePage(deps.updateAppealService));

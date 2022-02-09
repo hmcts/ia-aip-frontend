@@ -145,7 +145,8 @@ interface Appeal {
   additionalEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
   isDecisionAllowed?: string;
-  appealOutOfCountry?: string;
+  appealOutOfCountry: boolean;
+  appellantInUk?: string;
 }
 
 interface Hearing {
@@ -199,6 +200,7 @@ interface AppealApplication {
   appealType: string;
   isAppealLate: boolean;
   lateAppeal?: LateAppeal;
+  appellantInUk: boolean;
   personalDetails: {
     givenNames: string;
     familyName: string;

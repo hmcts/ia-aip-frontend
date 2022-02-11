@@ -259,7 +259,7 @@ describe('Type of appeal Controller', () => {
         modal: undefined,
         questionId: undefined,
         previousPage: paths.appealStarted.taskList,
-        answer: 'No',
+        answer: undefined,
         errors: undefined,
         errorList: undefined
       });
@@ -278,16 +278,21 @@ describe('Type of appeal Controller', () => {
     beforeEach(() => {
       appeal = {
         ...req.session.appeal,
-        appealOutOfCountry: 'No'
+        application: {
+          ...req.session.appeal.application,
+          appellantInUk: 'No'
+        }
       };
 
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
-        appealOutOfCountry: 'No'
+        application: {
+          appellantInUk: 'No'
+        }
       } as Appeal);
     });
 
     it('should validate and redirect to the type of appeal page', async () => {
-      req.body['appealOutOfCountry'] = 'No';
+      req.body['answer'] = 'No';
       await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
@@ -295,11 +300,11 @@ describe('Type of appeal Controller', () => {
     });
 
     it('should fail validation and appeal-out-of-country.njk with a validation error', async () => {
-      req.body = { 'appealOutOfCountry': undefined };
+      req.body = { 'answer': undefined };
       const expectedError: ValidationError = {
-        key: 'appealOutOfCountry',
+        key: 'answer',
         text: 'Select yes if you are currently living in the United Kingdom',
-        href: '#appealOutOfCountry'
+        href: '#answer'
       };
 
       await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -312,7 +317,7 @@ describe('Type of appeal Controller', () => {
         questionId: undefined,
         previousPage: paths.appealStarted.taskList,
         answer: undefined,
-        errors: { appealOutOfCountry: expectedError },
+        errors: { answer: expectedError },
         errorList: [expectedError]
       });
     });

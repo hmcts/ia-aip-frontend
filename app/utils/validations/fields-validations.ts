@@ -310,10 +310,10 @@ function addressValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function appealOutOfCountryValidation(obj: object): null | ValidationErrors {
+function appellantInUkValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    appealOutOfCountry: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.appealOutOfCountry
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.appellantInUk
     })
   }).unknown();
 
@@ -444,7 +444,7 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
-  appealOutOfCountryValidation,
+  appellantInUkValidation,
   reasonForAppealDecisionValidation,
   yesOrNoRequiredValidation,
   DOBValidation,

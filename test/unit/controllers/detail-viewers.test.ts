@@ -330,6 +330,7 @@ describe('Detail viewer Controller', () => {
         appealReferenceNumber: 'PA/50008/2021',
         application: {
           homeOfficeRefNumber: 'A1234567',
+          appellantInUk: 'No',
           appealType: 'protection',
           contactDetails: {
             email: 'test@email.com',

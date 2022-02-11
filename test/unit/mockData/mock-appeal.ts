@@ -3,6 +3,7 @@ export function createDummyAppealApplication(): Appeal {
     appealStatus: 'appealStarted',
     application: {
       homeOfficeRefNumber: 'A1234567',
+      appellantInUk: 'No',
       dateLetterSent: {
         day: '1',
         month: '7',

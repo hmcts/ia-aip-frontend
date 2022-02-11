@@ -2595,7 +2595,7 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
-    "appealOutOfCountry": "Select yes if you are currently living in the United Kingdom",
+    "appellantInUk": "Select yes if you are currently living in the United Kingdom",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",

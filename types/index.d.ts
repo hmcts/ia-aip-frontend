@@ -145,8 +145,7 @@ interface Appeal {
   additionalEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
   isDecisionAllowed?: string;
-  appealOutOfCountry: boolean;
-  appellantInUk?: string;
+  appealOutOfCountry?: string;
 }
 
 interface Hearing {
@@ -195,6 +194,7 @@ interface LateAppeal {
 
 interface AppealApplication {
   homeOfficeRefNumber: string;
+  appellantInUk: string;
   dateLetterSent: AppealDate;
   homeOfficeLetter?: Evidence[];
   appealType: string;

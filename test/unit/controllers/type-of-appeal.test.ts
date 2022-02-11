@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  getAppealOutOfCountry,
+  getAppellantInUk,
   getTypeOfAppeal,
-  postAppealOutOfCountry,
+  postAppellantInUk,
   postTypeOfAppeal,
   setupTypeOfAppealController
 } from '../../../app/controllers/appeal-application/type-of-appeal';
@@ -245,14 +245,14 @@ describe('Type of appeal Controller', () => {
     });
   });
 
-  describe('getAppealOutOfCountry', () => {
+  describe('getAppellantInUk', () => {
     afterEach(() => {
       sandbox.restore();
       LaunchDarklyService.close();
     });
     it('should render appeal-out-of-country.njk with payments feature flag OFF', async () => {
       req.session.appeal.appealOutOfCountry = 'No';
-      await getAppealOutOfCountry(req as Request, res as Response, next);
+      await getAppellantInUk(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/appeal-out-of-country.njk', {
         question: 'Are you currently living in the United Kingdom?',
         description: undefined,
@@ -273,7 +273,7 @@ describe('Type of appeal Controller', () => {
     });
   });
 
-  describe('postAppealOutOfCountry', () => {
+  describe('postAppellantInUk', () => {
     let appeal: Appeal;
     beforeEach(() => {
       appeal = {
@@ -288,7 +288,7 @@ describe('Type of appeal Controller', () => {
 
     it('should validate and redirect to the type of appeal page', async () => {
       req.body['appealOutOfCountry'] = 'No';
-      await postAppealOutOfCountry(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.typeOfAppeal);
@@ -302,7 +302,7 @@ describe('Type of appeal Controller', () => {
         href: '#appealOutOfCountry'
       };
 
-      await postAppealOutOfCountry(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/appeal-out-of-country.njk', {
@@ -317,11 +317,11 @@ describe('Type of appeal Controller', () => {
       });
     });
 
-    it('postAppealOutOfCountry should catch exception and call next with the error', async () => {
+    it('postAppellantInUk should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'appealOutOfCountry': undefined };
       res.render = sandbox.stub().throws(error);
-      await postAppealOutOfCountry(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

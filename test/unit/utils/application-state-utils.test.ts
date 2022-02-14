@@ -761,7 +761,7 @@ describe('application-state-utils', () => {
         deadline: '28 July 2020',
         descriptionParagraphs: [
           'Your appeal is going to hearing.',
-          'Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access'
+          'Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access.'
         ],
         info: {
           title: 'Helpful Information',

@@ -21,7 +21,8 @@
               {% else %}
                 {{ i18n.pages.hearingRequirements.taskList[task.id].title }}
               {% endif %}
-              {% if task.saved or task.completed %}
+              {% if task.completed %}
+              <!-- if task.saved or task.completed -->
                 {{ govukTag({
                   text: "Saved"
                 }) }}

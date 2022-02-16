@@ -2,6 +2,8 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/tag/macro.njk" import govukTag2 %}
+{% from "govuk/components/tag/macro.njk" import govukTag3 %}
 
 {% block content %}
   <h1 class="govuk-heading-xl">{{ i18n.pages.hearingRequirements.taskList.header }}</h1>
@@ -27,11 +29,13 @@
                 }) }}
               {% elif task.active %}
                  {{ govukTag({
-                   text: "TODO"
+                   text: "TO DO",
+                   classes: "govuk-tag--blue"
                  }) }}
               {% else %}
                 {{ govukTag({
-                  text: "CANNOTSTARTYET"
+                  text: "CANNOT START YET",
+                  classes: "govuk-tag--grey"
                 }) }}
               {% endif %}
             </li>

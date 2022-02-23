@@ -65,16 +65,16 @@ describe('Type of appeal Controller', () => {
       });
     });
 
-    it('loads first question feature flag', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'online-card-payments-feature', false).resolves(false);
+    it('loads first question ooc feature flag', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(true);
 
       req.session.eligibility = {};
       await eligibilityQuestionGet(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('eligibility/eligibility-question.njk', {
-        question: i18n.eligibilityPaymentsFlag[0].question,
-        description: i18n.eligibilityPaymentsFlag[0].description,
-        modal: i18n.eligibilityPaymentsFlag[0].modal,
+        question: i18n.eligibilityOOCFlag[0].question,
+        description: i18n.eligibilityOOCFlag[0].description,
+        modal: i18n.eligibilityOOCFlag[0].modal,
         questionId: '0',
         previousPage: paths.common.start,
         answer: '',

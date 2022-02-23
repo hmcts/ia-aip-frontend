@@ -6,17 +6,18 @@ Feature: Eligibility
   Scenario: Citizen was once a british citizen and is eligible to use the service
     Given I am on home page
     When I click start now
+  # TODO: Remove "Are you currently living in the United Kingdom" step when "Feature flag for Out of Country feature" flag is switched on
     Then I should see the "Are you currently living in the United Kingdom" eligibility page
     When I select Yes and click continue
     Then I should see the "Are you currently in detention" eligibility page
     When I select No and click continue
     Then I should see the "Are you appealing an EU Settlement Scheme decision?" eligibility page
     When I select No and click continue
-    Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
+    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
     When I select Yes and click continue
     Then I should see the eligible page
     When I click "Back" button
-    Then I should see the "Are you appealing an Asylum and/or Humanitarian Protection decision" eligibility page
+    Then I should see the "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision" eligibility page
 
   Scenario: Citizen is ineligible to use the service
     Given I am on home page

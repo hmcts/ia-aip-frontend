@@ -81,6 +81,7 @@ async function eligibilityQuestionPost(req: Request, res: Response, next: NextFu
     next(error);
   }
 }
+
 function getEligible(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.session.eligibility) {
@@ -125,25 +126,25 @@ async function isEligibilityQuestion(questionId: string, answer: string, i18nEli
     i18nEligibility[questionId].eligibleAnswer.indexOf(answer) > -1;
 }
 
-async function onlineCardPaymentsFeature() {
-  return LaunchDarklyService.getInstance().getVariation(null, 'online-card-payments-feature', false);
+async function outOfCountryFeature() {
+  return LaunchDarklyService.getInstance().getVariation(null, 'aip-ooc-feature', false);
 }
 
 async function getI18nEligibility() {
-  const paymentsFlag = await onlineCardPaymentsFeature();
+  const oocFlag = await outOfCountryFeature();
 
-  if (paymentsFlag) {
-    return i18n.eligibilityPaymentsFlag;
+  if (oocFlag) {
+    return i18n.eligibilityOOCFlag;
   } else {
     return i18n.eligibility;
   }
 }
 
 async function getI18nIneligible() {
-  const paymentsFlag = await onlineCardPaymentsFeature();
+  const oocFlag = await outOfCountryFeature();
 
-  if (paymentsFlag) {
-    return i18n.ineligiblePaymentsFlag;
+  if (oocFlag) {
+    return i18n.ineligibleOOCFlag;
   } else {
     return i18n.ineligible;
   }

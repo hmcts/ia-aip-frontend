@@ -150,7 +150,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.decisionType);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
     it('should validate and redirect to the task-list page and payments feature flag ON', async () => {
@@ -159,7 +159,7 @@ describe('Type of appeal Controller', () => {
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', true);
-      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.decisionType);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
     it('should fail validation and render type-of-appeal.njk with a validation error', async () => {

@@ -94,6 +94,7 @@ module.exports = {
 
     Given('I have an appeal with home office details and name', async () => {
       await setupData({
+        appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
@@ -103,6 +104,7 @@ module.exports = {
 
     Given('I have an appeal with home office details, name and date of birth', async () => {
       await setupData({
+        appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
@@ -113,6 +115,7 @@ module.exports = {
 
     Given('I have an appeal with home office details, name, date of birth and nationality', async () => {
       await setupData({
+        appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
@@ -131,6 +134,7 @@ module.exports = {
 
     Given('I have an appeal with home office details, name, date of birth, nationality and address', async () => {
       await setupData({
+        appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',
@@ -152,8 +156,9 @@ module.exports = {
       });
     });
 
-    Given('I have an appeal with home office details, personal details and contact details', async () => {
+    Given('I have a fresh appeal', async () => {
       await setupData({
+        appealType: 'protection',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',

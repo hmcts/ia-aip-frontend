@@ -21,17 +21,20 @@
               {% else %}
                 {{ i18n.pages.hearingRequirements.taskList[task.id].title }}
               {% endif %}
-              {% if task.saved or task.completed %}
+              {% if task.completed %}
+              <!-- if task.saved or task.completed -->
                 {{ govukTag({
                   text: "Saved"
                 }) }}
               {% elif task.active %}
                  {{ govukTag({
-                   text: "TODO"
+                   text: "TO DO",
+                   classes: "govuk-tag--blue"
                  }) }}
               {% else %}
                 {{ govukTag({
-                  text: "CANNOTSTARTYET"
+                  text: "CANNOT START YET",
+                  classes: "govuk-tag--grey"
                 }) }}
               {% endif %}
             </li>

@@ -97,6 +97,11 @@
         "title": "Your contact details",
         "path": "appealStarted.contactDetails"
       },
+      "sponsorContactDetails": {
+        "id": "sponsorContactDetailsLink",
+        "title": "Your sponsor's contact details",
+        "path": "appealStarted.sponsorContactDetails"
+      },
       "typeOfAppeal": {
         "id": "typeOfAppealLink",
         "title": "Appeal type",
@@ -125,12 +130,46 @@
     },
     "contactDetails": {
       "header": "How do you want us to contact you?",
-      "hint": "Select at least one of option, or both",
+      "hint": "Select at least one of option, or both. For international numbers include the country code for the country your phone is registered in.",
+      "email": "Email",
+      "enterEmail": "Enter email address",
+      "mobile": "Enter a phone number",
+      "textMessage": "Mobile phone",
+      "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
+    },
+    "hasSponsor": {
+      "title": "Do you have a sponsor?",
+      "hint": "A sponsor is usually someone you want to join in the UK."
+    },
+    "sponsorName": {
+      "title": "What is your sponsor's name?",
+      "sponsorGivenNames": "Given names",
+      "sponsorFamilyName": "Family name"
+    },
+    "sponsorAddress": {
+      "heading": "What is your sponsor's address?",
+      "title": "What is your sponsor's address?",
+      "change": "Change",
+      "inputs": {
+        "building": "Building and street",
+        "buildingAndStreet": "Building and street <span class=\"govuk-visually-hidden\">line 1 of 2</span>",
+        "buildingAndStreet2": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2</span>",
+        "town": "Town or city",
+        "country": "Country",
+        "county": "County",
+        "postcode": "Postcode"
+      }
+    },
+    "sponsorContactDetails": {
+      "header": "What are your sponsor's contact details?",
+      "hint": "Please provide an email address or phone number for your sponsor. Select at least one of option, or both.",
       "email": "Email",
       "enterEmail": "Enter email address",
       "mobile": "Enter a UK phone number",
-      "textMessage": "Text message",
-      "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
+      "textMessage": "Text message"
+    },
+    "sponsorAuthorisation": {
+      "title": "Do you agree to let your sponsor have access to information about your appeal?"
     },
     "appealType": {
       "header": "What is your appeal type?",
@@ -191,8 +230,8 @@
       "statement": "Statement of truth",
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
-        "textMessage": "Text message",
-        "mobilePhone": "Enter a UK phone number",
+        "textMessage": "Mobile phone",
+        "mobilePhone": "Enter a phone number",
         "email": "Email",
         "emailAddress": "Enter email address",
         "homeOfficeRefNumber": "Home Office reference number",
@@ -203,6 +242,12 @@
         "nationality": "Nationality",
         "contactDetails": "Contact details",
         "addressDetails": "Address",
+        "appellantOutOfCountryAddress": "Address",
+        "hasSponsor": "Sponsor",
+        "sponsorNameForDisplay": "Sponsor's name",
+        "sponsorAddressDetails": "Sponsor's address",
+        "sponsorContactDetails": "Sponsor's contact details",
+        "sponsorAuthorisation": "Sponsor has access to information",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence",
@@ -2623,6 +2668,19 @@
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
+    "hasSponsor": "Select yes if you have a sponsor",
+    "sponsorGivenNames": "Enter your sponsor's given name or names",
+    "sponsorFamilyName": "Enter your sponsor's family name or names",
+    "sponsorAddress": {
+      "required": "Select your address",
+      "line1Required": "Enter your sponsor's building number and street name",
+      "townCityRequired": "Enter your sponsor's Town or City",
+      "postcodeRequired": "Enter your sponsor's Postcode"
+    },
+    "sponsorContactDetails": {
+      "selectOneOption": "Select at least one of the contact options"
+    },
+    "sponsorAuthorisation": "Select yes if you agree to let your sponsor have access to information about your appeal",
     "acceptanceStatement": "Select if you believe the information you have given is true.",
     "contactDetails": {
       "selectOneOption": "Select at least one of the contact options"

@@ -35,6 +35,24 @@ export function createDummyAppealApplication(): Appeal {
         phone: '07123456789',
         wantsSms: false
       },
+      hasSponsor: 'Yes',
+      sponsorGivenNames: 'Michael',
+      sponsorFamilyName: 'Jackson',
+      sponsorNameForDisplay: 'Michael Jackson',
+      sponsorAddress: {
+        line1: '39 The Street,',
+        line2: '',
+        city: 'Ashtead',
+        county: 'United Kingdom',
+        postcode: 'KT21 1AA'
+      },
+      sponsorContactDetails: {
+        email: 'frank.smith@example.net',
+        wantsEmail: true,
+        phone: '07123356777',
+        wantsSms: false
+      },
+      sponsorAuthorisation: 'Yes',
       addressLookup: {}
     },
     reasonsForAppeal: {

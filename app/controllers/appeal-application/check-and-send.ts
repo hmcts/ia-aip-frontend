@@ -94,6 +94,36 @@ async function createSummaryRowsFrom(req: Request) {
     rows.push(appealType);
   }
 
+  if (['Yes'].includes(application.hasSponsor)) {
+    const hasSponsorYes = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor,
+        [...Object.values(application.hasSponsor)],
+        paths.appealStarted.hasSponsor + editParameter);
+
+    const hasSponsorName = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay,
+        [...Object.values(application.sponsorNameForDisplay)],
+        paths.appealStarted.sponsorName + editParameter);
+
+    const hasSponsorAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails,
+        [...Object.values(application.sponsorAddress)],
+        paths.appealStarted.sponsorAddress + editParameter,
+        Delimiter.BREAK_LINE);
+
+    const hasSponsorContactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails,
+        [ application.sponsorContactDetails.email, application.sponsorContactDetails.phone ],
+        paths.appealStarted.sponsorContactDetails + editParameter,
+        Delimiter.BREAK_LINE);
+
+    const hasSponsorAuthorisation = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation,
+        [...Object.values(application.sponsorAuthorisation)],
+        paths.appealStarted.sponsorAuthorisation + editParameter);
+
+    rows.push(hasSponsorYes);
+    rows.push(hasSponsorName);
+    rows.push(hasSponsorAddress);
+    rows.push(hasSponsorContactDetails);
+    rows.push(hasSponsorAuthorisation);
+  }
+
   if (application.isAppealLate) {
     const lateAppealValue = [ formatTextForCYA(application.lateAppeal.reason) ];
     if (application.lateAppeal.evidence) {

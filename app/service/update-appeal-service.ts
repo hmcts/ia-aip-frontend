@@ -113,7 +113,16 @@ export default class UpdateAppealService {
       postcode: caseData.appellantAddress.PostCode
     } : null;
 
+    const sponsorAddress = caseData.sponsorAddress ? {
+      line1: caseData.sponsorAddress.AddressLine1,
+      line2: caseData.sponsorAddress.AddressLine2,
+      city: caseData.sponsorAddress.PostTown,
+      county: caseData.sponsorAddress.County,
+      postcode: caseData.sponsorAddress.PostCode
+    } : null;
+
     const subscriptions = caseData.subscriptions || [];
+    const sponsorSubscriptions = caseData.sponsorSubscriptions || [];
     let outOfTimeAppeal: LateAppeal = null;
     // let respondentDocuments: RespondentDocument[] = null;
     let directions: Direction[] = null;
@@ -136,6 +145,16 @@ export default class UpdateAppealService {
         };
       }
     }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
+
+    const sponsorContactDetails = sponsorSubscriptions.reduce((sponsorContactDetails, sponsorSubscription) => {
+      const value = sponsorSubscription.value;
+      return {
+        email: value.email || null,
+        wantsEmail: (YesOrNo.YES === value.wantsEmail),
+        phone: value.mobileNumber || null,
+        wantsSms: (YesOrNo.YES === value.wantsSms)
+      };
+    }, {}) || { sponsorEmail: null, sponsorWantsEmail: false, phone: null, wantsSms: false };
 
     if (yesNoToBool(caseData.submissionOutOfTime)) {
       if (caseData.applicationOutOfTimeExplanation) {
@@ -386,6 +405,15 @@ export default class UpdateAppealService {
         contactDetails: {
           ...appellantContactDetails
         },
+        hasSponsor: caseData.hasSponsor,
+        sponsorGivenNames: caseData.sponsorGivenNames,
+        sponsorFamilyName: caseData.sponsorFamilyName,
+        sponsorNameForDisplay: caseData.sponsorNameForDisplay,
+        sponsorAddress: sponsorAddress,
+        sponsorContactDetails: {
+          ...sponsorContactDetails
+        },
+        sponsorAuthorisation: caseData.sponsorAuthorisation,
         dateLetterSent,
         isAppealLate: caseData.submissionOutOfTime ? yesNoToBool(caseData.submissionOutOfTime) : undefined,
         lateAppeal: outOfTimeAppeal || undefined,
@@ -529,6 +557,51 @@ export default class UpdateAppealService {
           wantsSms: YesOrNo.NO,
           mobileNumber: null
         };
+
+        caseData.hasSponsor = appeal.application.hasSponsor;
+
+        if (appeal.application.sponsorGivenNames) {
+          caseData.sponsorGivenNames = appeal.application.sponsorGivenNames;
+        }
+
+        if (appeal.application.sponsorFamilyName) {
+          caseData.sponsorFamilyName = appeal.application.sponsorFamilyName;
+        }
+
+        caseData.sponsorNameForDisplay = appeal.application.sponsorNameForDisplay;
+
+        if (appeal.application.sponsorAddress) {
+          caseData.sponsorAddress = {
+            AddressLine1: appeal.application.sponsorAddress.line1,
+            AddressLine2: appeal.application.sponsorAddress.line2,
+            PostTown: appeal.application.sponsorAddress.city,
+            County: appeal.application.sponsorAddress.county,
+            PostCode: appeal.application.sponsorAddress.postcode,
+            Country: 'United Kingdom'
+          };
+        }
+
+        const sponsorSubscription: Subscription = {
+          subscriber: Subscriber.SUPPORTER,
+          wantsEmail: YesOrNo.NO,
+          email: null,
+          wantsSms: YesOrNo.NO,
+          mobileNumber: null
+        };
+
+        if (appeal.application.sponsorContactDetails.wantsEmail === true && appeal.application.sponsorContactDetails.email) {
+          sponsorSubscription.wantsEmail = YesOrNo.YES;
+          sponsorSubscription.email = appeal.application.sponsorContactDetails.email;
+          caseData.sponsorEmail = appeal.application.sponsorContactDetails.email;
+        }
+        if (appeal.application.sponsorContactDetails.wantsSms === true && appeal.application.sponsorContactDetails.phone) {
+          sponsorSubscription.wantsSms = YesOrNo.YES;
+          sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
+          caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
+        }
+        caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
+
+        caseData.sponsorAuthorisation = appeal.application.sponsorAuthorisation;
 
         if (appeal.application.contactDetails.wantsEmail === true && appeal.application.contactDetails.email) {
           subscription.wantsEmail = YesOrNo.YES;

@@ -19,6 +19,11 @@ const paths = {
     payNow: '/pay-now',
     decisionType: '/decision-type',
     contactDetails: '/contact-preferences',
+    hasSponsor: '/has-sponsor',
+    sponsorName: '/sponsor-name',
+    sponsorAddress: '/sponsor-address',
+    sponsorContactDetails: '/sponsor-contact-preferences',
+    sponsorAuthorisation: '/sponsor-authorisation',
     checkAndSend: '/check-answers',
     taskList: '/about-appeal',
     appealOutOfCountry: '/in-the-uk'

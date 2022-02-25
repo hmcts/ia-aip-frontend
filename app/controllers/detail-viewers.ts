@@ -38,11 +38,20 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [ application.personalDetails.givenNames, application.personalDetails.familyName ], null, Delimiter.SPACE),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [ formatDate(toIsoDate(application.personalDetails.dob)) ], null),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [ nation ], null),
-    addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [ ...Object.values(application.personalDetails.address) ], null, Delimiter.BREAK_LINE),
+    application.personalDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [ ...Object.values(application.personalDetails.address) ], null, Delimiter.BREAK_LINE),
+    application.appellantOutOfCountryAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantOutOfCountryAddress, [ application.appellantOutOfCountryAddress ], null),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [
       ...(application.contactDetails.wantsEmail ? [ application.contactDetails.email ] : []),
       ...(application.contactDetails.wantsSms ? [ application.contactDetails.phone ] : [])
     ], null, Delimiter.BREAK_LINE),
+    application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor, [ application.hasSponsor ], null),
+    application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay, [ application.sponsorNameForDisplay ], null),
+    application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails, [ ...Object.values(application.sponsorAddress) ], null, Delimiter.BREAK_LINE),
+    application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails, [
+      ...(application.sponsorContactDetails.wantsEmail ? [ application.sponsorContactDetails.email ] : []),
+      ...(application.sponsorContactDetails.wantsSms ? [ application.sponsorContactDetails.phone ] : [])
+    ], null, Delimiter.BREAK_LINE),
+    application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation, [ application.sponsorAuthorisation ], null),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [ i18n.appealTypes[application.appealType].name ], null),
     application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [ application.lateAppeal.reason ], null),
     application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>` ])

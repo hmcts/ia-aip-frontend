@@ -16,6 +16,19 @@ describe('getStatus', () => {
       appellantInUk: 'No',
       appealType: null,
       contactDetails: null,
+      hasSponsor: null,
+      sponsorGivenNames: 'Michael',
+      sponsorFamilyName: 'Jackson',
+      sponsorNameForDisplay: 'Michael Jackson',
+      sponsorAddress: {
+        line1: '39 The Street,',
+        line2: '',
+        city: 'Ashtead',
+        county: 'United Kingdom',
+        postcode: 'KT21 1AA'
+      },
+      sponsorContactDetails: null,
+      sponsorAuthorisation: null,
       dateLetterSent: {
         day: '1',
         month: '1',

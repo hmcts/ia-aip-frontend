@@ -177,6 +177,15 @@ function appellantNamesValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function sponsorNamesValidation(obj: object) {
+  const schema = Joi.object({
+    sponsorGivenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorGivenNames }),
+    sponsorFamilyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorFamilyName })
+
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function witnessNameValidation(obj: object) {
   const schema = Joi.object({
     witnessName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessName })
@@ -381,6 +390,69 @@ function askForMoreTimeValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function hasSponsorValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.hasSponsor
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
+function sponsorAddressValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorAddress.line1Required }),
+    ['address-town']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorAddress.townCityRequired }),
+    ['address-county']: Joi.string().optional().empty(''),
+    ['address-line-2']: Joi.string().optional().empty(''),
+    ['address-postcode']: Joi.string().optional().regex(postcodeRegex).messages({
+          'string.pattern.base': i18n.validationErrors.postcode.invalid,
+          'string.empty': i18n.validationErrors.sponsorAddress.postcodeRequired
+    })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function sponsorContactDetailsValidation(obj: object) {
+  const schema = Joi.object({
+    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorContactDetails.selectOneOption }),
+    'email-value': Joi.alternatives().conditional(
+        'selections', {
+          is: Joi.string().regex(/email/),
+          then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
+              .email({ minDomainSegments: 2, allowUnicode: false }).messages({
+                'string.empty': i18n.validationErrors.emailEmpty,
+                'string.email': i18n.validationErrors.emailFormat
+              }),
+          otherwise: Joi.any()
+        }),
+    'text-message-value': Joi.alternatives().conditional(
+        'selections', {
+          is: Joi.string().regex(/text-message/),
+          then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+              .messages({
+                'string.empty': i18n.validationErrors.phoneEmpty,
+                'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
+                'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+              }),
+          otherwise: Joi.any()
+        })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
+function sponsorAuthorisationValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.sponsorAuthorisation
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 function isDateInRange(dateFrom: string, dateTo: string, obj,dateMissingErrMsg: string): boolean | ValidationErrors {
 
   const errorMessage = `Enter a date between ${dateFrom} and ${dateTo}`;
@@ -452,5 +524,10 @@ export {
   selectedRequiredValidation,
   isDateInRange,
   decisionTypeValidation,
-  interpreterLanguagesValidation
+  interpreterLanguagesValidation,
+  hasSponsorValidation,
+  sponsorNamesValidation,
+  sponsorAddressValidation,
+  sponsorContactDetailsValidation,
+  sponsorAuthorisationValidation
 };

@@ -35,9 +35,23 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const wantsEmail: boolean = !!_.get(appeal.application, 'contactDetails.wantsEmail');
   const phone: boolean = !!_.get(appeal.application, 'contactDetails.phone');
   const wantsSms: boolean = !!_.get(appeal.application, 'contactDetails.wantsSms');
+  const hasSponsorNo: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'No' || false;
+  const hasSponsorYes: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'Yes' || false;
+  const sponsorEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.email');
+  const sponsorWantsEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.wantsEmail');
+  const sponsorPhone: boolean = !!_.get(appeal.application, 'sponsorContactDetails.phone');
+  const sponsorWantsSms: boolean = !!_.get(appeal.application, 'sponsorContactDetails.wantsSms');
+  const sponsorGivenNames: boolean = !!_.get(appeal.application, 'sponsorGivenNames');
+  const sponsorFamilyName: boolean = !!_.get(appeal.application, 'sponsorFamilyName');
+  const sponsorAddress: boolean = !!_.get(appeal.application, 'sponsorAddress');
+  const sponsorAuthorisation: boolean = !!_.get(appeal.application, 'sponsorAuthorisation');
+  const appellantContactDetails: boolean = email && wantsEmail || phone && wantsSms;
+  const sponsorContactDetails: boolean = sponsorEmail && sponsorWantsEmail || sponsorPhone && sponsorWantsSms;
+  const outUkContactDetailsComplete: boolean = (appellantContactDetails && hasSponsorNo) ||
+      (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
   const contactDetails: Task = {
     saved: email && wantsEmail || phone && wantsSms,
-    completed: email && wantsEmail || phone && wantsSms,
+    completed: _.get(appeal.application, 'appellantInUk') === 'Yes' ? appellantContactDetails : outUkContactDetailsComplete,
     active: personalDetails.completed
   };
 

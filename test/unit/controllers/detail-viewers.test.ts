@@ -339,6 +339,24 @@ describe('Detail viewer Controller', () => {
             phone: '7759991234',
             wantsSms: true
           },
+          hasSponsor: 'Yes',
+          sponsorGivenNames: 'Michael',
+          sponsorFamilyName: 'Jackson',
+          sponsorNameForDisplay: 'Michael Jackson',
+          sponsorAddress: {
+            line1: '39 The Street,',
+            line2: '',
+            city: 'Ashtead',
+            county: 'United Kingdom',
+            postcode: 'KT21 1AA'
+          },
+          sponsorContactDetails: {
+            email: 'sponsor@email.com',
+            wantsEmail: true,
+            phone: '7759991333',
+            wantsSms: true
+          },
+          sponsorAuthorisation: 'Yes',
           dateLetterSent: {
             year: '2020',
             month: '2',

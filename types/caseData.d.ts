@@ -119,13 +119,21 @@ interface CaseData {
   feeVersion?: string;
   feeAmountGbp?: string;
   pcqId?: string;
-
   isWitnessesAttending?: 'Yes' | 'No';
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
   witnessDetails?: Collection<WitnessDetails>[];
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;
+  hasSponsor: string;
+  sponsorGivenNames: string;
+  sponsorFamilyName: string;
+  sponsorNameForDisplay: string;
+  sponsorAddress: CCDAddress;
+  sponsorSubscriptions: SponsorSubscriptionCollection[];
+  sponsorEmail: string;
+  sponsorMobileNumber: string;
+  sponsorAuthorisation: string;
 }
 
 interface Application<T> {
@@ -177,6 +185,11 @@ interface CCDAddress {
 }
 
 interface SubscriptionCollection {
+  id?: number | string;
+  value: Subscription;
+}
+
+interface SponsorSubscriptionCollection {
   id?: number | string;
   value: Subscription;
 }

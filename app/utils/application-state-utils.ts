@@ -416,6 +416,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'prepareForHearing':
+    case 'finalBundling':
       const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
       if (!hearingBundleFeatureEnabled) {
         return {

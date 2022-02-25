@@ -484,7 +484,7 @@
           }
         },
         "respondentReview": {
-          "detailsSent": "The Tribunal has asked the Home Office to review your appeal. The Home Office will look at all the information you sent to the Tribunal and will either withdraw or maintain their decision to refuse your application to stay in or enter the UK. <ul class='govuk-list govuk-list--bullet'><li>If the Home Office withdraw their decision it means they will look again their decision to refuse your application</li><li>If the Home Office maintain their decision it means they still think they were correct to refuse your application</li></ul>",
+          "detailsSent": "The Tribunal has asked the Home Office to review your appeal. The Home Office will look at all the information you sent to the Tribunal and will either withdraw or maintain their decision to refuse your application to stay in or enter the UK. <ul class='govuk-list govuk-list--bullet'><li>If the Home Office withdraw their decision it means they will look again at their decision to refuse your application</li><li>If the Home Office maintain their decision it means they still think they were correct to refuse your application</li></ul>",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what to do next. This should be by<span  class='govuk-!-font-weight-bold'> {{ applicationNextStep.deadline }}</span> but it might be later than that.",
           "info": {
             "title": "Helpful Information",
@@ -561,7 +561,7 @@
         },
         "submitHearingRequirements": {
           "description": "Your appeal is going to hearing.",
-          "description2": "Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access",
+          "description2": "Tell us if there is anything you will need at the hearing, like an <p>interpreter or step-free access.",
           "descriptionAskForMoreTime": "You need to respond by by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span>.",
           "respondByTextAskForMoreTime": "It’s important to respond by the deadline but, if you can’t answer fully, you will be able to provide more information about your appeal later.",
           "info": {
@@ -996,6 +996,7 @@
           {
             "title": "What a Tribunal Caseworker can’t do",
             "content": [
+              "A Tribunal Caseworker cannot:",
               "A Tribunal Caseworker cannot:",
               "<ul class='govuk-list govuk-list--bullet'><li>offer legal advice</li><li>go to a hearing with you</li><li>decide the outcome of your appeal</li></ul>"
             ]

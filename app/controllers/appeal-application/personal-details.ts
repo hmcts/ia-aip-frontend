@@ -254,7 +254,7 @@ function buildAddressList(addressLookupResult) {
     {
       value: '',
       text: selectAddresses
-    } ].concat(lookedUpAddresses);
+    }].concat(lookedUpAddresses);
   return addresses;
 }
 
@@ -378,7 +378,7 @@ function postManualEnterAddressPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupPersonalDetailsController(middleware: Middleware[] ,deps?: any): Router {
+function setupPersonalDetailsController(middleware: Middleware[], deps?: any): Router {
   const router = Router();
   router.get(paths.appealStarted.name, middleware, getNamePage);
   router.post(paths.appealStarted.name, middleware, postNamePage(deps.updateAppealService));

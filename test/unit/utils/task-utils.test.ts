@@ -12,6 +12,7 @@ describe('getStatus', () => {
     },
     application: {
       homeOfficeRefNumber: 'reference no',
+      appellantInUk: 'No',
       appealType: null,
       contactDetails: null,
       dateLetterSent: {

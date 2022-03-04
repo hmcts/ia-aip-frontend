@@ -310,6 +310,16 @@ function addressValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function appellantInUkValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.appellantInUk
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 function typeOfAppealValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     appealType: Joi.string().required().messages({
@@ -434,6 +444,7 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
+  appellantInUkValidation,
   reasonForAppealDecisionValidation,
   yesOrNoRequiredValidation,
   DOBValidation,

@@ -2,9 +2,7 @@
 # ia-aip-frontend
 
 
-
 ## Purpose
-
 
 
 ### Prerequisites

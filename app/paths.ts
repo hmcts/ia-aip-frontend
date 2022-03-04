@@ -6,6 +6,7 @@ const paths = {
     enterPostcode: '/address',
     enterAddress: '/manual-address',
     postcodeLookup: '/select-address',
+    oocAddress: '/out-of-country-address',
     details: '/home-office-reference-number',
     letterSent: '/date-letter-sent',
     homeOfficeDecisionLetter: '/home-office-upload-decision-letter',
@@ -19,7 +20,8 @@ const paths = {
     decisionType: '/decision-type',
     contactDetails: '/contact-preferences',
     checkAndSend: '/check-answers',
-    taskList: '/about-appeal'
+    taskList: '/about-appeal',
+    appealOutOfCountry: '/in-the-uk'
   },
   appealSubmitted: {
     confirmation: '/appeals-details-sent'

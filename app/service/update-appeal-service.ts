@@ -379,7 +379,9 @@ export default class UpdateAppealService {
       isDecisionAllowed: caseData.isDecisionAllowed,
       appealOutOfCountry: caseData.appealOutOfCountry,
       application: {
+        appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
+        appellantInUk: caseData.appellantInUk,
         appealType: caseData.appealType || null,
         contactDetails: {
           ...appellantContactDetails
@@ -460,6 +462,7 @@ export default class UpdateAppealService {
       if (appeal.application.homeOfficeRefNumber) {
         caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
       }
+      caseData.appellantInUk = String(appeal.application.appellantInUk);
       if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
         caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
@@ -510,6 +513,11 @@ export default class UpdateAppealService {
         };
         caseData.appellantHasFixedAddress = 'Yes';
       }
+
+      if (appeal.application.appellantOutOfCountryAddress) {
+        caseData.appellantOutOfCountryAddress = appeal.application.appellantOutOfCountryAddress;
+      }
+
       if (appeal.application.appealType) {
         caseData.appealType = appeal.application.appealType;
       }

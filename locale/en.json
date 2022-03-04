@@ -100,7 +100,7 @@
       "typeOfAppeal": {
         "id": "typeOfAppealLink",
         "title": "Appeal type",
-        "path": "appealStarted.typeOfAppeal"
+        "path": "appealStarted.appealOutOfCountry"
       },
       "decisionType": {
         "id": "typeOfDecisionLink",
@@ -172,10 +172,18 @@
       "title": "What is your date of birth? ",
       "hint": "For example, 31 3 1980"
     },
+    "OOC": {
+      "title": "Are you currently living in the United Kingdom?",
+      "hint": "Select yes if you are currently living in the United Kingdom"
+    },
     "nationality": {
       "title": "What is your nationality?",
       "stateless": "I am stateless (A stateless person is not a citizen of any country).",
       "defaultNationality": "Please select a nationality"
+    },
+    "outOfCountryAddress": {
+      "title": "What is your address?",
+      "description": "Enter your address"
     },
     "checkYourAnswers": {
       "title": "Check your answer",
@@ -2608,6 +2616,7 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
+    "appellantInUk": "Select yes if you are currently living in the United Kingdom",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",
@@ -2646,6 +2655,9 @@
       "line1Required": "Enter a building number and street name",
       "townCityRequired": "Enter a Town or City",
       "postcodeRequired": "Enter your postcode"
+    },
+    "outOfCountryAddress":{
+      "addressRequired": "Enter your address"
     },
     "homeOfficeReference": {
       "required": "Enter the Home Office reference number",
@@ -2879,11 +2891,11 @@
       "modal": null
     },
     {
-      "question": "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?",
-      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
-      "modal": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Revocation of Protection Status?</h3> <p>This is when your protection status has been taken away because it is believed you no longer need it, didn‘t tell the truth in your claim or have committed a serious crime.</p> <h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Deprivation of British Citizenship?</h3> <p>This is when your British citizenship has been taken away because It is believed you didn't tell the truth when claiming citizenship or have been involved in behaviours including terrorism or serious organised crime.</p>",
+      "question": "Are you appealing an Asylum and/or Humanitarian Protection decision?",
+      "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country. If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are appealing a Revocation of Protection Status or Deprivation of Citizenship decision"
+      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision",
+      "modal": null
     }
   ],
   "ineligible": [

@@ -26,6 +26,8 @@ interface CcdCaseDetails {
 }
 
 interface CaseData {
+  appellantInUk: string;
+  appellantOutOfCountryAddress: string;
   journeyType: string;
   appealType: string;
   homeOfficeReferenceNumber: string;

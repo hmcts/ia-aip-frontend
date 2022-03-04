@@ -53,36 +53,45 @@ async function createSummaryRowsFrom(req: Request) {
       Delimiter.SPACE
     ),
     addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.nationality,
-      [ nationality ],
-      paths.appealStarted.nationality + editParameter
-    ),
-    addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.contactDetails,
-      [ application.contactDetails.email, application.contactDetails.phone ],
-      paths.appealStarted.contactDetails + editParameter,
-      Delimiter.BREAK_LINE
-    ),
-    addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.appealType,
-      [ appealTypeNames ],
-      paths.appealStarted.typeOfAppeal + editParameter
+        i18n.pages.checkYourAnswers.rowTitles.nationality,
+        [ nationality ],
+        paths.appealStarted.nationality + editParameter
     )
   ];
 
-  if (['Yes'].includes(application.appellantInUk)) {
-    const addressInUk = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails,
+  if (application.appellantInUk) {
+
+    if (['Yes'].includes(application.appellantInUk)) {
+      const addressInUk = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails,
           [...Object.values(application.personalDetails.address)],
           paths.appealStarted.enterAddress + editParameter,
           Delimiter.BREAK_LINE);
-    rows.push(addressInUk);
-  } else {
-    const addressOutUk = addSummaryRow(
-          i18n.pages.checkYourAnswers.rowTitles.addressDetails,
-          [ ...Object.values(application.appellantOutOfCountryAddress) ],
-          paths.appealStarted.oocAddress + editParameter
-      );
-    rows.push(addressOutUk);
+      rows.push(addressInUk);
+    }
+
+    if (['No'].includes(application.appellantInUk)) {
+      const oocAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails,
+          [...Object.values(application.appellantOutOfCountryAddress)],
+          paths.appealStarted.oocAddress + editParameter);
+      rows.push(oocAddress);
+    }
+
+    const contactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails,
+        [ application.contactDetails.email, application.contactDetails.phone ],
+        paths.appealStarted.contactDetails + editParameter,
+        Delimiter.BREAK_LINE);
+
+    const phone = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails,
+        [...Object.values(application.contactDetails.phone)],
+        paths.appealStarted.contactDetails + editParameter);
+
+    const appealType = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,
+          [appealTypeNames],
+          paths.appealStarted.typeOfAppeal + editParameter,
+          Delimiter.BREAK_LINE);
+
+    rows.push(contactDetails);
+    rows.push(appealType);
   }
 
   if (application.isAppealLate) {

@@ -2,9 +2,8 @@ export function createDummyAppealApplication(): Appeal {
   return {
     appealStatus: 'appealStarted',
     application: {
-      appellantOutOfCountryAddress: '',
+      appellantInUk: 'Yes',
       homeOfficeRefNumber: 'A1234567',
-      appellantInUk: 'No',
       dateLetterSent: {
         day: '1',
         month: '7',

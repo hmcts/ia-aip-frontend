@@ -85,7 +85,6 @@ interface AdditionalEvidence {
   };
 }
 
-
 interface DocumentUploadResponse {
   fileId: string;
   name: string;
@@ -193,7 +192,6 @@ interface LateAppeal {
 }
 
 interface AppealApplication {
-  appellantOutOfCountryAddress: string;
   homeOfficeRefNumber: string;
   appellantInUk: string;
   dateLetterSent: AppealDate;
@@ -201,7 +199,6 @@ interface AppealApplication {
   appealType: string;
   isAppealLate: boolean;
   lateAppeal?: LateAppeal;
-  appellantInUk: boolean;
   personalDetails: {
     givenNames: string;
     familyName: string;
@@ -216,6 +213,7 @@ interface AppealApplication {
       county?: string;
     }
   };
+  appellantOutOfCountryAddress?: string;
   contactDetails: {
     email?: string;
     wantsEmail?: boolean;

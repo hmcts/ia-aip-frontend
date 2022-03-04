@@ -49,9 +49,7 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   }, {
     actions: { items: [ { href: paths.appealStarted.enterAddress + '?edit', text: 'Change' } ] },
     key: { text: 'Address' },
-    value: {
-      html: '60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London'
-    }
+    value: { html: '60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London' }
   }, {
     actions: { items: [ { href: paths.appealStarted.contactDetails + '?edit', text: 'Change' } ] },
     key: { text: 'Contact details' },

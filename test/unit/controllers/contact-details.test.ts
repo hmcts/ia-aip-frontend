@@ -274,7 +274,7 @@ describe('Contact details Controller', () => {
           sandbox.restore();
         });
 
-        it('should validate email and redirect to task-list.njk', async () => {
+        it('should validate email and redirect to has-sponsor.njk', async () => {
           req.body = {
             selections: 'email',
             'email-value': 'valid@example.net'
@@ -283,7 +283,7 @@ describe('Contact details Controller', () => {
 
           expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.hasSponsor);
         });
 
         it('when in edit mode should validate email and redirect to check-and-send.njk and reset isEdit flag', async () => {
@@ -400,12 +400,12 @@ describe('Contact details Controller', () => {
           sandbox.restore();
         });
 
-        it('should validate phone number and redirect to task-list.njk', async () => {
+        it('should validate phone number and redirect to has-sponsor.njk', async () => {
           await postContactDetails(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
           expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
           expect(req.session.appeal.application.contactDetails).to.deep.equal(contactDetails);
-          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.taskList);
+          expect(res.redirect).to.have.been.calledWith(paths.appealStarted.hasSponsor);
         });
 
         it('should validate phone number and redirect to check-and-send.njk and reset isEdit', async () => {

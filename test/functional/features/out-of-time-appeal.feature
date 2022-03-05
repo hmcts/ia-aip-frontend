@@ -34,7 +34,7 @@ Scenario: Explain the reason why my appeal is late
   And I choose the first address from the dropdown list and click continue
   And I click "Save and continue" button
   And I click the contact details link
-  And I check the "Text message" option
+  And I check the "Mobile phone" option
   And I enter text message number "07899999999"
   And I click "Save and continue" button
 #  And I click on the decision-type link

@@ -32,6 +32,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   });
 
   const rows = [
+    application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [ application.appellantInUk ], null),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [ application.homeOfficeRefNumber ], null),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [ formatDate(toIsoDate(application.dateLetterSent)) ], null),
     addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE),

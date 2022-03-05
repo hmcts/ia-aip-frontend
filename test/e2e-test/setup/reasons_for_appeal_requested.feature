@@ -50,7 +50,7 @@ Feature: Business rules
     Then I should be taken to the task-list page
     Given I click the contact details link
     Then I should be taken to the contact-details page
-    And I check the "Text message" option
+    And I check the "Mobile phone" option
     Then I click "Save and continue" button
     And I enter text message number "07899999999"
     Then I click "Save and continue" button

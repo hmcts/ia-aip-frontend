@@ -549,6 +549,7 @@ export default class UpdateAppealService {
       if (appeal.application.appealType) {
         caseData.appealType = appeal.application.appealType;
       }
+
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
         const subscription: Subscription = {
           subscriber: Subscriber.APPELLANT,
@@ -558,7 +559,21 @@ export default class UpdateAppealService {
           mobileNumber: null
         };
 
-        caseData.hasSponsor = appeal.application.hasSponsor;
+        if (appeal.application.contactDetails.wantsEmail === true && appeal.application.contactDetails.email) {
+          subscription.wantsEmail = YesOrNo.YES;
+          subscription.email = appeal.application.contactDetails.email;
+          caseData.appellantEmailAddress = appeal.application.contactDetails.email;
+        }
+        if (appeal.application.contactDetails.wantsSms === true && appeal.application.contactDetails.phone) {
+          subscription.wantsSms = YesOrNo.YES;
+          subscription.mobileNumber = appeal.application.contactDetails.phone;
+          caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
+        }
+        caseData.subscriptions = [ { value: subscription } ];
+
+        if (appeal.application.hasSponsor) {
+          caseData.hasSponsor = appeal.application.hasSponsor;
+        }
 
         if (appeal.application.sponsorGivenNames) {
           caseData.sponsorGivenNames = appeal.application.sponsorGivenNames;
@@ -568,7 +583,9 @@ export default class UpdateAppealService {
           caseData.sponsorFamilyName = appeal.application.sponsorFamilyName;
         }
 
-        caseData.sponsorNameForDisplay = appeal.application.sponsorNameForDisplay;
+        if (appeal.application.sponsorNameForDisplay) {
+          caseData.sponsorNameForDisplay = appeal.application.sponsorNameForDisplay;
+        }
 
         if (appeal.application.sponsorAddress) {
           caseData.sponsorAddress = {
@@ -581,39 +598,31 @@ export default class UpdateAppealService {
           };
         }
 
-        const sponsorSubscription: Subscription = {
-          subscriber: Subscriber.SUPPORTER,
-          wantsEmail: YesOrNo.NO,
-          email: null,
-          wantsSms: YesOrNo.NO,
-          mobileNumber: null
-        };
+        if (appeal.application.sponsorContactDetails && (appeal.application.sponsorContactDetails.email || appeal.application.sponsorContactDetails.phone)) {
+          const sponsorSubscription: Subscription = {
+            subscriber: Subscriber.SUPPORTER,
+            wantsEmail: YesOrNo.NO,
+            email: null,
+            wantsSms: YesOrNo.NO,
+            mobileNumber: null
+          };
 
-        if (appeal.application.sponsorContactDetails.wantsEmail === true && appeal.application.sponsorContactDetails.email) {
-          sponsorSubscription.wantsEmail = YesOrNo.YES;
-          sponsorSubscription.email = appeal.application.sponsorContactDetails.email;
-          caseData.sponsorEmail = appeal.application.sponsorContactDetails.email;
+          if (appeal.application.sponsorContactDetails.wantsEmail === true && appeal.application.sponsorContactDetails.email) {
+            sponsorSubscription.wantsEmail = YesOrNo.YES;
+            sponsorSubscription.email = appeal.application.sponsorContactDetails.email;
+            caseData.sponsorEmail = appeal.application.sponsorContactDetails.email;
+          }
+          if (appeal.application.sponsorContactDetails.wantsSms === true && appeal.application.sponsorContactDetails.phone) {
+            sponsorSubscription.wantsSms = YesOrNo.YES;
+            sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
+            caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
+          }
+          caseData.sponsorSubscriptions = [ { value: sponsorSubscription } ];
         }
-        if (appeal.application.sponsorContactDetails.wantsSms === true && appeal.application.sponsorContactDetails.phone) {
-          sponsorSubscription.wantsSms = YesOrNo.YES;
-          sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
-          caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
-        }
-        caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
 
-        caseData.sponsorAuthorisation = appeal.application.sponsorAuthorisation;
-
-        if (appeal.application.contactDetails.wantsEmail === true && appeal.application.contactDetails.email) {
-          subscription.wantsEmail = YesOrNo.YES;
-          subscription.email = appeal.application.contactDetails.email;
-          caseData.appellantEmailAddress = appeal.application.contactDetails.email;
+        if (appeal.application.sponsorAuthorisation) {
+          caseData.sponsorAuthorisation = appeal.application.sponsorAuthorisation;
         }
-        if (appeal.application.contactDetails.wantsSms === true && appeal.application.contactDetails.phone) {
-          subscription.wantsSms = YesOrNo.YES;
-          subscription.mobileNumber = appeal.application.contactDetails.phone;
-          caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
-        }
-        caseData.subscriptions = [{ value: subscription }];
       }
     }
 

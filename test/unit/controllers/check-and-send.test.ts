@@ -23,6 +23,10 @@ const express = require('express');
 
 function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
   return [ {
+    actions: { items: [ { href: '/in-the-uk?edit', text: 'Change' } ] },
+    key: { text: 'In the UK' },
+    value: { html: 'No' }
+  }, {
     actions: { items: [ { href: '/home-office-reference-number?edit', text: 'Change' } ] },
     key: { text: 'Home Office reference number' },
     value: { html: 'A1234567' }
@@ -47,15 +51,35 @@ function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
     key: { text: 'Nationality' },
     value: { html: 'Austria' }
   }, {
-    actions: { items: [ { href: paths.appealStarted.enterAddress + '?edit', text: 'Change' } ] },
+    actions: { items: [ { href: paths.appealStarted.oocAddress + '?edit', text: 'Change' } ] },
     key: { text: 'Address' },
-    value: { html: '60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London' }
+    value: { html: '28 The Street, Ukraine, 2378' }
   }, {
     actions: { items: [ { href: paths.appealStarted.contactDetails + '?edit', text: 'Change' } ] },
     key: { text: 'Contact details' },
     value: {
       html: 'pedro.jimenez@example.net<br>07123456789'
     }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.hasSponsor + '?edit', text: 'Change' } ] },
+    key: { text: 'Sponsor' },
+    value: { html: 'Yes' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.sponsorName + '?edit', text: 'Change' } ] },
+    key: { text: 'Sponsor\'s name' },
+    value: { html: 'Frank Smith' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.sponsorAddress + '?edit', text: 'Change' } ] },
+    key: { text: 'Sponsor\'s address' },
+    value: { html: '39 The Street,<br>Ashtead<br>United Kingdom<br>KT21 1AA' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.sponsorContactDetails + '?edit', text: 'Change' } ] },
+    key: { text: 'Sponsor\'s contact details' },
+    value: { html: 'frank.smith@example.net<br>07177777777' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.sponsorAuthorisation + '?edit', text: 'Change' } ] },
+    key: { text: 'Sponsor has access to information' },
+    value: { html: 'Yes' }
   }, {
     actions: { items: [ { href: paths.appealStarted.typeOfAppeal + '?edit', text: 'Change' } ] },
     key: { text: 'Appeal type' },

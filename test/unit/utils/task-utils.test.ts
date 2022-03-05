@@ -114,11 +114,6 @@ describe('getStatus', () => {
       completed: false,
       saved: false
     },
-    typeOfAppealAndDecision: {
-      saved: false,
-      completed: false,
-      active: false
-    },
     checkAndSend: {
       saved: false,
       completed: false,
@@ -167,13 +162,13 @@ describe('getStatus', () => {
       phone: '07769118762',
       wantsSms: true
     };
+    appeal.application.hasSponsor = 'No';
     status.contactDetails = {
       ...status.contactDetails,
       completed: true,
       saved: true
     };
     status.decisionType.active = true;
-    status.typeOfAppealAndDecision.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
@@ -185,12 +180,13 @@ describe('getStatus', () => {
       email: 'email@test.com',
       wantsEmail: true
     };
+    appeal.application.hasSponsor = 'No';
     status.contactDetails = {
       ...status.contactDetails,
       completed: true,
       saved: true
     };
-    status.typeOfAppeal.active = true;
+    status.decisionType.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
@@ -201,13 +197,7 @@ describe('getStatus', () => {
       completed: true,
       saved: true
     };
-    status.typeOfAppealAndDecision = {
-      ...status.typeOfAppeal,
-      completed: false,
-      saved: true
-    };
     status.homeOfficeDetails.active = true;
-    status.decisionType.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 });

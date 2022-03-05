@@ -68,22 +68,16 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: contactDetails.completed
   };
 
-  const typeOfAppealAndDecision: Task = {
-    saved: appealType || decisionTypePage || payNow,
-    completed: _.get(appeal.application, 'appealType') === 'protection' ? appealType && decisionTypePage && payNow : appealType && decisionTypePage,
-    active: contactDetails.completed
-  };
-
   const checkAndSend: Task = {
     saved: false,
     completed: false,
-    active: typeOfAppealAndDecision.completed
+    active: decisionType.completed
   };
 
   const checkAndSendWithPayments: Task = {
     saved: false,
     completed: false,
-    active: typeOfAppealAndDecision.completed
+    active: decisionType.completed
   };
 
   return {
@@ -92,7 +86,6 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     contactDetails,
     typeOfAppeal,
     decisionType,
-    typeOfAppealAndDecision,
     checkAndSend,
     checkAndSendWithPayments
   };

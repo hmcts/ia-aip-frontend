@@ -214,7 +214,7 @@ function postNationalityPage(updateAppealService: UpdateAppealService) {
 async function isOutOfCountryAppeal(req: Request) {
   let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   let outOfCountryFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.OUT_OF_COUNTRY, false);
-  return (outOfCountryFeatureEnabled && appealOutOfCountry === 'Yes');
+  return (outOfCountryFeatureEnabled && appealOutOfCountry && appealOutOfCountry === 'Yes');
 }
 
 function getEnterAddressForOutOfCountryAppeal(req: Request, res: Response, next: NextFunction) {

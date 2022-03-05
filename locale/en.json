@@ -230,6 +230,7 @@
       "statement": "Statement of truth",
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
+        "appellantInUk": "In the UK",
         "textMessage": "Mobile phone",
         "mobilePhone": "Enter a phone number",
         "email": "Email",

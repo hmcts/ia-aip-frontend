@@ -2,7 +2,7 @@ export function createDummyAppealApplication(): Appeal {
   return {
     appealStatus: 'appealStarted',
     application: {
-      appellantInUk: 'Yes',
+      appellantInUk: 'No',
       homeOfficeRefNumber: 'A1234567',
       dateLetterSent: {
         day: '1',
@@ -29,6 +29,7 @@ export function createDummyAppealApplication(): Appeal {
           county: 'London'
         }
       },
+      appellantOutOfCountryAddress: '28 The Street, Ukraine, 2378',
       contactDetails: {
         email: 'pedro.jimenez@example.net',
         wantsEmail: true,
@@ -38,7 +39,7 @@ export function createDummyAppealApplication(): Appeal {
       hasSponsor: 'Yes',
       sponsorGivenNames: 'Michael',
       sponsorFamilyName: 'Jackson',
-      sponsorNameForDisplay: 'Michael Jackson',
+      sponsorNameForDisplay: 'Frank Smith',
       sponsorAddress: {
         line1: '39 The Street,',
         line2: '',
@@ -49,7 +50,7 @@ export function createDummyAppealApplication(): Appeal {
       sponsorContactDetails: {
         email: 'frank.smith@example.net',
         wantsEmail: true,
-        phone: '07123356777',
+        phone: '07177777777',
         wantsSms: false
       },
       sponsorAuthorisation: 'Yes',

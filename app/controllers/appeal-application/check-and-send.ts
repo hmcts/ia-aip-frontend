@@ -24,6 +24,11 @@ async function createSummaryRowsFrom(req: Request) {
   const editParameter = '?edit';
   const rows = [
     addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.appellantInUk,
+        [ application.appellantInUk ],
+        paths.appealStarted.appealOutOfCountry + editParameter
+    ),
+    addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,
       [ application.homeOfficeRefNumber ],
       paths.appealStarted.details + editParameter
@@ -81,47 +86,47 @@ async function createSummaryRowsFrom(req: Request) {
         paths.appealStarted.contactDetails + editParameter,
         Delimiter.BREAK_LINE);
 
-    const phone = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails,
-        [...Object.values(application.contactDetails.phone)],
-        paths.appealStarted.contactDetails + editParameter);
-
-    const appealType = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,
-          [appealTypeNames],
-          paths.appealStarted.typeOfAppeal + editParameter,
-          Delimiter.BREAK_LINE);
-
     rows.push(contactDetails);
-    rows.push(appealType);
   }
 
-  if (['Yes'].includes(application.hasSponsor)) {
-    const hasSponsorYes = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor,
+  if (application.hasSponsor) {
+
+    const hasSponsor = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor,
         [...Object.values(application.hasSponsor)],
         paths.appealStarted.hasSponsor + editParameter);
+    rows.push(hasSponsor);
 
-    const hasSponsorName = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay,
-        [...Object.values(application.sponsorNameForDisplay)],
-        paths.appealStarted.sponsorName + editParameter);
+    if (['Yes'].includes(application.hasSponsor)) {
 
-    const hasSponsorAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails,
-        [...Object.values(application.sponsorAddress)],
-        paths.appealStarted.sponsorAddress + editParameter,
+      const hasSponsorName = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay,
+          [...Object.values(application.sponsorNameForDisplay)],
+          paths.appealStarted.sponsorName + editParameter);
+
+      const hasSponsorAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails,
+          [...Object.values(application.sponsorAddress)],
+          paths.appealStarted.sponsorAddress + editParameter,
+          Delimiter.BREAK_LINE);
+
+      const hasSponsorContactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails,
+          [ application.sponsorContactDetails.email, application.sponsorContactDetails.phone ],
+          paths.appealStarted.sponsorContactDetails + editParameter,
+          Delimiter.BREAK_LINE);
+
+      const hasSponsorAuthorisation = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation,
+          [...Object.values(application.sponsorAuthorisation)],
+          paths.appealStarted.sponsorAuthorisation + editParameter);
+
+      rows.push(hasSponsorName);
+      rows.push(hasSponsorAddress);
+      rows.push(hasSponsorContactDetails);
+      rows.push(hasSponsorAuthorisation);
+    }
+
+    const appealType = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,
+        [appealTypeNames],
+        paths.appealStarted.typeOfAppeal + editParameter,
         Delimiter.BREAK_LINE);
-
-    const hasSponsorContactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails,
-        [ application.sponsorContactDetails.email, application.sponsorContactDetails.phone ],
-        paths.appealStarted.sponsorContactDetails + editParameter,
-        Delimiter.BREAK_LINE);
-
-    const hasSponsorAuthorisation = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation,
-        [...Object.values(application.sponsorAuthorisation)],
-        paths.appealStarted.sponsorAuthorisation + editParameter);
-
-    rows.push(hasSponsorYes);
-    rows.push(hasSponsorName);
-    rows.push(hasSponsorAddress);
-    rows.push(hasSponsorContactDetails);
-    rows.push(hasSponsorAuthorisation);
+    rows.push(appealType);
   }
 
   if (application.isAppealLate) {

@@ -1492,14 +1492,6 @@
             }
           ]
         },
-
-
-      {
-        "title": "Allow cookies that measure website usage?",
-        "content": [
-          "<div class='govuk-radios'>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-on' value='true' class='govuk-radios__input'>  <label for='radio-analytics-on' class='govuk-label govuk-radios__label' id='radio-analytics-on-label'>  <span>Use cookies that measure my website usage</span>   </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-analytics-off' class='govuk-label govuk-radios__label' id='radio-analytics-off-label'>  <span>Do not use cookies that measure my website usage</span>  </label> </input> </div> </div>"
-        ]
-      },
         {
           "title": "Cookies used to measure application performance",
           "content": [
@@ -1592,10 +1584,6 @@
           ]
         },
         {
-          "title": "Allow cookies that measure website application performance monitoring?",
-          "content" : [ "<div class='govuk-radios'> <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-on' value='true' class='govuk-radios__input'>  <label for='radio-apm-on' class='govuk-label govuk-radios__label' id='radio-apm-on-label'> <span>Use cookies that measure website application performance monitoring</span>  </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-apm-off' class='govuk-label govuk-radios__label' id='radio-apm-off-label'>  <span>Do not use cookies that measure website application performance monitoring</span> </label> </input> </div> </div>"]
-        },
-        {
           "title": "Essential cookies",
           "content": [
             "These essential cookies make the service more secure. They always need to be on.",
@@ -1672,10 +1660,6 @@
               }
             }
           ]
-        },
-        {
-          "title": "",
-          "content": ["<p id='save-cookie-preferences' class='govuk-body govuk-button-group'><a id='saveCookies' class='govuk-button' href='cookie-policy'>Save</a></p>"]
         }
       ]
     },

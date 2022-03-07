@@ -11,7 +11,6 @@ export default class CookiesBanner implements ICookies {
   public cookieBanner: HTMLElement = null;
   public acceptCookiesButton: HTMLElement = null;
   public rejectCookiesButton: HTMLElement = null;
-  public saveButton: HTMLInputElement = null;
   private currentDate = new Date();
   private expiryDate = new Date(this.currentDate.setMonth(this.currentDate.getMonth() + 1));
   private pastDate = new Date(this.currentDate.setMonth(this.currentDate.getMonth() - 2));
@@ -20,11 +19,9 @@ export default class CookiesBanner implements ICookies {
     this.cookieBanner = document.querySelector('#cookie-banner');
     if (isNull(this.cookieBanner)) { return; }
     // tslint:disable-next-line
-    if (!window.gtag) window.gtag = () => { };
+    if (!window.gtag) window.gtag = () => {};
     this.acceptCookiesButton = document.querySelector('#acceptCookies');
     this.rejectCookiesButton = document.querySelector('#rejectCookies');
-    this.saveButton = document.querySelector('#saveCookies');
-
     this.addEventListeners();
     this.initAnalyticsCookie();
   }
@@ -32,13 +29,8 @@ export default class CookiesBanner implements ICookies {
   addEventListeners() {
     this.acceptCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'yes');
-      this.addCookie('apm_consent', 'yes');
-      if (this.saveButton !== null) {
-        this.setAnalyticsAndApmSelectionsForAccepted();
-      }
       window.gtag('consent', 'update', {
-        'analytics_storage': 'granted',
-        'apm_storage': 'granted'
+        'analytics_storage': 'granted'
       });
       this.hideCookieBanner();
       this.enableDynaCookies();
@@ -46,78 +38,26 @@ export default class CookiesBanner implements ICookies {
 
     this.rejectCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'no');
-      this.addCookie('apm_consent', 'no');
-
-      if (this.saveButton !== null) {
-        this.setAnalyticsAndApmSelectionsForRejected();
-      }
       window.gtag('consent', 'update', {
-        'analytics_storage': 'denied',
-        'apm_storage': 'denied'
+        'analytics_storage': 'denied'
       });
-
       this.hideCookieBanner();
     });
-
-    if (this.saveButton !== null) {
-      this.saveButton.addEventListener('click', () => {
-        let analyticsRadioButtonOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
-        this.addCookie('analytics_consent', analyticsRadioButtonOff.checked ? 'no' : 'yes');
-
-        let apmRadioButtonOff: HTMLInputElement = document.querySelector('#radio-apm-off');
-        this.addCookie('apm_consent', apmRadioButtonOff.checked ? 'no' : 'yes');
-      });
-    }
-  }
-
-  setAnalyticsAndApmSelectionsForAccepted() {
-    let analyticsRadioButtonOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
-    analyticsRadioButtonOn.checked = true;
-
-    let apmRadioButtonOn: HTMLInputElement = document.querySelector('#radio-apm-on');
-    apmRadioButtonOn.checked = true;
-  }
-
-  setAnalyticsAndApmSelectionsForRejected() {
-    let analyticsRadioButtonOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
-    analyticsRadioButtonOff.checked = true;
-
-    let apmRadioButtonOff: HTMLInputElement = document.querySelector('#radio-apm-off');
-    apmRadioButtonOff.checked = true;
   }
 
   initAnalyticsCookie() {
     const analyticsCookieExist = document.cookie.indexOf('analytics_consent') > -1;
-
     if (analyticsCookieExist) {
       this.hideCookieBanner();
-      const analyticsConsent = this.getCookieValue('analytics_consent');
-      const apmConsent = this.getCookieValue('apm_consent');
-
+      const consent = this.getCookieValue('analytics_consent');
       window.gtag('consent', 'update', {
-        'analytics_storage': analyticsConsent === 'yes' ? 'granted' : 'denied',
-        'apm_storage': apmConsent === 'yes' ? 'granted' : 'denied'
+        'ad_storage': consent === 'yes' ? 'granted' : 'denied',
+        'analytics_storage': consent === 'yes' ? 'granted' : 'denied'
       });
-
-      this.setAnalyticsAndApmSelectionsFromCookies();
-      if (analyticsConsent === 'yes') this.enableDynaCookies();
+      if (consent === 'yes') this.enableDynaCookies();
     } else {
       this.showCookieBanner();
     }
-  }
-
-  setAnalyticsAndApmSelectionsFromCookies() {
-    const analyticsConsent = this.getCookieValue('analytics_consent');
-    const apmConsent = this.getCookieValue('apm_consent');
-
-    let analyticsRadioButtonOn: HTMLInputElement = document.querySelector(analyticsConsent === 'yes'
-      ? '#radio-analytics-on' : '#radio-analytics-off');
-    analyticsRadioButtonOn.checked = true;
-
-    let apmRadioButtonOn: HTMLInputElement = document.querySelector(apmConsent === 'yes'
-      ? '#radio-apm-on' : '#radio-apm-off');
-    apmRadioButtonOn.checked = true;
-
   }
 
   enableDynaCookies() {

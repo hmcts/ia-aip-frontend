@@ -2592,7 +2592,7 @@
     },
     "gwfReference" : {
        "title": "What is your Global Web Form (GWF) reference number?",
-       "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the Uk. For example, GWF12345678",
+       "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the UK. For example, GWF12345678",
        "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find your GWF reference number.",
        "homeOfficeReferenceNumberLabel": "Enter your GWF reference number"
     },

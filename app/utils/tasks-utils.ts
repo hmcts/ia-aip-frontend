@@ -15,6 +15,11 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const decisionLetterReceived: boolean = !!_.get(appeal.application, 'decisionLetterReceivedDate');
   const homeOfficeLetter: boolean = appeal.application.homeOfficeLetter && appeal.application.homeOfficeLetter.length > 0 || false;
   const homeOfficeDetails: Task = {
+    saved: homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
+    completed: homeOfficeLetter && homeOfficeRefNumber && dateLetterSent,
+    active: typeOfAppeal.completed
+  };
+  const homeOfficeDetailsOOC: Task = {
     saved: gwfRefNumber || homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
     completed: homeOfficeLetter && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
     active: typeOfAppeal.completed
@@ -29,7 +34,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const personalDetails: Task = {
     saved: givenNames || familyName || dob || nationality || postcode || line1,
     completed: givenNames && familyName && dob && nationality && line1,
-    active: homeOfficeDetails.completed
+    active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
   };
 
   const email: boolean = !!_.get(appeal.application, 'contactDetails.email');
@@ -75,6 +80,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
 
   return {
     homeOfficeDetails,
+    homeOfficeDetailsOOC,
     personalDetails,
     contactDetails,
     typeOfAppeal,

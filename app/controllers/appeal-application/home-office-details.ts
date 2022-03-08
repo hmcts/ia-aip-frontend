@@ -126,7 +126,7 @@ function getDateLetterReceived(req: Request, res: Response, next: NextFunction) 
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-    let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.details : paths.appealStarted.gwfReference;
+    let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
 
     const { decisionLetterReceivedDate } = req.session.appeal.application;
     res.render('appeal-application/home-office/letter-received.njk', {

@@ -437,7 +437,7 @@ describe('Detail viewer Controller', () => {
       ];
     });
 
-    it('should render detail-viewers/appeal-details-viewer.njk', async () => {
+    it.only('should render detail-viewers/appeal-details-viewer.njk', async () => {
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
@@ -553,25 +553,24 @@ describe('Detail viewer Controller', () => {
             nationality: 'AL'
           },
           appellantOutOfCountryAddress: '28 Some Street, Ukraine, 23543',
-          hasSponsor: 'No'
-          // sponsorFamilyName: 'Frank',
-          // sponsorGivenNames: 'Smith',
-          // sponsorNameForDisplay: 'Frank Smith',
-          // sponsorContactDetails: {
-          //   email: 'frank@email.com',
-          //   wantsEmail: true,
-          //   phone: '7759999999',
-          //   wantsSms: true
-          // },
-          // sponsorAddress: {
-          //   line1: '60 GREAT PORTLAND STREET',
-          //   line2: '',
-          //   city: 'LONDON',
-          //   county: 'United Kingdom',
-          //   postcode: 'W1W 7RT'
-          // },
-          // sponsorAuthorisation: 'Yes',
-          // decisionHearingFeeOption: 'Decision with a hearing'
+          hasSponsor: 'No',
+          sponsorFamilyName: 'Frank',
+          sponsorGivenNames: 'Smith',
+          sponsorNameForDisplay: 'Frank Smith',
+          sponsorContactDetails: {
+            email: 'frank@email.com',
+            wantsEmail: true,
+            phone: '7759999999',
+            wantsSms: true
+          },
+          sponsorAddress: {
+            line1: '60 GREAT PORTLAND STREET',
+            line2: '',
+            city: 'LONDON',
+            county: 'United Kingdom',
+            postcode: 'W1W 7RT'
+          },
+          sponsorAuthorisation: 'Yes'
         },
         legalRepresentativeDocuments: [
           {
@@ -626,7 +625,6 @@ describe('Detail viewer Controller', () => {
       };
 
       expectedSummaryRows = [
-
         { key: { text: 'In the UK' }, value: { html: 'No' } },
         { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
         { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
@@ -637,10 +635,10 @@ describe('Detail viewer Controller', () => {
         { key: { text: 'Address' }, value: { html: '28 Some Street, RSA' } },
         { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } },
         { key: { text: 'Sponsor' }, value: { html: 'No' } },
-        // { key: { text: 'Sponsor\'s name' }, value: { html: 'Frank Smith' } },
-        // { key: { text: 'Sponsor\'s address' }, value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' } },
-        // { key: { text: 'Sponsor\'s contact details' }, value: { html: 'frank@email.com<br>7759999999' } },
-        // { key: { text: 'Sponsor has access to information' }, value: { html: 'Yes' } },
+        { key: { text: 'Sponsor\'s name' }, value: { html: 'Frank Smith' } },
+        { key: { text: 'Sponsor\'s address' }, value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' } },
+        { key: { text: 'Sponsor\'s contact details' }, value: { html: 'frank@email.com<br>7759999999' } },
+        { key: { text: 'Sponsor has access to information' }, value: { html: 'Yes' } },
         { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
         { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
         { key: { text: 'Supporting evidence' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>" } },
@@ -648,7 +646,7 @@ describe('Detail viewer Controller', () => {
       ];
     });
 
-    // it('should render detail-viewers/appeal-details-viewer.njk', async () => {
+    // it.only('should render detail-viewers/appeal-details-viewer.njk', async () => {
     //   await getAppealDetailsViewer(req as Request, res as Response, next);
     //   expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
     //     title: i18n.pages.detailViewers.appealDetails.title,

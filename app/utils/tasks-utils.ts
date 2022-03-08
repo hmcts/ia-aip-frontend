@@ -16,12 +16,11 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const homeOfficeLetter: boolean = appeal.application.homeOfficeLetter && appeal.application.homeOfficeLetter.length > 0 || false;
   const dateLetterReceived: boolean = !!_.get(appeal.application, 'decisionLetterReceivedDate');
   const homeOfficeDetails: Task = {
-    saved: homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
-    completed: homeOfficeLetter && homeOfficeRefNumber && dateLetterSent,
+    saved: gwfRefNumber || homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
+    completed: homeOfficeLetter && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
     active: typeOfAppeal.completed
   };
   const homeOfficeDetailsOOC: Task = {
-
     saved: gwfRefNumber || homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
     completed: homeOfficeLetter && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
     active: typeOfAppeal.completed

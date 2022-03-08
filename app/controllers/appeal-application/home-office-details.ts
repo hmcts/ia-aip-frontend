@@ -53,6 +53,8 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
+
+      if (['Yes'].includes(appeal.application.appellantInUk)) return res.redirect(paths.appealStarted.letterSent);
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterReceived);
       return res.redirect(redirectPage);
     } catch (e) {

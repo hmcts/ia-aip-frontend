@@ -1,18 +1,26 @@
 import * as _ from 'lodash';
 
 function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
+  const appealOutOfCountry: boolean = !!_.get(appeal.application, 'appealOutOfCountry');
+  const appealType: boolean = !!_.get(appeal.application, 'appealType');
   const typeOfAppeal: Task = {
-    saved: !!_.get(appeal.application, 'appealType'),
-    completed: !!_.get(appeal.application, 'appealType'),
+    saved: appealOutOfCountry || appealType,
+    completed: appealOutOfCountry || appealType,
     active: true
   };
 
+  const gwfRefNumber: boolean = !!_.get(appeal.application, 'gwfRefNumber');
   const homeOfficeRefNumber: boolean = !!_.get(appeal.application, 'homeOfficeRefNumber');
   const dateLetterSent: boolean = !!_.get(appeal.application, 'dateLetterSent');
   const homeOfficeLetter: boolean = appeal.application.homeOfficeLetter && appeal.application.homeOfficeLetter.length > 0 || false;
   const homeOfficeDetails: Task = {
     saved: homeOfficeRefNumber || dateLetterSent || homeOfficeLetter,
     completed: homeOfficeRefNumber && dateLetterSent && homeOfficeLetter,
+    active: typeOfAppeal.completed
+  };
+  const homeOfficeDetailsOOC: Task = {
+    saved: gwfRefNumber || dateLetterSent || homeOfficeLetter,
+    completed: gwfRefNumber && dateLetterSent && homeOfficeLetter,
     active: typeOfAppeal.completed
   };
 
@@ -38,7 +46,6 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: personalDetails.completed
   };
 
-  const appealType: boolean = !!_.get(appeal.application, 'appealType');
   let decisionTypePage: boolean;
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
     decisionTypePage = !!_.get(appeal.application, 'rpDcAppealHearingOption');
@@ -72,6 +79,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
 
   return {
     homeOfficeDetails,
+    homeOfficeDetailsOOC,
     personalDetails,
     contactDetails,
     typeOfAppeal,

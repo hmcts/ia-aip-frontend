@@ -53,6 +53,10 @@ describe('update-appeal-service', () => {
 
     expectedCaseData = {
       'appealType': 'protection',
+      'appellantInUk': 'undefined',
+      'outsideUkWhenApplicationMade': 'No',
+      'gwfReferenceNumber': '',
+      'dateClientLeaveUk': '2022-02-19',
       'journeyType': 'aip',
       'homeOfficeReferenceNumber': 'A1234567',
       'homeOfficeDecisionDate': '2019-01-02',
@@ -667,6 +671,7 @@ describe('update-appeal-service', () => {
           {
             appellantEmailAddress: 'abc@example.net',
             appellantPhoneNumber: '07123456789',
+            appellantInUk: 'undefined',
             journeyType: 'aip',
             subscriptions: [
               {
@@ -691,6 +696,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
+            appellantInUk: 'undefined',
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -715,6 +721,7 @@ describe('update-appeal-service', () => {
         expect(caseData).eql(
           {
             journeyType: 'aip',
+            appellantInUk: 'undefined',
             appellantPhoneNumber: '07123456789',
             subscriptions: [
               {
@@ -775,6 +782,7 @@ describe('update-appeal-service', () => {
       expect(caseData).to.deep.eq(
         {
           'journeyType': 'aip',
+          'appellantInUk': 'undefined',
           'reviewTimeExtensionRequired': 'Yes',
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
@@ -803,6 +811,7 @@ describe('update-appeal-service', () => {
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
+        'appellantInUk': 'undefined',
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -830,6 +839,7 @@ describe('update-appeal-service', () => {
       const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
+        'appellantInUk': 'undefined',
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',
@@ -1074,6 +1084,7 @@ describe('update-appeal-service', () => {
       updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService);
       expectedCaseData = {
         journeyType: 'aip',
+        appellantInUk: 'undefined',
         homeOfficeReferenceNumber: 'newRef',
         homeOfficeDecisionDate: '2019-12-11',
         submissionOutOfTime: 'Yes',

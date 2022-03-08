@@ -27,7 +27,7 @@ async function getTypeOfAppeal(req: Request, res: Response, next: NextFunction) 
 
     return res.render('appeal-application/type-of-appeal.njk', {
       types: await getAppealTypes(req),
-      previousPage: paths.appealStarted.taskList
+      previousPage: paths.appealStarted.appealOutOfCountry
     });
   } catch (error) {
     next(error);
@@ -51,7 +51,7 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
           errors: validation,
           errorList: Object.values(validation),
           types: await getAppealTypes(req),
-          previousPage: paths.appealStarted.taskList
+          previousPage: paths.appealStarted.appealOutOfCountry
         });
       }
 
@@ -63,20 +63,21 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
           appealType: req.body['appealType']
         }
       };
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
-      const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      let defaultRedirect = paths.appealStarted.taskList;
-      let editingModeRedirect = paths.appealStarted.checkAndSend;
-      if (paymentsFlag) {
-        if (editingMode) editingModeRedirect = req.body['appealType'] === req.session.appeal.application.appealType ? paths.appealStarted.checkAndSend : paths.appealStarted.decisionType;
-        defaultRedirect = paths.appealStarted.taskList;
-      }
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], paymentsFlag);
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true);
       req.session.appeal = {
         ...req.session.appeal,
         ...req.body['appealType'] !== 'protection' && { paAppealTypeAipPaymentOption: '' },
         ...appealUpdated
       };
+
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const citizenInUk: boolean = (req.session.appeal.application.appellantInUk === 'Yes') || false;
+      const humanRightsOrEEA: boolean = (req.session.appeal.application.appealType === 'refusalOfEu' || req.session.appeal.application.appealType === 'refusalOfHumanRights');
+
+      let defaultRedirect = (!citizenInUk && humanRightsOrEEA) ? paths.appealStarted.oocHrEea : paths.appealStarted.taskList;
+      let editingModeRedirect = paths.appealStarted.checkAndSend;
+
       let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
 
       return res.redirect(redirectPage);

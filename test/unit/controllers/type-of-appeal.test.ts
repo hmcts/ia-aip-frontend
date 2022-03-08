@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { getAppellantInUk, postAppellantInUk } from '../../../app/controllers/appeal-application/out-of-country';
 import {
   getTypeOfAppeal,
   postTypeOfAppeal,
@@ -71,6 +72,8 @@ describe('Type of appeal Controller', () => {
       setupTypeOfAppealController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.typeOfAppeal);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.typeOfAppeal);
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.appealOutOfCountry);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.appealOutOfCountry);
     });
   });
 
@@ -84,7 +87,7 @@ describe('Type of appeal Controller', () => {
       await getTypeOfAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes.filter(type => type.value === 'protection' || type.value === 'revocationOfProtection'),
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.appealOutOfCountry
       });
     });
 
@@ -93,7 +96,7 @@ describe('Type of appeal Controller', () => {
       await getTypeOfAppeal(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.appealOutOfCountry
       });
     });
 
@@ -105,7 +108,7 @@ describe('Type of appeal Controller', () => {
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: appealTypes,
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.appealOutOfCountry
       });
     });
 
@@ -176,8 +179,8 @@ describe('Type of appeal Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/type-of-appeal.njk', {
         types: sinon.match.any,
         errors: { appealType: expectedError },
-        errorList: [ expectedError ],
-        previousPage: paths.appealStarted.taskList
+        errorList: [expectedError],
+        previousPage: paths.appealStarted.appealOutOfCountry
       });
     });
 
@@ -237,6 +240,92 @@ describe('Type of appeal Controller', () => {
       req.body = { 'button': 'save-for-later', 'appealType': 'human-rights' };
       res.redirect = sandbox.stub().throws(error);
       await postTypeOfAppeal(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('getAppellantInUk', () => {
+    afterEach(() => {
+      sandbox.restore();
+      LaunchDarklyService.close();
+    });
+    it('should render appeal-out-of-country.njk with payments feature flag OFF', async () => {
+      req.session.appeal.appealOutOfCountry = 'No';
+      await getAppellantInUk(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/appeal-out-of-country.njk', {
+        question: 'Are you currently living in the United Kingdom?',
+        description: undefined,
+        modal: undefined,
+        questionId: undefined,
+        previousPage: paths.appealStarted.taskList,
+        answer: undefined,
+        errors: undefined,
+        errorList: undefined
+      });
+    });
+
+    it('getTypeOfAppeal should catch exception and call next with the error', async () => {
+      const error = new Error('an error');
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
+      await getTypeOfAppeal(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postAppellantInUk', () => {
+    let appeal: Appeal;
+    beforeEach(() => {
+      appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          appellantInUk: 'No'
+        }
+      };
+
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          appellantInUk: 'No'
+        }
+      } as Appeal);
+    });
+
+    it('should validate and redirect to the type of appeal page', async () => {
+      req.body['answer'] = 'No';
+      await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken', false);
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.typeOfAppeal);
+    });
+
+    it('should fail validation and appeal-out-of-country.njk with a validation error', async () => {
+      req.body = { 'answer': undefined };
+      const expectedError: ValidationError = {
+        key: 'answer',
+        text: 'Select yes if you are currently living in the United Kingdom',
+        href: '#answer'
+      };
+
+      await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/appeal-out-of-country.njk', {
+        question: 'Are you currently living in the United Kingdom?',
+        description: undefined,
+        modal: undefined,
+        questionId: undefined,
+        previousPage: paths.appealStarted.taskList,
+        answer: undefined,
+        errors: { answer: expectedError },
+        errorList: [expectedError]
+      });
+    });
+
+    it('postAppellantInUk should catch exception and call next with the error', async () => {
+      const error = new Error('an error');
+      req.body = { 'appealOutOfCountry': undefined };
+      res.render = sandbox.stub().throws(error);
+      await postAppellantInUk(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

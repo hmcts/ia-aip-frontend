@@ -330,6 +330,14 @@ describe('Detail viewer Controller', () => {
         appealReferenceNumber: 'PA/50008/2021',
         application: {
           homeOfficeRefNumber: 'A1234567',
+          appellantInUk: 'No',
+          outsideUkWhenApplicationMade: 'No',
+          gwfReferenceNumber: '',
+          dateClientLeaveUk: {
+            year: '2022',
+            month: '2',
+            day: '19'
+          },
           appealType: 'protection',
           contactDetails: {
             email: 'test@email.com',
@@ -338,6 +346,11 @@ describe('Detail viewer Controller', () => {
             wantsSms: true
           },
           dateLetterSent: {
+            year: '2020',
+            month: '2',
+            day: '16'
+          },
+          decisionLetterReceivedDate: {
             year: '2020',
             month: '2',
             day: '16'

@@ -3,10 +3,23 @@ export function createDummyAppealApplication(): Appeal {
     appealStatus: 'appealStarted',
     application: {
       homeOfficeRefNumber: 'A1234567',
+      appellantInUk: 'No',
+      outsideUkWhenApplicationMade: 'No',
+      gwfReferenceNumber: '',
+      dateClientLeaveUk: {
+        year: '2022',
+        month: '2',
+        day: '19'
+      },
       dateLetterSent: {
         day: '1',
         month: '7',
         year: '2019'
+      },
+      decisionLetterReceivedDate: {
+        year: '2020',
+        month: '2',
+        day: '16'
       },
       appealType: 'protection',
       isAppealLate: false,

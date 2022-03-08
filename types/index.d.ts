@@ -194,7 +194,12 @@ interface LateAppeal {
 
 interface AppealApplication {
   homeOfficeRefNumber: string;
+  appellantInUk: string;
+  gwfReferenceNumber: string;
+  outsideUkWhenApplicationMade?: string;
+  dateClientLeaveUk: AppealDate;
   dateLetterSent: AppealDate;
+  decisionLetterReceivedDate: AppealDate;
   homeOfficeLetter?: Evidence[];
   appealType: string;
   isAppealLate: boolean;

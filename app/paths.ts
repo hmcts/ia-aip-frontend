@@ -8,6 +8,7 @@ const paths = {
     postcodeLookup: '/select-address',
     details: '/home-office-reference-number',
     letterSent: '/date-letter-sent',
+    letterReceived: '/date-letter-received',
     homeOfficeDecisionLetter: '/home-office-upload-decision-letter',
     homeOfficeDecisionLetterUpload: '/home-office-upload-decision-letter/upload',
     homeOfficeDecisionLetterDelete: '/home-office-upload-decision-letter/delete',
@@ -19,7 +20,11 @@ const paths = {
     decisionType: '/decision-type',
     contactDetails: '/contact-preferences',
     checkAndSend: '/check-answers',
-    taskList: '/about-appeal'
+    taskList: '/about-appeal',
+    appealOutOfCountry: '/in-the-uk',
+    gwfReference: '/gwf-reference',
+    oocHrInside: '/ooc-hr-inside',
+    oocHrEea: '/ooc-hr-eea'
   },
   appealSubmitted: {
     confirmation: '/appeals-details-sent'

@@ -100,10 +100,12 @@ export default class UpdateAppealService {
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
     const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
+    const decisionLetterReceivedDate = this.getDate(caseData.decisionLetterReceivedDate);
     const dateOfBirth = this.getDate(caseData.appellantDateOfBirth);
     const listHearingCentre = caseData.listCaseHearingCentre || '';
     const listHearingLength = caseData.listCaseHearingLength || '';
     const listHearingDate = caseData.listCaseHearingDate || '';
+    const dateClientLeaveUk = this.getDate(caseData.dateClientLeaveUk);
 
     const appellantAddress = caseData.appellantAddress ? {
       line1: caseData.appellantAddress.AddressLine1,
@@ -380,11 +382,16 @@ export default class UpdateAppealService {
       appealOutOfCountry: caseData.appealOutOfCountry,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
+        appellantInUk: caseData.appellantInUk,
+        gwfReferenceNumber: caseData.gwfReferenceNumber,
+        outsideUkWhenApplicationMade: caseData.outsideUkWhenApplicationMade,
+        dateClientLeaveUk,
         appealType: caseData.appealType || null,
         contactDetails: {
           ...appellantContactDetails
         },
         dateLetterSent,
+        decisionLetterReceivedDate,
         isAppealLate: caseData.submissionOutOfTime ? yesNoToBool(caseData.submissionOutOfTime) : undefined,
         lateAppeal: outOfTimeAppeal || undefined,
         personalDetails: {
@@ -460,6 +467,10 @@ export default class UpdateAppealService {
       if (appeal.application.homeOfficeRefNumber) {
         caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
       }
+      caseData.appellantInUk = String(appeal.application.appellantInUk);
+      caseData.outsideUkWhenApplicationMade = yesNoToBool(appeal.application.outsideUkWhenApplicationMade) ? YesOrNo.YES : YesOrNo.NO;
+      caseData.gwfReferenceNumber = appeal.application.gwfReferenceNumber;
+
       if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
         caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
@@ -489,6 +500,12 @@ export default class UpdateAppealService {
       }
       if (appeal.application.personalDetails.dob && appeal.application.personalDetails.dob.year) {
         caseData.appellantDateOfBirth = toIsoDate(appeal.application.personalDetails.dob);
+      }
+      if (appeal.application.dateClientLeaveUk && appeal.application.dateClientLeaveUk.year) {
+        caseData.dateClientLeaveUk = toIsoDate(appeal.application.dateClientLeaveUk);
+      }
+      if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
+        caseData.decisionLetterReceivedDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
       }
       if (appeal.application.personalDetails && appeal.application.personalDetails.nationality) {
         caseData.appellantNationalities = [

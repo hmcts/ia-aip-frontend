@@ -26,6 +26,10 @@ interface CcdCaseDetails {
 }
 
 interface CaseData {
+  appellantInUk: string;
+  gwfReferenceNumber: string;
+  dateClientLeaveUk: string;
+  outsideUkWhenApplicationMade: string;
   journeyType: string;
   appealType: string;
   homeOfficeReferenceNumber: string;
@@ -33,6 +37,7 @@ interface CaseData {
   removeAppealFromOnlineReason: string;
   removeAppealFromOnlineDate: string;
   homeOfficeDecisionDate: string;
+  decisionLetterReceivedDate: string;
   appellantGivenNames: string;
   appellantFamilyName: string;
   appellantDateOfBirth: string;

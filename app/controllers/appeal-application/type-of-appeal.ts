@@ -91,7 +91,7 @@ function getDefaultRedirect(citizenInUk: boolean, appealType: string): string {
     case (!citizenInUk && appealType === 'refusalOfEu'):
     case (!citizenInUk && appealType === 'refusalOfHumanRights'):
       return paths.appealStarted.oocHrEea;
-    case (appealType === 'protection'):
+    case (!citizenInUk && appealType === 'protection'):
       return paths.appealStarted.oocProtectionDepartureDate;
     default:
       return paths.appealStarted.taskList;

@@ -163,12 +163,16 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
         });
       }
 
+      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+      let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
       const { day, month, year } = req.body;
+      const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
+          isAppealLate: diffInDays <= noOfDays ? false : true,
           decisionLetterReceivedDate: {
             day,
             month,

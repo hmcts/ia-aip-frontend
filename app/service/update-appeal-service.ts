@@ -475,6 +475,10 @@ export default class UpdateAppealService {
         caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
       }
+      if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
+        caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
+        caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
+      }
 
       if (appeal.application.isAppealLate) {
         if (_.has(appeal.application.lateAppeal, 'reason')) {

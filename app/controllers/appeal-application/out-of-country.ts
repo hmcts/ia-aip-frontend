@@ -211,7 +211,7 @@ function postOocHrEea(updateAppealService: UpdateAppealService) {
       const validation = oocHrEeaValidation(req.body);
 
       if (validation) {
-        return res.render('appeal-application/out-of-country/hr-eea.njk', {
+        return res.render('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
           question: i18n.pages.EEA.title,
           description: undefined,
           modal: undefined,
@@ -249,6 +249,66 @@ function postOocHrEea(updateAppealService: UpdateAppealService) {
   };
 }
 
+function getOocProtectionDepartureDate(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+
+    const { dateClientLeaveUk } = req.session.appeal.application;
+    res.render('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+      dateClientLeaveUk,
+      previousPage: paths.appealStarted.typeOfAppeal
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postOocProtectionDepartureDate(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      const validation = dateLeftUkValidation(req.body);
+      if (validation) {
+        return res.render('appeal-application/out-of-country/hr-inside.njk', {
+          error: validation,
+          errorList: Object.values(validation),
+          dateClientLeaveUk: {
+            ...req.body
+          },
+          previousPage: paths.appealStarted.typeOfAppeal
+        });
+      }
+
+      const { day, month, year } = req.body;
+      const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          dateClientLeaveUk: {
+            day,
+            month,
+            year
+          }
+        }
+      };
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
+      return res.redirect(redirectPage);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
 function setupOutOfCountryController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.appealStarted.appealOutOfCountry, middleware, getAppellantInUk);
@@ -259,6 +319,8 @@ function setupOutOfCountryController(middleware: Middleware[], updateAppealServi
   router.post(paths.appealStarted.gwfReference, middleware, postGwfReference(updateAppealService));
   router.get(paths.appealStarted.oocHrEea, middleware, getOocHrEea);
   router.post(paths.appealStarted.oocHrEea, middleware, postOocHrEea(updateAppealService));
+  router.get(paths.appealStarted.oocProtectionDepartureDate, middleware, getOocProtectionDepartureDate);
+  router.post(paths.appealStarted.oocProtectionDepartureDate, middleware, postOocProtectionDepartureDate(updateAppealService));
   return router;
 }
 

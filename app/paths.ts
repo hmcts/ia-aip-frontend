@@ -24,7 +24,8 @@ const paths = {
     appealOutOfCountry: '/in-the-uk',
     gwfReference: '/gwf-reference',
     oocHrInside: '/ooc-hr-inside',
-    oocHrEea: '/ooc-hr-eea'
+    oocHrEea: '/ooc-hr-eea',
+    oocProtectionDepartureDate: '/ooc-protection-departure-date'
   },
   appealSubmitted: {
     confirmation: '/appeals-details-sent'

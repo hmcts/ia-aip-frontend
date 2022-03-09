@@ -73,9 +73,8 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
 
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const citizenInUk: boolean = (req.session.appeal.application.appellantInUk === 'Yes') || false;
-      const humanRightsOrEEA: boolean = (req.session.appeal.application.appealType === 'refusalOfEu' || req.session.appeal.application.appealType === 'refusalOfHumanRights');
 
-      let defaultRedirect = (!citizenInUk && humanRightsOrEEA) ? paths.appealStarted.oocHrEea : paths.appealStarted.taskList;
+      let defaultRedirect = getDefaultRedirect(citizenInUk, req.session.appeal.application.appealType);
       let editingModeRedirect = paths.appealStarted.checkAndSend;
 
       let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
@@ -85,6 +84,18 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
       next(error);
     }
   };
+}
+
+function getDefaultRedirect(citizenInUk: boolean, appealType: string): string {
+  switch (true) {
+    case (!citizenInUk && appealType === 'refusalOfEu'):
+    case (!citizenInUk && appealType === 'refusalOfHumanRights'):
+      return paths.appealStarted.oocHrEea;
+    case (appealType === 'protection'):
+      return paths.appealStarted.oocProtectionDepartureDate;
+    default:
+      return paths.appealStarted.taskList;
+  }
 }
 
 function setupTypeOfAppealController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {

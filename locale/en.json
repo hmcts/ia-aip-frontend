@@ -87,6 +87,11 @@
         "title": "Your Home Office details",
         "path": "appealStarted.details"
       },
+      "homeOfficeDetailsOOC": {
+        "id": "homeOfficeDetailsLinkOOC",
+        "title": "Your Home Office details",
+        "path": "appealStarted.gwfReference"
+      },
       "personalDetails": {
         "id": "personalDetailsLink",
         "title": "Your personal details",
@@ -215,6 +220,10 @@
       "title": "Are you currently living in the United Kingdom?",
       "hint": "Select yes if you are currently living in the United Kingdom"
     },
+    "EEA": {
+      "title": "Were you outside the UK when you made your application?",
+      "hint": "Select yes if you are were living outside the United Kingdom when you made your application"
+    },
     "nationality": {
       "title": "What is your nationality?",
       "stateless": "I am stateless (A stateless person is not a citizen of any country).",
@@ -325,6 +334,11 @@
         }
       ]
     },
+    "homeOfficeLetterReceived": {
+      "title": "What date did you receive your decision letter from the Home Office?",
+      "dateTitle": "Enter the date",
+      "dateHint": "For example, 31 3 2019"
+    },
     "homeOfficeLetterUpload": {
       "title": "Upload your Home Office decision letter",
       "content": [
@@ -342,6 +356,7 @@
       "title": "Your appeal is late",
       "appealLateLabel": "Why is your appeal late?",
       "description": "Appeals should be made within 14 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
+      "descriptionOOC": "Appeals should be made within 28 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
       "provideEvidenceTitle": "Supporting evidence for why your appeal is late",
       "provideEvidenceDescription": [
         "You can upload <b>one piece of evidence</b> to support your answer such as a letter, photo or document. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
@@ -2625,6 +2640,24 @@
         "feedbackSessions": "Feedback sessions",
         "feedbackText": "We also hope you can attend feedback sessions, along with any appellants you have supported that are happy to take part. This will help us understand more about your experience and identify ways to improve the service."
       }
+    },
+    "gwfReference" : {
+       "title": "What is your Global Web Form (GWF) reference number?",
+       "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the UK. For example, GWF12345678",
+       "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find your GWF reference number.",
+       "homeOfficeReferenceNumberLabel": "Enter your GWF reference number"
+    },
+    "hrInside": {
+      "title": "What date did you leave the UK after your application to stay in the country was refused?",
+      "dateTitle": "Enter the date",
+      "dateHint": "For example, 31 3 2019",
+      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
+    },
+    "oocProtectionDepartureDate": {
+      "title": "What date did you leave the UK after your Protection claim was refused?",
+      "dateTitle": "Enter the date",
+      "dateHint": "For example, 31 3 2019",
+      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     }
   },
   "error": {
@@ -2663,6 +2696,7 @@
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
     "appellantInUk": "Select yes if you are currently living in the United Kingdom",
+    "oocHrEea": "Select yes if you are were living outside the United Kingdom when you made your application",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",
@@ -2701,6 +2735,18 @@
       "inPast": "The date letter was sent must be in the past",
       "underAge": "You must be at least 18 years old to use this service"
     },
+    "dateLetterReceived": {
+      "missing": "Date letter sent must include a day, month and year",
+      "incorrectFormat": "Enter the date in the correct format",
+      "inPast": "The date letter was sent must be in the past",
+      "underAge": "You must be at least 18 years old to use this service"
+    },
+    "dateLeftUk": {
+      "missing": "Date must include a day, month and year",
+      "incorrectFormat": "Enter the date in the correct format",
+      "inPast": "The date must be in the past",
+      "underAge": "You must be at least 18 years old to use this service"
+    },
     "nationality": {
       "selectNationality": "Select your Nationality",
       "onlyOne": "Only select one option"
@@ -2721,6 +2767,10 @@
     "homeOfficeReference": {
       "required": "Enter the Home Office reference number",
       "invalid": "Enter the Home Office reference number in the correct format"
+    },
+    "gwfReference": {
+      "required": "Enter the GWF reference number",
+      "invalid": "Enter the GWF reference number in the correct format"
     },
     "homeOfficeDecision": {
       "required": "Enter the reasons you think the Home Office decision is wrong"

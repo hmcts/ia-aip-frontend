@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import { getAppellantInUk, postAppellantInUk } from '../../../app/controllers/appeal-application/out-of-country';
 import {
-  getAppellantInUk,
   getTypeOfAppeal,
-  postAppellantInUk,
   postTypeOfAppeal,
   setupTypeOfAppealController
 } from '../../../app/controllers/appeal-application/type-of-appeal';

@@ -14,6 +14,13 @@ describe('getStatus', () => {
       appellantOutOfCountryAddress: '',
       homeOfficeRefNumber: 'reference no',
       appellantInUk: 'No',
+      outsideUkWhenApplicationMade: 'No',
+      gwfReferenceNumber: '',
+      dateClientLeaveUk: {
+        year: '2022',
+        month: '2',
+        day: '19'
+      },
       appealType: null,
       contactDetails: null,
       hasSponsor: null,
@@ -33,6 +40,11 @@ describe('getStatus', () => {
         day: '1',
         month: '1',
         year: '1980'
+      },
+      decisionLetterReceivedDate: {
+        year: '2020',
+        month: '2',
+        day: '16'
       },
       isAppealLate: true,
       lateAppeal: null,

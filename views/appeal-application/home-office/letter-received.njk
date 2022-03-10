@@ -1,0 +1,78 @@
+{% set pageTitleName = i18n.pages.homeOfficeLetterReceived.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "components/date-component.njk" import dateInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action="{{ paths.appealStarted.letterReceived }}" method="post">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.homeOfficeLetterReceived.title,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+
+      <span>{{ i18n.pages.homeOfficeLetterReceived.dateTitle }}</span>
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {% set errorMessage =  error.day.text if error.day %}
+      {% set errorMessage =  error.month.text if error.month else errorMessage %}
+      {% set errorMessage =  error.year.text if error.year else errorMessage %}
+      {% set errorMessage =  error.date.text if error.date else errorMessage %}
+
+      {{ govukDateInput({
+        fieldset: {},
+        hint: {
+          text: i18n.pages.homeOfficeLetterReceived.dateHint
+        },
+        id: 'date',
+        name: 'date',
+        errorMessage: {
+          html: errorMessage
+        } if error,
+        items: [
+          {
+            id: 'day',
+            name: "day",
+            classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
+            value: decisionLetterReceivedDate.day,
+            attributes: {
+            max: 31
+          }
+          },
+          {
+            id: 'month',
+            name: "month",
+            classes: "govuk-input--width-2 govuk-input--error" if errorMessage else "govuk-input--width-2",
+            value: decisionLetterReceivedDate.month,
+            attributes: {
+            max: 12
+          }
+          },
+          {
+            id: 'year',
+            name: "year",
+            classes: "govuk-input--width-4 govuk-input--error" if errorMessage else "govuk-input--width-4",
+            value: decisionLetterReceivedDate.year,
+            attributes: {
+            max: 9999
+          }
+          }
+        ]
+      }) }}
+
+      {{ saveButtons() }}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

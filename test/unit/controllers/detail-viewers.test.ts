@@ -331,10 +331,12 @@ describe('Detail viewer Controller', () => {
         application: {
           appellantInUk: 'Yes',
           homeOfficeRefNumber: 'A1234567',
-          dateLetterSent: {
-            day: '16',
+          outsideUkWhenApplicationMade: 'No',
+          gwfReferenceNumber: '',
+          dateClientLeaveUk: {
+            year: '2022',
             month: '2',
-            year: '2020'
+            day: '19'
           },
           appealType: 'protection',
           contactDetails: {
@@ -342,6 +344,16 @@ describe('Detail viewer Controller', () => {
             wantsEmail: true,
             phone: '7759991234',
             wantsSms: true
+          },
+          dateLetterSent: {
+            year: '2020',
+            month: '2',
+            day: '16'
+          },
+          decisionLetterReceivedDate: {
+            year: '2020',
+            month: '2',
+            day: '16'
           },
           isAppealLate: true,
           lateAppeal: {
@@ -522,7 +534,19 @@ describe('Detail viewer Controller', () => {
         application: {
           appellantInUk: 'No',
           homeOfficeRefNumber: 'A1234567',
+          gwfReferenceNumber: 'GWF12345678',
+          outsideUkWhenApplicationMade: 'Yes',
           dateLetterSent: {
+            day: '16',
+            month: '2',
+            year: '2020'
+          },
+          dateClientLeaveUk: {
+            day: '16',
+            month: '2',
+            year: '2020'
+          },
+          decisionLetterReceivedDate: {
             day: '16',
             month: '2',
             year: '2020'
@@ -710,12 +734,12 @@ describe('Detail viewer Controller', () => {
     //   });
     // });
 
-  //   it('should catch exception and call next with the error', async () => {
-  //     const error = new Error('an error');
-  //     res.render = sandbox.stub().throws(error);
-  //     await getAppealDetailsViewer(req as Request, res as Response, next);
-  //     expect(next).to.have.been.calledOnce.calledWith(error);
-  //   });
+    //   it('should catch exception and call next with the error', async () => {
+    //     const error = new Error('an error');
+    //     res.render = sandbox.stub().throws(error);
+    //     await getAppealDetailsViewer(req as Request, res as Response, next);
+    //     expect(next).to.have.been.calledOnce.calledWith(error);
+    //   });
   });
 
   describe('getTimeExtensionViewer', () => {

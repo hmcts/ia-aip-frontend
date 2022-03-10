@@ -20,6 +20,9 @@ function getHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunc
 
     }
     const homeOfficeLetterEvidences = req.session.appeal.application.homeOfficeLetter || [];
+    const appellantInUk: boolean = (req.session.appeal.application.appellantInUk === 'Yes') || false;
+    let previousPage = (appellantInUk) ? paths.appealStarted.letterSent : paths.appealStarted.letterReceived;
+
     res.render('templates/multiple-evidence-upload-page.njk', {
       title: i18n.pages.homeOfficeLetterUpload.title,
       content: i18n.pages.homeOfficeLetterUpload.content,
@@ -27,7 +30,7 @@ function getHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunc
       evidenceUploadAction: paths.appealStarted.homeOfficeDecisionLetterUpload,
       evidences: homeOfficeLetterEvidences,
       evidenceCTA: paths.appealStarted.homeOfficeDecisionLetterDelete,
-      previousPage: paths.appealStarted.letterSent,
+      previousPage: previousPage,
       saveForLaterCTA: paths.common.overview,
       ...validationErrors && { error: validationErrors },
       ...validationErrors && { errorList: Object.values(validationErrors) }

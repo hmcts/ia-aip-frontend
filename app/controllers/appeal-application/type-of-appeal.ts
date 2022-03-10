@@ -64,20 +64,20 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
           appealType: req.body['appealType']
         }
       };
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
-      const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      let defaultRedirect = paths.appealStarted.taskList;
-      let editingModeRedirect = paths.appealStarted.checkAndSend;
-      if (paymentsFlag) {
-        if (editingMode) editingModeRedirect = req.body['appealType'] === req.session.appeal.application.appealType ? paths.appealStarted.checkAndSend : paths.appealStarted.decisionType;
-        defaultRedirect = paths.appealStarted.taskList;
-      }
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], paymentsFlag);
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], true);
       req.session.appeal = {
         ...req.session.appeal,
         ...req.body['appealType'] !== 'protection' && { paAppealTypeAipPaymentOption: '' },
         ...appealUpdated
       };
+
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const citizenInUk: boolean = (req.session.appeal.application.appellantInUk === 'Yes') || false;
+
+      let defaultRedirect = getDefaultRedirect(citizenInUk, req.session.appeal.application.appealType);
+      let editingModeRedirect = paths.appealStarted.checkAndSend;
+
       let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
 
       return res.redirect(redirectPage);
@@ -147,6 +147,18 @@ function postAppellantInUk(updateAppealService: UpdateAppealService) {
       next(error);
     }
   };
+}
+
+function getDefaultRedirect(citizenInUk: boolean, appealType: string): string {
+  switch (true) {
+    case (!citizenInUk && appealType === 'refusalOfEu'):
+    case (!citizenInUk && appealType === 'refusalOfHumanRights'):
+      return paths.appealStarted.oocHrEea;
+    case (!citizenInUk && appealType === 'protection'):
+      return paths.appealStarted.oocProtectionDepartureDate;
+    default:
+      return paths.appealStarted.taskList;
+  }
 }
 
 function setupTypeOfAppealController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {

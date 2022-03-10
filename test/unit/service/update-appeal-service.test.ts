@@ -54,6 +54,9 @@ describe('update-appeal-service', () => {
     expectedCaseData = {
       'appealType': 'protection',
       'appellantInUk': 'undefined',
+      'outsideUkWhenApplicationMade': 'No',
+      'gwfReferenceNumber': '',
+      'dateClientLeaveUk': '2022-02-19',
       'journeyType': 'aip',
       'homeOfficeReferenceNumber': 'A1234567',
       'homeOfficeDecisionDate': '2019-01-02',

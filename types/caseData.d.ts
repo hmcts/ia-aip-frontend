@@ -125,15 +125,15 @@ interface CaseData {
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;
-  hasSponsor: string;
-  sponsorGivenNames: string;
-  sponsorFamilyName: string;
-  sponsorNameForDisplay: string;
-  sponsorAddress: CCDAddress;
-  sponsorSubscriptions: SponsorSubscriptionCollection[];
-  sponsorEmail: string;
-  sponsorMobileNumber: string;
-  sponsorAuthorisation: string;
+  hasSponsor?: string;
+  sponsorGivenNames?: string;
+  sponsorFamilyName?: string;
+  sponsorNameForDisplay?: string;
+  sponsorAddress?: CCDAddress;
+  sponsorSubscriptions?: SponsorSubscriptionCollection[];
+  sponsorEmail?: string;
+  sponsorMobileNumber?: string;
+  sponsorAuthorisation?: string;
 }
 
 interface Application<T> {

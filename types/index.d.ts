@@ -336,6 +336,7 @@ interface RespondentDocument {
 
 interface AppealType {
   value: string;
+  name: string;
   title: string;
   examples: string;
   checked?: boolean;

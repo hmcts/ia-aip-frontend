@@ -34,8 +34,8 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const postcode: boolean = !!_.get(appeal.application, 'personalDetails.address.postcode');
   const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
   const personalDetails: Task = {
-    saved: givenNames || familyName || dob || nationality || postcode || line1,
-    completed: givenNames && familyName && dob && nationality && line1,
+    saved: givenNames || familyName || dob || nationality || postcode || line1 || appellantOutOfCountryAddress,
+    completed: givenNames && familyName && dob && nationality && (line1 || appellantOutOfCountryAddress),
     active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
   };
 

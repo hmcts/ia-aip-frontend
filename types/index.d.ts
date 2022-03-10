@@ -85,7 +85,6 @@ interface AdditionalEvidence {
   };
 }
 
-
 interface DocumentUploadResponse {
   fileId: string;
   name: string;
@@ -194,6 +193,7 @@ interface LateAppeal {
 
 interface AppealApplication {
   homeOfficeRefNumber: string;
+  appellantInUk: string;
   dateLetterSent: AppealDate;
   homeOfficeLetter?: Evidence[];
   appealType: string;
@@ -213,12 +213,31 @@ interface AppealApplication {
       county?: string;
     }
   };
+  appellantOutOfCountryAddress?: string;
   contactDetails: {
     email?: string;
     wantsEmail?: boolean;
     phone?: string;
     wantsSms?: boolean;
   };
+  hasSponsor?: string;
+  sponsorGivenNames?: string;
+  sponsorFamilyName?: string;
+  sponsorNameForDisplay?: string;
+  sponsorAddress?: {
+    line1?: string;
+    line2?: string;
+    city?: string;
+    postcode?: string;
+    county?: string;
+  };
+  sponsorContactDetails?: {
+    email?: string;
+    wantsEmail?: boolean;
+    phone?: string;
+    wantsSms?: boolean;
+  };
+  sponsorAuthorisation?: string;
   tasks?: {
     [key: string]: Task;
   };

@@ -97,10 +97,15 @@
         "title": "Your contact details",
         "path": "appealStarted.contactDetails"
       },
+      "sponsorContactDetails": {
+        "id": "sponsorContactDetailsLink",
+        "title": "Your sponsor's contact details",
+        "path": "appealStarted.sponsorContactDetails"
+      },
       "typeOfAppeal": {
         "id": "typeOfAppealLink",
         "title": "Appeal type",
-        "path": "appealStarted.typeOfAppeal"
+        "path": "appealStarted.appealOutOfCountry"
       },
       "decisionType": {
         "id": "typeOfDecisionLink",
@@ -125,12 +130,46 @@
     },
     "contactDetails": {
       "header": "How do you want us to contact you?",
-      "hint": "Select at least one of option, or both",
+      "hint": "Select at least one of option, or both. For international numbers include the country code for the country your phone is registered in.",
+      "email": "Email",
+      "enterEmail": "Enter email address",
+      "mobile": "Enter a phone number",
+      "textMessage": "Mobile phone",
+      "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
+    },
+    "hasSponsor": {
+      "title": "Do you have a sponsor?",
+      "hint": "A sponsor is usually someone you want to join in the UK."
+    },
+    "sponsorName": {
+      "title": "What is your sponsor's name?",
+      "sponsorGivenNames": "Given names",
+      "sponsorFamilyName": "Family name"
+    },
+    "sponsorAddress": {
+      "heading": "What is your sponsor's address?",
+      "title": "What is your sponsor's address?",
+      "change": "Change",
+      "inputs": {
+        "building": "Building and street",
+        "buildingAndStreet": "Building and street <span class=\"govuk-visually-hidden\">line 1 of 2</span>",
+        "buildingAndStreet2": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2</span>",
+        "town": "Town or city",
+        "country": "Country",
+        "county": "County",
+        "postcode": "Postcode"
+      }
+    },
+    "sponsorContactDetails": {
+      "header": "What are your sponsor's contact details?",
+      "hint": "Please provide an email address or phone number for your sponsor. Select at least one of option, or both.",
       "email": "Email",
       "enterEmail": "Enter email address",
       "mobile": "Enter a UK phone number",
-      "textMessage": "Text message",
-      "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
+      "textMessage": "Text message"
+    },
+    "sponsorAuthorisation": {
+      "title": "Do you agree to let your sponsor have access to information about your appeal?"
     },
     "appealType": {
       "header": "What is your appeal type?",
@@ -172,10 +211,18 @@
       "title": "What is your date of birth? ",
       "hint": "For example, 31 3 1980"
     },
+    "OOC": {
+      "title": "Are you currently living in the United Kingdom?",
+      "hint": "Select yes if you are currently living in the United Kingdom"
+    },
     "nationality": {
       "title": "What is your nationality?",
       "stateless": "I am stateless (A stateless person is not a citizen of any country).",
       "defaultNationality": "Please select a nationality"
+    },
+    "outOfCountryAddress": {
+      "title": "What is your address?",
+      "description": "Enter your address"
     },
     "checkYourAnswers": {
       "title": "Check your answer",
@@ -183,8 +230,9 @@
       "statement": "Statement of truth",
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
-        "textMessage": "Text message",
-        "mobilePhone": "Enter a UK phone number",
+        "appellantInUk": "In the UK",
+        "textMessage": "Mobile phone",
+        "mobilePhone": "Enter a phone number",
         "email": "Email",
         "emailAddress": "Enter email address",
         "homeOfficeRefNumber": "Home Office reference number",
@@ -195,6 +243,12 @@
         "nationality": "Nationality",
         "contactDetails": "Contact details",
         "addressDetails": "Address",
+        "appellantOutOfCountryAddress": "Address",
+        "hasSponsor": "Sponsor",
+        "sponsorNameForDisplay": "Sponsor's name",
+        "sponsorAddressDetails": "Sponsor's address",
+        "sponsorContactDetails": "Sponsor's contact details",
+        "sponsorAuthorisation": "Sponsor has access to information",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence",
@@ -2608,12 +2662,26 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
+    "appellantInUk": "Select yes if you are currently living in the United Kingdom",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
+    "hasSponsor": "Select yes if you have a sponsor",
+    "sponsorGivenNames": "Enter your sponsor's given name or names",
+    "sponsorFamilyName": "Enter your sponsor's family name or names",
+    "sponsorAddress": {
+      "required": "Select your address",
+      "line1Required": "Enter your sponsor's building number and street name",
+      "townCityRequired": "Enter your sponsor's Town or City",
+      "postcodeRequired": "Enter your sponsor's Postcode"
+    },
+    "sponsorContactDetails": {
+      "selectOneOption": "Select at least one of the contact options"
+    },
+    "sponsorAuthorisation": "Select yes if you agree to let your sponsor have access to information about your appeal",
     "acceptanceStatement": "Select if you believe the information you have given is true.",
     "contactDetails": {
       "selectOneOption": "Select at least one of the contact options"
@@ -2646,6 +2714,9 @@
       "line1Required": "Enter a building number and street name",
       "townCityRequired": "Enter a Town or City",
       "postcodeRequired": "Enter your postcode"
+    },
+    "outOfCountryAddress":{
+      "addressRequired": "Enter your address"
     },
     "homeOfficeReference": {
       "required": "Enter the Home Office reference number",
@@ -2879,11 +2950,11 @@
       "modal": null
     },
     {
-      "question": "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?",
-      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
-      "modal": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Revocation of Protection Status?</h3> <p>This is when your protection status has been taken away because it is believed you no longer need it, didn‘t tell the truth in your claim or have committed a serious crime.</p> <h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Deprivation of British Citizenship?</h3> <p>This is when your British citizenship has been taken away because It is believed you didn't tell the truth when claiming citizenship or have been involved in behaviours including terrorism or serious organised crime.</p>",
+      "question": "Are you appealing an Asylum and/or Humanitarian Protection decision?",
+      "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country. If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are appealing a Revocation of Protection Status or Deprivation of Citizenship decision"
+      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision",
+      "modal": null
     }
   ],
   "ineligible": [

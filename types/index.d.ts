@@ -146,6 +146,7 @@ interface Appeal {
   pcqId?: string;
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;
+  submissionOutOfTime?: string;
 }
 
 interface Hearing {

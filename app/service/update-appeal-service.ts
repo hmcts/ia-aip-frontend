@@ -380,6 +380,7 @@ export default class UpdateAppealService {
       removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
       isDecisionAllowed: caseData.isDecisionAllowed,
       appealOutOfCountry: caseData.appealOutOfCountry,
+      submissionOutOfTime: caseData.submissionOutOfTime,
       application: {
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,
         appellantInUk: caseData.appellantInUk,
@@ -473,11 +474,17 @@ export default class UpdateAppealService {
 
       if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {
         caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.dateLetterSent);
+
+        // logic here for setting correct field
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
+        // caseData.submissionOutOfTime = YesOrNo.NO;
       }
       if (appeal.application.decisionLetterReceivedDate && appeal.application.decisionLetterReceivedDate.year) {
         caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
+
+        // logic here for setting correct field
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
+        // caseData.submissionOutOfTime = YesOrNo.NO;
       }
 
       if (appeal.application.isAppealLate) {

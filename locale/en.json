@@ -222,7 +222,9 @@
         "sponsorsAddress": "Sponsor's Address",
         "sponsorsContactDetails": "Sponsor's contact details",
         "sponsorsHasAccessToInformation": "Sponsor has access to information",
-        "decisionType": "Decision Type"
+        "decisionType": "Decision Type",
+        "whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused": "What date did you leave the UK after your Protection claim was refused?",
+        "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",

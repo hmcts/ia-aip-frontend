@@ -468,7 +468,11 @@ export default class UpdateAppealService {
         caseData.homeOfficeReferenceNumber = appeal.application.homeOfficeRefNumber;
       }
       caseData.appellantInUk = String(appeal.application.appellantInUk);
-      caseData.outsideUkWhenApplicationMade = yesNoToBool(appeal.application.outsideUkWhenApplicationMade) ? YesOrNo.YES : YesOrNo.NO;
+
+      if (appeal.application.outsideUkWhenApplicationMade) {
+        caseData.outsideUkWhenApplicationMade = yesNoToBool(appeal.application.outsideUkWhenApplicationMade) ? YesOrNo.YES : YesOrNo.NO;
+      }
+
       caseData.gwfReferenceNumber = appeal.application.gwfReferenceNumber;
 
       if (appeal.application.dateLetterSent && appeal.application.dateLetterSent.year) {

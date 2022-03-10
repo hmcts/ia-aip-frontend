@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
+import { appealTypes } from '../../data/appeal-types';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
@@ -21,8 +22,9 @@ async function createSummaryRowsFrom(req: Request) {
     return i18n.appealTypes[appealType].name;
   });
   const nationality = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const appealType = appealTypes.find(appeal => appeal.value === application.appealType).name;
   const editParameter = '?edit';
-  const appellantInUk: boolean = (req.session.appeal.application.appellantInUk === 'Yes') || false;
+  const appellantInUk: boolean = (application.appellantInUk === 'Yes') || false;
 
   const rows = [
     addSummaryRow(
@@ -32,15 +34,36 @@ async function createSummaryRowsFrom(req: Request) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.appealType,
-      [application.appealType],
+      [appealType],
       paths.appealStarted.typeOfAppeal + editParameter
-    ),
-    addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.outsideUKWhenApplicationWasMade,
-      [application.appellantInUk],
-      paths.appealStarted.appealOutOfCountry + editParameter
     )
   ];
+
+  if (application.dateClientLeaveUk && application.dateClientLeaveUk.year && application.appealType === 'protection') {
+    const decisionLetterReceivedDateRow = addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused,
+      [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
+      paths.appealStarted.oocProtectionDepartureDate + editParameter,
+      Delimiter.SPACE);
+    rows.push(decisionLetterReceivedDateRow);
+  }
+
+  if (application.outsideUkWhenApplicationMade && application.outsideUkWhenApplicationMade !== null) {
+    const gwfReferenceNumberRow = addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.outsideUKWhenApplicationWasMade,
+      [application.outsideUkWhenApplicationMade],
+      paths.appealStarted.oocHrEea + editParameter);
+    rows.push(gwfReferenceNumberRow);
+  }
+
+  if (application.dateClientLeaveUk && application.dateClientLeaveUk.year && application.appealType !== 'protection') {
+    const decisionLetterReceivedDateRow = addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused,
+      [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
+      paths.appealStarted.oocHrInside + editParameter,
+      Delimiter.SPACE);
+    rows.push(decisionLetterReceivedDateRow);
+  }
 
   if (application.gwfReferenceNumber && application.gwfReferenceNumber !== null) {
     const gwfReferenceNumberRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.gwfReferenceNumber,
@@ -110,16 +133,6 @@ async function createSummaryRowsFrom(req: Request) {
   ];
 
   rows.push(...rowsCont);
-
-  if (application.isAppealLate) {
-    const lateAppealValue = [formatTextForCYA(application.lateAppeal.reason)];
-    if (application.lateAppeal.evidence) {
-      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`;
-      lateAppealValue.push(urlHtml);
-    }
-    const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);
-    rows.push(lateAppealRow);
-  }
 
   if (application.isAppealLate) {
     const lateAppealValue = [formatTextForCYA(application.lateAppeal.reason)];

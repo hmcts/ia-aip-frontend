@@ -191,8 +191,8 @@
       "defaultNationality": "Please select a nationality"
     },
     "checkYourAnswers": {
-      "title": "Check your answer",
-      "header": "Check your answer",
+      "title": "Check your answers",
+      "header": "Check your answers",
       "statement": "Statement of truth",
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
@@ -212,7 +212,17 @@
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence",
         "paymentType": "Payment type",
-        "feeAmount": "Fee amount"
+        "feeAmount": "Fee amount",
+        "inTheUk": "In the UK",
+        "outsideUKWhenApplicationWasMade": "Outside UK when application was made",
+        "gwfReferenceNumber": "GWF reference number",
+        "dateLetterReceived": "Date letter received",
+        "sponsor": "Sponsor",
+        "sponsorsName": "Sponsor's name",
+        "sponsorsAddress": "Sponsor's Address",
+        "sponsorsContactDetails": "Sponsor's contact details",
+        "sponsorsHasAccessToInformation": "Sponsor has access to information",
+        "decisionType": "Decision Type"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",

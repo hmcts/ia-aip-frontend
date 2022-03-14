@@ -21,7 +21,7 @@
       }
     }) %}
 
-      {% if appealOutOfCountry %}
+      {% if (appealOutOfCountry == "Yes") %}
       <p>{{ i18n.pages.homeOfficeAppealLate.descriptionOOC | safe }}</p>
       {% else %}
       <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>

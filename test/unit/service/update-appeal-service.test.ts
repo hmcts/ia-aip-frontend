@@ -54,6 +54,11 @@ describe('update-appeal-service', () => {
     expectedCaseData = {
       'appealType': 'protection',
       'appellantInUk': 'undefined',
+      'hasSponsor': 'No',
+      'sponsorGivenNames': 'ABC XYZ',
+      'sponsorFamilyName': 'ABC XYZ',
+      'sponsorNameForDisplay': 'ABC XYZ',
+      'sponsorAuthorisation': 'ABC XYZ',
       'outsideUkWhenApplicationMade': 'No',
       'gwfReferenceNumber': '',
       'dateClientLeaveUk': '2022-02-19',
@@ -201,6 +206,11 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingLoopNeeded).to.eq(false);
       expect(req.session.appeal.cmaRequirements.accessNeeds.isHearingRoomNeeded).to.eq(false);
       expect(req.session.appeal.hearingCentre).eq('birmingham');
+      expect(req.session.appeal.application.hasSponsor).eq('No');
+      expect(req.session.appeal.application.sponsorGivenNames).eq('ABC XYZ');
+      expect(req.session.appeal.application.sponsorFamilyName).eq('ABC XYZ');
+      expect(req.session.appeal.application.sponsorNameForDisplay).eq('ABC XYZ');
+      expect(req.session.appeal.application.sponsorAuthorisation).eq('ABC XYZ');
     });
 
     it('load time extensions when no time extensions', async () => {
@@ -511,7 +521,19 @@ describe('update-appeal-service', () => {
             email: null,
             phone: null
           },
+          outsideUkWhenApplicationMade: null,
+          gwfReferenceNumber: null,
+          dateClientLeaveUk: {
+            year: null,
+            month: null,
+            day: null
+          },
           dateLetterSent: {
+            year: null,
+            month: null,
+            day: null
+          },
+          decisionLetterReceivedDate: {
             year: null,
             month: null,
             day: null
@@ -672,6 +694,7 @@ describe('update-appeal-service', () => {
             appellantEmailAddress: 'abc@example.net',
             appellantPhoneNumber: '07123456789',
             appellantInUk: 'undefined',
+            gwfReferenceNumber: null,
             journeyType: 'aip',
             subscriptions: [
               {
@@ -697,6 +720,7 @@ describe('update-appeal-service', () => {
           {
             journeyType: 'aip',
             appellantInUk: 'undefined',
+            gwfReferenceNumber: null,
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -723,6 +747,7 @@ describe('update-appeal-service', () => {
             journeyType: 'aip',
             appellantInUk: 'undefined',
             appellantPhoneNumber: '07123456789',
+            gwfReferenceNumber: null,
             subscriptions: [
               {
                 value: {
@@ -783,6 +808,7 @@ describe('update-appeal-service', () => {
         {
           'journeyType': 'aip',
           'appellantInUk': 'undefined',
+          'gwfReferenceNumber': null,
           'reviewTimeExtensionRequired': 'Yes',
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
@@ -812,6 +838,7 @@ describe('update-appeal-service', () => {
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
+        'gwfReferenceNumber': null,
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -840,6 +867,7 @@ describe('update-appeal-service', () => {
       expect(caseData).to.deep.eq({
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
+        'gwfReferenceNumber': null,
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',
@@ -989,8 +1017,25 @@ describe('update-appeal-service', () => {
             appealStatus: 'appealStarted',
             application: {
               homeOfficeRefNumber: 'newRef',
+              outsideUkWhenApplicationMade: 'No',
+              hasSponsor: 'No',
+              sponsorGivenNames: 'ABC XYZ',
+              sponsorFamilyName: 'ABC XYZ',
+              sponsorNameForDisplay: 'ABC XYZ',
+              sponsorAuthorisation: 'ABC XYZ',
+              gwfReferenceNumber: '',
               appealType: 'appealType',
               dateLetterSent: {
+                year: '2019',
+                month: '12',
+                day: '11'
+              },
+              dateClientLeaveUk: {
+                year: '2019',
+                month: '12',
+                day: '11'
+              },
+              decisionLetterReceivedDate: {
                 year: '2019',
                 month: '12',
                 day: '11'
@@ -1086,7 +1131,16 @@ describe('update-appeal-service', () => {
         journeyType: 'aip',
         appellantInUk: 'undefined',
         homeOfficeReferenceNumber: 'newRef',
+        outsideUkWhenApplicationMade: 'No',
+        hasSponsor: 'No',
+        sponsorGivenNames: 'ABC XYZ',
+        sponsorFamilyName: 'ABC XYZ',
+        sponsorNameForDisplay: 'ABC XYZ',
+        sponsorAuthorisation: 'ABC XYZ',
+        gwfReferenceNumber: '',
         homeOfficeDecisionDate: '2019-12-11',
+        dateClientLeaveUk: '2019-12-11',
+        decisionLetterReceivedDate: '2019-12-11',
         submissionOutOfTime: 'Yes',
         applicationOutOfTimeExplanation: 'a reason',
         applicationOutOfTimeDocument: {

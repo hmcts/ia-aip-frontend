@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
-import i18n from '../../../locale/en.json';
 import { appealTypes } from '../../data/appeal-types';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
@@ -10,7 +9,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
-import { appellantInUkValidation, typeOfAppealValidation } from '../../utils/validations/fields-validations';
+import { typeOfAppealValidation } from '../../utils/validations/fields-validations';
 
 async function getAppealTypes(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
@@ -87,74 +86,6 @@ function postTypeOfAppeal(updateAppealService: UpdateAppealService) {
   };
 }
 
-async function getAppellantInUk(req: Request, res: Response, next: NextFunction) {
-  try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-
-    const answer = req.session.appeal.application.appellantInUk;
-
-    return res.render('appeal-application/appeal-out-of-country.njk', {
-      question: i18n.pages.OOC.title,
-      description: undefined,
-      modal: undefined,
-      questionId: undefined,
-      previousPage: paths.appealStarted.taskList,
-      answer: answer,
-      errors: undefined,
-      errorList: undefined
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
-function postAppellantInUk(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const validation = appellantInUkValidation(req.body);
-
-      if (validation) {
-        return res.render('appeal-application/appeal-out-of-country.njk', {
-          question: i18n.pages.OOC.title,
-          description: undefined,
-          modal: undefined,
-          questionId: undefined,
-          previousPage: paths.appealStarted.taskList,
-          answer: undefined,
-          errors: validation,
-          errorList: Object.values(validation)
-        });
-      }
-
-      const appeal: Appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          appellantInUk: req.body['answer']
-        }
-      };
-
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], false);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
-
-      const editingMode: boolean = req.session.appeal.application.isEdit || false;
-      const citizenInUk: boolean = (req.session.appeal.application.appellantInUk === 'Yes') || false;
-
-      let defaultRedirect = getDefaultRedirect(citizenInUk, req.session.appeal.application.appealType);
-      let editingModeRedirect = paths.appealStarted.checkAndSend;
-
-      let redirectPage = getRedirectPage(editingMode, editingModeRedirect, req.body.saveForLater, defaultRedirect);
-
-      return res.redirect(redirectPage);
-    } catch (error) {
-      next(error);
-    }
-  };
-}
-
 function getDefaultRedirect(citizenInUk: boolean, appealType: string): string {
   switch (true) {
     case (!citizenInUk && appealType === 'refusalOfEu'):
@@ -171,15 +102,11 @@ function setupTypeOfAppealController(middleware: Middleware[], updateAppealServi
   const router = Router();
   router.get(paths.appealStarted.typeOfAppeal, middleware, getTypeOfAppeal);
   router.post(paths.appealStarted.typeOfAppeal, middleware, postTypeOfAppeal(updateAppealService));
-  router.get(paths.appealStarted.appealOutOfCountry, middleware, getAppellantInUk);
-  router.post(paths.appealStarted.appealOutOfCountry, middleware, postAppellantInUk(updateAppealService));
   return router;
 }
 
 export {
   setupTypeOfAppealController,
   getTypeOfAppeal,
-  postTypeOfAppeal,
-  getAppellantInUk,
-  postAppellantInUk
+  postTypeOfAppeal
 };

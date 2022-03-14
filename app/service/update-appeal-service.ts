@@ -148,7 +148,7 @@ export default class UpdateAppealService {
       }
     }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
 
-    const sponsorContactDetails = sponsorSubscriptions.reduce((sponsorContactDetails, sponsorSubscription) => {
+    const sponsorContactDetails = sponsorSubscriptions.reduce((scd, sponsorSubscription) => {
       const value = sponsorSubscription.value;
       return {
         email: value.email || null,

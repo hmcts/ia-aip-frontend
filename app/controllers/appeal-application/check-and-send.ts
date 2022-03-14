@@ -18,8 +18,8 @@ import { statementOfTruthValidation } from '../../utils/validations/fields-valid
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const { application } = req.session.appeal;
-  const appealTypeNames: string[] = application.appealType.split(',').map(appealType => {
-    return i18n.appealTypes[appealType].name;
+  const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
+    return i18n.appealTypes[appealTypeInstance].name;
   });
   const nationality = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const appealType = appealTypes.find(appeal => appeal.value === application.appealType).name;
@@ -178,11 +178,11 @@ async function createSummaryRowsFrom(req: Request) {
       rows.push(hasSponsorAuthorisation);
     }
 
-    const appealType = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,
+    const appealTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,
         [appealTypeNames],
         paths.appealStarted.typeOfAppeal + editParameter,
         Delimiter.BREAK_LINE);
-    rows.push(appealType);
+    rows.push(appealTypeRow);
   }
 
   rows.push(...rowsCont);

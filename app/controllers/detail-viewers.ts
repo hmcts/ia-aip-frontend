@@ -31,12 +31,27 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
   });
   const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
+  const hasSponsor = application.appellantInUk && application.appellantInUk === 'No' && application.hasSponsor && application.hasSponsor === 'Yes';
   let rows = [];
+  let rowsCont = [];
 
   if (appellantInUk) {
 
     rows = [
-      application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null),
+      application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null)
+    ];
+
+    if (application.gwfReferenceNumber && application.gwfReferenceNumber !== null) {
+      const gwfReferenceNumberRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.gwfReferenceNumber,
+        [application.gwfReferenceNumber], null);
+      rows.push(gwfReferenceNumberRow);
+    } else {
+      const homeOfficeRefNumberRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [application.homeOfficeRefNumber], null);
+      rows.push(homeOfficeRefNumberRow);
+    }
+
+    rowsCont = [
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [application.homeOfficeRefNumber], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE),
@@ -52,9 +67,52 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
       application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [application.lateAppeal.reason], null),
       application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`])
     ];
+
+    rows.push(...rowsCont);
   }
 
-  if (!appellantInUk) {
+  if (!appellantInUk && hasSponsor) {
+
+    rows = [
+      application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null)
+    ];
+
+    if (application.gwfReferenceNumber
+      && application.gwfReferenceNumber !== null) {
+      const gwfReferenceNumberRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.gwfReferenceNumber, [application.gwfReferenceNumber], null);
+      rows.push(gwfReferenceNumberRow);
+    } else {
+      const homeOfficeRefNumberRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [application.homeOfficeRefNumber], null);
+      rows.push(homeOfficeRefNumberRow);
+    }
+
+    rowsCont = [
+      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null),
+      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE),
+      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [application.personalDetails.givenNames, application.personalDetails.familyName], null, Delimiter.SPACE),
+      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [formatDate(toIsoDate(application.personalDetails.dob))], null),
+      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [nation], null),
+      application.appellantOutOfCountryAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantOutOfCountryAddress, [application.appellantOutOfCountryAddress], null),
+      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [
+        ...(application.contactDetails.wantsEmail ? [application.contactDetails.email] : []), ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])
+      ], null, Delimiter.BREAK_LINE),
+      application.hasSponsor && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor, [application.hasSponsor], null),
+      application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay, [application.sponsorNameForDisplay], null),
+      application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails, [...Object.values(application.sponsorAddress)], null, Delimiter.BREAK_LINE),
+      application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails, [
+        ...(application.sponsorContactDetails.wantsEmail ? [application.sponsorContactDetails.email] : []),
+        ...(application.sponsorContactDetails.wantsSms ? [application.sponsorContactDetails.phone] : [])
+      ], null, Delimiter.BREAK_LINE),
+      application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation, [application.sponsorAuthorisation], null),
+      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [i18n.appealTypes[application.appealType].name], null),
+      application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [application.lateAppeal.reason], null),
+      application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`])
+    ];
+
+    rows.push(...rowsCont);
+  }
+
+  if (!appellantInUk && !hasSponsor) {
 
     rows = [
       application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null),
@@ -64,19 +122,9 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [application.personalDetails.givenNames, application.personalDetails.familyName], null, Delimiter.SPACE),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [formatDate(toIsoDate(application.personalDetails.dob))], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [nation], null),
-      application.appellantOutOfCountryAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantOutOfCountryAddress, [ application.appellantOutOfCountryAddress ], null),
-      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [
-        ...(application.contactDetails.wantsEmail ? [application.contactDetails.email] : []),
-        ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])
-      ], null, Delimiter.BREAK_LINE),
-      application.hasSponsor && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor, [ application.hasSponsor ], null),
-      application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay, [ application.sponsorNameForDisplay ], null),
-      application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails, [ ...Object.values(application.sponsorAddress) ], null, Delimiter.BREAK_LINE),
-      application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails, [
-        ...(application.sponsorContactDetails.wantsEmail ? [ application.sponsorContactDetails.email ] : []),
-        ...(application.sponsorContactDetails.wantsSms ? [ application.sponsorContactDetails.phone ] : [])
-      ], null, Delimiter.BREAK_LINE),
-      application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation, [ application.sponsorAuthorisation ], null),
+      application.appellantOutOfCountryAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantOutOfCountryAddress, [application.appellantOutOfCountryAddress], null),
+      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [...(application.contactDetails.wantsEmail ? [application.contactDetails.email] : []), ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])], null, Delimiter.BREAK_LINE),
+      application.hasSponsor && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor, [application.hasSponsor], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [i18n.appealTypes[application.appealType].name], null),
       application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [application.lateAppeal.reason], null),
       application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`])
@@ -94,13 +142,13 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(application.appealType)) {
       decisionType = req.session.appeal.application.decisionHearingFeeOption;
       if (paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid') {
-        paymentTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [ i18n.pages.checkYourAnswers.payLater ]);
+        paymentTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [i18n.pages.checkYourAnswers.payLater]);
       } else {
         fee = getFee(req.session.appeal);
-        feeAmountRow = fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [ `£${fee.calculated_amount}` ]) : null;
+        feeAmountRow = fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null;
       }
     }
-    const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers[decisionType] ]);
+    const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [i18n.pages.checkYourAnswers[decisionType]]);
     if (decisionType) rows.push(decisionTypeRow);
     if (paymentTypeRow) rows.push(paymentTypeRow);
     if (fee) rows.push(feeAmountRow);
@@ -111,7 +159,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
 function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   const array = [];
   const data = req.session.appeal.reasonsForAppeal;
-  array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [ data.applicationReason ], null));
+  array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [data.applicationReason], null));
   if (data.evidences !== null) {
     const evidenceText = data.evidences.map((evidence) => {
       return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
@@ -124,22 +172,22 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
 function getTimeExtensionSummaryRows(timeExtensionEvent: Collection<Application<Evidence>>) {
   const request = [];
   const data = timeExtensionEvent.value;
-  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [ i18n.pages.detailViewers.timeExtension.request.wantMoreTime ]));
-  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.reason, [ data.details ]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [i18n.pages.detailViewers.timeExtension.request.wantMoreTime]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.reason, [data.details]));
   if (data.evidence.length) {
     const evidenceText = data.evidence.map((evidence) => {
       return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
     });
     request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.evidence, evidenceText, null, Delimiter.BREAK_LINE));
   }
-  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.date, [ moment(data.date).format(dayMonthYearFormat) ]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.date, [moment(data.date).format(dayMonthYearFormat)]));
 
   if (data.decision !== 'Pending') {
     const response = [];
-    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.decision, [ i18n.pages.detailViewers.timeExtension.response[data.decision] ]));
-    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.reason, [ data.decisionReason ]));
-    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.date, [ moment(data.decisionDate).format(dayMonthYearFormat) ]));
-    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.maker, [ data.decisionMaker ]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.decision, [i18n.pages.detailViewers.timeExtension.response[data.decision]]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.reason, [data.decisionReason]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.date, [moment(data.decisionDate).format(dayMonthYearFormat)]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.maker, [data.decisionMaker]));
     return { request, response };
   }
   return { request };
@@ -159,7 +207,7 @@ function setupCmaRequirementsViewer(req: Request) {
   const submitCmaRequirements = getAppealApplicationData('submitCmaRequirements', req);
   const { data } = submitCmaRequirements[0];
   const cmaRequirements: CmaRequirements = req.session.appeal.cmaRequirements;
-  if (_.has(data,'isInterpreterServicesNeeded')) {
+  if (_.has(data, 'isInterpreterServicesNeeded')) {
     interpreter.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.interpreterTitle], null));
     interpreter.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isInterpreterServicesNeeded], null));
     if (data.isInterpreterServicesNeeded === 'Yes') {
@@ -172,22 +220,22 @@ function setupCmaRequirementsViewer(req: Request) {
       ], null));
     }
   }
-  if (_.has(data,'isHearingRoomNeeded')) {
+  if (_.has(data, 'isHearingRoomNeeded')) {
     stepFree.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.stepFreeAccessTitle], null));
     stepFree.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isHearingRoomNeeded], null));
   }
-  if (_.has(data,'isHearingLoopNeeded')) {
+  if (_.has(data, 'isHearingLoopNeeded')) {
     hearingLoop.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.hearingLoopTitle], null));
     hearingLoop.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.isHearingLoopNeeded], null));
   }
   // // Other NEEDS
   // // MULTIMEDIA
-  if (_.has(data,'multimediaEvidence')) {
+  if (_.has(data, 'multimediaEvidence')) {
     multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceTitle], null));
     multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.multimediaEvidence], null));
   }
-  if (_.has(data,'multimediaEvidence')) {
-    multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceBringEquip ], null));
+  if (_.has(data, 'multimediaEvidence')) {
+    multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceBringEquip], null));
     multiEvidence.push(addSummaryRow(i18n.common.cya.answerRowTitle, [boolToYesNo(cmaRequirements.otherNeeds.bringOwnMultimediaEquipment)], null));
     if ((data.multimediaEvidenceDescription && !_.isEmpty(data.multimediaEvidenceDescription))) {
       multiEvidence.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.MultimediaEvidenceCantBringEquip], null));
@@ -195,11 +243,11 @@ function setupCmaRequirementsViewer(req: Request) {
     }
   }
   // // SAME SEX
-  if (_.has(data,'singleSexCourt')) {
+  if (_.has(data, 'singleSexCourt')) {
     sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMTitle], null));
     sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourt], null));
   }
-  if (_.has(data,'singleSexCourt')) {
+  if (_.has(data, 'singleSexCourt')) {
     sexAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.AllFOrMQuestion], null));
     sexAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.singleSexCourtType], null));
     if (data.singleSexCourt === 'Yes') {
@@ -208,7 +256,7 @@ function setupCmaRequirementsViewer(req: Request) {
     }
   }
   // // PRIVATE APPOINTMENT NEEDED
-  if (_.has(data,'inCameraCourt')) {
+  if (_.has(data, 'inCameraCourt')) {
     privateAppointment.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.privateAppointmentTitle], null));
     privateAppointment.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.inCameraCourt], null));
     if (data.inCameraCourt === 'Yes') {
@@ -217,9 +265,9 @@ function setupCmaRequirementsViewer(req: Request) {
     }
   }
   // // PHYSICAL EVIDENCE
-  if (_.has(data,'physicalOrMentalHealthIssues')) {
+  if (_.has(data, 'physicalOrMentalHealthIssues')) {
     physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalTitle], null));
-    physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle,[data.physicalOrMentalHealthIssues], null));
+    physicalOrMental.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.physicalOrMentalHealthIssues], null));
 
     if (data.physicalOrMentalHealthIssues === 'Yes') {
       physicalOrMental.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.physicalQuestion], null));
@@ -227,7 +275,7 @@ function setupCmaRequirementsViewer(req: Request) {
     }
   }
   // // PRIVATE pastExperiencesTitle
-  if (_.has(data,'pastExperiences')) {
+  if (_.has(data, 'pastExperiences')) {
     pastExperiences.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.pastExperiencesTitle], null));
     pastExperiences.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.pastExperiences], null));
 
@@ -237,7 +285,7 @@ function setupCmaRequirementsViewer(req: Request) {
     }
   }
   // // ANYTHING ELSE
-  if (_.has(data,'additionalRequests')) {
+  if (_.has(data, 'additionalRequests')) {
     anythingElse.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.detailViewers.cmaRequirements.anythingElseTitle], null));
     anythingElse.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.additionalRequests], null));
 
@@ -248,25 +296,25 @@ function setupCmaRequirementsViewer(req: Request) {
   }
 
   // // dates to avoid
-  if (_.has(data,'datesToAvoidYesNo')) {
+  if (_.has(data, 'datesToAvoidYesNo')) {
     dateToAvoid.push(addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.cmaRequirements.taskList.datesToAvoid.title], null));
     dateToAvoid.push(addSummaryRow(i18n.common.cya.answerRowTitle, [data.datesToAvoidYesNo], null));
     // Loop dates
     if (data.datesToAvoidYesNo === 'Yes') {
       data.datesToAvoid.map((date: any, i: number) => {
         dateToAvoid.push(
-        addSummaryRow(
-          i === 0 ? i18n.pages.cmaRequirements.taskList.sections.datesToAvoid : null,
-          [
-            `<b>${i18n.common.cya.date}</b>`,
-            Delimiter.BREAK_LINE,
-            `<pre>${date.value.dateToAvoid}</pre>`,
-            Delimiter.BREAK_LINE,
-            `<b>${i18n.common.cya.reason}</b>`,
-            Delimiter.BREAK_LINE,
-            `<pre>${date.value.dateToAvoidReason || ''}</pre>`
-          ],
-          null));
+          addSummaryRow(
+            i === 0 ? i18n.pages.cmaRequirements.taskList.sections.datesToAvoid : null,
+            [
+              `<b>${i18n.common.cya.date}</b>`,
+              Delimiter.BREAK_LINE,
+              `<pre>${date.value.dateToAvoid}</pre>`,
+              Delimiter.BREAK_LINE,
+              `<b>${i18n.common.cya.reason}</b>`,
+              Delimiter.BREAK_LINE,
+              `<pre>${date.value.dateToAvoidReason || ''}</pre>`
+            ],
+            null));
       });
     }
   }
@@ -405,7 +453,7 @@ function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
     const fileNameFormatted = fileNameFormatter(endedAppealDoc.name);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(endedAppealDoc.dateUploaded).format(dayMonthYearFormat)]),
-      addSummaryRow(i18n.pages.detailViewers.common.document, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${endedAppealDoc.fileId}'>${fileNameFormatted}</a>` ])
+      addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${endedAppealDoc.fileId}'>${fileNameFormatted}</a>`])
     ];
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.endedAppeal.title,
@@ -471,8 +519,8 @@ function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunct
     const fileNameFormatted = fileNameFormatter(recordOutOfTimeDecisionDoc.name);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decision, [i18n.pages.detailViewers.outOfTimeDecision.type[req.session.appeal.outOfTimeDecisionType]]),
-      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decisionMaker, [ req.session.appeal.outOfTimeDecisionMaker ]),
-      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.reasonForDecision, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${recordOutOfTimeDecisionDoc.fileId}'>${fileNameFormatted}</a>` ])
+      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.decisionMaker, [req.session.appeal.outOfTimeDecisionMaker]),
+      addSummaryRow(i18n.pages.detailViewers.outOfTimeDecision.reasonForDecision, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${recordOutOfTimeDecisionDoc.fileId}'>${fileNameFormatted}</a>`])
     ];
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.outOfTimeDecision.title,
@@ -491,12 +539,12 @@ function getHomeOfficeWithdrawLetter(req: Request, res: Response, next: NextFunc
 
     const homeOfficeLetter = homeOfficeResponseDocuments.shift();
     const data = [
-      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.dateUploaded, [ moment(homeOfficeLetter.dateUploaded).format(dayMonthYearFormat) ]),
-      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.document, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${homeOfficeLetter.fileId}'>${fileNameFormatter(homeOfficeLetter.name)}</a>` ]),
-      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.documentDescription, [ homeOfficeLetter.description ])
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.dateUploaded, [moment(homeOfficeLetter.dateUploaded).format(dayMonthYearFormat)]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${homeOfficeLetter.fileId}'>${fileNameFormatter(homeOfficeLetter.name)}</a>`]),
+      addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.documentDescription, [homeOfficeLetter.description])
     ];
     homeOfficeResponseDocuments.forEach(document => {
-      data.push(addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.additionalEvidence, [ `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatter(document.name)}</a>` ]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.homeOfficeWithdrawLetter.additionalEvidence, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatter(document.name)}</a>`]));
     });
     return res.render('templates/details-viewer.njk', {
       title: i18n.pages.detailViewers.homeOfficeWithdrawLetter.title,
@@ -565,9 +613,9 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
   router.get(paths.common.homeOfficeWithdrawLetter, getHomeOfficeWithdrawLetter);
   router.get(paths.common.homeOfficeResponse, getHomeOfficeResponse);
-  router.get(paths.common.hearingNoticeViewer,getHearingNoticeViewer);
-  router.get(paths.common.hearingBundleViewer,getHearingBundle);
-  router.get(paths.common.decisionAndReasonsViewer,getDecisionAndReasonsViewer);
+  router.get(paths.common.hearingNoticeViewer, getHearingNoticeViewer);
+  router.get(paths.common.hearingBundleViewer, getHearingBundle);
+  router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
   return router;
 }
 

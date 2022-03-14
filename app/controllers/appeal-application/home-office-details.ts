@@ -117,8 +117,8 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.homeOfficeDecisionLetter);
-      return res.redirect(redirectPage);
+      let defaultRedirect = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.homeOfficeDecisionLetter);
+      return res.redirect(defaultRedirect);
     } catch (e) {
       next(e);
     }
@@ -129,8 +129,8 @@ function getDateLetterReceived(req: Request, res: Response, next: NextFunction) 
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
-    const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-    let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
+    const citizenOutsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+    let previousPage = citizenOutsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
 
     const { decisionLetterReceivedDate } = req.session.appeal.application;
     res.render('appeal-application/home-office/letter-received.njk', {
@@ -145,9 +145,7 @@ function getDateLetterReceived(req: Request, res: Response, next: NextFunction) 
 function postDateLetterReceived(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
+      if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) { return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved'); }
       const validation = dateLetterReceivedValidation(req.body);
       if (validation) {
         const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
@@ -164,7 +162,7 @@ function postDateLetterReceived(updateAppealService: UpdateAppealService) {
       }
 
       let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-      let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
+      let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'No') ? 14 : 28;
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
       const editingMode: boolean = req.session.appeal.application.isEdit || false;

@@ -111,6 +111,11 @@ describe('getStatus', () => {
       completed: true,
       active: false
     },
+    homeOfficeDetailsOOC: {
+      saved: true,
+      completed: true,
+      active: false
+    },
     personalDetails: {
       saved: true,
       completed: false,
@@ -210,6 +215,7 @@ describe('getStatus', () => {
       saved: true
     };
     status.homeOfficeDetails.active = true;
+    status.homeOfficeDetailsOOC.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 });

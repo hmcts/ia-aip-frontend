@@ -14,7 +14,6 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const dateLetterSent: boolean = !!_.get(appeal.application, 'dateLetterSent');
   const decisionLetterReceived: boolean = !!_.get(appeal.application, 'decisionLetterReceivedDate');
   const homeOfficeLetter: boolean = appeal.application.homeOfficeLetter && appeal.application.homeOfficeLetter.length > 0 || false;
-  const dateLetterReceived: boolean = !!_.get(appeal.application, 'decisionLetterReceivedDate');
   const homeOfficeDetails: Task = {
     saved: gwfRefNumber || homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
     completed: homeOfficeLetter && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),

@@ -353,10 +353,8 @@ function gwfReferenceNumberValidation(obj: object): null | ValidationErrors {
    * GWF reference has the format of GWF12345678
    */
 
-  let gwfReferenceNumber = String(obj['gwfReferenceNumber']);
-
   const schema = Joi.object({
-    gwfReferenceNumber: Joi.string().required().regex(/^[a-zA-Z]+[0-9]{8}/).messages({
+    gwfReferenceNumber: Joi.string().required().regex(/^[a-zA-Z]+\d{8}/).messages({
       'string.empty': i18n.validationErrors.gwfReference.required,
       'string.pattern.base': i18n.validationErrors.gwfReference.invalid
     })

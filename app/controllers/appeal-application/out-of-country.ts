@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
-import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
@@ -26,8 +25,8 @@ async function getAppellantInUk(req: Request, res: Response, next: NextFunction)
       errors: undefined,
       errorList: undefined
     });
-  } catch (error) {
-    next(error);
+  } catch (getAppellantInUkError) {
+    next(getAppellantInUkError);
   }
 }
 
@@ -66,8 +65,8 @@ function postAppellantInUk(updateAppealService: UpdateAppealService) {
       let redirectPage = paths.appealStarted.typeOfAppeal;
 
       return res.redirect(redirectPage);
-    } catch (error) {
-      next(error);
+    } catch (postAppellantInUkError) {
+      next(postAppellantInUkError);
     }
   };
 }
@@ -81,8 +80,8 @@ function getOocHrInside(req: Request, res: Response, next: NextFunction) {
       dateClientLeaveUk,
       previousPage: paths.appealStarted.oocHrEea
     });
-  } catch (e) {
-    next(e);
+  } catch (getOocHrInsideError) {
+    next(getOocHrInsideError);
   }
 }
 
@@ -95,8 +94,7 @@ function postOocHrInside(updateAppealService: UpdateAppealService) {
       const validation = dateLeftUkValidation(req.body);
       if (validation) {
         return res.render('appeal-application/out-of-country/hr-inside.njk', {
-          error: validation,
-          errorList: Object.values(validation),
+          error: validation, errorList: Object.values(validation),
           dateClientLeaveUk: {
             ...req.body
           },
@@ -105,7 +103,6 @@ function postOocHrInside(updateAppealService: UpdateAppealService) {
       }
 
       const { day, month, year } = req.body;
-      const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -126,8 +123,8 @@ function postOocHrInside(updateAppealService: UpdateAppealService) {
 
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
       return res.redirect(redirectPage);
-    } catch (e) {
-      next(e);
+    } catch (postOocHrInsideError) {
+      next(postOocHrInsideError);
     }
   };
 }
@@ -141,8 +138,8 @@ function getGwfReference(req: Request, res: Response, next: NextFunction) {
       gwfReferenceNumber,
       previousPage: paths.appealStarted.taskList
     });
-  } catch (e) {
-    next(e);
+  } catch (getGwfReferenceError) {
+    next(getGwfReferenceError);
   }
 }
 
@@ -178,8 +175,8 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
       };
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterReceived);
       return res.redirect(redirectPage);
-    } catch (e) {
-      next(e);
+    } catch (postGwfReferenceError) {
+      next(postGwfReferenceError);
     }
   };
 }
@@ -192,16 +189,12 @@ async function getOocHrEea(req: Request, res: Response, next: NextFunction) {
 
     return res.render('appeal-application/out-of-country/hr-eea.njk', {
       question: i18n.pages.EEA.title,
-      description: undefined,
-      modal: undefined,
-      questionId: undefined,
+      description: undefined, modal: undefined, questionId: undefined,
       previousPage: paths.appealStarted.typeOfAppeal,
-      answer: answer,
-      errors: undefined,
-      errorList: undefined
+      answer: answer, errors: undefined, errorList: undefined
     });
-  } catch (error) {
-    next(error);
+  } catch (getOocHrEeaError) {
+    next(getOocHrEeaError);
   }
 }
 
@@ -211,15 +204,11 @@ function postOocHrEea(updateAppealService: UpdateAppealService) {
       const validation = oocHrEeaValidation(req.body);
 
       if (validation) {
-        return res.render('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
+        return res.render('appeal-application/out-of-country/hr-eea.njk', {
           question: i18n.pages.EEA.title,
-          description: undefined,
-          modal: undefined,
-          questionId: undefined,
+          description: undefined, modal: undefined, questionId: undefined,
           previousPage: paths.appealStarted.typeOfAppeal,
-          answer: undefined,
-          errors: validation,
-          errorList: Object.values(validation)
+          answer: undefined, errors: validation, errorList: Object.values(validation)
         });
       }
 
@@ -240,11 +229,10 @@ function postOocHrEea(updateAppealService: UpdateAppealService) {
 
       const refusalOfHumanRights: boolean = (req.session.appeal.application.appealType === 'refusalOfHumanRights');
       const outsideUkWhenApplicationMade: boolean = (req.body['answer'] === 'Yes') || false;
-      let editingModeRedirect = paths.appealStarted.checkAndSend;
       let redirectPage = (!outsideUkWhenApplicationMade && refusalOfHumanRights) ? paths.appealStarted.oocHrInside : paths.appealStarted.taskList;
       return res.redirect(redirectPage);
-    } catch (error) {
-      next(error);
+    } catch (postOocHrEeaError) {
+      next(postOocHrEeaError);
     }
   };
 }
@@ -258,8 +246,8 @@ function getOocProtectionDepartureDate(req: Request, res: Response, next: NextFu
       dateClientLeaveUk,
       previousPage: paths.appealStarted.typeOfAppeal
     });
-  } catch (e) {
-    next(e);
+  } catch (getOocProtectionDepartureDateError) {
+    next(getOocProtectionDepartureDateError);
   }
 }
 
@@ -271,7 +259,7 @@ function postOocProtectionDepartureDate(updateAppealService: UpdateAppealService
       }
       const validation = dateLeftUkValidation(req.body);
       if (validation) {
-        return res.render('appeal-application/out-of-country/hr-inside.njk', {
+        return res.render('appeal-application/out-of-country/ooc-protection-departure-date.njk', {
           error: validation,
           errorList: Object.values(validation),
           dateClientLeaveUk: {
@@ -282,7 +270,6 @@ function postOocProtectionDepartureDate(updateAppealService: UpdateAppealService
       }
 
       const { day, month, year } = req.body;
-      const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -303,8 +290,8 @@ function postOocProtectionDepartureDate(updateAppealService: UpdateAppealService
 
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
       return res.redirect(redirectPage);
-    } catch (e) {
-      next(e);
+    } catch (postOocProtectionDepartureDateError) {
+      next(postOocProtectionDepartureDateError);
     }
   };
 }
@@ -328,6 +315,12 @@ export {
   getAppellantInUk,
   postAppellantInUk,
   getOocHrInside,
+  postOocHrInside,
   getGwfReference,
+  postGwfReference,
+  getOocHrEea,
+  postOocHrEea,
+  getOocProtectionDepartureDate,
+  postOocProtectionDepartureDate,
   setupOutOfCountryController
 };

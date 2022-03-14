@@ -7,7 +7,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
-import { dateLetterSentValidation, homeOfficeNumberValidation } from '../../utils/validations/fields-validations';
+import { dateLetterReceivedValidation, dateLetterSentValidation, homeOfficeNumberValidation } from '../../utils/validations/fields-validations';
 
 function getHomeOfficeDetails(req: Request, res: Response, next: NextFunction) {
   try {
@@ -53,7 +53,9 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterSent);
+
+      if (['Yes'].includes(appeal.application.appellantInUk)) return res.redirect(paths.appealStarted.letterSent);
+      let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.letterReceived);
       return res.redirect(redirectPage);
     } catch (e) {
       next(e);
@@ -93,6 +95,8 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         });
       }
 
+      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+      let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
       const { day, month, year } = req.body;
       const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
       const editingMode: boolean = req.session.appeal.application.isEdit || false;
@@ -100,8 +104,74 @@ function postDateLetterSent(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          isAppealLate: diffInDays <= 14 ? false : true,
+          isAppealLate: diffInDays <= noOfDays ? false : true,
           dateLetterSent: {
+            day,
+            month,
+            year
+          }
+        }
+      };
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      let defaultRedirect = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.homeOfficeDecisionLetter);
+      return res.redirect(defaultRedirect);
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+function getDateLetterReceived(req: Request, res: Response, next: NextFunction) {
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+
+    const citizenOutsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+    let previousPage = citizenOutsideUkWhenApplicationMade ? paths.appealStarted.gwfReference : paths.appealStarted.details;
+
+    const { decisionLetterReceivedDate } = req.session.appeal.application;
+    res.render('appeal-application/home-office/letter-received.njk', {
+      decisionLetterReceivedDate,
+      previousPage: previousPage
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function postDateLetterReceived(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) { return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved'); }
+      const validation = dateLetterReceivedValidation(req.body);
+      if (validation) {
+        const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+        let previousPage = outsideUkWhenApplicationMade ? paths.appealStarted.details : paths.appealStarted.gwfReference;
+
+        return res.render('appeal-application/home-office/letter-received.njk', {
+          error: validation,
+          errorList: Object.values(validation),
+          decisionLetterReceivedDate: {
+            ...req.body
+          },
+          previousPage: previousPage
+        });
+      }
+
+      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+      let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'No') ? 14 : 28;
+      const { day, month, year } = req.body;
+      const diffInDays = moment().diff(moment(`${year} ${month} ${day}`, 'YYYY MM DD'), 'days');
+      const editingMode: boolean = req.session.appeal.application.isEdit || false;
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          isAppealLate: diffInDays <= noOfDays ? false : true,
+          decisionLetterReceivedDate: {
             day,
             month,
             year
@@ -127,6 +197,8 @@ function setupHomeOfficeDetailsController(middleware: Middleware[], updateAppeal
   router.post(paths.appealStarted.details, middleware, postHomeOfficeDetails(updateAppealService));
   router.get(paths.appealStarted.letterSent, middleware, getDateLetterSent);
   router.post(paths.appealStarted.letterSent, middleware, postDateLetterSent(updateAppealService));
+  router.get(paths.appealStarted.letterReceived, middleware, getDateLetterReceived);
+  router.post(paths.appealStarted.letterReceived, middleware, postDateLetterReceived(updateAppealService));
   return router;
 }
 
@@ -135,5 +207,7 @@ export {
   getHomeOfficeDetails,
   postDateLetterSent,
   postHomeOfficeDetails,
+  getDateLetterReceived,
+  postDateLetterReceived,
   setupHomeOfficeDetailsController
 };

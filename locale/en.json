@@ -87,6 +87,11 @@
         "title": "Your Home Office details",
         "path": "appealStarted.details"
       },
+      "homeOfficeDetailsOOC": {
+        "id": "homeOfficeDetailsLinkOOC",
+        "title": "Your Home Office details",
+        "path": "appealStarted.gwfReference"
+      },
       "personalDetails": {
         "id": "personalDetailsLink",
         "title": "Your personal details",
@@ -97,10 +102,15 @@
         "title": "Your contact details",
         "path": "appealStarted.contactDetails"
       },
+      "sponsorContactDetails": {
+        "id": "sponsorContactDetailsLink",
+        "title": "Your sponsor's contact details",
+        "path": "appealStarted.sponsorContactDetails"
+      },
       "typeOfAppeal": {
         "id": "typeOfAppealLink",
         "title": "Appeal type",
-        "path": "appealStarted.typeOfAppeal"
+        "path": "appealStarted.appealOutOfCountry"
       },
       "decisionType": {
         "id": "typeOfDecisionLink",
@@ -125,12 +135,46 @@
     },
     "contactDetails": {
       "header": "How do you want us to contact you?",
-      "hint": "Select at least one of option, or both",
+      "hint": "Select at least one of option, or both. For international numbers include the country code for the country your phone is registered in.",
+      "email": "Email",
+      "enterEmail": "Enter email address",
+      "mobile": "Enter a phone number",
+      "textMessage": "Mobile phone",
+      "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
+    },
+    "hasSponsor": {
+      "title": "Do you have a sponsor?",
+      "hint": "A sponsor is usually someone you want to join in the UK."
+    },
+    "sponsorName": {
+      "title": "What is your sponsor's name?",
+      "sponsorGivenNames": "Given names",
+      "sponsorFamilyName": "Family name"
+    },
+    "sponsorAddress": {
+      "heading": "What is your sponsor's address?",
+      "title": "What is your sponsor's address?",
+      "change": "Change",
+      "inputs": {
+        "building": "Building and street",
+        "buildingAndStreet": "Building and street <span class=\"govuk-visually-hidden\">line 1 of 2</span>",
+        "buildingAndStreet2": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2</span>",
+        "town": "Town or city",
+        "country": "Country",
+        "county": "County",
+        "postcode": "Postcode"
+      }
+    },
+    "sponsorContactDetails": {
+      "header": "What are your sponsor's contact details?",
+      "hint": "Please provide an email address or phone number for your sponsor. Select at least one of option, or both.",
       "email": "Email",
       "enterEmail": "Enter email address",
       "mobile": "Enter a UK phone number",
-      "textMessage": "Text message",
-      "minorsHelp": "If you are under 18 years old, you can enter contact details for a parent, guardian, sponsor or other responsible adult"
+      "textMessage": "Text message"
+    },
+    "sponsorAuthorisation": {
+      "title": "Do you agree to let your sponsor have access to information about your appeal?"
     },
     "appealType": {
       "header": "What is your appeal type?",
@@ -172,19 +216,32 @@
       "title": "What is your date of birth? ",
       "hint": "For example, 31 3 1980"
     },
+    "OOC": {
+      "title": "Are you currently living in the United Kingdom?",
+      "hint": "Select yes if you are currently living in the United Kingdom"
+    },
+    "EEA": {
+      "title": "Were you outside the UK when you made your application?",
+      "hint": "Select yes if you are were living outside the United Kingdom when you made your application"
+    },
     "nationality": {
       "title": "What is your nationality?",
       "stateless": "I am stateless (A stateless person is not a citizen of any country).",
       "defaultNationality": "Please select a nationality"
     },
+    "outOfCountryAddress": {
+      "title": "What is your address?",
+      "description": "Enter your address"
+    },
     "checkYourAnswers": {
-      "title": "Check your answer",
-      "header": "Check your answer",
+      "title": "Check your answers",
+      "header": "Check your answers",
       "statement": "Statement of truth",
       "agreement": "I believe the information I have given is true",
       "rowTitles": {
-        "textMessage": "Text message",
-        "mobilePhone": "Enter a UK phone number",
+        "appellantInUk": "In the UK",
+        "textMessage": "Mobile phone",
+        "mobilePhone": "Enter a phone number",
         "email": "Email",
         "emailAddress": "Enter email address",
         "homeOfficeRefNumber": "Home Office reference number",
@@ -195,11 +252,29 @@
         "nationality": "Nationality",
         "contactDetails": "Contact details",
         "addressDetails": "Address",
+        "appellantOutOfCountryAddress": "Address",
+        "hasSponsor": "Sponsor",
+        "sponsorNameForDisplay": "Sponsor's name",
+        "sponsorAddressDetails": "Sponsor's address",
+        "sponsorContactDetails": "Sponsor's contact details",
+        "sponsorAuthorisation": "Sponsor has access to information",
         "appealType": "Appeal type",
         "appealLate": "Reason for late appeal",
         "supportingEvidence": "Supporting evidence",
         "paymentType": "Payment type",
-        "feeAmount": "Fee amount"
+        "feeAmount": "Fee amount",
+        "inTheUk": "In the UK",
+        "outsideUKWhenApplicationWasMade": "Outside UK when application was made",
+        "gwfReferenceNumber": "GWF reference number",
+        "dateLetterReceived": "Date letter received",
+        "sponsor": "Sponsor",
+        "sponsorsName": "Sponsor's name",
+        "sponsorsAddress": "Sponsor's Address",
+        "sponsorsContactDetails": "Sponsor's contact details",
+        "sponsorsHasAccessToInformation": "Sponsor has access to information",
+        "decisionType": "Decision Type",
+        "whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused": "What date did you leave the UK after your Protection claim was refused?",
+        "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -271,6 +346,11 @@
         }
       ]
     },
+    "homeOfficeLetterReceived": {
+      "title": "What date did you receive your decision letter from the Home Office?",
+      "dateTitle": "Enter the date",
+      "dateHint": "For example, 31 3 2019"
+    },
     "homeOfficeLetterUpload": {
       "title": "Upload your Home Office decision letter",
       "content": [
@@ -288,6 +368,7 @@
       "title": "Your appeal is late",
       "appealLateLabel": "Why is your appeal late?",
       "description": "Appeals should be made within 14 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
+      "descriptionOOC": "Appeals should be made within 28 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
       "provideEvidenceTitle": "Supporting evidence for why your appeal is late",
       "provideEvidenceDescription": [
         "You can upload <b>one piece of evidence</b> to support your answer such as a letter, photo or document. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
@@ -2571,6 +2652,24 @@
         "feedbackSessions": "Feedback sessions",
         "feedbackText": "We also hope you can attend feedback sessions, along with any appellants you have supported that are happy to take part. This will help us understand more about your experience and identify ways to improve the service."
       }
+    },
+    "gwfReference" : {
+       "title": "What is your Global Web Form (GWF) reference number?",
+       "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the UK. For example, GWF12345678",
+       "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find your GWF reference number.",
+       "homeOfficeReferenceNumberLabel": "Enter your GWF reference number"
+    },
+    "hrInside": {
+      "title": "What date did you leave the UK after your application to stay in the country was refused?",
+      "dateTitle": "Enter the date",
+      "dateHint": "For example, 31 3 2019",
+      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
+    },
+    "oocProtectionDepartureDate": {
+      "title": "What date did you leave the UK after your Protection claim was refused?",
+      "dateTitle": "Enter the date",
+      "dateHint": "For example, 31 3 2019",
+      "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     }
   },
   "error": {
@@ -2608,12 +2707,27 @@
     "stringMin": "Please add some more detail.",
     "homeOfficeRef": "The Home Office Number is not correct. Please review it.",
     "selectAnAppealType": "Select an appeal type",
+    "appellantInUk": "Select yes if you are currently living in the United Kingdom",
+    "oocHrEea": "Select yes if you are were living outside the United Kingdom when you made your application",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
+    "hasSponsor": "Select yes if you have a sponsor",
+    "sponsorGivenNames": "Enter your sponsor's given name or names",
+    "sponsorFamilyName": "Enter your sponsor's family name or names",
+    "sponsorAddress": {
+      "required": "Select your address",
+      "line1Required": "Enter your sponsor's building number and street name",
+      "townCityRequired": "Enter your sponsor's Town or City",
+      "postcodeRequired": "Enter your sponsor's Postcode"
+    },
+    "sponsorContactDetails": {
+      "selectOneOption": "Select at least one of the contact options"
+    },
+    "sponsorAuthorisation": "Select yes if you agree to let your sponsor have access to information about your appeal",
     "acceptanceStatement": "Select if you believe the information you have given is true.",
     "contactDetails": {
       "selectOneOption": "Select at least one of the contact options"
@@ -2633,6 +2747,18 @@
       "inPast": "The date letter was sent must be in the past",
       "underAge": "You must be at least 18 years old to use this service"
     },
+    "dateLetterReceived": {
+      "missing": "Date letter sent must include a day, month and year",
+      "incorrectFormat": "Enter the date in the correct format",
+      "inPast": "The date letter was sent must be in the past",
+      "underAge": "You must be at least 18 years old to use this service"
+    },
+    "dateLeftUk": {
+      "missing": "Date must include a day, month and year",
+      "incorrectFormat": "Enter the date in the correct format",
+      "inPast": "The date must be in the past",
+      "underAge": "You must be at least 18 years old to use this service"
+    },
     "nationality": {
       "selectNationality": "Select your Nationality",
       "onlyOne": "Only select one option"
@@ -2647,9 +2773,16 @@
       "townCityRequired": "Enter a Town or City",
       "postcodeRequired": "Enter your postcode"
     },
+    "outOfCountryAddress":{
+      "addressRequired": "Enter your address"
+    },
     "homeOfficeReference": {
       "required": "Enter the Home Office reference number",
       "invalid": "Enter the Home Office reference number in the correct format"
+    },
+    "gwfReference": {
+      "required": "Enter the GWF reference number",
+      "invalid": "Enter the GWF reference number in the correct format"
     },
     "homeOfficeDecision": {
       "required": "Enter the reasons you think the Home Office decision is wrong"
@@ -2879,11 +3012,11 @@
       "modal": null
     },
     {
-      "question": "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?",
-      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
-      "modal": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Revocation of Protection Status?</h3> <p>This is when your protection status has been taken away because it is believed you no longer need it, didn‘t tell the truth in your claim or have committed a serious crime.</p> <h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Deprivation of British Citizenship?</h3> <p>This is when your British citizenship has been taken away because It is believed you didn't tell the truth when claiming citizenship or have been involved in behaviours including terrorism or serious organised crime.</p>",
+      "question": "Are you appealing an Asylum and/or Humanitarian Protection decision?",
+      "description": "You should answer yes if you fear you will be persecuted or harmed in some way if you are sent back to your home country. If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "eligibleAnswer": "yes",
-      "errorMessage": "Select yes if you are appealing a Revocation of Protection Status or Deprivation of Citizenship decision"
+      "errorMessage": "Select yes if you are appealing an Asylum and/or Humanitarian Protection decision",
+      "modal": null
     }
   ],
   "ineligible": [

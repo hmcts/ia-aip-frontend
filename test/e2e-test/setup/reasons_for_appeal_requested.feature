@@ -50,13 +50,15 @@ Feature: Business rules
     Then I should be taken to the task-list page
     Given I click the contact details link
     Then I should be taken to the contact-details page
-    And I check the "Text message" option
+    And I check the "Mobile phone" option
     Then I click "Save and continue" button
     And I enter text message number "07899999999"
     Then I click "Save and continue" button
     Then I should be taken to the task-list page
 
     When I click on the type-of-appeal link
+    Then I should be taken to the currently living in the United Kingdom page
+    When I select Yes and click continue
     Then I should be taken to the appeal page
 
     When I select appeal type Protection

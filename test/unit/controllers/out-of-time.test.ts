@@ -240,7 +240,8 @@ describe('Out of time controller', () => {
         evidence: evidenceExample,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        appealOutOfCountry: undefined
       });
     });
 
@@ -259,7 +260,8 @@ describe('Out of time controller', () => {
         evidence: null,
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        appealOutOfCountry: undefined
       });
     });
 
@@ -275,9 +277,9 @@ describe('Out of time controller', () => {
 
     it('Should delete successfully when click on delete link, fail validation and render with errors', async () => {
       const expectedError: ValidationError = {
-        href: '#appeal-late',
         key: 'appeal-late',
-        text: i18n.validationErrors.emptyReasonAppealIsLate
+        text: i18n.validationErrors.emptyReasonAppealIsLate,
+        href: '#appeal-late'
       };
       req.session.appeal.application.lateAppeal.evidence = evidenceExample;
 
@@ -291,7 +293,8 @@ describe('Out of time controller', () => {
         appealLateReason: undefined,
         error: { 'appeal-late': expectedError },
         errorList: [ expectedError ],
-        previousPage: paths.appealStarted.taskList
+        previousPage: paths.appealStarted.taskList,
+        appealOutOfCountry: undefined
       });
     });
 

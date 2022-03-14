@@ -85,7 +85,6 @@ interface AdditionalEvidence {
   };
 }
 
-
 interface DocumentUploadResponse {
   fileId: string;
   name: string;
@@ -194,7 +193,12 @@ interface LateAppeal {
 
 interface AppealApplication {
   homeOfficeRefNumber: string;
+  appellantInUk: string;
+  gwfReferenceNumber: string;
+  outsideUkWhenApplicationMade?: string;
+  dateClientLeaveUk: AppealDate;
   dateLetterSent: AppealDate;
+  decisionLetterReceivedDate: AppealDate;
   homeOfficeLetter?: Evidence[];
   appealType: string;
   isAppealLate: boolean;
@@ -213,12 +217,31 @@ interface AppealApplication {
       county?: string;
     }
   };
+  appellantOutOfCountryAddress?: string;
   contactDetails: {
     email?: string;
     wantsEmail?: boolean;
     phone?: string;
     wantsSms?: boolean;
   };
+  hasSponsor?: string;
+  sponsorGivenNames?: string;
+  sponsorFamilyName?: string;
+  sponsorNameForDisplay?: string;
+  sponsorAddress?: {
+    line1?: string;
+    line2?: string;
+    city?: string;
+    postcode?: string;
+    county?: string;
+  };
+  sponsorContactDetails?: {
+    email?: string;
+    wantsEmail?: boolean;
+    phone?: string;
+    wantsSms?: boolean;
+  };
+  sponsorAuthorisation?: string;
   tasks?: {
     [key: string]: Task;
   };
@@ -313,6 +336,7 @@ interface RespondentDocument {
 
 interface AppealType {
   value: string;
+  name: string;
   title: string;
   examples: string;
   checked?: boolean;

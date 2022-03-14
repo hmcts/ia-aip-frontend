@@ -72,18 +72,26 @@ export default class CookiesBanner implements ICookies {
 
   setAnalyticsAndApmSelectionsForAccepted() {
     let analyticsRadioButtonOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
-    analyticsRadioButtonOn.checked = true;
+    if (analyticsRadioButtonOn && analyticsRadioButtonOn.checked) {
+      analyticsRadioButtonOn.checked = true;
+    }
 
     let apmRadioButtonOn: HTMLInputElement = document.querySelector('#radio-apm-on');
-    apmRadioButtonOn.checked = true;
+    if (apmRadioButtonOn && apmRadioButtonOn.checked) {
+      apmRadioButtonOn.checked = true;
+    }
   }
 
   setAnalyticsAndApmSelectionsForRejected() {
     let analyticsRadioButtonOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
-    analyticsRadioButtonOff.checked = true;
+    if (analyticsRadioButtonOff && analyticsRadioButtonOff.checked) {
+      analyticsRadioButtonOff.checked = true;
+    }
 
     let apmRadioButtonOff: HTMLInputElement = document.querySelector('#radio-apm-off');
-    apmRadioButtonOff.checked = true;
+    if (apmRadioButtonOff && apmRadioButtonOff.checked) {
+      apmRadioButtonOff.checked = true;
+    }
   }
 
   initAnalyticsCookie() {
@@ -112,11 +120,15 @@ export default class CookiesBanner implements ICookies {
 
     let analyticsRadioButtonOn: HTMLInputElement = document.querySelector(analyticsConsent === 'yes'
       ? '#radio-analytics-on' : '#radio-analytics-off');
-    analyticsRadioButtonOn.checked = true;
+    if (analyticsRadioButtonOn && analyticsRadioButtonOn.checked) {
+      analyticsRadioButtonOn.checked = true;
+    }
 
     let apmRadioButtonOn: HTMLInputElement = document.querySelector(apmConsent === 'yes'
       ? '#radio-apm-on' : '#radio-apm-off');
-    apmRadioButtonOn.checked = true;
+    if (apmRadioButtonOn && apmRadioButtonOn.checked) {
+      apmRadioButtonOn.checked = true;
+    }
 
   }
 

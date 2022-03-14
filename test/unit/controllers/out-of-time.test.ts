@@ -241,7 +241,8 @@ describe('Out of time controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.appealStarted.taskList,
-        appealOutOfCountry: undefined
+        appealOutOfCountry: undefined,
+        sentOrReceived: 'sent'
       });
     });
 
@@ -261,7 +262,8 @@ describe('Out of time controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.appealStarted.taskList,
-        appealOutOfCountry: undefined
+        appealOutOfCountry: undefined,
+        sentOrReceived: 'sent'
       });
     });
 
@@ -294,7 +296,8 @@ describe('Out of time controller', () => {
         error: { 'appeal-late': expectedError },
         errorList: [ expectedError ],
         previousPage: paths.appealStarted.taskList,
-        appealOutOfCountry: undefined
+        appealOutOfCountry: undefined,
+        sentOrReceived: 'sent'
       });
     });
 

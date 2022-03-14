@@ -367,8 +367,8 @@
     "homeOfficeAppealLate": {
       "title": "Your appeal is late",
       "appealLateLabel": "Why is your appeal late?",
-      "description": "Appeals should be made within 14 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
-      "descriptionOOC": "Appeals should be made within 28 days of the date the decision letter was sent. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
+      "description": "Appeals should be made within 14 days of the date the decision letter was {{ sentOrReceived }}. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
+      "descriptionOOC": "Appeals should be made within 28 days of the date the decision letter was {{ sentOrReceived }}. <br />You may still be able to appeal. Please tell us why your appeal is late, and provide supporting evidence if you have it.",
       "provideEvidenceTitle": "Supporting evidence for why your appeal is late",
       "provideEvidenceDescription": [
         "You can upload <b>one piece of evidence</b> to support your answer such as a letter, photo or document. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",

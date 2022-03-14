@@ -76,13 +76,13 @@ function dropdownValidation(text: string, theKey: string): ValidationErrors | nu
 }
 
 function homeOfficeNumberValidation(obj: object) {
-  /**
-   * Validates whether the Home Office reference number
-   * Home Office references accept either UANs or CID references (zero padded on letters) in the validation reference.
-   * UAN has the format of xxxx-xxxx-xxxx-xxxx.
-   * CID reference has the format of xxxxxxxxx
-   * A (CID) number with less than 9 digit will be padded with preceding zeros ( eg 123456 becomes 000123456).
-   */
+/**
+ * Validates whether the Home Office reference number
+ * Home Office references accept either UANs or CID references (zero padded on letters) in the validation reference.
+ * UAN has the format of xxxx-xxxx-xxxx-xxxx.
+ * CID reference has the format of xxxxxxxxx
+ * A (CID) number with less than 9 digit will be padded with preceding zeros ( eg 123456 becomes 000123456).
+ */
 
   let homeOfficeNumber = String(obj['homeOfficeRefNumber']);
   if (homeOfficeNumber.length > 0 && homeOfficeNumber.length < 9 && parseInt(homeOfficeNumber, 10)) {
@@ -100,14 +100,6 @@ function homeOfficeNumberValidation(obj: object) {
 
 function dateLetterSentValidation(obj: object): boolean | ValidationErrors {
   return dateValidation(obj, i18n.validationErrors.dateLetterSent);
-}
-
-function dateLetterReceivedValidation(obj: object): boolean | ValidationErrors {
-  return dateValidation(obj, i18n.validationErrors.dateLetterReceived);
-}
-
-function dateLeftUkValidation(obj: object): boolean | ValidationErrors {
-  return dateValidation(obj, i18n.validationErrors.dateLeftUk);
 }
 
 function dateOfBirthValidation(obj: object): boolean | ValidationErrors {
@@ -156,7 +148,7 @@ function dateValidation(obj: any, errors): boolean | ValidationErrors {
 function DOBValidation(obj: any, errors): boolean | ValidationErrors {
   const { year, month, day } = obj;
   const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
-    moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
+      moment(`${year} ${month} ${day}`, 'YYYY MM DD').format('YYYY MM DD') : 'invalid Date';
 
   const startDate = new Date();
   const numOfYears = 18;
@@ -180,15 +172,6 @@ function appellantNamesValidation(obj: object) {
   const schema = Joi.object({
     givenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.givenNames }),
     familyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.familyName })
-
-  }).unknown();
-  return validate(obj, schema);
-}
-
-function sponsorNamesValidation(obj: object) {
-  const schema = Joi.object({
-    sponsorGivenNames: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorGivenNames }),
-    sponsorFamilyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorFamilyName })
 
   }).unknown();
   return validate(obj, schema);
@@ -220,25 +203,25 @@ function contactDetailsValidation(obj: object) {
     selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
     'email-value': Joi.alternatives().conditional(
       'selections', {
-      is: Joi.string().regex(/email/),
-      then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
-        .email({ minDomainSegments: 2, allowUnicode: false }).messages({
-          'string.empty': i18n.validationErrors.emailEmpty,
-          'string.email': i18n.validationErrors.emailFormat
-        }),
-      otherwise: Joi.any()
-    }),
+        is: Joi.string().regex(/email/),
+        then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
+          .email({ minDomainSegments: 2, allowUnicode: false }).messages({
+            'string.empty': i18n.validationErrors.emailEmpty,
+            'string.email': i18n.validationErrors.emailFormat
+          }),
+        otherwise: Joi.any()
+      }),
     'text-message-value': Joi.alternatives().conditional(
       'selections', {
-      is: Joi.string().regex(/text-message/),
-      then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
-        .messages({
-          'string.empty': i18n.validationErrors.phoneEmpty,
-          'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-          'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
-        }),
-      otherwise: Joi.any()
-    })
+        is: Joi.string().regex(/text-message/),
+        then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
+          .messages({
+            'string.empty': i18n.validationErrors.phoneEmpty,
+            'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
+            'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+          }),
+        otherwise: Joi.any()
+      })
   }).unknown();
 
   return validate(obj, schema);
@@ -327,41 +310,6 @@ function addressValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
-function oocHrEeaValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.object({
-    answer: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.oocHrEea
-    })
-  }).unknown();
-
-  return validate(obj, schema);
-}
-
-function appellantInUkValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.object({
-    answer: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.appellantInUk
-    })
-  }).unknown();
-
-  return validate(obj, schema);
-}
-
-function gwfReferenceNumberValidation(obj: object): null | ValidationErrors {
-  /**
-   * Validates the Global Web Form (GWF) reference number
-   * GWF reference has the format of GWF12345678
-   */
-
-  const schema = Joi.object({
-    gwfReferenceNumber: Joi.string().required().regex(/^[a-zA-Z]+\d{8}/).messages({
-      'string.empty': i18n.validationErrors.gwfReference.required,
-      'string.pattern.base': i18n.validationErrors.gwfReference.invalid
-    })
-  }).unknown();
-  return validate(obj, schema);
-}
-
 function typeOfAppealValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
     appealType: Joi.string().required().messages({
@@ -423,70 +371,8 @@ function askForMoreTimeValidation(obj: object) {
   return validate(obj, schema);
 }
 
-function hasSponsorValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.object({
-    answer: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.hasSponsor
-    })
-  }).unknown();
-
-  return validate(obj, schema);
-}
-
-function sponsorAddressValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.object({
-    ['address-line-1']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorAddress.line1Required }),
-    ['address-town']: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorAddress.townCityRequired }),
-    ['address-county']: Joi.string().optional().empty(''),
-    ['address-line-2']: Joi.string().optional().empty(''),
-    ['address-postcode']: Joi.string().optional().regex(postcodeRegex).messages({
-          'string.pattern.base': i18n.validationErrors.postcode.invalid,
-          'string.empty': i18n.validationErrors.sponsorAddress.postcodeRequired
-    })
-  }).unknown();
-  return validate(obj, schema);
-}
-
-function sponsorContactDetailsValidation(obj: object) {
-  const schema = Joi.object({
-    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.sponsorContactDetails.selectOneOption }),
-    'email-value': Joi.alternatives().conditional(
-        'selections', {
-          is: Joi.string().regex(/email/),
-          then: Joi.string().required().messages({ 'any.required': i18n.validationErrors.emailEmpty })
-              .email({ minDomainSegments: 2, allowUnicode: false }).messages({
-                'string.empty': i18n.validationErrors.emailEmpty,
-                'string.email': i18n.validationErrors.emailFormat
-              }),
-          otherwise: Joi.any()
-        }),
-    'text-message-value': Joi.alternatives().conditional(
-        'selections', {
-          is: Joi.string().regex(/text-message/),
-          then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164')
-              .messages({
-                'string.empty': i18n.validationErrors.phoneEmpty,
-                'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-                'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
-              }),
-          otherwise: Joi.any()
-        })
-  }).unknown();
-
-  return validate(obj, schema);
-}
-
-function sponsorAuthorisationValidation(obj: object): null | ValidationErrors {
-  const schema = Joi.object({
-    answer: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.sponsorAuthorisation
-    })
-  }).unknown();
-
-  return validate(obj, schema);
-}
-
 function isDateInRange(dateFrom: string, dateTo: string, obj,dateMissingErrMsg: string): boolean | ValidationErrors {
+
   const errorMessage = `Enter a date between ${dateFrom} and ${dateTo}`;
   const { year, month, day } = obj;
   const date = moment(`${year} ${month} ${day}`, 'YYYY MM DD').isValid() ?
@@ -536,8 +422,6 @@ export {
   homeOfficeNumberValidation,
   dateValidation,
   dateLetterSentValidation,
-  dateLetterReceivedValidation,
-  dateLeftUkValidation,
   dateOfBirthValidation,
   dropdownValidation,
   appellantNamesValidation,
@@ -550,8 +434,6 @@ export {
   statementOfTruthValidation,
   addressValidation,
   typeOfAppealValidation,
-  oocHrEeaValidation,
-  appellantInUkValidation,
   reasonForAppealDecisionValidation,
   yesOrNoRequiredValidation,
   DOBValidation,
@@ -559,11 +441,5 @@ export {
   selectedRequiredValidation,
   isDateInRange,
   decisionTypeValidation,
-  interpreterLanguagesValidation,
-  hasSponsorValidation,
-  sponsorNamesValidation,
-  sponsorAddressValidation,
-  sponsorContactDetailsValidation,
-  sponsorAuthorisationValidation,
-  gwfReferenceNumberValidation
+  interpreterLanguagesValidation
 };

@@ -13,8 +13,6 @@ Feature: Home office reference page
 
     Then I see "Tell us about your appeal" in title
     And I click on the type-of-appeal link
-    Then I should be taken to the currently living in the United Kingdom page
-    When I select Yes and click continue
 
     Then I should be taken to the appeal page
     And  I select appeal type Protection

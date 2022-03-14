@@ -1,18 +1,27 @@
 import * as _ from 'lodash';
 
 function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
+  const appealOutOfCountry: boolean = !!_.get(appeal.application, 'appealOutOfCountry');
+  const appealType: boolean = !!_.get(appeal.application, 'appealType');
   const typeOfAppeal: Task = {
-    saved: !!_.get(appeal.application, 'appealType'),
-    completed: !!_.get(appeal.application, 'appealType'),
+    saved: appealOutOfCountry || appealType,
+    completed: appealOutOfCountry || appealType,
     active: true
   };
 
+  const gwfRefNumber: boolean = !!_.get(appeal.application, 'gwfReferenceNumber');
   const homeOfficeRefNumber: boolean = !!_.get(appeal.application, 'homeOfficeRefNumber');
   const dateLetterSent: boolean = !!_.get(appeal.application, 'dateLetterSent');
+  const decisionLetterReceived: boolean = !!_.get(appeal.application, 'decisionLetterReceivedDate');
   const homeOfficeLetter: boolean = appeal.application.homeOfficeLetter && appeal.application.homeOfficeLetter.length > 0 || false;
   const homeOfficeDetails: Task = {
-    saved: homeOfficeRefNumber || dateLetterSent || homeOfficeLetter,
-    completed: homeOfficeRefNumber && dateLetterSent && homeOfficeLetter,
+    saved: gwfRefNumber || homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
+    completed: homeOfficeLetter && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
+    active: typeOfAppeal.completed
+  };
+  const homeOfficeDetailsOOC: Task = {
+    saved: gwfRefNumber || homeOfficeRefNumber || decisionLetterReceived || homeOfficeLetter,
+    completed: homeOfficeLetter && ((homeOfficeRefNumber && dateLetterSent) || (gwfRefNumber && decisionLetterReceived) || (homeOfficeRefNumber && decisionLetterReceived)),
     active: typeOfAppeal.completed
   };
 
@@ -20,25 +29,39 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const familyName: boolean = !!_.get(appeal.application, 'personalDetails.familyName');
   const dob: boolean = !!_.get(appeal.application, 'personalDetails.dob');
   const nationality: boolean = !!_.get(appeal.application, 'personalDetails.nationality');
+  const appellantOutOfCountryAddress: boolean = !!_.get(appeal.application, 'appellantOutOfCountryAddress');
   const postcode: boolean = !!_.get(appeal.application, 'personalDetails.address.postcode');
   const line1: boolean = !!_.get(appeal.application, 'personalDetails.address.line1');
   const personalDetails: Task = {
-    saved: givenNames || familyName || dob || nationality || postcode || line1,
-    completed: givenNames && familyName && dob && nationality && line1,
-    active: homeOfficeDetails.completed
+    saved: givenNames || familyName || dob || nationality || postcode || line1 || appellantOutOfCountryAddress,
+    completed: givenNames && familyName && dob && nationality && (line1 || appellantOutOfCountryAddress),
+    active: homeOfficeDetails.completed || homeOfficeDetailsOOC.completed
   };
 
   const email: boolean = !!_.get(appeal.application, 'contactDetails.email');
   const wantsEmail: boolean = !!_.get(appeal.application, 'contactDetails.wantsEmail');
   const phone: boolean = !!_.get(appeal.application, 'contactDetails.phone');
   const wantsSms: boolean = !!_.get(appeal.application, 'contactDetails.wantsSms');
+  const hasSponsorNo: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'No' || false;
+  const hasSponsorYes: boolean = appeal.application.hasSponsor && appeal.application.hasSponsor === 'Yes' || false;
+  const sponsorEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.email');
+  const sponsorWantsEmail: boolean = !!_.get(appeal.application, 'sponsorContactDetails.wantsEmail');
+  const sponsorPhone: boolean = !!_.get(appeal.application, 'sponsorContactDetails.phone');
+  const sponsorWantsSms: boolean = !!_.get(appeal.application, 'sponsorContactDetails.wantsSms');
+  const sponsorGivenNames: boolean = !!_.get(appeal.application, 'sponsorGivenNames');
+  const sponsorFamilyName: boolean = !!_.get(appeal.application, 'sponsorFamilyName');
+  const sponsorAddress: boolean = !!_.get(appeal.application, 'sponsorAddress');
+  const sponsorAuthorisation: boolean = !!_.get(appeal.application, 'sponsorAuthorisation');
+  const appellantContactDetails: boolean = email && wantsEmail || phone && wantsSms;
+  const sponsorContactDetails: boolean = sponsorEmail && sponsorWantsEmail || sponsorPhone && sponsorWantsSms;
+  const outUkContactDetailsComplete: boolean = (appellantContactDetails && hasSponsorNo) ||
+      (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
   const contactDetails: Task = {
     saved: email && wantsEmail || phone && wantsSms,
-    completed: email && wantsEmail || phone && wantsSms,
+    completed: _.get(appeal.application, 'appellantInUk') === 'Yes' ? appellantContactDetails : outUkContactDetailsComplete,
     active: personalDetails.completed
   };
 
-  const appealType: boolean = !!_.get(appeal.application, 'appealType');
   let decisionTypePage: boolean;
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
     decisionTypePage = !!_.get(appeal.application, 'rpDcAppealHearingOption');
@@ -47,13 +70,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   }
   const payNow = _.get(appeal.application, 'appealType') === 'protection' && !!_.get(appeal, 'paAppealTypeAipPaymentOption');
   const decisionType: Task = {
-    saved: appealType || decisionTypePage || payNow,
-    completed: _.get(appeal.application, 'appealType') === 'protection' ? appealType && decisionTypePage && payNow : appealType && decisionTypePage,
-    active: contactDetails.completed
-  };
-
-  const typeOfAppealAndDecision: Task = {
-    saved: appealType || decisionTypePage || payNow,
+    saved: decisionTypePage || payNow,
     completed: _.get(appeal.application, 'appealType') === 'protection' ? appealType && decisionTypePage && payNow : appealType && decisionTypePage,
     active: contactDetails.completed
   };
@@ -61,22 +78,22 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const checkAndSend: Task = {
     saved: false,
     completed: false,
-    active: typeOfAppealAndDecision.completed
+    active: decisionType.completed
   };
 
   const checkAndSendWithPayments: Task = {
     saved: false,
     completed: false,
-    active: typeOfAppealAndDecision.completed
+    active: decisionType.completed
   };
 
   return {
     homeOfficeDetails,
+    homeOfficeDetailsOOC,
     personalDetails,
     contactDetails,
     typeOfAppeal,
     decisionType,
-    typeOfAppealAndDecision,
     checkAndSend,
     checkAndSendWithPayments
   };

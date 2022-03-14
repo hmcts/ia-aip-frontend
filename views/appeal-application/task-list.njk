@@ -26,7 +26,8 @@
               {{ govukTag({
                   text: "Saved"
               }) }}
-              {% elif task.active %}
+              {% else %}
+                {% if task.active %}
                     <a class="govuk-link" id='{{ i18n.pages.taskList[task.id].id }}'
                      href='{{ i18n.pages.taskList[task.id].path | path }}'
                      title='{{ i18n.pages.taskList[task.id].title }}'>
@@ -40,6 +41,7 @@
                       text: "CANNOT START YET",
                       classes: "govuk-tag--grey"
                     }) }}
+                {% endif %}
             {% endif %}
           </li>
         {% endfor %}
@@ -48,4 +50,3 @@
   {% endfor %}
   </ol>
 {% endblock %}
-

@@ -21,7 +21,11 @@
       }
     }) %}
 
+      {% if appealOutOfCountry %}
+      <p>{{ i18n.pages.homeOfficeAppealLate.descriptionOOC | safe }}</p>
+      {% else %}
       <p>{{ i18n.pages.homeOfficeAppealLate.description | safe }}</p>
+      {% endif %}
       {{ govukTextarea({
         name: "appeal-late",
         id: "appeal-late",

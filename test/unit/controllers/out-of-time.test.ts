@@ -233,6 +233,7 @@ describe('Out of time controller', () => {
       req.body['appeal-late'] = 'My explanation why am late';
       req.session.appeal.application.lateAppeal.evidence = evidenceExample;
       res.locals.multerError = expectedError.text;
+      req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
@@ -241,7 +242,7 @@ describe('Out of time controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.appealStarted.taskList,
-        appealOutOfCountry: undefined
+        appealOutOfCountry: true
       });
     });
 
@@ -253,6 +254,7 @@ describe('Out of time controller', () => {
       };
       req.body['appeal-late'] = 'My explanation why am late';
       res.locals.multerError = expectedError.text;
+      req.session.appeal.appealOutOfCountry = 'Yes';
 
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/home-office/appeal-late.njk', {
@@ -261,7 +263,7 @@ describe('Out of time controller', () => {
         error: { uploadFile: expectedError },
         errorList: [ expectedError ],
         previousPage: paths.appealStarted.taskList,
-        appealOutOfCountry: undefined
+        appealOutOfCountry: true
       });
     });
 
@@ -282,6 +284,7 @@ describe('Out of time controller', () => {
         href: '#appeal-late'
       };
       req.session.appeal.application.lateAppeal.evidence = evidenceExample;
+      req.session.appeal.appealOutOfCountry = 'Yes';
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
@@ -294,7 +297,7 @@ describe('Out of time controller', () => {
         error: { 'appeal-late': expectedError },
         errorList: [ expectedError ],
         previousPage: paths.appealStarted.taskList,
-        appealOutOfCountry: undefined
+        appealOutOfCountry: true
       });
     });
 

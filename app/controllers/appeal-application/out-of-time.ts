@@ -14,7 +14,7 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
     const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
-    let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+    let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
     res.render('appeal-application/home-office/appeal-late.njk', {
       appealLateReason,
       evidence: evidence,
@@ -36,7 +36,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
 
       const { application } = req.session.appeal;
       let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+      let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
 
       if (res.locals.multerError) {
         validationError = {
@@ -105,7 +105,7 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
       await documentManagementService.deleteFile(req, evidence.fileId);
       delete req.session.appeal.application.lateAppeal.evidence;
       const validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+      let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
 
       if (validationError) {
         return res.render('appeal-application/home-office/appeal-late.njk', {

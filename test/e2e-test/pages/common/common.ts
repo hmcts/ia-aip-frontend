@@ -135,6 +135,7 @@ module.exports = {
     Given('I have an appeal with home office details, name, date of birth, nationality and address', async () => {
       await setupData({
         appealType: 'protection',
+        appellantInUk: 'Yes',
         homeOfficeReferenceNumber: 'A1111111',
         homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
         appellantGivenNames: 'givenName',

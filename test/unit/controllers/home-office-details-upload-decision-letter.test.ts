@@ -108,7 +108,7 @@ describe('Home office decision letter', function () {
         evidenceUploadAction: paths.appealStarted.homeOfficeDecisionLetterUpload,
         evidences: [],
         evidenceCTA: paths.appealStarted.homeOfficeDecisionLetterDelete,
-        previousPage: paths.appealStarted.letterSent,
+        previousPage: paths.appealStarted.letterReceived,
         saveForLaterCTA: paths.common.overview,
         error: validationErrors,
         errorList: Object.values(validationErrors)

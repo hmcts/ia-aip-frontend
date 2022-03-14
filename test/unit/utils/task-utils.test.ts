@@ -11,13 +11,40 @@ describe('getStatus', () => {
       time: '10am'
     },
     application: {
+      appellantOutOfCountryAddress: '',
       homeOfficeRefNumber: 'reference no',
+      appellantInUk: 'No',
+      outsideUkWhenApplicationMade: 'No',
+      gwfReferenceNumber: '',
+      dateClientLeaveUk: {
+        year: '2022',
+        month: '2',
+        day: '19'
+      },
       appealType: null,
       contactDetails: null,
+      hasSponsor: null,
+      sponsorGivenNames: 'Michael',
+      sponsorFamilyName: 'Jackson',
+      sponsorNameForDisplay: 'Michael Jackson',
+      sponsorAddress: {
+        line1: '39 The Street,',
+        line2: '',
+        city: 'Ashtead',
+        county: 'United Kingdom',
+        postcode: 'KT21 1AA'
+      },
+      sponsorContactDetails: null,
+      sponsorAuthorisation: null,
       dateLetterSent: {
         day: '1',
         month: '1',
         year: '1980'
+      },
+      decisionLetterReceivedDate: {
+        year: '2020',
+        month: '2',
+        day: '16'
       },
       isAppealLate: true,
       lateAppeal: null,
@@ -84,6 +111,11 @@ describe('getStatus', () => {
       completed: true,
       active: false
     },
+    homeOfficeDetailsOOC: {
+      saved: true,
+      completed: true,
+      active: false
+    },
     personalDetails: {
       saved: true,
       completed: false,
@@ -98,11 +130,6 @@ describe('getStatus', () => {
       active: false,
       completed: false,
       saved: false
-    },
-    typeOfAppealAndDecision: {
-      saved: false,
-      completed: false,
-      active: false
     },
     checkAndSend: {
       saved: false,
@@ -152,13 +179,13 @@ describe('getStatus', () => {
       phone: '07769118762',
       wantsSms: true
     };
+    appeal.application.hasSponsor = 'No';
     status.contactDetails = {
       ...status.contactDetails,
       completed: true,
       saved: true
     };
     status.decisionType.active = true;
-    status.typeOfAppealAndDecision.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
@@ -170,12 +197,13 @@ describe('getStatus', () => {
       email: 'email@test.com',
       wantsEmail: true
     };
+    appeal.application.hasSponsor = 'No';
     status.contactDetails = {
       ...status.contactDetails,
       completed: true,
       saved: true
     };
-    status.typeOfAppeal.active = true;
+    status.decisionType.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 
@@ -186,66 +214,8 @@ describe('getStatus', () => {
       completed: true,
       saved: true
     };
-    status.typeOfAppealAndDecision = {
-      ...status.typeOfAppeal,
-      completed: false,
-      saved: true
-    };
     status.homeOfficeDetails.active = true;
-    status.decisionType.saved = true;
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
-  });
-
-  it('should update status typeOfAppealAndDecision as completed', () => {
-    appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-    status.typeOfAppealAndDecision = {
-      ...status.typeOfAppeal,
-      completed: false,
-      saved: true
-    };
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
-  });
-
-  it('should update status typeOfAppealAndDecision as completed', () => {
-    appeal.paAppealTypeAipPaymentOption = 'payLater';
-    status.typeOfAppealAndDecision = {
-      ...status.typeOfAppeal,
-      completed: true,
-      saved: true
-    };
-    status.checkAndSendWithPayments.active = true;
-    status.checkAndSend.active = true;
-    status.decisionType.completed = true;
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
-  });
-
-  it('should update status typeOfAppealAndDecision as completed', () => {
-    appeal.application.appealType = 'refusalOfHumanRights';
-    appeal.application.decisionHearingFeeOption = null;
-    appeal.paAppealTypeAipPaymentOption = null;
-    status.typeOfAppealAndDecision = {
-      ...status.typeOfAppeal,
-      completed: false,
-      saved: true
-    };
-    status.checkAndSendWithPayments.active = false;
-    status.checkAndSend.active = false;
-    status.decisionType.completed = false;
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
-  });
-
-  it('should update status typeOfAppealAndDecision as completed', () => {
-    appeal.application.appealType = 'refusalOfHumanRights';
-    appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
-    appeal.paAppealTypeAipPaymentOption = null;
-    status.typeOfAppealAndDecision = {
-      ...status.typeOfAppeal,
-      completed: true,
-      saved: true
-    };
-    status.checkAndSendWithPayments.active = true;
-    status.checkAndSend.active = true;
-    status.decisionType.completed = true;
+    status.homeOfficeDetailsOOC.active = true;
     expect(appealApplicationStatus(appeal)).to.deep.eq(status);
   });
 });

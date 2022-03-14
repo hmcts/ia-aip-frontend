@@ -6,11 +6,15 @@ import { appealApplicationStatus, buildSectionObject } from '../../utils/tasks-u
 async function getAppealStageStatus(req: Request) {
   const status = appealApplicationStatus(req.session.appeal);
   const paymentsFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
-  const typeOfAppealTask = paymentsFlag ? 'typeOfAppealAndDecision' : 'typeOfAppeal';
   const checkAndSendTask = paymentsFlag ? 'checkAndSendWithPayments' : 'checkAndSend';
-  const yourDetails = buildSectionObject('yourDetails', [ 'typeOfAppeal', 'homeOfficeDetails', 'personalDetails', 'contactDetails' ], status);
-  const decisionType = buildSectionObject('decisionType', [ 'decisionType' ], status);
-  const checkAndSend = buildSectionObject('checkAndSend', [ checkAndSendTask ], status);
+  const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
+  const humanRightsOrEEA: boolean = (req.session.appeal.application.appealType === 'refusalOfEu' || req.session.appeal.application.appealType === 'refusalOfHumanRights');
+
+  const homeOfficeDetails: string = (outsideUkWhenApplicationMade && humanRightsOrEEA) ? 'homeOfficeDetailsOOC' : 'homeOfficeDetails';
+
+  const yourDetails = buildSectionObject('yourDetails', ['typeOfAppeal', homeOfficeDetails, 'personalDetails', 'contactDetails'], status);
+  const decisionType = buildSectionObject('decisionType', ['decisionType'], status);
+  const checkAndSend = buildSectionObject('checkAndSend', [checkAndSendTask], status);
 
   return [
     yourDetails,

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { DocumentManagementService } from '../../service/document-management-service';
+import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
@@ -14,13 +14,11 @@ function getAppealLate(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
     const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
-    let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
     res.render('appeal-application/home-office/appeal-late.njk', {
       appealLateReason,
       evidence: evidence,
       evidenceCTA: paths.appealStarted.deleteEvidence,
-      previousPage: paths.appealStarted.taskList,
-      appealOutOfCountry: appealOutOfCountry
+      previousPage: paths.appealStarted.taskList
     });
   } catch (e) {
     next(e);
@@ -36,7 +34,6 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
 
       const { application } = req.session.appeal;
       let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
 
       if (res.locals.multerError) {
         validationError = {
@@ -56,8 +53,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
           evidence,
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.appealStarted.taskList,
-          appealOutOfCountry: appealOutOfCountry
+          previousPage: paths.appealStarted.taskList
         });
       }
       let lateAppeal: LateAppeal;
@@ -105,15 +101,12 @@ function postAppealLateDeleteFile(documentManagementService: DocumentManagementS
       await documentManagementService.deleteFile(req, evidence.fileId);
       delete req.session.appeal.application.lateAppeal.evidence;
       const validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
-      let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
-
       if (validationError) {
         return res.render('appeal-application/home-office/appeal-late.njk', {
           appealLateReason: req.body['appeal-late'],
           error: validationError,
           errorList: Object.values(validationError),
-          previousPage: paths.appealStarted.taskList,
-          appealOutOfCountry: appealOutOfCountry
+          previousPage: paths.appealStarted.taskList
         });
       }
       const lateAppeal: LateAppeal = {

@@ -11,9 +11,6 @@ module.exports = {
     Then(/^I should be taken to the appeal page$/, async () => {
       await I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });
-    Then(/^I should be taken to the currently living in the United Kingdom page$/, async () => {
-      await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
-    });
     When(/^I click on Protection as my type of appeal and click Save and continue$/, async () => {
       await I.checkOption('Protection');
       await I.click('Save and continue');

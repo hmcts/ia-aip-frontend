@@ -113,8 +113,8 @@ describe('Cookies Banner', () => {
       cookiesBanner.setAnalyticsAndApmSelectionsFromCookies();
       let analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
       let apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
-      expect(analyticsSelectionOn.checked).to.equal(false);
-      expect(apmSelectionOn.checked).to.equal(false);
+      expect(analyticsSelectionOn.checked).to.equal(true);
+      expect(apmSelectionOn.checked).to.equal(true);
     });
 
     it('should set the consent to no from cookies', () => {
@@ -124,8 +124,8 @@ describe('Cookies Banner', () => {
       cookiesBanner.setAnalyticsAndApmSelectionsFromCookies();
       let analyticsSelectionOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
       let apmSelectionOff: HTMLInputElement = document.querySelector('#radio-apm-off');
-      expect(analyticsSelectionOff.checked).to.equal(false);
-      expect(apmSelectionOff.checked).to.equal(false);
+      expect(analyticsSelectionOff.checked).to.equal(true);
+      expect(apmSelectionOff.checked).to.equal(true);
     });
   });
 
@@ -135,8 +135,8 @@ describe('Cookies Banner', () => {
 
       let analyticsSelectionOn: HTMLInputElement = document.querySelector('#radio-analytics-on');
       let apmSelectionOn: HTMLInputElement = document.querySelector('#radio-apm-on');
-      expect(analyticsSelectionOn.checked).to.equal(false);
-      expect(apmSelectionOn.checked).to.equal(false);
+      expect(analyticsSelectionOn.checked).to.equal(true);
+      expect(apmSelectionOn.checked).to.equal(true);
     });
 
     it('should set the consent to no when rejected', () => {

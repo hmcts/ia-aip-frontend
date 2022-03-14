@@ -9,7 +9,6 @@ import {
 import { countryList } from '../../../app/data/country-list';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { getNationalitiesOptions } from '../../../app/utils/nationalities';
@@ -124,17 +123,6 @@ describe('Nationality details Controller', function () {
       } as Appeal);
 
     });
-
-    it('should redirect to out of country address page when ooc feature is enabled', async () => {
-      // ooc feature flag is enabled
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
-
-      // appeal is out of country
-      req.session.appeal.appealOutOfCountry = 'Yes';
-      await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.oocAddress);
-    });
-
     it('should validate and redirect personal-details/nationality.njk', async () => {
       await postNationalityPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 

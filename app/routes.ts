@@ -8,7 +8,6 @@ import { setupContactDetailsController } from './controllers/appeal-application/
 import { setupDecisionTypeController } from './controllers/appeal-application/decision-type';
 import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
-import { setupOutOfCountryController } from './controllers/appeal-application/out-of-country';
 import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
 import './controllers/appeal-application/pay-now';
 import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
@@ -211,7 +210,6 @@ const hearingDatesToAvoidAddAnotherDateController = setupHearingDatesToAvoidAddA
 const hearingRequirementsCYAController = setupHearingRequirementsCYAController(middleware, updateAppealService);
 const yourHearingNeedsController = setupYourHearingNeedsController(middleware, updateAppealService);
 const hearingRequirementConfirmationController = setupHearingRequirementsConfirmationPage(middleware);
-const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
 const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleController(middleware);
@@ -320,7 +318,6 @@ router.use(cmaRequirementsCYAController);
 router.use(cmaRequirementsConfirmationController);
 router.use(whatToExpectAtCmaNextController);
 router.use(provideMoreEvidence);
-router.use(outOfCountryController);
 
 router.use(hearingBundleFeatureToggleController);
 router.use(outOfCountryFeatureToggleController);

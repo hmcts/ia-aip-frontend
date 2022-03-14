@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
-import { appealTypes } from '../../data/appeal-types';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { countryList } from '../../data/country-list';
 import { Events } from '../../data/events';
@@ -18,83 +17,23 @@ import { statementOfTruthValidation } from '../../utils/validations/fields-valid
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const { application } = req.session.appeal;
-  const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
-    return i18n.appealTypes[appealTypeInstance].name;
+  const appealTypeNames: string[] = application.appealType.split(',').map(appealType => {
+    return i18n.appealTypes[appealType].name;
   });
   const nationality = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
-  const appealType = appealTypes.find(appeal => appeal.value === application.appealType).name;
   const editParameter = '?edit';
-  const appellantInUk: boolean = (application.appellantInUk === 'Yes') || false;
-
   const rows = [
     addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.appellantInUk,
-        [ application.appellantInUk ],
-        paths.appealStarted.appealOutOfCountry + editParameter
+      i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,
+      [ application.homeOfficeRefNumber ],
+      paths.appealStarted.details + editParameter
     ),
     addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.appealType,
-      [appealType],
-      paths.appealStarted.typeOfAppeal + editParameter
-    )
-  ];
-
-  if (application.dateClientLeaveUk && application.dateClientLeaveUk.year && application.appealType === 'protection') {
-    const decisionLetterReceivedDateRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused,
-      [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
-      paths.appealStarted.oocProtectionDepartureDate + editParameter,
-      Delimiter.SPACE);
-    rows.push(decisionLetterReceivedDateRow);
-  }
-
-  if (application.outsideUkWhenApplicationMade && application.outsideUkWhenApplicationMade !== null) {
-    const gwfReferenceNumberRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.outsideUKWhenApplicationWasMade,
-      [application.outsideUkWhenApplicationMade],
-      paths.appealStarted.oocHrEea + editParameter);
-    rows.push(gwfReferenceNumberRow);
-  }
-
-  if (application.dateClientLeaveUk && application.dateClientLeaveUk.year && application.appealType !== 'protection') {
-    const decisionLetterReceivedDateRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused,
-      [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
-      paths.appealStarted.oocHrInside + editParameter,
-      Delimiter.SPACE);
-    rows.push(decisionLetterReceivedDateRow);
-  }
-
-  if (application.gwfReferenceNumber && application.gwfReferenceNumber !== null) {
-    const gwfReferenceNumberRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.gwfReferenceNumber,
-      [application.gwfReferenceNumber],
-      paths.appealStarted.gwfReference + editParameter);
-    rows.push(gwfReferenceNumberRow);
-  } else {
-    const homeOfficeRefNumberRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,
-      [application.homeOfficeRefNumber],
-      paths.appealStarted.details + editParameter);
-    rows.push(homeOfficeRefNumberRow);
-  }
-
-  if (application.decisionLetterReceivedDate && application.decisionLetterReceivedDate.year) {
-    const decisionLetterReceivedDateRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived,
-      [application.decisionLetterReceivedDate.day, moment.months(parseInt(application.decisionLetterReceivedDate.month, 10) - 1), application.decisionLetterReceivedDate.year],
-      paths.appealStarted.letterReceived + editParameter,
-      Delimiter.SPACE);
-    rows.push(decisionLetterReceivedDateRow);
-  } else {
-    const dateLetterSentRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
-      [application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year],
+      [ application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year ],
       paths.appealStarted.letterSent + editParameter,
-      Delimiter.SPACE);
-    rows.push(dateLetterSentRow);
-  }
-
-  const rowsCont = [
+      Delimiter.SPACE
+    ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
       application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
@@ -103,92 +42,42 @@ async function createSummaryRowsFrom(req: Request) {
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.name,
-      [application.personalDetails.givenNames, application.personalDetails.familyName],
+      [ application.personalDetails.givenNames, application.personalDetails.familyName ],
       paths.appealStarted.name + editParameter,
       Delimiter.SPACE
     ),
     addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.dob,
-      [application.personalDetails.dob.day, moment.months(parseInt(application.personalDetails.dob.month, 10) - 1), application.personalDetails.dob.year],
+      [ application.personalDetails.dob.day, moment.months(parseInt(application.personalDetails.dob.month, 10) - 1), application.personalDetails.dob.year ],
       paths.appealStarted.dob + editParameter,
       Delimiter.SPACE
     ),
     addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.nationality,
-        [ nationality ],
-        paths.appealStarted.nationality + editParameter
+      i18n.pages.checkYourAnswers.rowTitles.nationality,
+      [ nationality ],
+      paths.appealStarted.nationality + editParameter
+    ),
+    addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.addressDetails,
+      [ ...Object.values(application.personalDetails.address) ],
+      paths.appealStarted.enterAddress + editParameter,
+      Delimiter.BREAK_LINE
+    ),
+    addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.contactDetails,
+      [ application.contactDetails.email, application.contactDetails.phone ],
+      paths.appealStarted.contactDetails + editParameter,
+      Delimiter.BREAK_LINE
+    ),
+    addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.appealType,
+      [ appealTypeNames ],
+      paths.appealStarted.typeOfAppeal + editParameter
     )
   ];
 
-  if (application.appellantInUk) {
-
-    if (appellantInUk) {
-      const addressInUk = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails,
-          [...Object.values(application.personalDetails.address)],
-          paths.appealStarted.enterAddress + editParameter,
-          Delimiter.BREAK_LINE);
-      rows.push(addressInUk);
-    }
-
-    if (!appellantInUk && application.appellantOutOfCountryAddress) {
-      const oocAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails,
-          [...Object.values(application.appellantOutOfCountryAddress)],
-          paths.appealStarted.oocAddress + editParameter);
-      rows.push(oocAddress);
-    }
-
-    const contactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails,
-        [ application.contactDetails.email, application.contactDetails.phone ],
-        paths.appealStarted.contactDetails + editParameter,
-        Delimiter.BREAK_LINE);
-
-    rows.push(contactDetails);
-  }
-
-  if (application.hasSponsor) {
-
-    const hasSponsor = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor,
-        [...Object.values(application.hasSponsor)],
-        paths.appealStarted.hasSponsor + editParameter);
-    rows.push(hasSponsor);
-
-    if (['Yes'].includes(application.hasSponsor)) {
-
-      const hasSponsorName = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay,
-          [...Object.values(application.sponsorNameForDisplay)],
-          paths.appealStarted.sponsorName + editParameter);
-
-      const hasSponsorAddress = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails,
-          [...Object.values(application.sponsorAddress)],
-          paths.appealStarted.sponsorAddress + editParameter,
-          Delimiter.BREAK_LINE);
-
-      const hasSponsorContactDetails = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails,
-          [ application.sponsorContactDetails.email, application.sponsorContactDetails.phone ],
-          paths.appealStarted.sponsorContactDetails + editParameter,
-          Delimiter.BREAK_LINE);
-
-      const hasSponsorAuthorisation = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation,
-          [...Object.values(application.sponsorAuthorisation)],
-          paths.appealStarted.sponsorAuthorisation + editParameter);
-
-      rows.push(hasSponsorName);
-      rows.push(hasSponsorAddress);
-      rows.push(hasSponsorContactDetails);
-      rows.push(hasSponsorAuthorisation);
-    }
-
-    const appealTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType,
-        [appealTypeNames],
-        paths.appealStarted.typeOfAppeal + editParameter,
-        Delimiter.BREAK_LINE);
-    rows.push(appealTypeRow);
-  }
-
-  rows.push(...rowsCont);
-
   if (application.isAppealLate) {
-    const lateAppealValue = [formatTextForCYA(application.lateAppeal.reason)];
+    const lateAppealValue = [ formatTextForCYA(application.lateAppeal.reason) ];
     if (application.lateAppeal.evidence) {
       const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(urlHtml);
@@ -204,14 +93,14 @@ async function createSummaryRowsFrom(req: Request) {
     } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(application.appealType)) {
       decisionType = req.session.appeal.application.decisionHearingFeeOption;
     }
-    const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [i18n.pages.checkYourAnswers[decisionType]], paths.appealStarted.decisionType);
+    const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers[decisionType] ], paths.appealStarted.decisionType);
     rows.push(decisionTypeRow);
 
     const { paAppealTypeAipPaymentOption = null } = req.session.appeal;
     if (paAppealTypeAipPaymentOption) {
       const payNowRow = addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.paymentType,
-        [i18n.pages.checkYourAnswers[paAppealTypeAipPaymentOption]],
+        [ i18n.pages.checkYourAnswers[paAppealTypeAipPaymentOption]],
         paths.appealStarted.payNow + editParameter
       );
       rows.push(payNowRow);

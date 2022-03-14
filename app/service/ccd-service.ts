@@ -87,9 +87,6 @@ class CcdService {
   }
 
   loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails[]> {
-    // tslint:disable:no-console
-    console.log(userId);
-    console.log(headers);
     return rp.get(this.createOptions(
       userId,
       headers,

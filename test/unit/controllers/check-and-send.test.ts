@@ -22,10 +22,47 @@ import { createDummyAppealApplication } from '../mockData/mock-appeal';
 const express = require('express');
 
 function getMockedSummaryRows(appealType = 'protection'): SummaryRow[] {
-  return [{ key: { text: 'In the UK' }, value: { html: 'No' }, actions: { items: [{ href: '/in-the-uk?edit', text: 'Change' }] } }, { key: { text: 'Appeal type' }, value: { html: 'Protection' }, actions: { items: [{ href: '/appeal-type?edit', text: 'Change' }] } }, { key: { text: 'What date did you leave the UK after your Protection claim was refused?' }, value: { html: '19 February 2022' }, actions: { items: [{ href: '/ooc-protection-departure-date?edit', text: 'Change' }] } }, { key: { text: 'Outside UK when application was made' }, value: { html: 'No' }, actions: { items: [{ href: '/ooc-hr-eea?edit', text: 'Change' }] } }, { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' }, actions: { items: [{ href: '/home-office-reference-number?edit', text: 'Change' }] } }, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' }, actions: { items: [{ href: '/date-letter-received?edit', text: 'Change' }] } }, { key: { text: 'Address' }, value: { html: '28 The Street, Ukraine, 2378' }, actions: { items: [{ href: '/out-of-country-address?edit', text: 'Change' }] } }, { key: { text: 'Contact details' }, value: { html: 'pedro.jimenez@example.net<br>07123456789' }, actions: { items: [{ href: '/contact-preferences?edit', text: 'Change' }] } }, { key: { text: 'Sponsor' }, value: { html: 'Yes' }, actions: { items: [{ href: '/has-sponsor?edit', text: 'Change' }] } }, { key: { text: 'Sponsor\'s name' }, value: { html: 'Frank Smith' }, actions: { items: [{ href: '/sponsor-name?edit', text: 'Change' }] } }, { key: { text: 'Sponsor\'s address' }, value: { html: '39 The Street,<br>Ashtead<br>United Kingdom<br>KT21 1AA' }, actions: { items: [{ href: '/sponsor-address?edit', text: 'Change' }] } }, { key: { text: 'Sponsor\'s contact details' }, value: { html: 'frank.smith@example.net<br>07177777777' }, actions: { items: [{ href: '/sponsor-contact-preferences?edit', text: 'Change' }] } }, { key: { text: 'Sponsor has access to information' }, value: { html: 'Yes' }, actions: { items: [{ href: '/sponsor-authorisation?edit', text: 'Change' }] } }, { key: { text: 'Appeal type' }, value: { html: i18n.appealTypes[appealType].name }, actions: { items: [{ href: '/appeal-type?edit', text: 'Change' }] } }, { key: { text: 'Home Office decision letter' }, value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' }, actions: { items: [{ href: '/home-office-upload-decision-letter?edit', text: 'Change' }] } }, { key: { text: 'Name' }, value: { html: 'Pedro Jimenez' }, actions: { items: [{ href: '/name?edit', text: 'Change' }] } }, { key: { text: 'Date of birth' }, value: { html: '10 October 1980' }, actions: { items: [{ href: '/date-birth?edit', text: 'Change' }] } }, { key: { text: 'Nationality' }, value: { html: 'Austria' }, actions: { items: [{ href: '/nationality?edit', text: 'Change' }] } }];
-}
-function getMockedSummaryRowsPayment(appealType = 'protection'): SummaryRow[] {
-  return [{ key: { text: 'In the UK' }, value: { html: 'No' }, actions: { items: [{ href: '/in-the-uk?edit', text: 'Change' }] } }, { key: { text: 'Appeal type' }, value: { html: i18n.appealTypes[appealType].name }, actions: { items: [{ href: '/appeal-type?edit', text: 'Change' }] } }, { key: { text: 'Outside UK when application was made' }, value: { html: 'No' }, actions: { items: [{ href: '/ooc-hr-eea?edit', text: 'Change' }] } }, { key: { text: 'What date did you leave the UK after your application to stay in the country was refused?' }, value: { html: '19 February 2022' }, actions: { items: [{ href: '/ooc-hr-inside?edit', text: 'Change' }] } }, { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' }, actions: { items: [{ href: '/home-office-reference-number?edit', text: 'Change' }] } }, { key: { text: 'Date letter received' }, value: { html: '16 February 2020' }, actions: { items: [{ href: '/date-letter-received?edit', text: 'Change' }] } }, { key: { text: 'Address' }, value: { html: '28 The Street, Ukraine, 2378' }, actions: { items: [{ href: '/out-of-country-address?edit', text: 'Change' }] } }, { key: { text: 'Contact details' }, value: { html: 'pedro.jimenez@example.net<br>07123456789' }, actions: { items: [{ href: '/contact-preferences?edit', text: 'Change' }] } }, { key: { text: 'Sponsor' }, value: { html: 'Yes' }, actions: { items: [{ href: '/has-sponsor?edit', text: 'Change' }] } }, { key: { text: 'Sponsor\'s name' }, value: { html: 'Frank Smith' }, actions: { items: [{ href: '/sponsor-name?edit', text: 'Change' }] } }, { key: { text: 'Sponsor\'s address' }, value: { html: '39 The Street,<br>Ashtead<br>United Kingdom<br>KT21 1AA' }, actions: { items: [{ href: '/sponsor-address?edit', text: 'Change' }] } }, { key: { text: 'Sponsor\'s contact details' }, value: { html: 'frank.smith@example.net<br>07177777777' }, actions: { items: [{ href: '/sponsor-contact-preferences?edit', text: 'Change' }] } }, { key: { text: 'Sponsor has access to information' }, value: { html: 'Yes' }, actions: { items: [{ href: '/sponsor-authorisation?edit', text: 'Change' }] } }, { key: { text: 'Appeal type' }, value: { html: 'Deprivation of Citizenship' }, actions: { items: [{ href: '/appeal-type?edit', text: 'Change' }] } }, { key: { text: 'Home Office decision letter' }, value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' }, actions: { items: [{ href: '/home-office-upload-decision-letter?edit', text: 'Change' }] } }, { key: { text: 'Name' }, value: { html: 'Pedro Jimenez' }, actions: { items: [{ href: '/name?edit', text: 'Change' }] } }, { key: { text: 'Date of birth' }, value: { html: '10 October 1980' }, actions: { items: [{ href: '/date-birth?edit', text: 'Change' }] } }, { key: { text: 'Nationality' }, value: { html: 'Austria' }, actions: { items: [{ href: '/nationality?edit', text: 'Change' }] } }, { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' }, actions: { items: [{ href: '/decision-type', text: 'Change' }] } }];
+  return [ {
+    actions: { items: [ { href: '/home-office-reference-number?edit', text: 'Change' } ] },
+    key: { text: 'Home Office reference number' },
+    value: { html: 'A1234567' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.letterSent + '?edit', text: 'Change' } ] },
+    key: { text: 'Date letter sent' },
+    value: { html: '1 July 2019' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.homeOfficeDecisionLetter + '?edit', text: 'Change' } ] },
+    key: { text: 'Home Office decision letter' },
+    value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/anId\'>name</a>' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.name + '?edit', text: 'Change' } ] },
+    key: { text: 'Name' },
+    value: { html: 'Pedro Jimenez' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.dob + '?edit', text: 'Change' } ] },
+    key: { text: 'Date of birth' },
+    value: { html: '10 October 1980' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.nationality + '?edit', text: 'Change' } ] },
+    key: { text: 'Nationality' },
+    value: { html: 'Austria' }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.enterAddress + '?edit', text: 'Change' } ] },
+    key: { text: 'Address' },
+    value: {
+      html: '60 Beautiful Street<br>Flat 2<br>London<br>W1W 7RT<br>London'
+    }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.contactDetails + '?edit', text: 'Change' } ] },
+    key: { text: 'Contact details' },
+    value: {
+      html: 'pedro.jimenez@example.net<br>07123456789'
+    }
+  }, {
+    actions: { items: [ { href: paths.appealStarted.typeOfAppeal + '?edit', text: 'Change' } ] },
+    key: { text: 'Appeal type' },
+    value: { html: i18n.appealTypes[appealType].name }
+  } ];
 }
 
 describe('createSummaryRowsFrom', () => {
@@ -64,7 +101,7 @@ describe('createSummaryRowsFrom', () => {
     };
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [formatTextForCYA(req.session.appeal.application.lateAppeal.reason)], paths.appealStarted.appealLate);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(req.session.appeal.application.lateAppeal.reason) ], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
@@ -81,7 +118,7 @@ describe('createSummaryRowsFrom', () => {
     };
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [formatTextForCYA(req.session.appeal.application.lateAppeal.reason), `<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/fileId'>filename</a>`], paths.appealStarted.appealLate);
+    const appealLateRow = addSummaryRow('Reason for late appeal', [ formatTextForCYA(req.session.appeal.application.lateAppeal.reason), `<p class=\"govuk-!-font-weight-bold\">Supporting evidence</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/fileId'>filename</a>` ], paths.appealStarted.appealLate);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(appealLateRow);
     expect(rows).to.be.deep.equal(mockedRows);
@@ -93,8 +130,9 @@ describe('createSummaryRowsFrom', () => {
     req.session.appeal.application.appealType = 'deprivation';
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const mockedRows: SummaryRow[] = getMockedSummaryRowsPayment('deprivation');
-
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows('deprivation');
+    mockedRows.push(decisionType);
     expect(rows).to.be.deep.equal(mockedRows);
   });
 
@@ -103,7 +141,7 @@ describe('createSummaryRowsFrom', () => {
     req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [i18n.pages.checkYourAnswers['decisionWithHearing']], paths.appealStarted.decisionType);
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(decisionType);
     expect(rows).to.be.deep.equal(mockedRows);
@@ -115,8 +153,8 @@ describe('createSummaryRowsFrom', () => {
     req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
 
     const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [i18n.pages.checkYourAnswers['decisionWithHearing']], paths.appealStarted.decisionType);
-    const paymentType = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [i18n.pages.checkYourAnswers['payNow']], `${paths.appealStarted.payNow}?edit`);
+    const decisionType = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [ i18n.pages.checkYourAnswers['decisionWithHearing'] ], paths.appealStarted.decisionType);
+    const paymentType = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [ i18n.pages.checkYourAnswers['payNow'] ], `${paths.appealStarted.payNow}?edit`);
     const mockedRows: SummaryRow[] = getMockedSummaryRows();
     mockedRows.push(decisionType);
     mockedRows.push(paymentType);

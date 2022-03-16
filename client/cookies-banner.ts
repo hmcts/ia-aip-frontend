@@ -109,7 +109,7 @@ export default class CookiesBanner implements ICookies {
       });
 
       this.setAnalyticsAndApmSelectionsFromCookies();
-      if (analyticsConsent === 'yes') {
+      if (apmConsent === 'yes') {
         this.enableDynaCookies();
       } else {
         this.disableDynaCookies();

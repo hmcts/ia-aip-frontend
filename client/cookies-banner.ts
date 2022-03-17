@@ -57,6 +57,7 @@ export default class CookiesBanner implements ICookies {
       });
 
       this.hideCookieBanner();
+      this.disableDynaCookies();
     });
 
     if (this.saveButton !== null) {
@@ -108,7 +109,11 @@ export default class CookiesBanner implements ICookies {
       });
 
       this.setAnalyticsAndApmSelectionsFromCookies();
-      if (analyticsConsent === 'yes') this.enableDynaCookies();
+      if (apmConsent === 'yes') {
+        this.enableDynaCookies();
+      } else {
+        this.disableDynaCookies();
+      }
     } else {
       this.showCookieBanner();
     }
@@ -136,6 +141,13 @@ export default class CookiesBanner implements ICookies {
     if (window.dtrum !== undefined) {
       window.dtrum.enable();
       window.dtrum.enableSessionReplay();
+    }
+  }
+
+  disableDynaCookies() {
+    if (window.dtrum !== undefined) {
+      window.dtrum.disableSessionReplay();
+      window.dtrum.disable();
     }
   }
 

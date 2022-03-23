@@ -101,7 +101,7 @@ describe('Nationality details Controller', function () {
   describe('postNationality', () => {
     let appeal: Appeal;
     beforeEach(() => {
-      req.body.nationality = 'AQ';
+      req.body.nationality = 'AF';
       req.body.stateless = 'hasNationality';
       appeal = {
         ...req.session.appeal,
@@ -109,7 +109,7 @@ describe('Nationality details Controller', function () {
           ...req.session.appeal.application,
           personalDetails: {
             ...req.session.appeal.application.personalDetails,
-            nationality: 'AQ',
+            nationality: 'AF',
             stateless: 'hasNationality'
           }
         }
@@ -117,7 +117,7 @@ describe('Nationality details Controller', function () {
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
         application: {
           personalDetails: {
-            nationality: 'AQ',
+            nationality: 'AF',
             stateless: 'hasNationality'
           }
         }

@@ -152,12 +152,7 @@ const endedAppeal = {
       }
     ],
     "appellantNationalities": [
-      {
-        "id": "8ec4f879-786d-4a31-8449-0ec8e2967a35",
-        "value": {
-          "code": "AX"
-        }
-      }
+      { 'id': 'deb1b9fe-43f7-4a8b-89ef-951eeda7e11d', 'value': { 'code': 'AL' } }
     ],
     "homeOfficeDecisionDate": "2019-01-01",
     "searchPostcode": "E16 2FS",

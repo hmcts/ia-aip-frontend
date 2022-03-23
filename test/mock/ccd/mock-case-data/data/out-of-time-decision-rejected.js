@@ -61,12 +61,7 @@ const outOfTimeDecisionRejectedCaseData = {
     "appellantFamilyName": "Jimeno",
     "draftClarifyingQuestionsAnswers": [],
     "appellantNationalities": [
-      {
-        "id": "7cbdf73a-8863-41aa-84ee-f3a21ec63136",
-        "value": {
-          "code": "AX"
-        }
-      }
+      { 'id': 'deb1b9fe-43f7-4a8b-89ef-951eeda7e11d', 'value': { 'code': 'AL' } }
     ],
     "outOfTimeDecisionMaker": "Tribunal Caseworker",
     "homeOfficeDecisionDate": "2019-01-01",

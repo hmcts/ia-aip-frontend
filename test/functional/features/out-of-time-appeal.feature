@@ -29,7 +29,7 @@ Scenario: Explain the reason why my appeal is late
   And I click "Your personal details" link
   And Enter "Random" "User" as my Given and Family Name and click Save and continue
   And I enter "11" "11" "1999" as my DOB and click Save and continue
-  And I pick "Angola" from the Nationalities drop down and click continue
+  And I pick "Angolan" from the Nationalities drop down and click continue
   And I type "W1W 7RT" as my postcode and click Find address
   And I choose the first address from the dropdown list and click continue
   And I click "Save and continue" button

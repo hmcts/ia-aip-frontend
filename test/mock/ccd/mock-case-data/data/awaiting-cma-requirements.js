@@ -25,7 +25,7 @@ const awaitingCmaRequirements = {
     'appellantGivenNames': 'Citizen',
     'journeyType': 'aip',
     'appellantFamilyName': 'Surname',
-    'appellantNationalities': [ { 'id': '39dd0f68-aa9f-41b0-99a8-e553e1ce0fb1', 'value': { 'code': 'AX' } } ],
+    'appellantNationalities': [ { 'id': 'deb1b9fe-43f7-4a8b-89ef-951eeda7e11d', 'value': { 'code': 'AL' } } ],
     'homeOfficeDecisionDate': '2020-02-10',
     'searchPostcode': 'W1W 7RT',
     'submissionOutOfTime': 'No',

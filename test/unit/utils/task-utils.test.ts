@@ -162,7 +162,7 @@ describe('getStatus', () => {
     };
     appeal.application.personalDetails = {
       ...appeal.application.personalDetails,
-      nationality: 'Angola',
+      nationality: 'Angolan',
       address: {
         line1: '60 GPS London United Kingdom  W1W 7RT60 GPS London United Kingdom  W1W 7RT',
         postcode: 'W1W 7RT'

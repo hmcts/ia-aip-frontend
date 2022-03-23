@@ -18,7 +18,7 @@ Feature: Personal details nationality page
     Then I should see error summary
 
     Given I am on the personal details nationality page
-    When I enter a nationality "Armenia"
+    When I enter a nationality "Armenian"
     And I click "Save for later" button
     Then I am on the overview page
     Then I click continue
@@ -26,7 +26,7 @@ Feature: Personal details nationality page
     And I shouldnt be able to click "Your contact details"
 
     Given I am on the personal details nationality page
-    When I enter a nationality "Armenia"
+    When I enter a nationality "Armenian"
     And I click "Save and continue" button
     Then I should see the enter postcode page
 

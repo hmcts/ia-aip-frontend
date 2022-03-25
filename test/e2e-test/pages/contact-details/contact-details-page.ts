@@ -9,6 +9,11 @@ module.exports = {
       I.amOnPage(testUrl + paths.appealStarted.contactDetails);
     });
 
+    When(/^I enter email "([^"]*)"$/, async (email) => {
+      await I.checkOption('#contactDetails');
+      await I.fillField('#email-value', email);
+    });
+
     When(/^I enter text message number "([^"]*)"$/, async (phoneNumber) => {
       await I.checkOption('#contactDetails-2');
       await I.fillField('#text-message-value', phoneNumber);

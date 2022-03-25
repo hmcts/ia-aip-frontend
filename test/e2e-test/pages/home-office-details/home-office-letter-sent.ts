@@ -19,7 +19,16 @@ module.exports = {
       await I.seeInCurrentUrl(paths.appealStarted.letterSent);
     });
 
+    Then(/^I should see letter received page$/, async () => {
+      await I.seeInCurrentUrl(paths.appealStarted.letterReceived);
+    });
+
     When(/^I enter an on time letter sent date$/, async () => {
+      const date = new Date();
+      await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());
+    });
+
+    When(/^I enter an on time letter received date$/, async () => {
       const date = new Date();
       await fillInDate(date.getDate(),date.getMonth() + 1 ,date.getFullYear());
     });

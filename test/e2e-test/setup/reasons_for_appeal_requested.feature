@@ -40,7 +40,7 @@ Feature: Business rules
     Then I should be taken to the DOB page
     When I enter "11" "11" "1999" as my DOB and click Save and continue
     Then I should be taken to nationality page
-    When I pick "Angola" from the Nationalities drop down and click continue
+    When I pick "Angolan" from the Nationalities drop down and click continue
     Then I should be taken to the enter your postcode page
     When I type "W1W 7RT" as my postcode and click Find address
     Then I should be taken to the what is your address page

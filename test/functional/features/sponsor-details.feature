@@ -43,7 +43,7 @@ Scenario: Complete appeal application
   Then I should be taken to the DOB page
   When I enter "11" "11" "1999" as my DOB and click Save and continue
   Then I should be taken to nationality page
-  When I pick "Ukraine" from the Nationalities drop down and click continue
+  When I pick "Ukrainian" from the Nationalities drop down and click continue
   Then I am on the out of country address page
   And I see "What is your address?" in title
   When I enter an out of country address of "28 The Street, Ukraine, 23234"

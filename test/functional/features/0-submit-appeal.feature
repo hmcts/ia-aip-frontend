@@ -51,7 +51,7 @@ Feature: Home office reference page
     And I click "Save and continue" button
 
     Then I see "What is your nationality?" in title
-    And I select "Albania" from "What is your nationality?" drop-down
+    And I select "Albanian" from "What is your nationality?" drop-down
     And I click "Save and continue" button
 
     Then I see "What is your address?" in title

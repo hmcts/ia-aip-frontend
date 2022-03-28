@@ -455,7 +455,7 @@ describe('Detail viewer Controller', () => {
         },
         { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
-        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+        { key: { text: 'Nationality' }, value: { html: 'Albanian' } },
         {
           key: { text: 'Address' },
           value: {
@@ -686,7 +686,7 @@ describe('Detail viewer Controller', () => {
         { key: { text: 'Home Office decision letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>" } },
         { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
-        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+        { key: { text: 'Nationality' }, value: { html: 'Albanian' } },
         { key: { text: 'Address' }, value: { html: '28 Some Street, Ukraine, 23543' } },
         { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } },
         { key: { text: 'Sponsor' }, value: { html: 'Yes' } },
@@ -887,7 +887,7 @@ describe('Detail viewer Controller', () => {
         { key: { text: 'Home Office decision letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>" } },
         { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
         { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
-        { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+        { key: { text: 'Nationality' }, value: { html: 'Albanian' } },
         { key: { text: 'Address' }, value: { html: '28 Some Street, Ukraine, 23543' } },
         { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } },
         { key: { text: 'Sponsor' }, value: { html: 'No' } },

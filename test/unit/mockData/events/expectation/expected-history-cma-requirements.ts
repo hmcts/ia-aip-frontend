@@ -123,7 +123,7 @@ export const expectedEventsWithCmaRequirements = [{
     'appealReferenceNumber': 'RP/50003/2020',
     'appealType': 'revocationOfProtection',
     'uploadAdditionalEvidenceActionAvailable': 'No',
-    'appellantNationalities': [{ 'id': 'c650e242-553a-4b9d-8a60-d687aeb57fb0', 'value': { 'code': 'AX' } }],
+    'appellantNationalities': [{ 'id': 'c650e242-553a-4b9d-8a60-d687aeb57fb0', 'value': { 'code': 'AL' } }],
     'homeOfficeDecisionDate': '2020-04-19',
     'changeDirectionDueDateActionAvailable': 'No',
     'currentCaseStateVisibleToJudge': 'unknown',

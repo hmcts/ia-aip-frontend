@@ -203,8 +203,8 @@ export default class CookiesBanner implements ICookies {
        *   expect to appear on the site, and their subsequent categories and optionality.
        */
     const cookieManagerConfig = {
+      'user-preference-cookie-name': 'adoption-web-cookie-preferences',
       'preference-form-id': 'cookie-manager-form',
-      'user-preference-cookie-name': 'cm-user-preferences',
       'preference-form-saved-callback': false,
       'cookie-banner-id': 'cookie-banner',
       'cookie-banner-visible-on-page-with-preference-form': false,
@@ -216,7 +216,7 @@ export default class CookiesBanner implements ICookies {
         {
           'category-name': 'essential',
           'optional': false,
-          'cookies': ['Idam.Session', '_oauth2_proxy', 'Idam.AuthId', 'Idam.SSOSession', 'idam_ui_locales', 'XSRF-TOKEN']
+          'cookies': ['Idam.Session','__auth-token', 'adoption-web-cookie-preferences', '_oauth2_proxy', 'Idam.AuthId', 'Idam.SSOSession', 'idam_ui_locales', 'XSRF-TOKEN']
         },
         {
           'category-name': 'analytics',

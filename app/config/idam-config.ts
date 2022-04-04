@@ -16,7 +16,7 @@ export const idamConfig = {
   idamClientID: config.get('microservice'),
   openId: true,
   logger: null,
-  tokenCookieName: null
+  tokenCookieName: '_oauth2_proxy'
 };
 
 export function setupIdamConfig(logger: Logger) {

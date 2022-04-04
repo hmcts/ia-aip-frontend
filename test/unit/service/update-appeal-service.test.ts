@@ -21,6 +21,7 @@ describe('update-appeal-service', () => {
 
   const userId = 'userId';
   const userToken = 'userToken';
+  const oath2Token = 'oath2Token';
   const serviceToken = 'serviceToken';
   const caseId = 'caseId';
 
@@ -34,6 +35,7 @@ describe('update-appeal-service', () => {
     ccdServiceMock = sandbox.mock(ccdService);
 
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
+    sandbox.stub(idamService, 'getOath2ProxyToken').returns(oath2Token);
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
 
     updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService);
@@ -1121,7 +1123,8 @@ describe('update-appeal-service', () => {
         updateAppeal: sandbox.stub()
       };
       idamService2 = {
-        getUserToken: sandbox.stub().returns(userToken)
+        getUserToken: sandbox.stub().returns(userToken),
+        getOath2ProxyToken: sandbox.stub().returns(oath2Token)
       };
       s2sService2 = {
         getServiceToken: sandbox.stub().resolves(serviceToken)

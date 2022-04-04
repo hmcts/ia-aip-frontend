@@ -5,8 +5,12 @@ import { checkSession, initSession } from '../middleware/session-middleware';
 import { paths } from '../paths';
 import { getIdamLoginUrl, getIdamRedirectUrl } from '../utils/url-utils';
 
+// tslint:disable:no-console
 function getLogin(req: Request, res: Response, next: NextFunction) {
   try {
+    console.info('======================');
+    console.info('Reading Oath2 Proxy');
+    console.info(req.cookies['_oauth2_proxy']);
     res.redirect(paths.common.overview);
   } catch (e) {
     next(e);

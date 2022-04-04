@@ -28,10 +28,16 @@ function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
     next(e);
   }
 }
-
+// tslint:disable:no-console
 function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {
   idamConfig.redirectUri = getIdamRedirectUrl(req);
   idamConfig.idamLoginUrl = getIdamLoginUrl(req);
+  idamConfig.tokenCookieName = req.cookies['_oauth2_proxy'];
+  console.info('======================');
+  console.info('Reading Oath2 Proxy');
+  console.info('======================');
+  console.info(idamConfig.tokenCookieName);
+  console.info(req.cookies['_oauth2_proxy']);
   idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
 }
 

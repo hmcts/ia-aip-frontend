@@ -15,7 +15,8 @@ export const idamConfig = {
   idamSecret: config.get('idam.secret'),
   idamClientID: config.get('microservice'),
   openId: true,
-  logger: null
+  logger: null,
+  tokenCookieName: null
 };
 
 export function setupIdamConfig(logger: Logger) {

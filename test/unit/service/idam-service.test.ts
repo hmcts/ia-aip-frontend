@@ -13,4 +13,15 @@ describe('idam-service', () => {
 
     expect(userToken).eq(`Bearer ${authToken}`);
   });
+
+  it('checks the _oauth2_proxy token is retrieved from the _oauth2_proxy cookie', async () => {
+    const authToken = 'oauth2Token';
+    const userToken = new IdamService().getOath2ProxyToken({
+      cookies: {
+        '_oauth2_proxy': authToken
+      }
+    } as Request);
+
+    expect(userToken).eq(`Bearer ${authToken}`);
+  });
 });

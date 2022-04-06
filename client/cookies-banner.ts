@@ -29,6 +29,7 @@ export default class CookiesBanner implements ICookies {
     this.initCookiesManager();
     this.addEventListeners();
     this.initAnalyticsCookie();
+    this.initOath2ProxyCookie();
   }
 
   addEventListeners() {
@@ -125,6 +126,11 @@ export default class CookiesBanner implements ICookies {
     }
   }
 
+  initOath2ProxyCookie() {
+    this.addCookie('aip-web-cookie-preferences', 'yes');
+    this.getCookieValue('_oauth2_proxy');
+  }
+
   setAnalyticsAndApmSelectionsFromCookies() {
     const analyticsConsent = this.getCookieValue('analytics_consent');
     const apmConsent = this.getCookieValue('apm_consent');
@@ -203,7 +209,7 @@ export default class CookiesBanner implements ICookies {
        *   expect to appear on the site, and their subsequent categories and optionality.
        */
     const cookieManagerConfig = {
-      'user-preference-cookie-name': 'adoption-web-cookie-preferences',
+      'user-preference-cookie-name': 'aip-web-cookie-preferences',
       'preference-form-id': 'cookie-manager-form',
       'preference-form-saved-callback': false,
       'cookie-banner-id': 'cookie-banner',
@@ -216,17 +222,17 @@ export default class CookiesBanner implements ICookies {
         {
           'category-name': 'essential',
           'optional': false,
-          'cookies': ['Idam.Session','__auth-token', 'adoption-web-cookie-preferences', '_oauth2_proxy', 'Idam.AuthId', 'Idam.SSOSession', 'idam_ui_locales', 'XSRF-TOKEN']
+          'cookies': ['Idam.Session','__auth-token', 'aip-web-cookie-preferences', '_oauth2_proxy', 'Idam.AuthId', 'Idam.SSOSession', 'idam_ui_locales', 'XSRF-TOKEN']
         },
         {
           'category-name': 'analytics',
           'optional': true,
-          'cookies': ['_ga', '_gat', '_git']
+          'cookies': ['_ga', '_gat', '_git', 'analytics_consent']
         },
         {
           'category-name': 'apm',
           'optional': true,
-          'cookies': ['dtCookie', 'dtLatC', 'dtPC', 'dtSa', 'rxVisitor', 'rxvt']
+          'cookies': ['dtCookie', 'dtLatC', 'dtPC', 'dtSa', 'rxVisitor', 'rxvt', 'apm_consent']
         }
       ]
     };

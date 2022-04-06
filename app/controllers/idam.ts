@@ -37,12 +37,10 @@ function authenticateMiddleware(req: Request, res: Response, next: NextFunction)
   idamConfig.redirectUri = getIdamRedirectUrl(req);
   idamConfig.idamLoginUrl = getIdamLoginUrl(req);
   console.info('======================');
-  console.info('Reading Oath2 Proxy');
-  console.info(req.cookies['_oauth2_proxy']);
   console.info('Reading Response');
-  console.info(res);
+  console.info(res.getHeaders);
   console.info('Reading Request');
-  console.info(req);
+  console.info(req.cookies);
   idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
 }
 

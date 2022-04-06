@@ -38,7 +38,7 @@ function authenticateMiddleware(req: Request, res: Response, next: NextFunction)
   idamConfig.idamLoginUrl = getIdamLoginUrl(req);
   console.info('======================');
   console.info('Reading Response');
-  console.info(res.getHeaders);
+  console.info(res);
   console.info('Reading Request');
   console.info(req.cookies);
   idamExpressMiddleware.authenticate(idamConfig)(req, res, next);

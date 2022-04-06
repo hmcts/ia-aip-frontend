@@ -29,13 +29,13 @@ export default class CookiesBanner implements ICookies {
     this.initCookiesManager();
     this.addEventListeners();
     this.initAnalyticsCookie();
-    this.initOath2ProxyCookie();
   }
 
   addEventListeners() {
     this.acceptCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'yes');
       this.addCookie('apm_consent', 'yes');
+      this.addCookie('aip-web-cookie-preferences', 'yes');
       if (this.saveButton !== null) {
         this.setAnalyticsAndApmSelectionsForAccepted();
       }
@@ -124,11 +124,6 @@ export default class CookiesBanner implements ICookies {
     } else {
       this.showCookieBanner();
     }
-  }
-
-  initOath2ProxyCookie() {
-    this.addCookie('aip-web-cookie-preferences', 'yes');
-    this.getCookieValue('_oauth2_proxy');
   }
 
   setAnalyticsAndApmSelectionsFromCookies() {

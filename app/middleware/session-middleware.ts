@@ -23,10 +23,8 @@ async function initSession(req: Request, res: Response, next: NextFunction) {
 function checkSession(args: any = {}) {
   return (req: Request, res: Response, next: NextFunction) => {
     const tokenCookieName = args.tokenCookieName || '__auth-token';
-    const oauth2CookieName = args.tokenCookieName || '_oauth2_proxy';
-    if (req.cookies && req.cookies[tokenCookieName] && oauth2CookieName && !_.has(req, 'session.appeal.application')) {
+    if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
       res.clearCookie(tokenCookieName, '/');
-      res.clearCookie(oauth2CookieName, '/');
       res.redirect(paths.common.login);
     } else {
       next();

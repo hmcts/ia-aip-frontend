@@ -11,6 +11,7 @@ function getLogin(req: Request, res: Response, next: NextFunction) {
     console.info('======================');
     console.info('Reading Oath2 Proxy');
     console.info(req.cookies['_oauth2_proxy']);
+    console.info(req.cookies['_oauth2_proxy_csrf']);
     res.redirect(paths.common.overview);
   } catch (e) {
     next(e);

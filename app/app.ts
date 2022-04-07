@@ -45,7 +45,7 @@ function createApp() {
   app.locals.maxFileSizeInMb = config.get('evidenceUpload.maxFileSizeInMb');
   app.locals.supportedFormats = config.get('evidenceUpload.supportedFormats');
   app.locals.trackingScripts = config.get('trackingScripts');
-  if (environment !== 'test') app.use(logRequestMiddleware);
+  // if (environment !== 'test') app.use(logRequestMiddleware);
   app.use(express.static('build', { maxAge: 31557600000 }));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -66,6 +66,7 @@ function createApp() {
     res.locals.csrfToken = req.csrfToken();
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     res.cookie('_oauth2_proxy', req.cookies['_oauth2_proxy']);
+    res.cookie('__auth-token', req.cookies['__auth-token']);
     next();
   });
   app.use(isUserAuthenticated);

@@ -9,9 +9,8 @@ import { getIdamLoginUrl, getIdamRedirectUrl } from '../utils/url-utils';
 function getLogin(req: Request, res: Response, next: NextFunction) {
   try {
     console.info('======================');
-    console.info('Reading Oath2 Proxy');
-    console.info(req.cookies['_oauth2_proxy']);
-    console.info(req.cookies['_oauth2_proxy_csrf']);
+    console.info('getLogin Response');
+    console.info(res);
     res.redirect(paths.common.overview);
   } catch (e) {
     next(e);
@@ -28,6 +27,9 @@ function getLogout(req: Request, res: Response, next: NextFunction) {
 
 function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
+    console.info('======================');
+    console.info('getRedirectUrl');
+    console.info(res);
     res.redirect(paths.common.overview);
   } catch (e) {
     next(e);

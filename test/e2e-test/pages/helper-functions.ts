@@ -7,7 +7,6 @@ async function signInHelper() {
     const userDetails = await createUser();
     I.fillField('#username', userDetails.email);
     I.fillField('#password', userDetails.password);
-    I.setCookie('oauth2Token');
   }
   I.click('Sign in');
   I.wait(5);

@@ -65,8 +65,9 @@ function createApp() {
   app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
     res.locals.host = getUrl(req.protocol, req.hostname, '');
-    res.cookie('_oauth2_proxy', req.cookies['_oauth2_proxy']);
-    res.cookie('_oauth2_proxy_csrf', req.cookies['_oauth2_proxy_csrf']);
+    res.cookie('_oauth2_proxy', req.cookies['_oauth2_proxy'], { sameSite: 'none', secure: true });
+    res.cookie('__auth-token', req.cookies['__auth-token'], { sameSite: 'none', secure: true });
+    res.cookie('_oauth2_proxy_csrf', req.cookies['_oauth2_proxy_csrf'], { sameSite: 'none', secure: true });
     next();
   });
   app.use(isUserAuthenticated);

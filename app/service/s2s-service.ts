@@ -80,6 +80,8 @@ export default class S2SService implements IS2SService {
     }
     if (res && res.data) {
       this.serviceToken = res.data;
+      // tslint:disable-next-line:no-console
+      console.info(this.serviceToken);
       logger.trace('Received S2S token and stored token', logLabel);
     } else {
       logger.exception('Could not retrieve S2S token', logLabel);

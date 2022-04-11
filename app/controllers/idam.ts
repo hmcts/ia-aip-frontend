@@ -48,6 +48,9 @@ function authenticateMiddleware(req: Request, res: Response, next: NextFunction)
   console.info(res);
   console.info('Reading Request');
   console.info(req.cookies);
+  res.cookie('_oauth2_proxy', req.cookies['_oauth2_proxy'], { sameSite: 'none', secure: true });
+  res.cookie('__auth-token', req.cookies['__auth-token'], { sameSite: 'none', secure: true });
+  res.cookie('_oauth2_proxy_csrf', req.cookies['_oauth2_proxy_csrf'], { sameSite: 'none', secure: true });
   idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
 }
 

@@ -25,7 +25,7 @@ function setupSession() {
         httpOnly: true,
         maxAge: config.get('session.cookie.maxAgeInMs'),
         secure: isSecure,
-        sameSite: 'lax'
+        sameSite: 'none'
       },
       resave: true,
       saveUninitialized: true,

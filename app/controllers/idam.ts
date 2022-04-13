@@ -4,6 +4,7 @@ import { idamConfig } from '../config/idam-config';
 import { checkSession, initSession } from '../middleware/session-middleware';
 import { paths } from '../paths';
 import { getIdamLoginUrl, getIdamRedirectUrl } from '../utils/url-utils';
+import { idamExpressAuthenticate } from './idamExpressAuthenticate';
 
 // tslint:disable:no-console
 function getLogin(req: Request, res: Response, next: NextFunction) {
@@ -45,7 +46,7 @@ function authenticateMiddleware(req: Request, res: Response, next: NextFunction)
   res.cookie('_oauth2_proxy', req.cookies['_oauth2_proxy'], { sameSite: 'lax', secure: true });
  // res.cookie('__auth-token', req.cookies['__auth-token'], { sameSite: 'none', secure: true });
   res.cookie('_oauth2_proxy_csrf', req.cookies['_oauth2_proxy_csrf'], { sameSite: 'lax', secure: true });
-  idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
+  idamExpressAuthenticate(idamConfig)(req, res, next);
 }
 
 function setupIdamController(): Router {

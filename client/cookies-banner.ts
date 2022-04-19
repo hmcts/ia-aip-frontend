@@ -1,3 +1,4 @@
+import * as cookieManager from '@hmcts/cookie-manager';
 import { isNull } from 'lodash';
 
 interface ICookies {
@@ -25,6 +26,7 @@ export default class CookiesBanner implements ICookies {
     this.rejectCookiesButton = document.querySelector('#rejectCookies');
     this.saveButton = document.querySelector('#saveCookies');
 
+    this.initCookiesManager();
     this.addEventListeners();
     this.initAnalyticsCookie();
   }
@@ -33,6 +35,7 @@ export default class CookiesBanner implements ICookies {
     this.acceptCookiesButton.addEventListener('click', () => {
       this.addCookie('analytics_consent', 'yes');
       this.addCookie('apm_consent', 'yes');
+      this.addCookie('aip-web-cookie-preferences', 'yes');
       if (this.saveButton !== null) {
         this.setAnalyticsAndApmSelectionsForAccepted();
       }
@@ -61,14 +64,18 @@ export default class CookiesBanner implements ICookies {
     });
 
     if (this.saveButton !== null) {
-      this.saveButton.addEventListener('click', () => {
-        let analyticsRadioButtonOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
-        this.addCookie('analytics_consent', analyticsRadioButtonOff.checked ? 'no' : 'yes');
-
-        let apmRadioButtonOff: HTMLInputElement = document.querySelector('#radio-apm-off');
-        this.addCookie('apm_consent', apmRadioButtonOff.checked ? 'no' : 'yes');
-      });
+      this.saveAnalyticsAndApmSelections();
     }
+  }
+
+  saveAnalyticsAndApmSelections() {
+    this.saveButton.addEventListener('click', () => {
+      let analyticsRadioButtonOff: HTMLInputElement = document.querySelector('#radio-analytics-off');
+      this.addCookie('analytics_consent', analyticsRadioButtonOff.checked ? 'no' : 'yes');
+
+      let apmRadioButtonOff: HTMLInputElement = document.querySelector('#radio-apm-off');
+      this.addCookie('apm_consent', apmRadioButtonOff.checked ? 'no' : 'yes');
+    });
   }
 
   setAnalyticsAndApmSelectionsForAccepted() {
@@ -190,5 +197,42 @@ export default class CookiesBanner implements ICookies {
 
   showCookieBanner() {
     this.cookieBanner.style.display = 'block';
+  }
+
+  initCookiesManager() {
+    /*  This is where you configure the initial settings of the cookieManager and list the cookies that you
+       *   expect to appear on the site, and their subsequent categories and optionality.
+       */
+    const cookieManagerConfig = {
+      'user-preference-cookie-name': 'aip-web-cookie-preferences',
+      'preference-form-id': 'cookie-manager-form',
+      'preference-form-saved-callback': false,
+      'cookie-banner-id': 'cookie-banner',
+      'cookie-banner-visible-on-page-with-preference-form': false,
+      'cookie-banner-auto-hide': false,
+      'cookie-banner-accept-callback': this.setAnalyticsAndApmSelectionsForAccepted,
+      'cookie-banner-reject-callback': this.setAnalyticsAndApmSelectionsForRejected,
+      'cookie-banner-save-callback': this.saveAnalyticsAndApmSelections,
+      'cookie-manifest': [
+        {
+          'category-name': 'essential',
+          'optional': false,
+          'cookies': ['_oauth2_proxy_csrf', 'Idam.Session','__auth-token', 'aip-web-cookie-preferences', '_oauth2_proxy', 'Idam.AuthId', 'Idam.SSOSession', 'idam_ui_locales', 'XSRF-TOKEN']
+        },
+        {
+          'category-name': 'analytics',
+          'optional': true,
+          'cookies': ['_ga', '_gat', '_git', 'analytics_consent']
+        },
+        {
+          'category-name': 'apm',
+          'optional': true,
+          'cookies': ['dtCookie', 'dtLatC', 'dtPC', 'dtSa', 'rxVisitor', 'rxvt', 'apm_consent']
+        }
+      ]
+    };
+
+    /*  Initializes the cookie manager with the provided settings */
+    cookieManager.init(cookieManagerConfig);
   }
 }

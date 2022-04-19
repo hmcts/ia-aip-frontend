@@ -156,6 +156,7 @@
       window.gtag('js', new Date());
       window.gtag('config', 'UA-159574540-1');
     </script>
+    <script src="./cookie-manager.js"></script>
   {% endif %}
 {% endblock %}
 
@@ -183,8 +184,7 @@
               text: i18n.cookieBanner.acceptCookiesButton,
               classes: "govuk-!-margin-right-3",
               attributes: {
-                id: 'acceptCookies'
-              }
+                id: 'acceptCookies'              }
             }) }}
 
             {{ govukButton({
@@ -192,8 +192,7 @@
               text: i18n.cookieBanner.rejectCookiesButton,
               classes: "govuk-!-margin-right-3",
               attributes: {
-                id: 'rejectCookies'
-              }
+                id: 'rejectCookies'              }
             }) }}
             <a href="{{paths.common.cookies}}" class="govuk-link">{{ i18n.cookieBanner.viewCookies }}</a>
         </div>

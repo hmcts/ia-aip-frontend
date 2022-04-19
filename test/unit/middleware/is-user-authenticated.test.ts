@@ -31,6 +31,7 @@ describe('is-user-authenticated middleware', () => {
 
   it('should return true if user is not authenticated', () => {
     req.cookies['__auth-token'] = 'aToken';
+    req.cookies['_oauth2_proxy'] = 'bToken';
     isUserAuthenticated(req as Request, res as Response, next);
 
     expect(res.locals.authenticated).to.be.true;

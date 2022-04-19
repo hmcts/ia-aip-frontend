@@ -13,6 +13,8 @@ const updateAppealService: UpdateAppealService = new UpdateAppealService(new Ccd
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
+    // tslint:disable-next-line:no-console
+    console.debug('initSession');
     await updateAppealService.loadAppeal(req);
     next();
   } catch (e) {
@@ -23,6 +25,8 @@ async function initSession(req: Request, res: Response, next: NextFunction) {
 function checkSession(args: any = {}) {
   return (req: Request, res: Response, next: NextFunction) => {
     const tokenCookieName = args.tokenCookieName || '__auth-token';
+    // tslint:disable-next-line:no-console
+    console.debug('Check Session' + tokenCookieName);
     if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
       res.clearCookie(tokenCookieName, '/');
       res.redirect(paths.common.login);

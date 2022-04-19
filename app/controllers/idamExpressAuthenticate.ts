@@ -24,12 +24,14 @@ const idamExpressAuthenticate = (args = {}) => {
 
     const redirectUser = () => {
       const state = getState();
+      logger.info(`redirectUser: ${state}`);
       cookies.set(res, stateCookieName, state, idamConfig.idamApiUrl);
+      logger.info(`redirectUser: ${state}`);
       res.redirect(idamFunctions.getIdamLoginUrl({ state }));
     };
     const authToken = cookies.get(req, tokenCookieName);
     if (authToken) {
-      logger.debug(`User is authenticated: ${authToken}`);
+      logger.info(`User is authenticated: ${authToken}`);
       idamFunctions
         .getUserDetails(authToken)
         .then(userDetails => {

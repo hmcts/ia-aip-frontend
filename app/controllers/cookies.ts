@@ -6,6 +6,8 @@ const set = (res, cookieName, cookieValue,
     sameSite: 'lax',
     domain
   });
+  // tslint:disable-next-line:no-console
+  console.debug(`cookie set: ${cookieValue}, ${domain}`);
 };
 
 const get = (req, cookieName) => {

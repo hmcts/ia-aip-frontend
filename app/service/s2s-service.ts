@@ -74,7 +74,9 @@ export default class S2SService implements IS2SService {
     }
     let res;
     try {
+      logger.trace(`Attempting to request a S2S token from: ${request.uri}, microservice: ${request.body.microservice}`, logLabel);
       res = await axios.post(request.uri, request.body, proxyConfig);
+      logger.trace('Attempting to request a S2S token after', logLabel);
     } catch (err) {
       logger.exception(err, logLabel);
     }

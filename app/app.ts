@@ -67,7 +67,7 @@ function createApp() {
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });
-  app.use(isUserAuthenticated);
+//  app.use(isUserAuthenticated);
   app.use(router);
   app.use(logErrorMiddleware);
   app.use(pageNotFoundHandler);

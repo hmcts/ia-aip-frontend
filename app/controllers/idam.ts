@@ -9,6 +9,8 @@ function getLogin(req: Request, res: Response, next: NextFunction) {
   try {
     res.redirect(paths.common.overview);
   } catch (e) {
+    // tslint:disable-next-line:no-console
+    console.debug('getLogin Error' + e.toString());
     next(e);
   }
 }
@@ -25,6 +27,8 @@ function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
     res.redirect(paths.common.overview);
   } catch (e) {
+    // tslint:disable-next-line:no-console
+    console.debug('getRedirectUrl Error' + e.toString());
     next(e);
   }
 }

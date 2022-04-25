@@ -16,6 +16,8 @@ async function initSession(req: Request, res: Response, next: NextFunction) {
     await updateAppealService.loadAppeal(req);
     next();
   } catch (e) {
+    // tslint:disable-next-line:no-console
+    console.debug('initSession Error' + e.toString());
     next(e);
   }
 }
@@ -23,7 +25,11 @@ async function initSession(req: Request, res: Response, next: NextFunction) {
 function checkSession(args: any = {}) {
   return (req: Request, res: Response, next: NextFunction) => {
     const tokenCookieName = args.tokenCookieName || '__auth-token';
+    // tslint:disable-next-line:no-console
+    console.debug('checkSession tokenCookieName: ' + tokenCookieName);
     if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
+      // tslint:disable-next-line:no-console
+      console.debug('checkSession clearCookie');
       res.clearCookie(tokenCookieName, '/');
       res.redirect(paths.common.login);
     } else {

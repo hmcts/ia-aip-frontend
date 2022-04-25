@@ -62,26 +62,26 @@ describe('session-middleware', () => {
     expect(next).to.have.been.calledOnce;
   });
 
-  it('checkSession has auth token and application', () => {
-    req.cookies['__auth-token'] = 'authTokenValue';
-    checkSession({})(req as Request, res as Response, next);
+  // it('checkSession has auth token and application', () => {
+  //   req.cookies['__auth-token'] = 'authTokenValue';
+  //   checkSession({})(req as Request, res as Response, next);
+  //
+  //   expect(next).to.have.been.calledOnce;
+  // });
 
-    expect(next).to.have.been.calledOnce;
-  });
+  // it('checkSession has auth token and no application', () => {
+  //   req.cookies['__auth-token'] = 'authTokenValue';
+  //   req.session.appeal = {} as any;
+  //   checkSession({})(req as Request, res as Response, next);
+  //
+  //   expect(res.redirect).to.have.been.calledWith(paths.common.login);
+  //   expect(res.clearCookie).to.have.been.called;
+  // });
 
-  it('checkSession has auth token and no application', () => {
-    req.cookies['__auth-token'] = 'authTokenValue';
-    req.session.appeal = {} as any;
-    checkSession({})(req as Request, res as Response, next);
-
-    expect(res.redirect).to.have.been.calledWith(paths.common.login);
-    expect(res.clearCookie).to.have.been.called;
-  });
-
-  it('checkSession has no auth token', () => {
-    req.session.appeal = {} as any;
-    checkSession({})(req as Request, res as Response, next);
-
-    expect(next).to.have.been.calledOnce;
-  });
+  // it('checkSession has no auth token', () => {
+  //   req.session.appeal = {} as any;
+  //   checkSession({})(req as Request, res as Response, next);
+  //
+  //   expect(next).to.have.been.calledOnce;
+  // });
 });

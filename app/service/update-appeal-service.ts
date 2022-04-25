@@ -48,6 +48,8 @@ export default class UpdateAppealService {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
+    // tslint:disable-next-line:no-console
+    console.log('loadAppeal, ccdCase id : ' + ccdCase.id);
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
   }
 

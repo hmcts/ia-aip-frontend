@@ -138,7 +138,7 @@ export default class UpdateAppealService {
     let hasPendingTimeExtension = false;
     let documentMap: DocumentMap[] = [];
 
-    const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
+    const appellantContactDetails = subscriptions.reduce((_contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
         return {
@@ -150,7 +150,7 @@ export default class UpdateAppealService {
       }
     }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
 
-    const sponsorContactDetails = sponsorSubscriptions.reduce((scd, sponsorSubscription) => {
+    const sponsorContactDetails = sponsorSubscriptions.reduce((_scd, sponsorSubscription) => {
       const value = sponsorSubscription.value;
       return {
         email: value.email || null,

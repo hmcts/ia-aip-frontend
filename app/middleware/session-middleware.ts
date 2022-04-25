@@ -11,7 +11,7 @@ import Logger from '../utils/logger';
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 
-async function initSession(req: Request, res: Response, next: NextFunction) {
+async function initSession(req: Request, _res: Response, next: NextFunction) {
   try {
     await updateAppealService.loadAppeal(req);
     next();
@@ -51,7 +51,7 @@ function replacer(key, value) {
   }
 }
 
-function logSession(req: Request, res: Response, next: NextFunction) {
+function logSession(req: Request, _res: Response, next: NextFunction) {
   try {
     const logger: Logger = req.app.locals.logger;
     logger.request(JSON.stringify(req.session, replacer, 2), 'logSession');

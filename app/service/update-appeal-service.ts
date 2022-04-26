@@ -53,6 +53,8 @@ export default class UpdateAppealService {
     // tslint:disable-next-line:no-console
     console.log('loadAppeal, ccdCase id : ' + ccdCase.state);
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    // tslint:disable-next-line:no-console
+    console.log('loadAppeal, req.session.appeal : ' + req.session.appeal);
   }
 
   private getDate(ccdDate): AppealDate {
@@ -102,6 +104,8 @@ export default class UpdateAppealService {
   }
 
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
+    // tslint:disable-next-line:no-console
+    console.debug('mapCcdCaseToAppeal');
     const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const decisionLetterReceivedDate = this.getDate(caseData.decisionLetterReceivedDate);

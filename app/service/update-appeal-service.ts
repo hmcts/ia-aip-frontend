@@ -51,10 +51,10 @@ export default class UpdateAppealService {
     // tslint:disable-next-line:no-console
     console.log('loadAppeal, ccdCase id : ' + ccdCase.id);
     // tslint:disable-next-line:no-console
-    console.log('loadAppeal, ccdCase id : ' + ccdCase.state);
+    console.log('loadAppeal, appeal status : ' + ccdCase.state);
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
     // tslint:disable-next-line:no-console
-    console.log('loadAppeal, req.session.appeal : ' + req.session.appeal);
+    console.log('loadAppeal, req.session.appeal : ' + JSON.stringify(req.session.appeal));
   }
 
   private getDate(ccdDate): AppealDate {
@@ -83,6 +83,12 @@ export default class UpdateAppealService {
       state: req.session.appeal.appealStatus,
       case_data: caseData
     };
+    // tslint:disable-next-line:no-console
+    console.debug('updatedCcdCase: ' + updatedCcdCase.case_data);
+    // tslint:disable-next-line:no-console
+    console.debug('updatedCcdCase: ' + updatedCcdCase.state);
+    // tslint:disable-next-line:no-console
+    console.debug('updatedCcdCase: ' + updatedCcdCase.id);
 
     const updatedAppeal = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
     return updatedAppeal;
@@ -493,6 +499,8 @@ export default class UpdateAppealService {
       hearingCentre: caseData.hearingCentre || null,
       documentMap
     };
+    // tslint:disable-next-line:no-console
+    console.debug('appeal:' + JSON.stringify(appeal));
     return appeal;
   }
 

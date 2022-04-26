@@ -53,7 +53,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       // tslint:disable-next-line:no-console
-      console.debug('getApplicationOverview: request session appeal: ' + req.session.appeal);
+      console.debug('getApplicationOverview: request session appeal: ' + JSON.stringify(req.session.appeal));
       const hearingBundleFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
       if (req.session.appeal.appealStatus === 'preHearing' || req.session.appeal.appealStatus === 'preHearingOutOfCountryFeatureDisabled') {
         req.session.appeal.appealStatus = hearingBundleFeatureEnabled ? 'preHearing' : 'preHearingOutOfCountryFeatureDisabled';
@@ -110,6 +110,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
 function setupApplicationOverviewController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
+  // tslint:disable-next-line:no-console
+  console.debug('setupApplicationOverviewController');
   router.get(paths.common.overview, getApplicationOverview(updateAppealService));
   return router;
 }

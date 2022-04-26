@@ -60,7 +60,8 @@ async function eligibilityQuestionPost(req: Request, res: Response, next: NextFu
         previousPage: getPreviousPageLink(questionId),
         answer,
         errors: validation,
-        errorList: Object.values(validation)
+        errorList: Object.values(validation),
+        csrfToken: req.csrfToken()
       });
     }
     if (!req.session.eligibility) {

@@ -50,6 +50,8 @@ export default class UpdateAppealService {
     req.session.ccdCaseId = ccdCase.id;
     // tslint:disable-next-line:no-console
     console.log('loadAppeal, ccdCase id : ' + ccdCase.id);
+    // tslint:disable-next-line:no-console
+    console.log('loadAppeal, ccdCase id : ' + ccdCase.state);
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
   }
 

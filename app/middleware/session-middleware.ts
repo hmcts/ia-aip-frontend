@@ -27,6 +27,8 @@ function checkSession(args: any = {}) {
     const tokenCookieName = args.tokenCookieName || '__auth-token';
     // tslint:disable-next-line:no-console
     console.debug('checkSession tokenCookieName: ' + tokenCookieName);
+    // tslint:disable-next-line:no-console
+    console.debug('session appeal application: ' + JSON.stringify(req));
     // if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
     //   // tslint:disable-next-line:no-console
     //   console.debug('checkSession clearCookie');

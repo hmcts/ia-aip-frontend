@@ -217,7 +217,7 @@ export default class CookiesBanner implements ICookies {
         {
           'category-name': 'essential',
           'optional': false,
-          'cookies': ['_oauth2_proxy_csrf', 'Idam.Session','__auth-token', 'aip-web-cookie-preferences', '_oauth2_proxy', 'Idam.AuthId', 'Idam.SSOSession', 'idam_ui_locales', 'XSRF-TOKEN']
+          'cookies': ['connect.sid', 'Idam.Session','__auth-token', 'aip-web-cookie-preferences', '_oauth2_proxy', 'Idam.AuthId', 'Idam.SSOSession', 'idam_ui_locales', 'XSRF-TOKEN']
         },
         {
           'category-name': 'analytics',

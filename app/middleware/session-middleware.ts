@@ -28,7 +28,13 @@ function checkSession(args: any = {}) {
     // tslint:disable-next-line:no-console
     console.debug('checkSession tokenCookieName: ' + tokenCookieName);
     // tslint:disable-next-line:no-console
-    console.debug('session appeal application: ' + JSON.stringify(req));
+    console.debug('request: ' + req);
+    // tslint:disable-next-line:no-console
+    console.debug('request session: ' + req.session);
+    // tslint:disable-next-line:no-console
+    console.debug('request session appeal: ' + req.session.appeal);
+    // tslint:disable-next-line:no-console
+    console.debug('request session appeal application: ' + req.session.appeal.application);
     // if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
     //   // tslint:disable-next-line:no-console
     //   console.debug('checkSession clearCookie');

@@ -2,7 +2,10 @@
   "testUrl": "https://localhost:3000",
   "session": {
     "useRedis": true,
-    "useLogger": false
+    "useLogger": false,
+    "cookie": {
+      "secure": false
+    }
   },
   "evidenceUpload": {
     "maxFileSizeInMb": 6

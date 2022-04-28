@@ -25,7 +25,7 @@ function setupSession() {
       cookie: {
         httpOnly: true,
         maxAge: config.get('session.cookie.maxAgeInMs'),
-        secure: isNotSecure,
+        ...(config.get('session.cookie.secure') === 'true' ? { secure: true } : {}),
         sameSite: 'lax'
       },
       resave: true,

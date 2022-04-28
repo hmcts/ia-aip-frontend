@@ -30,9 +30,9 @@ function checkSession(args: any = {}) {
     // tslint:disable-next-line:no-console
     console.debug('request: ' + req);
     // tslint:disable-next-line:no-console
-    console.debug('request session: ' + req.session);
+    console.debug('request session: ' + JSON.stringify(req.session));
     // tslint:disable-next-line:no-console
-    console.debug('request session appeal: ' + req.session.appeal);
+    console.debug('request session appeal: ' + JSON.stringify(req.session.appeal));
     // tslint:disable-next-line:no-console
     console.debug('request session appeal application: ' + req.session.appeal.application);
     // if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {

@@ -46,7 +46,12 @@ describe('Payments Service', () => {
       session: {
         appeal: {
           ccdCaseId: 'aCcdCaseId',
-          appealReferenceNumber: 'anAppealReferenceNumber'
+          appealReferenceNumber: 'anAppealReferenceNumber',
+          application: {
+            personalDetails: {
+              familyName: 'SURNAME'
+            }
+          }
         }
       }
     } as Partial<Request>;
@@ -66,7 +71,7 @@ describe('Payments Service', () => {
     expect(createCardPaymentStub).to.have.been.called;
     expect(updateAppealService.submitEventRefactored).to.have.been.called;
     expect(result).to.be.eql(createCardPaymentResponse);
-    expect(req.session.appeal.paymentReference).to.be.eql('thePaymentReference');
+    expect(req.session.appeal.paymentReference).to.be.eql('thePaymentReference_SURNAME');
   });
 
   it('should get payment details', async () => {

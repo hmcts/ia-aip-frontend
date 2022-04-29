@@ -7,7 +7,6 @@ import { States } from '../data/states';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppellantApplications } from './utils';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -122,7 +121,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealArgumentSection = constructSection(appealArgumentSectionEvents, req.session.appeal.history, [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.RESPONDENT_REVIEW.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.SUBMIT_HEARING_REQUIREMENTS.id, States.ENDED.id ], req);
   const appealDetailsSection = constructSection(appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
-  const timeExtensions = getTimeExtensionsEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
+  const timeExtensions = getTimeExtensionsEvents(req.session.appeal.makeAnApplications);
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;

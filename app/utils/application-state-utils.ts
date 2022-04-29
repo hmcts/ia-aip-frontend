@@ -6,7 +6,7 @@ import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
-import { getAppellantApplications, hasPendingTimeExtension } from '../utils/utils';
+import { hasPendingTimeExtension } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
 
@@ -90,9 +90,8 @@ function getMoveAppealOfflineDate(req: Request) {
 async function getAppealApplicationNextStep(req: Request) {
   const currentAppealStatus = getAppealStatus(req);
   const pendingTimeExtension = hasPendingTimeExtension(req.session.appeal);
-  const applications = getAppellantApplications(req.session.appeal.makeAnApplications);
-  const decisionGranted = applications.length > 0 && applications[0].value.decision === 'Granted' || null;
-  const decisionRefused = applications.length > 0 && applications[0].value.decision === 'Refused' || null;
+  const decisionGranted = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Granted' || null;
+  const decisionRefused = req.session.appeal.makeAnApplications && req.session.appeal.makeAnApplications[0].value.decision === 'Refused' || null;
   let doThisNextSection: DoThisNextSection;
 
   let descriptionParagraphs;

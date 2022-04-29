@@ -39,10 +39,8 @@ export function nowAppealDate(): AppealDate {
 }
 
 export function hasPendingTimeExtension(appeal: Appeal): boolean {
-  if (appeal.makeAnApplications) {
-    return !!appeal.makeAnApplications.find(application => application.value.decision === 'Pending');
-  }
-  return false;
+  return !!getAppellantApplications(appeal.makeAnApplications)
+      .find(application => application.value.decision === 'Pending');
 }
 
 export function formatTextForCYA(text: string) {
@@ -61,4 +59,8 @@ export function boolToYesNo(value: boolean) {
 
 export function yesNoToBool(answer: string): boolean {
   return answer ? answer.toLowerCase() === 'yes' : false;
+}
+
+export function getAppellantApplications(applications: Collection<Application<Evidence>>[]): any[] {
+  return applications ? applications.filter(application => application.value.applicant === 'Appellant') : [];
 }

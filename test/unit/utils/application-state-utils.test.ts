@@ -301,7 +301,8 @@ describe('application-state-utils', () => {
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a pending time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
-            decision: 'Pending'
+            decision: 'Pending',
+            applicant: 'Appellant'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -333,7 +334,8 @@ describe('application-state-utils', () => {
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a granted time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
-            decision: 'Granted'
+            decision: 'Granted',
+            applicant: 'Appellant'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -365,7 +367,8 @@ describe('application-state-utils', () => {
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppeal and a refused time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
-            decision: 'Refused'
+            decision: 'Refused',
+            applicant: 'Appellant'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -452,7 +455,8 @@ describe('application-state-utils', () => {
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and pending time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
-            decision: 'Pending'
+            decision: 'Pending',
+            applicant: 'Appellant'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -486,7 +490,8 @@ describe('application-state-utils', () => {
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and granted time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
-            decision: 'Granted'
+            decision: 'Granted',
+            applicant: 'Appellant'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -520,7 +525,8 @@ describe('application-state-utils', () => {
       it('should return \'Do This next section\' when application status is awaitingReasonsForAppealPartial and refused time extension', async () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
-            decision: 'Refused'
+            decision: 'Refused',
+            applicant: 'Appellant'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -775,7 +781,8 @@ describe('application-state-utils', () => {
     it('should return \'Do This next section\' when application status is submitHearingRequirements and a pending time extension', async () => {
       const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
         value: {
-          decision: 'Pending'
+          decision: 'Pending',
+          applicant: 'Appellant'
         }
       };
       req.session.appeal.appealStatus = 'submitHearingRequirements';

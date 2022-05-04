@@ -35,13 +35,14 @@ function checkSession(args: any = {}) {
     console.debug('request session appeal: ' + JSON.stringify(req.session.appeal));
     // tslint:disable-next-line:no-console
     console.debug('request session appeal application: ' + req.session.appeal.application);
-    // if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
-    //   // tslint:disable-next-line:no-console
-    //   console.debug('checkSession clearCookie');
-    //   res.clearCookie(tokenCookieName, '/');
-    //   res.redirect(paths.common.login);
-    // } else {
-    next();
+    if (req.cookies && req.cookies[tokenCookieName] && !_.has(req, 'session.appeal.application')) {
+      // tslint:disable-next-line:no-console
+      console.debug('checkSession clearCookie');
+      res.clearCookie(tokenCookieName, '/');
+      res.redirect(paths.common.login);
+    } else {
+      next();
+    }
   };
 }
 

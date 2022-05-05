@@ -71,7 +71,7 @@ describe('Payments Service', () => {
     expect(createCardPaymentStub).to.have.been.called;
     expect(updateAppealService.submitEventRefactored).to.have.been.called;
     expect(result).to.be.eql(createCardPaymentResponse);
-    expect(req.session.appeal.paymentReference).to.be.eql('thePaymentReference_SURNAME');
+    expect(req.session.appeal.paymentReference).to.be.eql('thePaymentReference');
   });
 
   it('should get payment details', async () => {

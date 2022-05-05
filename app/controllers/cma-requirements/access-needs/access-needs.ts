@@ -26,6 +26,7 @@ function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
 }
 
 function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction) {
+  console.log('-------------------------------------------------------------------------------------- 1')
   try {
     const { accessNeeds } = req.session.appeal.cmaRequirements;
     const answer = _.get(accessNeeds, 'isInterpreterServicesNeeded', null);
@@ -45,6 +46,7 @@ function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction)
 }
 
 function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
+  console.log('-------------------------------------------------------------------------------------- 2')
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const onValidationErrorMessage = i18n.validationErrors.cmaRequirements.accessNeeds.selectInterpreter;
@@ -92,6 +94,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
 }
 
 function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) {
+  console.log('-------------------------------------------------------------------------------------- 3')
   try {
     return res.render('case-management-appointment/additional-language.njk', {
       previousPage: paths.awaitingCmaRequirements.accessNeedsInterpreter,
@@ -103,6 +106,7 @@ function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) 
 }
 
 function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
+  console.log('-------------------------------------------------------------------------------------- 4')
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
@@ -137,6 +141,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
 }
 
 function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) {
+  console.log('-------------------------------------------------------------------------------------- 5')
   try {
     const { isHearingRoomNeeded, isInterpreterServicesNeeded } = req.session.appeal.cmaRequirements.accessNeeds;
     const backButton = isInterpreterServicesNeeded === true ? paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage : paths.awaitingCmaRequirements.accessNeedsInterpreter;
@@ -159,6 +164,7 @@ function getStepFreeAccessPage(req: Request, res: Response, next: NextFunction) 
 }
 
 function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
+  console.log('-------------------------------------------------------------------------------------- 6')
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -195,6 +201,7 @@ function postStepFreeAccessPage(updateAppealService: UpdateAppealService) {
 }
 
 function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
+  console.log('-------------------------------------------------------------------------------------- 7')
   try {
     const { isHearingLoopNeeded } = req.session.appeal.cmaRequirements.accessNeeds;
     const answer = isHearingLoopNeeded || null;
@@ -216,6 +223,7 @@ function getHearingLoopPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function postHearingLoopPage(updateAppealService: UpdateAppealService) {
+  console.log('-------------------------------------------------------------------------------------- 8')
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -253,6 +261,7 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
 }
 
 function setupAccessNeedsController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+  console.log('-------------------------------------------------------------------------------------- 9')
   const router = Router();
   router.get(paths.awaitingCmaRequirements.accessNeeds, middleware, getAccessNeeds);
   router.get(paths.awaitingCmaRequirements.accessNeedsInterpreter, middleware, getNeedInterpreterPage);

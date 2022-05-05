@@ -175,8 +175,8 @@ interface WitnessDetails {
 }
 
 interface InterpreterLanguage {
-  language?: string;
-  languageDialect?: string;
+  language: string;
+  languageDialect: string;
 }
 
 interface CCDAddress {

@@ -11,13 +11,14 @@ import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
   interpreterLanguagesValidation,
-  selectedRequiredValidation
+  selectedRequiredValidation,
+  selectedRequiredValidation1
 } from '../../utils/validations/fields-validations';
 import { postHearingRequirementsYesNoHandler } from './common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 function getOptions(selectionPresent, answer) {
-
+  console.log('Test 1 getOptions')
   if (selectionPresent == null) {
     return [
       { text: 'Yes', value: 'yes' },
@@ -32,6 +33,7 @@ function getOptions(selectionPresent, answer) {
 }
 
 function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
+  console.log('Test 1 getAccessNeeds')
   try {
     return res.render('hearing-requirements/access-needs.njk', {
       previousPage: previousPage
@@ -180,11 +182,32 @@ function buildLanguageList(interpreterLanguages: InterpreterLanguage[]): Summary
 function addMoreLanguagePostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
+      console.log('Test 1 addMoreLanguagePostAction')
       let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
+      //interpreterLanguages = interpreterLanguages.filter(interpreterLanguage => interpreterLanguage.language !== null);
       const validation = selectedRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguage);
+      const validation1 = selectedRequiredValidation1(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect);
+      const dialect1: string = req.body['dialect'] as string;
+      const language1: string = req.body['language'] as string;
+
+      console.log('getting dialect value ' + JSON.stringify(dialect1))
+      console.log(' getting language ' + JSON.stringify(language1))
+
+      console.log('Test validation ' + JSON.stringify(validation))
+      console.log('Test validation1 ' + JSON.stringify(validation1))
+
       if (validation) {
+        console.log('inside validation block ')
         return renderPage(res, validation, interpreterLanguages);
       }
+
+      if(language1.length >0)
+      {      console.log('inside validation 1 block ')
+        if (validation1) {
+          return renderPage(res, validation1, interpreterLanguages);
+        }
+      }
+
       const language: string = req.body['language'] as string;
       const dialect: string = req.body['dialect'] as string;
       const interpreterLanguage: InterpreterLanguage = { language: language, languageDialect: dialect };
@@ -203,7 +226,7 @@ function removeLanguagePostAction() {
     try {
       let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
       const nameToRemove: string = req.query.name as string;
-      req.session.appeal.hearingRequirements.interpreterLanguages = interpreterLanguages.filter(interpreterLanguage => interpreterLanguage.language !== nameToRemove);
+      req.session.appeal.hearingRequirements.interpreterLanguages =  interpreterLanguages.filter(interpreterLanguage => interpreterLanguage.language !== nameToRemove);
       return res.redirect(paths.submitHearingRequirements.hearingLanguageDetails);
     } catch (e) {
       next(e);

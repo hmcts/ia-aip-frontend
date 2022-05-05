@@ -408,8 +408,18 @@ function yesOrNoRequiredValidation(obj: object, errorMessage: string) {
 }
 
 function selectedRequiredValidation(obj: object, errorMessage: string) {
+
   const schema = Joi.object({
     language: Joi.string().required().messages({ 'string.empty': errorMessage })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function selectedRequiredValidation1(obj: object, errorMessage: string) {
+  // console.log('Inside validation method here language '+ JSON.stringify(Joi.string().required().messages({ 'string.empty': errorMessage })));
+
+  const schema = Joi.object({
+    dialect: Joi.string().required().messages({ 'string.empty': errorMessage })
   }).unknown();
   return validate(obj, schema);
 }
@@ -565,5 +575,6 @@ export {
   sponsorAddressValidation,
   sponsorContactDetailsValidation,
   sponsorAuthorisationValidation,
-  gwfReferenceNumberValidation
+  gwfReferenceNumberValidation,
+  selectedRequiredValidation1
 };

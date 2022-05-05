@@ -16,7 +16,7 @@ import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
-import { boolToYesNo, toIsoDate } from '../utils/utils';
+import { boolToYesNo, getAppellantApplications, toIsoDate } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
@@ -408,7 +408,7 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
 function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
   try {
     const timeExtensionId = req.params.id;
-    const timeExtension = req.session.appeal.makeAnApplications.find(application => application.id === timeExtensionId);
+    const timeExtension = getAppellantApplications(req.session.appeal.makeAnApplications).find(application => application.id === timeExtensionId);
     const previousPage: string = paths.common.overview;
     const { request, response = null } = getTimeExtensionSummaryRows(timeExtension);
     const hearingCentreEmail = getHearingCentreEmail(req);

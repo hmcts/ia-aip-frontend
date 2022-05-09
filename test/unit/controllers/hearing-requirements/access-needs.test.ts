@@ -18,7 +18,6 @@ import { paths } from '../../../../app/paths';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
 import { expect, sinon } from '../../../utils/testUtils';
-import {selectedRequiredValidationDialect} from "../../../../app/utils/validations/fields-validations";
 
 const express = require('express');
 
@@ -198,7 +197,6 @@ describe('Hearing requirements access needs controller', () => {
 
   });
 
-
   describe('addMoreLanguagePostAction', () => {
 
     it('should fail validation and render template with errors', async () => {
@@ -257,8 +255,6 @@ describe('Hearing requirements access needs controller', () => {
       expect(res.render).to.have.been.calledWith('hearing-requirements/language-details.njk', expectedArgs);
 
     });
-
-
 
     it('should add language in session and redirect to names page', async () => {
       req.body['language'] = 'Afar';

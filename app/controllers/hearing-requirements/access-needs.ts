@@ -141,7 +141,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
 
 function renderPage(res: Response, validation: ValidationErrors, interpreterLanguages: InterpreterLanguage[]) {
 
-    return res.render('hearing-requirements/language-details.njk', {
+  return res.render('hearing-requirements/language-details.njk', {
     items: isoLanguages,
     error: validation,
     errorList: Object.values(validation),
@@ -191,8 +191,7 @@ function addMoreLanguagePostAction() {
         return renderPage(res, validation, interpreterLanguages);
       }
 
-      if(language.length >0)
-      {
+      if (language.length > 0) {
         if (validationDialect) {
           return renderPage(res, validationDialect, interpreterLanguages);
         }

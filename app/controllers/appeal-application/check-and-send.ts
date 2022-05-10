@@ -327,6 +327,10 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
         if (req.session.appeal.appealStatus === 'appealStarted') {
           event = Events.SUBMIT_APPEAL;
           redirectUrl = paths.appealSubmitted.confirmation;
+        }
+        if (req.session.appeal.appealStatus === 'appealSubmitted') {
+          event = Events.PAYMENT_APPEAL;
+          redirectUrl = paths.appealSubmitted.confirmation;
         } else {
           event = Events.PAYMENT_APPEAL;
           redirectUrl = paths.common.confirmationPayLater;

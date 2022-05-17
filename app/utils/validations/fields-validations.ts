@@ -210,7 +210,7 @@ function witnessNamesValidation(obj: object) {
 
 function interpreterLanguagesValidation(obj: object) {
   const schema = Joi.object({
-    language: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.hearingRequirements.accessNeeds.addLanguage })
+    language: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect })
   }).unknown();
   return validate({ language: obj }, schema);
 }

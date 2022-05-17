@@ -175,8 +175,8 @@ describe('Hearing requirements access needs controller', () => {
 
       expect(res.render).to.have.been.calledWith('hearing-requirements/language-details.njk', {
         items: isoLanguages,
-        error: { language: { key: 'language', text: 'Select a language', href: '#language' } },
-        errorList: [{ key: 'language', text: 'Select a language', href: '#language' }],
+        error: { language: { key: 'language', text: 'Select language and add dialect', href: '#language' } },
+        errorList: [{ key: 'language', text: 'Select language and add dialect', href: '#language' }],
         previousPage: previousPage,
         summaryList: [{ 'summaryRows': [], 'title': 'Languages' }],
         languageAction: '/hearing-language-details'

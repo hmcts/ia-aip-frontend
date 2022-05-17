@@ -2811,6 +2811,7 @@
         "emptyAnswer": "Please enter an answer for the question",
         "selectInterpreter": "Select yes if anyone will need an interpreter",
         "addLanguage": "Select a language",
+        "addLanguageDialect": "Select language and add dialect",
         "stepFreeAccess": "Select yes if you or anyone coming with will you need step-free access",
         "hearingLoop": "Select yes if you or anyone coming with you will need a hearing loop"
       },
@@ -2850,7 +2851,7 @@
       "accessNeeds": {
         "selectInterpreter": "Select yes if you or any witnesses will need an interpreter at the hearing",
         "addLanguage": "Select a language",
-        "addLanguageDialect": "Select language and dialect",
+        "addLanguageDialect": "Select language and add dialect",
         "stepFreeAccess": "Select yes if you or any witnesses will need step-free access",
         "hearingLoop": "Select yes if you or any witnesses will need a hearing loop"
       },

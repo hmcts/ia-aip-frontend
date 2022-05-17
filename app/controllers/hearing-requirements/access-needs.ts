@@ -182,7 +182,7 @@ function addMoreLanguagePostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.hearingRequirements.interpreterLanguages || [];
-      const validation = selectedRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguage);
+      const validation = selectedRequiredValidation(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect);
       const validationDialect = selectedRequiredValidationDialect(req.body, i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect);
       const language: string = req.body['language'] as string;
       const dialect: string = req.body['dialect'] as string;

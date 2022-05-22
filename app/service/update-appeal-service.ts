@@ -512,9 +512,9 @@ export default class UpdateAppealService {
         caseData.homeOfficeDecisionDate = toIsoDate(appeal.application.decisionLetterReceivedDate);
         caseData.submissionOutOfTime = appeal.application.isAppealLate ? YesOrNo.YES : YesOrNo.NO;
       }
-
       if (appeal.application.isAppealLate) {
-        if (_.has(appeal.application.lateAppeal, 'reason')) {
+       caseData.recordedOutOfTimeDecision = 'No';
+       if (_.has(appeal.application.lateAppeal, 'reason')) {
           caseData.applicationOutOfTimeExplanation = appeal.application.lateAppeal.reason;
         }
         if (_.has(appeal.application.lateAppeal, 'evidence')) {
@@ -891,6 +891,7 @@ export default class UpdateAppealService {
       ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
       ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) }
     };
+    console.log("case data " + JSON.stringify(caseData))
     return caseData;
   }
 

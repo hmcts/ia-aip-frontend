@@ -1242,7 +1242,6 @@ describe('update-appeal-service', () => {
     });
 
     it('submits ReasonsForAppeal with ccd', async () => {
-      console.log("expected data " + JSON.stringify(expectedCaseData))
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req as Request);
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.SUBMIT_REASONS_FOR_APPEAL,

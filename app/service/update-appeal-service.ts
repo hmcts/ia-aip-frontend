@@ -514,8 +514,8 @@ export default class UpdateAppealService {
       }
 
       if (appeal.application.isAppealLate) {
-       caseData.recordedOutOfTimeDecision = 'No';
-       if (_.has(appeal.application.lateAppeal, 'reason')) {
+        caseData.recordedOutOfTimeDecision = 'No';
+        if (_.has(appeal.application.lateAppeal, 'reason')) {
           caseData.applicationOutOfTimeExplanation = appeal.application.lateAppeal.reason;
         }
         if (_.has(appeal.application.lateAppeal, 'evidence')) {

@@ -141,7 +141,9 @@ interface Appeal {
   feeVersion?: string;
   feeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
+  addendumEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
+  addendumEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;

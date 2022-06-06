@@ -73,7 +73,7 @@
         {% include "components/ask-for-more-time-panel.njk" %}
       {% endif %}
       {% if continueCancelButtons %} 
-        {{ continueToUrlButton() }}
+        {{ continueToUrlButton(redirectTo) }}
         {{ canelButton() }}
         {% else %}
         {{ saveButtons() }}

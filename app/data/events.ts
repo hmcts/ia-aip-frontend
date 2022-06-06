@@ -104,6 +104,11 @@ export const Events = {
     summary: 'Upload additional evidence for AIP',
     description: 'Upload additional evidence for AIP'
   },
+  UPLOAD_ADDENDUM_EVIDENCE: {
+    id: 'uploadAddendumEvidenceLegalRep',
+    summary: 'Upload addendum evidence for AIP',
+    description: 'Upload addendum evidence for AIP'
+  },
   EDIT_DOCUMENTS: {
     id: 'editDocuments',
     summary: 'Edit additional evidence for AIP',

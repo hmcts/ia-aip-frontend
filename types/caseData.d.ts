@@ -91,7 +91,9 @@ interface CaseData {
   listCaseHearingDate: string;
   uploadTheNoticeOfDecisionDocs: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   additionalEvidence: Collection<Document>[];
+  addendumEvidence: Collection<Document>[];
   additionalEvidenceDocuments: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  addendumEvidenceDocuments: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   recordedOutOfTimeDecision: string;
   legalRepresentativeDocuments?: Collection<DocumentWithMetaData>[];
   tribunalDocuments?: Collection<DocumentWithMetaData>[];

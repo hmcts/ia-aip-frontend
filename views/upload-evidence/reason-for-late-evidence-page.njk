@@ -1,0 +1,39 @@
+{% set pageTitleName = title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action={{ formSubmitAction }} method='post'>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% call govukFieldset({
+    legend: {
+      text: title,
+      classes: "govuk-fieldset__legend--l",
+      isPageHeading: true
+    }
+    }) %}
+
+      {{ govukTextarea({
+        name: id,
+        id: id,
+        label: {
+          text: content
+        } if (content),
+        value: reason,
+        errorMessage: {
+          text: error[id].text
+        } if error[id]
+      }) }}
+      {{ continueButton() }}
+      {{ canelButton() }}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

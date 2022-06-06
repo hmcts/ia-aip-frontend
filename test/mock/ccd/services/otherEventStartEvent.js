@@ -24,6 +24,8 @@ function getCurrentState(params) {
       return 'cmaListed';
     case 'makeAnApplication':
       return 'awaitingReasonsForAppeal';
+    case 'uploadAddendumEvidenceLegalRep':
+      return 'preHearing';
     default:
       throw `Event type ${params.eventType} no current state set`
   }

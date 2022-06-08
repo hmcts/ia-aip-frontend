@@ -518,9 +518,14 @@ async function getAppealApplicationNextStep(req: Request) {
   return doThisNextSection;
 }
 
+function isPreAddendumEvidenceUploadState(appealStatus: string): Boolean {
+  return [States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id].includes(appealStatus);
+}
+
 export {
   getAppealApplicationNextStep,
   getAppealStatus,
   getMoveAppealOfflineReason,
-  getMoveAppealOfflineDate
+  getMoveAppealOfflineDate,
+  isPreAddendumEvidenceUploadState
 };

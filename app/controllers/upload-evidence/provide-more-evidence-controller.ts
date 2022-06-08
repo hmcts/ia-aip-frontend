@@ -7,6 +7,7 @@ import { States } from '../../data/states';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { isPreAddendumEvidenceUploadState } from '../../utils/application-state-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
@@ -380,10 +381,6 @@ function buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceD
   }
 
   return additionalEvidenceSummaryLists;
-}
-
-function isPreAddendumEvidenceUploadState(appealStatus: string): Boolean {
-  return [States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id].includes(appealStatus);
 }
 
 export {

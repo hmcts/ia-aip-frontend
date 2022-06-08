@@ -6,7 +6,7 @@ import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppealApplicationNextStep } from '../utils/application-state-utils';
+import { getAppealApplicationNextStep, isPreAddendumEvidenceUploadState } from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded } from '../utils/payments-utils';
@@ -56,6 +56,13 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       if (req.session.appeal.appealStatus === 'preHearing' || req.session.appeal.appealStatus === 'preHearingOutOfCountryFeatureDisabled') {
         req.session.appeal.appealStatus = hearingBundleFeatureEnabled ? 'preHearing' : 'preHearingOutOfCountryFeatureDisabled';
       } // TODO: remove after Feature flag for AIP Hearing (Bundling) is permanently switched on
+      let enableProvideMoreEvidenceLink = true;
+      const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+      if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+        if (uploadAddendumEvidenceFeatureEnabled) {
+          enableProvideMoreEvidenceLink = false;
+        }
+      } // TODO: remove after Feature flag for AIP Upload Addendum Evidence is permanently switched on
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
@@ -96,7 +103,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal),
         askForMoreTime,
         saveAndAskForMoreTime,
-        provideMoreEvidenceSection: provideMoreEvidenceStates.includes(req.session.appeal.appealStatus),
+        provideMoreEvidenceSection: provideMoreEvidenceStates.includes(req.session.appeal.appealStatus) && enableProvideMoreEvidenceLink,
         payLater,
         hearingDetails
       });

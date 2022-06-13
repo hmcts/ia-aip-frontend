@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  checkAppealEnded, getAppealRefNumber,
+  checkAppealEnded,
+  checkEnableProvideMoreEvidenceSection,
+  getAppealRefNumber,
   getApplicationOverview,
   getHearingDetails,
   setupApplicationOverviewController
@@ -484,6 +486,34 @@ describe('Confirmation Page Controller', () => {
     const { appealStatus } = req.session.appeal;
     const result = checkAppealEnded(appealStatus);
     expect(result).to.equal(false);
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return false', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: 'preHearing'
+        }
+      }
+    };
+    const featureFlagEnabled = false;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(false);
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return true', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: 'preHearing'
+        }
+      }
+    };
+    const featureFlagEnabled = true;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(true);
   });
 
   it('getHearingDetails with case not ended', () => {

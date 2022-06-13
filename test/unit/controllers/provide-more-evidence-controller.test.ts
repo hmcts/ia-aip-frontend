@@ -212,9 +212,48 @@ describe('Provide more evidence controller', () => {
 
       expect(next).to.have.been.calledWith(error);
     });
+
+    it('should upload file as addendum evidence', async () => {
+      const fileSizeInMb = 0.001;
+      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
+      const mockFile = {
+        originalname: 'somefile.png',
+        size: mockSizeInBytes
+      } as Partial<Express.Multer.File>;
+
+      req.file = mockFile as Express.Multer.File;
+      req.session.appeal.appealStatus = States.PRE_HEARING.id;
+
+      const documentUploadResponse: DocumentUploadResponse = {
+        fileId: 'someUUID',
+        name: 'name.png'
+      };
+
+      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
+      req.session.appeal.documentMap = [ documentMap ];
+
+      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
+
+      await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      expect((req.session.appeal.addendumEvidence || [])[0].fileId === documentUploadResponse.fileId);
+      expect((req.session.appeal.addendumEvidence || [])[0].name === documentUploadResponse.name);
+    });
+
   });
 
   describe('postProvideMoreEvidenceCheckAndSend', () => {
+    it('should redirect to provide-more-evidence confirmation page', async () => {
+      req.session.appeal.appealStatus = States.PRE_HEARING.id;
+      const file = {
+        originalname: 'file.png',
+        mimetype: 'type'
+      };
+      req.file = file as Express.Multer.File;
+
+      await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceConfirmation);
+    });
 
     it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
@@ -274,6 +313,13 @@ describe('Provide more evidence controller', () => {
 
       expect(res.render).to.have.been.calledWith('templates/confirmation-page.njk');
     });
+
+    it('should render for updload addendum evidence', () => {
+      req.session.appeal.appealStatus = States.PRE_HEARING.id;
+      getConfirmation(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('templates/confirmation-page.njk');
+    });
   });
 
   describe('getEvidenceDocuments', () => {
@@ -327,6 +373,27 @@ describe('Provide more evidence controller', () => {
 
       expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
       expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
+    });
+
+    it('should return additional document list', () => {
+      const mockEvidenceDocuments: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName'
+        }
+      ];
+
+      const result = buildAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+
+      expect(result[0].summaryRows).to.be.lengthOf(1);
+    });
+
+    it('should return empty list', () => {
+      const mockEvidenceDocuments: Evidence[] = [];
+
+      const result = buildAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+
+      expect(result[0].summaryRows).to.be.empty;
     });
   });
 
@@ -386,6 +453,27 @@ describe('Provide more evidence controller', () => {
       expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
       expect(result[0].summaryRows[1].key.text).to.equal(expectedSummaryList[0].summaryRows[1].key.text);
       expect(result[0].summaryRows[1].value.html).to.equal(expectedSummaryList[0].summaryRows[1].value.html);
+
+      it('should return addendum document list', () => {
+        const mockEvidenceDocuments: Evidence[] = [
+          {
+            fileId: 'aFileId',
+            name: 'fileName'
+          }
+        ];
+
+        const result = buildAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+
+        expect(result).to.be.lengthOf(1);
+      });
+
+      it('should return empty list', () => {
+        const mockEvidenceDocuments: Evidence[] = [];
+
+        const result = buildAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+
+        expect(result).to.be.empty;
+      });
     });
   });
 

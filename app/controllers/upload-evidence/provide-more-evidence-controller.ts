@@ -114,7 +114,7 @@ function postProvideMoreEvidence(req: Request, res: Response, next: NextFunction
 }
 
 function validate (redirectToUrl: string) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (_req: Request, res: Response, next: NextFunction) => {
     try {
       let errorCode: string;
       if (res.locals.errorCode) {

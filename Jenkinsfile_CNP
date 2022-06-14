@@ -40,7 +40,8 @@ withPipeline("nodejs", product, component) {
 //    The following code was commented temporarily to stop using Jenkins resources, due to the AiP project being paused.  The expectation is that it will be resumed and the commented code will be required
 
   after('checkout') { sh 'yarn cache clean' }
-  after('checkout') { echo 'hello kill port 3000' }
+  after('checkout') { echo 'on checkout hello kill port 3000' }
+  after('checkout') { sh 'PID=$(sudo su lsof -i :3000 | awk "NR==2 {print $2}")' }
   after('build') { sh 'yarn build' }
 //
 //

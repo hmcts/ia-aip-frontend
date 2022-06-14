@@ -41,7 +41,13 @@ withPipeline("nodejs", product, component) {
 
   after('checkout') { sh 'yarn cache clean' }
   after('checkout') { echo 'on checkout hello kill port 3000' }
-  after('checkout') { sh 'PID=$(sudo su lsof -i :3000 | awk "NR==2 {print $2}")' }
+    after('checkout') {
+        sh '''#!/bin/bash
+                 echo "hello kill port 3000" 
+                 PID=$(lsof -i :3000 | awk 'NR==2 {print $2}')
+                 kill -9 $PID
+         '''
+    }
   after('build') { sh 'yarn build' }
 //
 //
@@ -52,15 +58,7 @@ loadVaultSecrets(secrets)
 env.S2S_MICROSERVICE_NAME = 'iac'
 env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
 env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
-
- before('test') { echo 'hello kill port 3000'  }
- before('test') { sh 'PID=$(sudo su lsof -i :3000 | awk "NR==2 {print $2}")' }
  before("functionalTest") {
-         sh '''#!/bin/bash
-                 echo "hello kill port 3000" 
-                 PID=$(sudo su lsof -i :3000 | awk 'NR==2 {print $2}')
-                 kill -9 $PID
-         '''
    env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
  }
 }

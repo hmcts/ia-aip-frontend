@@ -49,7 +49,7 @@ function getHearingDetails(req: Request): Hearing {
   return null;
 }
 
-function checkEnableProvideMoreEvidenceSection(appealStatus: string, uploadAddendumEvidenceFeatureEnabled: boolean) {
+function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnabled: boolean) {
   const provideMoreEvidenceStates = [
     States.RESPONDENT_REVIEW.id,
     States.SUBMIT_HEARING_REQUIREMENTS.id,
@@ -68,9 +68,9 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, uploadAdden
   ];
   let preAddendumEvidenceUploadState = isPreAddendumEvidenceUploadState(appealStatus);
   if (!preAddendumEvidenceUploadState) {
-    return provideMoreEvidenceStates.includes(appealStatus) && true;
+    return provideMoreEvidenceStates.includes(appealStatus);
   }
-  return provideMoreEvidenceStates.includes(appealStatus) && uploadAddendumEvidenceFeatureEnabled && preAddendumEvidenceUploadState;
+  return featureEnabled && preAddendumEvidenceUploadState;
 }
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {

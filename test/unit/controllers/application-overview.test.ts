@@ -7,6 +7,7 @@ import {
   getHearingDetails,
   setupApplicationOverviewController
 } from '../../../app/controllers/application-overview';
+import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
@@ -488,11 +489,25 @@ describe('Confirmation Page Controller', () => {
     expect(result).to.equal(false);
   });
 
-  it('checkEnableProvideMoreEvidenceSection should return false', () => {
+  it('checkEnableProvideMoreEvidenceSection should return true when in preHearing state and featureFlag enabled', () => {
     const req = {
       session: {
         appeal: {
-          appealStatus: 'preHearing'
+          appealStatus: States.PRE_HEARING.id
+        }
+      }
+    };
+    const featureFlagEnabled = true;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(true);
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return false when in preHearing state and featureFlag not enabled', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: States.PRE_HEARING.id
         }
       }
     };
@@ -502,15 +517,15 @@ describe('Confirmation Page Controller', () => {
     expect(result).to.equal(false);
   });
 
-  it('checkEnableProvideMoreEvidenceSection should return true', () => {
+  it('checkEnableProvideMoreEvidenceSection should return true when in respondentReview state', () => {
     const req = {
       session: {
         appeal: {
-          appealStatus: 'preHearing'
+          appealStatus: States.RESPONDENT_REVIEW.id
         }
       }
     };
-    const featureFlagEnabled = true;
+    const featureFlagEnabled = false;
     const { appealStatus } = req.session.appeal;
     const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
     expect(result).to.equal(true);

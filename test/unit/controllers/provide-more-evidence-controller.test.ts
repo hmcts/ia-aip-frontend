@@ -1,8 +1,10 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { buildAddendumEvidenceDocumentsSummaryList, buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getConfirmation, getEvidenceDocuments, getProvideMoreEvidence, getReasonForLateEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, postReasonForLateEvidence, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -56,6 +58,7 @@ describe('Provide more evidence controller', () => {
 
   afterEach(() => {
     sandbox.restore();
+    LaunchDarklyService.close();
   });
 
   describe('setupProvideMoreEvidenceController', () => {
@@ -213,7 +216,34 @@ describe('Provide more evidence controller', () => {
       expect(next).to.have.been.calledWith(error);
     });
 
-    it('should upload file as addendum evidence', async () => {
+    it('should upload file when additional evidence', async () => {
+      const fileSizeInMb = 0.001;
+      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
+      const mockFile = {
+        originalname: 'somefile.png',
+        size: mockSizeInBytes
+      } as Partial<Express.Multer.File>;
+
+      req.file = mockFile as Express.Multer.File;
+      req.session.appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+
+      const documentUploadResponse: DocumentUploadResponse = {
+        fileId: 'someUUID',
+        name: 'name.png'
+      };
+
+      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
+      req.session.appeal.documentMap = [ documentMap ];
+
+      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
+
+      await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      expect((req.session.appeal.additionalEvidence || [])[0].fileId === documentUploadResponse.fileId);
+      expect((req.session.appeal.additionalEvidence || [])[0].name === documentUploadResponse.name);
+    });
+
+    it('should upload file when addendum evidence and feature flag enabled', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(true);
       const fileSizeInMb = 0.001;
       const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
       const mockFile = {
@@ -239,10 +269,40 @@ describe('Provide more evidence controller', () => {
       expect((req.session.appeal.addendumEvidence || [])[0].name === documentUploadResponse.name);
     });
 
+    it('should redirect to appeal overview page when addendum evidence and feature flag disabled', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(false);
+      const fileSizeInMb = 0.001;
+      const mockSizeInBytes: number = fileSizeInMb * 1000 * 1000;
+      const mockFile = {
+        originalname: 'somefile.png',
+        size: mockSizeInBytes
+      } as Partial<Express.Multer.File>;
+
+      req.file = mockFile as Express.Multer.File;
+      req.session.appeal.appealStatus = States.PRE_HEARING.id;
+
+      await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+    });
+
   });
 
   describe('postProvideMoreEvidenceCheckAndSend', () => {
-    it('should redirect to provide-more-evidence confirmation page', async () => {
+    it('should redirect to provide-more-evidence confirmation page when additional evidence', async () => {
+      req.session.appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+      const file = {
+        originalname: 'file.png',
+        mimetype: 'type'
+      };
+      req.file = file as Express.Multer.File;
+
+      await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceConfirmation);
+    });
+
+    it('should redirect to provide-more-evidence confirmation page when addendum evidence and feature flag enabled', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(true);
       req.session.appeal.appealStatus = States.PRE_HEARING.id;
       const file = {
         originalname: 'file.png',
@@ -253,6 +313,20 @@ describe('Provide more evidence controller', () => {
       await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceConfirmation);
+    });
+
+    it('should redirect to appeal overview page when addendum evidence and feature flag disabled', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(false);
+      req.session.appeal.appealStatus = States.PRE_HEARING.id;
+      const file = {
+        originalname: 'file.png',
+        mimetype: 'type'
+      };
+      req.file = file as Express.Multer.File;
+
+      await postProvideMoreEvidenceCheckAndSend(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 
     it('should catch an error and redirect with error', async () => {

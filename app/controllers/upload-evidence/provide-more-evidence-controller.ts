@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import Requestor from 'launchdarkly-node-server-sdk/requestor';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { isPreAddendumEvidenceUploadState } from '../../utils/application-state-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
@@ -42,7 +43,7 @@ function getProvideMoreEvidence(req: Request, res: Response, next: NextFunction)
   }
 }
 
-function getReasonForLateEvidence(req: Requestor, res: Response, next: NextFunction) {
+function getReasonForLateEvidence(req: Request, res: Response, next: NextFunction) {
   if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
     if ((req.session.appeal.addendumEvidence || []).length === 0) {
       return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
@@ -135,6 +136,10 @@ function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
     try {
       if (req.file) {
         if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+          const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+          if (!uploadAddendumEvidenceFeatureEnabled) {
+            return res.redirect(paths.common.overview);
+          }// TODO: remove after Feature flag for AIP Upload Addendum Evidence is permanently switched on
           const addendumEvidenceDocument: DocumentUploadResponse = await documentManagementService.uploadFile(req);
           const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
 
@@ -174,6 +179,10 @@ function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealSe
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+        const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+        if (!uploadAddendumEvidenceFeatureEnabled) {
+          return res.redirect(paths.common.overview);
+        }// TODO: remove after Feature flag for AIP Upload Addendum Evidence is permanently switched on
         const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
 
         const appeal: Appeal = {

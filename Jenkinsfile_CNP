@@ -46,6 +46,7 @@ withPipeline("nodejs", product, component) {
                  echo "hello kill port 3000"
                  echo $(sudo lsof -i :3000)
                  echo $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
+                 sudo kill -9 $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
          '''
     }
   after('build') { sh 'yarn build' }

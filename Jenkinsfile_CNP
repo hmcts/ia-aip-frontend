@@ -52,6 +52,13 @@ env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.int
 env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
 
  before("functionalTest") {
+     steps {
+         sh '''#!/bin/bash
+                 echo "hello kill port 3000" 
+                 PID=$(lsof -i :3000 | awk 'NR==2 {print $2}')
+                 kill -9 $PID
+         '''
+     }
    env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
  }
 }

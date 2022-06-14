@@ -39,8 +39,9 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline("nodejs", product, component) {
 //    The following code was commented temporarily to stop using Jenkins resources, due to the AiP project being paused.  The expectation is that it will be resumed and the commented code will be required
 
-//  after('checkout') { sh 'yarn cache clean' }
-//  after('build') { sh 'yarn build' }
+  after('checkout') { sh 'yarn cache clean' }
+  after('checkout') { echo 'hello kill port 3000' }
+  after('build') { sh 'yarn build' }
 //
 //
 loadVaultSecrets(secrets)
@@ -52,13 +53,11 @@ env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.int
 env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
 
  before("functionalTest") {
-     steps {
          sh '''#!/bin/bash
                  echo "hello kill port 3000" 
-                 PID=$(lsof -i :3000 | awk 'NR==2 {print $2}')
+                 PID=$(sudo su lsof -i :3000 | awk 'NR==2 {print $2}')
                  kill -9 $PID
          '''
-     }
    env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
  }
 }

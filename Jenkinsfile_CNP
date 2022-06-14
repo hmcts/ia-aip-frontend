@@ -52,6 +52,8 @@ env.S2S_MICROSERVICE_NAME = 'iac'
 env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
 env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
 
+ before('test') { echo 'hello kill port 3000'  }
+ before('test') { sh 'PID=$(sudo su lsof -i :3000 | awk "NR==2 {print $2}")' }
  before("functionalTest") {
          sh '''#!/bin/bash
                  echo "hello kill port 3000" 

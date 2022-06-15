@@ -1,3 +1,4 @@
+import { log } from 'console';
 import express from 'express';
 import fs from 'graceful-fs';
 import http from 'http';
@@ -19,7 +20,6 @@ let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 function bootstrap() {
-  process.exit(1);
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
@@ -83,6 +83,8 @@ function closeServerWithPromise(server) {
 async function teardown(done) {
   try {
     if (server && server.close) {
+      // tslint:disable-next-line:no-console
+      console.log('closing server');
       await closeServerWithPromise(server);
     }
     if (ccdServer && ccdServer.close) {
@@ -102,6 +104,8 @@ async function teardown(done) {
     logger.exception(e, logLabel);
   } finally {
     done();
+    // tslint:disable-next-line:no-console
+    console.log('closing process');
     process.exit();
   }
 }

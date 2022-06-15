@@ -41,7 +41,7 @@ withPipeline("nodejs", product, component) {
 
 //  after('checkout') { sh 'yarn cache clean' }
 //  after('build') { sh 'yarn build' }
-    before('functionalTest') {
+    before('test') {
         sh '''#!/bin/bash
                  echo "hello kill port 3000"
                  echo $(sudo lsof -i :3000)

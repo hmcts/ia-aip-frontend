@@ -10,7 +10,6 @@ dependencies:
   - name: redis
     version: 15.7.6
     repository: "https://charts.bitnami.com/bitnami"
-    condition: redis.enabled
     tags:
       - pr
   - name: idam-pr

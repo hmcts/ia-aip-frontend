@@ -9,6 +9,10 @@ properties(
 def product = "ia"
 def component = "aip-frontend"
 
+def vaultOverrides = [
+  'preview': 'aat'
+]
+
 def secrets = [
     'ia-${env}': [
         secret('s2s-secret', 'S2S_SECRET'),
@@ -43,6 +47,7 @@ withPipeline("nodejs", product, component) {
 //  after('build') { sh 'yarn build' }
 //
 //
+overrideVaultEnvironments(vaultOverrides)
 loadVaultSecrets(secrets)
 //  enableAksStagingDeployment()
 //  disableLegacyDeployment()

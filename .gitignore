@@ -12,3 +12,4 @@ output
 _output
 .stryker-tmp
 stryker.log
+/.vscode/

@@ -19,6 +19,7 @@ let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 function bootstrap() {
+  process.exit(1);
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')

@@ -39,18 +39,19 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline("nodejs", product, component) {
 //    The following code was commented temporarily to stop using Jenkins resources, due to the AiP project being paused.  The expectation is that it will be resumed and the commented code will be required
 
- // after('checkout') { sh 'yarn cache clean' }
-  after('checkout') { echo 'on checkout hello kill port 3000' }
-    after('checkout') {
+after('checkout') { sh 'yarn cache clean' }
+after('checkout') { sh 'yarn cache clean' }
+after('build') { sh 'yarn build' }
+    after('test') {
         sh '''#!/bin/bash
                  echo "hello kill port 3000"
                  echo $(sudo lsof -i :3000)
                  echo $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
-                 sudo kill -9 $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
+                 sudo kill -15 $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
                  echo $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
          '''
     }
- // after('build') { sh 'yarn build' }
+after('build') { sh 'yarn build' }
 //
 //
 loadVaultSecrets(secrets)

@@ -39,8 +39,8 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline("nodejs", product, component) {
 //    The following code was commented temporarily to stop using Jenkins resources, due to the AiP project being paused.  The expectation is that it will be resumed and the commented code will be required
 
-after('checkout') { sh 'yarn cache clean' }
-after('build') { sh 'yarn build' }
+// after('checkout') { sh 'yarn cache clean' }
+// after('build') { sh 'yarn build' }
     before('test') {
         sh '''#!/bin/bash
                  echo "hello kill port 3000"

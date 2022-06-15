@@ -1,15 +1,16 @@
 apiVersion: v2
 name: ia-aip-frontend
 home: https://github.com/hmcts/ia-aip-frontend
-version: 0.0.32
+version: 0.0.33
 description: IA AIP Frontend
 dependencies:
   - name: nodejs
     version: ~2.4.1
     repository: '@hmctspublic'
   - name: redis
-    version: "10.0.0"
-    repository: "https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami"
+    version: 15.7.6
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
     tags:
       - pr
   - name: idam-pr

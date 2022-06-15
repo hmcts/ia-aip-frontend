@@ -106,7 +106,12 @@ async function teardown(done) {
     done();
     // tslint:disable-next-line:no-console
     console.log('closing process');
-    process.exit();
+    process.on('SIGTERM', () => {
+      server.close(() => {
+        // tslint:disable-next-line:no-console
+        console.log('Process terminated');
+      });
+    });
   }
 }
 

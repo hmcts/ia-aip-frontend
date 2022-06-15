@@ -105,9 +105,9 @@ async function teardown(done) {
   } finally {
     done();
     // tslint:disable-next-line:no-console
-    console.log('closing process' + process.pid);
+    console.log('closing process ' + process.pid);
     process.exitCode = 1;
-    process.kill(1);
+    process.kill(process.pid);
   }
 }
 

@@ -31,6 +31,11 @@ function bootstrap() {
       }
     );
 
+  process.on('uncaughtException', error => {
+    logger.exception(`Exiting the process with call to 'process.exit()' due to Uncaught Exception: ${error.message}`, logLabel);
+    process.exit();
+  });
+
   const ccdApp = express();
   const idamApp = express();
   const postcodeLookupApp = express();

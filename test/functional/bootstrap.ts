@@ -104,15 +104,15 @@ async function teardown(done) {
     logger.exception(e, logLabel);
   } finally {
     done();
-    // tslint:disable-next-line:no-console
-    console.log('closing process ' + process.pid);
-    process.kill(process.pid, 'SIGTERM');
-    process.on('SIGTERM', () => {
-      server.close(() => {
-        // tslint:disable-next-line:no-console
-        console.log('Process terminated');
-      });
-    });
+    // // tslint:disable-next-line:no-console
+    // console.log('closing process ' + process.pid);
+    // process.kill(process.pid, 'SIGTERM');
+    // process.on('SIGTERM', () => {
+    //   server.close(() => {
+    //     // tslint:disable-next-line:no-console
+    //     console.log('Process terminated');
+    //   });
+    // });
   }
 }
 

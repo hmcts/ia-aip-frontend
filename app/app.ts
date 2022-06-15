@@ -64,6 +64,8 @@ function createApp() {
 
   app.use((req, res, next) => {
     res.locals.csrfToken = req.csrfToken();
+    // tslint:disable-next-line:no-console
+    console.debug(`res.locals.csrfToken: ${JSON.stringify(res.locals.csrfToken)}`);
     res.locals.host = getUrl(req.protocol, req.hostname, '');
     next();
   });

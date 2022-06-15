@@ -48,7 +48,13 @@ export default class UpdateAppealService {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
     req.session.ccdCaseId = ccdCase.id;
+    // tslint:disable-next-line:no-console
+    console.log('loadAppeal, ccdCase id : ' + ccdCase.id);
+    // tslint:disable-next-line:no-console
+    console.log('loadAppeal, appeal status : ' + ccdCase.state);
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
+    // tslint:disable-next-line:no-console
+    console.log('loadAppeal, req.session.appeal : ' + JSON.stringify(req.session.appeal));
   }
 
   private getDate(ccdDate): AppealDate {
@@ -77,6 +83,12 @@ export default class UpdateAppealService {
       state: req.session.appeal.appealStatus,
       case_data: caseData
     };
+    // tslint:disable-next-line:no-console
+    console.debug('updatedCcdCase: ' + updatedCcdCase.case_data);
+    // tslint:disable-next-line:no-console
+    console.debug('updatedCcdCase: ' + updatedCcdCase.state);
+    // tslint:disable-next-line:no-console
+    console.debug('updatedCcdCase: ' + updatedCcdCase.id);
 
     const updatedAppeal = await this._ccdService.updateAppeal(event, currentUserId, updatedCcdCase, securityHeaders);
     return updatedAppeal;
@@ -98,6 +110,8 @@ export default class UpdateAppealService {
   }
 
   mapCcdCaseToAppeal(ccdCase: CcdCaseDetails): Appeal {
+    // tslint:disable-next-line:no-console
+    console.debug('mapCcdCaseToAppeal');
     const caseData: CaseData = ccdCase.case_data;
     const dateLetterSent = this.getDate(caseData.homeOfficeDecisionDate);
     const decisionLetterReceivedDate = this.getDate(caseData.decisionLetterReceivedDate);
@@ -136,7 +150,7 @@ export default class UpdateAppealService {
     let hasPendingTimeExtension = false;
     let documentMap: DocumentMap[] = [];
 
-    const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
+    const appellantContactDetails = subscriptions.reduce((_contactDetails, subscription) => {
       const value = subscription.value;
       if (Subscriber.APPELLANT === value.subscriber) {
         return {
@@ -148,7 +162,7 @@ export default class UpdateAppealService {
       }
     }, {}) || { email: null, wantsEmail: false, phone: null, wantsSms: false };
 
-    const sponsorContactDetails = sponsorSubscriptions.reduce((scd, sponsorSubscription) => {
+    const sponsorContactDetails = sponsorSubscriptions.reduce((_scd, sponsorSubscription) => {
       const value = sponsorSubscription.value;
       return {
         email: value.email || null,
@@ -485,6 +499,8 @@ export default class UpdateAppealService {
       hearingCentre: caseData.hearingCentre || null,
       documentMap
     };
+    // tslint:disable-next-line:no-console
+    console.debug('appeal:' + JSON.stringify(appeal));
     return appeal;
   }
 

@@ -108,13 +108,6 @@ describe('Provide more evidence controller', () => {
       expect(res.redirect).to.have.been.calledWith(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
     });
 
-    it('should redirect to \'/provide-more-evidence-check\' if not addendum evidence', () => {
-      req.session.appeal.additionalEvidence = [{ fileId: '1', name: 'name' } as AdditionalEvidenceDocument];
-      getReasonForLateEvidence(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceCheck);
-    });
-
     it('should render for addendum evidence', () => {
       req.params.id = '1';
       req.session.appeal.appealStatus = States.DECISION.id;
@@ -378,6 +371,23 @@ describe('Provide more evidence controller', () => {
 
       expect(req.session.appeal.addendumEvidence.length).to.eq(0);
       expect(req.session.appeal.documentMap.length).to.eq(0);
+    });
+
+    it('should not delete any document if no query id', async () => {
+      const deleteEvidence: Evidence = {
+        fileId: 'fileId',
+        name: 'theFileName'
+      };
+      const documentMap: DocumentMap = { id: '1', url: 'docStoreURLToFile' };
+      req.session.appeal.additionalEvidence = [{ fileId: '1', name: 'name' } as AdditionalEvidenceDocument];
+      req.session.appeal.documentMap = [ { ...documentMap } ];
+      const appeal: Appeal = { ...req.session.appeal };
+
+      await deleteProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.additionalEvidence.length).to.eq(1);
+      expect(req.session.appeal.documentMap.length).to.eq(1);
+      expect(res.redirect).to.have.been.calledWith(paths.common.provideMoreEvidenceForm);
     });
   });
 

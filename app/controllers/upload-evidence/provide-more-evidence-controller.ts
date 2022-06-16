@@ -22,54 +22,54 @@ function getProvideMoreEvidence(req: Request, res: Response, next: NextFunction)
 
     }
 
-    const evidences = isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus) ? req.session.appeal.addendumEvidence : req.session.appeal.additionalEvidence || [];
-
-    res.render('templates/multiple-evidence-upload-page.njk', {
+    const content = {
       title: i18n.pages.provideMoreEvidence.form.title,
       content: i18n.pages.provideMoreEvidence.form.content,
       moreInfo: i18n.pages.provideMoreEvidence.form.moreInfo,
       formSubmitAction: paths.common.provideMoreEvidenceForm,
       evidenceUploadAction: paths.common.provideMoreEvidenceUploadFile,
-      evidences,
+      evidences: req.session.appeal.additionalEvidence || [],
       evidenceCTA: paths.common.provideMoreEvidenceDeleteFile,
       previousPage: paths.common.overview,
       ...validationErrors && { error: validationErrors },
       ...validationErrors && { errorList: Object.values(validationErrors) },
       continueCancelButtons: true,
-      redirectTo: paths.common.whyEvidenceLate
-    });
+      redirectTo: paths.common.provideMoreEvidenceCheck
+    };
+    if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+      content.evidences = req.session.appeal.addendumEvidence;
+      content.redirectTo = paths.common.whyEvidenceLate;
+    }
+
+    res.render('templates/multiple-evidence-upload-page.njk', content);
   } catch (e) {
     next(e);
   }
 }
 
 function getReasonForLateEvidence(req: Request, res: Response, next: NextFunction) {
-  if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
-    if ((req.session.appeal.addendumEvidence || []).length === 0) {
-      return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+  if ((req.session.appeal.addendumEvidence || []).length === 0) {
+    return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+  }
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    let validationErrors: ValidationErrors;
+    if (req.query.error) {
+      validationErrors = {
+        whyEvidenceLate: createStructuredError('whyEvidenceLate', i18n.validationErrors.whyEvidenceLate)
+      };
     }
-    try {
-      req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-      let validationErrors: ValidationErrors;
-      if (req.query.error) {
-        validationErrors = {
-          whyEvidenceLate: createStructuredError('whyEvidenceLate', i18n.validationErrors.whyEvidenceLate)
-        };
-      }
-      res.render('upload-evidence/reason-for-late-evidence-page.njk', {
-        title: i18n.pages.provideMoreEvidence.whyEvidenceLate.title,
-        content: i18n.pages.provideMoreEvidence.whyEvidenceLate.content,
-        formSubmitAction: paths.common.whyEvidenceLate,
-        id: 'whyEvidenceLate',
-        previousPage: paths.common.provideMoreEvidenceForm,
-        ...validationErrors && { error: validationErrors },
-        ...validationErrors && { errorList: Object.values(validationErrors) }
-      });
-    } catch (e) {
-      next(e);
-    }
-  } else {
-    return res.redirect(paths.common.provideMoreEvidenceCheck);
+    res.render('upload-evidence/reason-for-late-evidence-page.njk', {
+      title: i18n.pages.provideMoreEvidence.whyEvidenceLate.title,
+      content: i18n.pages.provideMoreEvidence.whyEvidenceLate.content,
+      formSubmitAction: paths.common.whyEvidenceLate,
+      id: 'whyEvidenceLate',
+      previousPage: paths.common.provideMoreEvidenceForm,
+      ...validationErrors && { error: validationErrors },
+      ...validationErrors && { errorList: Object.values(validationErrors) }
+    });
+  } catch (e) {
+    next(e);
   }
 }
 
@@ -133,118 +133,35 @@ function validate (redirectToUrl: string) {
 
 function uploadProvideMoreEvidence(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (req.file) {
-        if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
-          const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
-          if (!uploadAddendumEvidenceFeatureEnabled) {
-            return res.redirect(paths.common.overview);
-          }// TODO: remove after Feature flag for AIP Upload Addendum Evidence is permanently switched on
-          const addendumEvidenceDocument: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-          const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
-
-          addendumEvidence.push({
-            name: addendumEvidenceDocument.name,
-            fileId: addendumEvidenceDocument.fileId
-          });
-
-          req.session.appeal = {
-            ...req.session.appeal,
-            addendumEvidence
-          };
-        } else {
-          const additionalEvidenceDocument: DocumentUploadResponse = await documentManagementService.uploadFile(req);
-          const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
-
-          additionalEvidence.push({
-            name: additionalEvidenceDocument.name,
-            fileId: additionalEvidenceDocument.fileId
-          });
-
-          req.session.appeal = {
-            ...req.session.appeal,
-            additionalEvidence
-          };
-        }
-        return res.redirect(paths.common.provideMoreEvidenceForm);
-      }
+    if (!req.file) {
       return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
-    } catch (e) {
-      next(e);
     }
+    return (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)
+      ? uploadAddendumEvidence(req, res, documentManagementService)
+      : uploadAdditionalEvidence(req, res, documentManagementService)).catch(e => next(e));
   };
 }
 
 function postProvideMoreEvidenceCheckAndSend(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
-        const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
-        if (!uploadAddendumEvidenceFeatureEnabled) {
-          return res.redirect(paths.common.overview);
-        }// TODO: remove after Feature flag for AIP Upload Addendum Evidence is permanently switched on
-        const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
-
-        const appeal: Appeal = {
-          ...req.session.appeal,
-          addendumEvidence: [...addendumEvidence]
-        };
-
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDENDUM_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-        req.session.appeal = {
-          ...req.session.appeal,
-          ...appealUpdated
-        };
-        req.session.appeal.addendumEvidence = [];
-      } else {
-        const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
-
-        const appeal: Appeal = {
-          ...req.session.appeal,
-          additionalEvidence: [...additionalEvidence]
-        };
-
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDITIONAL_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-        req.session.appeal = {
-          ...req.session.appeal,
-          ...appealUpdated
-        };
-        req.session.appeal.additionalEvidence = [];
-      }
-      return res.redirect(paths.common.provideMoreEvidenceConfirmation);
-    } catch (e) {
-      next(e);
+    if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+      return postAddendumEvidence(req, res, updateAppealService).catch(e => next(e));
+    } else {
+      return postAdditionalEvidence(req, res, updateAppealService).catch(e => next(e));
     }
   };
 }
 
 function deleteProvideMoreEvidence(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (req.query.id) {
-        if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
-          const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence.filter(document => document.fileId !== req.query.id) || [])];
-          const documentMap: DocumentMap[] = [...(req.session.appeal.documentMap.filter(document => document.id !== req.query.id) || [])];
-
-          await documentManagementService.deleteFile(req, req.query.id as string);
-
-          req.session.appeal.addendumEvidence = addendumEvidence;
-          req.session.appeal.documentMap = documentMap;
-        } else {
-          const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence.filter(document => document.fileId !== req.query.id) || [])];
-          const documentMap: DocumentMap[] = [...(req.session.appeal.documentMap.filter(document => document.id !== req.query.id) || [])];
-
-          await documentManagementService.deleteFile(req, req.query.id as string);
-
-          req.session.appeal.additionalEvidence = additionalEvidence;
-          req.session.appeal.documentMap = documentMap;
-        }
-
-        return res.redirect(paths.common.provideMoreEvidenceForm);
+    if (req.query.id) {
+      if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
+        return deleteAddendumEvidence(req, res, documentManagementService).catch(e => next(e));
+      } else {
+        return deleteAdditionalEvidence(req, res, documentManagementService).catch(e => next(e));
       }
-    } catch (e) {
-      next(e);
     }
+    return res.redirect(paths.common.provideMoreEvidenceForm);
   };
 }
 
@@ -389,6 +306,106 @@ function buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceD
   }
 
   return additionalEvidenceSummaryLists;
+}
+
+async function uploadAddendumEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
+  const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+  if (!uploadAddendumEvidenceFeatureEnabled) {
+    return res.redirect(paths.common.overview);
+  }
+
+  const addendumEvidenceDocument: DocumentUploadResponse = await documentManagementService.uploadFile(req);
+  const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
+
+  addendumEvidence.push({
+    name: addendumEvidenceDocument.name,
+    fileId: addendumEvidenceDocument.fileId
+  });
+
+  req.session.appeal = {
+    ...req.session.appeal,
+    addendumEvidence
+  };
+  return res.redirect(paths.common.provideMoreEvidenceForm);
+}
+
+async function uploadAdditionalEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
+  const additionalEvidenceDocument: DocumentUploadResponse = await documentManagementService.uploadFile(req);
+  const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
+
+  additionalEvidence.push({
+    name: additionalEvidenceDocument.name,
+    fileId: additionalEvidenceDocument.fileId
+  });
+
+  req.session.appeal = {
+    ...req.session.appeal,
+    additionalEvidence
+  };
+  return res.redirect(paths.common.provideMoreEvidenceForm);
+}
+
+async function postAddendumEvidence(req: Request, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
+  const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+  if (!uploadAddendumEvidenceFeatureEnabled) {
+    return res.redirect(paths.common.overview);
+  }
+
+  const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence || [])];
+  const appeal: Appeal = {
+    ...req.session.appeal,
+    addendumEvidence: [...addendumEvidence]
+  };
+  const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDENDUM_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+  req.session.appeal = {
+    ...req.session.appeal,
+    ...appealUpdated
+  };
+  req.session.appeal.addendumEvidence = [];
+
+  return res.redirect(paths.common.provideMoreEvidenceConfirmation);
+}
+
+async function postAdditionalEvidence(req: Request, res: Response, updateAppealService: UpdateAppealService): Promise<any> {
+  const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence || [])];
+  const appeal: Appeal = {
+    ...req.session.appeal,
+    additionalEvidence: [...additionalEvidence]
+  };
+  const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDITIONAL_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+
+  req.session.appeal = {
+    ...req.session.appeal,
+    ...appealUpdated
+  };
+  req.session.appeal.additionalEvidence = [];
+
+  return res.redirect(paths.common.provideMoreEvidenceConfirmation);
+}
+
+async function deleteAddendumEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
+  const addendumEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.addendumEvidence.filter(document => document.fileId !== req.query.id) || [])];
+  const documentMap: DocumentMap[] = [...(req.session.appeal.documentMap.filter(document => document.id !== req.query.id) || [])];
+
+  await documentManagementService.deleteFile(req, req.query.id as string);
+
+  req.session.appeal.addendumEvidence = addendumEvidence;
+  req.session.appeal.documentMap = documentMap;
+
+  return res.redirect(paths.common.provideMoreEvidenceForm);
+}
+
+async function deleteAdditionalEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
+  const additionalEvidence: AdditionalEvidenceDocument[] = [...(req.session.appeal.additionalEvidence.filter(document => document.fileId !== req.query.id) || [])];
+  const documentMap: DocumentMap[] = [...(req.session.appeal.documentMap.filter(document => document.id !== req.query.id) || [])];
+
+  await documentManagementService.deleteFile(req, req.query.id as string);
+
+  req.session.appeal.additionalEvidence = additionalEvidence;
+  req.session.appeal.documentMap = documentMap;
+
+  return res.redirect(paths.common.provideMoreEvidenceForm);
 }
 
 export {

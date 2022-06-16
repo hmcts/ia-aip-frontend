@@ -80,30 +80,22 @@ const uploadAddendumEvidence = {
         }
       }
     ],
-    "addendumEvidence": [
+    "addendumEvidenceDocuments": [
       {
-        "id": "d8403157-cbc8-4441-8f0e-831d7911d070",
+        "id": "7",
         "value": {
-          "description": "Why evidence is late.",
           "document": {
-            "document_filename": "test_doc.pdf",
-            "document_url": "http://dm-store:4506/documents/c1d139da-2110-4062-9e10-922a3c63b3aa",
-            "document_binary_url": "http://dm-store:4506/documents/c1d139da-2110-4062-9e10-922a3c63b3aa/binary"
-          }
-        }
-      },
-      {
-        "id": "2d33e255-609c-47e2-8a10-c8056945eaa7",
-        "value": {
-          "description": "Why evidence is late.",
-          "document": {
-            "document_filename": "test_doc.pdf",
-            "document_url": "http://dm-store:4506/documents/a9970992-749a-4c8b-9b92-349ef110b0ca",
-            "document_binary_url": "http://dm-store:4506/documents/a9970992-749a-4c8b-9b92-349ef110b0ca/binary"
-          }
+            "document_url": "http://dm-store:4506/documents/e0f634e7-9ac6-4e78-ac1e-dc58196f61d3",
+            "document_filename": "test_file.docx"
+          },
+          "description": "Reason evidence is late. This is an explanation on why I provided my evidence late.",
+          "tag": "addendumEvidence",
+          "dateUploaded": "16 June 2022"
         }
       }
-    ]
+    ],
+    "appealReviewOutcome": "decisionMaintained",
+    "hearingCentre": "birmingham",
   }
 }
 

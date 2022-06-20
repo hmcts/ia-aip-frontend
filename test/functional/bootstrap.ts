@@ -18,21 +18,26 @@ let idamServer: http.Server;
 let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
-function bootstrap() {
-  server = https.createServer({
-    key: fs.readFileSync('keys/server.key'),
-    cert: fs.readFileSync('keys/server.cert')
-  }, app);
+function listenWithPromise(server) {
   return new Promise(function () {
     server.listen(port, () => {
       logger.trace(`Server  listening on port ${port}`, logLabel);
     });
     server.on('error',
-            (error: Error) => {
-              logger.exception(`Unable to start server because of ${error.message}`, logLabel);
-            }
-        );
+        (error: Error) => {
+          logger.exception(`Unable to start server because of ${error.message}`, logLabel);
+        }
+    );
   });
+}
+
+async function bootstrap() {
+  server = https.createServer({
+    key: fs.readFileSync('keys/server.key'),
+    cert: fs.readFileSync('keys/server.cert')
+  }, app);
+
+  await listenWithPromise(server);
 
   const ccdApp = express();
   const idamApp = express();

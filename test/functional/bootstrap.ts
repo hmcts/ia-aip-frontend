@@ -18,7 +18,7 @@ let idamServer: http.Server;
 let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
-function bootstrap() {
+async function bootstrap() {
   return new Promise(function () {
     https.createServer({
       key: fs.readFileSync('keys/server.key'),

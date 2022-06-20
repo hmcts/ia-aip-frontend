@@ -74,7 +74,7 @@
     "nl2br": "^0.0.3",
     "nunjucks": "^3.2.3",
     "otp": "^0.1.3",
-    "redis": "^3.0.2",
+    "redis": "^3.1.1",
     "request-promise": "^4.2.6",
     "webdriverio": "^6.12.1",
     "webpack": "^4.46.0",
@@ -152,6 +152,7 @@
   "resolutions": {
     "codeceptjs/*/*/ansi-regex": "^4.1.1",
     "@hmcts/ia-idam-express-middleware/@hmcts/nodejs-logging/moment": "^2.29.2",
-    "webdriverio/*/async": "^3.2.2"
+    "webdriverio/*/async": "^3.2.2",
+    "launchdarkly-node-server-sdk/async": "^3.2.2"
   }
 }

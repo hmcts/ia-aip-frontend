@@ -44,10 +44,10 @@ withPipeline("nodejs", product, component) {
     before('test') {
         sh '''#!/bin/bash
                  echo "hello kill port 3000 Take 2"
-                 echo $(sudo lsof -i :3000)
-                 echo $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
+                 echo $(lsof -i :3000)
+                 echo $(lsof -i :3000 | awk 'NR==2 {print $2}')
                  sudo kill -15 $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
-                 echo $(sudo lsof -i :3000 | awk 'NR==2 {print $2}')
+                 echo $(lsof -i :3000 | awk 'NR==2 {print $2}')
          '''
     }
 loadVaultSecrets(secrets)

@@ -19,17 +19,19 @@ let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 function bootstrap() {
-  server = https.createServer({
-    key: fs.readFileSync('keys/server.key'),
-    cert: fs.readFileSync('keys/server.cert')
-  }, app).listen(port, () => {
-    logger.trace(`Server  listening on port ${port}`, logLabel);
-  })
-    .on('error',
-      (error: Error) => {
-        logger.exception(`Unable to start server because of ${error.message}`, logLabel);
-      }
-    );
+  return new Promise(function () {
+    https.createServer({
+      key: fs.readFileSync('keys/server.key'),
+      cert: fs.readFileSync('keys/server.cert')
+    }, app).listen(port, () => {
+      logger.trace(`Server  listening on port ${port}`, logLabel);
+    })
+        .on('error',
+            (error: Error) => {
+              logger.exception(`Unable to start server because of ${error.message}`, logLabel);
+            }
+        );
+  });
 
   const ccdApp = express();
   const idamApp = express();
@@ -106,8 +108,8 @@ async function teardown(done) {
 }
 
 module.exports = {
-  bootstrap: function (done) {
-    bootstrap();
+  bootstrap: async function (done) {
+    await bootstrap();
     done();
   },
   teardown: async function (done) {

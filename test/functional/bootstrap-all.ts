@@ -33,9 +33,9 @@ module.exports = {
     sauceConnectProcess = await sauceConnect();
     done();
   },
-  teardownAll: function(done) {
+  teardownAll: async function(done) {
     if (sauceConnectProcess) {
-      sauceConnectProcess.close(() => {
+      await sauceConnectProcess.close(() => {
         console.info('Closed sauce connect process');
       });
     }

@@ -44,7 +44,7 @@
     "@hmcts/os-places-client": "^1.1.2",
     "@hmcts/properties-volume": "^0.0.13",
     "applicationinsights": "^1.8.10",
-    "codeceptjs": "^2.6.11",
+    "codeceptjs": "^3.0.0",
     "config": "^3.3.6",
     "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.5",

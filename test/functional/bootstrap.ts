@@ -81,7 +81,7 @@ function closeServerWithPromise(server) {
   });
 }
 
-async function teardown(done) {
+async function teardown() {
   try {
     if (server && server.close) {
       await closeServerWithPromise(server);
@@ -102,17 +102,15 @@ async function teardown(done) {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    done();
     process.exit();
   }
 }
 
 module.exports = {
-  bootstrap: async function (done) {
+  bootstrap: async function () {
     await bootstrap();
-    done();
   },
-  teardown: async function (done) {
-    await teardown(done);
+  teardown: async function () {
+    await teardown();
   }
 };

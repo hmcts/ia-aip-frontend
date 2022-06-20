@@ -25,12 +25,12 @@ Feature: upload addendum evidence
     When I click "Continue" button
     Then I should see the why evidence late page
 
-    #When I click "Continue" button
-    #Then I should see error summary
+    When I click "Continue" button
+    Then I should see error summary
 
-    #When I enter "Reason for late submission of evidence" into the why evidence late text area and click Save and Continue
-    #Then I should see the provide more evidence check page
+    When I enter "Reason for late submission of evidence" into the why evidence late text area and click Save and Continue
+    Then I should see the provide more evidence check page
 
-    #When I click "Confirm and send" button
-    #Then I should see the provide more evidence sent page
-    #Then I should see "A Tribunal judge will look at the reasons why your evidence is late and decide if the evidence can be part of your appeal." on the page
+    When I click "Confirm and send" button
+    Then I should see the provide more evidence sent page
+    Then I should see "A Tribunal judge will look at the reasons why your evidence is late and decide if the evidence can be part of your appeal." on the page

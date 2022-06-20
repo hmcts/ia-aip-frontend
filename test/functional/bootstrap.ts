@@ -20,22 +20,22 @@ let documentManagementStoreServer: http.Server;
 
 function listenWithPromise(server) {
   // tslint:disable-next-line:no-console
-  console.debug('listenWithPromise');
-  return new Promise(function () {
-    server.listen(port, () => {
+  console.info('listenWithPromise');
+  return new Promise(function (resolve, reject) {
+    reject(server.listen(port, () => {
       logger.trace(`Server  listening on port ${port}`, logLabel);
-    });
-    server.on('error',
+    }));
+    reject(server.on('error',
         (error: Error) => {
           logger.exception(`Unable to start server because of ${error.message}`, logLabel);
         }
-    );
+    ));
   });
 }
 
 async function bootstrap() {
   // tslint:disable-next-line:no-console
-  console.debug('bootstrap');
+  console.info('bootstrap');
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
@@ -93,7 +93,7 @@ function closeServerWithPromise(server) {
 
 async function teardown() {
   // tslint:disable-next-line:no-console
-  console.debug('teardown');
+  console.info('teardown');
   try {
     if (server && server.close) {
       await closeServerWithPromise(server);

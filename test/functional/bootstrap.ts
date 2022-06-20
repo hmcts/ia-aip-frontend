@@ -19,6 +19,8 @@ let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 function listenWithPromise(server) {
+  // tslint:disable-next-line:no-console
+  console.debug('listenWithPromise');
   return new Promise(function () {
     server.listen(port, () => {
       logger.trace(`Server  listening on port ${port}`, logLabel);
@@ -32,6 +34,8 @@ function listenWithPromise(server) {
 }
 
 async function bootstrap() {
+  // tslint:disable-next-line:no-console
+  console.debug('bootstrap');
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
@@ -88,6 +92,8 @@ function closeServerWithPromise(server) {
 }
 
 async function teardown() {
+  // tslint:disable-next-line:no-console
+  console.debug('teardown');
   try {
     if (server && server.close) {
       await closeServerWithPromise(server);

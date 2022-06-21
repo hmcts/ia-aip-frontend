@@ -63,6 +63,7 @@ function getReasonForLateEvidence(req: Request, res: Response, next: NextFunctio
       title: i18n.pages.provideMoreEvidence.whyEvidenceLate.title,
       content: i18n.pages.provideMoreEvidence.whyEvidenceLate.content,
       formSubmitAction: paths.common.whyEvidenceLate,
+      reason: req.session.appeal.addendumEvidence[0].description,
       id: 'whyEvidenceLate',
       previousPage: paths.common.provideMoreEvidenceForm,
       ...validationErrors && { error: validationErrors },

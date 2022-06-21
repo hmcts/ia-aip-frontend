@@ -487,7 +487,17 @@ describe('Provide more evidence controller', () => {
       const mockEvidenceDocuments: Evidence[] = [
         {
           fileId: 'aFileId',
-          name: 'fileName',
+          name: 'aFileName',
+          description: 'Reason for late evidence'
+        },
+        {
+          fileId: 'bFileId',
+          name: 'bFileName',
+          description: 'Reason for late evidence'
+        },
+        {
+          fileId: 'cFileId',
+          name: 'cFileName',
           description: 'Reason for late evidence'
         }
       ];
@@ -508,7 +518,7 @@ describe('Provide more evidence controller', () => {
                 'text': 'Supporting evidence'
               },
               'value': {
-                'html': '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/aFileId\'>fileName</a>'
+                'html': '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/aFileId\'>aFileName</a>'
               }
             },
             {
@@ -535,8 +545,8 @@ describe('Provide more evidence controller', () => {
 
       expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
       expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
-      expect(result[0].summaryRows[1].key.text).to.equal(expectedSummaryList[0].summaryRows[1].key.text);
-      expect(result[0].summaryRows[1].value.html).to.equal(expectedSummaryList[0].summaryRows[1].value.html);
+      expect(result[0].summaryRows[result[0].summaryRows.length - 1].key.text).to.equal(expectedSummaryList[0].summaryRows[1].key.text);
+      expect(result[0].summaryRows[result[0].summaryRows.length - 1].value.html).to.equal(expectedSummaryList[0].summaryRows[1].value.html);
 
       it('should return addendum document list', () => {
         const mockEvidenceDocuments: Evidence[] = [

@@ -250,21 +250,23 @@ function buildAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments
 function buildAddendumEvidenceDocumentsSummaryList(addendumEvidenceDocuments: Evidence[]): SummaryList[] {
   const addendumEvidenceSummaryLists: SummaryList[] = [];
   const addendumEvidenceRows: SummaryRow[] = [];
-  if (addendumEvidenceDocuments) {
+  if (addendumEvidenceDocuments && addendumEvidenceDocuments.length > 0) {
     addendumEvidenceDocuments.forEach((evidence: Evidence) => {
       addendumEvidenceRows.push(
         addSummaryRow(
           i18n.pages.provideMoreEvidence.checkYourAnswers.evidenceTitle,
           [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
           'provide-more-evidence'
-        ),
-        addSummaryRow(
-          i18n.pages.provideMoreEvidence.checkYourAnswers.evidenceDescription,
-          [`<p>${evidence.description}</p>`],
-          'why-evidence-late'
         )
       );
     });
+    addendumEvidenceRows.push(
+      addSummaryRow(
+        i18n.pages.provideMoreEvidence.checkYourAnswers.evidenceDescription,
+        [`<p>${addendumEvidenceDocuments[0].description}</p>`],
+        'why-evidence-late'
+      )
+    );
     addendumEvidenceSummaryLists.push({
       summaryRows: addendumEvidenceRows
     });

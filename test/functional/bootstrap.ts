@@ -18,30 +18,18 @@ let idamServer: http.Server;
 let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
-function listenWithPromise(server) {
-  // tslint:disable-next-line:no-console
-  console.info('listenWithPromise');
-  return new Promise(function (resolve, reject) {
-    resolve(server.listen(port, () => {
-      logger.trace(`Server  listening on port ${port}`, logLabel);
-    }));
-    reject(server.on('error',
-        (error: Error) => {
-          logger.exception(`Unable to start server because of ${error.message}`, logLabel);
-        }
-    ));
-  });
-}
-
-async function bootstrap() {
-  // tslint:disable-next-line:no-console
-  console.info('bootstrap');
+function bootstrap() {
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
-  }, app);
-
-  await listenWithPromise(server);
+  }, app).listen(port, () => {
+    logger.trace(`Server  listening on port ${port}`, logLabel);
+  })
+    .on('error',
+      (error: Error) => {
+        logger.exception(`Unable to start server because of ${error.message}`, logLabel);
+      }
+    );
 
   const ccdApp = express();
   const idamApp = express();
@@ -91,9 +79,7 @@ function closeServerWithPromise(server) {
   });
 }
 
-async function teardown() {
-  // tslint:disable-next-line:no-console
-  console.info('teardown');
+async function teardown(done) {
   try {
     if (server && server.close) {
       await closeServerWithPromise(server);
@@ -114,17 +100,17 @@ async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
+    done();
     process.exit();
   }
 }
 
 module.exports = {
-  bootstrap: async (): Promise<void> => {
-    // tslint:disable-next-line:no-console
-    console.info('bootstrap');
-    await bootstrap();
+  bootstrap: function (done) {
+    bootstrap();
+    done();
   },
-  teardown: async (): Promise<void> => {
-    await teardown();
+  teardown: async function (done) {
+    await teardown(done);
   }
 };

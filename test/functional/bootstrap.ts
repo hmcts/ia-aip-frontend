@@ -119,10 +119,10 @@ async function teardown() {
 }
 
 module.exports = {
-  bootstrap: async () => {
+  bootstrap: async (): Promise<void> => {
     await bootstrap();
   },
-  teardown: async () => {
+  teardown: async (): Promise<void> => {
     await teardown();
   }
 };

@@ -117,6 +117,7 @@ async function teardown() {
     process.exit();
   }
 }
+module.exports = require('./bootstap.ts');
 
 module.exports = {
   bootstrap: async (): Promise<void> => {

@@ -1,5 +1,5 @@
 const config = require('config');
-const { bootstrap, teardown } = require('./test/functional/bootstrap');
+const { bootstrap, teardown } = require('./test/functional/bootstrap.ts');
 
 exports.config = {
   name: 'codecept',

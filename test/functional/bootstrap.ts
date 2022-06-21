@@ -22,7 +22,7 @@ function listenWithPromise(server) {
   // tslint:disable-next-line:no-console
   console.info('listenWithPromise');
   return new Promise(function (resolve, reject) {
-    reject(server.listen(port, () => {
+    resolve(server.listen(port, () => {
       logger.trace(`Server  listening on port ${port}`, logLabel);
     }));
     reject(server.on('error',
@@ -117,3 +117,12 @@ async function teardown() {
     process.exit();
   }
 }
+
+module.exports = {
+  bootstrap: async () => {
+    await bootstrap();
+  },
+  teardown: async () => {
+    await teardown();
+  }
+};

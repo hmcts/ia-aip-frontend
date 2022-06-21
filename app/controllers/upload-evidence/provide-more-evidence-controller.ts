@@ -41,7 +41,7 @@ function getProvideMoreEvidence(req: Request, res: Response, next: NextFunction)
       content.redirectTo = paths.common.whyEvidenceLate;
     }
 
-    res.render('templates/multiple-evidence-upload-page.njk', content);
+    return res.render('templates/multiple-evidence-upload-page.njk', content);
   } catch (e) {
     next(e);
   }
@@ -59,7 +59,7 @@ function getReasonForLateEvidence(req: Request, res: Response, next: NextFunctio
         whyEvidenceLate: createStructuredError('whyEvidenceLate', i18n.validationErrors.whyEvidenceLate)
       };
     }
-    res.render('upload-evidence/reason-for-late-evidence-page.njk', {
+    return res.render('upload-evidence/reason-for-late-evidence-page.njk', {
       title: i18n.pages.provideMoreEvidence.whyEvidenceLate.title,
       content: i18n.pages.provideMoreEvidence.whyEvidenceLate.content,
       formSubmitAction: paths.common.whyEvidenceLate,
@@ -168,18 +168,11 @@ function deleteProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
 
 function getProvideMoreEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    const summaryList: SummaryList[] = isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus) ? buildAddendumEvidenceDocumentsSummaryList(req.session.appeal.addendumEvidence) : buildAdditionalEvidenceDocumentsSummaryList(req.session.appeal.additionalEvidence);
-
-    if (summaryList.length < 1) {
-      return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+    if (isPreAddendumEvidenceUploadState) {
+      return getProvideAddendumEvidenceCheckAndSend(req, res);
+    } else {
+      return getProvideAdditionalEvidenceCheckAndSend(req, res);
     }
-
-    res.render('templates/check-and-send.njk', {
-      pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
-      continuePath: paths.common.provideMoreEvidenceConfirmation,
-      previousPage: paths.common.provideMoreEvidenceForm,
-      summaryLists: summaryList
-    });
   } catch (e) {
     next(e);
   }
@@ -188,12 +181,12 @@ function getProvideMoreEvidenceCheckAndSend(req: Request, res: Response, next: N
 function getConfirmation(req: Request, res: Response, next: NextFunction) {
   try {
     if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
-      res.render('templates/confirmation-page.njk', {
+      return res.render('templates/confirmation-page.njk', {
         title: i18n.pages.provideMoreEvidence.confirmation.title,
         whatNextContent: i18n.pages.provideMoreEvidence.confirmation.whatNextContent
       });
     } else {
-      res.render('templates/confirmation-page.njk', {
+      return res.render('templates/confirmation-page.njk', {
         title: i18n.pages.provideMoreEvidence.confirmation.title,
         whatNextListItems: i18n.pages.provideMoreEvidence.confirmation.whatNextListItems
       });
@@ -209,7 +202,7 @@ function getEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
     const additionalEvidenceDocuments = req.session.appeal.additionalEvidenceDocuments;
     const summaryList: SummaryList[] = buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments);
 
-    res.render('templates/check-and-send.njk', {
+    return res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
       previousPage: paths.common.overview,
       summaryLists: summaryList
@@ -344,6 +337,36 @@ async function uploadAdditionalEvidence(req: Request, res: Response, documentMan
     additionalEvidence
   };
   return res.redirect(paths.common.provideMoreEvidenceForm);
+}
+
+function getProvideAddendumEvidenceCheckAndSend(req: Request, res: Response) {
+  const summaryList: SummaryList[] = buildAddendumEvidenceDocumentsSummaryList(req.session.appeal.addendumEvidence);
+
+  if (summaryList.length < 1) {
+    return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+  }
+
+  return res.render('templates/check-and-send.njk', {
+    pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
+    continuePath: paths.common.provideMoreEvidenceConfirmation,
+    previousPage: paths.common.whyEvidenceLate,
+    summaryLists: summaryList
+  });
+}
+
+function getProvideAdditionalEvidenceCheckAndSend(req: Request, res: Response) {
+  const summaryList: SummaryList[] = buildAdditionalEvidenceDocumentsSummaryList(req.session.appeal.additionalEvidence);
+
+  if (summaryList.length < 1) {
+    return res.redirect(`${paths.common.provideMoreEvidenceForm}?error=noFileSelected`);
+  }
+
+  return res.render('templates/check-and-send.njk', {
+    pageTitle: i18n.pages.provideMoreEvidence.checkYourAnswers.title,
+    continuePath: paths.common.provideMoreEvidenceConfirmation,
+    previousPage: paths.common.provideMoreEvidenceForm,
+    summaryLists: summaryList
+  });
 }
 
 async function postAddendumEvidence(req: Request, res: Response, updateAppealService: UpdateAppealService): Promise<any> {

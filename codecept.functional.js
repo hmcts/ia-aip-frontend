@@ -1,10 +1,11 @@
 const config = require('config');
+const { bootstrap, teardown } = require('./test/functional/bootstrap');
 
 exports.config = {
   name: 'codecept',
   output: './functional-output/functional/reports/',
-  bootstrap: './test/functional/bootstrap.ts',
-  teardown: './test/functional/bootstrap.ts',
+  bootstrap: bootstrap(),
+  teardown: teardown(),
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),

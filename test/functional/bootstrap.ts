@@ -120,6 +120,8 @@ async function teardown() {
 
 module.exports = {
   bootstrap: async (): Promise<void> => {
+    // tslint:disable-next-line:no-console
+    console.info('bootstrap');
     await bootstrap();
   },
   teardown: async (): Promise<void> => {

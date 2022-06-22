@@ -3,6 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
 const path = require('path');
+const merge = require("webpack-merge");
 
 const serverConfig = {
   entry: [
@@ -86,4 +87,4 @@ const commonConfig = {
   client: clientConfig
 };
 
-module.exports = commonConfig;
+module.exports = merge.merge([commonConfig]);

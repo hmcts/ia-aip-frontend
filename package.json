@@ -150,11 +150,13 @@
     "nonGlobalStepDefinitions": true
   },
   "resolutions": {
-    "codeceptjs/*/*/ansi-regex": "^4.1.1",
+    "codeceptjs/*/*/ansi-regex": "^5.0.1",
     "@hmcts/ia-idam-express-middleware/@hmcts/nodejs-logging/moment": "^2.29.2",
     "webdriverio/*/async": "^3.2.2",
     "launchdarkly-node-server-sdk/async": "^3.2.2",
-    "codeceptjs/@codeceptjs/configure/webdriverio/webdriver/@wdio/*/@wdio/*/*/ansi-regex": "^5.0.1",
+    "codeceptjs/@codeceptjs/configure/webdriverio/webdriver/@wdio/config/@wdio/logger/strip-ansi/ansi-regex": "^5.0.1",
+    "webdriverio/@wdio/logger/strip-ansi/ansi-regex": "^5.0.1",
+    "codeceptjs/@codeceptjs/configure/webdriverio/@wdio/logger/strip-ansi/ansi-regex": "^5.0.1",
     "@hmcts/ia-idam-express-middleware/request/http-signature/jsprim/json-schema": "^0.4.0"
   }
 }

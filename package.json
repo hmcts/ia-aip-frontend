@@ -79,8 +79,8 @@
     "webdriverio": "^6.12.1",
     "webpack": "^5.73.0",
     "webpack-dev-middleware": "^3.7.3",
-    "webpack-merge": "^4.2.2",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-merge": "^5.8.0",
+    "webpack-node-externals": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

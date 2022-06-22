@@ -55,7 +55,9 @@ function createApp() {
   app.post('*', filterRequest);
 
   if (environment === 'development' || environment === 'test') {
-    JSON.stringify(webpackDevConfig);
+    JSON.stringify(webpackDevConfig.server);
+    // tslint:disable-next-line:no-console
+    console.debug(webpackDevConfig.server);
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     JSON.stringify(serverDevConfig);
     JSON.stringify(clientDevConfig);

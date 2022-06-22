@@ -39,20 +39,12 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline("nodejs", product, component) {
 //    The following code was commented temporarily to stop using Jenkins resources, due to the AiP project being paused.  The expectation is that it will be resumed and the commented code will be required
 
-// after('checkout') { sh 'yarn cache clean' }
-// after('build') { sh 'yarn build' }
-    before('test') {
-        sh '''#!/bin/bash
-                 echo "hello kill port 3000 Take 2"
-                 echo $(lsof -i :3000)
-                 echo $(lsof -i :3000 | awk 'NR==2 {print $2}')
-                 sudo kill -15 $(lsof -i :3000 | awk 'NR==2 {print $2}')
-                 echo $(lsof -i :3000 | awk 'NR==2 {print $2}')
-         '''
-    }
+ after('checkout') { sh 'yarn cache clean' }
+ after('build') { sh 'yarn build' }
+
 loadVaultSecrets(secrets)
-//  enableAksStagingDeployment()
-//  disableLegacyDeployment()
+  enableAksStagingDeployment()
+  disableLegacyDeployment()
 
 env.S2S_MICROSERVICE_NAME = 'iac'
 env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'

@@ -157,6 +157,8 @@
     "codeceptjs/@codeceptjs/configure/webdriverio/webdriver/@wdio/config/@wdio/logger/strip-ansi/ansi-regex": "^5.0.1",
     "webdriverio/@wdio/logger/strip-ansi/ansi-regex": "^5.0.1",
     "codeceptjs/@codeceptjs/configure/webdriverio/@wdio/logger/strip-ansi/ansi-regex": "^5.0.1",
-    "@hmcts/ia-idam-express-middleware/request/http-signature/jsprim/json-schema": "^0.4.0"
+    "@hmcts/ia-idam-express-middleware/request/http-signature/jsprim/json-schema": "^0.4.0",
+    "webdriverio/devtools/puppeteer-core/node-fetch": "^2.6.7",
+    "webdriverio/puppeteer-core/node-fetch": "^2.6.7"
   }
 }

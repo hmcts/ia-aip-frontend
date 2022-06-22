@@ -87,4 +87,4 @@ const commonConfig = {
   client: clientConfig
 };
 
-module.exports = merge.merge([commonConfig]);
+module.exports = [commonConfig]

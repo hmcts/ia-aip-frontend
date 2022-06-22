@@ -55,6 +55,7 @@ function createApp() {
   app.post('*', filterRequest);
 
   if (environment === 'development' || environment === 'test') {
+    JSON.stringify(webpackDevConfig);
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     JSON.stringify(serverDevConfig);
     JSON.stringify(clientDevConfig);

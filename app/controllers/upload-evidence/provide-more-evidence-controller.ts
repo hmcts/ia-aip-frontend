@@ -168,7 +168,7 @@ function deleteProvideMoreEvidence(updateAppealService: UpdateAppealService, doc
 
 function getProvideMoreEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
-    if (isPreAddendumEvidenceUploadState) {
+    if (isPreAddendumEvidenceUploadState(req.session.appeal.appealStatus)) {
       return getProvideAddendumEvidenceCheckAndSend(req, res);
     } else {
       return getProvideAdditionalEvidenceCheckAndSend(req, res);

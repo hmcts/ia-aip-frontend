@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
+import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
@@ -197,13 +198,50 @@ function getConfirmation(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+function getHomeOfficeEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
   try {
-    const additionalEvidenceDocuments = req.session.appeal.additionalEvidenceDocuments;
+    const homeOfficeAddendumEvidenceDocuments = (req.session.appeal.addendumEvidenceDocuments || [])
+      .filter((doc: Evidence) => doc.suppliedBy === 'The respondent')
+      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+    const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(homeOfficeAddendumEvidenceDocuments);
+
+    return res.render('upload-evidence/addendum-evidence-detail-page.njk', {
+      pageTitle: i18n.pages.provideMoreEvidence.homeOfficeEvidence.title,
+      description: i18n.pages.provideMoreEvidence.homeOfficeEvidence.description,
+      previousPage: paths.common.overview,
+      summaryLists: summaryList
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getAdditionalEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+  try {
+    const additionalEvidenceDocuments = (req.session.appeal.additionalEvidenceDocuments || [])
+      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
     const summaryList: SummaryList[] = buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments);
 
     return res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
+      previousPage: paths.common.overview,
+      summaryLists: summaryList
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getAddendumEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+  try {
+    const newAddendumEvidenceDocuments = (req.session.appeal.addendumEvidenceDocuments || [])
+      .filter((doc: Evidence) => doc.suppliedBy === 'The appellant')
+      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+    const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(newAddendumEvidenceDocuments);
+
+    return res.render('upload-evidence/addendum-evidence-detail-page.njk', {
+      pageTitle: i18n.pages.provideMoreEvidence.yourAddendumEvidence.title,
+      description: i18n.pages.provideMoreEvidence.yourAddendumEvidence.description,
       previousPage: paths.common.overview,
       summaryLists: summaryList
     });
@@ -222,7 +260,9 @@ function setupProvideMoreEvidenceController(middleware: Middleware[], updateAppe
   router.get(paths.common.provideMoreEvidenceCheck, getProvideMoreEvidenceCheckAndSend);
   router.post(paths.common.provideMoreEvidenceCheck, middleware, validate(paths.common.provideMoreEvidenceForm), postProvideMoreEvidenceCheckAndSend(updateAppealService, documentManagementService));
   router.get(paths.common.provideMoreEvidenceConfirmation, getConfirmation);
-  router.get(paths.common.yourEvidence, getEvidenceDocuments);
+  router.get(paths.common.yourEvidence, getAdditionalEvidenceDocuments);
+  router.get(paths.common.yourAddendumEvidence, getAddendumEvidenceDocuments);
+  router.get(paths.common.homeOfficeAddendumEvidence, getHomeOfficeEvidenceDocuments);
   return router;
 }
 
@@ -304,6 +344,41 @@ function buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceD
   return additionalEvidenceSummaryLists;
 }
 
+function buildUploadedAddendumEvidenceDocumentsSummaryList(addendumEvidenceDocuments: Evidence[]): SummaryList[] {
+  const addendumEvidenceSummaryLists: SummaryList[] = [];
+  const addendumEvidenceRows: SummaryRow[] = [];
+
+  if (addendumEvidenceDocuments) {
+
+    addendumEvidenceDocuments.forEach((evidence: Evidence) => {
+      addendumEvidenceRows.push(
+        addSummaryRow(
+          'Date uploaded',
+          [`<p>${evidence.dateUploaded}</p>`]
+        )
+      );
+      addendumEvidenceRows.push(
+        addSummaryRow(
+          'Document',
+          [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`], null, Delimiter.BREAK_LINE
+        )
+      );
+      addendumEvidenceRows.push(
+        addSummaryRow(
+          'Reason evidence is late',
+          [`<p>${evidence.description}</p>`]
+        )
+      );
+    });
+
+    addendumEvidenceSummaryLists.push({
+      summaryRows: addendumEvidenceRows
+    });
+  }
+
+  return addendumEvidenceSummaryLists;
+}
+
 async function uploadAddendumEvidence(req: Request, res: Response, documentManagementService: DocumentManagementService): Promise<any> {
   const featureEnabled = await isUploadAddendumEvidenceFeatureEnabled(req);
   if (!featureEnabled) {
@@ -382,7 +457,7 @@ async function postAddendumEvidence(req: Request, res: Response, updateAppealSer
     ...req.session.appeal,
     addendumEvidence: [...addendumEvidence]
   };
-  const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDENDUM_EVIDENCE, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+  const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
   req.session.appeal = {
     ...req.session.appeal,
@@ -451,9 +526,12 @@ export {
   setupProvideMoreEvidenceController,
   postProvideMoreEvidenceCheckAndSend,
   getConfirmation,
-  getEvidenceDocuments,
+  getHomeOfficeEvidenceDocuments,
+  getAdditionalEvidenceDocuments,
+  getAddendumEvidenceDocuments,
   buildAdditionalEvidenceDocumentsSummaryList,
   buildAddendumEvidenceDocumentsSummaryList,
   buildUploadedAdditionalEvidenceDocumentsSummaryList,
+  buildUploadedAddendumEvidenceDocumentsSummaryList,
   validate
 };

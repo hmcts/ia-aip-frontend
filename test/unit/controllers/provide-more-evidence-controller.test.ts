@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { buildAddendumEvidenceDocumentsSummaryList, buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getConfirmation, getEvidenceDocuments, getProvideMoreEvidence, getReasonForLateEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, postReasonForLateEvidence, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
+import { buildAddendumEvidenceDocumentsSummaryList, buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAddendumEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getAddendumEvidenceDocuments, getAdditionalEvidenceDocuments, getConfirmation, getHomeOfficeEvidenceDocuments, getProvideMoreEvidence, getReasonForLateEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, postReasonForLateEvidence, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
@@ -406,14 +406,42 @@ describe('Provide more evidence controller', () => {
     });
   });
 
-  describe('getEvidenceDocuments', () => {
-    it('should render', () => {
+  describe('getAdditionalEvidenceDocuments', () => {
+    it('should render when additional evidence', () => {
       const summaryList: SummaryList[] = [{ summaryRows: [] }];
       req.session.appeal.additionalEvidenceDocuments = [];
-      getEvidenceDocuments(req as Request, res as Response, next);
+      getAdditionalEvidenceDocuments(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk',{
         pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
+        previousPage: paths.common.overview,
+        summaryLists: summaryList
+      });
+    });
+
+    it('should render when addendum evidence', () => {
+      const summaryList: SummaryList[] = [{ summaryRows: [] }];
+      req.session.appeal.addendumEvidenceDocuments = [];
+      getAddendumEvidenceDocuments(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+        pageTitle: i18n.pages.provideMoreEvidence.yourAddendumEvidence.title,
+        description: i18n.pages.provideMoreEvidence.yourAddendumEvidence.description,
+        previousPage: paths.common.overview,
+        summaryLists: summaryList
+      });
+    });
+  });
+
+  describe('getHomeOfficeEvidenceDocuments', () => {
+    it('should render', () => {
+      const summaryList: SummaryList[] = [{ summaryRows: [] }];
+      req.session.appeal.addendumEvidenceDocuments = [];
+      getHomeOfficeEvidenceDocuments(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+        pageTitle: i18n.pages.provideMoreEvidence.homeOfficeEvidence.title,
+        description: i18n.pages.provideMoreEvidence.homeOfficeEvidence.description,
         previousPage: paths.common.overview,
         summaryLists: summaryList
       });
@@ -547,27 +575,28 @@ describe('Provide more evidence controller', () => {
       expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
       expect(result[0].summaryRows[result[0].summaryRows.length - 1].key.text).to.equal(expectedSummaryList[0].summaryRows[1].key.text);
       expect(result[0].summaryRows[result[0].summaryRows.length - 1].value.html).to.equal(expectedSummaryList[0].summaryRows[1].value.html);
+    });
 
-      it('should return addendum document list', () => {
-        const mockEvidenceDocuments: Evidence[] = [
-          {
-            fileId: 'aFileId',
-            name: 'fileName'
-          }
-        ];
+    it('should return addendum document list', () => {
+      const mockEvidenceDocuments: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName',
+          description: 'description'
+        }
+      ];
 
-        const result = buildAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+      const result = buildAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
 
-        expect(result).to.be.lengthOf(1);
-      });
+      expect(result).to.be.lengthOf(1);
+    });
 
-      it('should return empty list', () => {
-        const mockEvidenceDocuments: Evidence[] = [];
+    it('should return empty list', () => {
+      const mockEvidenceDocuments: Evidence[] = [];
 
-        const result = buildAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+      const result = buildAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
 
-        expect(result).to.be.empty;
-      });
+      expect(result).to.be.empty;
     });
   });
 
@@ -615,6 +644,67 @@ describe('Provide more evidence controller', () => {
 
       expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
       expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
+    });
+  });
+
+  describe('buildUploadedAddendumEvidenceDocumentsSummaryList', () => {
+
+    it('should build a list in correct format', () => {
+      const mockEvidenceDocuments: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName',
+          dateUploaded: 'dateUploaded',
+          description: 'description'
+        }
+      ];
+
+      const expectedSummaryList: SummaryList[] = [
+        {
+          'summaryRows': [
+            {
+              'actions': {
+                'items': []
+              },
+              'key': {
+                'text': 'Date uploaded'
+              },
+              'value': {
+                'html': '<p>dateUploaded</p>'
+              }
+            },
+            {
+              'actions': {
+                'items': []
+              },
+              'key': {
+                'text': 'Document'
+              },
+              'value': {
+                'html': '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/aFileId\'>fileName</a>'
+              }
+            },
+            {
+              'actions': {
+                'items': []
+              },
+              'key': {
+                'text': 'Reason evidence is late'
+              },
+              'value': {
+                'html': '<p>description</p>'
+              }
+            }
+          ]
+        }
+      ];
+
+      const result = buildUploadedAddendumEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+
+      expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
+      expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
+      expect(result[0].summaryRows[2].key.text).to.equal(expectedSummaryList[0].summaryRows[2].key.text);
+      expect(result[0].summaryRows[2].value.html).to.equal(expectedSummaryList[0].summaryRows[2].value.html);
     });
   });
 

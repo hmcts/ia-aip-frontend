@@ -79,6 +79,7 @@ interface AdditionalEvidence {
   id?: string;
   value: {
     tag: string;
+    suppliedBy?: string;
     document?: SupportingDocument;
     description?: string;
     dateUploaded?: string;

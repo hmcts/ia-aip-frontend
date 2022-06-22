@@ -472,6 +472,19 @@
       },
       "yourEvidence": {
         "title": "Your evidence"
+      },
+      "yourAddendumEvidence": {
+        "title": "Your evidence",
+        "description": [
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
+        ]
+      },
+      "homeOfficeEvidence": {
+        "title": "Home Office evidence",
+        "description": [
+          "The Home Office has uploaded new evidence for this appeal.",
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
+        ]
       }
     },
     "reasonsForAppealUpload": {
@@ -760,6 +773,26 @@
               "title": "What you sent",
               "text": "Your evidence",
               "href": "{{ paths.common.yourEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidenceLegalRep": {
+          "text": "You provided more evidence.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your evidence",
+              "href": "{{ paths.common.yourAddendumEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidenceHomeOffice": {
+          "text": "The Home Office uploaded new evidence.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Home Office evidence",
+              "href": "{{ paths.common.homeOfficeAddendumEvidence }}"
             }
           ]
         },

@@ -20,7 +20,7 @@ const serverConfig = {
   module: {
     rules: [
       {
-        test: /\.ts?$/,
+        test: /\.ts$/,
         use: [
           'ts-loader',
         ]
@@ -46,7 +46,7 @@ const clientConfig = {
   module: {
     rules: [
       {
-        test: /\.ts?$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
         use: [
           {
@@ -81,7 +81,9 @@ const clientConfig = {
   ],
 };
 
-module.exports = {
+const commonConfig = {
   server: serverConfig,
   client: clientConfig
 };
+
+module.exports = commonConfig;

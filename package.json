@@ -159,6 +159,16 @@
     "codeceptjs/@codeceptjs/configure/webdriverio/@wdio/logger/strip-ansi/ansi-regex": "^5.0.1",
     "@hmcts/ia-idam-express-middleware/request/http-signature/jsprim/json-schema": "^0.4.0",
     "webdriverio/devtools/puppeteer-core/node-fetch": "^2.6.7",
-    "webdriverio/puppeteer-core/node-fetch": "^2.6.7"
+    "webdriverio/puppeteer-core/node-fetch": "^2.6.7",
+    "webdriverio/webdriver/got/cacheable-request/normalize-url": "^4.5.1",
+    "webpack/terser-webpack-plugin/cacache/move-concurrently/copy-concurrently/mkdirp/minimist": "^1.2.6",
+    "copy-webpack-plugin/cacache/move-concurrently/copy-concurrently/mkdirp/minimist": "^1.2.6",
+    "webpack/terser-webpack-plugin/cacache/mkdirp/minimist": "^1.2.6",
+    "multer/mkdirp/minimist": "^1.2.6",
+    "dyson/lodash": "^4.17.21",
+    "webpack/watchpack/chokidar/glob-parent": "^5.1.2",
+    "codeceptjs/axios": "^0.21.2",
+    "webpack/watchpack/watchpack-chokidar2/chokidar/glob-parent": "^5.1.2",
+    "copy-webpack-plugin/glob-parent": "^5.1.2"
   }
 }

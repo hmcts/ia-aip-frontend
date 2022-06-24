@@ -1,4 +1,5 @@
 const merge = require('webpack-merge');
+const Configuration = require('webpack');
 const commonConfig = require('./webpack.common');
 
 const serverConfig = {
@@ -9,7 +10,6 @@ const serverConfig = {
 const clientConfig = {
   mode: "development",
   devtool: 'inline-source-map',
-
 };
 
 const devConfig = {
@@ -17,4 +17,11 @@ const devConfig = {
   client: clientConfig
 };
 
-module.exports = merge.merge([commonConfig, devConfig]);
+console.debug('DEV')
+console.debug(JSON.stringify(devConfig))
+console.debug('COMMON')
+console.debug(JSON.stringify(commonConfig))
+
+const config = merge<Configuration>(commonConfig, devConfig);
+
+module.exports = config

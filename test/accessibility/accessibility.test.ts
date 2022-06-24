@@ -12,7 +12,7 @@ describe('Test accessibility', async function() {
   this.retries(3);
   before('launch browser and pages', async function() {
     try {
-      bootstrap(() => {
+      await bootstrap(() => {
         console.log('Started server');
       });
       browser = await puppeteer.launch({

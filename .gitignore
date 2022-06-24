@@ -12,3 +12,6 @@ output
 _output
 .stryker-tmp
 stryker.log
+.vscode/
+ia-aip-frontend.iml
+

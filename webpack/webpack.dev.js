@@ -24,4 +24,7 @@ console.debug(JSON.stringify(commonConfig))
 
 const config = merge<Configuration>(commonConfig, devConfig);
 
+console.debug('DEV CONFIG MERGED')
+console.debug(JSON.stringify(config))
+
 module.exports = config

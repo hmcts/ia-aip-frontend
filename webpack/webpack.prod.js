@@ -31,6 +31,7 @@ console.debug('COMMON')
 console.debug(JSON.stringify(commonConfig))
 
 const config = merge<Configuration>(commonConfig, prodConfig);
-
+console.debug('PROD CONFIG MERGED')
+console.debug(JSON.stringify(config))
 module.exports = config;
 

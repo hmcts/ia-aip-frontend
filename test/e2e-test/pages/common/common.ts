@@ -279,7 +279,7 @@ module.exports = {
       await fillInDate(day, month, year);
     });
 
-    Then(/^I should see error summary$/, async () => {
+    Then(/^I should see error summary$/,{timeout: 60 * 1000}, async () => {
       await I.seeElementInDOM('.govuk-error-summary');
       await I.seeInTitle('Error: ');
     });

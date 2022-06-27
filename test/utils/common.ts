@@ -40,7 +40,7 @@ export async function getNewPage() {
 
 export async function startBrowser() {
 
-  const args = ['--no-sandbox', '--start-maximized', '--ignore-certificate-errors'];
+  const args = ['--no-sandbox', '--start-maximized', '--ignore-certificate-errors', '--disable-dev-shm-usage'];
   if (httpProxy) {
     args.push(`-proxy-server=${httpProxy}`);
   }

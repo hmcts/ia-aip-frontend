@@ -5,7 +5,7 @@ import expectCt from 'expect-ct';
 import express from 'express';
 import helmet from 'helmet';
 import webpack from 'webpack';
-import webpackDevMiddleware, {IncomingMessage, Options, ServerResponse} from 'webpack-dev-middleware';
+import webpackDevMiddleware, { IncomingMessage, Options, ServerResponse } from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureIdam, configureLogger, configureNunjucks, configureS2S } from './app-config';

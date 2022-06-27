@@ -11,10 +11,10 @@
       "./types",
       "./node_modules/@types"
     ],
-    "include": ["app/**/*"],
-    "exclude": [
-      "node_modules",
-      "**/*.spec.ts"
-    ]
-  }
+  },
+  "include": ["app/**/*"],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }

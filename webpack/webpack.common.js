@@ -4,9 +4,7 @@ const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 
 const path = require('path');
 
-module.exports = [
-    {
-        name: "server",
+const serverConfig = {
         entry: [
             './app/server.ts'
         ],
@@ -29,13 +27,14 @@ module.exports = [
                 }
             ]
         },
-    },
-    {
-        name: "client",
+};
+
+const clientConfig = {
         entry: [
             './client/main.ts',
             './app/assets/scss/application.scss'
         ],
+  watch: true,
         target: 'web',
         output: {
             path: path.resolve(__dirname, '../build'),
@@ -63,7 +62,7 @@ module.exports = [
                 },
                 {
                     test: /\.(sa|sc|c)ss$/,
-                    use: [
+        loader: [
                         MiniCSSExtractPlugin.loader,
                         'css-loader',
                         'sass-loader'
@@ -80,7 +79,11 @@ module.exports = [
                 filename: '[name].css'
             })
         ],
-    }
-];
+};
 
+const commonConfig = {
+    server: serverConfig,
+    client: clientConfig
+};
 
+module.exports = commonConfig;

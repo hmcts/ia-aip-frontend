@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { buildAddendumEvidenceDocumentsSummaryList, buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAddendumEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getAddendumEvidenceDocuments, getAdditionalEvidenceDocuments, getAppellantAddendumEvidenceDocuments, getConfirmation, getHomeOfficeEvidenceDocuments, getProvideMoreEvidence, getReasonForLateEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, postReasonForLateEvidence, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
+import { buildAddendumEvidenceDocumentsSummaryList, buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAddendumEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getAddendumEvidenceDocuments, getAdditionalEvidenceDocuments, getAppellantAddendumEvidenceDocuments, getConfirmation, getHomeOfficeEvidenceDocuments, getProvideMoreEvidence, getReasonForLateEvidence, getUploadedAddendumEvidenceDocuments, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, postReasonForLateEvidence, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
@@ -447,6 +447,64 @@ describe('Provide more evidence controller', () => {
         previousPage: paths.common.overview,
         summaryLists: summaryList
       });
+    });
+  });
+
+  describe('getUploadedAddendumEvidenceDocuments', () => {
+    it('should return addendum evidence uploaded by the TCW', () => {
+      req.session.appeal.addendumEvidenceDocuments = [
+        {
+          id: 'id1',
+          name: 'fileName',
+          fileId: 'aFile',
+          uploadedBy: 'TCW'
+        }
+      ];
+      const docs: Evidence[] = getUploadedAddendumEvidenceDocuments(req as Request, 'TCW');
+
+      expect(docs).to.be.lengthOf(1);
+    });
+
+    it('should return addendum evidence uploaded by the Appellant', () => {
+      req.session.appeal.addendumEvidenceDocuments = [
+        {
+          id: 'id1',
+          name: 'fileName',
+          fileId: 'aFile',
+          suppliedBy: 'The appellant'
+        }
+      ];
+      const docs: Evidence[] = getUploadedAddendumEvidenceDocuments(req as Request, 'Appellant');
+
+      expect(docs).to.be.lengthOf(1);
+    });
+
+    it('should return addendum evidence uploaded by the Respondent', () => {
+      req.session.appeal.addendumEvidenceDocuments = [
+        {
+          id: 'id1',
+          name: 'fileName',
+          fileId: 'aFile',
+          suppliedBy: 'The respondent'
+        }
+      ];
+      const docs: Evidence[] = getUploadedAddendumEvidenceDocuments(req as Request, 'Respondent');
+
+      expect(docs).to.be.lengthOf(1);
+    });
+
+    it('should return empty list', () => {
+      req.session.appeal.addendumEvidenceDocuments = [
+        {
+          id: 'id1',
+          name: 'fileName',
+          fileId: 'aFile',
+          suppliedBy: 'suppliedBy'
+        }
+      ];
+      const docs: Evidence[] = getUploadedAddendumEvidenceDocuments(req as Request, 'uploadedBy');
+
+      expect(docs).to.be.empty;
     });
   });
 

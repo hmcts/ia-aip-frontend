@@ -200,9 +200,7 @@ function getConfirmation(req: Request, res: Response, next: NextFunction) {
 
 function getHomeOfficeEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
   try {
-    const homeOfficeAddendumEvidenceDocuments = (req.session.appeal.addendumEvidenceDocuments || [])
-      .filter((doc: Evidence) => doc.suppliedBy === 'The respondent')
-      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+    const homeOfficeAddendumEvidenceDocuments = getUploadedAddendumEvidenceDocuments(req, 'Respondent');
     const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(homeOfficeAddendumEvidenceDocuments);
 
     return res.render('upload-evidence/addendum-evidence-detail-page.njk', {
@@ -234,9 +232,7 @@ function getAdditionalEvidenceDocuments(req: Request, res: Response, next: NextF
 
 function getAppellantAddendumEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
   try {
-    const appellantAddendumEvidenceDocuments = (req.session.appeal.addendumEvidenceDocuments || [])
-      .filter((doc: Evidence) => doc.suppliedBy === 'The appellant')
-      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+    const appellantAddendumEvidenceDocuments = getUploadedAddendumEvidenceDocuments(req, 'Appellant');
     const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(appellantAddendumEvidenceDocuments);
 
     return res.render('upload-evidence/addendum-evidence-detail-page.njk', {
@@ -252,9 +248,8 @@ function getAppellantAddendumEvidenceDocuments(req: Request, res: Response, next
 
 function getAddendumEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
   try {
-    const appellantAddendumEvidenceDocuments = (req.session.appeal.addendumEvidenceDocuments || [])
-      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
-    const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(appellantAddendumEvidenceDocuments);
+    const addendumEvidenceDocuments = getUploadedAddendumEvidenceDocuments(req, 'TCW');
+    const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(addendumEvidenceDocuments);
 
     return res.render('upload-evidence/addendum-evidence-detail-page.njk', {
       pageTitle: i18n.pages.provideMoreEvidence.newEvidence.title,
@@ -533,6 +528,24 @@ async function isUploadAddendumEvidenceFeatureEnabled(req: Request) {
   return uploadAddendumEvidenceFeatureEnabled;
 }
 
+function getUploadedAddendumEvidenceDocuments(req: Request, uploadedBy: string): Evidence[] {
+  if (uploadedBy === 'TCW') {
+    return (req.session.appeal.addendumEvidenceDocuments || [])
+      .filter(doc => doc.uploadedBy === 'TCW')
+      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+  } else if (uploadedBy === 'Appellant') {
+    return (req.session.appeal.addendumEvidenceDocuments || [])
+      .filter(doc => doc.suppliedBy === 'The appellant' && doc.uploadedBy !== 'TCW')
+      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+  } else if (uploadedBy === 'Respondent') {
+    return (req.session.appeal.addendumEvidenceDocuments || [])
+      .filter(doc => doc.suppliedBy === 'The respondent' && doc.uploadedBy !== 'TCW')
+      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+  } else {
+    return [];
+  }
+}
+
 export {
   getProvideMoreEvidence,
   postProvideMoreEvidence,
@@ -548,6 +561,7 @@ export {
   getHomeOfficeEvidenceDocuments,
   getAdditionalEvidenceDocuments,
   getAppellantAddendumEvidenceDocuments,
+  getUploadedAddendumEvidenceDocuments,
   buildAdditionalEvidenceDocumentsSummaryList,
   buildAddendumEvidenceDocumentsSummaryList,
   buildUploadedAdditionalEvidenceDocumentsSummaryList,

@@ -1069,6 +1069,7 @@ export default class UpdateAppealService {
         ...doc.id && { id: doc.id },
         ...doc.value.tag && { tag: doc.value.tag },
         ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
+        ...doc.value.uploadedBy && { uploadedBy: doc.value.uploadedBy },
         ...doc.value.description && { description: doc.value.description },
         ...doc.value.dateUploaded && { dateUploaded: moment(new Date(doc.value.dateUploaded)).format('DD MMMM YYYY') }
       };

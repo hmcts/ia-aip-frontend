@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { buildAddendumEvidenceDocumentsSummaryList, buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAddendumEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getAddendumEvidenceDocuments, getAdditionalEvidenceDocuments, getConfirmation, getHomeOfficeEvidenceDocuments, getProvideMoreEvidence, getReasonForLateEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, postReasonForLateEvidence, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
+import { buildAddendumEvidenceDocumentsSummaryList, buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAddendumEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getAddendumEvidenceDocuments, getAdditionalEvidenceDocuments, getAppellantAddendumEvidenceDocuments, getConfirmation, getHomeOfficeEvidenceDocuments, getProvideMoreEvidence, getReasonForLateEvidence, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, postReasonForLateEvidence, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
@@ -418,11 +418,28 @@ describe('Provide more evidence controller', () => {
         summaryLists: summaryList
       });
     });
+  });
 
+  describe('getAddendumEvidenceDocuments', () => {
     it('should render when addendum evidence', () => {
       const summaryList: SummaryList[] = [{ summaryRows: [] }];
       req.session.appeal.addendumEvidenceDocuments = [];
       getAddendumEvidenceDocuments(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+        pageTitle: i18n.pages.provideMoreEvidence.newEvidence.title,
+        description: i18n.pages.provideMoreEvidence.newEvidence.description,
+        previousPage: paths.common.overview,
+        summaryLists: summaryList
+      });
+    });
+  });
+
+  describe('getAppellantAddendumEvidenceDocuments', () => {
+    it('should render when addendum evidence', () => {
+      const summaryList: SummaryList[] = [{ summaryRows: [] }];
+      req.session.appeal.addendumEvidenceDocuments = [];
+      getAppellantAddendumEvidenceDocuments(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourAddendumEvidence.title,

@@ -232,16 +232,33 @@ function getAdditionalEvidenceDocuments(req: Request, res: Response, next: NextF
   }
 }
 
-function getAddendumEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+function getAppellantAddendumEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
   try {
-    const newAddendumEvidenceDocuments = (req.session.appeal.addendumEvidenceDocuments || [])
+    const appellantAddendumEvidenceDocuments = (req.session.appeal.addendumEvidenceDocuments || [])
       .filter((doc: Evidence) => doc.suppliedBy === 'The appellant')
       .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
-    const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(newAddendumEvidenceDocuments);
+    const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(appellantAddendumEvidenceDocuments);
 
     return res.render('upload-evidence/addendum-evidence-detail-page.njk', {
       pageTitle: i18n.pages.provideMoreEvidence.yourAddendumEvidence.title,
       description: i18n.pages.provideMoreEvidence.yourAddendumEvidence.description,
+      previousPage: paths.common.overview,
+      summaryLists: summaryList
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getAddendumEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+  try {
+    const appellantAddendumEvidenceDocuments = (req.session.appeal.addendumEvidenceDocuments || [])
+      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+    const summaryList: SummaryList[] = buildUploadedAddendumEvidenceDocumentsSummaryList(appellantAddendumEvidenceDocuments);
+
+    return res.render('upload-evidence/addendum-evidence-detail-page.njk', {
+      pageTitle: i18n.pages.provideMoreEvidence.newEvidence.title,
+      description: i18n.pages.provideMoreEvidence.newEvidence.description,
       previousPage: paths.common.overview,
       summaryLists: summaryList
     });
@@ -261,8 +278,9 @@ function setupProvideMoreEvidenceController(middleware: Middleware[], updateAppe
   router.post(paths.common.provideMoreEvidenceCheck, middleware, validate(paths.common.provideMoreEvidenceForm), postProvideMoreEvidenceCheckAndSend(updateAppealService, documentManagementService));
   router.get(paths.common.provideMoreEvidenceConfirmation, getConfirmation);
   router.get(paths.common.yourEvidence, getAdditionalEvidenceDocuments);
-  router.get(paths.common.yourAddendumEvidence, getAddendumEvidenceDocuments);
+  router.get(paths.common.yourAddendumEvidence, getAppellantAddendumEvidenceDocuments);
   router.get(paths.common.homeOfficeAddendumEvidence, getHomeOfficeEvidenceDocuments);
+  router.get(paths.common.newEvidence, getAddendumEvidenceDocuments);
   return router;
 }
 
@@ -526,9 +544,10 @@ export {
   setupProvideMoreEvidenceController,
   postProvideMoreEvidenceCheckAndSend,
   getConfirmation,
+  getAddendumEvidenceDocuments,
   getHomeOfficeEvidenceDocuments,
   getAdditionalEvidenceDocuments,
-  getAddendumEvidenceDocuments,
+  getAppellantAddendumEvidenceDocuments,
   buildAdditionalEvidenceDocumentsSummaryList,
   buildAddendumEvidenceDocumentsSummaryList,
   buildUploadedAdditionalEvidenceDocumentsSummaryList,

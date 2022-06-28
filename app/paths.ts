@@ -174,6 +174,7 @@ const paths = {
     yourEvidence: '/your-evidence',
     yourAddendumEvidence: '/your-evidence/addendum',
     homeOfficeAddendumEvidence: '/home-office-evidence/addendum',
+    newEvidence: '/new-evidence',
     whyEvidenceLate: '/why-evidence-late',
 
     // Viewers endpoints

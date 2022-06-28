@@ -75,9 +75,9 @@ function getTimeExtensionsEvents(makeAnApplications: Collection<Application<Evid
           href: `${i18n.pages.overviewPage.timeline.decideAnApplication.links[0].href}/${application.id}`
         }]
       };
-      return [ decision, request ];
+      return [decision, request];
     }
-    return [ request ];
+    return [request];
   }) : [];
   return makeDirectionsFlatMap;
 }
@@ -107,29 +107,14 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
-  const appealHearingRequirementsSectionEvents = [ Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, Events.STITCHING_BUNDLE_COMPLETE.id ];
-  const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
-  if (hearingBundleFeatureEnabled) {
-    appealHearingRequirementsSectionEvents.push(Events.LIST_CASE.id);
-  }
-
-  const appealArgumentSectionEvents = [ Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.SUBMIT_REASONS_FOR_APPEAL.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONDENT_REVIEW.id, Events.REQUEST_RESPONSE_REVIEW.id, Events.SUBMIT_CMA_REQUIREMENTS.id, Events.LIST_CMA.id, Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id, Events.END_APPEAL.id, Events.RECORD_OUT_OF_TIME_DECISION.id ];
-  const appealDecisionSectionEvents = [ Events.SEND_DECISION_AND_REASONS.id ];
-  const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
-
-  const appealArgumentSectionStates = [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.RESPONDENT_REVIEW.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.SUBMIT_HEARING_REQUIREMENTS.id, States.ENDED.id ];
-
   const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
-  if (uploadAddendumEvidenceFeatureEnabled) {
-    appealArgumentSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id);
-    appealArgumentSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_HOME_OFFICE.id);
-    appealArgumentSectionStates.push(States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id);
-  }
+  const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
+  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled);
 
-  const appealDecisionSection = constructSection(appealDecisionSectionEvents, req.session.appeal.history, null, req);
-  const appealHearingRequirementsSection = constructSection(appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req);
-  const appealArgumentSection = constructSection(appealArgumentSectionEvents, req.session.appeal.history, appealArgumentSectionStates, req);
-  const appealDetailsSection = constructSection(appealDetailsSectionEvents, req.session.appeal.history, null, req);
+  const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
+  const appealHearingRequirementsSection = constructSection(eventsAndStates.appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req);
+  const appealArgumentSection = constructSection(eventsAndStates.appealArgumentSectionEvents, req.session.appeal.history, eventsAndStates.appealArgumentSectionStates, req);
+  const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
   const timeExtensions = getTimeExtensionsEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
@@ -158,9 +143,62 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   };
 }
 
+function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, hearingBundleFeatureEnabled: boolean) {
+  const appealHearingRequirementsSectionEvents = [Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, Events.STITCHING_BUNDLE_COMPLETE.id];
+  const appealArgumentSectionEvents = [
+    Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+    Events.SUBMIT_REASONS_FOR_APPEAL.id,
+    Events.REQUEST_RESPONDENT_REVIEW.id,
+    Events.REQUEST_RESPONDENT_REVIEW.id,
+    Events.REQUEST_RESPONSE_REVIEW.id,
+    Events.SUBMIT_CMA_REQUIREMENTS.id,
+    Events.LIST_CMA.id,
+    Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id,
+    Events.END_APPEAL.id,
+    Events.RECORD_OUT_OF_TIME_DECISION.id
+  ];
+  const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
+  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id];
+  const appealArgumentSectionStates = [
+    States.APPEAL_SUBMITTED.id,
+    States.CLARIFYING_QUESTIONS_SUBMITTED.id,
+    States.REASONS_FOR_APPEAL_SUBMITTED.id,
+    States.AWAITING_REASONS_FOR_APPEAL.id,
+    States.RESPONDENT_REVIEW.id,
+    States.AWAITING_CLARIFYING_QUESTIONS.id,
+    States.CMA_REQUIREMENTS_SUBMITTED.id,
+    States.CMA_LISTED.id,
+    States.SUBMIT_HEARING_REQUIREMENTS.id,
+    States.ENDED.id
+  ];
+
+  if (hearingBundleFeatureEnabled) {
+    appealHearingRequirementsSectionEvents.push(Events.LIST_CASE.id);
+  }
+
+  if (uploadAddendumEvidenceFeatureEnabled) {
+    appealArgumentSectionEvents.push(
+      Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id,
+      Events.UPLOAD_ADDENDUM_EVIDENCE_HOME_OFFICE.id,
+      Events.UPLOAD_ADDENDUM_EVIDENCE.id,
+      Events.UPLOAD_ADDENDUM_EVIDENCE_ADMIN_OFFICER.id
+    );
+    appealArgumentSectionStates.push(States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id);
+  }
+
+  return {
+    appealArgumentSectionEvents,
+    appealHearingRequirementsSectionEvents,
+    appealDecisionSectionEvents,
+    appealDetailsSectionEvents,
+    appealArgumentSectionStates
+  };
+}
+
 export {
   getAppealApplicationHistory,
   getSubmitClarifyingQuestionsEvents,
   getTimeExtensionsEvents,
-  constructSection
+  constructSection,
+  getEventsAndStates
 };

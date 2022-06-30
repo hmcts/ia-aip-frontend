@@ -6,7 +6,7 @@ import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppealApplicationNextStep } from '../utils/application-state-utils';
+import { getAppealApplicationNextStep, isPreAddendumEvidenceUploadState } from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded } from '../utils/payments-utils';
@@ -49,13 +49,40 @@ function getHearingDetails(req: Request): Hearing {
   return null;
 }
 
+function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnabled: boolean) {
+  const provideMoreEvidenceStates = [
+    States.RESPONDENT_REVIEW.id,
+    States.SUBMIT_HEARING_REQUIREMENTS.id,
+    States.LISTING.id,
+    States.PREPARE_FOR_HEARING.id,
+    States.FINAL_BUNDLING.id,
+    States.PRE_HEARING.id,
+    States.DECISION.id,
+    States.DECIDED.id,
+    States.REASONS_FOR_APPEAL_SUBMITTED.id,
+    States.AWAITING_CMA_REQUIREMENTS.id,
+    States.CMA_REQUIREMENTS_SUBMITTED.id,
+    States.CMA_ADJUSTMENTS_AGREED.id,
+    States.CMA_LISTED.id,
+    States.ADJOURNED.id
+  ];
+  let preAddendumEvidenceUploadState = isPreAddendumEvidenceUploadState(appealStatus);
+  if (!preAddendumEvidenceUploadState) {
+    return provideMoreEvidenceStates.includes(appealStatus);
+  }
+  return featureEnabled && preAddendumEvidenceUploadState;
+}
+
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      // TODO: remove after Feature flag for AIP Hearing (Bundling) is permanently switched on
       const hearingBundleFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
       if (req.session.appeal.appealStatus === 'preHearing' || req.session.appeal.appealStatus === 'preHearingOutOfCountryFeatureDisabled') {
         req.session.appeal.appealStatus = hearingBundleFeatureEnabled ? 'preHearing' : 'preHearingOutOfCountryFeatureDisabled';
-      } // TODO: remove after Feature flag for AIP Hearing (Bundling) is permanently switched on
+      }
+
+      const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
@@ -66,22 +93,6 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(req.session.appeal.appealStatus);
-      const provideMoreEvidenceStates = [
-        States.RESPONDENT_REVIEW.id,
-        States.SUBMIT_HEARING_REQUIREMENTS.id,
-        States.LISTING.id,
-        States.PREPARE_FOR_HEARING.id,
-        States.FINAL_BUNDLING.id,
-        States.PRE_HEARING.id,
-        States.DECISION.id,
-        States.DECIDED.id,
-        States.REASONS_FOR_APPEAL_SUBMITTED.id,
-        States.AWAITING_CMA_REQUIREMENTS.id,
-        States.CMA_REQUIREMENTS_SUBMITTED.id,
-        States.CMA_ADJUSTMENTS_AGREED.id,
-        States.CMA_LISTED.id,
-        States.ADJOURNED.id
-      ];
       const payLater = payLaterForApplicationNeeded(req);
       const hearingDetails = getHearingDetails(req);
 
@@ -96,7 +107,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal),
         askForMoreTime,
         saveAndAskForMoreTime,
-        provideMoreEvidenceSection: provideMoreEvidenceStates.includes(req.session.appeal.appealStatus),
+        provideMoreEvidenceSection: checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled),
         payLater,
         hearingDetails
       });
@@ -117,5 +128,6 @@ export {
   getApplicationOverview,
   getAppealRefNumber,
   checkAppealEnded,
+  checkEnableProvideMoreEvidenceSection,
   getHearingDetails
 };

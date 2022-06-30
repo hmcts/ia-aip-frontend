@@ -79,6 +79,7 @@ interface AdditionalEvidence {
   id?: string;
   value: {
     tag: string;
+    suppliedBy?: string;
     document?: SupportingDocument;
     description?: string;
     dateUploaded?: string;
@@ -141,7 +142,9 @@ interface Appeal {
   feeVersion?: string;
   feeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
+  addendumEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
+  addendumEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;

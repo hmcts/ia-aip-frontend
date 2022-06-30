@@ -172,6 +172,9 @@ const paths = {
     provideMoreEvidenceCheck: '/provide-more-evidence-check',
     provideMoreEvidenceConfirmation: '/provide-more-evidence-sent',
     yourEvidence: '/your-evidence',
+    yourAddendumEvidence: '/your-evidence/addendum',
+    homeOfficeAddendumEvidence: '/home-office-evidence/addendum',
+    whyEvidenceLate: '/why-evidence-late',
 
     // Viewers endpoints
     documentViewer: '/view/document',

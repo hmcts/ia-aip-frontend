@@ -94,6 +94,10 @@ module.exports = {
           signInForUser('cmaListed@example.com');
           break;
         }
+        case 'preHearing': {
+          signInForUser('preHearing@example.com');
+          break;
+        }
         default:
           break;
       }

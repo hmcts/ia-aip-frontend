@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  checkAppealEnded, getAppealRefNumber,
+  checkAppealEnded,
+  checkEnableProvideMoreEvidenceSection,
+  getAppealRefNumber,
   getApplicationOverview,
   getHearingDetails,
   setupApplicationOverviewController
 } from '../../../app/controllers/application-overview';
+import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
@@ -484,6 +487,48 @@ describe('Confirmation Page Controller', () => {
     const { appealStatus } = req.session.appeal;
     const result = checkAppealEnded(appealStatus);
     expect(result).to.equal(false);
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return true when in preHearing state and featureFlag enabled', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: States.PRE_HEARING.id
+        }
+      }
+    };
+    const featureFlagEnabled = true;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(true);
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return false when in preHearing state and featureFlag not enabled', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: States.PRE_HEARING.id
+        }
+      }
+    };
+    const featureFlagEnabled = false;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(false);
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return true when in respondentReview state', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: States.RESPONDENT_REVIEW.id
+        }
+      }
+    };
+    const featureFlagEnabled = false;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(true);
   });
 
   it('getHearingDetails with case not ended', () => {

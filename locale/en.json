@@ -438,6 +438,7 @@
       "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
     },
     "provideMoreEvidence": {
+      "additionalEvidenceDefaultDescription": "Additional evidence",
       "form": {
         "title": "Provide more evidence",
         "content": [
@@ -450,18 +451,40 @@
         ],
         "moreInfo": "<a target=\"_blank\" href=\"/supporting-evidence\">Find out more about evidence to support your appeal</a>"
       },
+      "whyEvidenceLate": {
+        "title": "Why is this evidence late?",
+        "content": "Evidence should be provided before the hearing bundle is produced. Tell us why you weren't able to provide this evidence before now."
+      },
       "checkYourAnswers": {
-        "title": "Check your answers"
+        "title": "Check your answers",
+        "evidenceTitle": "Supporting evidence",
+        "evidenceDescription": "Reason evidence is late"
       },
       "confirmation": {
         "title": "You have provided more evidence",
         "whatNextListItems": [
           "The evidence is now part of your appeal and can be seen by the Tribunal and the Home Office",
           "If your appeal goes to a hearing, the judge will consider this evidence when deciding your appeal"
+        ],
+        "whatNextContent": [
+          "A Tribunal judge will look at the reasons why your evidence is late and decide if the evidence can be part of your appeal."
         ]
       },
       "yourEvidence": {
         "title": "Your evidence"
+      },
+      "yourAddendumEvidence": {
+        "title": "Your evidence",
+        "description": [
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
+        ]
+      },
+      "homeOfficeEvidence": {
+        "title": "Home Office evidence",
+        "description": [
+          "The Home Office has uploaded new evidence for this appeal.",
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
+        ]
       }
     },
     "reasonsForAppealUpload": {
@@ -750,6 +773,26 @@
               "title": "What you sent",
               "text": "Your evidence",
               "href": "{{ paths.common.yourEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidenceLegalRep": {
+          "text": "You provided more evidence.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your evidence",
+              "href": "{{ paths.common.yourAddendumEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidenceHomeOffice": {
+          "text": "The Home Office uploaded new evidence.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Home Office evidence",
+              "href": "{{ paths.common.homeOfficeAddendumEvidence }}"
             }
           ]
         },
@@ -2801,6 +2844,7 @@
       "incorrectFormat": "The selected file must be a {{ supportedFormats | join(', ') }}",
       "fileCannotBeUploaded": "The file cannot be uploaded"
     },
+    "whyEvidenceLate": "Enter the reason the evidence is late",
     "askForMoreTime": "Enter how much time you need and why you need it",
     "clarifyingQuestions": {
       "emptyAnswer": "Please enter an answer for the question",

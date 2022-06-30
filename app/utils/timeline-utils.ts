@@ -117,9 +117,18 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealDecisionSectionEvents = [ Events.SEND_DECISION_AND_REASONS.id ];
   const appealDetailsSectionEvents = [ Events.SUBMIT_APPEAL.id ];
 
+  const appealArgumentSectionStates = [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.RESPONDENT_REVIEW.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.SUBMIT_HEARING_REQUIREMENTS.id, States.ENDED.id ];
+
+  const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+  if (uploadAddendumEvidenceFeatureEnabled) {
+    appealArgumentSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id);
+    appealArgumentSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_HOME_OFFICE.id);
+    appealArgumentSectionStates.push(States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id);
+  }
+
   const appealDecisionSection = constructSection(appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req);
-  const appealArgumentSection = constructSection(appealArgumentSectionEvents, req.session.appeal.history, [ States.APPEAL_SUBMITTED.id, States.CLARIFYING_QUESTIONS_SUBMITTED.id, States.REASONS_FOR_APPEAL_SUBMITTED.id, States.AWAITING_REASONS_FOR_APPEAL.id, States.RESPONDENT_REVIEW.id, States.AWAITING_CLARIFYING_QUESTIONS.id, States.CMA_REQUIREMENTS_SUBMITTED.id, States.CMA_LISTED.id, States.SUBMIT_HEARING_REQUIREMENTS.id, States.ENDED.id ], req);
+  const appealArgumentSection = constructSection(appealArgumentSectionEvents, req.session.appeal.history, appealArgumentSectionStates, req);
   const appealDetailsSection = constructSection(appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
   const timeExtensions = getTimeExtensionsEvents(getAppellantApplications(req.session.appeal.makeAnApplications));

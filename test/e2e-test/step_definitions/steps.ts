@@ -36,6 +36,7 @@ const { askForMoreTime } = require('../pages/ask-for-more-time/ask-for-more-time
 const { caseProgression } = require('../service/case-progression-service');
 const { clarifyingQuestions } = require('../pages/clarifying-questions/clarifying-questions');
 const { cmaRequirements } = require('../pages/cma-requirements/cma-requirements');
+const { uploadAddendumEvidence } = require('../pages/provide-more-evidence/upload-addendum-evidence');
 
 const { I } = inject();
 
@@ -79,3 +80,4 @@ askForMoreTime(I);
 caseProgression(I);
 clarifyingQuestions(I);
 cmaRequirements(I);
+uploadAddendumEvidence(I);

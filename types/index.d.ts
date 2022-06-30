@@ -123,6 +123,7 @@ interface Appeal {
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
+  hearingApplicationType?: string;
   makeAnApplicationTypes?: any;
   makeAnApplicationDetails?: string;
   makeAnApplicationEvidence?: Evidence[];

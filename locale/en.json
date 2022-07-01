@@ -473,6 +473,13 @@
       "yourEvidence": {
         "title": "Your evidence"
       },
+      "newEvidence": {
+        "title": "New evidence",
+        "description": [
+          "The Tribunal has uploaded new evidence for you/the Home Office.",
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
+        ]
+      },
       "yourAddendumEvidence": {
         "title": "Your evidence",
         "description": [
@@ -773,6 +780,26 @@
               "title": "What you sent",
               "text": "Your evidence",
               "href": "{{ paths.common.yourEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidence": {
+          "text": "The Tribunal uploaded new evidence.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "New evidence",
+              "href": "{{ paths.common.newEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidenceAdminOfficer": {
+          "text": "The Tribunal uploaded new evidence.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "New evidence",
+              "href": "{{ paths.common.newEvidence }}"
             }
           ]
         },

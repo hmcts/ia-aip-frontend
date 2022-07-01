@@ -67,6 +67,7 @@ interface Evidence {
   suppliedBy?: string;
   description?: string;
   dateUploaded?: string;
+  uploadedBy?: string;
 }
 
 interface AdditionalEvidenceDocument {
@@ -80,6 +81,7 @@ interface AdditionalEvidence {
   value: {
     tag: string;
     suppliedBy?: string;
+    uploadedBy?: string;
     document?: SupportingDocument;
     description?: string;
     dateUploaded?: string;

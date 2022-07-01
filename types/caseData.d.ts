@@ -6,6 +6,7 @@ interface SupportingDocument {
 
 interface DocumentWithMetaData {
   suppliedBy?: string;
+  uploadedBy?: string;
   description?: string;
   dateUploaded?: string;
   tag?: string;

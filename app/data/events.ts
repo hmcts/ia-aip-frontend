@@ -48,11 +48,9 @@ export const Events = {
     description: 'edits time extensions for case AIP'
   },
   MAKE_AN_APPLICATION: {
-    TIME_EXTENSION: {
-      id: 'makeAnApplication',
-      summary: 'Make an application',
-      description: 'Make an application'
-    }
+    id: 'makeAnApplication',
+    summary: 'Make an application',
+    description: 'Make an application'
   },
   EDIT_CLARIFYING_QUESTION_ANSWERS: {
     id: 'editClarifyingQuestionAnswers',

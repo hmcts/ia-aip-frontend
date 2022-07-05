@@ -2,13 +2,13 @@ const merge = require('webpack-merge');
 const commonConfig = require('./webpack.common');
 
 const serverConfig = {
-    mode: "development",
-    devtool: 'inline-source-map',
+  mode: "development",
+  devtool: 'inline-source-map',
 };
 
 const clientConfig = {
-    mode: "development",
-    devtool: 'inline-source-map',
+  mode: "development",
+  devtool: 'inline-source-map',
 
 };
 

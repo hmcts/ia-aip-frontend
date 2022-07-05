@@ -84,12 +84,12 @@ Feature: Home office reference page
 #
 #    Then I see "Check your answer" in title
 
-#  Scenario: Submit an on time new appeal
+  Scenario: Submit an on time new appeal
 #    And I check "I believe the information I have given is true" option
 #    And I click "Send" button
 #    Then I see "Your appeal details have been sent" in title
 
-#  Scenario: Submit an out of time appeal
+  Scenario: Submit an out of time appeal
 #    And I click "Date letter sent" change link
 #    Then I see "What date was your decision letter sent?" in title
 #

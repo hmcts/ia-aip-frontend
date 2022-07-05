@@ -279,9 +279,7 @@ module.exports = {
       await fillInDate(day, month, year);
     });
 
-    Then(/^I should see error summary$/,async () => {
-      console.debug('I should see error summary');
-      console.debug(JSON.stringify(I));
+    Then(/^I should see error summary$/, async () => {
       await I.seeElementInDOM('.govuk-error-summary');
       await I.seeInTitle('Error: ');
     });

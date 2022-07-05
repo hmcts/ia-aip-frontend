@@ -497,27 +497,27 @@
     },
     "makeApplication": {
       "hearingRequests": {
-        "askToChangeSomethingAboutYourHearing": {
+        "askChangeHearing": {
           "title": "Ask to change something about your hearing",
           "question": {
             "heading": "Select what you want to change about your hearing.",
             "name": "hearingApplicationType",
             "options": {
-              "hearingSooner": {
+              "askHearingSooner": {
                 "text": "I want to ask for the hearing to be sooner",
-                "value": "askHearingSooner"
+                "value": "expedite"
               },
-              "hearingLater": {
+              "askChangeDate": {
                 "text": "I want to ask for the hearing to be later",
-                "value": "askHearingLater"
+                "value": "adjourn"
               },
-              "changeHearingLocation": {
+              "askChangeLocation": {
                 "text": "I want to change the hearing location",
-                "value": "askChangeLocation"
+                "value": "transfer"
               },
-              "askForSomething": {
+              "askUpdateHearingRequirements": {
                 "text": "I want to ask for something at the hearing",
-                "value": "askUpdateHearingRequirements"
+                "value": "updateHearingRequirements"
               }
             }
           }
@@ -2982,7 +2982,7 @@
       }
     },
     "makeApplication": {
-      "askToChangeSomethingAboutYourHearing": "Select what you want to ask to change about your hearing"
+      "askChangeHearing": "Select what you want to ask to change about your hearing"
     }
   },
   "components": {

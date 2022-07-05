@@ -93,6 +93,16 @@ interface DocumentUploadResponse {
   name: string;
 }
 
+interface Value {
+  code: String;
+  label: String;
+}
+
+interface MakeAnApplicationTypes {
+  value: Value;
+  list_items?: Value[];
+}
+
 interface Appeal {
   ccdCaseId?: string;
   appealStatus?: string;
@@ -123,8 +133,7 @@ interface Appeal {
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
-  hearingApplicationType?: string;
-  makeAnApplicationTypes?: any;
+  makeAnApplicationTypes?: MakeAnApplicationTypes;
   makeAnApplicationDetails?: string;
   makeAnApplicationEvidence?: Evidence[];
   makeAnApplications?: Collection<Application<Evidence>>[];

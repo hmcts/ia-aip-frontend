@@ -244,10 +244,10 @@ const paths = {
   },
   makeApplication: {
     askChangeHearing: '/ask-change-hearing',
-    askHearingSooner: '/ask-hearing-sooner',
-    askHearingLater: '/ask-hearing-later',
-    askChangeLocation: '/ask-change-location',
-    askUpdateHearingRequirements: '/ask-update-hearing-requirements'
+    expedite: '/ask-hearing-sooner',
+    adjourn: '/ask-change-date',
+    transfer: '/ask-change-location',
+    updateHearingRequirements: '/ask-update-hearing-requirements'
   }
 };
 export {

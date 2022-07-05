@@ -241,6 +241,13 @@ const paths = {
     termsAndConditions: '/terms-and-conditions',
     privacyPolicy: '/privacy-policy',
     accessibility: '/accessibility-statement'
+  },
+  makeApplication: {
+    askChangeHearing: '/ask-change-hearing',
+    expedite: '/ask-hearing-sooner',
+    adjourn: '/ask-change-date',
+    transfer: '/ask-change-location',
+    updateHearingRequirements: '/ask-update-hearing-requirements'
   }
 };
 export {

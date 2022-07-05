@@ -340,7 +340,8 @@
         {
           "title": "If you got your decision by email",
           "description": "Enter the date the email was sent by the Home Office."
-        }, {
+        },
+        {
           "title": "If you got your decision by post",
           "description": "Enter the date stamped on the front of the envelope. If you don't have the envelope, enter the date on the first page of the decision letter."
         }
@@ -391,7 +392,7 @@
       "outOfTime": {
         "panel": "Your late appeal details have been sent",
         "askHomeOffice": "A Tribunal Caseworker will look at the reasons your appeal was late and decide if your appeal can continue",
-        "whatToDoNext": "You will be sent a notification to tell you what the Tribunal has decided and what you can do next" ,
+        "whatToDoNext": "You will be sent a notification to tell you what the Tribunal has decided and what you can do next",
         "timescale": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might be later than that"
       },
       "inTime": {
@@ -492,6 +493,35 @@
           "The Home Office has uploaded new evidence for this appeal.",
           "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
         ]
+      }
+    },
+    "makeApplication": {
+      "hearingRequests": {
+        "askChangeHearing": {
+          "title": "Ask to change something about your hearing",
+          "question": {
+            "heading": "Select what you want to change about your hearing.",
+            "name": "hearingApplicationType",
+            "options": {
+              "askHearingSooner": {
+                "text": "I want to ask for the hearing to be sooner",
+                "value": "expedite"
+              },
+              "askChangeDate": {
+                "text": "I want to ask for the hearing to be later",
+                "value": "adjourn"
+              },
+              "askChangeLocation": {
+                "text": "I want to change the hearing location",
+                "value": "transfer"
+              },
+              "askUpdateHearingRequirements": {
+                "text": "I want to ask for something at the hearing",
+                "value": "updateHearingRequirements"
+              }
+            }
+          }
+        }
       }
     },
     "reasonsForAppealUpload": {
@@ -744,7 +774,7 @@
           "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
           "ctaFeedbackDescription": "<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
         }
-    },
+      },
       "timeline": {
         "completed": "Completed",
         "sections": {
@@ -981,7 +1011,7 @@
         },
         "listCase": {
           "text": "Your hearing was listed.",
-          "textForEditListCase" : "Your hearing details were updated.",
+          "textForEditListCase": "Your hearing details were updated.",
           "links": [
             {
               "title": "Useful documents",
@@ -992,7 +1022,7 @@
         },
         "sendDecisionAndReasons": {
           "text": "The Decision and Reasons documents is ready to view.",
-          "textForEditListCase" : "The Decision and Reasons documents is ready to view.",
+          "textForEditListCase": "The Decision and Reasons documents is ready to view.",
           "links": [
             {
               "title": "Useful documents",
@@ -1118,17 +1148,17 @@
         "documentDescription": "Document description",
         "additionalEvidence": "Additional evidence"
       },
-      "hearingNotice" : {
+      "hearingNotice": {
         "title": "Notice of Hearing"
       },
-      "hearingBundle" : {
+      "hearingBundle": {
         "title": "Hearing Bundle",
         "dateUploaded": "Date uploaded",
         "document": "Document"
       },
-      "decisionsAndReasons" : {
-         "title": "Decision and Reasons",
-         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
+      "decisionsAndReasons": {
+        "title": "Decision and Reasons",
+        "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
       }
     },
     "guidancePages": {
@@ -1379,7 +1409,7 @@
           {
             "title": "Before the hearing",
             "content": [
-               "If the hearing takes place at a hearing centre, you must arrive at least 15 minutes before your hearing is due to start. First go to reception and tell them why you are there. They will check you in and show you where the waiting area is. You may have to wait several hours as the order the hearings take place is decided on the day. ",
+              "If the hearing takes place at a hearing centre, you must arrive at least 15 minutes before your hearing is due to start. First go to reception and tell them why you are there. They will check you in and show you where the waiting area is. You may have to wait several hours as the order the hearings take place is decided on the day. ",
               "If the hearing takes place by video call, be ready at least 20 minutes before the hearing starts. If you do not join the call, the hearing may continue without you."
             ]
           },
@@ -1416,9 +1446,9 @@
           {
             "title": "During your hearing",
             "content": [
-               "The judge will introduce everyone and explain how the hearing will work.  ",
-               "If there is a Home Office Presenting Officer they will tell the judge why they think the Home Office decision is right. The Home Office Presenting Officer may also ask you some questions. ",
-               "If there are any witnesses they will then be asked to speak. The judge and the Home Office Presenting Officer may ask the witnesses some questions. You can also ask witnesses questions."
+              "The judge will introduce everyone and explain how the hearing will work.  ",
+              "If there is a Home Office Presenting Officer they will tell the judge why they think the Home Office decision is right. The Home Office Presenting Officer may also ask you some questions. ",
+              "If there are any witnesses they will then be asked to speak. The judge and the Home Office Presenting Officer may ask the witnesses some questions. You can also ask witnesses questions."
             ]
           },
           {
@@ -1430,9 +1460,8 @@
           {
             "title": "Advice on preparing for a hearing",
             "content": [
-            "If the hearing takes place at a hearing centre ",
-
-            "<ul class='govuk-list govuk-list--bullet'>",
+              "If the hearing takes place at a hearing centre ",
+              "<ul class='govuk-list govuk-list--bullet'>",
               "<li>If you can, visit the hearing centre before your hearing day </li>",
               "<li>Go to a hearing during your visit – they are usually open to the public</li>",
               "<li>Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new window)</a></li>",
@@ -1445,7 +1474,7 @@
           {
             "title": "If the hearing takes place by video call ",
             "content": [
-            "<ul class='govuk-list govuk-list--bullet'>",
+              "<ul class='govuk-list govuk-list--bullet'>",
               "<li>Make sure you have any documents you will need before the day of the hearing</li>",
               "<li>If you have any electronic documents, make sure you have downloaded them and you are able to easily see them</li>",
               "<li>Try to be somewhere private and quiet for the hearing </li>",
@@ -1643,14 +1672,12 @@
             }
           ]
         },
-
-
-      {
-        "title": "Allow cookies that measure website usage?",
-        "content": [
-          "<div class='govuk-radios'>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-on' value='true' class='govuk-radios__input'>  <label for='radio-analytics-on' class='govuk-label govuk-radios__label' id='radio-analytics-on-label'>  <span>Use cookies that measure my website usage</span>   </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-analytics-off' class='govuk-label govuk-radios__label' id='radio-analytics-off-label'>  <span>Do not use cookies that measure my website usage</span>  </label> </input> </div> </div>"
-        ]
-      },
+        {
+          "title": "Allow cookies that measure website usage?",
+          "content": [
+            "<div class='govuk-radios'>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-on' value='true' class='govuk-radios__input'>  <label for='radio-analytics-on' class='govuk-label govuk-radios__label' id='radio-analytics-on-label'>  <span>Use cookies that measure my website usage</span>   </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-analytics-off' class='govuk-label govuk-radios__label' id='radio-analytics-off-label'>  <span>Do not use cookies that measure my website usage</span>  </label> </input> </div> </div>"
+          ]
+        },
         {
           "title": "Cookies used to measure application performance",
           "content": [
@@ -1744,7 +1771,9 @@
         },
         {
           "title": "Allow cookies that measure website application performance monitoring?",
-          "content" : [ "<div class='govuk-radios'> <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-on' value='true' class='govuk-radios__input'>  <label for='radio-apm-on' class='govuk-label govuk-radios__label' id='radio-apm-on-label'> <span>Use cookies that measure website application performance monitoring</span>  </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-apm-off' class='govuk-label govuk-radios__label' id='radio-apm-off-label'>  <span>Do not use cookies that measure website application performance monitoring</span> </label> </input> </div> </div>"]
+          "content": [
+            "<div class='govuk-radios'> <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-on' value='true' class='govuk-radios__input'>  <label for='radio-apm-on' class='govuk-label govuk-radios__label' id='radio-apm-on-label'> <span>Use cookies that measure website application performance monitoring</span>  </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-apm-off' class='govuk-label govuk-radios__label' id='radio-apm-off-label'>  <span>Do not use cookies that measure website application performance monitoring</span> </label> </input> </div> </div>"
+          ]
         },
         {
           "title": "Essential cookies",
@@ -1826,7 +1855,9 @@
         },
         {
           "title": "",
-          "content": ["<p id='save-cookie-preferences' class='govuk-body govuk-button-group'><a id='saveCookies' class='govuk-button' href='cookie-policy'>Save</a></p>"]
+          "content": [
+            "<p id='save-cookie-preferences' class='govuk-body govuk-button-group'><a id='saveCookies' class='govuk-button' href='cookie-policy'>Save</a></p>"
+          ]
         }
       ]
     },
@@ -2348,7 +2379,6 @@
           "title": "Would you be able to join the hearing by video call?",
           "question": "Would you be able to join the hearing by video call?",
           "description": "<p>The Tribunal may decide to have the hearing by video call.  Answer no if there are reasons<br>you would not be able to join a video call.</p>",
-
           "hintsTitle": "Why you might not be able to join a video call?",
           "hintDescription": "For example, if you:",
           "hints": [
@@ -2359,8 +2389,8 @@
           ]
         },
         "joinHearingByVideoCallReason": {
-           "title": "Tell us the reasons you would not be able to join a video call",
-           "heading": "Tell us the reasons you would not be able to join a video call"
+          "title": "Tell us the reasons you would not be able to join a video call",
+          "heading": "Tell us the reasons you would not be able to join a video call"
         },
         "multimediaEvidence": {
           "title": "Will you bring any video or audio evidence to the hearing?",
@@ -2370,7 +2400,7 @@
         "bringEquipment": {
           "title": "Will you bring the equipment to play this evidence?",
           "question": "Will you bring the equipment to play this evidence?",
-          "description" : "For example, a laptop computer or DVD player"
+          "description": "For example, a laptop computer or DVD player"
         },
         "bringEquipmentReason": {
           "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
@@ -2410,7 +2440,6 @@
           "title": "Will you need anything else at the hearing?",
           "question": "Will you need anything else at the hearing?"
         },
-
         "privateHearingReason": {
           "title": "Tell us why you need a private hearing",
           "heading": "Tell us why you need a private hearing"
@@ -2428,7 +2457,6 @@
           "heading": "Tell us what you will need and why you need it",
           "text": "If you or any witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing."
         }
-
       },
       "datesToAvoidSection": {
         "questionPage": {
@@ -2463,7 +2491,7 @@
           "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
         }
       },
-      "yourHearingNeeds" : {
+      "yourHearingNeeds": {
         "title": "Your hearing needs"
       }
     },
@@ -2723,11 +2751,11 @@
         "feedbackText": "We also hope you can attend feedback sessions, along with any appellants you have supported that are happy to take part. This will help us understand more about your experience and identify ways to improve the service."
       }
     },
-    "gwfReference" : {
-       "title": "What is your Global Web Form (GWF) reference number?",
-       "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the UK. For example, GWF12345678",
-       "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find your GWF reference number.",
-       "homeOfficeReferenceNumberLabel": "Enter your GWF reference number"
+    "gwfReference": {
+      "title": "What is your Global Web Form (GWF) reference number?",
+      "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the UK. For example, GWF12345678",
+      "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find your GWF reference number.",
+      "homeOfficeReferenceNumberLabel": "Enter your GWF reference number"
     },
     "hrInside": {
       "title": "What date did you leave the UK after your application to stay in the country was refused?",
@@ -2843,7 +2871,7 @@
       "townCityRequired": "Enter a Town or City",
       "postcodeRequired": "Enter your postcode"
     },
-    "outOfCountryAddress":{
+    "outOfCountryAddress": {
       "addressRequired": "Enter your address"
     },
     "homeOfficeReference": {
@@ -2952,6 +2980,9 @@
           "incorrectFormat": "Enter the date in the correct format"
         }
       }
+    },
+    "makeApplication": {
+      "askChangeHearing": "Select what you want to ask to change about your hearing"
     }
   },
   "components": {
@@ -3115,18 +3146,18 @@
       "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
     },
     {
-    "title": "There is a fee for this appeal",
-    "description": "It costs:",
-    "optionsList": [
-      "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
-      "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
-      "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
-      "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
-      "In all other cases, you should use the new service."
-    ],
-    "cta": "link",
-    "hideMoreInfo": true,
-    "showHelp": true
+      "title": "There is a fee for this appeal",
+      "description": "It costs:",
+      "optionsList": [
+        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
+        "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
+        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
+        "In all other cases, you should use the new service."
+      ],
+      "cta": "link",
+      "hideMoreInfo": true,
+      "showHelp": true
     }
   ],
   "eligibilityOOCFlag": [
@@ -3170,18 +3201,18 @@
       "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
     },
     {
-    "title": "There is a fee for this appeal",
-    "description": "It costs:",
-    "optionsList": [
-      "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
-      "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
-      "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
-      "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
-      "In all other cases, you should use the new service."
-    ],
-    "cta": "link",
-    "hideMoreInfo": true,
-    "showHelp": true
+      "title": "There is a fee for this appeal",
+      "description": "It costs:",
+      "optionsList": [
+        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
+        "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
+        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
+        "In all other cases, you should use the new service."
+      ],
+      "cta": "link",
+      "hideMoreInfo": true,
+      "showHelp": true
     }
   ]
 }

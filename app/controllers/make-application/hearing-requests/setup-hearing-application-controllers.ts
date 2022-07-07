@@ -41,5 +41,6 @@ function setupHearingApplicationControllers(middleware: Middleware[], updateAppe
 }
 
 export {
-  setupHearingApplicationControllers
+  setupHearingApplicationControllers,
+  validate
 };

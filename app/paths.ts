@@ -249,13 +249,18 @@ const paths = {
     adjourn: '/ask-change-date',
     transfer: '/ask-change-location',
     updateHearingRequirements: '/ask-update-hearing-requirements',
+    withdrawAppeal: '/ask-withdraw',
+    askToChangeDetails: '/ask-update-details',
+    askToLinkOrUnlink: '/ask-link-unlink',
+    askJudgeToReview: '/ask-judge-review',
+    askForSomethingElse: '/ask-something-else',
+    askReinstateAppeal: '/ask-reinstate',
     supportingEvidenceExpedite: '/supporting-evidence-hearing-sooner',
     provideSupportingEvidenceExpedite: '/provide-supporting-evidence-hearing-sooner',
     provideSupportingEvidenceUploadFile: '/provide-supporting-evidence/upload/file',
     provideSupportingEvidenceDeleteFile: '/provide-supporting-evidence/delete/file',
     checkAnswerExpedite: '/check-answer-hearing-sooner',
-    requestSent: '/request-sent',
-    yourRequest: '/your-request'
+    requestSent: '/request-sent'
   }
 };
 export {

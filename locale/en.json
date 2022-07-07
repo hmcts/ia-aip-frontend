@@ -612,6 +612,19 @@
       "savedAndAskedForMoreTime": "You have saved your answers and asked for more time",
       "weAimTo": "We aim to get back to you within 5 days.",
       "iWantTo": "I want to...",
+      "withdrawAppeal": "Withdraw my appeal",
+      "appealRequests": {
+        "sectionHeading": "Appeal requests",
+        "askToChangeDetails": "Ask to change some of your details",
+        "askToLinkOrUnlink": "Ask to link or unlink with another appeal",
+        "askJudgeToReview": "Ask for a judge to review a decision by a Tribunal Caseworker",
+        "askForSomethingElse": "Ask for something else",
+        "askReinstateAppeal": "Ask to reinstate the appeal"
+      },
+     "hearingRequests": {
+        "sectionHeading": "Hearing requests",
+        "askToChangeYourHearing": "Ask to change your hearing date, location or needs"
+      },
       "payForAppeal": "Pay for this appeal",
       "doThisNext": {
         "toDo": "Do this next",

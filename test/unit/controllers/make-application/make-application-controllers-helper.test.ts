@@ -181,7 +181,7 @@ describe('Make application controllers helper', () => {
 
       const question = {
         title: i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.title,
-        name: 'makeAnApplicationProvideEvidence',
+        name: 'answer',
         titleIsheading: true,
         options: [
           {
@@ -233,7 +233,7 @@ describe('Make application controllers helper', () => {
 
       const question = {
         title: i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.title,
-        name: 'makeAnApplicationProvideEvidence',
+        name: 'answer',
         titleIsheading: true,
         options: [
           {
@@ -268,7 +268,7 @@ describe('Make application controllers helper', () => {
 
   describe('postProvideSupportingEvidenceYesOrNo', () => {
     it('should redirect to provide supporting evidence page', () => {
-      req.body['makeAnApplicationProvideEvidence'] = 'yes';
+      req.body['answer'] = 'yes';
       const pathToProvideSupportingEvidence = paths.makeApplication.provideSupportingEvidenceExpedite;
       const pathToCheckAnswer = paths.makeApplication.checkAnswerExpedite;
       makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, pathToProvideSupportingEvidence, pathToCheckAnswer);
@@ -277,7 +277,7 @@ describe('Make application controllers helper', () => {
     });
 
     it('should redirect to check answer page', () => {
-      req.body['makeAnApplicationProvideEvidence'] = 'no';
+      req.body['answer'] = 'no';
       const pathToProvideSupportingEvidence = paths.makeApplication.provideSupportingEvidenceExpedite;
       const pathToCheckAnswer = paths.makeApplication.checkAnswerExpedite;
       makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, pathToProvideSupportingEvidence, pathToCheckAnswer);

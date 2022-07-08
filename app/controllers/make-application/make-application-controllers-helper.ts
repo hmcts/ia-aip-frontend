@@ -76,7 +76,7 @@ function getProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: 
     const makeAnApplicationProvideEvidence = req.session.appeal.makeAnApplicationProvideEvidence;
     const question = {
       title: i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.title,
-      name: 'makeAnApplicationProvideEvidence',
+      name: 'answer',
       titleIsheading: true,
       options: [
         {
@@ -109,7 +109,7 @@ function getProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: 
 
 function postProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: NextFunction, pathToProvideSupportingEvidence: string, pathToCheckAnswer: string) {
   try {
-    const makeAnApplicationProvideEvidence = req.body['makeAnApplicationProvideEvidence'];
+    const makeAnApplicationProvideEvidence = req.body['answer'];
 
     if (makeAnApplicationProvideEvidence) {
       const redirectTo = makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value
@@ -146,6 +146,7 @@ function getProvideSupportingEvidence(req: Request, res: Response, next: NextFun
       evidenceCTA: config.evidenceCTA,
       previousPage: config.previousPage,
       ...validationErrors && { errorList: Object.values(validationErrors) },
+      ...validationErrors && { error: validationErrors },
       redirectTo: config.redirectTo
     };
 

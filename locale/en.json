@@ -528,6 +528,13 @@
           "hint": "What is the latest date you want the hearing to take place and why?",
           "ableToAddEvidenceTitle": "Supporting evidence for why you want the hearing to be sooner",
           "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+        },
+        "askChangeLocation": {
+          "title": "Ask to change the location of the hearing",
+          "description": "<p>If something changes and you need the hearing to take place at a different location, you can ask the Tribunal to change the location.</p><p>Tell us where you want the hearing to take place and explain the reasons why. You should provide supporting evidence for your answer if you have any.</p><div class='govuk-inset-text'>You can ask the hearing to take place at a different hearing centre or by video call. You can also ask to change a video hearing to an in-person hearing at a hearing centre.</div>",
+          "hint": "Where do you want the hearing to take place and why?",
+          "ableToAddEvidenceTitle": "Supporting evidence for why you want to change the hearing location",
+          "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
         }
       },
       "provideSupportingEvidenceYesOrNo": {
@@ -3041,6 +3048,7 @@
     "makeApplication": {
       "askChangeHearing": "Select what you want to ask to change about your hearing",
       "askHearingSooner": "Enter the latest date you want the hearing to take place and why",
+      "askChangeLocation": "Enter the latest date you want the hearing to take place and why",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }
   },

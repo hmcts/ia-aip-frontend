@@ -4,6 +4,7 @@ import { DocumentManagementService } from '../../../service/document-management-
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { deleteSupportingEvidence, getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, getRequestSent, postProvideSupportingEvidence, postProvideSupportingEvidenceCheckAndSend, postProvideSupportingEvidenceYesOrNo, uploadSupportingEvidence } from '../make-application-common';
 import { getExpediteHearingApplication, postExpediteHearingApplication } from './expedite-hearing-application';
+import { getTransferHearingApplication, postTransferHearingApplication } from './transfer-hearing-application';
 import { getHearingApplicationType, postHearingApplicationType } from './hearing-application-type';
 
 function validate(redirectToUrl: string) {
@@ -26,6 +27,7 @@ function validate(redirectToUrl: string) {
 function setupHearingApplicationControllers(middleware: Middleware[], updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.makeApplication.expedite, middleware, getExpediteHearingApplication);
+  router.get(paths.makeApplication.transfer, middleware, getTransferHearingApplication);
   router.get(paths.makeApplication.supportingEvidenceExpedite, middleware, getProvideSupportingEvidenceYesOrNo);
   router.get(paths.makeApplication.askChangeHearing, middleware, getHearingApplicationType);
   router.get(paths.makeApplication.provideSupportingEvidenceExpedite, middleware, getProvideSupportingEvidence);
@@ -33,6 +35,7 @@ function setupHearingApplicationControllers(middleware: Middleware[], updateAppe
   router.get(paths.makeApplication.checkAnswerExpedite, middleware, getProvideSupportingEvidenceCheckAndSend);
   router.get(paths.makeApplication.requestSent, middleware, getRequestSent);
   router.post(paths.makeApplication.expedite, middleware, postExpediteHearingApplication);
+  router.post(paths.makeApplication.transfer, middleware, postTransferHearingApplication);
   router.post(paths.makeApplication.askChangeHearing, middleware, postHearingApplicationType);
   router.post(paths.makeApplication.provideSupportingEvidenceExpedite, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceExpedite, middleware, postProvideSupportingEvidenceYesOrNo);

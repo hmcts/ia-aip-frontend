@@ -3048,7 +3048,7 @@
     "makeApplication": {
       "askChangeHearing": "Select what you want to ask to change about your hearing",
       "askHearingSooner": "Enter the latest date you want the hearing to take place and why",
-      "askChangeLocation": "Enter the latest date you want the hearing to take place and why",
+      "askChangeLocation": "Enter where you want the hearing to take place and why",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }
   },

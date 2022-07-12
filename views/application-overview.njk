@@ -97,18 +97,40 @@
       </div>
       <div class="govuk-grid-column-one-third">
         <div class="side-menu">
-          {% if provideMoreEvidenceSection %}
+          {% if payLater or provideMoreEvidenceSection or showAppealRequests %}
             <div class="side-menu__section">
-              <h2 class="govuk-heading-s">I want to...</h2>
-              <p><a class="govuk-link" href='{{ paths.common.provideMoreEvidenceForm }}'>{{ i18n.pages.provideMoreEvidence.form.title }}</a></p>
+              <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.iWantTo }}</h2>
+              {% if payLater %}
+                <p><a class='govuk-link' href='{{ paths.common.payLater }}'>{{ i18n.pages.overviewPage.payForAppeal }}</a></p>
+              {% endif %}
+              {% if provideMoreEvidenceSection %}
+                <p><a class="govuk-link" href='{{ paths.common.provideMoreEvidenceForm }}'>{{ i18n.pages.provideMoreEvidence.form.title }}</a></p>
+              {% endif %}
+              {% if showAppealRequests %}
+                <p><a class="govuk-link" href='{{ paths.makeApplication.withdrawAppeal }}'>{{ i18n.pages.overviewPage.withdrawAppeal }}</a></p>
+              {% endif %}
             </div>
           {% endif %}
-        {% if payLater %}
-          <div>
-            <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.iWantTo }}</h2>
-            <p><a class='govuk-link' href='{{ paths.common.payLater }}'>{{ i18n.pages.overviewPage.payForAppeal }}</a></p>
-          </div>
-        {% endif %}
+          {% if showAppealRequests or ended %}
+              <div class="side-menu__section">
+                  <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.appealRequests.sectionHeading }}</h2>
+                       {% if showAppealRequests %}
+                         <p><a class="govuk-link" href='{{ paths.makeApplication.askToChangeDetails }}'>{{ i18n.pages.overviewPage.appealRequests.askToChangeDetails }}</a></p>
+                         <p><a class="govuk-link" href='{{ paths.makeApplication.askToLinkOrUnlink }}'>{{ i18n.pages.overviewPage.appealRequests.askToLinkOrUnlink }}</a></p>
+                         <p><a class="govuk-link" href='{{ paths.makeApplication.askJudgeToReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview }}</a></p>
+                         <p><a class="govuk-link" href='{{ paths.makeApplication.askForSomethingElse }}'>{{ i18n.pages.overviewPage.appealRequests.askForSomethingElse }}</a></p>
+                       {% elif ended %}
+                          <p><a class="govuk-link" href='{{ paths.makeApplication.askReinstateAppeal }}'>{{ i18n.pages.overviewPage.appealRequests.askReinstateAppeal }}</a></p>
+                          <p><a class="govuk-link" href='{{ paths.makeApplication.askJudgeToReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview}}</a></p>
+                      {% endif %}
+              </div>
+          {% endif %}
+          {% if showHearingRequests %}
+              <div class="side-menu__section">
+                  <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.hearingRequests.sectionHeading }}</h2>
+                    <p><a class="govuk-link" href='{{ paths.makeApplication.askChangeHearing }}'>{{ i18n.pages.overviewPage.hearingRequests.askToChangeYourHearing }}</a></p>
+              </div>
+          {% endif %}
         <div class="contact-us-component">
           <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.contactUs }}</h2>
           <p>{{ i18n.pages.overviewPage.askAQuestion }}</p>

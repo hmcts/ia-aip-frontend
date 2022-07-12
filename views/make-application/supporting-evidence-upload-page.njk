@@ -1,0 +1,64 @@
+{% set pageTitleName = title %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "components/evidence-list.njk" import evidenceList with context %}
+
+{% extends "layout.njk" %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form action="{{ formSubmitAction }}" method="post">
+    {% call govukFieldset({
+      legend: {
+        text: title,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <p>{{ adviceHeader }}</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        {% for item in advice %}
+          <li>{{ item | safe }}</li>
+        {% endfor %}
+      </ul>
+
+      <div class="govuk-inset-text">
+        {{ govukFileUpload({
+          id: "file-upload",
+          name: "file-upload",
+          label: {
+            html: i18n.pages.makeApplication.provideSupportingEvidence.fileUpload | safe
+          },
+          errorMessage: {
+            text: errorList[0].text
+          } if (errorList)
+        }) }}
+
+        {{ govukButton({
+          text: i18n.common.buttons.uploadFile,
+          name: 'uploadFile',
+          classes: "govuk-button--secondary",
+          attributes: {
+            formEnctype: 'multipart/form-data',
+            formaction: evidenceUploadAction + '?_csrf=' + csrfToken
+          }
+        }) }}
+      </div>
+      {{ evidenceList(evidences, evidenceCTA) }}
+      {{ continueToUrlButton(redirectTo) }}
+      {{ canelButton() }}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+
+{% endblock %}

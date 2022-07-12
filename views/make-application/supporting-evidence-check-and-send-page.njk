@@ -1,0 +1,37 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "components/summary-list.njk" import govukSummaryList %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-xl">{{ pageTitle }}</h1>
+
+  {% if summaryLists %}
+    {% for summaryList in summaryLists %}
+      {% if summaryList.title %}
+        <h2 class="govuk-heading-l">{{ summaryList.title }}</h2>
+      {% endif %}
+      {{ govukSummaryList({
+        rows: summaryList.summaryRows
+      }) }}
+    {% endfor %}
+  {% endif %}
+
+  {% if continuePath %}
+    <form method="post" action="{{ continuePath }}">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      {{ govukButton({
+        text: i18n.common.buttons.confirmAndSend
+      }) }}
+    <a class="cancel-button" href="{{ previousPage }}">{{ i18n.common.buttons.cancel }}</a>
+    </form>
+  {% endif %}
+
+  {{ contactUs() }}
+{% endblock %}

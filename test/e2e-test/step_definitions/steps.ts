@@ -37,6 +37,7 @@ const { caseProgression } = require('../service/case-progression-service');
 const { clarifyingQuestions } = require('../pages/clarifying-questions/clarifying-questions');
 const { cmaRequirements } = require('../pages/cma-requirements/cma-requirements');
 const { uploadAddendumEvidence } = require('../pages/provide-more-evidence/upload-addendum-evidence');
+const { makeHearingApplication } = require('../pages/make-application/make-hearing-application');
 
 const { I } = inject();
 
@@ -81,3 +82,4 @@ caseProgression(I);
 clarifyingQuestions(I);
 cmaRequirements(I);
 uploadAddendumEvidence(I);
+makeHearingApplication(I);

@@ -50,7 +50,7 @@ function getHearingApplicationType(req: Request, res: Response, next: NextFuncti
       inline: false
     };
 
-    return res.render('make-application/application-type-page.njk', {
+    return res.render('make-application/radio-button-question-page.njk', {
       previousPage: paths.common.overview,
       pageTitle: i18n.pages.makeApplication.hearingRequests.askChangeHearing.title,
       formAction: paths.makeApplication.askChangeHearing,
@@ -87,15 +87,7 @@ function postHearingApplicationType(req: Request, res: Response, next: NextFunct
   }
 }
 
-function setupHearingApplicationTypeController(middleware: Middleware[]): Router {
-  const router = Router();
-  router.get(paths.makeApplication.askChangeHearing, middleware, getHearingApplicationType);
-  router.post(paths.makeApplication.askChangeHearing, middleware, postHearingApplicationType);
-  return router;
-}
-
 export {
   getHearingApplicationType,
-  postHearingApplicationType,
-  setupHearingApplicationTypeController
+  postHearingApplicationType
 };

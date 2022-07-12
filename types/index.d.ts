@@ -94,8 +94,8 @@ interface DocumentUploadResponse {
 }
 
 interface Value {
-  code: String;
-  label: String;
+  code: string;
+  label: string;
 }
 
 interface MakeAnApplicationTypes {
@@ -133,6 +133,7 @@ interface Appeal {
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
+  makeAnApplicationProvideEvidence?: string;
   makeAnApplicationTypes?: MakeAnApplicationTypes;
   makeAnApplicationDetails?: string;
   makeAnApplicationEvidence?: Evidence[];

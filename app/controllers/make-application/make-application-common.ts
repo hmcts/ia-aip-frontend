@@ -11,9 +11,12 @@ function getProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: 
 }
 
 function postProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: NextFunction) {
-  const pathToProvideSupportingEvidence = makeApplicationControllersHelper.getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code);
-  const pathToCheckAnswer = makeApplicationControllersHelper.getPath('checkAnswer', req.session.appeal.makeAnApplicationTypes.value.code);
-  return makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req, res, next, pathToProvideSupportingEvidence, pathToCheckAnswer);
+  const config = {
+    pathToProvideSupportingEvidence: makeApplicationControllersHelper.getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code),
+    pathToSupportingEvidence: makeApplicationControllersHelper.getPath('supportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code),
+    pathToCheckAnswer: makeApplicationControllersHelper.getPath('checkAnswer', req.session.appeal.makeAnApplicationTypes.value.code)
+  };
+  return makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req, res, next, config);
 }
 
 function getProvideSupportingEvidence(req: Request, res: Response, next: NextFunction) {
@@ -21,9 +24,17 @@ function getProvideSupportingEvidence(req: Request, res: Response, next: NextFun
     evidenceUploadAction: paths.makeApplication.provideSupportingEvidenceUploadFile,
     evidenceCTA: paths.makeApplication.provideSupportingEvidenceDeleteFile,
     previousPage: makeApplicationControllersHelper.getPath('supportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code),
-    redirectTo: makeApplicationControllersHelper.getPath('checkAnswer', req.session.appeal.makeAnApplicationTypes.value.code)
+    pathToSupportingEvidence: makeApplicationControllersHelper.getPath('supportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code)
   };
   return makeApplicationControllersHelper.getProvideSupportingEvidence(req, res, next, config);
+}
+
+function postProvideSupportingEvidence(req: Request, res: Response, next: NextFunction) {
+  const config = {
+    pathToCheckYourAnswer: makeApplicationControllersHelper.getPath('checkAnswer', req.session.appeal.makeAnApplicationTypes.value.code),
+    pathToProvideSupportingEvidence: makeApplicationControllersHelper.getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code)
+  };
+  return makeApplicationControllersHelper.postProvideSupportingEvidence(req, res, next, config);
 }
 
 function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction) {
@@ -58,6 +69,7 @@ export {
   getProvideSupportingEvidence,
   getProvideSupportingEvidenceCheckAndSend,
   getRequestSent,
+  postProvideSupportingEvidence,
   postProvideSupportingEvidenceYesOrNo,
   postProvideSupportingEvidenceCheckAndSend,
   uploadSupportingEvidence,

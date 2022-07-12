@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { deleteSupportingEvidence, getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, getRequestSent, postProvideSupportingEvidenceYesOrNo, uploadSupportingEvidence } from '../../../../app/controllers/make-application/make-application-common';
+import { deleteSupportingEvidence, getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, getRequestSent, postProvideSupportingEvidence, postProvideSupportingEvidenceYesOrNo, uploadSupportingEvidence } from '../../../../app/controllers/make-application/make-application-common';
 import { DocumentManagementService } from '../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../utils/testUtils';

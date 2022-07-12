@@ -107,19 +107,19 @@ function getProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: 
   }
 }
 
-function postProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: NextFunction, pathToProvideSupportingEvidence: string, pathToCheckAnswer: string) {
+function postProvideSupportingEvidenceYesOrNo(req: Request, res: Response, next: NextFunction, config: any) {
   try {
     const makeAnApplicationProvideEvidence = req.body['answer'];
 
     if (makeAnApplicationProvideEvidence) {
       const redirectTo = makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value
-        ? pathToProvideSupportingEvidence
-        : pathToCheckAnswer;
+        ? config.pathToProvideSupportingEvidence
+        : config.pathToCheckAnswer;
 
       req.session.appeal.makeAnApplicationProvideEvidence = makeAnApplicationProvideEvidence;
       res.redirect(redirectTo);
     } else {
-      res.redirect(`${paths.makeApplication.supportingEvidenceExpedite}?error=supportingEvidenceRequired`);
+      res.redirect(`${config.pathToSupportingEvidence}?error=supportingEvidenceRequired`);
     }
   } catch (error) {
     next(error);
@@ -147,12 +147,24 @@ function getProvideSupportingEvidence(req: Request, res: Response, next: NextFun
       previousPage: config.previousPage,
       ...validationErrors && { errorList: Object.values(validationErrors) },
       ...validationErrors && { error: validationErrors },
-      redirectTo: config.redirectTo
+      formSubmitAction: config.pathToProvideSupportingEvidence
     };
 
     return res.render('make-application/supporting-evidence-upload-page.njk', content);
   } catch (e) {
     next(e);
+  }
+}
+
+function postProvideSupportingEvidence(req: Request, res: Response, next: NextFunction, config: any) {
+  try {
+    if ((req.session.appeal.makeAnApplicationEvidence || []).length > 0) {
+      res.redirect(config.pathToCheckYourAnswer);
+    } else {
+      res.redirect(`${config.pathToProvideSupportingEvidence}?error=noFileSelected`);
+    }
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -303,6 +315,7 @@ export const makeApplicationControllersHelper = {
   getProvideSupportingEvidenceCheckAndSend,
   getRequestSent,
   postProvideMakeAnApplicationDetails,
+  postProvideSupportingEvidence,
   postProvideSupportingEvidenceYesOrNo,
   postProvideSupportingEvidenceCheckAndSend,
   uploadSupportingEvidence,

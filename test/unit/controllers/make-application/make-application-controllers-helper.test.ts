@@ -269,20 +269,37 @@ describe('Make application controllers helper', () => {
   describe('postProvideSupportingEvidenceYesOrNo', () => {
     it('should redirect to provide supporting evidence page', () => {
       req.body['answer'] = 'yes';
-      const pathToProvideSupportingEvidence = paths.makeApplication.provideSupportingEvidenceExpedite;
-      const pathToCheckAnswer = paths.makeApplication.checkAnswerExpedite;
-      makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, pathToProvideSupportingEvidence, pathToCheckAnswer);
+      const config = {
+        pathToProvideSupportingEvidence: paths.makeApplication.provideSupportingEvidenceExpedite,
+        pathToSupportingEvidence: paths.makeApplication.supportingEvidenceExpedite,
+        pathToCheckAnswer: paths.makeApplication.checkAnswerExpedite
+      };
+      makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, config);
 
-      expect(res.redirect).to.have.been.calledWith(pathToProvideSupportingEvidence);
+      expect(res.redirect).to.have.been.calledWith(config.pathToProvideSupportingEvidence);
     });
 
     it('should redirect to check answer page', () => {
       req.body['answer'] = 'no';
-      const pathToProvideSupportingEvidence = paths.makeApplication.provideSupportingEvidenceExpedite;
-      const pathToCheckAnswer = paths.makeApplication.checkAnswerExpedite;
-      makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, pathToProvideSupportingEvidence, pathToCheckAnswer);
+      const config = {
+        pathToProvideSupportingEvidence: paths.makeApplication.provideSupportingEvidenceExpedite,
+        pathToSupportingEvidence: paths.makeApplication.supportingEvidenceExpedite,
+        pathToCheckAnswer: paths.makeApplication.checkAnswerExpedite
+      };
+      makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, config);
 
-      expect(res.redirect).to.have.been.calledWith(pathToCheckAnswer);
+      expect(res.redirect).to.have.been.calledWith(config.pathToCheckAnswer);
+    });
+
+    it('should redirect with error', () => {
+      const config = {
+        pathToProvideSupportingEvidence: paths.makeApplication.provideSupportingEvidenceExpedite,
+        pathToSupportingEvidence: paths.makeApplication.supportingEvidenceExpedite,
+        pathToCheckAnswer: paths.makeApplication.checkAnswerExpedite
+      };
+      makeApplicationControllersHelper.postProvideSupportingEvidenceYesOrNo(req as Request, res as Response, next, config);
+
+      expect(res.redirect).to.have.been.calledWith(`${config.pathToSupportingEvidence}?error=supportingEvidenceRequired`);
     });
   });
 
@@ -292,7 +309,7 @@ describe('Make application controllers helper', () => {
         evidenceUploadAction: paths.makeApplication.provideSupportingEvidenceUploadFile,
         evidenceCTA: paths.makeApplication.provideSupportingEvidenceDeleteFile,
         previousPage: paths.makeApplication.supportingEvidenceExpedite,
-        redirectTo: paths.makeApplication.checkAnswerExpedite
+        pathToProvideSupportingEvidence: paths.makeApplication.provideSupportingEvidenceExpedite
       };
 
       const expectedRenderPayload = {
@@ -303,7 +320,7 @@ describe('Make application controllers helper', () => {
         evidences: req.session.appeal.makeAnApplicationEvidence || [],
         evidenceCTA: config.evidenceCTA,
         previousPage: config.previousPage,
-        redirectTo: config.redirectTo
+        formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
       expect(res.render).to.have.been.calledWith('make-application/supporting-evidence-upload-page.njk', {
@@ -326,7 +343,7 @@ describe('Make application controllers helper', () => {
         evidenceUploadAction: paths.makeApplication.provideSupportingEvidenceUploadFile,
         evidenceCTA: paths.makeApplication.provideSupportingEvidenceDeleteFile,
         previousPage: paths.makeApplication.supportingEvidenceExpedite,
-        redirectTo: paths.makeApplication.checkAnswerExpedite
+        pathToProvideSupportingEvidence: paths.makeApplication.provideSupportingEvidenceExpedite
       };
 
       const expectedRenderPayload = {
@@ -339,12 +356,38 @@ describe('Make application controllers helper', () => {
         previousPage: config.previousPage,
         errorList,
         error,
-        redirectTo: config.redirectTo
+        formSubmitAction: config.pathToProvideSupportingEvidence
       };
       makeApplicationControllersHelper.getProvideSupportingEvidence(req as Request, res as Response, next, config);
       expect(res.render).to.have.been.calledWith('make-application/supporting-evidence-upload-page.njk', {
         ...expectedRenderPayload
       });
+    });
+  });
+
+  describe('postProvideSupportingEvidence', () => {
+    it('should redirect to check your answers page', () => {
+      req.session.appeal.makeAnApplicationEvidence = [{
+        fileId: 'fileId',
+        name: 'theFileName'
+      }];
+      const config = {
+        pathToProvideSupportingEvidence: paths.makeApplication.provideSupportingEvidenceExpedite,
+        pathToCheckYourAnswer: paths.makeApplication.checkAnswerExpedite
+      };
+      makeApplicationControllersHelper.postProvideSupportingEvidence(req as Request, res as Response, next, config);
+
+      expect(res.redirect).to.have.been.calledWith(config.pathToCheckYourAnswer);
+    });
+
+    it('should redirect with error', () => {
+      const config = {
+        pathToProvideSupportingEvidence: paths.makeApplication.provideSupportingEvidenceExpedite,
+        pathToCheckYourAnswer: paths.makeApplication.checkAnswerExpedite
+      };
+      makeApplicationControllersHelper.postProvideSupportingEvidence(req as Request, res as Response, next, config);
+
+      expect(res.redirect).to.have.been.calledWith(`${config.pathToProvideSupportingEvidence}?error=noFileSelected`);
     });
   });
 

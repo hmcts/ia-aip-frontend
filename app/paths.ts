@@ -243,11 +243,19 @@ const paths = {
     accessibility: '/accessibility-statement'
   },
   makeApplication: {
+    // Hearing requests
     askChangeHearing: '/ask-change-hearing',
     expedite: '/ask-hearing-sooner',
     adjourn: '/ask-change-date',
     transfer: '/ask-change-location',
-    updateHearingRequirements: '/ask-update-hearing-requirements'
+    updateHearingRequirements: '/ask-update-hearing-requirements',
+    supportingEvidenceExpedite: '/supporting-evidence-hearing-sooner',
+    provideSupportingEvidenceExpedite: '/provide-supporting-evidence-hearing-sooner',
+    provideSupportingEvidenceUploadFile: '/provide-supporting-evidence/upload/file',
+    provideSupportingEvidenceDeleteFile: '/provide-supporting-evidence/delete/file',
+    checkAnswerExpedite: '/check-answer-hearing-sooner',
+    requestSent: '/request-sent',
+    yourRequest: '/your-request'
   }
 };
 export {

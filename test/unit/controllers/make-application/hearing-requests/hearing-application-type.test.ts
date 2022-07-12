@@ -1,5 +1,5 @@
-import express, { NextFunction, Request, Response } from 'express';
-import { getHearingApplicationType, postHearingApplicationType, setupHearingApplicationTypeController } from '../../../../../app/controllers/make-application/hearing-requests/hearing-application-type';
+import { NextFunction, Request, Response } from 'express';
+import { getHearingApplicationType, postHearingApplicationType } from '../../../../../app/controllers/make-application/hearing-requests/hearing-application-type';
 import { applicationTypes } from '../../../../../app/data/application-types';
 import { paths } from '../../../../../app/paths';
 import i18n from '../../../../../locale/en.json';
@@ -74,18 +74,6 @@ describe('Hearing applications types controller', () => {
     sandbox.restore();
   });
 
-  describe('setupHearingApplicationTypeController', () => {
-    it('should setup routes', () => {
-      const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'get');
-      const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
-      const middleware: Middleware[] = [];
-
-      setupHearingApplicationTypeController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
-    });
-  });
-
   describe('getHearingApplicationType', () => {
     it('should render', () => {
       req.query.error = undefined;
@@ -106,7 +94,7 @@ describe('Hearing applications types controller', () => {
       };
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('make-application/application-type-page.njk', {
+      expect(res.render).to.have.been.calledWith('make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });
@@ -130,7 +118,7 @@ describe('Hearing applications types controller', () => {
       };
       getHearingApplicationType(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('make-application/application-type-page.njk', {
+      expect(res.render).to.have.been.calledWith('make-application/radio-button-question-page.njk', {
         ...expectedRenderPayload
       });
     });

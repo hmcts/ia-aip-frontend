@@ -88,7 +88,7 @@ import { setupHearingRequirementsStartPageController } from './controllers/heari
 import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
 import { setupYourHearingNeedsController } from './controllers/hearing-requirements/your-hearing-needs';
 import { setupIdamController } from './controllers/idam';
-import { setupHearingApplicationTypeController } from './controllers/make-application/hearing-requests/hearing-application-type';
+import { setupHearingApplicationControllers } from './controllers/make-application/hearing-requests/setup-hearing-application-controllers';
 import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
@@ -213,7 +213,7 @@ const hearingRequirementsCYAController = setupHearingRequirementsCYAController(m
 const yourHearingNeedsController = setupYourHearingNeedsController(middleware, updateAppealService);
 const hearingRequirementConfirmationController = setupHearingRequirementsConfirmationPage(middleware);
 const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
-const hearingApplicationTypeController = setupHearingApplicationTypeController(middleware);
+const hearingApplicationControllers = setupHearingApplicationControllers(middleware, updateAppealService, documentManagementService);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
 const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleController(middleware);
@@ -323,7 +323,7 @@ router.use(cmaRequirementsConfirmationController);
 router.use(whatToExpectAtCmaNextController);
 router.use(provideMoreEvidence);
 router.use(outOfCountryController);
-router.use(hearingApplicationTypeController);
+router.use(hearingApplicationControllers);
 
 router.use(hearingBundleFeatureToggleController);
 router.use(outOfCountryFeatureToggleController);

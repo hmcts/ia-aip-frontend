@@ -1,0 +1,55 @@
+{% set pageTitleName = title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action={{ formAction }} method='post'>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {% call govukFieldset({
+      legend: {
+        text: title,
+        classes: "govuk-fieldset__legend--l",
+        isPageHeading: true
+      }
+    }) %}
+
+      {{ govukTextarea({
+        name: question.name,
+        id: question.name,
+        label: {
+          text: question.description | eval | safe 
+        } if (question.description),
+        hint: {
+          text: question.hint
+        } if (question.hint),
+        value: question.value,
+        errorMessage: {
+          text: error[question.name].text
+        } if error[question.name]
+      }) }}
+
+      {% if supportingEvidence %}
+        {% set supportingEvidenceContent %}
+          <h2 class="govuk-heading-s">
+            {{ ableToAddEvidenceTitle }}
+          </h2>
+          <p>{{ ableToAddEvidenceAdvice }}</p>
+        {% endset %}
+        <div class="panel-background">
+          {{ supportingEvidenceContent | safe }}
+        </div>
+      {% endif %}
+
+      {{ continueButton() }}
+      {{ canelButton() }}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

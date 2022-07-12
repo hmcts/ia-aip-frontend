@@ -73,6 +73,46 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
   return featureEnabled && preAddendumEvidenceUploadState;
 }
 
+function showAppealRequests(appealStatus: string) {
+  const showAppealRequestsStates = [
+    States.APPEAL_SUBMITTED.id,
+    States.AWAITING_RESPONDENT_EVIDENCE.id,
+    States.AWAITING_REASONS_FOR_APPEAL.id,
+    States.REASONS_FOR_APPEAL_SUBMITTED.id,
+    States.CASE_UNDER_REVIEW.id,
+    States.RESPONDENT_REVIEW.id,
+    States.SUBMIT_HEARING_REQUIREMENTS.id,
+    States.LISTING.id,
+    States.PREPARE_FOR_HEARING.id,
+    States.FINAL_BUNDLING.id,
+    States.PRE_HEARING.id,
+    States.DECISION.id,
+    States.DECIDED.id,
+    States.APPEAL_TAKEN_OFFLINE.id,
+    States.FTPA_SUBMITTED.id,
+    States.FTPA_DECIDED.id,
+    States.AWAITING_CLARIFYING_QUESTIONS_ANSWERS.id,
+    States.CLARIFYING_QUESTIONS_ANSWERED_SUBMITTED.id,
+    States.AWAITING_CMA_REQUIREMENTS.id,
+    States.CMA_REQUIREMENTS_SUBMITTED.id,
+    States.CMA_ADJUSTMENTS_AGREED.id,
+    States.CMA_LISTED.id,
+    States.ADJOURNED.id
+  ];
+  return showAppealRequestsStates.includes(appealStatus);
+}
+
+function showHearingRequests(appealStatus: string) {
+  const showHearingRequestsStates = [
+    States.PREPARE_FOR_HEARING.id,
+    States.FINAL_BUNDLING.id,
+    States.PRE_HEARING.id,
+    States.DECISION.id,
+    States.ADJOURNED.id
+  ];
+  return showHearingRequestsStates.includes(appealStatus);
+}
+
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -108,6 +148,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         askForMoreTime,
         saveAndAskForMoreTime,
         provideMoreEvidenceSection: checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled),
+        showAppealRequests: showAppealRequests(req.session.appeal.appealStatus),
+        showHearingRequests: showHearingRequests(req.session.appeal.appealStatus),
         payLater,
         hearingDetails
       });
@@ -129,5 +171,7 @@ export {
   getAppealRefNumber,
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
-  getHearingDetails
+  getHearingDetails,
+  showAppealRequests,
+  showHearingRequests
 };

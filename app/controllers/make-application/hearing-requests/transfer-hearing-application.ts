@@ -7,20 +7,20 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getTransferHearingApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askChangeLocation: createStructuredError('askChangeLocation', i18n.validationErrors.makeApplication.askHearingSooner)
+      askChangeLocation: createStructuredError('askChangeLocation', i18n.validationErrors.makeApplication.askChangeLocation)
     },
-    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.hearingRequests.askHearingSooner.description,
-    makeAnApplicationDetailsHint: i18n.pages.makeApplication.hearingRequests.askHearingSooner.hint,
-    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.hearingRequests.askHearingSooner.title,
+    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.hearingRequests.askChangeLocation.description,
+    makeAnApplicationDetailsHint: i18n.pages.makeApplication.hearingRequests.askChangeLocation.hint,
+    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.hearingRequests.askChangeLocation.title,
     formAction: paths.makeApplication.transfer,
-    ableToAddEvidenceTitle: i18n.pages.makeApplication.hearingRequests.askHearingSooner.ableToAddEvidenceTitle,
-    ableToAddEvidenceAdvice: i18n.pages.makeApplication.hearingRequests.askHearingSooner.ableToAddEvidenceAdvice
+    ableToAddEvidenceTitle: i18n.pages.makeApplication.hearingRequests.askChangeLocation.ableToAddEvidenceTitle,
+    ableToAddEvidenceAdvice: i18n.pages.makeApplication.hearingRequests.askChangeLocation.ableToAddEvidenceAdvice
   };
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }
 
 function postTransferHearingApplication(req: Request, res: Response, next: NextFunction) {
-  const redirectToSuccessPath = paths.makeApplication.supportingEvidenceExpedite;
+  const redirectToSuccessPath = paths.makeApplication.supportingEvidenceTransfer;
   const redirectToErrorPath = `${paths.makeApplication.transfer}?error=askChangeLocation`;
   return makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req, res, next, redirectToSuccessPath, redirectToErrorPath);
 }

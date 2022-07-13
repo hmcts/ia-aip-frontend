@@ -76,6 +76,7 @@ describe('Hearing application controllers setup', () => {
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.transfer);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceExpedite);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceTransfer);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceTransfer);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUploadFile);

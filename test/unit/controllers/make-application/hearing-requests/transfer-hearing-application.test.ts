@@ -41,7 +41,7 @@ describe('Hearing application controllers setup', () => {
         sandbox.restore();
     });
 
-    describe('getExpediteHearingApplication', () => {
+    describe('getTransferHearingApplication', () => {
         it('should catch an error and redirect with error', () => {
             const error = new Error('the error');
             res.redirect = sandbox.stub().throws(error);
@@ -52,7 +52,7 @@ describe('Hearing application controllers setup', () => {
         });
     });
 
-    describe('postExpediteHearingApplication', () => {
+    describe('postTransferHearingApplication', () => {
         it('should catch an error and redirect with error', () => {
             const error = new Error('the error');
             res.redirect = sandbox.stub().throws(error);

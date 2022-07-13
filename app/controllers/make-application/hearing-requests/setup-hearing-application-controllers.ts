@@ -39,6 +39,7 @@ function setupHearingApplicationControllers(middleware: Middleware[], updateAppe
   router.post(paths.makeApplication.transfer, middleware, postTransferHearingApplication);
   router.post(paths.makeApplication.askChangeHearing, middleware, postHearingApplicationType);
   router.post(paths.makeApplication.provideSupportingEvidenceExpedite, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.provideSupportingEvidenceTransfer, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceExpedite, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.supportingEvidenceTransfer, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.provideSupportingEvidenceUploadFile, middleware, validate('supportingEvidence'), uploadSupportingEvidence(documentManagementService));

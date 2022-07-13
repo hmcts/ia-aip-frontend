@@ -3,10 +3,10 @@ import { paths } from '../../../paths';
 import { DocumentManagementService } from '../../../service/document-management-service';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { deleteSupportingEvidence, getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, getRequestSent, postProvideSupportingEvidence, postProvideSupportingEvidenceCheckAndSend, postProvideSupportingEvidenceYesOrNo, uploadSupportingEvidence } from '../make-application-common';
-import { getExpediteHearingApplication, postExpediteHearingApplication } from './expedite-hearing-application';
-import { getTransferHearingApplication, postTransferHearingApplication } from './transfer-hearing-application';
-import { getHearingApplicationType, postHearingApplicationType } from './hearing-application-type';
 import { getPath } from '../make-application-controllers-helper';
+import { getExpediteHearingApplication, postExpediteHearingApplication } from './expedite-hearing-application';
+import { getHearingApplicationType, postHearingApplicationType } from './hearing-application-type';
+import { getTransferHearingApplication, postTransferHearingApplication } from './transfer-hearing-application';
 
 function validate(pathPrefix: string) {
   return (_req: Request, res: Response, next: NextFunction) => {

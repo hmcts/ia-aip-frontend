@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getExpediteHearingApplication, postExpediteHearingApplication } from '../../../../../app/controllers/make-application/hearing-requests/expedite-hearing-application';
+import { getAdjournHearingApplication, postAdjournHearingApplication } from '../../../../../app/controllers/make-application/hearing-requests/adjourn-hearing-application';
 import { expect, sinon } from '../../../../utils/testUtils';
 
 describe('Hearing application controllers setup', () => {
@@ -41,23 +41,23 @@ describe('Hearing application controllers setup', () => {
     sandbox.restore();
   });
 
-  describe('getExpediteHearingApplication', () => {
+  describe('getAdjournHearingApplication', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);
 
-      getExpediteHearingApplication(req as Request, res as Response, next);
+      getAdjournHearingApplication(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });
   });
 
-  describe('postExpediteHearingApplication', () => {
+  describe('postAdjournHearingApplication', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);
 
-      postExpediteHearingApplication(req as Request, res as Response, next);
+      postAdjournHearingApplication(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });

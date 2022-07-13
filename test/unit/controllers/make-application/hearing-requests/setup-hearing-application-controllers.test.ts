@@ -60,17 +60,24 @@ describe('Hearing application controllers setup', () => {
       setupHearingApplicationControllers(middleware, updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.expedite);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.adjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceExpedite);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceAdjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceExpedite);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceAdjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceDeleteFile);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerExpedite);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerAdjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.requestSent);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.expedite);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.adjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceExpedite);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceAdjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUploadFile);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerExpedite);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerAdjourn);
     });
   });
 

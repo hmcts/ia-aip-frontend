@@ -256,11 +256,15 @@ const paths = {
     askForSomethingElse: '/ask-something-else',
     askReinstateAppeal: '/ask-reinstate',
     supportingEvidenceExpedite: '/supporting-evidence-hearing-sooner',
+    supportingEvidenceAdjourn: '/supporting-evidence-hearing-later',
     provideSupportingEvidenceExpedite: '/provide-supporting-evidence-hearing-sooner',
+    provideSupportingEvidenceAdjourn: '/provide-supporting-evidence-hearing-later',
     provideSupportingEvidenceUploadFile: '/provide-supporting-evidence/upload/file',
     provideSupportingEvidenceDeleteFile: '/provide-supporting-evidence/delete/file',
     checkAnswerExpedite: '/check-answer-hearing-sooner',
-    requestSent: '/request-sent'
+    checkAnswerAdjourn: '/check-answer-hearing-later',
+    requestSent: '/request-sent',
+    yourRequest: '/your-request'
   }
 };
 export {

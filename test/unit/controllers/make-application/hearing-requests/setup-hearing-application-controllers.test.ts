@@ -30,7 +30,10 @@ describe('Hearing application controllers setup', () => {
       session: {
         appeal: {
           application: {},
-          documentMap: []
+          documentMap: [],
+          makeAnApplicationTypes: {
+            value: {}
+          }
         }
       }
     } as Partial<Request>;
@@ -83,24 +86,27 @@ describe('Hearing application controllers setup', () => {
 
   describe('validate', function () {
     it('should call next if no multer errors', () => {
-      validate(paths.makeApplication.provideSupportingEvidenceExpedite)(req as Request, res as Response, next);
+      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
+      validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
       expect(next).to.have.been.called;
     });
 
     it('should redirect with error code', async () => {
+      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
       res.locals.errorCode = 'anError';
-      validate(paths.makeApplication.provideSupportingEvidenceExpedite)(req as Request, res as Response, next);
+      validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.makeApplication.provideSupportingEvidenceExpedite}?error=anError`);
     });
 
     it('should catch error and call next with error', async () => {
+      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
       res.locals.errorCode = 'anError';
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);
 
-      validate(paths.makeApplication.provideSupportingEvidenceExpedite)(req as Request, res as Response, next);
+      validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });

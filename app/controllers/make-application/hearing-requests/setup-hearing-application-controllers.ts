@@ -6,16 +6,14 @@ import { deleteSupportingEvidence, getProvideSupportingEvidence, getProvideSuppo
 import { getExpediteHearingApplication, postExpediteHearingApplication } from './expedite-hearing-application';
 import { getTransferHearingApplication, postTransferHearingApplication } from './transfer-hearing-application';
 import { getHearingApplicationType, postHearingApplicationType } from './hearing-application-type';
+import { getPath } from '../make-application-controllers-helper';
 
-function validate(redirectToUrl: string) {
+function validate(pathPrefix: string) {
   return (_req: Request, res: Response, next: NextFunction) => {
     try {
-      let errorCode: string;
       if (res.locals.errorCode) {
-        errorCode = res.locals.errorCode;
-      }
-      if (errorCode) {
-        return res.redirect(`${redirectToUrl}?error=${errorCode}`);
+        let redirectUrl = getPath(pathPrefix, _req.session.appeal.makeAnApplicationTypes.value.code);
+        return res.redirect(`${redirectUrl}?error=${res.locals.errorCode}`);
       }
       next();
     } catch (e) {
@@ -43,10 +41,9 @@ function setupHearingApplicationControllers(middleware: Middleware[], updateAppe
   router.post(paths.makeApplication.provideSupportingEvidenceExpedite, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceExpedite, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.supportingEvidenceTransfer, middleware, postProvideSupportingEvidenceYesOrNo);
-  router.post(paths.makeApplication.provideSupportingEvidenceUploadFile, middleware, validate(paths.makeApplication.provideSupportingEvidenceExpedite), uploadSupportingEvidence(documentManagementService));
-  router.post(paths.makeApplication.provideSupportingEvidenceUploadFile, middleware, validate(paths.makeApplication.provideSupportingEvidenceTransfer), uploadSupportingEvidence(documentManagementService));
-  router.post(paths.makeApplication.checkAnswerExpedite, middleware, validate(paths.makeApplication.provideSupportingEvidenceExpedite), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
-  router.post(paths.makeApplication.checkAnswerTransfer, middleware, validate(paths.makeApplication.provideSupportingEvidenceTransfer), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+  router.post(paths.makeApplication.provideSupportingEvidenceUploadFile, middleware, validate('supportingEvidence'), uploadSupportingEvidence(documentManagementService));
+  router.post(paths.makeApplication.checkAnswerExpedite, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+  router.post(paths.makeApplication.checkAnswerTransfer, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
   return router;
 }
 

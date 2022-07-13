@@ -280,8 +280,6 @@ module.exports = {
     });
 
     Then(/^I should see error summary$/,async () => {
-      console.debug('I should see error summary');
-      console.debug(JSON.stringify(I));
       await I.seeElementInDOM('.govuk-error-summary');
       await I.seeInTitle('Error: ');
     });

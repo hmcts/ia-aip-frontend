@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { handleFileUploadErrors, uploadConfiguration } from '../../../middleware/file-upload-validation-middleware';
 import { paths } from '../../../paths';
 import { DocumentManagementService } from '../../../service/document-management-service';
 import UpdateAppealService from '../../../service/update-appeal-service';
@@ -42,7 +43,7 @@ function setupHearingApplicationControllers(middleware: Middleware[], updateAppe
   router.post(paths.makeApplication.provideSupportingEvidenceTransfer, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceExpedite, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.supportingEvidenceTransfer, middleware, postProvideSupportingEvidenceYesOrNo);
-  router.post(paths.makeApplication.provideSupportingEvidenceUploadFile, middleware, validate('supportingEvidence'), uploadSupportingEvidence(documentManagementService));
+  router.post(paths.makeApplication.provideSupportingEvidenceUploadFile, middleware, validate('provideSupportingEvidence'), uploadSupportingEvidence(documentManagementService));
   router.post(paths.makeApplication.checkAnswerExpedite, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
   router.post(paths.makeApplication.checkAnswerTransfer, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
   return router;

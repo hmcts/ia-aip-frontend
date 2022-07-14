@@ -71,7 +71,7 @@ function postHearingApplicationType(req: Request, res: Response, next: NextFunct
       const makeAnApplicationTypes = {
         value: {
           code: decision,
-          label: applicationTypes[decision]
+          label: applicationTypes[decision].type
         }
       };
       req.session.appeal = {

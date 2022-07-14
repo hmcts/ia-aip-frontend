@@ -584,6 +584,12 @@ describe('Make application controllers helper', () => {
 
       req.session.appeal.makeAnApplicationDetails = 'makeAnApplicationDetails';
       req.session.appeal.makeAnApplicationEvidence = mockEvidenceDocuments;
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
 
       const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 
@@ -600,6 +606,12 @@ describe('Make application controllers helper', () => {
       ];
       req.session.appeal.makeAnApplicationDetails = 'makeAnApplicationDetails';
       req.session.appeal.makeAnApplicationEvidence = mockEvidenceDocuments;
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
 
       const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 

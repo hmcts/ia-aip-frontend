@@ -80,7 +80,7 @@ describe('Hearing applications types controller', () => {
       req.session.appeal.makeAnApplicationTypes = {
         value: {
           code: question.options[0].value,
-          label: applicationTypes[question.options[0].value]
+          label: applicationTypes[question.options[0].value].type
         }
       };
       question.options[0].checked = true;

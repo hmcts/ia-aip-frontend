@@ -27,7 +27,7 @@ function setupMakeApplicationControllers(middleware: Middleware[], updateAppealS
   router.get(paths.makeApplication.requestSent, middleware, getRequestSent);
   router.post(paths.makeApplication.provideSupportingEvidenceUploadFile, middleware, validate('provideSupportingEvidence'), uploadSupportingEvidence(documentManagementService));
   router.use(setupAppealRequestControllers(middleware, updateAppealService));
-  router.use(setupHearingApplicationControllers(middleware, updateAppealService, documentManagementService));
+  router.use(setupHearingApplicationControllers(middleware, updateAppealService));
   return router;
 }
 

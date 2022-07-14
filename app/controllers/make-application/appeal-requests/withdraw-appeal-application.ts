@@ -12,7 +12,7 @@ function getWithdrawAppealApplication(req: Request, res: Response, next: NextFun
     makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askWithdrawAppeal.description,
     makeAnApplicationDetailsHint: i18n.pages.makeApplication.askWithdrawAppeal.hint,
     makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askWithdrawAppeal.title,
-    formAction: paths.makeApplication.askWithdraw,
+    formAction: paths.makeApplication.withdraw,
     ableToAddEvidenceTitle: i18n.pages.makeApplication.askWithdrawAppeal.ableToAddEvidenceTitle,
     ableToAddEvidenceAdvice: i18n.pages.makeApplication.askWithdrawAppeal.ableToAddEvidenceAdvice
   };

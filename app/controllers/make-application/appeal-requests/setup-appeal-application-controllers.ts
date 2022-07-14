@@ -20,5 +20,4 @@ function setupAppealRequestControllers(middleware: Middleware[], updateAppealSer
 
 export {
   setupAppealRequestControllers
-}
-
+};

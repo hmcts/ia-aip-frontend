@@ -88,7 +88,7 @@ import { setupHearingRequirementsStartPageController } from './controllers/heari
 import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
 import { setupYourHearingNeedsController } from './controllers/hearing-requirements/your-hearing-needs';
 import { setupIdamController } from './controllers/idam';
-import { setupMakeApplicationControllers } from "./controllers/make-application/setup-application-controllers";
+import { setupMakeApplicationControllers } from './controllers/make-application/setup-application-controllers';
 import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';

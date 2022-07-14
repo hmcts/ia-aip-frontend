@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { string } from 'joi';
 import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
@@ -484,7 +485,12 @@ export default class UpdateAppealService {
       ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
       ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
       hearingCentre: caseData.hearingCentre || null,
-      documentMap
+      documentMap: documentMap.map(doc => {
+        return {
+          id: doc.id,
+          url: this.formatDocUrl(doc.url)
+        };
+      })
     };
     return appeal;
   }
@@ -593,7 +599,7 @@ export default class UpdateAppealService {
           subscription.mobileNumber = appeal.application.contactDetails.phone;
           caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
         }
-        caseData.subscriptions = [ { value: subscription } ];
+        caseData.subscriptions = [{ value: subscription }];
 
         if (appeal.application.hasSponsor) {
           caseData.hasSponsor = appeal.application.hasSponsor;
@@ -641,7 +647,7 @@ export default class UpdateAppealService {
             sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
             caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
           }
-          caseData.sponsorSubscriptions = [ { value: sponsorSubscription } ];
+          caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
         }
 
         if (appeal.application.sponsorAuthorisation) {
@@ -1223,5 +1229,12 @@ export default class UpdateAppealService {
         caseData.remoteVideoCallDescription = otherNeeds.remoteVideoCallDescription;
       }
     }
+  }
+
+  private formatDocUrl(docUrl: string): string {
+    if (process.env.NODE_ENV === 'development') {
+      return `${process.env.DOC_MANAGEMENT_URL}/documents${docUrl.substring(docUrl.lastIndexOf('/'))}`;
+    }
+    return docUrl;
   }
 }

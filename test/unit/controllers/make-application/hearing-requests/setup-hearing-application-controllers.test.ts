@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { setupHearingApplicationControllers, validate } from '../../../../../app/controllers/make-application/hearing-requests/setup-hearing-application-controllers';
+import { setupHearingApplicationControllers } from '../../../../../app/controllers/make-application/hearing-requests/setup-hearing-application-controllers';
 import { paths } from '../../../../../app/paths';
 import { DocumentManagementService } from '../../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
@@ -71,11 +71,9 @@ describe('Hearing application controllers setup', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceExpedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceAdjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceTransfer);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceDeleteFile);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerExpedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerAdjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerTransfer);
-      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.requestSent);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.expedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.adjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.transfer);
@@ -86,38 +84,9 @@ describe('Hearing application controllers setup', () => {
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceAdjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceTransfer);
-      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUploadFile);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerAdjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerTransfer);
-    });
-  });
-
-  describe('validate', function () {
-    it('should call next if no multer errors', () => {
-      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
-      validate('provideSupportingEvidence')(req as Request, res as Response, next);
-
-      expect(next).to.have.been.called;
-    });
-
-    it('should redirect with error code', async () => {
-      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
-      res.locals.errorCode = 'anError';
-      validate('provideSupportingEvidence')(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(`${paths.makeApplication.provideSupportingEvidenceExpedite}?error=anError`);
-    });
-
-    it('should catch error and call next with error', async () => {
-      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
-      res.locals.errorCode = 'anError';
-      const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
-
-      validate('provideSupportingEvidence')(req as Request, res as Response, next);
-
-      expect(next).to.have.been.calledWith(error);
     });
   });
 });

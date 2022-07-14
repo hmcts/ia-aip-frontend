@@ -31,8 +31,8 @@
         } if (question.hint),
         value: question.value,
         errorMessage: {
-          text: error[question.name].text
-        } if error[question.name]
+          text: errorList[0].text
+        } if errorList
       }) }}
 
       {% if supportingEvidence %}

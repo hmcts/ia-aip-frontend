@@ -257,12 +257,15 @@ const paths = {
     askReinstateAppeal: '/ask-reinstate',
     supportingEvidenceExpedite: '/supporting-evidence-hearing-sooner',
     supportingEvidenceAdjourn: '/supporting-evidence-hearing-later',
+    supportingEvidenceTransfer: '/supporting-evidence-change-location',
     provideSupportingEvidenceExpedite: '/provide-supporting-evidence-hearing-sooner',
     provideSupportingEvidenceAdjourn: '/provide-supporting-evidence-hearing-later',
+    provideSupportingEvidenceTransfer: '/provide-supporting-evidence-change-location',
     provideSupportingEvidenceUploadFile: '/provide-supporting-evidence/upload/file',
     provideSupportingEvidenceDeleteFile: '/provide-supporting-evidence/delete/file',
     checkAnswerExpedite: '/check-answer-hearing-sooner',
     checkAnswerAdjourn: '/check-answer-hearing-later',
+    checkAnswerTransfer: '/check-answer-change-location',
     requestSent: '/request-sent',
     yourRequest: '/your-request'
   }

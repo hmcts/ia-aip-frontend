@@ -303,7 +303,7 @@ function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvide
   return summaryLists;
 }
 
-function getPath(pathPrefix: string, applicationType: string): string {
+export function getPath(pathPrefix: string, applicationType: string): string {
   const key = applicationType ? (pathPrefix + applicationType.charAt(0).toUpperCase() + applicationType.slice(1)) : pathPrefix;
   return paths.makeApplication[`${key}`];
 }

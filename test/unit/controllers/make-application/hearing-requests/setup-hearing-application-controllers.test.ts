@@ -30,7 +30,10 @@ describe('Hearing application controllers setup', () => {
       session: {
         appeal: {
           application: {},
-          documentMap: []
+          documentMap: [],
+          makeAnApplicationTypes: {
+            value: {}
+          }
         }
       }
     } as Partial<Request>;
@@ -61,46 +64,58 @@ describe('Hearing application controllers setup', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.expedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.adjourn);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.transfer);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceExpedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceAdjourn);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceTransfer);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceExpedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceAdjourn);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceTransfer);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceDeleteFile);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerExpedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerAdjourn);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerTransfer);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.requestSent);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.expedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.adjourn);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.transfer);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceExpedite);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceAdjourn);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceTransfer);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceAdjourn);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceTransfer);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUploadFile);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerAdjourn);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerTransfer);
     });
   });
 
   describe('validate', function () {
     it('should call next if no multer errors', () => {
-      validate(paths.makeApplication.provideSupportingEvidenceExpedite)(req as Request, res as Response, next);
+      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
+      validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
       expect(next).to.have.been.called;
     });
 
     it('should redirect with error code', async () => {
+      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
       res.locals.errorCode = 'anError';
-      validate(paths.makeApplication.provideSupportingEvidenceExpedite)(req as Request, res as Response, next);
+      validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.makeApplication.provideSupportingEvidenceExpedite}?error=anError`);
     });
 
     it('should catch error and call next with error', async () => {
+      req.session.appeal.makeAnApplicationTypes.value.code = 'expedite';
       res.locals.errorCode = 'anError';
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);
 
-      validate(paths.makeApplication.provideSupportingEvidenceExpedite)(req as Request, res as Response, next);
+      validate('provideSupportingEvidence')(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });

@@ -9,12 +9,12 @@ function getTransferHearingApplication(req: Request, res: Response, next: NextFu
     validationErrors: {
       askChangeLocation: createStructuredError('askChangeLocation', i18n.validationErrors.makeApplication.askChangeLocation)
     },
-    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.hearingRequests.askChangeLocation.description,
-    makeAnApplicationDetailsHint: i18n.pages.makeApplication.hearingRequests.askChangeLocation.hint,
-    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.hearingRequests.askChangeLocation.title,
+    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askChangeLocation.description,
+    makeAnApplicationDetailsHint: i18n.pages.makeApplication.askChangeLocation.hint,
+    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askChangeLocation.title,
     formAction: paths.makeApplication.transfer,
-    ableToAddEvidenceTitle: i18n.pages.makeApplication.hearingRequests.askChangeLocation.ableToAddEvidenceTitle,
-    ableToAddEvidenceAdvice: i18n.pages.makeApplication.hearingRequests.askChangeLocation.ableToAddEvidenceAdvice
+    ableToAddEvidenceTitle: i18n.pages.makeApplication.askChangeLocation.ableToAddEvidenceTitle,
+    ableToAddEvidenceAdvice: i18n.pages.makeApplication.askChangeLocation.ableToAddEvidenceAdvice
   };
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }

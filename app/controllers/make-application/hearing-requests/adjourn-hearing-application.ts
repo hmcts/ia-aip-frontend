@@ -9,12 +9,12 @@ function getAdjournHearingApplication(req: Request, res: Response, next: NextFun
     validationErrors: {
       askHearingSooner: createStructuredError('askChangeDate', i18n.validationErrors.makeApplication.askChangeDate)
     },
-    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.hearingRequests.askChangeDate.description,
-    makeAnApplicationDetailsHint: i18n.pages.makeApplication.hearingRequests.askChangeDate.hint,
-    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.hearingRequests.askChangeDate.title,
+    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askChangeDate.description,
+    makeAnApplicationDetailsHint: i18n.pages.makeApplication.askChangeDate.hint,
+    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askChangeDate.title,
     formAction: paths.makeApplication.adjourn,
-    ableToAddEvidenceTitle: i18n.pages.makeApplication.hearingRequests.askChangeDate.ableToAddEvidenceTitle,
-    ableToAddEvidenceAdvice: i18n.pages.makeApplication.hearingRequests.askChangeDate.ableToAddEvidenceAdvice
+    ableToAddEvidenceTitle: i18n.pages.makeApplication.askChangeDate.ableToAddEvidenceTitle,
+    ableToAddEvidenceAdvice: i18n.pages.makeApplication.askChangeDate.ableToAddEvidenceAdvice
   };
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }

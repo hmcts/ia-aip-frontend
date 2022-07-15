@@ -65,12 +65,12 @@ describe('Make application controllers helper', () => {
 
       config = {
         validationErrors: undefined,
-        makeAnApplicationDetailsDescription: i18n.pages.makeApplication.hearingRequests.askHearingSooner.description,
-        makeAnApplicationDetailsHint: i18n.pages.makeApplication.hearingRequests.askHearingSooner.hint,
-        makeAnApplicationDetailsTitle: i18n.pages.makeApplication.hearingRequests.askHearingSooner.title,
+        makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askHearingSooner.description,
+        makeAnApplicationDetailsHint: i18n.pages.makeApplication.askHearingSooner.hint,
+        makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askHearingSooner.title,
         formAction: paths.makeApplication.expedite,
-        ableToAddEvidenceTitle: i18n.pages.makeApplication.hearingRequests.askHearingSooner.ableToAddEvidenceTitle,
-        ableToAddEvidenceAdvice: i18n.pages.makeApplication.hearingRequests.askHearingSooner.ableToAddEvidenceAdvice
+        ableToAddEvidenceTitle: i18n.pages.makeApplication.askHearingSooner.ableToAddEvidenceTitle,
+        ableToAddEvidenceAdvice: i18n.pages.makeApplication.askHearingSooner.ableToAddEvidenceAdvice
       };
 
       const question = {
@@ -115,12 +115,12 @@ describe('Make application controllers helper', () => {
 
       config = {
         validationErrors: errorList,
-        makeAnApplicationDetailsDescription: i18n.pages.makeApplication.hearingRequests.askHearingSooner.description,
-        makeAnApplicationDetailsHint: i18n.pages.makeApplication.hearingRequests.askHearingSooner.hint,
-        makeAnApplicationDetailsTitle: i18n.pages.makeApplication.hearingRequests.askHearingSooner.title,
+        makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askHearingSooner.description,
+        makeAnApplicationDetailsHint: i18n.pages.makeApplication.askHearingSooner.hint,
+        makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askHearingSooner.title,
         formAction: paths.makeApplication.expedite,
-        ableToAddEvidenceTitle: i18n.pages.makeApplication.hearingRequests.askHearingSooner.ableToAddEvidenceTitle,
-        ableToAddEvidenceAdvice: i18n.pages.makeApplication.hearingRequests.askHearingSooner.ableToAddEvidenceAdvice
+        ableToAddEvidenceTitle: i18n.pages.makeApplication.askHearingSooner.ableToAddEvidenceTitle,
+        ableToAddEvidenceAdvice: i18n.pages.makeApplication.askHearingSooner.ableToAddEvidenceAdvice
       };
 
       const question = {

@@ -277,7 +277,7 @@ function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvide
 
   if (makeAnApplicationDetails) {
     const applicationType = applicationTypes[req.session.appeal.makeAnApplicationTypes.value.code].code;
-    const question = (i18n.pages.makeApplication.hearingRequests[applicationType] || {}).hint;
+    const question = (i18n.pages.makeApplication[applicationType] || {}).hint;
     summaryRows.push(
       addSummaryRow(
         i18n.pages.makeApplication.checkYourAnswers.rows[0],

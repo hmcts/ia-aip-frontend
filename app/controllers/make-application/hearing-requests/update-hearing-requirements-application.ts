@@ -9,12 +9,12 @@ function getUpdateHearingRequirementsApplication(req: Request, res: Response, ne
     validationErrors: {
       askUpdateHearingRequirements: createStructuredError('askUpdateHearingRequirements', i18n.validationErrors.makeApplication.askUpdateHearingRequirements)
     },
-    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.hearingRequests.askUpdateHearingRequirements.description,
-    makeAnApplicationDetailsHint: i18n.pages.makeApplication.hearingRequests.askUpdateHearingRequirements.hint,
-    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.hearingRequests.askUpdateHearingRequirements.title,
+    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askUpdateHearingRequirements.description,
+    makeAnApplicationDetailsHint: i18n.pages.makeApplication.askUpdateHearingRequirements.hint,
+    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askUpdateHearingRequirements.title,
     formAction: paths.makeApplication.updateHearingRequirements,
-    ableToAddEvidenceTitle: i18n.pages.makeApplication.hearingRequests.askUpdateHearingRequirements.ableToAddEvidenceTitle,
-    ableToAddEvidenceAdvice: i18n.pages.makeApplication.hearingRequests.askUpdateHearingRequirements.ableToAddEvidenceAdvice
+    ableToAddEvidenceTitle: i18n.pages.makeApplication.askUpdateHearingRequirements.ableToAddEvidenceTitle,
+    ableToAddEvidenceAdvice: i18n.pages.makeApplication.askUpdateHearingRequirements.ableToAddEvidenceAdvice
   };
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }

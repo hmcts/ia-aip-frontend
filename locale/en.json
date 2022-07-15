@@ -496,60 +496,58 @@
       }
     },
     "makeApplication": {
-      "hearingRequests": {
-        "askChangeHearing": {
-          "title": "Ask to change something about your hearing",
-          "question": {
-            "heading": "Select what you want to change about your hearing.",
-            "name": "hearingApplicationType",
-            "options": {
-              "askHearingSooner": {
-                "text": "I want to ask for the hearing to be sooner",
-                "value": "expedite"
-              },
-              "askChangeDate": {
-                "text": "I want to ask for the hearing to be later",
-                "value": "adjourn"
-              },
-              "askChangeLocation": {
-                "text": "I want to change the hearing location",
-                "value": "transfer"
-              },
-              "askUpdateHearingRequirements": {
-                "text": "I want to ask for something at the hearing",
-                "value": "updateHearingRequirements"
-              }
+      "askChangeHearing": {
+        "title": "Ask to change something about your hearing",
+        "question": {
+          "heading": "Select what you want to change about your hearing.",
+          "name": "hearingApplicationType",
+          "options": {
+            "askHearingSooner": {
+              "text": "I want to ask for the hearing to be sooner",
+              "value": "expedite"
+            },
+            "askChangeDate": {
+              "text": "I want to ask for the hearing to be later",
+              "value": "adjourn"
+            },
+            "askChangeLocation": {
+              "text": "I want to change the hearing location",
+              "value": "transfer"
+            },
+            "askUpdateHearingRequirements": {
+              "text": "I want to ask for something at the hearing",
+              "value": "updateHearingRequirements"
             }
           }
-        },
-        "askHearingSooner": {
-          "title": "Ask for the hearing to be sooner",
-          "description": "<p>If something changes and you need the hearing to take place sooner, you can ask the Tribunal to change the date.</p><p>Explain why you want the hearing to be sooner and tell us the latest date you want the hearing to take place.<br />You should provide supporting evidence for your answer if you have any.</p>",
-          "hint": "What is the latest date you want the hearing to take place and why?",
-          "ableToAddEvidenceTitle": "Supporting evidence for why you want the hearing to be sooner",
-          "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
-        },
-        "askChangeDate": {
-          "title": "Ask for the hearing to be later",
-          "description": "<p>If something changes and you need the hearing to take place later, you can ask the Tribunal to change the date.</p><p>Tell us the date you want to change the hearing to and explain why. You should provide supporting evidence for your answer if you have any.</p><div class='govuk-inset-text'>if You don't know the exact date you want the hearing to take place, tell us the latest date that you can go to a hearing.</div>",
-          "hint": "When do you want to change the hearing to and why?",
-          "ableToAddEvidenceTitle": "Supporting evidence for why you want to change the hearing date",
-          "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
-        },
-        "askChangeLocation": {
-          "title": "Ask to change the location of the hearing",
-          "description": "<p>If something changes and you need the hearing to take place at a different location, you can ask the Tribunal to change the location.</p><p>Tell us where you want the hearing to take place and explain the reasons why. You should provide supporting evidence for your answer if you have any.</p><div class='govuk-inset-text'>You can ask the hearing to take place at a different hearing centre or by video call. You can also ask to change a video hearing to an in-person hearing at a hearing centre.</div>",
-          "hint": "Where do you want the hearing to take place and why?",
-          "ableToAddEvidenceTitle": "Supporting evidence for why you want to change the hearing location",
-          "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
-        },
-        "askUpdateHearingRequirements": {
-          "title": "Ask for something at the hearing",
-          "description": "<p>If something changes and you, or any witnesses, need something to be provided at your hearing, you can ask the Tribunal.</p><p>Tell us what you, or any witnesses will need and explain why it is needed. You should provide supporting evidence for your answer if you have any.</p>",
-          "hint": "What do you need at the hearing and why?",
-          "ableToAddEvidenceTitle": "Supporting evidence for why you want something at your hearing",
-          "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
         }
+      },
+      "askHearingSooner": {
+        "title": "Ask for the hearing to be sooner",
+        "description": "<p>If something changes and you need the hearing to take place sooner, you can ask the Tribunal to change the date.</p><p>Explain why you want the hearing to be sooner and tell us the latest date you want the hearing to take place.<br />You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "What is the latest date you want the hearing to take place and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want the hearing to be sooner",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askChangeDate": {
+        "title": "Ask for the hearing to be later",
+        "description": "<p>If something changes and you need the hearing to take place later, you can ask the Tribunal to change the date.</p><p>Tell us the date you want to change the hearing to and explain why. You should provide supporting evidence for your answer if you have any.</p><div class='govuk-inset-text'>if You don't know the exact date you want the hearing to take place, tell us the latest date that you can go to a hearing.</div>",
+        "hint": "When do you want to change the hearing to and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to change the hearing date",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askChangeLocation": {
+        "title": "Ask to change the location of the hearing",
+        "description": "<p>If something changes and you need the hearing to take place at a different location, you can ask the Tribunal to change the location.</p><p>Tell us where you want the hearing to take place and explain the reasons why. You should provide supporting evidence for your answer if you have any.</p><div class='govuk-inset-text'>You can ask the hearing to take place at a different hearing centre or by video call. You can also ask to change a video hearing to an in-person hearing at a hearing centre.</div>",
+        "hint": "Where do you want the hearing to take place and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to change the hearing location",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askUpdateHearingRequirements": {
+        "title": "Ask for something at the hearing",
+        "description": "<p>If something changes and you, or any witnesses, need something to be provided at your hearing, you can ask the Tribunal.</p><p>Tell us what you, or any witnesses will need and explain why it is needed. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "What do you need at the hearing and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want something at your hearing",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
       "askWithdraw": {
         "title": "Ask to withdraw the appeal",

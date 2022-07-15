@@ -21,30 +21,30 @@ function getHearingApplicationType(req: Request, res: Response, next: NextFuncti
     }
 
     const question = {
-      title: i18n.pages.makeApplication.hearingRequests.askChangeHearing.title,
-      heading: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.heading,
-      name: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.name,
+      title: i18n.pages.makeApplication.askChangeHearing.title,
+      heading: i18n.pages.makeApplication.askChangeHearing.question.heading,
+      name: i18n.pages.makeApplication.askChangeHearing.question.name,
       titleIsheading: true,
       options: [
         {
-          value: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askHearingSooner.value,
-          text: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askHearingSooner.text,
-          checked: decision === i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askHearingSooner.value
+          value: i18n.pages.makeApplication.askChangeHearing.question.options.askHearingSooner.value,
+          text: i18n.pages.makeApplication.askChangeHearing.question.options.askHearingSooner.text,
+          checked: decision === i18n.pages.makeApplication.askChangeHearing.question.options.askHearingSooner.value
         },
         {
-          value: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeDate.value,
-          text: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeDate.text,
-          checked: decision === i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeDate.value
+          value: i18n.pages.makeApplication.askChangeHearing.question.options.askChangeDate.value,
+          text: i18n.pages.makeApplication.askChangeHearing.question.options.askChangeDate.text,
+          checked: decision === i18n.pages.makeApplication.askChangeHearing.question.options.askChangeDate.value
         },
         {
-          value: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeLocation.value,
-          text: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeLocation.text,
-          checked: decision === i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeLocation.value
+          value: i18n.pages.makeApplication.askChangeHearing.question.options.askChangeLocation.value,
+          text: i18n.pages.makeApplication.askChangeHearing.question.options.askChangeLocation.text,
+          checked: decision === i18n.pages.makeApplication.askChangeHearing.question.options.askChangeLocation.value
         },
         {
-          value: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askUpdateHearingRequirements.value,
-          text: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askUpdateHearingRequirements.text,
-          checked: decision === i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askUpdateHearingRequirements.value
+          value: i18n.pages.makeApplication.askChangeHearing.question.options.askUpdateHearingRequirements.value,
+          text: i18n.pages.makeApplication.askChangeHearing.question.options.askUpdateHearingRequirements.text,
+          checked: decision === i18n.pages.makeApplication.askChangeHearing.question.options.askUpdateHearingRequirements.value
         }
       ],
       inline: false
@@ -52,7 +52,7 @@ function getHearingApplicationType(req: Request, res: Response, next: NextFuncti
 
     return res.render('make-application/radio-button-question-page.njk', {
       previousPage: paths.common.overview,
-      pageTitle: i18n.pages.makeApplication.hearingRequests.askChangeHearing.title,
+      pageTitle: i18n.pages.makeApplication.askChangeHearing.title,
       formAction: paths.makeApplication.askChangeHearing,
       question,
       ...validationErrors && { errorList: Object.values(validationErrors) },
@@ -65,7 +65,7 @@ function getHearingApplicationType(req: Request, res: Response, next: NextFuncti
 
 function postHearingApplicationType(req: Request, res: Response, next: NextFunction) {
   try {
-    const decision = req.body[i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.name];
+    const decision = req.body[i18n.pages.makeApplication.askChangeHearing.question.name];
 
     if (decision) {
       const makeAnApplicationTypes = {

@@ -6,8 +6,8 @@ Feature: Make Application to withdraw an appeal
 
   Scenario: Make an Application to withdraw an appeal
     Given I have logged in as an appellant in state "preHearing"
-    When I click the "Withdraw my appeal" link
-    Then I should see the "Ask to withdraw the appeal" page
+    When I click the Withdraw my appeal link
+    Then I should see the Ask to withdraw the appeal page
 
     Then I fill textarea with "Why do you want to withdraw the appeal?"
     Then I click continue

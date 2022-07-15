@@ -31,6 +31,7 @@ describe('Make application controllers helper', () => {
       params: {},
       session: {
         appeal: {
+          makeAnApplicationTypes: {},
           application: {},
           documentMap: []
         }

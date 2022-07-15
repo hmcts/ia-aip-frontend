@@ -27,7 +27,7 @@ function getProvideMakeAnApplicationDetails(req: Request, res: Response, next: N
       };
 
       return res.render('make-application/details-question-page.njk', {
-        previousPage: paths.makeApplication.askChangeHearing,
+        previousPage: config.previousPage || paths.makeApplication.askChangeHearing,
         title: config.makeAnApplicationDetailsTitle,
         formAction: config.formAction,
         supportingEvidence: true,
@@ -38,7 +38,7 @@ function getProvideMakeAnApplicationDetails(req: Request, res: Response, next: N
         ...validationErrors && { errorList: Object.values(validationErrors) }
       });
     } else {
-      res.redirect(paths.makeApplication.askChangeHearing);
+      res.redirect(config.previousPage || paths.makeApplication.askChangeHearing);
     }
   } catch (error) {
     next(error);

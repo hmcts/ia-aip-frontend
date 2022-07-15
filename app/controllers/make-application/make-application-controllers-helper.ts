@@ -170,7 +170,7 @@ function postProvideSupportingEvidence(req: Request, res: Response, next: NextFu
 
 function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction, config: any) {
   try {
-    const summaryLists: SummaryList[] = buildSupportingEvidenceDocumentsSummaryList(req, config.pathToProvideSupportingEvidenceNoLeadingSlash);
+    const summaryLists: SummaryList[] = buildSupportingEvidenceDocumentsSummaryList(req, config.pathToProvideSupportingEvidenceNoLeadingSlash, config.pathToMakeApplicationDetailsNoLeadingSlash);
     const previousPage = req.session.appeal.makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value
       ? config.pathToProvideSupportingEvidence
       : config.pathToSupportingEvidence;
@@ -268,7 +268,7 @@ function deleteSupportingEvidence(documentManagementService: DocumentManagementS
   };
 }
 
-function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvideSupportingEvidenceNoLeadingSlash: string): SummaryList[] {
+function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvideSupportingEvidenceNoLeadingSlash: string, pathToMakeApplicationDetailsNoLeadingSlash: string): SummaryList[] {
   const summaryLists: SummaryList[] = [];
   const summaryRows: SummaryRow[] = [];
   const makeAnApplicationDetails = req.session.appeal.makeAnApplicationDetails;
@@ -281,7 +281,8 @@ function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvide
       ),
       addSummaryRow(
         i18n.pages.makeApplication.checkYourAnswers.rows[1],
-        [`<p>${makeAnApplicationDetails}</p>`]
+        [`<p>${makeAnApplicationDetails}</p>`],
+        pathToMakeApplicationDetailsNoLeadingSlash
       )
     );
   }
@@ -304,7 +305,7 @@ function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvide
 }
 
 export function getPath(pathPrefix: string, applicationType: string): string {
-  const key = applicationType ? (pathPrefix + applicationType.charAt(0).toUpperCase() + applicationType.slice(1)) : pathPrefix;
+  const key = pathPrefix ? (applicationType ? (pathPrefix + applicationType.charAt(0).toUpperCase() + applicationType.slice(1)) : pathPrefix) : applicationType;
   return paths.makeApplication[`${key}`];
 }
 

@@ -397,6 +397,7 @@ describe('Make application controllers helper', () => {
       req.session.appeal.makeAnApplications = [];
       const config = {
         pathToProvideSupportingEvidenceNoLeadingSlash: 'provide-supporting-evidence-hearing-sooner',
+        pathToMakeApplicationDetailsNoLeadingSlash: 'ask-hearing-sooner',
         pathToProvideSupportingEvidence: paths.makeApplication.provideSupportingEvidenceExpedite,
         pathToSupportingEvidence: paths.makeApplication.supportingEvidenceExpedite,
         pathToCheckYourAnswer: paths.makeApplication.checkAnswerExpedite
@@ -584,7 +585,7 @@ describe('Make application controllers helper', () => {
       req.session.appeal.makeAnApplicationDetails = 'makeAnApplicationDetails';
       req.session.appeal.makeAnApplicationEvidence = mockEvidenceDocuments;
 
-      const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner');
+      const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 
       expect(result[0].summaryRows[2].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
       expect(result[0].summaryRows[2].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
@@ -600,7 +601,7 @@ describe('Make application controllers helper', () => {
       req.session.appeal.makeAnApplicationDetails = 'makeAnApplicationDetails';
       req.session.appeal.makeAnApplicationEvidence = mockEvidenceDocuments;
 
-      const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner');
+      const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 
       expect(result[0].summaryRows).to.be.lengthOf(3);
     });
@@ -610,6 +611,13 @@ describe('Make application controllers helper', () => {
     it('should return valid path', async () => {
       const expectedPath = '/check-answer-hearing-sooner';
       const actualPath = makeApplicationControllersHelper.getPath('checkAnswer', 'expedite');
+
+      expect(actualPath === expectedPath);
+    });
+
+    it('should return valid path when pathPrefix is empty', async () => {
+      const expectedPath = '/ask-hearing-sooner';
+      const actualPath = makeApplicationControllersHelper.getPath('', 'expedite');
 
       expect(actualPath === expectedPath);
     });

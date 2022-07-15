@@ -39,8 +39,10 @@ function postProvideSupportingEvidence(req: Request, res: Response, next: NextFu
 
 function getProvideSupportingEvidenceCheckAndSend(req: Request, res: Response, next: NextFunction) {
   const pathToProvideSupportingEvidence = makeApplicationControllersHelper.getPath('provideSupportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code);
+  const pathToMakeApplicationDetails = makeApplicationControllersHelper.getPath('', req.session.appeal.makeAnApplicationTypes.value.code);
   const config = {
-    pathToProvideSupportingEvidenceNoLeadingSlash: pathToProvideSupportingEvidence.slice(1),
+    pathToProvideSupportingEvidenceNoLeadingSlash: pathToProvideSupportingEvidence ? pathToProvideSupportingEvidence.slice(1) : '',
+    pathToMakeApplicationDetailsNoLeadingSlash: pathToMakeApplicationDetails ? pathToMakeApplicationDetails.slice(1) : '',
     pathToProvideSupportingEvidence,
     pathToSupportingEvidence: makeApplicationControllersHelper.getPath('supportingEvidence', req.session.appeal.makeAnApplicationTypes.value.code),
     pathToCheckYourAnswer: makeApplicationControllersHelper.getPath('checkAnswer', req.session.appeal.makeAnApplicationTypes.value.code)

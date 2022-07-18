@@ -556,6 +556,13 @@
         "ableToAddEvidenceTitle": "Supporting evidence for why you want to withdraw the appeal",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
+      "askUpdateDetails": {
+        "title": "Ask to change some of your details",
+        "description": "<p>You can ask the Tribunal to change some or all of the following details:</p><ul><li>Your name</li><li>Your date of birth</li><li>Your Home Office reference number</li><li>The date your Home Office decision letter was sent</li><li>Your address</li><li>Your nationality</li><li>Your email address or phone number</li></ul><p>You must tell us why you want to make any changes. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "What changes do you want to make to your details and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to change some details",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
       "provideSupportingEvidenceYesOrNo": {
         "title": "Do you want to provide supporting evidence for this request?",
         "options": {
@@ -3070,6 +3077,7 @@
       "askChangeDate": "Enter when you want to change the hearing to and why",
       "askChangeLocation": "Enter where you want the hearing to take place and why",
       "askWithdraw": "Enter why you want to withdraw the appeal",
+      "askUpdateDetails": "Enter the changes you want to make to your appeal details and why",
       "askUpdateHearingRequirements": "Enter what you need at the hearing and why",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }

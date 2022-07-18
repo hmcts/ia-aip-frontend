@@ -54,7 +54,7 @@ describe('Make application controllers helper', () => {
     sandbox.restore();
   });
 
-  describe('getProfideMakeAnApplicationDetails', () => {
+  describe('getProvideMakeAnApplicationDetails', () => {
     it('should render', () => {
       req.session.appeal.makeAnApplicationTypes = {
         value: {

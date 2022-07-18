@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { paths } from '../../../paths';
-import { DocumentManagementService } from '../../../service/document-management-service';
 import UpdateAppealService from '../../../service/update-appeal-service';
 import { getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, postProvideSupportingEvidence, postProvideSupportingEvidenceCheckAndSend, postProvideSupportingEvidenceYesOrNo } from '../make-application-common';
 import { validate } from '../setup-application-controllers';

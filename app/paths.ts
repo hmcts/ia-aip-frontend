@@ -261,12 +261,14 @@ const paths = {
     supportingEvidenceWithdraw: '/supporting-evidence-withdraw',
     supportingEvidenceUpdateAppealDetails: '/supporting-evidence-update-details',
     supportingEvidenceUpdateHearingRequirements: '/supporting-evidence-update-hearing-requirements',
+    supportingEvidenceLinkOrUnlink: '/supporting-evidence-link-unlink',
     provideSupportingEvidenceExpedite: '/provide-supporting-evidence-hearing-sooner',
     provideSupportingEvidenceAdjourn: '/provide-supporting-evidence-hearing-later',
     provideSupportingEvidenceTransfer: '/provide-supporting-evidence-change-location',
     provideSupportingEvidenceWithdraw: '/provide-supporting-evidence-withdraw',
     provideSupportingEvidenceUpdateAppealDetails: '/provide-supporting-update-details',
     provideSupportingEvidenceUpdateHearingRequirements: '/provide-supporting-evidence-update-hearing-requirements',
+    provideSupportingEvidenceLinkOrUnlink: '/provide-supporting-evidence-link-unlink',
     provideSupportingEvidenceUploadFile: '/provide-supporting-evidence/upload/file',
     provideSupportingEvidenceDeleteFile: '/provide-supporting-evidence/delete/file',
     checkAnswerExpedite: '/check-answer-hearing-sooner',
@@ -275,6 +277,7 @@ const paths = {
     checkAnswerWithdraw: '/check-answer-withdraw',
     checkAnswerUpdateAppealDetails: '/check-answer-update-details',
     checkAnswerUpdateHearingRequirements: '/check-answer-update-hearing-requirements',
+    checkAnswerLinkOrUnlink: '/check-answer-link-unlink',
     requestSent: '/request-sent',
     yourRequest: '/your-request'
   }

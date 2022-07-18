@@ -116,12 +116,12 @@
                   <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.appealRequests.sectionHeading }}</h2>
                        {% if showAppealRequests %}
                          <p><a class="govuk-link" href='{{ paths.makeApplication.updateAppealDetails }}'>{{ i18n.pages.overviewPage.appealRequests.askToChangeDetails }}</a></p>
-                         <p><a class="govuk-link" href='{{ paths.makeApplication.askToLinkOrUnlink }}'>{{ i18n.pages.overviewPage.appealRequests.askToLinkOrUnlink }}</a></p>
-                         <p><a class="govuk-link" href='{{ paths.makeApplication.askJudgeToReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview }}</a></p>
+                         <p><a class="govuk-link" href='{{ paths.makeApplication.linkOrUnlink }}'>{{ i18n.pages.overviewPage.appealRequests.askToLinkOrUnlink }}</a></p>
+                         <p><a class="govuk-link" href='{{ paths.makeApplication.judgesReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview }}</a></p>
                          <p><a class="govuk-link" href='{{ paths.makeApplication.askForSomethingElse }}'>{{ i18n.pages.overviewPage.appealRequests.askForSomethingElse }}</a></p>
                        {% elif ended %}
-                          <p><a class="govuk-link" href='{{ paths.makeApplication.askReinstateAppeal }}'>{{ i18n.pages.overviewPage.appealRequests.askReinstateAppeal }}</a></p>
-                          <p><a class="govuk-link" href='{{ paths.makeApplication.askJudgeToReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview}}</a></p>
+                          <p><a class="govuk-link" href='{{ paths.makeApplication.reinstateAppeal }}'>{{ i18n.pages.overviewPage.appealRequests.askReinstateAppeal }}</a></p>
+                          <p><a class="govuk-link" href='{{ paths.makeApplication.judgesReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview}}</a></p>
                       {% endif %}
               </div>
           {% endif %}

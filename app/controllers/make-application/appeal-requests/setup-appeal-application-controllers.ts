@@ -4,6 +4,7 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, postProvideSupportingEvidence, postProvideSupportingEvidenceCheckAndSend, postProvideSupportingEvidenceYesOrNo } from '../make-application-common';
 import { validate } from '../setup-application-controllers';
 import { getChangeDetailsApplication, postChangeDetailsApplication } from './change-details-application';
+import { getLinkOrUnlinkAppealApplication, postLinkOrUnlinkAppealApplication } from './link-or-unlink-appeal-application';
 import { getWithdrawAppealApplication, postWithdrawAppealApplication } from './withdraw-appeal-application';
 
 function setupAppealRequestControllers(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
@@ -27,6 +28,17 @@ function setupAppealRequestControllers(middleware: Middleware[], updateAppealSer
   router.post(paths.makeApplication.provideSupportingEvidenceUpdateAppealDetails, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceUpdateAppealDetails, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.checkAnswerUpdateAppealDetails, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+
+  /* Link or Unlink Appeal */
+  router.get(paths.makeApplication.linkOrUnlink, middleware, getLinkOrUnlinkAppealApplication);
+  router.get(paths.makeApplication.supportingEvidenceLinkOrUnlink, middleware, getProvideSupportingEvidenceYesOrNo);
+  router.get(paths.makeApplication.provideSupportingEvidenceLinkOrUnlink, middleware, getProvideSupportingEvidence);
+  router.get(paths.makeApplication.checkAnswerLinkOrUnlink, middleware, getProvideSupportingEvidenceCheckAndSend);
+  router.post(paths.makeApplication.linkOrUnlink, middleware, postLinkOrUnlinkAppealApplication);
+  router.post(paths.makeApplication.provideSupportingEvidenceLinkOrUnlink, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.supportingEvidenceLinkOrUnlink, middleware, postProvideSupportingEvidenceYesOrNo);
+  router.post(paths.makeApplication.checkAnswerLinkOrUnlink, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+
   return router;
 }
 

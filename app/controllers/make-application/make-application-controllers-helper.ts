@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { applicationTypes } from '../../data/application-types';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
@@ -273,11 +274,14 @@ function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvide
   const summaryRows: SummaryRow[] = [];
   const makeAnApplicationDetails = req.session.appeal.makeAnApplicationDetails;
   const makeAnApplicationEvidence = req.session.appeal.makeAnApplicationEvidence;
+
   if (makeAnApplicationDetails) {
+    const applicationType = applicationTypes[req.session.appeal.makeAnApplicationTypes.value.code].code;
+    const question = (i18n.pages.makeApplication[applicationType] || {}).hint;
     summaryRows.push(
       addSummaryRow(
         i18n.pages.makeApplication.checkYourAnswers.rows[0],
-        [`<p>${i18n.pages.makeApplication.hearingRequests.askHearingSooner.hint}</p>`]
+        [`<p>${question}</p>`]
       ),
       addSummaryRow(
         i18n.pages.makeApplication.checkYourAnswers.rows[1],

@@ -40,29 +40,29 @@ describe('Hearing applications types controller', () => {
     } as Partial<Response>;
     next = sandbox.stub() as NextFunction;
     question = {
-      title: i18n.pages.makeApplication.hearingRequests.askChangeHearing.title,
-      heading: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.heading,
-      name: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.name,
+      title: i18n.pages.makeApplication.askChangeHearing.title,
+      heading: i18n.pages.makeApplication.askChangeHearing.question.heading,
+      name: i18n.pages.makeApplication.askChangeHearing.question.name,
       titleIsheading: true,
       options: [
         {
-          value: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askHearingSooner.value,
-          text: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askHearingSooner.text,
+          value: i18n.pages.makeApplication.askChangeHearing.question.options.askHearingSooner.value,
+          text: i18n.pages.makeApplication.askChangeHearing.question.options.askHearingSooner.text,
           checked: false
         },
         {
-          value: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeDate.value,
-          text: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeDate.text,
+          value: i18n.pages.makeApplication.askChangeHearing.question.options.askChangeDate.value,
+          text: i18n.pages.makeApplication.askChangeHearing.question.options.askChangeDate.text,
           checked: false
         },
         {
-          value: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeLocation.value,
-          text: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askChangeLocation.text,
+          value: i18n.pages.makeApplication.askChangeHearing.question.options.askChangeLocation.value,
+          text: i18n.pages.makeApplication.askChangeHearing.question.options.askChangeLocation.text,
           checked: false
         },
         {
-          value: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askUpdateHearingRequirements.value,
-          text: i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.options.askUpdateHearingRequirements.text,
+          value: i18n.pages.makeApplication.askChangeHearing.question.options.askUpdateHearingRequirements.value,
+          text: i18n.pages.makeApplication.askChangeHearing.question.options.askUpdateHearingRequirements.text,
           checked: false
         }
       ],
@@ -80,14 +80,14 @@ describe('Hearing applications types controller', () => {
       req.session.appeal.makeAnApplicationTypes = {
         value: {
           code: question.options[0].value,
-          label: applicationTypes[question.options[0].value]
+          label: applicationTypes[question.options[0].value].type
         }
       };
       question.options[0].checked = true;
 
       const expectedRenderPayload = {
         previousPage: paths.common.overview,
-        pageTitle: i18n.pages.makeApplication.hearingRequests.askChangeHearing.title,
+        pageTitle: i18n.pages.makeApplication.askChangeHearing.title,
         formAction: paths.makeApplication.askChangeHearing,
         question,
         saveAndContinue: false
@@ -110,7 +110,7 @@ describe('Hearing applications types controller', () => {
       ];
       const expectedRenderPayload = {
         previousPage: paths.common.overview,
-        pageTitle: i18n.pages.makeApplication.hearingRequests.askChangeHearing.title,
+        pageTitle: i18n.pages.makeApplication.askChangeHearing.title,
         formAction: paths.makeApplication.askChangeHearing,
         question,
         errorList,
@@ -134,7 +134,7 @@ describe('Hearing applications types controller', () => {
 
   describe('postHearingApplicationType', () => {
     it('should render', async () => {
-      req.body[i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.name] = 'expedite';
+      req.body[i18n.pages.makeApplication.askChangeHearing.question.name] = 'expedite';
       postHearingApplicationType(req as Request, res as Response, next);
 
       expect(req.session.appeal.makeAnApplicationTypes.value.code === 'expedite');
@@ -150,7 +150,7 @@ describe('Hearing applications types controller', () => {
     });
 
     it('should redirect with error', async () => {
-      req.body[i18n.pages.makeApplication.hearingRequests.askChangeHearing.question.name] = null;
+      req.body[i18n.pages.makeApplication.askChangeHearing.question.name] = null;
       postHearingApplicationType(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(`${paths.makeApplication.askChangeHearing}?error=askChangeHearing`);

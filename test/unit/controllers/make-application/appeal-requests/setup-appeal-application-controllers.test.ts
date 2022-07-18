@@ -61,6 +61,7 @@ describe('Hearing application controllers setup', () => {
       const middleware: Middleware[] = [];
 
       setupAppealRequestControllers(middleware, updateAppealService as UpdateAppealService);
+      /* Withdraw */
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.withdraw);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceWithdraw);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceWithdraw);
@@ -69,6 +70,15 @@ describe('Hearing application controllers setup', () => {
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceWithdraw);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceWithdraw);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerWithdraw);
+      /* Update Details*/
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.updateAppealDetails);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceUpdateAppealDetails);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateAppealDetails);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerUpdateAppealDetails);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.updateAppealDetails);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateAppealDetails);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceUpdateAppealDetails);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerUpdateAppealDetails);
     });
   });
 });

@@ -17,6 +17,10 @@ module.exports = {
       await I.amOnPage(testUrl + paths.makeApplication.updateAppealDetails);
     });
 
+    When(/^I click the Ask for a judge to review a decision by a Tribunal Caseworker link$/, async (text: string) => {
+      await I.amOnPage(testUrl + paths.makeApplication.judgesReview);
+    });
+
     Then(/^I should see the Ask to withdraw the appeal page$/, async (text: string) => {
       await I.seeInCurrentUrl(paths.makeApplication.withdraw);
     });
@@ -27,6 +31,10 @@ module.exports = {
 
     Then(/^I should see the Ask to link or unlink this appeal page$/, async (text: string) => {
       await I.seeInCurrentUrl(paths.makeApplication.linkOrUnlink);
+    });
+
+    Then(/^I should see the Ask for a judge to review a decision page$/, async (text: string) => {
+      await I.seeInCurrentUrl(paths.makeApplication.judgesReview);
     });
   }
 };

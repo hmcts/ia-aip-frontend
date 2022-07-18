@@ -4,6 +4,7 @@ import UpdateAppealService from '../../../service/update-appeal-service';
 import { getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, postProvideSupportingEvidence, postProvideSupportingEvidenceCheckAndSend, postProvideSupportingEvidenceYesOrNo } from '../make-application-common';
 import { validate } from '../setup-application-controllers';
 import { getChangeDetailsApplication, postChangeDetailsApplication } from './change-details-application';
+import { getJudgeReviewApplication, postJudgeReviewApplication } from './judge-review-application';
 import { getLinkOrUnlinkAppealApplication, postLinkOrUnlinkAppealApplication } from './link-or-unlink-appeal-application';
 import { getWithdrawAppealApplication, postWithdrawAppealApplication } from './withdraw-appeal-application';
 
@@ -38,6 +39,16 @@ function setupAppealRequestControllers(middleware: Middleware[], updateAppealSer
   router.post(paths.makeApplication.provideSupportingEvidenceLinkOrUnlink, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceLinkOrUnlink, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.checkAnswerLinkOrUnlink, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+
+  /* Judge's Review */
+  router.get(paths.makeApplication.judgesReview, middleware, getJudgeReviewApplication);
+  router.get(paths.makeApplication.supportingEvidenceJudgesReview, middleware, getProvideSupportingEvidenceYesOrNo);
+  router.get(paths.makeApplication.provideSupportingEvidenceJudgesReview, middleware, getProvideSupportingEvidence);
+  router.get(paths.makeApplication.checkAnswerJudgesReview, middleware, getProvideSupportingEvidenceCheckAndSend);
+  router.post(paths.makeApplication.judgesReview, middleware, postJudgeReviewApplication);
+  router.post(paths.makeApplication.provideSupportingEvidenceJudgesReview, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.supportingEvidenceJudgesReview, middleware, postProvideSupportingEvidenceYesOrNo);
+  router.post(paths.makeApplication.checkAnswerJudgesReview, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
 
   return router;
 }

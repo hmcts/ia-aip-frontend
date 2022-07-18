@@ -6,6 +6,7 @@ import { validate } from '../setup-application-controllers';
 import { getChangeDetailsApplication, postChangeDetailsApplication } from './change-details-application';
 import { getJudgeReviewApplication, postJudgeReviewApplication } from './judge-review-application';
 import { getLinkOrUnlinkAppealApplication, postLinkOrUnlinkAppealApplication } from './link-or-unlink-appeal-application';
+import { getOtherAppealApplication, postOtherAppealApplication } from './something-else-application';
 import { getWithdrawAppealApplication, postWithdrawAppealApplication } from './withdraw-appeal-application';
 
 function setupAppealRequestControllers(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
@@ -49,6 +50,16 @@ function setupAppealRequestControllers(middleware: Middleware[], updateAppealSer
   router.post(paths.makeApplication.provideSupportingEvidenceJudgesReview, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceJudgesReview, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.checkAnswerJudgesReview, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+
+  /* Ask Something Else */
+  router.get(paths.makeApplication.other, middleware, getOtherAppealApplication);
+  router.get(paths.makeApplication.supportingEvidenceOther, middleware, getProvideSupportingEvidenceYesOrNo);
+  router.get(paths.makeApplication.provideSupportingEvidenceOther, middleware, getProvideSupportingEvidence);
+  router.get(paths.makeApplication.checkAnswerOther, middleware, getProvideSupportingEvidenceCheckAndSend);
+  router.post(paths.makeApplication.other, middleware, postOtherAppealApplication);
+  router.post(paths.makeApplication.provideSupportingEvidenceOther, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.supportingEvidenceOther, middleware, postProvideSupportingEvidenceYesOrNo);
+  router.post(paths.makeApplication.checkAnswerOther, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
 
   return router;
 }

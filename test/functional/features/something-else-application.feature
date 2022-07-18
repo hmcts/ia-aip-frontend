@@ -1,13 +1,13 @@
-@withdrawAppealFeature
-Feature: Make Application to withdraw an appeal
-  In order to withdraw an appeal
+@somethingElseFeature
+Feature: Make Application to asl something else
+  In order to ask something else
   As a citizen
-  I want to be able to make an application to withdraw an appeal
+  I want to be able to make an application to ask something else
 
   Scenario: Make an Application to withdraw an appeal
     Given I have logged in as an appellant in state "preHearing"
-    When I click the Withdraw my appeal link
-    Then I should see the Ask to withdraw the appeal page
+    When I click the Ask for something else link
+    Then I should see the Ask for something else page
 
     Then I fill textarea with "Why do you want to withdraw the appeal?"
     Then I click continue

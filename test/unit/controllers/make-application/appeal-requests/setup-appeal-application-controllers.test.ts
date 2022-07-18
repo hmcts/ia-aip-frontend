@@ -72,7 +72,7 @@ describe('Hearing application controllers setup', () => {
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceWithdraw);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerWithdraw);
 
-      /* Update Details*/
+      /* Update Details */
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.updateAppealDetails);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceUpdateAppealDetails);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateAppealDetails);
@@ -101,6 +101,16 @@ describe('Hearing application controllers setup', () => {
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceJudgesReview);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceJudgesReview);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerJudgesReview);
+
+      /* Something Else */
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.other);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceOther);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceOther);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerOther);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.other);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceOther);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceOther);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerOther);
     });
   });
 });

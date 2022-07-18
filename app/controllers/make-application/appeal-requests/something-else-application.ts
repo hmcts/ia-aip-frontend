@@ -5,35 +5,35 @@ import { paths } from '../../../paths';
 import { createStructuredError } from '../../../utils/validations/fields-validations';
 import { makeApplicationControllersHelper } from '../make-application-controllers-helper';
 
-function getWithdrawAppealApplication(req: Request, res: Response, next: NextFunction) {
+function getOtherAppealApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askWithdraw: createStructuredError('askWithdraw', i18n.validationErrors.makeApplication.askWithdraw)
+      askSomethingElse: createStructuredError('askSomethingElse', i18n.validationErrors.makeApplication.askSomethingElse)
     },
-    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askWithdraw.description,
-    makeAnApplicationDetailsHint: i18n.pages.makeApplication.askWithdraw.hint,
-    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askWithdraw.title,
-    formAction: paths.makeApplication.withdraw,
-    ableToAddEvidenceTitle: i18n.pages.makeApplication.askWithdraw.ableToAddEvidenceTitle,
-    ableToAddEvidenceAdvice: i18n.pages.makeApplication.askWithdraw.ableToAddEvidenceAdvice,
+    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askSomethingElse.description,
+    makeAnApplicationDetailsHint: i18n.pages.makeApplication.askSomethingElse.hint,
+    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askSomethingElse.title,
+    formAction: paths.makeApplication.other,
+    ableToAddEvidenceTitle: i18n.pages.makeApplication.askSomethingElse.ableToAddEvidenceTitle,
+    ableToAddEvidenceAdvice: i18n.pages.makeApplication.askSomethingElse.ableToAddEvidenceAdvice,
     previousPage: paths.common.overview
   };
   req.session.appeal.makeAnApplicationTypes = {
     value: {
-      code: 'withdraw',
-      label: applicationTypes.withdraw.type
+      code: 'other',
+      label: applicationTypes.other.type
     }
   };
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
 }
 
-function postWithdrawAppealApplication(req: Request, res: Response, next: NextFunction) {
-  const redirectToSuccessPath = paths.makeApplication.supportingEvidenceWithdraw;
-  const redirectToErrorPath = `${paths.makeApplication.withdraw}?error=askWithdraw`;
+function postOtherAppealApplication(req: Request, res: Response, next: NextFunction) {
+  const redirectToSuccessPath = paths.makeApplication.supportingEvidenceOther;
+  const redirectToErrorPath = `${paths.makeApplication.other}?error=askSomethingElse`;
   return makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req, res, next, redirectToSuccessPath, redirectToErrorPath);
 }
 
 export {
-  getWithdrawAppealApplication,
-  postWithdrawAppealApplication
+  getOtherAppealApplication,
+  postOtherAppealApplication
 };

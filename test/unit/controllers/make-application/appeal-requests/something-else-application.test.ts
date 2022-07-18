@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getWithdrawAppealApplication, postWithdrawAppealApplication } from '../../../../../app/controllers/make-application/appeal-requests/withdraw-appeal-application';
+import { getOtherAppealApplication, postOtherAppealApplication } from '../../../../../app/controllers/make-application/appeal-requests/something-else-application';
 import { paths } from '../../../../../app/paths';
 import i18n from '../../../../../locale/en.json';
 import { expect, sinon } from '../../../../utils/testUtils';
@@ -43,25 +43,25 @@ describe('Appeal application controllers setup', () => {
     sandbox.restore();
   });
 
-  describe('getWithdrawAppealApplication', () => {
+  describe('getOtherAppealApplication', () => {
     it('should render details-question-page', () => {
       const question = {
         name: 'makeAnApplicationDetails',
         value: req.session.appeal.makeAnApplicationDetails,
-        description: i18n.pages.makeApplication.askWithdraw.description,
-        hint: i18n.pages.makeApplication.askWithdraw.hint
+        description: i18n.pages.makeApplication.askSomethingElse.description,
+        hint: i18n.pages.makeApplication.askSomethingElse.hint
       };
       const expectedRenderPayload = {
         previousPage: paths.common.overview,
-        title: i18n.pages.makeApplication.askWithdraw.title,
-        formAction: paths.makeApplication.withdraw,
+        title: i18n.pages.makeApplication.askSomethingElse.title,
+        formAction: paths.makeApplication.other,
         supportingEvidence: true,
-        ableToAddEvidenceTitle: i18n.pages.makeApplication.askWithdraw.ableToAddEvidenceTitle,
-        ableToAddEvidenceAdvice: i18n.pages.makeApplication.askWithdraw.ableToAddEvidenceAdvice,
+        ableToAddEvidenceTitle: i18n.pages.makeApplication.askSomethingElse.ableToAddEvidenceTitle,
+        ableToAddEvidenceAdvice: i18n.pages.makeApplication.askSomethingElse.ableToAddEvidenceAdvice,
         question
       };
 
-      getWithdrawAppealApplication(req as Request, res as Response, next);
+      getOtherAppealApplication(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('make-application/details-question-page.njk', {
         ...expectedRenderPayload
@@ -72,18 +72,18 @@ describe('Appeal application controllers setup', () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
 
-      getWithdrawAppealApplication(req as Request, res as Response, next);
+      getOtherAppealApplication(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });
   });
 
-  describe('postWithdrawAppealApplication', () => {
+  describe('postOtherAppealApplication', () => {
     it('should catch an error and redirect with error', () => {
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);
 
-      postWithdrawAppealApplication(req as Request, res as Response, next);
+      postOtherAppealApplication(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });

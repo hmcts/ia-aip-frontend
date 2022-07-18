@@ -48,16 +48,16 @@ describe('Appeal application controllers setup', () => {
       const question = {
         name: 'makeAnApplicationDetails',
         value: req.session.appeal.makeAnApplicationDetails,
-        description: i18n.pages.makeApplication.askWithdrawAppeal.description,
-        hint: i18n.pages.makeApplication.askWithdrawAppeal.hint
+        description: i18n.pages.makeApplication.askWithdraw.description,
+        hint: i18n.pages.makeApplication.askWithdraw.hint
       };
       const expectedRenderPayload = {
         previousPage: paths.common.overview,
-        title: i18n.pages.makeApplication.askWithdrawAppeal.title,
+        title: i18n.pages.makeApplication.askWithdraw.title,
         formAction: paths.makeApplication.withdraw,
         supportingEvidence: true,
-        ableToAddEvidenceTitle: i18n.pages.makeApplication.askWithdrawAppeal.ableToAddEvidenceTitle,
-        ableToAddEvidenceAdvice: i18n.pages.makeApplication.askWithdrawAppeal.ableToAddEvidenceAdvice,
+        ableToAddEvidenceTitle: i18n.pages.makeApplication.askWithdraw.ableToAddEvidenceTitle,
+        ableToAddEvidenceAdvice: i18n.pages.makeApplication.askWithdraw.ableToAddEvidenceAdvice,
         question
       };
 

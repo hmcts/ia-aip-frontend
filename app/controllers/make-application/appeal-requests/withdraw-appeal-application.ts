@@ -8,20 +8,20 @@ import { makeApplicationControllersHelper } from '../make-application-controller
 function getWithdrawAppealApplication(req: Request, res: Response, next: NextFunction) {
   const config = {
     validationErrors: {
-      askWithdrawAppeal: createStructuredError('askWithdrawAppeal', i18n.validationErrors.makeApplication.askWithdrawAppeal)
+      askWithdraw: createStructuredError('askWithdraw', i18n.validationErrors.makeApplication.askWithdraw)
     },
-    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askWithdrawAppeal.description,
-    makeAnApplicationDetailsHint: i18n.pages.makeApplication.askWithdrawAppeal.hint,
-    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askWithdrawAppeal.title,
+    makeAnApplicationDetailsDescription: i18n.pages.makeApplication.askWithdraw.description,
+    makeAnApplicationDetailsHint: i18n.pages.makeApplication.askWithdraw.hint,
+    makeAnApplicationDetailsTitle: i18n.pages.makeApplication.askWithdraw.title,
     formAction: paths.makeApplication.withdraw,
-    ableToAddEvidenceTitle: i18n.pages.makeApplication.askWithdrawAppeal.ableToAddEvidenceTitle,
-    ableToAddEvidenceAdvice: i18n.pages.makeApplication.askWithdrawAppeal.ableToAddEvidenceAdvice,
+    ableToAddEvidenceTitle: i18n.pages.makeApplication.askWithdraw.ableToAddEvidenceTitle,
+    ableToAddEvidenceAdvice: i18n.pages.makeApplication.askWithdraw.ableToAddEvidenceAdvice,
     previousPage: paths.common.overview
   };
   req.session.appeal.makeAnApplicationTypes = {
-    value : {
+    value: {
       code: 'withdraw',
-      label: applicationTypes.withdraw
+      label: applicationTypes.withdraw.type
     }
   };
   return makeApplicationControllersHelper.getProvideMakeAnApplicationDetails(req, res, next, config);
@@ -29,7 +29,7 @@ function getWithdrawAppealApplication(req: Request, res: Response, next: NextFun
 
 function postWithdrawAppealApplication(req: Request, res: Response, next: NextFunction) {
   const redirectToSuccessPath = paths.makeApplication.supportingEvidenceWithdraw;
-  const redirectToErrorPath = `${paths.makeApplication.withdraw}?error=askWithdrawAppeal`;
+  const redirectToErrorPath = `${paths.makeApplication.withdraw}?error=askWithdraw`;
   return makeApplicationControllersHelper.postProvideMakeAnApplicationDetails(req, res, next, redirectToSuccessPath, redirectToErrorPath);
 }
 

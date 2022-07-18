@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { setupHearingApplicationControllers } from '../../../../../app/controllers/make-application/hearing-requests/setup-hearing-application-controllers';
 import { paths } from '../../../../../app/paths';
-import { DocumentManagementService } from '../../../../../app/service/document-management-service';
 import UpdateAppealService from '../../../../../app/service/update-appeal-service';
 import { expect, sinon } from '../../../../utils/testUtils';
 
@@ -11,7 +10,6 @@ describe('Hearing application controllers setup', () => {
   let res: Partial<Response>;
   let next: NextFunction;
   let updateAppealService: Partial<UpdateAppealService>;
-  let documentManagementService: Partial<DocumentManagementService>;
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -47,7 +45,6 @@ describe('Hearing application controllers setup', () => {
       submitEventRefactored: sandbox.stub(),
       updateAppealService: sandbox.stub()
     } as Partial<UpdateAppealService>;
-    documentManagementService = { deleteFile: sandbox.stub() };
   });
 
   afterEach(() => {
@@ -60,33 +57,48 @@ describe('Hearing application controllers setup', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupHearingApplicationControllers(middleware, updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService);
+      setupHearingApplicationControllers(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.expedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.adjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.transfer);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.updateHearingRequirements);
+
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceExpedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceAdjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceTransfer);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceUpdateHearingRequirements);
+
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceExpedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceAdjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceTransfer);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateHearingRequirements);
+
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerExpedite);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerAdjourn);
       expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerTransfer);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerUpdateHearingRequirements);
+
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.expedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.adjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.transfer);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.askChangeHearing);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.updateHearingRequirements);
+
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceAdjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceTransfer);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceUpdateHearingRequirements);
+
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceAdjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceTransfer);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceUpdateHearingRequirements);
+
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerExpedite);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerAdjourn);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerTransfer);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerUpdateHearingRequirements);
     });
   });
 });

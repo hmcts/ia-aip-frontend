@@ -563,6 +563,13 @@
         "ableToAddEvidenceTitle": "Supporting evidence for why you want to change some details",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
+      "askLinkUnlink": {
+        "title": "Ask to link or unlink this appeal",
+        "description": "<p>If you want your appeal to be decided together with one or more appeals, you can ask the Tribunal to link the appeals.</p><p>If your appeal is linked to any other appeals, you can ask the Tribunal to unlink your appeal from some or all those appeals.</p><p>Tell us why you want to link or unlink this appeal. You should provide supporting evidence if you have any.</p><div class='govuk-inset-text'>Include the name of the person making the appeal and the appeal reference for each appeal, if you know them.</div>",
+        "hint": "Which appeal, or appeals, do you want to link to or unlink from and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to link or unlink this appeal",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
       "provideSupportingEvidenceYesOrNo": {
         "title": "Do you want to provide supporting evidence for this request?",
         "options": {
@@ -3079,6 +3086,7 @@
       "askWithdraw": "Enter why you want to withdraw the appeal",
       "askUpdateDetails": "Enter the changes you want to make to your appeal details and why",
       "askUpdateHearingRequirements": "Enter what you need at the hearing and why",
+      "askLinkUnlink": "Enter which appeal, or appeals, you want to link to or unlink from and why",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }
   },

@@ -6,6 +6,7 @@ import { validate } from '../setup-application-controllers';
 import { getChangeDetailsApplication, postChangeDetailsApplication } from './change-details-application';
 import { getJudgeReviewApplication, postJudgeReviewApplication } from './judge-review-application';
 import { getLinkOrUnlinkAppealApplication, postLinkOrUnlinkAppealApplication } from './link-or-unlink-appeal-application';
+import { getReinstateAppealApplication, postReinstateAppealApplication } from './reinstate-appeal-application';
 import { getOtherAppealApplication, postOtherAppealApplication } from './something-else-application';
 import { getWithdrawAppealApplication, postWithdrawAppealApplication } from './withdraw-appeal-application';
 
@@ -60,6 +61,16 @@ function setupAppealRequestControllers(middleware: Middleware[], updateAppealSer
   router.post(paths.makeApplication.provideSupportingEvidenceOther, middleware, postProvideSupportingEvidence);
   router.post(paths.makeApplication.supportingEvidenceOther, middleware, postProvideSupportingEvidenceYesOrNo);
   router.post(paths.makeApplication.checkAnswerOther, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+
+  /* Reinstate Appeal */
+  router.get(paths.makeApplication.reinstate, middleware, getReinstateAppealApplication);
+  router.get(paths.makeApplication.supportingEvidenceReinstate, middleware, getProvideSupportingEvidenceYesOrNo);
+  router.get(paths.makeApplication.provideSupportingEvidenceReinstate, middleware, getProvideSupportingEvidence);
+  router.get(paths.makeApplication.checkAnswerReinstate, middleware, getProvideSupportingEvidenceCheckAndSend);
+  router.post(paths.makeApplication.reinstate, middleware, postReinstateAppealApplication);
+  router.post(paths.makeApplication.provideSupportingEvidenceReinstate, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.supportingEvidenceReinstate, middleware, postProvideSupportingEvidenceYesOrNo);
+  router.post(paths.makeApplication.checkAnswerReinstate, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
 
   return router;
 }

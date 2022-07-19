@@ -25,6 +25,10 @@ module.exports = {
       await I.amOnPage(testUrl + paths.makeApplication.other);
     });
 
+    When(/^I click the Ask for the appeal to be reinstated link$/, async (text: string) => {
+      await I.amOnPage(testUrl + paths.makeApplication.reinstate);
+    });
+
     Then(/^I should see the Ask to withdraw the appeal page$/, async (text: string) => {
       await I.seeInCurrentUrl(paths.makeApplication.withdraw);
     });
@@ -43,6 +47,10 @@ module.exports = {
 
     Then(/^I should see the Ask for something else page$/, async (text: string) => {
       await I.seeInCurrentUrl(paths.makeApplication.other);
+    });
+
+    Then(/^I should see the Ask for the appeal to be reinstated page$/, async (text: string) => {
+      await I.seeInCurrentUrl(paths.makeApplication.reinstate);
     });
   }
 };

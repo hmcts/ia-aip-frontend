@@ -584,6 +584,13 @@
         "ableToAddEvidenceTitle": "Supporting evidence for why you need what you are asking for",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
+      "askReinstate": {
+        "title": "Ask for the appeal to be reinstated",
+        "description": "<p>If the Tribunal has ended your appeal, you can ask for the appeal to be reinstated. This means that it will start again from the point it was ended.</p><p>You need to explain why you think the Tribunal should reinstate the appeal. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "Why do you want the appeal to be reinstated?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want the appeal to be reinstated",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
       "provideSupportingEvidenceYesOrNo": {
         "title": "Do you want to provide supporting evidence for this request?",
         "options": {
@@ -3103,6 +3110,7 @@
       "askUpdateHearingRequirements": "Enter what you need at the hearing and why",
       "askLinkUnlink": "Enter which appeal, or appeals, you want to link to or unlink from and why",
       "askJudgeReview": "Enter which decision you want a judge to review and why",
+      "askReinstate": "Enter why you want the appeal to be reinstated",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }
   },

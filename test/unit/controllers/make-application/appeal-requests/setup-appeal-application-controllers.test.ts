@@ -91,6 +91,16 @@ describe('Hearing application controllers setup', () => {
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceLinkOrUnlink);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceLinkOrUnlink);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerLinkOrUnlink);
+
+      /* Judge's Review */
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.judgesReview);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceJudgesReview);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceJudgesReview);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerJudgesReview);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.judgesReview);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceJudgesReview);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceJudgesReview);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerJudgesReview);
     });
   });
 });

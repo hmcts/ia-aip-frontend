@@ -570,6 +570,13 @@
         "ableToAddEvidenceTitle": "Supporting evidence for why you want to link or unlink this appeal",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
+      "askJudgeReview": {
+        "title": "Ask for a judge to review a decision",
+        "description": "<p>If a Tribunal Caseworker made a decision about your appeal that you don't agree with, you can ask for a judge to look again at the decision.</p><p>Tell us which decision you want a judge to review and explain why. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "Which decision do you want a judge to review and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want a judge to review a decision",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
       "provideSupportingEvidenceYesOrNo": {
         "title": "Do you want to provide supporting evidence for this request?",
         "options": {
@@ -3087,6 +3094,7 @@
       "askUpdateDetails": "Enter the changes you want to make to your appeal details and why",
       "askUpdateHearingRequirements": "Enter what you need at the hearing and why",
       "askLinkUnlink": "Enter which appeal, or appeals, you want to link to or unlink from and why",
+      "askJudgeReview": "Enter which decision you want a judge to review and why",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }
   },

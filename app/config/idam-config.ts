@@ -6,7 +6,7 @@ const config = setupSecrets();
 const loginUrl = `${config.get('idam.webUrl')}/login`;
 
 export const idamConfig = {
-  redirectUri: 'https://localhost:3000/redirectUrl',
+  redirectUri: 'http://localhost:3000/redirectUrl',
   indexUrl: paths.common.login,
   idamApiUrl: config.get('idam.apiUrl'),
   idamLoginUrl: loginUrl,

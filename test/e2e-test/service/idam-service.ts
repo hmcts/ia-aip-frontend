@@ -9,7 +9,7 @@ const microservice = config.get('microservice');
 
 const proxyUrl = config.get('proxy.host');
 const proxyPort = config.get('proxy.port');
-const redirectUrl = 'https://localhost:3000/redirectUrl';
+const redirectUrl = 'http://localhost:3000/redirectUrl';
 
 const httpProxyEnabled = asBooleanValue(config.get('httpProxy'));
 

@@ -55,12 +55,12 @@ describe('Test accessibility', async function() {
       ];
       const aboutAppealActions = [
         ...appealOverviewActions,
-        'navigate to https://localhost:3000/about-appeal'
+        'navigate to http://localhost:3000/about-appeal'
       ];
       const results = await Promise.all([
-        pa11y('https://localhost:3000', options),
-        pa11y('https://localhost:3000/appeal-overview', { ...options, actions: appealOverviewActions }),
-        pa11y('https://localhost:3000/about-appeal', { ...options, actions: aboutAppealActions })
+        pa11y('http://localhost:3000', options),
+        pa11y('http://localhost:3000/appeal-overview', { ...options, actions: appealOverviewActions }),
+        pa11y('http://localhost:3000/about-appeal', { ...options, actions: aboutAppealActions })
       ]);
 
       if (!fs.existsSync(path)) { fs.mkdirSync(path); }

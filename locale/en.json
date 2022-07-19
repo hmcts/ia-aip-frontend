@@ -551,7 +551,7 @@
       },
       "askWithdraw": {
         "title": "Ask to withdraw the appeal",
-        "description": "<p>If you no longer want to appeal the Home Office decision to refuse your application to stay in or enter the UK, you can ask to withdraw the appeal.</p><p>You need to tell the Tribunal why you want to withdraw the appeal. You should provie supporting evidence for your answer if you have any.</p>",
+        "description": "<p>If you no longer want to appeal the Home Office decision to refuse your application to stay in or enter the UK, you can ask to withdraw the appeal.</p><p>You need to tell the Tribunal why you want to withdraw the appeal. You should provide supporting evidence for your answer if you have any.</p>",
         "hint": "Why do you want to withdraw the appeal?",
         "ableToAddEvidenceTitle": "Supporting evidence for why you want to withdraw the appeal",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"

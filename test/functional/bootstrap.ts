@@ -13,17 +13,14 @@ const app: express.Application = createApp();
 const port: number | string = process.env.PORT || 3000;
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
-let server: https.Server;
+let server: http.Server;
 let ccdServer: http.Server;
 let idamServer: http.Server;
 let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
 function bootstrap() {
-  server = https.createServer({
-    key: fs.readFileSync('keys/server.key'),
-    cert: fs.readFileSync('keys/server.cert')
-  }, app).listen(port, () => {
+  server = http.createServer({}, app).listen(port, () => {
     logger.trace(`Server  listening on port ${port}`, logLabel);
   })
     .on('error',

@@ -69,7 +69,7 @@ If the username is not recognised then no-cases@example.com behaviour will be us
 To understand if the application is working, you can call it's health endpoint:
 
 ```
-curl https://localhost:3000/health
+curl http://localhost:3000/health
 ```
 
 If the API is running, you should see this response:

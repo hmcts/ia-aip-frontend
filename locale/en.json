@@ -577,6 +577,13 @@
         "ableToAddEvidenceTitle": "Supporting evidence for why you want a judge to review a decision",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
+      "askSomethingElse": {
+        "title": "Ask for something else",
+        "description": "<p>Tell us what you want to ask for and explain why you need it. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "What do you need and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you need what you are asking for",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
       "provideSupportingEvidenceYesOrNo": {
         "title": "Do you want to provide supporting evidence for this request?",
         "options": {
@@ -3092,6 +3099,7 @@
       "askChangeLocation": "Enter where you want the hearing to take place and why",
       "askWithdraw": "Enter why you want to withdraw the appeal",
       "askUpdateDetails": "Enter the changes you want to make to your appeal details and why",
+      "askSomethingElse": "Enter what you need and why",
       "askUpdateHearingRequirements": "Enter what you need at the hearing and why",
       "askLinkUnlink": "Enter which appeal, or appeals, you want to link to or unlink from and why",
       "askJudgeReview": "Enter which decision you want a judge to review and why",

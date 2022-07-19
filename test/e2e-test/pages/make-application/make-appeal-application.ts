@@ -21,6 +21,10 @@ module.exports = {
       await I.amOnPage(testUrl + paths.makeApplication.judgesReview);
     });
 
+    When(/^I click the Ask for something else link$/, async (text: string) => {
+      await I.amOnPage(testUrl + paths.makeApplication.other);
+    });
+
     Then(/^I should see the Ask to withdraw the appeal page$/, async (text: string) => {
       await I.seeInCurrentUrl(paths.makeApplication.withdraw);
     });
@@ -35,6 +39,10 @@ module.exports = {
 
     Then(/^I should see the Ask for a judge to review a decision page$/, async (text: string) => {
       await I.seeInCurrentUrl(paths.makeApplication.judgesReview);
+    });
+
+    Then(/^I should see the Ask for something else page$/, async (text: string) => {
+      await I.seeInCurrentUrl(paths.makeApplication.other);
     });
   }
 };

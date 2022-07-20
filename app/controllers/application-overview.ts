@@ -73,7 +73,7 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
   return featureEnabled && preAddendumEvidenceUploadState;
 }
 
-function showAppealRequests(appealStatus: string) {
+function showAppealRequests(appealStatus: string, featureEnabled: boolean) {
   const showAppealRequestsStates = [
     States.APPEAL_SUBMITTED.id,
     States.AWAITING_RESPONDENT_EVIDENCE.id,
@@ -99,10 +99,14 @@ function showAppealRequests(appealStatus: string) {
     States.CMA_LISTED.id,
     States.ADJOURNED.id
   ];
-  return showAppealRequestsStates.includes(appealStatus);
+  return featureEnabled ? showAppealRequestsStates.includes(appealStatus) : featureEnabled;
 }
 
-function showHearingRequests(appealStatus: string) {
+function showAppealRequestsInAppealEndedStatus(appealStatus: string, featureEnabled: boolean): boolean {
+  return featureEnabled ? States.ENDED.id === appealStatus : featureEnabled;
+}
+
+function showHearingRequests(appealStatus: string, featureEnabled: boolean) {
   const showHearingRequestsStates = [
     States.PREPARE_FOR_HEARING.id,
     States.FINAL_BUNDLING.id,
@@ -110,7 +114,7 @@ function showHearingRequests(appealStatus: string) {
     States.DECISION.id,
     States.ADJOURNED.id
   ];
-  return showHearingRequestsStates.includes(appealStatus);
+  return featureEnabled ? showHearingRequestsStates.includes(appealStatus) : featureEnabled;
 }
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
@@ -122,7 +126,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         req.session.appeal.appealStatus = hearingBundleFeatureEnabled ? 'preHearing' : 'preHearingOutOfCountryFeatureDisabled';
       }
 
+      const makeApplicationFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.MAKE_APPLICATION, false);
       const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
@@ -148,8 +154,9 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         askForMoreTime,
         saveAndAskForMoreTime,
         provideMoreEvidenceSection: checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled),
-        showAppealRequests: showAppealRequests(req.session.appeal.appealStatus),
-        showHearingRequests: showHearingRequests(req.session.appeal.appealStatus),
+        showAppealRequests: showAppealRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
+        showAppealRequestsInAppealEndedStatus: showAppealRequestsInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
+        showHearingRequests: showHearingRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         payLater,
         hearingDetails
       });
@@ -173,5 +180,6 @@ export {
   checkEnableProvideMoreEvidenceSection,
   getHearingDetails,
   showAppealRequests,
-  showHearingRequests
+  showHearingRequests,
+  showAppealRequestsInAppealEndedStatus
 };

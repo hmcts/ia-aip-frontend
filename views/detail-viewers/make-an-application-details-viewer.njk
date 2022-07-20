@@ -1,0 +1,24 @@
+{% extends '../layout.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% set pageTitleName = i18n.pages.detailViewers.makeAnApplication.title %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.detailViewers.makeAnApplication.title  }}</h1>
+  {{ govukSummaryList({
+    rows: request
+  }) }}
+
+  {% if response %}
+    <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.makeAnApplication.response.title }}</h2>
+    {{ govukSummaryList({
+      rows: response
+    }) }}
+
+    <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.makeAnApplication.whatNext.title }}</h2>
+    <p>{{ i18n.pages.detailViewers.makeAnApplication.whatNext[timeExtension.value.decision] | eval | safe }}</p>
+  {% endif %}
+
+  {{ contactUs() }}
+{% endblock %}
+
+

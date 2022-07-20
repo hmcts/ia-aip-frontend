@@ -1,4 +1,4 @@
-import { asBooleanValue, formatTextForCYA, hasPendingTimeExtension, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
+import { asBooleanValue, formatTextForCYA, getApplicationType, hasPendingTimeExtension, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
 import { expect } from '../../utils/testUtils';
 
 describe('utils', () => {
@@ -162,4 +162,16 @@ describe('utils', () => {
       expect(actualText).to.be.eq('A&nbsp;string<br />\n&nbsp;&nbsp;with&nbsp;an&nbsp;indent');
     });
   });
+
+  describe('getApplicationType', () => {
+    it('Valid type', () => {
+      expect(getApplicationType('Judge\'s review of application decision')).to.include({ code: 'askJudgeReview', type: 'Judge\'s review of application decision' });
+      expect(getApplicationType('Other')).to.include({ code: 'askSomethingElse', type: 'Other' });
+    });
+
+    it('Invalid type', () => {
+      expect(getApplicationType('INVALID')).to.be.eq(undefined);
+    });
+  });
+
 });

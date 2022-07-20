@@ -1028,7 +1028,7 @@
             {
               "title": "What you sent",
               "text": "Your request",
-              "href": "{{ paths.common.timeExtensionViewer }}"
+              "href": "{{ paths.common.makeAnApplicationViewer }}"
             }
           ]
         },
@@ -1039,7 +1039,7 @@
             {
               "title": "What the Tribunal said",
               "text": "Reason for decision",
-              "href": "{{ paths.common.timeExtensionViewer }}"
+              "href": "{{ paths.common.makeAnApplicationViewer }}"
             }
           ]
         },
@@ -1049,7 +1049,7 @@
             {
               "title": "What you sent",
               "text": "Reason you needed more time",
-              "href": "{{ paths.common.timeExtensionViewer }}"
+              "href": "{{ paths.common.makeAnApplicationViewer }}"
             }
           ]
         },
@@ -1166,8 +1166,21 @@
         "question": "Question",
         "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
       },
-      "timeExtension": {
+      "makeAnApplication": {
         "title": "Your request",
+        "requestTypes": {
+          "askForMoreTime": "I want more time",
+          "askHearingSooner": "Ask for the hearing to be sooner",
+          "askChangeDate": "Ask for the hearing to be later",
+          "askChangeLocation": "Ask to change the location of the hearing",
+          "askJudgeReview": "Ask for a judge to review a decision",
+          "askLinkUnlink": "Ask to link or unlink this appeal",
+          "askReinstate": "Ask to reinstate the appeal",
+          "askWithdraw": "Ask to withdraw the appeal",
+          "askUpdateDetails": "Ask to change some of your details",
+          "askUpdateHearingRequirements": "Ask for something at the hearing",
+          "askSomethingElse": "Ask for something else"
+        },
         "whatNext": {
           "title": "What happens next",
           "Refused": "Your appeal will continue. If a Tribunal Caseworker made this decision you can ask for it to be reviewed by a judge by emailing <a class='govuk-link' href='mailto:{{ hearingCentreEmail }}'>{{ hearingCentreEmail }}</a> within 14 days of the date of decision.",
@@ -1175,7 +1188,6 @@
         },
         "request": {
           "whatYouAskedFor": "What you asked for",
-          "wantMoreTime": "I want more time",
           "reason": "Why you need it",
           "date": "Date requested",
           "evidence": "Supporting evidence"

@@ -17,15 +17,15 @@ const applicationTypes = {
   },
   judgesReview: {
     code: 'askJudgeReview',
-    type: 'Judge\'s review'
+    type: 'Judge\'s review of application decision'
   },
   linkOrUnlink: {
     code: 'askLinkUnlink',
-    type: 'Link or unlink'
+    type: 'Link/unlink appeals'
   },
   reinstate: {
     code: 'askReinstate',
-    type: 'Reinstate'
+    type: 'Reinstate an ended appeal'
   },
   withdraw: {
     code: 'askWithdraw',

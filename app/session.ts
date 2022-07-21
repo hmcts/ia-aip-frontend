@@ -5,8 +5,7 @@ const redis = require('redis');
 const session = require('express-session');
 
 const useRedis: boolean = config.get('session.useRedis') === true;
-// RIA-5692 only for demo env revert once testing has completed
-const isNotSecure: boolean = config.get('session.cookie.secure') === false;
+const isSecure: boolean = config.get('session.cookie.secure') === true;
 
 const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
@@ -25,7 +24,7 @@ function setupSession() {
       cookie: {
         httpOnly: true,
         maxAge: config.get('session.cookie.maxAgeInMs'),
-        secure: isNotSecure,
+        secure: isSecure,
         sameSite: 'lax'
       },
       resave: true,

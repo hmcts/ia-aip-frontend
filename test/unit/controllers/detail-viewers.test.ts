@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   getAppealDetailsViewer,
+  getApplicationTitle,
   getCmaRequirementsViewer,
   getDecisionAndReasonsViewer,
   getDocumentViewer,
@@ -9,11 +10,11 @@ import {
   getHoEvidenceDetailsViewer,
   getHomeOfficeResponse,
   getHomeOfficeWithdrawLetter,
+  getMakeAnApplicationSummaryRows,
+  getMakeAnApplicationViewer,
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
   getReasonsForAppealViewer,
-  getTimeExtensionSummaryRows,
-  getTimeExtensionViewer,
   setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
@@ -87,7 +88,7 @@ describe('Detail viewer Controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawLetter);
       expect(routerGetStub).to.have.been.calledWith(paths.common.appealDetailsViewer);
       expect(routerGetStub).to.have.been.calledWith(paths.common.reasonsForAppealViewer);
-      expect(routerGetStub).to.have.been.calledWith(paths.common.timeExtensionViewer + '/:id');
+      expect(routerGetStub).to.have.been.calledWith(paths.common.makeAnApplicationViewer + '/:id');
       expect(routerGetStub).to.have.been.calledWith(paths.common.cmaRequirementsAnswerViewer);
       expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawLetter);
     });
@@ -968,9 +969,9 @@ describe('Detail viewer Controller', () => {
     });
   });
 
-  describe('getTimeExtensionViewer', () => {
-    it('should render detail-viewers/time-extension-details-viewer.njk with no evidences', () => {
-      const timeExtension: Collection<Application<Evidence>> = {
+  describe('getMakeAnApplicationViewer', () => {
+    it('should render detail-viewers/make-an-application-details-viewer.njk with no evidences', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -988,9 +989,9 @@ describe('Detail viewer Controller', () => {
         hearingCentre: '',
         date: '',
         time: ''
-      },
-        req.session.appeal.hearingCentre = 'taylorHouse';
-      req.session.appeal.makeAnApplications = [timeExtension];
+      };
+      req.session.appeal.hearingCentre = 'taylorHouse';
+      req.session.appeal.makeAnApplications = [makeAnApplications];
       req.session.appeal.makeAnApplicationEvidence = [{
         id: 'id',
         fileId: '123456',
@@ -1000,10 +1001,10 @@ describe('Detail viewer Controller', () => {
         description: 'test-description',
         dateUploaded: 'test-date'
       }];
-      getTimeExtensionViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('detail-viewers/time-extension-details-viewer.njk', {
+      getMakeAnApplicationViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
-        timeExtension,
+        makeAnApplications,
         request: sinon.match.any,
         response: sinon.match.any,
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
@@ -1204,10 +1205,21 @@ describe('Detail viewer Controller', () => {
     });
   });
 
-  describe('getTimeExtensionSummaryRows', () => {
+  describe('getApplicationTitle', () => {
+    it('return title based on application type', () => {
+      expect(getApplicationTitle('Time extension')).to.be.eq(i18n.pages.detailViewers.makeAnApplication.requestTypes.askForMoreTime);
+      expect(getApplicationTitle('Link/unlink appeals')).to.be.eq(i18n.pages.detailViewers.makeAnApplication.requestTypes.askLinkUnlink);
+    });
+
+    it('return undefined for invalid application types', () => {
+      expect(getApplicationTitle('INVALID')).to.be.eq(undefined);
+    });
+  });
+
+  describe('getMakeAnApplicationSummaryRows', () => {
     it('should get rows', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const timeExtensionPendingDecision: Collection<Application<Evidence>> = {
+      const makeAnApplicationPendingDecision: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
           'date': '2021-07-15',
@@ -1229,16 +1241,16 @@ describe('Detail viewer Controller', () => {
         }
       };
 
-      getTimeExtensionSummaryRows(timeExtensionPendingDecision);
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
       expect(addSummaryRowStub).to.have.been.callCount(4);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [i18n.pages.detailViewers.timeExtension.request.wantMoreTime]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.reason, ['My reason']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.date, ['15 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.requestTypes.askForMoreTime]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.reason, ['My reason']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.date, ['15 July 2021']);
     });
 
     it('should get rows with decision', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
-      const timeExtensionPendingDecision = {
+      const makeAnApplicationPendingDecision = {
         'id': '2',
         'value': {
           'date': '2021-07-14',
@@ -1264,15 +1276,15 @@ describe('Detail viewer Controller', () => {
         }
       };
 
-      getTimeExtensionSummaryRows(timeExtensionPendingDecision);
+      getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
       expect(addSummaryRowStub).to.have.been.callCount(8);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [i18n.pages.detailViewers.timeExtension.request.wantMoreTime]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.reason, ['My reason']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.request.date, ['14 July 2021']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.decision, [i18n.pages.detailViewers.timeExtension.response.Refused]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.reason, ['Reason not enough']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.date, ['14 July 2021']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.timeExtension.response.maker, ['Tribunal Caseworker']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.requestTypes.askForMoreTime]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.reason, ['My reason']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.date, ['14 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.response.decision, [i18n.pages.detailViewers.makeAnApplication.response.Refused]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.response.reason, ['Reason not enough']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.response.date, ['14 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.response.maker, ['Tribunal Caseworker']);
     });
   });
 

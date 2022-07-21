@@ -16,7 +16,7 @@ import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
-import { boolToYesNo, getAppellantApplications, toIsoDate } from '../utils/utils';
+import { boolToYesNo, getAppellantApplications, getApplicationType, toIsoDate } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
@@ -169,28 +169,35 @@ function setupAnswersReasonsForAppeal(req: Request): Array<any> {
   return array;
 }
 
-function getTimeExtensionSummaryRows(timeExtensionEvent: Collection<Application<Evidence>>) {
+function getMakeAnApplicationSummaryRows(makeAnApplicationEvent: Collection<Application<Evidence>>) {
   const request = [];
-  const data = timeExtensionEvent.value;
-  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.whatYouAskedFor, [i18n.pages.detailViewers.timeExtension.request.wantMoreTime]));
-  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.reason, [data.details]));
+  const data = makeAnApplicationEvent.value;
+  request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.request.whatYouAskedFor, [getApplicationTitle(data.type)]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.request.reason, [data.details]));
   if (data.evidence.length) {
     const evidenceText = data.evidence.map((evidence) => {
       return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
     });
-    request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.evidence, evidenceText, null, Delimiter.BREAK_LINE));
+    request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.request.evidence, evidenceText, null, Delimiter.BREAK_LINE));
   }
-  request.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.request.date, [moment(data.date).format(dayMonthYearFormat)]));
+  request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.request.date, [moment(data.date).format(dayMonthYearFormat)]));
 
   if (data.decision !== 'Pending') {
     const response = [];
-    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.decision, [i18n.pages.detailViewers.timeExtension.response[data.decision]]));
-    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.reason, [data.decisionReason]));
-    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.date, [moment(data.decisionDate).format(dayMonthYearFormat)]));
-    response.push(addSummaryRow(i18n.pages.detailViewers.timeExtension.response.maker, [data.decisionMaker]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.response.decision, [i18n.pages.detailViewers.makeAnApplication.response[data.decision]]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.response.reason, [data.decisionReason]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.response.date, [moment(data.decisionDate).format(dayMonthYearFormat)]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.response.maker, [data.decisionMaker]));
     return { request, response };
   }
   return { request };
+}
+
+function getApplicationTitle(type: any): string {
+  const applicationType = getApplicationType(type);
+  if (applicationType) {
+    return i18n.pages.detailViewers.makeAnApplication.requestTypes[applicationType.code];
+  }
 }
 
 function setupCmaRequirementsViewer(req: Request) {
@@ -405,16 +412,16 @@ function getDocumentViewer(documentManagementService: DocumentManagementService)
   };
 }
 
-function getTimeExtensionViewer(req: Request, res: Response, next: NextFunction) {
+function getMakeAnApplicationViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    const timeExtensionId = req.params.id;
-    const timeExtension = getAppellantApplications(req.session.appeal.makeAnApplications).find(application => application.id === timeExtensionId);
+    const applicationId = req.params.id;
+    const makeAnApplications = getAppellantApplications(req.session.appeal.makeAnApplications).find(application => application.id === applicationId);
     const previousPage: string = paths.common.overview;
-    const { request, response = null } = getTimeExtensionSummaryRows(timeExtension);
+    const { request, response = null } = getMakeAnApplicationSummaryRows(makeAnApplications);
     const hearingCentreEmail = getHearingCentreEmail(req);
-    return res.render('detail-viewers/time-extension-details-viewer.njk', {
+    return res.render('detail-viewers/make-an-application-details-viewer.njk', {
       previousPage: previousPage,
-      timeExtension,
+      makeAnApplications,
       request,
       response,
       hearingCentreEmail
@@ -607,7 +614,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.homeOfficeDocumentsViewer, getHoEvidenceDetailsViewer);
   router.get(paths.common.appealDetailsViewer, getAppealDetailsViewer);
   router.get(paths.common.reasonsForAppealViewer, getReasonsForAppealViewer);
-  router.get(paths.common.timeExtensionViewer + '/:id', getTimeExtensionViewer);
+  router.get(paths.common.makeAnApplicationViewer + '/:id', getMakeAnApplicationViewer);
   router.get(paths.common.cmaRequirementsAnswerViewer, getCmaRequirementsViewer);
   router.get(paths.common.noticeEndedAppealViewer, getNoticeEndedAppeal);
   router.get(paths.common.outOfTimeDecisionViewer, getOutOfTimeDecisionViewer);
@@ -621,13 +628,14 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
 
 export {
   getAppealDetailsViewer,
+  getApplicationTitle,
   getReasonsForAppealViewer,
   getDocumentViewer,
   getHoEvidenceDetailsViewer,
   getHomeOfficeWithdrawLetter,
   getNoticeEndedAppeal,
-  getTimeExtensionSummaryRows,
-  getTimeExtensionViewer,
+  getMakeAnApplicationSummaryRows,
+  getMakeAnApplicationViewer,
   setupDetailViewersController,
   setupCmaRequirementsViewer,
   getCmaRequirementsViewer,
@@ -636,5 +644,4 @@ export {
   getHearingNoticeViewer,
   getHearingBundle,
   getDecisionAndReasonsViewer
-
 };

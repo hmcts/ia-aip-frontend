@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
+import { applicationTypes } from '../../data/application-types';
 import { Events } from '../../data/events';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
@@ -83,16 +84,16 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
         makeAnApplicationTypes: {
           'value': {
             'code': 'timeExtension',
-            'label': 'Time extension'
+            'label': applicationTypes.timeExtension.type
           },
           'list_items': [
             {
               'code': 'judgeReview',
-              'label': 'Judge\'s review of application decision'
+              'label': applicationTypes.judgesReview.type
             },
             {
               'code': 'timeExtension',
-              'label': 'Time extension'
+              'label': applicationTypes.timeExtension.type
             }
           ]
         },

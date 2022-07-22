@@ -7,6 +7,7 @@ import {
   getHearingDetails,
   setupApplicationOverviewController,
   showAppealRequests,
+  showAppealRequestsInAppealEndedStatus,
   showHearingRequests
 } from '../../../app/controllers/application-overview';
 import { States } from '../../../app/data/states';
@@ -183,6 +184,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -238,6 +240,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -294,6 +297,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -362,6 +366,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -432,6 +437,7 @@ describe('Confirmation Page Controller', () => {
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
       showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -556,22 +562,27 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('showAppealRequests should return true when in appealSubmitted state', () => {
-    const result = showAppealRequests(States.APPEAL_SUBMITTED.id);
+    const result = showAppealRequests(States.APPEAL_SUBMITTED.id, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequests should return false when in ended state', () => {
-    const result = showAppealRequests(States.ENDED.id);
+    const result = showAppealRequests(States.ENDED.id, true);
     expect(result).to.equal(false);
   });
 
   it('showHearingRequests should return false when in appealSubmitted state', () => {
-    const result = showHearingRequests(States.APPEAL_SUBMITTED.id);
+    const result = showHearingRequests(States.APPEAL_SUBMITTED.id, true);
     expect(result).to.equal(false);
   });
 
   it('showHearingRequests should return true when in prepareForHearing state', () => {
-    const result = showHearingRequests(States.PREPARE_FOR_HEARING.id);
+    const result = showHearingRequests(States.PREPARE_FOR_HEARING.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('showAppealRequestsInAppealEndedStatus should return true when in ended state', () => {
+    const result = showAppealRequestsInAppealEndedStatus(States.ENDED.id, true);
     expect(result).to.equal(true);
   });
 });

@@ -41,7 +41,7 @@ export function nowAppealDate(): AppealDate {
 
 export function hasPendingTimeExtension(appeal: Appeal): boolean {
   return !!getAppellantApplications(appeal.makeAnApplications)
-      .find(application => application.value.decision === 'Pending');
+    .find(application => (applicationTypes.timeExtension.type === application.value.type) && (application.value.decision === 'Pending'));
 }
 
 export function formatTextForCYA(text: string) {

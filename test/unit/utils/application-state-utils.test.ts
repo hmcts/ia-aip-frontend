@@ -302,7 +302,8 @@ describe('application-state-utils', () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending',
-            applicant: 'Appellant'
+            applicant: 'Appellant',
+            type: 'Time extension'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -456,7 +457,8 @@ describe('application-state-utils', () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending',
-            applicant: 'Appellant'
+            applicant: 'Appellant',
+            type: 'Time extension'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -782,7 +784,8 @@ describe('application-state-utils', () => {
       const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
         value: {
           decision: 'Pending',
-          applicant: 'Appellant'
+          applicant: 'Appellant',
+          type: 'Time extension'
         }
       };
       req.session.appeal.appealStatus = 'submitHearingRequirements';
@@ -921,7 +924,8 @@ describe('application-state-utils', () => {
   });
 
   function getPreHearingAndFinalBundling() {
-    return { 'allowedAskForMoreTime': false,
+    return {
+      'allowedAskForMoreTime': false,
       'cta': {},
       'date': '11 August 2020',
       'deadline': 'TBC',

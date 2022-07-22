@@ -111,7 +111,7 @@
               {% endif %}
             </div>
           {% endif %}
-          {% if showAppealRequests or ended %}
+          {% if showAppealRequests or showAppealRequestsInAppealEndedStatus %}
               <div class="side-menu__section">
                   <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.appealRequests.sectionHeading }}</h2>
                        {% if showAppealRequests %}
@@ -119,7 +119,7 @@
                          <p><a class="govuk-link" href='{{ paths.makeApplication.linkOrUnlink }}'>{{ i18n.pages.overviewPage.appealRequests.askToLinkOrUnlink }}</a></p>
                          <p><a class="govuk-link" href='{{ paths.makeApplication.judgesReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview }}</a></p>
                          <p><a class="govuk-link" href='{{ paths.makeApplication.other }}'>{{ i18n.pages.overviewPage.appealRequests.askForSomethingElse }}</a></p>
-                       {% elif ended %}
+                       {% elif showAppealRequestsInAppealEndedStatus %}
                           <p><a class="govuk-link" href='{{ paths.makeApplication.reinstate }}'>{{ i18n.pages.overviewPage.appealRequests.askReinstateAppeal }}</a></p>
                           <p><a class="govuk-link" href='{{ paths.makeApplication.judgesReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview}}</a></p>
                       {% endif %}

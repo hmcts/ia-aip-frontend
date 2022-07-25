@@ -15,7 +15,7 @@
     }) }}
 
     <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.makeAnApplication.whatNext.title }}</h2>
-    <p>{{ i18n.pages.detailViewers.makeAnApplication.whatNext[timeExtension.value.decision] | eval | safe }}</p>
+    <p>{{ whatNext | eval | safe }}</p>
   {% endif %}
 
   {{ contactUs() }}

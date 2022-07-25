@@ -67,7 +67,7 @@ function getTimeExtensionsEvents(makeAnApplications: Collection<Application<Evid
     if (application.value.decision !== 'Pending') {
       decision = {
         id: application.id,
-        date: moment(application.value.date).format('DD MMMM YYYY'),
+        date: moment(application.value.decisionDate).format('DD MMMM YYYY'),
         dateObject: new Date(application.value.decisionDate),
         text: i18n.pages.overviewPage.timeline.decideAnApplication[application.value.decision],
         links: [{

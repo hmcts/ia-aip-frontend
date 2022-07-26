@@ -450,7 +450,6 @@ async function getAppealApplicationNextStep(req: Request) {
         descriptionParagraphs: [
           i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
           i18n.pages.overviewPage.doThisNext.ended.ctaReview,
-          i18n.pages.overviewPage.doThisNext.ended.ctaContact,
           i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackTitle,
           i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackDescription
         ],

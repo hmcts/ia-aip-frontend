@@ -4,14 +4,17 @@ const applicationTypes = {
     type: 'Time extension'
   },
   expedite: {
+    parent: 'askChangeHearing',
     code: 'askHearingSooner',
     type: 'Expedite'
   },
   adjourn: {
+    parent: 'askChangeHearing',
     code: 'askChangeDate',
     type: 'Adjourn'
   },
   transfer: {
+    parent: 'askChangeHearing',
     code: 'askChangeLocation',
     type: 'Transfer'
   },
@@ -36,6 +39,7 @@ const applicationTypes = {
     type: 'Update appeal details'
   },
   updateHearingRequirements: {
+    parent: 'askChangeHearing',
     code: 'askUpdateHearingRequirements',
     type: 'Update hearing requirements'
   },

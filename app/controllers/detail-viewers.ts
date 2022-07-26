@@ -418,17 +418,34 @@ function getMakeAnApplicationViewer(req: Request, res: Response, next: NextFunct
     const makeAnApplications = getAppellantApplications(req.session.appeal.makeAnApplications).find(application => application.id === applicationId);
     const previousPage: string = paths.common.overview;
     const { request, response = null } = getMakeAnApplicationSummaryRows(makeAnApplications);
+    const whatNext = getMakeAnApplicationWhatNext(makeAnApplications);
     const hearingCentreEmail = getHearingCentreEmail(req);
     return res.render('detail-viewers/make-an-application-details-viewer.njk', {
       previousPage: previousPage,
       makeAnApplications,
       request,
       response,
+      whatNext,
       hearingCentreEmail
     });
   } catch (error) {
     next(error);
   }
+}
+
+function getMakeAnApplicationWhatNext(makeAnApplicationEvent: Collection<Application<Evidence>>) {
+  const data = makeAnApplicationEvent.value;
+  if (data.decision !== 'Pending') {
+    const applicationType = getApplicationType(data.type);
+    const questionKey = applicationType.parent ? applicationType.parent : applicationType.code;
+    const decisionKey = data.decision.toLowerCase();
+    if (i18n.pages.detailViewers.makeAnApplication.whatNext[questionKey][decisionKey]) {
+      return i18n.pages.detailViewers.makeAnApplication.whatNext[questionKey][decisionKey];
+    } else {
+      return i18n.pages.detailViewers.makeAnApplication.whatNext.default[decisionKey];
+    }
+  }
+  return null;
 }
 
 function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
@@ -636,6 +653,7 @@ export {
   getNoticeEndedAppeal,
   getMakeAnApplicationSummaryRows,
   getMakeAnApplicationViewer,
+  getMakeAnApplicationWhatNext,
   setupDetailViewersController,
   setupCmaRequirementsViewer,
   getCmaRequirementsViewer,

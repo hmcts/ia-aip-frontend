@@ -1190,8 +1190,34 @@
         },
         "whatNext": {
           "title": "What happens next",
-          "Refused": "Your appeal will continue. If a Tribunal Caseworker made this decision you can ask for it to be reviewed by a judge by emailing <a class='govuk-link' href='mailto:{{ hearingCentreEmail }}'>{{ hearingCentreEmail }}</a> within 14 days of the date of decision.",
-          "Granted": "A Tribunal Caseworker will give you more time to complete your next task. You will get a notification with the new date soon."
+          "default": {
+            "granted": "The Tribunal will contact you when it makes the changes requested.",
+            "refused": "Your appeal will continue. If a Tribunal Caseworker made this decision you can <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for the judge to review</a> it within 14 days of the date of the decision."
+          },
+          "askForMoreTime": {
+            "granted": "A Tribunal Caseworker will give you more time to complete your next task. You will get a notification with the new date soon."
+          },
+          "askJudgeReview": {
+            "refused": "Your appeal will continue.",
+            "granted": "The decision on your request will be overturned. The Tribunal will contact you if there is something you need to do next."
+          },
+          "askLinkUnlink": {
+            "granted": "This appeal will be linked or unlinked. The Tribunal will contact you when this happens."
+          },
+          "askReinstate": {
+            "refused": "If a Tribunal Caseworker made this decision you can <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review</a> it within 14 days of the date of the decision.",
+            "granted": "This appeal will be reinstated and will continue from the point where it was ended. The Tribunal will contact you when this happens."
+          },
+          "askWithdraw": {
+            "granted": "The Tribunal will end the appeal. The Tribunal will contact you when this happens."
+          },
+          "askUpdateDetails": {
+          },
+          "askSomethingElse": {
+          },
+          "askChangeHearing": {
+            "granted": "The details of you hearing will be updated. The Tribunal will contact you when this happens."
+          }
         },
         "request": {
           "whatYouAskedFor": "What you asked for",

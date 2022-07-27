@@ -23,7 +23,9 @@ function getLogout(req: Request, res: Response, next: NextFunction) {
 
 function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   try {
-    res.redirect(paths.common.overview);
+    const redirectTo = req.session.redirectUrl || paths.common.overview;
+    req.session.redirectUrl = undefined;
+    res.redirect(redirectTo);
   } catch (e) {
     next(e);
   }

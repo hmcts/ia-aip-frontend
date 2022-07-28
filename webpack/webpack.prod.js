@@ -8,13 +8,13 @@ const serverConfig = {
 };
 
 const clientConfig = {
-  mode: "production",
-  optimization: {
-    minimizer: [
-      new TerserJSPlugin({}),
-      new OptimizeCSSAssetsPlugin({})
-    ]
-  }
+        mode: "production",
+        optimization: {
+            minimizer: [
+                new TerserJSPlugin({}),
+                new OptimizeCSSAssetsPlugin({})
+            ]
+    }
 };
 
 const devConfig = {

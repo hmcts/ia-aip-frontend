@@ -42,9 +42,9 @@ withPipeline("nodejs", product, component) {
   after('build') { sh 'yarn build' }
 
 
-  loadVaultSecrets(secrets)
-  //  enableAksStagingDeployment()
-  //  disableLegacyDeployment()
+loadVaultSecrets(secrets)
+  enableAksStagingDeployment()
+  disableLegacyDeployment()
 
   env.S2S_MICROSERVICE_NAME = 'iac'
   env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'

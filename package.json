@@ -162,6 +162,7 @@
     "webdriverio/puppeteer-core/node-fetch": "^2.6.7",
     "webdriverio/webdriver/got/cacheable-request/normalize-url": "^4.5.1",
     "webpack/terser-webpack-plugin/cacache/move-concurrently/copy-concurrently/mkdirp/minimist": "^1.2.6",
+    "webpack/terser-webpack-plugin/terser": "^4.8.1",
     "copy-webpack-plugin/cacache/move-concurrently/copy-concurrently/mkdirp/minimist": "^1.2.6",
     "webpack/terser-webpack-plugin/cacache/mkdirp/minimist": "^1.2.6",
     "multer/mkdirp/minimist": "^1.2.6",

@@ -27,6 +27,10 @@ export const States = {
     id: 'clarifyingQuestionsAnswersSubmitted',
     name: 'Clarifying Questions submitted'
   },
+  CASE_UNDER_REVIEW: {
+    id: 'caseUnderReview',
+    name: 'Case under review'
+  },
   RESPONDENT_REVIEW: {
     id: 'respondentReview',
     name: 'Respondent review'
@@ -82,6 +86,26 @@ export const States = {
   DECIDED: {
     id: 'decided',
     name: 'Decided'
+  },
+  APPEAL_TAKEN_OFFLINE: {
+    id: 'appealTakenOffline',
+    name: 'Appeal taken offline'
+  },
+  FTPA_SUBMITTED: {
+    id: 'ftpaSubmitted',
+    name: 'FTPA submitted'
+  },
+  FTPA_DECIDED: {
+    id: 'ftpaDecided',
+    name: 'FTPA decided'
+  },
+  AWAITING_CLARIFYING_QUESTIONS_ANSWERS: {
+    id: 'awaitingClarifyingQuestionsAnswers',
+    name: 'Awaiting clarifying questions answers'
+  },
+  CLARIFYING_QUESTIONS_ANSWERED_SUBMITTED: {
+    id: 'clarifyingQuestionsAnswersSubmitted',
+    name: 'Clarifying questions answers submitted'
   },
   ADJOURNED: {
     id: 'adjourned',

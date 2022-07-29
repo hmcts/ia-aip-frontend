@@ -1,8 +1,9 @@
 import { Request } from 'express';
 import { Events } from '../../../app/data/events';
+import { States } from '../../../app/data/states';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { constructSection, getSubmitClarifyingQuestionsEvents, getTimeExtensionsEvents } from '../../../app/utils/timeline-utils';
+import { constructSection, getEventsAndStates, getSubmitClarifyingQuestionsEvents, getTimeExtensionsEvents } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -157,6 +158,36 @@ describe('timeline-utils', () => {
       const events = getSubmitClarifyingQuestionsEvents([], []);
 
       expect(events.length).to.be.eql(0);
+    });
+  });
+
+  describe('getEventsAndStates', () => {
+    it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
+      const eventsAndStates = getEventsAndStates(true, true);
+      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(14);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(13);
+    });
+
+    it('should return relevant events and states when uploadAddendumEvidence feature disabled', () => {
+      const eventsAndStates = getEventsAndStates(false, true);
+      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(10);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(10);
+    });
+
+    it('should return relevant events when hearingBundle feature enabled', () => {
+      const appealHearingRequirementsSectionEvents = [
+        Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
+        Events.STITCHING_BUNDLE_COMPLETE.id,
+        Events.LIST_CASE.id
+      ];
+      const expectedEvents = { appealHearingRequirementsSectionEvents };
+      const eventsAndStates = getEventsAndStates(true, true);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(3);
+    });
+
+    it('should return relevant events when hearingBundle feature disabled', () => {
+      const eventsAndStates = getEventsAndStates(true, false);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(2);
     });
   });
 });

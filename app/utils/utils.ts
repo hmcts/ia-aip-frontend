@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import nl2br from 'nl2br';
+import { applicationTypes } from '../data/application-types';
 import { paths } from '../paths';
 
 /**
@@ -40,7 +41,7 @@ export function nowAppealDate(): AppealDate {
 
 export function hasPendingTimeExtension(appeal: Appeal): boolean {
   return !!getAppellantApplications(appeal.makeAnApplications)
-      .find(application => application.value.decision === 'Pending');
+    .find(application => (applicationTypes.timeExtension.type === application.value.type) && (application.value.decision === 'Pending'));
 }
 
 export function formatTextForCYA(text: string) {
@@ -63,4 +64,14 @@ export function yesNoToBool(answer: string): boolean {
 
 export function getAppellantApplications(applications: Collection<Application<Evidence>>[]): any[] {
   return applications ? applications.filter(application => application.value.applicant === 'Appellant') : [];
+}
+
+export function getApplicationType(type: string): any {
+  let applicationType = undefined;
+  Object.keys(applicationTypes).forEach(key => {
+    if (applicationTypes[key].type === type) {
+      applicationType = applicationTypes[key];
+    }
+  });
+  return applicationType;
 }

@@ -41,13 +41,13 @@ nodejs:
         - hearing-centre-glasgow-email
         - pcq-token-key
 redis:
-  cluster:
-    enabled: false
-    slaveCount: 0
-  usePassword: false
+  enabled: false
+  architecture: standalone
   master:
     persistence:
       enabled: false
+  auth:
+    enabled: false
 tags:
   idam-pr: false
   pr: false

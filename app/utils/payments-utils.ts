@@ -29,3 +29,7 @@ export function payLaterForApplicationNeeded(req: Request): boolean {
   const payLater = appealStatus !== 'appealStarted' && appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid';
   return payLater;
 }
+
+export function appendCaseReferenceAndAppellantName(caseReference: String, appellantSurnameName: String) {
+  return caseReference + '_' + appellantSurnameName;
+}

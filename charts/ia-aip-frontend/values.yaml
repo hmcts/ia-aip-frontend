@@ -48,3 +48,6 @@ redis:
       enabled: false
   auth:
     enabled: false
+tags:
+  idam-pr: false
+  pr: false

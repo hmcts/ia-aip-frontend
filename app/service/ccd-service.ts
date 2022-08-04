@@ -86,15 +86,21 @@ class CcdService {
     return rp.post(options);
   }
 
-  loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails[]> {
+  loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails[]>> {
     // tslint:disable:no-console
     console.log(userId);
     console.log(headers);
-    return rp.get(this.createOptions(
-      userId,
-      headers,
-      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases`)
-    );
+    const body = {
+      query: { match_all: {} },
+      sort: [{ id: { order: 'asc' } }]
+    };
+    const options: any = this.createOptions(
+        userId,
+        headers,
+        `${ccdBaseUrl}/searchCases?ctid=A58`);
+    options.body = JSON.stringify(body);
+    return rp.post(options);
+
   }
 
   retrieveCaseHistoryV2(userId: string, caseId: string, headers: SecurityHeaders): Promise<any> {
@@ -169,6 +175,10 @@ class CcdService {
   }
 }
 
+interface ES<T> {
+  cases: T[];
+  total: number;
+}
 export {
   CcdService
 };

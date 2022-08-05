@@ -1,0 +1,33 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.changeRepresentation.title }}</h1>
+  <p class="govuk-!-font-size-24">{{ i18n.pages.changeRepresentation.instructions }}</p>
+  <p>{{ i18n.pages.changeRepresentation.detailsInstruction }}</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>
+        <span class='govuk-body govuk-!-font-weight-bold'>
+        {{ i18n.pages.changeRepresentation.details.caseReferenceNumber }}:</span>
+        {{ onlineCaseReferenceNumber }}</li>
+    <li>
+        <span class='govuk-body govuk-!-font-weight-bold'>
+        {{ i18n.pages.changeRepresentation.details.name }}:</span>
+        {{ appellantGivenNames }} {{ appellantFamilyName }}</li>
+    <li>
+        <span class='govuk-body govuk-!-font-weight-bold'>
+        {{ i18n.pages.changeRepresentation.details.dateOfBirth }}:</span>
+        {{ appellantDateOfBirth }}</li>
+  </ul>
+  <p>{{ i18n.pages.changeRepresentation.detailsUseOf }}</p>
+
+  <h2 class="govuk-heading-l">{{ i18n.pages.changeRepresentation.downloadHeading }}</h2>
+  <p>{{ i18n.pages.changeRepresentation.downloadInstructions }}</p>
+
+    {{ govukButton({
+      text: i18n.pages.changeRepresentation.downloadButton,
+      href: paths.common.changeRepresentationDownload
+    }) }}
+  {{ contactUs() }}
+{% endblock %}

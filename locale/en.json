@@ -438,6 +438,20 @@
       "title": "Do you want to provide supporting evidence?",
       "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
     },
+    "changeRepresentation": {
+      "title": "If you are no longer representing yourself",
+      "instructions": "If you have hired a legal representative to take on your appeal, you will need to give them some information so they can access your case.",
+      "detailsInstruction": "Give your legal representative the following information",
+      "details": {
+        "caseReferenceNumber": "Online case reference number",
+        "name": "Name",
+        "dateOfBirth": "Date of birth"
+      },
+      "detailsUseOf": "Your legal representative will use this information to tell the Tribunal that they are now appealing on your behalf and get access to your case.",
+      "downloadHeading": "Download a document to give to your legal representative",
+      "downloadInstructions": "Click the download button to save a document that you can email or post to your legal representative. The document includes all the information your legal representative will need to access your case.",
+      "downloadButton": "Document download"
+    },
     "provideMoreEvidence": {
       "additionalEvidenceDefaultDescription": "Additional evidence",
       "form": {
@@ -672,6 +686,8 @@
       "askedForMoreTime": "You have asked for more time",
       "savedAndAskedForMoreTime": "You have saved your answers and asked for more time",
       "weAimTo": "We aim to get back to you within 5 days.",
+      "changingRepresentation": "Changing Representation",
+      "noLongerRepresentingMyself": "I am no longer representing myself",
       "iWantTo": "I want to...",
       "withdrawAppeal": "Withdraw my appeal",
       "appealRequests": {

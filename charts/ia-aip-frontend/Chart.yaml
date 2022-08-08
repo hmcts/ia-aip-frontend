@@ -1,11 +1,11 @@
 apiVersion: v2
 name: ia-aip-frontend
 home: https://github.com/hmcts/ia-aip-frontend
-version: 0.0.36
+version: 0.0.37
 description: IA AIP Frontend
 dependencies:
   - name: nodejs
-    version: 2.4.6
+    version: 2.4.5
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
   - name: redis
     version: 16.11.3

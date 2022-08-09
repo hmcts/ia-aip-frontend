@@ -60,7 +60,11 @@ const PATHS = {
   'reasons for appeal check your answers': paths.awaitingReasonsForAppeal.checkAndSend,
   'Out of time appeal': paths.appealStarted.appealLate,
   'Task list': paths.appealStarted.taskList,
-  'Check and send': paths.appealStarted.checkAndSend
+  'Check and send': paths.appealStarted.checkAndSend,
+  'provide more evidence': paths.common.provideMoreEvidenceForm,
+  'provide more evidence check': paths.common.provideMoreEvidenceCheck,
+  'provide more evidence sent': paths.common.provideMoreEvidenceConfirmation,
+  'why evidence late': paths.common.whyEvidenceLate
 };
 
 module.exports = {

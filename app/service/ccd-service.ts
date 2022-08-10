@@ -86,15 +86,20 @@ class CcdService {
     return rp.post(options);
   }
 
-  loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails[]> {
+  loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails>> {
     // tslint:disable:no-console
     console.log(userId);
     console.log(headers);
-    return rp.get(this.createOptions(
+    const query = {
+      query: { match_all: {} },
+      sort: [{ id: { order: 'asc' } }]
+    };
+    const options: any = this.createOptions(
       userId,
       headers,
-      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases`)
-    );
+        `${ccdBaseUrl}/searchCases?ctid=${caseType}`);
+    options.body = query;
+    return rp.post(options);
   }
 
   retrieveCaseHistoryV2(userId: string, caseId: string, headers: SecurityHeaders): Promise<any> {
@@ -146,10 +151,9 @@ class CcdService {
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
-    const cases: CcdCaseDetails[] = await this.loadCasesForUser(userId, headers);
-    if (cases.length > 0) {
-      logger.trace(`found [${cases.length}] cases`, logLabel);
-      return cases[0];
+    const cases: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
+    if (cases.total > 0) {
+      return cases.cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);
       const newCase: CcdCaseDetails = await this.createCase(userId, headers);
@@ -167,6 +171,10 @@ class CcdService {
     }
     return history;
   }
+}
+interface ES<T> {
+  cases: T[];
+  total: number;
 }
 
 export {

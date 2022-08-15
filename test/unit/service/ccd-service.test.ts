@@ -142,6 +142,12 @@ describe('idam-service', () => {
       retrieveCaseHistoryStub.resolves(startAppealEventData);
 
       const result = await ccdService.getCaseHistory(userId, caseId, headers);
+      // tslint:disable-next-line:no-console
+      console.debug('***************************************');
+      // tslint:disable-next-line:no-console
+      console.debug(JSON.stringify(result));
+      // tslint:disable-next-line:no-console
+      console.debug(JSON.stringify(expectedStartAppealEventData));
 
       expect(result).deep.equal(expectedStartAppealEventData);
     });

@@ -202,7 +202,7 @@ describe('idam-service', () => {
     it('loadCasesForUser', async () => {
       await ccdService.loadCasesForUser(userId, headers);
 
-      expect(getRequest).to.have.been.called;
+      expect(postRequest).to.have.been.called;
     });
 
     it('startUpdateAppeal with "editAppeal"', async () => {

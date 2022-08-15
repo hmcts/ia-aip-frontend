@@ -1,10 +1,10 @@
 import axios from 'axios';
 import config from 'config';
 
-const renderURL = config.get('docmosis.renderUrl');
-const accessKey = config.get('docmosis.accessKey');
-const customerServicesTelephone = config.get('customerServices.telephone');
-const customerServicesEmail = config.get('customerServices.email');
+const renderURL: string = config.get('docmosis.renderUrl');
+const accessKey: string = config.get('docmosis.accessKey');
+const customerServicesTelephone: string = config.get('customerServices.telephone');
+const customerServicesEmail: string = config.get('customerServices.email');
 const templates = config.get('docmosis.templates');
 
 interface RenderedDocument {
@@ -15,7 +15,7 @@ interface RenderedDocument {
 
 class DocmosisService {
 
-  render(templateKey: string, data): Promise<RenderedDocument> {
+  async render(templateKey: string, data): Promise<RenderedDocument> {
     return axios.post(renderURL, this.getParameters(templateKey, data).toString(), {
       responseType: 'arraybuffer'
     }).then(response => {

@@ -33,6 +33,15 @@ describe('docmosis-service', () => {
       expect(response.success).to.be.eq(true);
       expect(response.document).to.deep.equal(Buffer.from('pdf-file', 'binary'));
     });
+
+    it('render throws error', async () => {
+      axiosStub = sandbox.stub(axios, 'post').returns(Promise.reject('error-message'));
+
+      let response = await new DocmosisService().render('template-key', {});
+
+      expect(response.success).to.be.eq(false);
+      expect(response.error).to.be.eq('error-message');
+    });
   });
 
 });

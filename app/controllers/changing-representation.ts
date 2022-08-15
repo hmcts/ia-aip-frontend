@@ -10,8 +10,8 @@ function getChangeRepresentation() {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       return res.render('change-representation.njk', getDetails(req));
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      next(error);
     }
   };
 }
@@ -23,12 +23,12 @@ function getChangeRepresentationDownload() {
       if (response.success) {
         res.setHeader('content-type', 'application/pdf');
         res.setHeader('content-disposition', 'attachment; filename="Notice of Change details.pdf"');
-        res.send(response.document);
+        return res.send(response.document);
       } else {
         next(response.error);
       }
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      next(error);
     }
   };
 }
@@ -47,7 +47,7 @@ function formatCaseId(caseId: any) {
   if (caseStr.length === 16) {
     caseStr = caseStr.substring(0,4) + '-' + caseStr.substring(4,8) + '-' + caseStr.substring(8,12) + '-' + caseStr.substring(12,16);
   }
-  return caseStr;
+  return caseStr.toString();
 }
 
 function setupChangeRepresentationControllers(middleware: Middleware[]): Router {

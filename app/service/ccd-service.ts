@@ -155,8 +155,8 @@ class CcdService {
     console.debug('*******************************');
     console.debug(JSON.stringify(cases));
     if (cases.length > 0) {
-      console.debug('case', JSON.stringify(cases.cases[0]));
-      return cases.cases[0];
+      console.debug('case', JSON.stringify(cases[0]));
+      return cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);
       const newCase: CcdCaseDetails = await this.createCase(userId, headers);

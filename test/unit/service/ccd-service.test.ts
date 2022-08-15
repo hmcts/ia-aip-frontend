@@ -27,6 +27,15 @@ describe('idam-service', () => {
       createCaseStub = sinon.mock(ccdService).expects('createCase').never();
 
       loadedCase = await ccdService.loadOrCreateCase(userId, headers);
+      // tslint:disable-next-line:no-console
+      console.debug('*********** Actual ********************');
+      // tslint:disable-next-line:no-console
+      console.debug(JSON.stringify(loadedCase));
+
+      // tslint:disable-next-line:no-console
+      console.debug('*********** Expected ********************');
+      // tslint:disable-next-line:no-console
+      console.debug(JSON.stringify(expectedCase));
     });
 
     it('loads the first case', () => {

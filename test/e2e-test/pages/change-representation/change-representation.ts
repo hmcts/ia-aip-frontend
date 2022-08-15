@@ -15,7 +15,7 @@ module.exports = {
     });
 
     Then(/^I should see a Document Download button$/, async (text: string) => {
-      await I.see('Document Download', 'a');
+      await I.see('Document download', 'a');
     });
   }
 };

@@ -8,6 +8,6 @@ Feature: Change Representation
     Given I have logged in as an appellant in state "preHearing"
     When I click the I am no longer representing myself link
     Then I should see the If you are no longer representing yourself page
-    Then I should see a Document Download button
+    Then I should see a Document download button
 
 

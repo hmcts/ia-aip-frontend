@@ -14,7 +14,7 @@ module.exports = {
       await I.see('If you are no longer representing yourself', 'h1');
     });
 
-    Then(/^I should see a Document Download button$/, async (text: string) => {
+    Then(/^I should see a Document download button$/, async (text: string) => {
       await I.see('Document download', 'a');
     });
   }

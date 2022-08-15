@@ -27,12 +27,6 @@
     "redis": {
       "url": "REDIS_URL",
       "secret": "SESSION_SECRET"
-    },
-    "cookie": {
-      "secure": {
-        "__name": "SECURE_SESSION",
-        "__format": "json"
-      }
     }
   },
   "s2s": {

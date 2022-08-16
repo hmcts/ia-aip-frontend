@@ -62,6 +62,7 @@ describe('Change Representation Controller', () => {
     it('should render change-representation.njk', () => {
       getChangeRepresentation()(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('change-representation.njk', {
+        previousPage: paths.common.overview,
         onlineCaseReferenceNumber: '5827-8410-0185-6205',
         appellantGivenNames: 'Pedro',
         appellantFamilyName: 'Jimenez',
@@ -73,6 +74,7 @@ describe('Change Representation Controller', () => {
       req.session.appeal.ccdCaseId = '582784100185620';
       getChangeRepresentation()(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('change-representation.njk', {
+        previousPage: paths.common.overview,
         onlineCaseReferenceNumber: '582784100185620',
         appellantGivenNames: 'Pedro',
         appellantFamilyName: 'Jimenez',

@@ -9,7 +9,10 @@ const docmosis: DocmosisService = new DocmosisService();
 function getChangeRepresentation() {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      return res.render('change-representation.njk', getDetails(req));
+      return res.render('change-representation.njk', {
+        previousPage: paths.common.overview,
+        ...getDetails(req)
+      });
     } catch (error) {
       next(error);
     }

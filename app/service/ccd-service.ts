@@ -158,11 +158,11 @@ class CcdService {
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
     console.trace('*********** loadOrCreateCase ********************', logLabel);
-    const cases: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
-    console.trace(JSON.stringify(cases.cases[0]), logLabel);
-    if (cases.length > 0) {
-      console.trace('case ..... ', JSON.stringify(cases[0]), logLabel);
-      return cases[0];
+    const data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
+    console.trace(JSON.stringify(data.cases[0]), logLabel);
+    if (data.length > 0) {
+      console.trace('case ..... ', JSON.stringify(data.cases[0]), logLabel);
+      return data.cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);
       const newCase: CcdCaseDetails = await this.createCase(userId, headers);

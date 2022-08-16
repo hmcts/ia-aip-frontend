@@ -20,8 +20,9 @@ const usersToCaseData = {
 };
 
 module.exports = {
-  path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases',
-  method: 'GET',
+ // path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases',
+  path: '/searchCases?ctid=${caseType}',
+  method: 'POST',
   cache: false,
   template: params => {
     if (params.userId === '999') {

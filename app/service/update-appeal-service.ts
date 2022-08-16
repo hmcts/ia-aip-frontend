@@ -47,6 +47,12 @@ export default class UpdateAppealService {
   async loadAppeal(req: Request) {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
     const ccdCase: CcdCaseDetails = await this._ccdService.loadOrCreateCase(req.idam.userDetails.uid, securityHeaders);
+    // tslint:disable-next-line:no-console
+    console.trace('******* update-appeal-service **************');
+    // tslint:disable-next-line:no-console
+    console.trace(JSON.stringify(securityHeaders));
+    // tslint:disable-next-line:no-console
+    console.trace(JSON.stringify(ccdCase));
     req.session.ccdCaseId = ccdCase.id;
     req.session.appeal = this.mapCcdCaseToAppeal(ccdCase);
   }
@@ -1218,4 +1224,10 @@ export default class UpdateAppealService {
       }
     }
   }
+}
+
+interface ES<T> {
+  length: number;
+  cases: T[];
+  total: number;
 }

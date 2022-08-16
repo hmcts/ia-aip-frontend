@@ -13,6 +13,10 @@ const updateAppealService: UpdateAppealService = new UpdateAppealService(new Ccd
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
+    // tslint:disable-next-line:no-console
+    console.log('***************8 Init Session *********************');
+    // tslint:disable-next-line:no-console
+    console.log(JSON.stringify(req));
     await updateAppealService.loadAppeal(req);
     next();
   } catch (e) {

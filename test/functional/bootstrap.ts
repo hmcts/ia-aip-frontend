@@ -85,6 +85,10 @@ async function teardown(done) {
       await closeServerWithPromise(server);
     }
     if (ccdServer && ccdServer.close) {
+      // tslint:disable-next-line:no-console
+      console.debug('******* CCD SERVER ********************');
+      // tslint:disable-next-line:no-console
+      console.debug(JSON.stringify(ccdServer));
       await closeServerWithPromise(ccdServer);
     }
     if (idamServer && idamServer.close) {

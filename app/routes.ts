@@ -16,6 +16,7 @@ import { setupTaskListController } from './controllers/appeal-application/task-l
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupChangeRepresentationControllers } from './controllers/changing-representation';
 import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
 import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
 import { setupClarifyingQuestionsCheckSendController } from './controllers/clarifying-questions/check-and-send';
@@ -214,6 +215,7 @@ const yourHearingNeedsController = setupYourHearingNeedsController(middleware, u
 const hearingRequirementConfirmationController = setupHearingRequirementsConfirmationPage(middleware);
 const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
 const makeApplicationControllers = setupMakeApplicationControllers(middleware, updateAppealService, documentManagementService);
+const changeRepresentationControllers = setupChangeRepresentationControllers(middleware);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
 const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleController(middleware);
@@ -324,6 +326,7 @@ router.use(whatToExpectAtCmaNextController);
 router.use(provideMoreEvidence);
 router.use(outOfCountryController);
 router.use(makeApplicationControllers);
+router.use(changeRepresentationControllers);
 
 router.use(hearingBundleFeatureToggleController);
 router.use(outOfCountryFeatureToggleController);

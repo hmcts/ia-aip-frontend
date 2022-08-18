@@ -89,6 +89,14 @@
     "hattonCrossEmail": "IA_HEARING_CENTRE_HATTON_CROSS_EMAIL",
     "glasgowEmail": "IA_HEARING_CENTRE_GLASGOW_EMAIL"
   },
+  "docmosis": {
+    "renderUrl": "DOCMOSIS_RENDER_URL",
+    "accessKey": "DOCMOSIS_ACCESS_KEY"
+  },
+  "customerServices": {
+    "telephone": "IA_CUSTOMER_SERVICES_TELEPHONE",
+    "email": "IA_CUSTOMER_SERVICES_EMAIL"
+  },
   "pcq": {
     "url": "PCQ_URL",
     "health": "/health",

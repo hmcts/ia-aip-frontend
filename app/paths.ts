@@ -208,6 +208,10 @@ const paths = {
     payLater: '/pay-later',
     confirmationPayLater: '/confirmation-payment',
 
+    // Change Representation
+    changeRepresentation: '/change-representation',
+    changeRepresentationDownload: '/change-representation-download',
+
     // Session extension
     extendSession: '/extend-session',
     sessionExpired: '/session-ended',

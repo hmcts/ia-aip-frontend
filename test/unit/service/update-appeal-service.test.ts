@@ -23,6 +23,7 @@ describe('update-appeal-service', () => {
   const userToken = 'userToken';
   const serviceToken = 'serviceToken';
   const caseId = 'caseId';
+  const appealReferenceNumber = 'PA/1234/2022';
 
   beforeEach(async () => {
     sandbox = sinon.createSandbox();
@@ -64,6 +65,7 @@ describe('update-appeal-service', () => {
       'dateClientLeaveUk': '2022-02-19',
       'journeyType': 'aip',
       'homeOfficeReferenceNumber': 'A1234567',
+      'appealReferenceNumber': 'PA/1234/2022',
       'homeOfficeDecisionDate': '2019-01-02',
       'appellantFamilyName': 'Pedro',
       'appellantGivenNames': 'Jimenez',
@@ -177,6 +179,7 @@ describe('update-appeal-service', () => {
         });
       await updateAppealService.loadAppeal(req as Request);
       expect(req.session.appeal.ccdCaseId).eq(caseId);
+      expect(req.session.appeal.appealReferenceNumber).eq(appealReferenceNumber);
       expect(req.session.appeal.application.appealType).eq('protection');
       expect(req.session.appeal.application.homeOfficeRefNumber).eq('A1234567');
       expect(req.session.appeal.application.personalDetails.familyName).eq('Pedro');

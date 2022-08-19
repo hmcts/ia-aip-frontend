@@ -45,7 +45,13 @@ describe('Payments Service', () => {
       },
       session: {
         appeal: {
-          ccdCaseId: 'aCcdCaseId'
+          ccdCaseId: 'aCcdCaseId',
+          appealReferenceNumber: 'anAppealReferenceNumber',
+          application: {
+            personalDetails: {
+              familyName: 'SURNAME'
+            }
+          }
         }
       }
     } as Partial<Request>;

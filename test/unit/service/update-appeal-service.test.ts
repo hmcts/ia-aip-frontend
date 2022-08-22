@@ -81,6 +81,7 @@ describe('update-appeal-service', () => {
         'AddressLine2': ''
       },
       'submissionOutOfTime': 'Yes',
+      'recordedOutOfTimeDecision': 'No',
       'applicationOutOfTimeExplanation': 'An Explanation on why this appeal was late',
       'applicationOutOfTimeDocument': {
         'document_url': 'http://dm-store:4506/documents/9f788e06-cc7d-4bf9-8d73-418b5fdcf891',
@@ -1175,6 +1176,7 @@ describe('update-appeal-service', () => {
         dateClientLeaveUk: '2019-12-11',
         decisionLetterReceivedDate: '2019-12-11',
         submissionOutOfTime: 'Yes',
+        recordedOutOfTimeDecision: 'No',
         applicationOutOfTimeExplanation: 'a reason',
         applicationOutOfTimeDocument: {
           document_filename: 'somefile.png',

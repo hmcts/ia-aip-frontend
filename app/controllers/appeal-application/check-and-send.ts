@@ -278,18 +278,21 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
           previousPage: paths.appealStarted.taskList
         });
       }
-      const { appeal } = req.session;
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       if (paymentsFlag && payNowForApplicationNeeded(req)) {
         const fee = getFee(req.session.appeal);
         return await paymentService.initiatePayment(req, res, fee);
       }
-      return res.redirect(paths.appealSubmitted.confirmation);
+      const { appeal } = req.session;
+      if (appeal.paymentStatus === 'Success') {
+        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+        req.session.appeal = {
+          ...req.session.appeal,
+          ...appealUpdated
+        };
+        return res.redirect(paths.appealSubmitted.confirmation);
+      }
+      return res.redirect(paths.common.overview);
     } catch (error) {
       next(error);
     }

@@ -284,15 +284,12 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
         return await paymentService.initiatePayment(req, res, fee);
       }
       const { appeal } = req.session;
-      if (appeal.paymentStatus === 'Success') {
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-        req.session.appeal = {
-          ...req.session.appeal,
-          ...appealUpdated
-        };
-        return res.redirect(paths.appealSubmitted.confirmation);
-      }
-      return res.redirect(paths.common.overview);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+      return res.redirect(paths.appealSubmitted.confirmation);
     } catch (error) {
       next(error);
     }
@@ -332,6 +329,9 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           redirectUrl = paths.common.confirmationPayLater;
         } else if (req.session.appeal.appealStatus === 'appealSubmitted') {
           event = Events.PAYMENT_APPEAL;
+          redirectUrl = paths.appealSubmitted.confirmation;
+        } else if (req.session.appeal.appealStatus === 'appealStarted') {
+          event = Events.SUBMIT_APPEAL;
           redirectUrl = paths.appealSubmitted.confirmation;
         }
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);

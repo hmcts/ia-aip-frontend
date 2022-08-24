@@ -44,9 +44,6 @@ withPipeline("nodejs", product, component) {
 
   loadVaultSecrets(secrets)
 
-  env.TEST_URL = 'https://immigration-appeal.aat.platform.hmcts.net'
-  enableSecurityScan()
-
   enableAksStagingDeployment()
   disableLegacyDeployment()
 

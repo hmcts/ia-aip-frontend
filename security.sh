@@ -9,7 +9,7 @@ fi
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
-zap-x.sh -d -host 0.0.0.0 -port 1001 -config database.newsession=3 -config database.newsessionprompt=false -config globalexcludeurl.url_list.url.regex='^https?:\/\/.*\/(?:.*login.*)+$' -config api.disablekey=true -config scanner.attackOnStart=true -config view.mode=attack -config connection.dnsTtlSuccessfulQueries=-1 -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true /dev/null 2>&1 &
+zap-x.sh -daemon -host 0.0.0.0 -port 1001 -config database.newsession=3 -config database.newsessionprompt=false -config globalexcludeurl.url_list.url.regex='^https?:\/\/.*\/(?:.*login.*)+$' -config api.disablekey=true -config scanner.attackOnStart=true -config view.mode=attack -config connection.dnsTtlSuccessfulQueries=-1 -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true &
 i=0
 while !(curl -s http://0.0.0.0:1001) > /dev/null
   do
@@ -30,7 +30,7 @@ while !(curl -s http://0.0.0.0:1001) > /dev/null
   curl --fail http://0.0.0.0:1001/OTHER/core/other/jsonreport/?formMethod=GET --output report.json
   cp *.html functional-output/
   cp activescanReport.xml functional-output/
-  zap-cli --zap-url http://0.0.0.0 -p 1001 alerts -l Informational --exit-code False
+  zap-cli --zap-url http://0.0.0.0 -p 1001 alerts -l Medium --exit-code False
 
 echo
 echo ZAP Security vulnerabilities were found that were not ignored

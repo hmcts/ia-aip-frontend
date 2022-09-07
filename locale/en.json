@@ -3256,6 +3256,12 @@
       "name": "Deprivation of Citizenship",
       "title": "Deprivation of Citizenship (Your British citizenship was taken away)",
       "examples": "Your British citizenship might have been taken away because it is believed you didn't tell the truth when claiming citizenship or have been involved in behaviours such as terrorism or serious organised crime."
+    },
+    "euSettlementScheme": {
+      "value": "euSettlementScheme",
+      "name": "EU Settlement Scheme",
+      "title": "EU Settlement Scheme (You have been refused an application under the EUSS, or a decision made under the EUSS has later been changed or cancelled)",
+      "examples": "You have applied for settled status, or a family or travel permit, so that you can either remain within or enter the UK, and it has been refused. A decision has been made to change or cancel your settled status, or your family or travel permit, including a deportation order that requires you to leave the UK."
     }
   },
   "eligibility": [
@@ -3270,13 +3276,6 @@
       "description": "This could be a prison or an immigration removal centre.",
       "eligibleAnswer": "no",
       "errorMessage": "Select yes if you are currently in detention",
-      "modal": null
-    },
-    {
-      "question": "Are you appealing an EU Settlement Scheme decision?",
-      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
-      "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you appealing an EU Settlement Scheme decision",
       "modal": null
     },
     {
@@ -3304,14 +3303,6 @@
       ]
     },
     {
-      "title": "You cannot currently use the new service",
-      "description": "You cannot use this service because you are appealing an EU Settlement Scheme decision.",
-      "optionsList": [
-        "<a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead</a> or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
-      ],
-      "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
-    },
-    {
       "title": "There is a fee for this appeal",
       "description": "It costs:",
       "optionsList": [
@@ -3335,13 +3326,6 @@
       "modal": null
     },
     {
-      "question": "Are you appealing an EU Settlement Scheme decision?",
-      "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
-      "eligibleAnswer": "no",
-      "errorMessage": "Select yes if you appealing an EU Settlement Scheme decision",
-      "modal": null
-    },
-    {
       "question": "Are you appealing a Revocation of Protection Status or Deprivation of Citizenship decision?",
       "description": "If you're unsure, the first page of your decision letter should include the type of decision you're appealing.",
       "modal": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Revocation of Protection Status?</h3> <p>This is when your protection status has been taken away because it is believed you no longer need it, didn‘t tell the truth in your claim or have committed a serious crime.</p> <h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">What is Deprivation of British Citizenship?</h3> <p>This is when your British citizenship has been taken away because It is believed you didn't tell the truth when claiming citizenship or have been involved in behaviours including terrorism or serious organised crime.</p>",
@@ -3357,14 +3341,6 @@
         "If you are in an immigration removal centre, you can <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/form-iaft-5dia-appeal-to-the-first-tier-tribunal-information-sheet\">use form IAFT-DIA</a> to appeal by post or fax.",
         "If you are in a prison, you can <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">use the current online service</a> to appeal online or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
       ]
-    },
-    {
-      "title": "You cannot currently use the new service",
-      "description": "You cannot use this service because you are appealing an EU Settlement Scheme decision.",
-      "optionsList": [
-        "<a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead</a> or <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/appeal-a-visa-or-immigration-decision-within-the-uk-form-iaft-5\">use form IAFT-5</a> to appeal by post or fax."
-      ],
-      "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
     },
     {
       "title": "There is a fee for this appeal",

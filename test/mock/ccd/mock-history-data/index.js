@@ -8,6 +8,7 @@ const endedAppealHistory = require('./data/ended-appeal')
 const outOfTimeDecisionGranted = require('./data/out-of-time-decision-granted');
 const outOfTimeDecisionRejected = require('./data/out-of-time-decision-rejected');
 const outOfTimeDecisionInTime = require('./data/out-of-time-decision-in-time');
+const uploadAddendumEvidence = require('./data/upload-addendum-evidence');
 
 module.exports = {
   appealSubmittedHistoryEvent,
@@ -19,5 +20,6 @@ module.exports = {
   endedAppealHistory,
   outOfTimeDecisionGranted,
   outOfTimeDecisionRejected,
-  outOfTimeDecisionInTime
+  outOfTimeDecisionInTime,
+  uploadAddendumEvidence
 };

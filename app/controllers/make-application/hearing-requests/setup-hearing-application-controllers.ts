@@ -1,0 +1,62 @@
+import { Router } from 'express';
+import { paths } from '../../../paths';
+import UpdateAppealService from '../../../service/update-appeal-service';
+import { getProvideSupportingEvidence, getProvideSupportingEvidenceCheckAndSend, getProvideSupportingEvidenceYesOrNo, postProvideSupportingEvidence, postProvideSupportingEvidenceCheckAndSend, postProvideSupportingEvidenceYesOrNo } from '../make-application-common';
+import { validate } from '../setup-application-controllers';
+import { getAdjournHearingApplication, postAdjournHearingApplication } from './adjourn-hearing-application';
+import { getExpediteHearingApplication, postExpediteHearingApplication } from './expedite-hearing-application';
+import { getHearingApplicationType, postHearingApplicationType } from './hearing-application-type';
+import { getTransferHearingApplication, postTransferHearingApplication } from './transfer-hearing-application';
+import { getUpdateHearingRequirementsApplication, postUpdateHearingRequirementsApplication } from './update-hearing-requirements-application';
+
+function setupHearingApplicationControllers(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+  const router = Router();
+
+  router.get(paths.makeApplication.askChangeHearing, middleware, getHearingApplicationType);
+  router.get(paths.makeApplication.expedite, middleware, getExpediteHearingApplication);
+  router.get(paths.makeApplication.adjourn, middleware, getAdjournHearingApplication);
+  router.get(paths.makeApplication.transfer, middleware, getTransferHearingApplication);
+  router.get(paths.makeApplication.updateHearingRequirements, middleware, getUpdateHearingRequirementsApplication);
+
+  router.get(paths.makeApplication.supportingEvidenceExpedite, middleware, getProvideSupportingEvidenceYesOrNo);
+  router.get(paths.makeApplication.supportingEvidenceAdjourn, middleware, getProvideSupportingEvidenceYesOrNo);
+  router.get(paths.makeApplication.supportingEvidenceTransfer, middleware, getProvideSupportingEvidenceYesOrNo);
+  router.get(paths.makeApplication.supportingEvidenceUpdateHearingRequirements, middleware, getProvideSupportingEvidenceYesOrNo);
+
+  router.get(paths.makeApplication.provideSupportingEvidenceExpedite, middleware, getProvideSupportingEvidence);
+  router.get(paths.makeApplication.provideSupportingEvidenceAdjourn, middleware, getProvideSupportingEvidence);
+  router.get(paths.makeApplication.provideSupportingEvidenceTransfer, middleware, getProvideSupportingEvidence);
+  router.get(paths.makeApplication.provideSupportingEvidenceUpdateHearingRequirements, middleware, getProvideSupportingEvidence);
+
+  router.get(paths.makeApplication.checkAnswerExpedite, middleware, getProvideSupportingEvidenceCheckAndSend);
+  router.get(paths.makeApplication.checkAnswerAdjourn, middleware, getProvideSupportingEvidenceCheckAndSend);
+  router.get(paths.makeApplication.checkAnswerTransfer, middleware, getProvideSupportingEvidenceCheckAndSend);
+  router.get(paths.makeApplication.checkAnswerUpdateHearingRequirements, middleware, getProvideSupportingEvidenceCheckAndSend);
+
+  router.post(paths.makeApplication.expedite, middleware, postExpediteHearingApplication);
+  router.post(paths.makeApplication.adjourn, middleware, postAdjournHearingApplication);
+  router.post(paths.makeApplication.transfer, middleware, postTransferHearingApplication);
+  router.post(paths.makeApplication.updateHearingRequirements, middleware, postUpdateHearingRequirementsApplication);
+  router.post(paths.makeApplication.askChangeHearing, middleware, postHearingApplicationType);
+
+  router.post(paths.makeApplication.provideSupportingEvidenceExpedite, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.provideSupportingEvidenceAdjourn, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.provideSupportingEvidenceTransfer, middleware, postProvideSupportingEvidence);
+  router.post(paths.makeApplication.provideSupportingEvidenceUpdateHearingRequirements, middleware, postProvideSupportingEvidence);
+
+  router.post(paths.makeApplication.supportingEvidenceExpedite, middleware, postProvideSupportingEvidenceYesOrNo);
+  router.post(paths.makeApplication.supportingEvidenceAdjourn, middleware, postProvideSupportingEvidenceYesOrNo);
+  router.post(paths.makeApplication.supportingEvidenceTransfer, middleware, postProvideSupportingEvidenceYesOrNo);
+  router.post(paths.makeApplication.supportingEvidenceUpdateHearingRequirements, middleware, postProvideSupportingEvidenceYesOrNo);
+
+  router.post(paths.makeApplication.checkAnswerExpedite, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+  router.post(paths.makeApplication.checkAnswerAdjourn, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+  router.post(paths.makeApplication.checkAnswerTransfer, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+  router.post(paths.makeApplication.checkAnswerUpdateHearingRequirements, middleware, validate('provideSupportingEvidence'), postProvideSupportingEvidenceCheckAndSend(updateAppealService));
+
+  return router;
+}
+
+export {
+  setupHearingApplicationControllers
+};

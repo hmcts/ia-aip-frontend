@@ -79,7 +79,7 @@ describe('Ask for more time Controller', function () {
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
       const middleware = sandbox.stub();
-      setupAskForMoreTimeController([ middleware ], { updateAppealService });
+      setupAskForMoreTimeController([middleware], { updateAppealService });
       expect(routerPOSTStub).to.have.been.calledWith(paths.common.askForMoreTimeReason);
       expect(routerGetStub).to.have.been.calledWith(paths.common.askForMoreTimeReason);
     });
@@ -173,23 +173,22 @@ describe('Ask for more time Controller', function () {
     it('should fail validation and render reasons-for-appeal/reason-for-appeal-page.njk with error', async () => {
       req.body.askForMoreTime = '';
       await postAskForMoreTimePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith(
-        './ask-for-more-time/ask-for-more-time.njk', {
-          askForMoreTime: '',
-          errorList: [ {
+      expect(res.render).to.have.been.calledWith('./ask-for-more-time/ask-for-more-time.njk', {
+        askForMoreTime: '',
+        errorList: [{
+          'key': 'askForMoreTime',
+          'text': 'Enter how much time you need and why you need it',
+          'href': '#askForMoreTime'
+        }],
+        errors: {
+          'askForMoreTime': {
             'key': 'askForMoreTime',
             'text': 'Enter how much time you need and why you need it',
             'href': '#askForMoreTime'
-          } ],
-          errors: {
-            'askForMoreTime': {
-              'key': 'askForMoreTime',
-              'text': 'Enter how much time you need and why you need it',
-              'href': '#askForMoreTime'
-            }
-          },
-          previousPage: paths.common.overview
-        });
+          }
+        },
+        previousPage: paths.common.overview
+      });
     });
 
     it('should pass validation and render reasons-for-appeal/reason-for-appeal-page.njk without error', async () => {
@@ -223,18 +222,17 @@ describe('Ask for more time Controller', function () {
       req.session.appeal.makeAnApplicationDetails = 'some reasons';
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith(
-        './ask-for-more-time/check-and-send.njk', {
-          previousPage: paths.common.askForMoreTimeSupportingEvidence,
-          summaryRows: [ {
-            key: { text: 'Question' },
-            value: { html: 'How much time do you need and why do you need it?' }
-          }, {
-            actions: { items: [ { href: '/ask-for-more-time', text: 'Change' } ] },
-            key: { text: 'Answer' },
-            value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
-          } ]
-        });
+      expect(res.render).to.have.been.calledWith('./ask-for-more-time/check-and-send.njk', {
+        previousPage: paths.common.askForMoreTimeSupportingEvidence,
+        summaryRows: [{
+          key: { text: 'Question' },
+          value: { html: 'How much time do you need and why do you need it?' }
+        }, {
+          actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
+          key: { text: 'Answer' },
+          value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
+        }]
+      });
     });
 
     it('should render check and send page with evidence', () => {
@@ -247,22 +245,21 @@ describe('Ask for more time Controller', function () {
       ];
       getCheckAndSend(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith(
-        './ask-for-more-time/check-and-send.njk', {
-          previousPage: paths.common.askForMoreTimeSupportingEvidence,
-          summaryRows: [ {
-            key: { text: 'Question' },
-            value: { html: 'How much time do you need and why do you need it?' }
-          }, {
-            actions: { items: [ { href: '/ask-for-more-time', text: 'Change' } ] },
-            key: { text: 'Answer' },
-            value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
-          }, {
-            actions: { items: [ { href: paths.common.askForMoreTimeSupportingEvidenceUpload, text: 'Change' } ] },
-            key: { text: 'Supporting evidence' },
-            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/fileId\'>name.txt</a>' }
-          } ]
-        });
+      expect(res.render).to.have.been.calledWith('./ask-for-more-time/check-and-send.njk', {
+        previousPage: paths.common.askForMoreTimeSupportingEvidence,
+        summaryRows: [{
+          key: { text: 'Question' },
+          value: { html: 'How much time do you need and why do you need it?' }
+        }, {
+          actions: { items: [{ href: '/ask-for-more-time', text: 'Change' }] },
+          key: { text: 'Answer' },
+          value: { html: formatTextForCYA(req.session.appeal.makeAnApplicationDetails) }
+        }, {
+          actions: { items: [{ href: paths.common.askForMoreTimeSupportingEvidenceUpload, text: 'Change' }] },
+          key: { text: 'Supporting evidence' },
+          value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/fileId\'>name.txt</a>' }
+        }]
+      });
     });
 
     it('should call next with error', () => {
@@ -298,7 +295,7 @@ describe('Ask for more time Controller', function () {
     it('submits ask for more time', async () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.MAKE_AN_APPLICATION.TIME_EXTENSION, appeal, 'idamUID', 'atoken');
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.MAKE_AN_APPLICATION, appeal, 'idamUID', 'atoken');
       expect(req.session.appeal.askForMoreTime.inFlight).to.be.true;
     });
 

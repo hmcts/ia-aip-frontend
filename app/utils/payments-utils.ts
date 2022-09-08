@@ -19,7 +19,7 @@ export function payNowForApplicationNeeded(req: Request): boolean {
   const { paAppealTypeAipPaymentOption } = req.session.appeal;
   let payNow = false;
   payNow = payNow || appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow';
-  payNow = payNow || ['refusalOfEu', 'refusalOfHumanRights'].includes(appealType);
+  payNow = payNow || ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appealType);
   return payNow;
 }
 

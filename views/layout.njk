@@ -116,10 +116,10 @@
   }) }}
 {% endmacro %}
 
-{% macro continueToUrlButton() %}
+{% macro continueToUrlButton(reDirectTo = paths.common.provideMoreEvidenceCheck) %}
   {{ govukButton({
     text: "Continue",
-    href: paths.common.provideMoreEvidenceCheck
+    href: reDirectTo
   }) }}
 {% endmacro %}
 

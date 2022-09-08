@@ -1,10 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  checkAppealEnded, getAppealRefNumber,
+  checkAppealEnded,
+  checkEnableProvideMoreEvidenceSection,
+  getAppealRefNumber,
   getApplicationOverview,
   getHearingDetails,
-  setupApplicationOverviewController
+  setupApplicationOverviewController,
+  showAppealRequests,
+  showAppealRequestsInAppealEndedStatus,
+  showHearingRequests
 } from '../../../app/controllers/application-overview';
+import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
@@ -38,7 +44,7 @@ describe('Confirmation Page Controller', () => {
   };
 
   const expectedHistory = {
-    appealArgumentSection: [ {
+    appealArgumentSection: [{
       'date': '27 February 2020',
       'dateObject': sinon.match.any,
       'text': 'You told us why you think the Home Office decision to refuse your claim is wrong.',
@@ -55,10 +61,10 @@ describe('Confirmation Page Controller', () => {
           'title': 'Helpful information',
           'text': 'Understanding your Home Office documents',
           'href': '{{ paths.common.homeOfficeDocuments }}'
-        } ]
+        }]
     }
     ],
-    appealDetailsSection: [ {
+    appealDetailsSection: [{
       'date': '27 February 2020',
       'dateObject': sinon.match.any,
       'text': 'You sent your appeal details to the Tribunal.',
@@ -71,8 +77,8 @@ describe('Confirmation Page Controller', () => {
           'title': 'Helpful information',
           'text': 'What is a Tribunal Caseworker?',
           'href': '{{ paths.common.tribunalCaseworker }}'
-        } ]
-    } ]
+        }]
+    }]
   };
 
   beforeEach(() => {
@@ -142,7 +148,7 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    const expectedStages = [ {
+    const expectedStages = [{
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -162,7 +168,7 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    } ];
+    }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
@@ -176,6 +182,9 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -195,7 +204,7 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    const expectedStages = [ {
+    const expectedStages = [{
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -215,7 +224,7 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    } ];
+    }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
@@ -229,6 +238,9 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -249,7 +261,7 @@ describe('Confirmation Page Controller', () => {
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
-    const expectedStages = [ {
+    const expectedStages = [{
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -269,7 +281,7 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    } ];
+    }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
@@ -283,6 +295,9 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -315,7 +330,7 @@ describe('Confirmation Page Controller', () => {
       info: null
     };
 
-    const expectedStages = [ {
+    const expectedStages = [{
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -335,7 +350,7 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    } ];
+    }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Alex Developer',
@@ -349,6 +364,9 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -383,7 +401,7 @@ describe('Confirmation Page Controller', () => {
       info: null
     };
 
-    const expectedStages = [ {
+    const expectedStages = [{
       active: true,
       ariaLabel: 'Your appeal details stage',
       completed: false,
@@ -403,7 +421,7 @@ describe('Confirmation Page Controller', () => {
       ariaLabel: 'Your appeal decision stage',
       completed: false,
       title: 'Your appeal<br/> decision'
-    } ];
+    }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
       name: 'Appellant Name',
@@ -417,6 +435,9 @@ describe('Confirmation Page Controller', () => {
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showHearingRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
       hearingDetails: null
     });
@@ -486,6 +507,48 @@ describe('Confirmation Page Controller', () => {
     expect(result).to.equal(false);
   });
 
+  it('checkEnableProvideMoreEvidenceSection should return true when in preHearing state and featureFlag enabled', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: States.PRE_HEARING.id
+        }
+      }
+    };
+    const featureFlagEnabled = true;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(true);
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return false when in preHearing state and featureFlag not enabled', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: States.PRE_HEARING.id
+        }
+      }
+    };
+    const featureFlagEnabled = false;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(false);
+  });
+
+  it('checkEnableProvideMoreEvidenceSection should return true when in respondentReview state', () => {
+    const req = {
+      session: {
+        appeal: {
+          appealStatus: States.RESPONDENT_REVIEW.id
+        }
+      }
+    };
+    const featureFlagEnabled = false;
+    const { appealStatus } = req.session.appeal;
+    const result = checkEnableProvideMoreEvidenceSection(appealStatus, featureFlagEnabled);
+    expect(result).to.equal(true);
+  });
+
   it('getHearingDetails with case not ended', () => {
     req.session.appeal.hearing = {
       hearingCentre: 'taylorHouse',
@@ -496,5 +559,30 @@ describe('Confirmation Page Controller', () => {
     expect(result.hearingCentre).to.equal('Taylor House');
     expect(result.date).to.equal('02 February 2022');
     expect(result.time).to.equal('8:30 pm');
+  });
+
+  it('showAppealRequests should return true when in appealSubmitted state', () => {
+    const result = showAppealRequests(States.APPEAL_SUBMITTED.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('showAppealRequests should return false when in ended state', () => {
+    const result = showAppealRequests(States.ENDED.id, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showHearingRequests should return false when in appealSubmitted state', () => {
+    const result = showHearingRequests(States.APPEAL_SUBMITTED.id, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showHearingRequests should return true when in prepareForHearing state', () => {
+    const result = showHearingRequests(States.PREPARE_FOR_HEARING.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('showAppealRequestsInAppealEndedStatus should return true when in ended state', () => {
+    const result = showAppealRequestsInAppealEndedStatus(States.ENDED.id, true);
+    expect(result).to.equal(true);
   });
 });

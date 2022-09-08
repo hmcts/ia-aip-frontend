@@ -33,85 +33,85 @@ async function createSummaryRowsFrom(req: Request) {
         paths.appealStarted.appealOutOfCountry + editParameter
     ),
     addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.appealType,
-      [appealType],
-      paths.appealStarted.typeOfAppeal + editParameter
+        i18n.pages.checkYourAnswers.rowTitles.appealType,
+        [appealType],
+        paths.appealStarted.typeOfAppeal + editParameter
     )
   ];
 
   if (application.dateClientLeaveUk && application.dateClientLeaveUk.year && application.appealType === 'protection') {
     const decisionLetterReceivedDateRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused,
-      [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
-      paths.appealStarted.oocProtectionDepartureDate + editParameter,
-      Delimiter.SPACE);
+        i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused,
+        [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
+        paths.appealStarted.oocProtectionDepartureDate + editParameter,
+        Delimiter.SPACE);
     rows.push(decisionLetterReceivedDateRow);
   }
 
   if (application.outsideUkWhenApplicationMade && application.outsideUkWhenApplicationMade !== null) {
     const gwfReferenceNumberRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.outsideUKWhenApplicationWasMade,
-      [application.outsideUkWhenApplicationMade],
-      paths.appealStarted.oocHrEea + editParameter);
+        i18n.pages.checkYourAnswers.rowTitles.outsideUKWhenApplicationWasMade,
+        [application.outsideUkWhenApplicationMade],
+        paths.appealStarted.oocHrEea + editParameter);
     rows.push(gwfReferenceNumberRow);
   }
 
   if (application.dateClientLeaveUk && application.dateClientLeaveUk.year && application.appealType !== 'protection') {
     const decisionLetterReceivedDateRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused,
-      [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
-      paths.appealStarted.oocHrInside + editParameter,
-      Delimiter.SPACE);
+        i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused,
+        [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
+        paths.appealStarted.oocHrInside + editParameter,
+        Delimiter.SPACE);
     rows.push(decisionLetterReceivedDateRow);
   }
 
   if (application.gwfReferenceNumber && application.gwfReferenceNumber !== null) {
     const gwfReferenceNumberRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.gwfReferenceNumber,
-      [application.gwfReferenceNumber],
-      paths.appealStarted.gwfReference + editParameter);
+        [application.gwfReferenceNumber],
+        paths.appealStarted.gwfReference + editParameter);
     rows.push(gwfReferenceNumberRow);
   } else {
     const homeOfficeRefNumberRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,
-      [application.homeOfficeRefNumber],
-      paths.appealStarted.details + editParameter);
+        i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber,
+        [application.homeOfficeRefNumber],
+        paths.appealStarted.details + editParameter);
     rows.push(homeOfficeRefNumberRow);
   }
 
   if (application.decisionLetterReceivedDate && application.decisionLetterReceivedDate.year) {
     const decisionLetterReceivedDateRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived,
-      [application.decisionLetterReceivedDate.day, moment.months(parseInt(application.decisionLetterReceivedDate.month, 10) - 1), application.decisionLetterReceivedDate.year],
-      paths.appealStarted.letterReceived + editParameter,
-      Delimiter.SPACE);
+        i18n.pages.checkYourAnswers.rowTitles.dateLetterReceived,
+        [application.decisionLetterReceivedDate.day, moment.months(parseInt(application.decisionLetterReceivedDate.month, 10) - 1), application.decisionLetterReceivedDate.year],
+        paths.appealStarted.letterReceived + editParameter,
+        Delimiter.SPACE);
     rows.push(decisionLetterReceivedDateRow);
   } else {
     const dateLetterSentRow = addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
-      [application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year],
-      paths.appealStarted.letterSent + editParameter,
-      Delimiter.SPACE);
+        i18n.pages.checkYourAnswers.rowTitles.dateLetterSent,
+        [application.dateLetterSent.day, moment.months(parseInt(application.dateLetterSent.month, 10) - 1), application.dateLetterSent.year],
+        paths.appealStarted.letterSent + editParameter,
+        Delimiter.SPACE);
     rows.push(dateLetterSentRow);
   }
 
   const rowsCont = [
     addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
-      application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
-      paths.appealStarted.homeOfficeDecisionLetter + editParameter,
-      Delimiter.BREAK_LINE
+        i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter,
+        application.homeOfficeLetter.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
+        paths.appealStarted.homeOfficeDecisionLetter + editParameter,
+        Delimiter.BREAK_LINE
     ),
     addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.name,
-      [application.personalDetails.givenNames, application.personalDetails.familyName],
-      paths.appealStarted.name + editParameter,
-      Delimiter.SPACE
+        i18n.pages.checkYourAnswers.rowTitles.name,
+        [application.personalDetails.givenNames, application.personalDetails.familyName],
+        paths.appealStarted.name + editParameter,
+        Delimiter.SPACE
     ),
     addSummaryRow(
-      i18n.pages.checkYourAnswers.rowTitles.dob,
-      [application.personalDetails.dob.day, moment.months(parseInt(application.personalDetails.dob.month, 10) - 1), application.personalDetails.dob.year],
-      paths.appealStarted.dob + editParameter,
-      Delimiter.SPACE
+        i18n.pages.checkYourAnswers.rowTitles.dob,
+        [application.personalDetails.dob.day, moment.months(parseInt(application.personalDetails.dob.month, 10) - 1), application.personalDetails.dob.year],
+        paths.appealStarted.dob + editParameter,
+        Delimiter.SPACE
     ),
     addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.nationality,
@@ -210,9 +210,9 @@ async function createSummaryRowsFrom(req: Request) {
     const { paAppealTypeAipPaymentOption = null } = req.session.appeal;
     if (paAppealTypeAipPaymentOption) {
       const payNowRow = addSummaryRow(
-        i18n.pages.checkYourAnswers.rowTitles.paymentType,
-        [i18n.pages.checkYourAnswers[paAppealTypeAipPaymentOption]],
-        paths.appealStarted.payNow + editParameter
+          i18n.pages.checkYourAnswers.rowTitles.paymentType,
+          [i18n.pages.checkYourAnswers[paAppealTypeAipPaymentOption]],
+          paths.appealStarted.payNow + editParameter
       );
       rows.push(payNowRow);
     }
@@ -324,15 +324,12 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           isFeePaymentEnabled: 'Yes'
         };
         req.app.locals.logger.trace(`Payment success`, 'Finishing payment');
-        if (req.session.appeal.appealStatus === 'appealSubmitted' && req.session.appeal.paAppealTypeAipPaymentOption === 'payLater') {
-          event = Events.PAYMENT_APPEAL;
-          redirectUrl = paths.common.confirmationPayLater;
-        } else if (req.session.appeal.appealStatus === 'appealSubmitted') {
-          event = Events.PAYMENT_APPEAL;
-          redirectUrl = paths.appealSubmitted.confirmation;
-        } else if (req.session.appeal.appealStatus === 'appealStarted') {
+        if (req.session.appeal.appealStatus === 'appealStarted') {
           event = Events.SUBMIT_APPEAL;
           redirectUrl = paths.appealSubmitted.confirmation;
+        } else {
+          event = Events.PAYMENT_APPEAL;
+          redirectUrl = paths.common.confirmationPayLater;
         }
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {

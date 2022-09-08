@@ -1,0 +1,25 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "components/summary-list.njk" import govukSummaryList %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ pageTitle }}</h1>
+  {% if description %}
+    {% for line in description %}
+      <p>{{ line }}</p>
+    {% endfor %}
+  {% endif %}
+
+  {% if summaryLists %}
+    {% for summaryList in summaryLists %}
+      {% if summaryList.title %}
+        <h2 class="govuk-heading-l">{{ summaryList.title }}</h2>
+      {% endif %}
+      {{ govukSummaryList({
+        rows: summaryList.summaryRows
+      }) }}
+    {% endfor %}
+  {% endif %}
+
+  {{ contactUs() }}
+{% endblock %}

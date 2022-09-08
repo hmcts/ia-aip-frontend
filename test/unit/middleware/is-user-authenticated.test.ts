@@ -11,7 +11,8 @@ describe('is-user-authenticated middleware', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = {
-      cookies: {}
+      cookies: {},
+      session: {}
     } as Partial<Request>;
     res = {
       locals: {}
@@ -34,5 +35,18 @@ describe('is-user-authenticated middleware', () => {
     isUserAuthenticated(req as Request, res as Response, next);
 
     expect(res.locals.authenticated).to.be.true;
+  });
+
+  it('should set redirect url', () => {
+    req.originalUrl = '/ask-judge-review';
+    isUserAuthenticated(req as Request, res as Response, next);
+
+    expect(req.session.redirectUrl).to.eql('/ask-judge-review');
+  });
+
+  it('should set redirect url', () => {
+    isUserAuthenticated(req as Request, res as Response, next);
+
+    expect(req.session.redirectUrl).to.be.undefined;
   });
 });

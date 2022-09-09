@@ -42,16 +42,16 @@ withPipeline("nodejs", product, component) {
   after('checkout') { sh 'yarn cache clean' }
   after('build') { sh 'yarn build' }
 
+  loadVaultSecrets(secrets)
 
-loadVaultSecrets(secrets)
   enableAksStagingDeployment()
   disableLegacyDeployment()
 
-env.S2S_MICROSERVICE_NAME = 'iac'
-env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
-env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+  env.S2S_MICROSERVICE_NAME = 'iac'
+  env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
+  env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
 
- before("functionalTest") {
-   env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
- }
+  before("functionalTest") {
+    env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
+  }
 }

@@ -67,6 +67,7 @@ interface Evidence {
   suppliedBy?: string;
   description?: string;
   dateUploaded?: string;
+  uploadedBy?: string;
 }
 
 interface AdditionalEvidenceDocument {
@@ -79,6 +80,8 @@ interface AdditionalEvidence {
   id?: string;
   value: {
     tag: string;
+    suppliedBy?: string;
+    uploadedBy?: string;
     document?: SupportingDocument;
     description?: string;
     dateUploaded?: string;
@@ -88,6 +91,16 @@ interface AdditionalEvidence {
 interface DocumentUploadResponse {
   fileId: string;
   name: string;
+}
+
+interface Value {
+  code: string;
+  label: string;
+}
+
+interface MakeAnApplicationTypes {
+  value: Value;
+  list_items?: Value[];
 }
 
 interface Appeal {
@@ -120,7 +133,8 @@ interface Appeal {
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
   outOfTimeDecisionMaker?: string;
-  makeAnApplicationTypes?: any;
+  makeAnApplicationProvideEvidence?: string;
+  makeAnApplicationTypes?: MakeAnApplicationTypes;
   makeAnApplicationDetails?: string;
   makeAnApplicationEvidence?: Evidence[];
   makeAnApplications?: Collection<Application<Evidence>>[];
@@ -141,7 +155,9 @@ interface Appeal {
   feeVersion?: string;
   feeAmountGbp?: string;
   additionalEvidenceDocuments?: Evidence[];
+  addendumEvidenceDocuments?: Evidence[];
   additionalEvidence?: AdditionalEvidenceDocument[];
+  addendumEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;

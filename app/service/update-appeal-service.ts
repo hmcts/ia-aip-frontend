@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { string } from 'joi';
 import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
@@ -465,6 +466,7 @@ export default class UpdateAppealService {
       ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
       ...caseData.legalRepresentativeDocuments && { legalRepresentativeDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.legalRepresentativeDocuments, documentMap) },
       ...caseData.additionalEvidenceDocuments && { additionalEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.additionalEvidenceDocuments, documentMap) },
+      ...caseData.addendumEvidenceDocuments && { addendumEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.addendumEvidenceDocuments, documentMap) },
       ...caseData.tribunalDocuments && { tribunalDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.tribunalDocuments, documentMap) },
       ...caseData.hearingDocuments && { hearingDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.hearingDocuments, documentMap) },
       ...caseData.finalDecisionAndReasonsDocuments && { finalDecisionAndReasonsDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.finalDecisionAndReasonsDocuments, documentMap) },
@@ -489,7 +491,12 @@ export default class UpdateAppealService {
       ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
       ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
       hearingCentre: caseData.hearingCentre || null,
-      documentMap
+      documentMap: documentMap.map(doc => {
+        return {
+          id: doc.id,
+          url: this.formatDocUrl(doc.url)
+        };
+      })
     };
     return appeal;
   }
@@ -520,6 +527,7 @@ export default class UpdateAppealService {
       }
 
       if (appeal.application.isAppealLate) {
+        caseData.recordedOutOfTimeDecision = 'No';
         if (_.has(appeal.application.lateAppeal, 'reason')) {
           caseData.applicationOutOfTimeExplanation = appeal.application.lateAppeal.reason;
         }
@@ -598,7 +606,7 @@ export default class UpdateAppealService {
           subscription.mobileNumber = appeal.application.contactDetails.phone;
           caseData.appellantPhoneNumber = appeal.application.contactDetails.phone;
         }
-        caseData.subscriptions = [ { value: subscription } ];
+        caseData.subscriptions = [{ value: subscription }];
 
         if (appeal.application.hasSponsor) {
           caseData.hasSponsor = appeal.application.hasSponsor;
@@ -646,7 +654,7 @@ export default class UpdateAppealService {
             sponsorSubscription.mobileNumber = appeal.application.sponsorContactDetails.phone;
             caseData.sponsorMobileNumber = appeal.application.sponsorContactDetails.phone;
           }
-          caseData.sponsorSubscriptions = [ { value: sponsorSubscription } ];
+          caseData.sponsorSubscriptions = [{ value: sponsorSubscription }];
         }
 
         if (appeal.application.sponsorAuthorisation) {
@@ -893,6 +901,9 @@ export default class UpdateAppealService {
       ...appeal.additionalEvidence && {
         additionalEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.additionalEvidence, appeal.documentMap)
       },
+      ...appeal.addendumEvidence && {
+        addendumEvidence: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.addendumEvidence, appeal.documentMap)
+      },
       ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
       ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
       ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) }
@@ -906,7 +917,7 @@ export default class UpdateAppealService {
       return {
         id: evidence.fileId,
         value: {
-          description: 'additionalEvidenceDocument',
+          description: evidence.description || 'additionalEvidenceDocument',
           document: {
             document_filename: evidence.name,
             document_url: documentLocationUrl,
@@ -1070,8 +1081,10 @@ export default class UpdateAppealService {
         name: doc.value.document.document_filename,
         ...doc.id && { id: doc.id },
         ...doc.value.tag && { tag: doc.value.tag },
+        ...doc.value.suppliedBy && { suppliedBy: doc.value.suppliedBy },
+        ...doc.value.uploadedBy && { uploadedBy: doc.value.uploadedBy },
         ...doc.value.description && { description: doc.value.description },
-        ...doc.value.dateUploaded && { dateUploaded: moment(doc.value.dateUploaded).format('DD MMMM YYYY') }
+        ...doc.value.dateUploaded && { dateUploaded: moment(new Date(doc.value.dateUploaded)).format('DD MMMM YYYY') }
       };
     });
     return evidences;
@@ -1223,6 +1236,13 @@ export default class UpdateAppealService {
         caseData.remoteVideoCallDescription = otherNeeds.remoteVideoCallDescription;
       }
     }
+  }
+
+  private formatDocUrl(docUrl: string): string {
+    if (process.env.NODE_ENV === 'development') {
+      return `${process.env.DOC_MANAGEMENT_URL}/documents${docUrl.substring(docUrl.lastIndexOf('/'))}`;
+    }
+    return docUrl;
   }
 }
 

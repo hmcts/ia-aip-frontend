@@ -17,6 +17,7 @@ const emailToUserId = {
   'outOfTimeDecisionGranted@example.com': '14',
   'outOfTimeDecisionRejected@example.com': '15',
   'outOfTimeDecisionInTime@example.com': '16',
+  'preHearing@example.com': '17',
   'setupcase@example.com': '999'
 };
 

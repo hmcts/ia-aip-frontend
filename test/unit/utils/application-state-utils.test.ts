@@ -302,7 +302,8 @@ describe('application-state-utils', () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending',
-            applicant: 'Appellant'
+            applicant: 'Appellant',
+            type: 'Time extension'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -456,7 +457,8 @@ describe('application-state-utils', () => {
         const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
           value: {
             decision: 'Pending',
-            applicant: 'Appellant'
+            applicant: 'Appellant',
+            type: 'Time extension'
           }
         };
         req.session.appeal.makeAnApplications = [timeExtensionApplication as Collection<Application<Evidence>>];
@@ -782,7 +784,8 @@ describe('application-state-utils', () => {
       const timeExtensionApplication: Collection<Partial<Application<Evidence>>> = {
         value: {
           decision: 'Pending',
-          applicant: 'Appellant'
+          applicant: 'Appellant',
+          type: 'Time extension'
         }
       };
       req.session.appeal.appealStatus = 'submitHearingRequirements';
@@ -885,8 +888,7 @@ describe('application-state-utils', () => {
           'deadline': 'TBC',
           descriptionParagraphs: [
             'Review your <a href=\"{{ paths.common.noticeEndedAppealViewer }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.',
-            'If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to ask for the decision to be reviewed by a judge.',
-            'You can do this by emailing <a href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a>. Please include your Appeal reference in the subject line of the email.',
+            'If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to <a href="{{ paths.makeApplication.judgesReview }}">ask for a judge to review the decision</a>.',
             '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>',
             '<a href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>.'
           ],
@@ -921,7 +923,8 @@ describe('application-state-utils', () => {
   });
 
   function getPreHearingAndFinalBundling() {
-    return { 'allowedAskForMoreTime': false,
+    return {
+      'allowedAskForMoreTime': false,
       'cta': {},
       'date': '11 August 2020',
       'deadline': 'TBC',

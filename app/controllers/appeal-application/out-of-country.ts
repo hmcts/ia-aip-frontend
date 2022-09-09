@@ -71,21 +71,21 @@ function postAppellantInUk(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getOocHrInside(req: Request, res: Response, next: NextFunction) {
+function getOocHrEuInside(req: Request, res: Response, next: NextFunction) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const { dateClientLeaveUk } = req.session.appeal.application;
-    res.render('appeal-application/out-of-country/hr-inside.njk', {
+    res.render('appeal-application/out-of-country/hr-eu-inside.njk', {
       dateClientLeaveUk,
       previousPage: paths.appealStarted.oocHrEea
     });
-  } catch (getOocHrInsideError) {
-    next(getOocHrInsideError);
+  } catch (getOocHrEuInsideError) {
+    next(getOocHrEuInsideError);
   }
 }
 
-function postOocHrInside(updateAppealService: UpdateAppealService) {
+function postOocHrEuInside(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!shouldValidateWhenSaveForLater(req.body, 'day', 'month', 'year')) {
@@ -93,7 +93,7 @@ function postOocHrInside(updateAppealService: UpdateAppealService) {
       }
       const validation = dateLeftUkValidation(req.body);
       if (validation) {
-        return res.render('appeal-application/out-of-country/hr-inside.njk', {
+        return res.render('appeal-application/out-of-country/hr-eu-inside.njk', {
           error: validation, errorList: Object.values(validation),
           dateClientLeaveUk: {
             ...req.body
@@ -123,8 +123,8 @@ function postOocHrInside(updateAppealService: UpdateAppealService) {
 
       let redirectPage = getRedirectPage(editingMode, paths.appealStarted.checkAndSend, req.body.saveForLater, paths.appealStarted.taskList);
       return res.redirect(redirectPage);
-    } catch (postOocHrInsideError) {
-      next(postOocHrInsideError);
+    } catch (postOocHrEuInsideError) {
+      next(postOocHrEuInsideError);
     }
   };
 }
@@ -149,8 +149,9 @@ function postGwfReference(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'gwfReferenceNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview);
       }
+      const isEuSettlementScheme = req.session.appeal.application.appealType === 'euSettlementScheme';
       const validation = gwfReferenceNumberValidation(req.body);
-      if (validation) {
+      if (validation && !isEuSettlementScheme) {
         return res.render('appeal-application/out-of-country/gwf-reference.njk',
           {
             errors: validation,
@@ -228,8 +229,9 @@ function postOocHrEea(updateAppealService: UpdateAppealService) {
       };
 
       const refusalOfHumanRights: boolean = (req.session.appeal.application.appealType === 'refusalOfHumanRights');
+      const euSettlementScheme: boolean = (req.session.appeal.application.appealType === 'euSettlementScheme');
       const outsideUkWhenApplicationMade: boolean = (req.body['answer'] === 'Yes') || false;
-      let redirectPage = (!outsideUkWhenApplicationMade && refusalOfHumanRights) ? paths.appealStarted.oocHrInside : paths.appealStarted.taskList;
+      let redirectPage = (!outsideUkWhenApplicationMade && (refusalOfHumanRights || euSettlementScheme)) ? paths.appealStarted.oocHrEuInside : paths.appealStarted.taskList;
       return res.redirect(redirectPage);
     } catch (postOocHrEeaError) {
       next(postOocHrEeaError);
@@ -300,8 +302,8 @@ function setupOutOfCountryController(middleware: Middleware[], updateAppealServi
   const router = Router();
   router.get(paths.appealStarted.appealOutOfCountry, middleware, getAppellantInUk);
   router.post(paths.appealStarted.appealOutOfCountry, middleware, postAppellantInUk(updateAppealService));
-  router.get(paths.appealStarted.oocHrInside, middleware, getOocHrInside);
-  router.post(paths.appealStarted.oocHrInside, middleware, postOocHrInside(updateAppealService));
+  router.get(paths.appealStarted.oocHrEuInside, middleware, getOocHrEuInside);
+  router.post(paths.appealStarted.oocHrEuInside, middleware, postOocHrEuInside(updateAppealService));
   router.get(paths.appealStarted.gwfReference, middleware, getGwfReference);
   router.post(paths.appealStarted.gwfReference, middleware, postGwfReference(updateAppealService));
   router.get(paths.appealStarted.oocHrEea, middleware, getOocHrEea);
@@ -314,8 +316,8 @@ function setupOutOfCountryController(middleware: Middleware[], updateAppealServi
 export {
   getAppellantInUk,
   postAppellantInUk,
-  getOocHrInside,
-  postOocHrInside,
+  getOocHrEuInside,
+  postOocHrEuInside,
   getGwfReference,
   postGwfReference,
   getOocHrEea,

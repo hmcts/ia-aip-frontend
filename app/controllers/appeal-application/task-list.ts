@@ -8,9 +8,9 @@ async function getAppealStageStatus(req: Request) {
   const paymentsFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
   const checkAndSendTask = paymentsFlag ? 'checkAndSendWithPayments' : 'checkAndSend';
   const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
-  const humanRightsOrEEA: boolean = (req.session.appeal.application.appealType === 'refusalOfEu' || req.session.appeal.application.appealType === 'refusalOfHumanRights');
+  const humanRightsOrEEAOrEU: boolean = (req.session.appeal.application.appealType === 'refusalOfEu' || req.session.appeal.application.appealType === 'refusalOfHumanRights' || req.session.appeal.application.appealType === 'euSettlementScheme');
 
-  const homeOfficeDetails: string = (outsideUkWhenApplicationMade && humanRightsOrEEA) ? 'homeOfficeDetailsOOC' : 'homeOfficeDetails';
+  const homeOfficeDetails: string = (outsideUkWhenApplicationMade && humanRightsOrEEAOrEU) ? 'homeOfficeDetailsOOC' : 'homeOfficeDetails';
 
   const yourDetails = buildSectionObject('yourDetails', ['typeOfAppeal', homeOfficeDetails, 'personalDetails', 'contactDetails'], status);
   const decisionType = buildSectionObject('decisionType', ['decisionType'], status);

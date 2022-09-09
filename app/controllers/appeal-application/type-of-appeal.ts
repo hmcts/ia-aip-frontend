@@ -90,6 +90,7 @@ function getDefaultRedirect(citizenInUk: boolean, appealType: string): string {
   switch (true) {
     case (!citizenInUk && appealType === 'refusalOfEu'):
     case (!citizenInUk && appealType === 'refusalOfHumanRights'):
+    case (!citizenInUk && appealType === 'euSettlementScheme'):
       return paths.appealStarted.oocHrEea;
     case (!citizenInUk && appealType === 'protection'):
       return paths.appealStarted.oocProtectionDepartureDate;

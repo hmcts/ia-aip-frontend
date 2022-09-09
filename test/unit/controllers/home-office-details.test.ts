@@ -527,7 +527,7 @@ describe('Home Office Details Controller', function () {
       sandbox.restore();
       LaunchDarklyService.close();
     });
-    it('should render hr-inside.njk', async () => {
+    it('should render hr-eu-inside.njk', async () => {
       req.session.appeal.application.dateLetterSent = {
         day: '1',
         month: '1',
@@ -540,7 +540,7 @@ describe('Home Office Details Controller', function () {
       });
     });
 
-    it('getOocHrInside should catch exception and call next with the error', async () => {
+    it('getOocHrEuInside should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       getDateLetterSent(req as Request, res as Response, next);
@@ -590,7 +590,7 @@ describe('Home Office Details Controller', function () {
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.homeOfficeDecisionLetter);
     });
 
-    it('should fail validation and render hr-inside.njk with a validation error', async () => {
+    it('should fail validation and render hr-eu-inside.njk with a validation error', async () => {
       req.body = { 'answer': undefined };
       const expectedError: ValidationError = {
         key: 'day',

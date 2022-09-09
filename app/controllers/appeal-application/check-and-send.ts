@@ -60,7 +60,7 @@ async function createSummaryRowsFrom(req: Request) {
     const decisionLetterReceivedDateRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused,
       [application.dateClientLeaveUk.day, moment.months(parseInt(application.dateClientLeaveUk.month, 10) - 1), application.dateClientLeaveUk.year],
-      paths.appealStarted.oocHrInside + editParameter,
+      paths.appealStarted.oocHrEuInside + editParameter,
       Delimiter.SPACE);
     rows.push(decisionLetterReceivedDateRow);
   }

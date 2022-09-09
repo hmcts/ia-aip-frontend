@@ -2912,7 +2912,7 @@
       "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find your GWF reference number.",
       "homeOfficeReferenceNumberLabel": "Enter your GWF reference number"
     },
-    "hrInside": {
+    "hrEuInside": {
       "title": "What date did you leave the UK after your application to stay in the country was refused?",
       "dateTitle": "Enter the date",
       "dateHint": "For example, 31 3 2019",

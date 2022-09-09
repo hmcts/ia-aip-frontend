@@ -1,5 +1,4 @@
 import config from 'config';
-import { response } from 'express';
 import rp from 'request-promise';
 import Logger, { getLogLabel } from '../utils/logger';
 import { asBooleanValue } from '../utils/utils';
@@ -88,9 +87,6 @@ class CcdService {
   }
 
   loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails>> {
-    // tslint:disable:no-console
-    console.log(userId);
-    console.log(headers);
     const query = {
       query: { match_all: {} },
       sort: [{ id: { order: 'asc' } }]
@@ -100,11 +96,7 @@ class CcdService {
       headers,
         `${ccdBaseUrl}/searchCases?ctid=${caseType}`);
     options.body = query;
-    console.trace('Options.....', logLabel);
-    console.trace(JSON.stringify(options), logLabel);
     let response = rp.post(options);
-    console.trace('ES Response , CCDCaseDetails', logLabel);
-    console.trace(JSON.stringify(response), logLabel);
     return response;
   }
 
@@ -157,11 +149,8 @@ class CcdService {
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
-    console.trace('*********** loadOrCreateCase ********************', logLabel);
     const data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
-    console.trace(JSON.stringify(data.cases[0]), logLabel);
     if (data.length > 0) {
-      console.trace('case ..... ', JSON.stringify(data.cases[0]), logLabel);
       return data.cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);

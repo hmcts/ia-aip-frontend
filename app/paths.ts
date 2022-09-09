@@ -212,6 +212,14 @@ const paths = {
     changeRepresentation: '/change-representation',
     changeRepresentationDownload: '/change-representation-download',
 
+    // Start Representing Yourself
+    startRepresentingYourself: {
+      start: '/start-representing-yourself',
+      enterCaseNumber: '/start-representing-yourself/enter-case-number',
+      enterSecurityCode: '/start-representing-yourself/enter-security-code',
+      confirmDetails: '/start-representing-yourself/confirm-case-details'
+    },
+
     // Session extension
     extendSession: '/extend-session',
     sessionExpired: '/session-ended',

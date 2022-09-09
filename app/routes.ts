@@ -94,6 +94,7 @@ import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-c
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
+import { setupStartRepresentingMyselfControllers } from './controllers/start-represent-yourself';
 import { setupStartController } from './controllers/startController';
 import { setupProvideMoreEvidenceController } from './controllers/upload-evidence/provide-more-evidence-controller';
 import { PageSetup } from './interfaces/PageSetup';
@@ -127,6 +128,7 @@ const startController = setupStartController();
 const healthController = setupHealthController();
 const notFoundController = setupNotFoundController();
 const idamController = setupIdamController();
+const startRepresentingMyselfControllers = setupStartRepresentingMyselfControllers();
 
 const middleware = [isJourneyAllowedMiddleware];
 
@@ -231,6 +233,7 @@ router.use(GuidancePages);
 router.use(footerController);
 router.use(sessionController);
 router.use(notFoundController);
+router.use(startRepresentingMyselfControllers);
 
 // protected by idam
 router.use(idamController);

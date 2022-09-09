@@ -1,0 +1,17 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.startRepresentingYourself.title }}</h1>
+
+  <p>{{ i18n.pages.startRepresentingYourself.instructions }}</p>
+  <p>{{ i18n.pages.startRepresentingYourself.summary }}</p>
+
+  {{ govukButton({
+    text: i18n.pages.startRepresentingYourself.startButton,
+    href: paths.common.startRepresentingYourself.enterCaseNumber
+  }) }}
+
+  {{ contactUs() }}
+{% endblock %}

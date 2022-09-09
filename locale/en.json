@@ -452,6 +452,36 @@
       "downloadInstructions": "Click the download button to save a document that you can email or post to your legal representative. The document includes all the information your legal representative will need to access your case.",
       "downloadButton": "Document download"
     },
+    "startRepresentingYourself": {
+      "title": "Start representing yourself",
+      "instructions": "You no longer have a legal representative for this appeal. To start representing yourself, you must enter the online case reference number and security code from the email, text message or letter we sent you.",
+      "summary": "This will give you access to all the details of your case so far.",
+      "startButton": "Start now",
+      "continueButton": "Continue",
+      "enterCaseReference": {
+        "title": "Enter your online case reference number",
+        "instructions": "Enter the online case reference number from the email, text message or letter we sent you.",
+        "fieldName": "Online case reference number",
+        "fieldHint": "For example, 1234-1234-1234-1234",
+        "error": "Please enter the online case reference number."
+      },
+      "enterSecurityCode": {
+        "title": "Enter your security code",
+        "instructions": "Enter the security code from the email, text message or letter we sent you.",
+        "fieldName": "Security code",
+        "error": "Please enter the security code."
+      },
+      "confirmDetails": {
+        "title": "Case details",
+        "instructions": "These are your case details. If these are ot the correct details, you should contact the Tribunal.",
+        "fieldName": "Name",
+        "fieldDateOfBirth": "Date of birth",
+        "fieldReferenceNumber": "Online case reference number",
+        "nextStepTitle": "Access your case",
+        "nextStepInstructions": "You can now access your case. You will first need to create an account or sign in if you already have one."
+      },
+      "pipValidationFailed": "Access validation failed, please try again."
+    },
     "provideMoreEvidence": {
       "additionalEvidenceDefaultDescription": "Additional evidence",
       "form": {

@@ -1,0 +1,25 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  <h1 class="govuk-heading-xl">{{ i18n.pages.startRepresentingYourself.confirmDetails.title }}</h1>
+
+  <p>{{ i18n.pages.startRepresentingYourself.confirmDetails.instructions }}</p>
+
+  {{ govukSummaryList({
+    rows: caseDetails
+  }) }}
+
+  <h3 class="govuk-heading-s">{{ i18n.pages.startRepresentingYourself.confirmDetails.nextStepTitle }}</h3>
+  <p>{{ i18n.pages.startRepresentingYourself.confirmDetails.nextStepInstructions }}</p>
+
+  <form action="{{ paths.common.startRepresentingYourself.confirmDetails }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukButton({
+        text: i18n.pages.startRepresentingYourself.continueButton
+    }) }}
+  </form>
+
+{% endblock %}

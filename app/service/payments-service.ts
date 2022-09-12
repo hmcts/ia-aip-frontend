@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import * as paymentApi from '../api/payments-api';
 import { Events } from '../data/events';
 import { paths } from '../paths';
-import { appendCaseReferenceAndAppellantName } from '../utils/payments-utils';
 import { getUrl } from '../utils/url-utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import UpdateAppealService from './update-appeal-service';
@@ -19,11 +18,9 @@ export default class PaymentService {
   // TODO: use the actual fee to initiate the payment
   async createCardPayment(req: Request, fee) {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
-    const referenceNumber = req.session.appeal.appealReferenceNumber;
-    const appellantSurname = req.session.appeal.application.personalDetails.familyName;
     const body = {
       amount: fee.calculated_amount,
-      case_reference: appendCaseReferenceAndAppellantName(referenceNumber, appellantSurname),
+      case_reference: req.session.appeal.ccdCaseId,
       ccd_case_number: req.session.appeal.ccdCaseId,
       channel: 'online',
       currency: 'GBP',
@@ -65,9 +62,5 @@ export default class PaymentService {
     }
     const response = await this.createCardPayment(req, fee);
     return res.redirect(response._links.next_url.href);
-  }
-
-  async paymentDetails(req: Request): Promise<any> {
-    return undefined;
   }
 }

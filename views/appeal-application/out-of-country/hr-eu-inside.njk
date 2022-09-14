@@ -14,16 +14,16 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form action="{{ paths.appealStarted.oocHrInside }}" method="post">
+  <form action="{{ paths.appealStarted.oocHrEuInside }}" method="post">
     {% call govukFieldset({
       legend: {
-        text: i18n.pages.hrInside.title,
+        text: i18n.pages.hrEuInside.title,
         classes: "govuk-fieldset__legend--xl",
         isPageHeading: true
       }
     }) %}
 
-      <span>{{ i18n.pages.hrInside.dateTitle }}</span>
+      <span>{{ i18n.pages.hrEuInside.dateTitle }}</span>
       <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       {% set errorMessage =  error.day.text if error.day %}
       {% set errorMessage =  error.month.text if error.month else errorMessage %}
@@ -33,7 +33,7 @@
       {{ govukDateInput({
         fieldset: {},
         hint: {
-          text: i18n.pages.hrInside.dateHint
+          text: i18n.pages.hrEuInside.dateHint
         },
         id: 'date',
         name: 'date',

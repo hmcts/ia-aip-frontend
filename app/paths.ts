@@ -29,7 +29,7 @@ const paths = {
     taskList: '/about-appeal',
     appealOutOfCountry: '/in-the-uk',
     gwfReference: '/gwf-reference',
-    oocHrInside: '/ooc-hr-inside',
+    oocHrEuInside: '/ooc-hr-eu-inside',
     oocHrEea: '/ooc-hr-eea',
     oocProtectionDepartureDate: '/ooc-protection-departure-date'
   },

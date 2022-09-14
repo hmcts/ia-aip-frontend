@@ -30,7 +30,8 @@ function postHomeOfficeDetails(updateAppealService: UpdateAppealService) {
         return getConditionalRedirectUrl(req, res, paths.common.overview);
       }
       const validation = homeOfficeNumberValidation(req.body);
-      if (validation) {
+      const isEuSettlementScheme: boolean = req.session.appeal.application.appealType === 'euSettlementScheme';
+      if (validation && !isEuSettlementScheme) {
         return res.render('appeal-application/home-office/details.njk',
           {
             errors: validation,

@@ -1,5 +1,15 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { getAppellantInUk, getOocHrInside, getOocProtectionDepartureDate, postAppellantInUk, postOocHrInside, postOocProtectionDepartureDate, setupOutOfCountryController } from '../../../app/controllers/appeal-application/out-of-country';
+import {
+  getAppellantInUk,
+  getGwfReference,
+  getOocHrEea,
+  getOocHrEuInside,
+  getOocProtectionDepartureDate,
+  postAppellantInUk, postGwfReference, postOocHrEea,
+  postOocHrEuInside,
+  postOocProtectionDepartureDate,
+  setupOutOfCountryController
+} from '../../../app/controllers/appeal-application/out-of-country';
 import { getTypeOfAppeal } from '../../../app/controllers/appeal-application/type-of-appeal';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
@@ -73,8 +83,8 @@ describe('Out of Country Controller', function () {
       setupOutOfCountryController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.appealOutOfCountry);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.appealOutOfCountry);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.oocHrInside);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.oocHrInside);
+      expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.oocHrEuInside);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.oocHrEuInside);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.gwfReference);
       expect(routerPOSTStub).to.have.been.calledWith(paths.appealStarted.gwfReference);
       expect(routerGetStub).to.have.been.calledWith(paths.appealStarted.oocHrEea);
@@ -170,33 +180,195 @@ describe('Out of Country Controller', function () {
     });
   });
 
-  describe('getOocHrInside', () => {
+  describe('getOocHrEuInside', () => {
     afterEach(() => {
       sandbox.restore();
       LaunchDarklyService.close();
     });
-    it('should render hr-inside.njk', async () => {
+    it('should render hr-eu-inside.njk', async () => {
       req.session.appeal.application.dateClientLeaveUk = {
         day: '1',
         month: '1',
         year: '2022'
       };
-      getOocHrInside(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-inside.njk', {
+      getOocHrEuInside(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-eu-inside.njk', {
         dateClientLeaveUk: req.session.appeal.application.dateClientLeaveUk,
         previousPage: paths.appealStarted.oocHrEea
       });
     });
 
-    it('getOocHrInside should catch exception and call next with the error', async () => {
+    it('getOocHrEuInside should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      getOocHrInside(req as Request, res as Response, next);
+      getOocHrEuInside(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
 
-  describe('postOocHrInside', () => {
+  describe('getGwfReference', () => {
+    afterEach(() => {
+      sandbox.restore();
+      LaunchDarklyService.close();
+    });
+    it('should render gwf-reference.njk', async () => {
+      // @ts-ignore
+      req.session.appeal.application.gwfReferenceNumber = {
+        gwfReferenceNumber: '123123123'
+      };
+      getGwfReference(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/gwf-reference.njk', {
+        gwfReferenceNumber: req.session.appeal.application.gwfReferenceNumber,
+        previousPage: paths.appealStarted.taskList
+      });
+    });
+
+    it('getGwfReference should catch exception and call next with the error', async () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getGwfReference(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postGwfReference', () => {
+    let appeal: Appeal;
+    beforeEach(() => {
+      req.body.gwfReferenceNumber = '123123123';
+
+      appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          appealType: 'euSettlementScheme',
+          gwfReferenceNumber: req.body.gwfReferenceNumber
+        }
+      };
+
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          appealType: 'euSettlementScheme',
+          gwfReferenceNumber: req.body.gwfReferenceNumber
+        }
+      } as Appeal);
+    });
+
+    it('should validate the gwf Reference Number', async () => {
+      req.body['gwfReferenceNumber'] = '123123123';
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/gwf-reference.njk', {
+        errors: {
+          gwfReferenceNumber: {
+            key: 'gwfReferenceNumber',
+            text: 'Enter the GWF reference number in the correct format',
+            href: '#gwfReferenceNumber'
+          }
+        },
+        errorList: [
+          {
+            key: 'gwfReferenceNumber',
+            text: 'Enter the GWF reference number in the correct format',
+            href: '#gwfReferenceNumber'
+          }
+        ],
+        gwfReferenceNumber: '123123123',
+        previousPage: paths.appealStarted.taskList
+      });
+    });
+
+    it('should redirect to the check and send page', async () => {
+      req.session.appeal.application.appealType = 'euSettlementScheme';
+      await postGwfReference(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.letterReceived);
+    });
+  });
+
+  describe('getOocHrEea', () => {
+    afterEach(() => {
+      sandbox.restore();
+      LaunchDarklyService.close();
+    });
+    it('should render out-of-country/hr-eea.njk', async () => {
+      req.session.appeal.appealOutOfCountry = 'No';
+      await getOocHrEea(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-eea.njk', {
+        question: 'Were you outside the UK when you made your application?',
+        description: undefined,
+        modal: undefined,
+        questionId: undefined,
+        previousPage: paths.appealStarted.typeOfAppeal,
+        answer: undefined,
+        errors: undefined,
+        errorList: undefined
+      });
+    });
+
+    it('getOocHrEea should catch exception and call next with the error', async () => {
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      await getOocHrEea(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postOocHrEea', () => {
+    let appeal: Appeal;
+    beforeEach(() => {
+      req.body.outsideUkWhenApplicationMade = 'No';
+
+      appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          appealType: 'euSettlementScheme',
+          outsideUkWhenApplicationMade: req.body.outsideUkWhenApplicationMade
+        }
+      };
+
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          appealType: 'euSettlementScheme',
+          outsideUkWhenApplicationMade: req.body.outsideUkWhenApplicationMade
+        }
+      } as Appeal);
+    });
+
+    it('should fail validation and render hr-eu-inside.njk with a validation error', async () => {
+      req.body = { 'answer': undefined };
+      const expectedError: ValidationError = {
+        key: 'answer',
+        text: 'Select yes if you are were living outside the United Kingdom when you made your application',
+        href: '#answer'
+      };
+
+      await postOocHrEea(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-eea.njk', {
+        question: 'Were you outside the UK when you made your application?',
+        description: undefined,
+        modal: undefined,
+        questionId: undefined,
+        previousPage: paths.appealStarted.typeOfAppeal,
+        answer: undefined,
+        errors: { answer: expectedError },
+        errorList: [expectedError]
+      });
+    });
+
+    it('should redirect to the check and send page', async () => {
+      req.body['answer'] = 'No';
+      req.session.appeal.application.appealType = 'euSettlementScheme';
+      await postOocHrEea(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.oocHrEuInside);
+    });
+  });
+
+  describe('postOocHrEuInside', () => {
     let appeal: Appeal;
     beforeEach(() => {
       req.body.day = 1;
@@ -231,13 +403,13 @@ describe('Out of Country Controller', function () {
       req.body['day'] = 1;
       req.body['month'] = 11;
       req.body['year'] = 1993;
-      await postOocHrInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postOocHrEuInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.taskList);
     });
 
-    it('should fail validation and render hr-inside.njk with a validation error', async () => {
+    it('should fail validation and render hr-eu-inside.njk with a validation error', async () => {
       req.body = { 'answer': undefined };
       const expectedError: ValidationError = {
         key: 'day',
@@ -245,10 +417,10 @@ describe('Out of Country Controller', function () {
         href: '#day'
       };
 
-      await postOocHrInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postOocHrEuInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-inside.njk', {
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-eu-inside.njk', {
         error: { day: expectedError },
         errorList: [expectedError],
         dateClientLeaveUk: {
@@ -258,11 +430,11 @@ describe('Out of Country Controller', function () {
       });
     });
 
-    it('postOocHrInside should catch exception and call next with the error', async () => {
+    it('postOocEu should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       req.body = { 'dateClientLeaveUk': undefined };
       res.render = sandbox.stub().throws(error);
-      await postOocHrInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postOocHrEuInside(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -363,5 +535,4 @@ describe('Out of Country Controller', function () {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
-
 });

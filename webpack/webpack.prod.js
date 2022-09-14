@@ -17,9 +17,9 @@ const clientConfig = {
     }
 };
 
-const devConfig = {
+const prodConfig = {
   server: serverConfig,
   client: clientConfig
 };
 
-module.exports = merge.multiple(commonConfig, devConfig);
+module.exports = merge.multiple(commonConfig, prodConfig);

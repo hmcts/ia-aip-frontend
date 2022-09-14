@@ -62,7 +62,7 @@ const clientConfig = {
                 },
                 {
                     test: /\.(sa|sc|c)ss$/,
-        loader: [
+                    loader: [
                         MiniCSSExtractPlugin.loader,
                         'css-loader',
                         'sass-loader'
@@ -71,10 +71,12 @@ const clientConfig = {
             ]
         },
         plugins: [
-            new CopyWebpackPlugin([
-                {from: path.resolve('node_modules/govuk-frontend/govuk/assets/'), to: 'assets'},
-                {from: path.resolve('app/assets/images/'), to: 'assets/images'}
-            ]),
+            new CopyWebpackPlugin({
+                patterns: [
+                    {from: path.resolve('node_modules/govuk-frontend/govuk/assets/'), to: 'assets'},
+                    {from: path.resolve('app/assets/images/'), to: 'assets/images'}
+                ],
+            }),
             new MiniCSSExtractPlugin({
                 filename: '[name].css'
             })

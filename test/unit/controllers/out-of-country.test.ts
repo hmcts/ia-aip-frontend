@@ -5,7 +5,7 @@ import {
   getOocHrEea,
   getOocHrEuInside,
   getOocProtectionDepartureDate,
-  postAppellantInUk, postGwfReference,
+  postAppellantInUk, postGwfReference, postOocHrEea,
   postOocHrEuInside,
   postOocProtectionDepartureDate,
   setupOutOfCountryController
@@ -310,6 +310,61 @@ describe('Out of Country Controller', function () {
       res.render = sandbox.stub().throws(error);
       await getOocHrEea(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
+  describe('postOocHrEea', () => {
+    let appeal: Appeal;
+    beforeEach(() => {
+      req.body.outsideUkWhenApplicationMade = 'No';
+
+      appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          appealType: 'euSettlementScheme',
+          outsideUkWhenApplicationMade: req.body.outsideUkWhenApplicationMade
+        }
+      };
+
+      updateAppealService.submitEventRefactored = sandbox.stub().returns({
+        application: {
+          appealType: 'euSettlementScheme',
+          outsideUkWhenApplicationMade: req.body.outsideUkWhenApplicationMade
+        }
+      } as Appeal);
+    });
+
+    it('should fail validation and render hr-eu-inside.njk with a validation error', async () => {
+      req.body = { 'answer': undefined };
+      const expectedError: ValidationError = {
+        key: 'answer',
+        text: 'Select yes if you are were living outside the United Kingdom when you made your application',
+        href: '#answer'
+      };
+
+      await postOocHrEea(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.not.have.been.called;
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/out-of-country/hr-eea.njk', {
+        question: 'Were you outside the UK when you made your application?',
+        description: undefined,
+        modal: undefined,
+        questionId: undefined,
+        previousPage: paths.appealStarted.typeOfAppeal,
+        answer: undefined,
+        errors: { answer: expectedError },
+        errorList: [expectedError]
+      });
+    });
+
+    it('should redirect to the check and send page', async () => {
+      req.body['answer'] = 'No';
+      req.session.appeal.application.appealType = 'euSettlementScheme';
+      await postOocHrEea(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
+      expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealStarted.oocHrEuInside);
     });
   });
 

@@ -10,10 +10,6 @@ describe('payments-api', () => {
     userToken: 'aUserToken',
     serviceToken: 'aServiceToken'
   };
-  const body = {
-    ccdCaseId: 'aCcdCaseId',
-    appealReferenceNumber: 'anAppealReferenceNumber'
-  };
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     rpGetStub = sandbox.stub(rp, 'get').resolves({});
@@ -34,11 +30,5 @@ describe('payments-api', () => {
     await paymentsApi.paymentDetails(headers, 'paymentRef');
 
     expect(rpGetStub).to.have.been.called;
-  });
-
-  it('should call create card payment endpoint', async () => {
-    await paymentsApi.createCardPayment(headers, body, 'http://aReturnUrl');
-
-    expect(rpPostStub).to.have.been.called;
   });
 });

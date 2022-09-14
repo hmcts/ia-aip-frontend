@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
+import { applicationTypes } from '../../data/application-types';
 import { Events } from '../../data/events';
 import { handleFileUploadErrors, uploadConfiguration } from '../../middleware/file-upload-validation-middleware';
 import { paths } from '../../paths';
@@ -28,7 +29,7 @@ export const askForMoreTimeEvidenceUploadConfig: EvidenceUploadConfig = {
   cancelPath: paths.common.askForMoreTimeCancel,
   nextPath: paths.common.askForMoreTimeCheckAndSend,
   askForMoreTimeFeatureEnabled: false,
-  updateCcdEvent: Events.MAKE_AN_APPLICATION.TIME_EXTENSION,
+  updateCcdEvent: Events.MAKE_AN_APPLICATION,
   addEvidenceToSessionFunction: function (evidences, req: Request) {
     if (!req.session.appeal.makeAnApplicationEvidence) {
       req.session.appeal.makeAnApplicationEvidence = [];
@@ -83,16 +84,16 @@ function postAskForMoreTimePage(updateAppealService: UpdateAppealService) {
         makeAnApplicationTypes: {
           'value': {
             'code': 'timeExtension',
-            'label': 'Time extension'
+            'label': applicationTypes.timeExtension.type
           },
           'list_items': [
             {
               'code': 'judgeReview',
-              'label': 'Judge\'s review of application decision'
+              'label': applicationTypes.judgesReview.type
             },
             {
               'code': 'timeExtension',
-              'label': 'Time extension'
+              'label': applicationTypes.timeExtension.type
             }
           ]
         },
@@ -145,8 +146,8 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
   try {
     const reasonFormattingPreserved = formatTextForCYA(req.session.appeal.makeAnApplicationDetails);
     const summaryRows = [
-      addSummaryRow(i18n.common.cya.questionRowTitle, [ i18n.pages.askForMoreTimePage.textAreaText ], null),
-      addSummaryRow(i18n.common.cya.answerRowTitle, [ reasonFormattingPreserved ], paths.common.askForMoreTimeReason)
+      addSummaryRow(i18n.common.cya.questionRowTitle, [i18n.pages.askForMoreTimePage.textAreaText], null),
+      addSummaryRow(i18n.common.cya.answerRowTitle, [reasonFormattingPreserved], paths.common.askForMoreTimeReason)
     ];
     let previousPage = paths.common.askForMoreTimeSupportingEvidence;
 
@@ -175,7 +176,7 @@ function getCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.MAKE_AN_APPLICATION.TIME_EXTENSION, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.MAKE_AN_APPLICATION, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated,

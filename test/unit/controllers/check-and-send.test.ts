@@ -389,7 +389,6 @@ describe('Check and Send Controller', () => {
   describe('getFinishPayment', () => {
     it('should finish a payment and redirect to confirmation', async () => {
       req.session.appeal.paymentReference = 'aReference';
-      req.session.appeal.appealStatus = 'appealSubmitted';
       updateAppealService.submitEventRefactored = sandbox.stub().resolves({
         paymentStatus: 'Paid',
         paymentDate: 'aDate',
@@ -407,14 +406,32 @@ describe('Check and Send Controller', () => {
     it('should finish a payment and redirect to confirmation pay later', async () => {
       req.session.appeal.paymentReference = 'aReference';
       req.session.appeal.appealStatus = 'appealSubmitted';
-      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       updateAppealService.submitEventRefactored = sandbox.stub().resolves({
+        paymentStatus: 'Paid',
         paymentDate: 'aDate',
         isFeePaymentEnabled: 'Yes'
       } as Partial<Appeal>);
 
       await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
+      expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
+      expect(req.session.appeal.paymentDate).to.be.eql('aDate');
+      expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
+      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayLater);
+    });
+
+    it('should finish a payment and redirect to confirmation pay later', async () => {
+      req.session.appeal.paymentReference = 'aReference';
+      req.session.appeal.appealStatus = 'appealSubmitted';
+      updateAppealService.submitEventRefactored = sandbox.stub().resolves({
+        paymentStatus: 'Paid',
+        paymentDate: 'aDate',
+        isFeePaymentEnabled: 'Yes'
+      } as Partial<Appeal>);
+
+      await getFinishPayment(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
       expect(req.session.appeal.paymentDate).to.be.eql('aDate');
       expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
       expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayLater);

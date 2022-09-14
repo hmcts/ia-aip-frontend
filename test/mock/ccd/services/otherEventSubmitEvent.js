@@ -24,6 +24,8 @@ function getNextState(body) {
       return 'cmaListed';
     case 'makeAnApplication':
       return 'awaitingReasonsForAppeal';
+    case 'uploadAddendumEvidenceLegalRep':
+      return 'preHearing';
     default:
       throw `Event type ${body.eventType} no next state set`
   }

@@ -180,6 +180,13 @@
     "node-sass/meow/trim-newlines": "^3.0.1",
     "puppeteer/node-fetch": "^2.6.7",
     "optimize-css-assets-webpack-plugin/cssnano/cssnano-preset-default/postcss-svgo/svgo/css-select/nth-check": "^2.0.1",
-    "@stryker-mutator/core/typed-rest-client/underscore": "^1.12.1"
+    "@stryker-mutator/core/typed-rest-client/underscore": "^1.12.1",
+    "node-sass/meow/read-pkg-up/read-pkg/normalize-package-data/resolve/path-parse": "^1.0.7",
+    "nyc/istanbul-lib-instrument/@babel/core/resolve/path-parse": "^1.0.7",
+    "codeceptjs/requireg/resolve/path-parse": "^1.0.7",
+    "@babel/core/resolve/path-parse": "^1.0.7",
+    "@stryker-mutator/core/log4js": "^6.4.0",
+    "nodemon/update-notifier/latest-version/package-json/got": "^11.8.5",
+    "webdriverio/webdriver/got": "^11.8.5"
   }
 }

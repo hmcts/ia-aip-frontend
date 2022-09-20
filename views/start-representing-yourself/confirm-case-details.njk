@@ -15,7 +15,7 @@
   <h3 class="govuk-heading-s">{{ i18n.pages.startRepresentingYourself.confirmDetails.nextStepTitle }}</h3>
   <p>{{ i18n.pages.startRepresentingYourself.confirmDetails.nextStepInstructions }}</p>
 
-  <form action="{{ paths.common.startRepresentingYourself.confirmDetails }}" method="post">
+  <form action="{{ paths.startRepresentingYourself.confirmDetails }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukButton({
         text: i18n.pages.startRepresentingYourself.continueButton

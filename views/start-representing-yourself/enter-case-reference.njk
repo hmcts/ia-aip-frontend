@@ -15,7 +15,7 @@
 
   <p>{{ i18n.pages.startRepresentingYourself.enterCaseReference.instructions }}</p>
 
-  <form action="{{ paths.common.startRepresentingYourself.enterCaseNumber }}" method="post">
+  <form action="{{ paths.startRepresentingYourself.enterCaseNumber }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
       label: {

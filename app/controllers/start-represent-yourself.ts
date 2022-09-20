@@ -10,7 +10,7 @@ import { createStructuredError } from '../utils/validations/fields-validations';
 function getStartRepresentingYourself(req: Request, res: Response, next: NextFunction) {
   try {
     res.render('start-representing-yourself/start-representing-yourself.njk', {
-      nextPage: paths.common.startRepresentingYourself.enterCaseNumber
+      nextPage: paths.startRepresentingYourself.enterCaseNumber
     });
   } catch (e) {
     next(e);
@@ -47,7 +47,7 @@ function postEnterCaseReference(req: Request, res: Response, next: NextFunction)
   try {
     const id = req.body['caseReferenceNumber'];
     if (!validCaseReferenceNumber(id)) {
-      res.redirect(paths.common.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
+      res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
       return;
     }
 
@@ -57,7 +57,7 @@ function postEnterCaseReference(req: Request, res: Response, next: NextFunction)
       }
     });
 
-    res.redirect(paths.common.startRepresentingYourself.enterSecurityCode);
+    res.redirect(paths.startRepresentingYourself.enterSecurityCode);
   } catch (error) {
     next(error);
   }
@@ -94,17 +94,17 @@ function postValidateAccess(ccdSystemService: CcdSystemService) {
     try {
       const accessCode = req.body['accessCode'];
       if (!validAccessCode(accessCode)) {
-        res.redirect(paths.common.startRepresentingYourself.enterSecurityCode + '?error=accessCode');
+        res.redirect(paths.startRepresentingYourself.enterSecurityCode + '?error=accessCode');
         return;
       }
       const caseId = req.session.startRepresentingYourself.id;
       const pipValidation = await ccdSystemService.pipValidation(caseId.replace(/-/g, ''), accessCode);
       if (pipValidation.accessValidated) {
         Object.assign(req.session.startRepresentingYourself, pipValidation);
-        res.redirect(paths.common.startRepresentingYourself.confirmDetails);
+        res.redirect(paths.startRepresentingYourself.confirmDetails);
         return;
       }
-      res.redirect(paths.common.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
+      res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
     } catch (error) {
       next(error);
     }
@@ -150,13 +150,13 @@ function postConfirmCaseDetails(req: Request, res: Response, next: NextFunction)
 
 function setupStartRepresentingMyselfPublicControllers(ccdSystemService: CcdSystemService): Router {
   const router = Router();
-  router.get(paths.common.startRepresentingYourself.start, getStartRepresentingYourself);
-  router.get(paths.common.startRepresentingYourself.enterCaseNumber, getEnterCaseReference);
-  router.post(paths.common.startRepresentingYourself.enterCaseNumber, postEnterCaseReference);
-  router.get(paths.common.startRepresentingYourself.enterSecurityCode, getEnterSecurityCode);
-  router.post(paths.common.startRepresentingYourself.enterSecurityCode, postValidateAccess(ccdSystemService));
-  router.get(paths.common.startRepresentingYourself.confirmDetails, getConfirmCaseDetails);
-  router.post(paths.common.startRepresentingYourself.confirmDetails, postConfirmCaseDetails);
+  router.get(paths.startRepresentingYourself.start, getStartRepresentingYourself);
+  router.get(paths.startRepresentingYourself.enterCaseNumber, getEnterCaseReference);
+  router.post(paths.startRepresentingYourself.enterCaseNumber, postEnterCaseReference);
+  router.get(paths.startRepresentingYourself.enterSecurityCode, getEnterSecurityCode);
+  router.post(paths.startRepresentingYourself.enterSecurityCode, postValidateAccess(ccdSystemService));
+  router.get(paths.startRepresentingYourself.confirmDetails, getConfirmCaseDetails);
+  router.post(paths.startRepresentingYourself.confirmDetails, postConfirmCaseDetails);
   return router;
 }
 

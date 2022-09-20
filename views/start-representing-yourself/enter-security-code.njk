@@ -14,7 +14,7 @@
 
   <p>{{ i18n.pages.startRepresentingYourself.enterSecurityCode.instructions }}</p>
 
-  <form action="{{ paths.common.startRepresentingYourself.enterSecurityCode.enterSecurityCode }}" method="post">
+  <form action="{{ paths.startRepresentingYourself.enterSecurityCode.enterSecurityCode }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukInput({
       label: {

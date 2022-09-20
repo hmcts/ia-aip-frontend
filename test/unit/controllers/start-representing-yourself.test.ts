@@ -43,20 +43,20 @@ describe('start-representing-yourself', () => {
 
     setupStartRepresentingMyselfPublicControllers(ccdSystemService);
 
-    expect(routerGetStub).to.have.been.calledWith(paths.common.startRepresentingYourself.start);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.startRepresentingYourself.enterCaseNumber);
-    expect(routerPostStub).to.have.been.calledWith(paths.common.startRepresentingYourself.enterCaseNumber);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.startRepresentingYourself.enterSecurityCode);
-    expect(routerPostStub).to.have.been.calledWith(paths.common.startRepresentingYourself.enterSecurityCode);
-    expect(routerGetStub).to.have.been.calledWith(paths.common.startRepresentingYourself.confirmDetails);
-    expect(routerPostStub).to.have.been.calledWith(paths.common.startRepresentingYourself.confirmDetails);
+    expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.start);
+    expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber);
+    expect(routerPostStub).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber);
+    expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.enterSecurityCode);
+    expect(routerPostStub).to.have.been.calledWith(paths.startRepresentingYourself.enterSecurityCode);
+    expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.confirmDetails);
+    expect(routerPostStub).to.have.been.calledWith(paths.startRepresentingYourself.confirmDetails);
   });
 
   it('getStartRepresentingYourself', () => {
     getStartRepresentingYourself(req as Request, res as Response, next);
 
     expect(res.render).to.have.been.calledWith('start-representing-yourself/start-representing-yourself.njk', {
-      nextPage: paths.common.startRepresentingYourself.enterCaseNumber
+      nextPage: paths.startRepresentingYourself.enterCaseNumber
     });
   });
 
@@ -110,13 +110,13 @@ describe('start-representing-yourself', () => {
   it('postEnterCaseReference with valid reference, redirects to enter security code', () => {
     req.body.caseReferenceNumber = '1234-1234-1234-1234';
     postEnterCaseReference(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.common.startRepresentingYourself.enterSecurityCode);
+    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.enterSecurityCode);
   });
 
   it('postEnterCaseReference with invalid reference, redirects to enter case reference with error message', () => {
     req.body.caseReferenceNumber = 'INVALID';
     postEnterCaseReference(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.common.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
+    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
   });
 
   it('getEnterSecurityCode', () => {
@@ -161,7 +161,7 @@ describe('start-representing-yourself', () => {
     req.body.accessCode = 'ABCD1234EFGH';
 
     await postValidateAccess(ccdSystemServiceStub as unknown as CcdSystemService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.common.startRepresentingYourself.confirmDetails);
+    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.confirmDetails);
   });
 
   it('postValidateAccess with invalid security code, redirects to enter security code with error message', async() => {
@@ -173,7 +173,7 @@ describe('start-representing-yourself', () => {
 
     await postValidateAccess(ccdSystemServiceStub as unknown as CcdSystemService)(req as Request, res as Response, next);
     expect(ccdSystemServiceStub.pipValidation).to.have.been.callCount(0);
-    expect(res.redirect).to.have.been.calledWith(paths.common.startRepresentingYourself.enterSecurityCode + '?error=accessCode');
+    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.enterSecurityCode + '?error=accessCode');
   });
 
   it('postValidateAccess with incorrect security code, redirects to enter enter case number with error message', async() => {
@@ -187,7 +187,7 @@ describe('start-representing-yourself', () => {
     req.body.accessCode = 'ABCD1234EFGH';
 
     await postValidateAccess(ccdSystemServiceStub as unknown as CcdSystemService)(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.common.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
+    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
   });
 
   it('getConfirmCaseDetails', () => {

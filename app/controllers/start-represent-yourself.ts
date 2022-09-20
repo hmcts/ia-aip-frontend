@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
+import CcdSystemService from '../service/ccd-system-service';
+import { formatDate } from '../utils/date-utils';
 import { addSummaryRow } from '../utils/summary-list';
+import { formatCaseId } from '../utils/utils';
 import { createStructuredError } from '../utils/validations/fields-validations';
 
 function getStartRepresentingYourself(req: Request, res: Response, next: NextFunction) {
   try {
-    res.render('start-representing-yourself/start-representing-yourself.njk');
+    res.render('start-representing-yourself/start-representing-yourself.njk', {
+      nextPage: paths.common.startRepresentingYourself.enterCaseNumber
+    });
   } catch (e) {
     next(e);
   }
@@ -84,31 +89,26 @@ function getEnterSecurityCode(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postValidateAccess(req: Request, res: Response, next: NextFunction) {
-  try {
-    const accessCode = req.body['accessCode'];
-    if (!validAccessCode(accessCode)) {
-      res.redirect(paths.common.startRepresentingYourself.enterSecurityCode + '?error=accessCode');
-      return;
+function postValidateAccess(ccdSystemService: CcdSystemService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const accessCode = req.body['accessCode'];
+      if (!validAccessCode(accessCode)) {
+        res.redirect(paths.common.startRepresentingYourself.enterSecurityCode + '?error=accessCode');
+        return;
+      }
+      const caseId = req.session.startRepresentingYourself.id;
+      const pipValidation = await ccdSystemService.pipValidation(caseId.replace(/-/g, ''), accessCode);
+      if (pipValidation.accessValidated) {
+        Object.assign(req.session.startRepresentingYourself, pipValidation);
+        res.redirect(paths.common.startRepresentingYourself.confirmDetails);
+        return;
+      }
+      res.redirect(paths.common.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
+    } catch (error) {
+      next(error);
     }
-    // validate access
-    // retrieve case summary
-    if (true) {
-      Object.assign(req.session.startRepresentingYourself, {
-        accessValidated: true,
-        caseSummary: {
-          name: 'James Bond',
-          dateOfBirth: '12-09-1980',
-          referenceNumber: '1234-1234-1234-1234'
-        }
-      });
-      res.redirect(paths.common.startRepresentingYourself.confirmDetails);
-      return;
-    }
-    res.redirect(paths.common.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
-  } catch (error) {
-    next(error);
-  }
+  };
 }
 
 function validAccessCode(value: string): boolean {
@@ -127,11 +127,11 @@ function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) 
         ),
         addSummaryRow(
           i18n.pages.startRepresentingYourself.confirmDetails.fieldDateOfBirth,
-          [ details.dateOfBirth ]
+          [ formatDate(details.dateOfBirth) ]
         ),
         addSummaryRow(
           i18n.pages.startRepresentingYourself.confirmDetails.fieldReferenceNumber,
-          [ details.referenceNumber ]
+          [ formatCaseId(details.referenceNumber) ]
         )
       ]
     });
@@ -142,24 +142,31 @@ function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) 
 
 function postConfirmCaseDetails(req: Request, res: Response, next: NextFunction) {
   try {
-    res.redirect(paths.common.overview);
+    res.redirect(paths.common.login);
   } catch (error) {
     next(error);
   }
 }
 
-function setupStartRepresentingMyselfControllers(): Router {
+function setupStartRepresentingMyselfPublicControllers(ccdSystemService: CcdSystemService): Router {
   const router = Router();
   router.get(paths.common.startRepresentingYourself.start, getStartRepresentingYourself);
   router.get(paths.common.startRepresentingYourself.enterCaseNumber, getEnterCaseReference);
   router.post(paths.common.startRepresentingYourself.enterCaseNumber, postEnterCaseReference);
   router.get(paths.common.startRepresentingYourself.enterSecurityCode, getEnterSecurityCode);
-  router.post(paths.common.startRepresentingYourself.enterSecurityCode, postValidateAccess);
+  router.post(paths.common.startRepresentingYourself.enterSecurityCode, postValidateAccess(ccdSystemService));
   router.get(paths.common.startRepresentingYourself.confirmDetails, getConfirmCaseDetails);
   router.post(paths.common.startRepresentingYourself.confirmDetails, postConfirmCaseDetails);
   return router;
 }
 
 export {
-  setupStartRepresentingMyselfControllers
+  setupStartRepresentingMyselfPublicControllers,
+  getStartRepresentingYourself,
+  getEnterCaseReference,
+  postEnterCaseReference,
+  getEnterSecurityCode,
+  postValidateAccess,
+  getConfirmCaseDetails,
+  postConfirmCaseDetails
 };

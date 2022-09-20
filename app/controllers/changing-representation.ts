@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { paths } from '../paths';
 import { DocmosisService } from '../service/docmosis-service';
 import { formatDate } from '../utils/date-utils';
-import { toIsoDate } from '../utils/utils';
+import { formatCaseId, toIsoDate } from '../utils/utils';
 
 const docmosis: DocmosisService = new DocmosisService();
 
@@ -43,14 +43,6 @@ function getDetails(req: Request) {
     appellantFamilyName: req.session.appeal.application.personalDetails.familyName,
     appellantDateOfBirth: formatDate(toIsoDate(req.session.appeal.application.personalDetails.dob))
   };
-}
-
-function formatCaseId(caseId: any) {
-  let caseStr = new String(caseId);
-  if (caseStr.length === 16) {
-    caseStr = caseStr.substring(0,4) + '-' + caseStr.substring(4,8) + '-' + caseStr.substring(8,12) + '-' + caseStr.substring(12,16);
-  }
-  return caseStr.toString();
 }
 
 function setupChangeRepresentationControllers(middleware: Middleware[]): Router {

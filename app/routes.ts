@@ -94,7 +94,7 @@ import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-c
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
-import { setupStartRepresentingMyselfControllers } from './controllers/start-represent-yourself';
+import { setupStartRepresentingMyselfPublicControllers } from './controllers/start-represent-yourself';
 import { setupStartController } from './controllers/startController';
 import { setupProvideMoreEvidenceController } from './controllers/upload-evidence/provide-more-evidence-controller';
 import { PageSetup } from './interfaces/PageSetup';
@@ -103,6 +103,7 @@ import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middle
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
+import CcdSystemService from './service/ccd-system-service';
 import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import PaymentService from './service/payments-service';
@@ -110,6 +111,7 @@ import PcqService from './service/pcq-service';
 import S2SService from './service/s2s-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
+import {SystemAuthenticationService} from "./service/system-authentication-service";
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
@@ -128,7 +130,7 @@ const startController = setupStartController();
 const healthController = setupHealthController();
 const notFoundController = setupNotFoundController();
 const idamController = setupIdamController();
-const startRepresentingMyselfControllers = setupStartRepresentingMyselfControllers();
+const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfPublicControllers(new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance()));
 
 const middleware = [isJourneyAllowedMiddleware];
 
@@ -233,7 +235,7 @@ router.use(GuidancePages);
 router.use(footerController);
 router.use(sessionController);
 router.use(notFoundController);
-router.use(startRepresentingMyselfControllers);
+router.use(startRepresentingMyselfPublicControllers);
 
 // protected by idam
 router.use(idamController);

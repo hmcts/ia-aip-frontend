@@ -58,7 +58,6 @@ export class SystemAuthenticationService {
       return response.data.uid;
     }).catch(function (error) {
       logger.exception(error, logLabel);
-      return undefined;
     });
   }
 }

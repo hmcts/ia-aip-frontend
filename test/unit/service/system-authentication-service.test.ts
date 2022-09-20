@@ -33,7 +33,7 @@ describe('system-authentication-service', () => {
 
   it('requests new user token when cached token expires', async () => {
     axiosStub = sandbox.stub(axios, 'post').returns(Promise.resolve({ data: { access_token: token } }));
-    isJWTExpiredStub = sandbox.stub(jwtUtils, 'isJWTExpired').returns(false);
+    isJWTExpiredStub = sandbox.stub(jwtUtils, 'isJWTExpired').returns(true);
 
     const token1 = await authenticationService.getCaseworkSystemToken();
     const token2 = await authenticationService.getCaseworkSystemToken();
@@ -55,8 +55,8 @@ describe('system-authentication-service', () => {
     expect(axiosStub).to.have.been.calledOnce;
   });
 
-  it('when requesting UUID fails, error get logged', async () => {
-    axiosStub = sandbox.stub(axios, 'get').throws('error');
+  it('when requesting UUID fails, returns undefined', async () => {
+    axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject());
 
     const uuid1 = await authenticationService.getCaseworkSystemUUID(token);
 

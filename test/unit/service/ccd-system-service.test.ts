@@ -142,6 +142,17 @@ describe('ccd-system-service', () => {
       });
     });
 
+    describe('pipValidation in time', () => {
+      beforeEach(() => {
+        axiosStub = sandbox.stub(axios, 'get').returns(Promise.reject({}));
+      });
+
+      it('should return validation failed response when retrieving case details fails', async () => {
+        const response = await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).pipValidation(caseId, invalidCode);
+        expect(response).to.eql(failedResponse);
+      });
+    });
+
     describe('pipValidation expired', () => {
       it('should return validation failed response when expired', async () => {
         axiosStub = sandbox.stub(axios, 'get').returns(Promise.resolve({ data: {

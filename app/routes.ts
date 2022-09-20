@@ -109,9 +109,9 @@ import IdamService from './service/idam-service';
 import PaymentService from './service/payments-service';
 import PcqService from './service/pcq-service';
 import S2SService from './service/s2s-service';
+import { SystemAuthenticationService } from './service/system-authentication-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
-import {SystemAuthenticationService} from "./service/system-authentication-service";
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');

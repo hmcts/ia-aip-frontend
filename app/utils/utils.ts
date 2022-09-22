@@ -75,3 +75,11 @@ export function getApplicationType(type: string): any {
   });
   return applicationType;
 }
+
+export function formatCaseId(caseId: any) {
+  let caseStr = new String(caseId);
+  if (caseStr.length === 16) {
+    caseStr = caseStr.substring(0,4) + '-' + caseStr.substring(4,8) + '-' + caseStr.substring(8,12) + '-' + caseStr.substring(12,16);
+  }
+  return caseStr.toString();
+}

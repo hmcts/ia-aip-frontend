@@ -144,6 +144,13 @@ const paths = {
   cmaRequirementsSubmitted: {
     confirmation: '/appointment-success'
   },
+  // Start Representing Yourself
+  startRepresentingYourself: {
+    start: '/start-representing-yourself',
+    enterCaseNumber: '/start-representing-yourself/enter-case-number',
+    enterSecurityCode: '/start-representing-yourself/enter-security-code',
+    confirmDetails: '/start-representing-yourself/confirm-case-details'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',

@@ -113,7 +113,6 @@ function postValidateAccess(ccdSystemService: CcdSystemService) {
       }
 
       res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
-
     } catch (error) {
       next(error);
     }
@@ -130,7 +129,6 @@ function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) 
     if (!req.session.startRepresentingYourself.accessValidated) {
       res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
     }
-
     const details = req.session.startRepresentingYourself.caseSummary;
     res.render('start-representing-yourself/confirm-case-details.njk', {
       caseDetails: [

@@ -4,7 +4,6 @@ import S2SService from '../../../app/service/s2s-service';
 import { SystemAuthenticationService } from '../../../app/service/system-authentication-service';
 import { addDaysToDate } from '../../../app/utils/date-utils';
 import { expect, sinon } from '../../utils/testUtils';
-import {any, string} from "joi";
 
 describe('ccd-system-service', () => {
   const caseId = '1234123412341234';

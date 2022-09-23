@@ -179,7 +179,7 @@ describe('ccd-system-service', () => {
         const appellantId = 'appellant-uuid';
         axiosStub = sandbox.stub(axios, 'post').returns(Promise.resolve());
         await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).givenAppellantAccess(caseId, appellantId);
-        expect(axiosStub).to.be.calledWith('http://localhost:4452/caseworkers/abc-123-efg/jurisdictions/IA/case-types/Asylum/cases/1234123412341234/users',
+        expect(axiosStub).to.be.calledWith(sinon.match(/.+\/caseworkers\/abc-123-efg\/jurisdictions\/IA\/case-types\/Asylum\/cases\/1234123412341234\/users/),
           { id: appellantId },
           { headers: {
             Authorization: 'Bearer user-token',

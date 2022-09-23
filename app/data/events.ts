@@ -155,5 +155,10 @@ export const Events = {
     id: 'sendDecisionAndReasons',
     summary: 'Send decision and reasons',
     description: 'Send decision and reasons'
+  },
+  PIP_ACTIVATION: {
+    id: 'pipActivation',
+    summary: 'PiP Activation',
+    description: 'Appellant is now representing themselves'
   }
 };

@@ -1,15 +1,57 @@
 import { NextFunction, Request, Response } from 'express';
 import * as _ from 'lodash';
+import { Events } from '../data/events';
 import { paths } from '../paths';
 import { AuthenticationService } from '../service/authentication-service';
 import { CcdService } from '../service/ccd-service';
+import CcdSystemService from '../service/ccd-system-service';
 import IdamService from '../service/idam-service';
 import S2SService from '../service/s2s-service';
+import { SystemAuthenticationService } from '../service/system-authentication-service';
 import UpdateAppealService from '../service/update-appeal-service';
 import Logger from '../utils/logger';
 
-const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+const idamService = new IdamService();
+const authenticationService: AuthenticationService = new AuthenticationService(idamService, S2SService.getInstance());
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
+const ccdSystemService: CcdSystemService = new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance());
+
+const PIN_USED_UPDATE = {
+  appellantPinInPost: {
+    pinUsed: 'Yes'
+  }
+};
+
+async function startRepresentingYourself(req: Request, res: Response, next: NextFunction) {
+  if (req.session.startRepresentingYourself === undefined) {
+    return next();
+  }
+
+  if (!req.session.startRepresentingYourself.accessValidated) {
+    return res.redirect(paths.startRepresentingYourself.start);
+  }
+
+  if (!req.session.startRepresentingYourself.detailsConfirmed) {
+    return res.redirect(paths.startRepresentingYourself.confirmDetails);
+  }
+
+  try {
+    const caseId = req.session.startRepresentingYourself.id;
+    await ccdSystemService.givenAppellantAccess(caseId, req.idam.userDetails.uid);
+    const appeal: Appeal = await updateAppealService.submitSimpleEvent(Events.PIP_ACTIVATION, caseId,
+      PIN_USED_UPDATE, req.idam.userDetails.uid, idamService.getUserToken(req));
+    req.session.ccdCaseId = caseId;
+    req.session.appeal = appeal;
+    req.session.startRepresentingYourself = undefined;
+    res.redirect(paths.common.overview);
+  } catch (e) {
+    next(e);
+  }
+}
+
+async function completeStartRepresentingYourself(req: Request) {
+
+}
 
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
@@ -56,6 +98,7 @@ function logSession(req: Request, res: Response, next: NextFunction) {
 }
 
 export {
+  startRepresentingYourself,
   checkSession,
   initSession,
   logSession

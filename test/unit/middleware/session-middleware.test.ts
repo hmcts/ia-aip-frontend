@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { checkSession, initSession, logSession } from '../../../app/middleware/session-middleware';
+import {
+  checkSession,
+  initSession,
+  logSession,
+  startRepresentingYourself
+} from '../../../app/middleware/session-middleware';
 import { paths } from '../../../app/paths';
+import CcdSystemService from '../../../app/service/ccd-system-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -83,5 +89,65 @@ describe('session-middleware', () => {
     checkSession({})(req as Request, res as Response, next);
 
     expect(next).to.have.been.calledOnce;
+  });
+
+  it('startRepresentingYourself calls next if no start-representing-yourself flow in progress', async () => {
+    req.session = {} as any;
+    await startRepresentingYourself(req as Request, res as Response, next);
+
+    expect(next).to.have.been.calledOnce;
+  });
+
+  it('startRepresentingYourself redirects to start if start-representing-yourself flow in incomplete', async () => {
+    req.session.startRepresentingYourself = {id: '1234123412341234'} as any;
+    await startRepresentingYourself(req as Request, res as Response, next);
+
+    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.start);
+  });
+
+  it('startRepresentingYourself redirects to confirmDetails if not confirmed', async () => {
+    req.session.startRepresentingYourself = {
+      id: '1234123412341234',
+      accessValidated: true
+    } as any;
+    await startRepresentingYourself(req as Request, res as Response, next);
+
+    expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.confirmDetails);
+  });
+
+  it('startRepresentingYourself call next with error if givenAppellantAccess fails', async () => {
+    const error = new Error('the error');;
+    req.session.startRepresentingYourself = {
+      id: '1234123412341234',
+      accessValidated: true,
+      detailsConfirmed: true
+    } as any;
+    const givenAppellantAccessStub = sandbox.stub(CcdSystemService.prototype, 'givenAppellantAccess').throws(error);
+    await startRepresentingYourself(req as Request, res as Response, next);
+
+    expect(givenAppellantAccessStub).to.have.been.calledOnce;
+    expect(next).to.have.been.calledWith(error);
+  });
+
+  it('startRepresentingYourself loads case', async () => {
+    const appeal = {
+      details: 'testing'
+    } as Partial<Appeal>;
+    req.session.startRepresentingYourself = {
+      id: '1234123412341234',
+      accessValidated: true,
+      detailsConfirmed: true
+    } as any;
+    const givenAppellantAccessStub = sandbox.stub(CcdSystemService.prototype, 'givenAppellantAccess');
+    const submitSimpleEventStub = sandbox.stub(UpdateAppealService.prototype, 'submitSimpleEvent').resolves(appeal as Appeal);
+    await startRepresentingYourself(req as Request, res as Response, next);
+
+    expect(givenAppellantAccessStub).to.have.been.calledOnce;
+    expect(submitSimpleEventStub).to.have.been.calledOnce;
+    expect(next).to.have.been.callCount(0);
+    expect(req.session.startRepresentingYourself).to.be.undefined;
+    expect(req.session.ccdCaseId).to.be.eql('1234123412341234');
+    expect(req.session.appeal).to.be.eq(appeal);
+    expect(res.redirect).to.have.been.calledWith(paths.common.overview);
   });
 });

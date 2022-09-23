@@ -94,7 +94,7 @@ import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-c
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
-import { setupStartRepresentingMyselfPublicControllers } from './controllers/start-represent-yourself';
+import { setupStartRepresentingMyselfControllers } from './controllers/start-represent-yourself';
 import { setupStartController } from './controllers/startController';
 import { setupProvideMoreEvidenceController } from './controllers/upload-evidence/provide-more-evidence-controller';
 import { PageSetup } from './interfaces/PageSetup';
@@ -130,7 +130,7 @@ const startController = setupStartController();
 const healthController = setupHealthController();
 const notFoundController = setupNotFoundController();
 const idamController = setupIdamController();
-const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfPublicControllers(new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance()));
+const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfControllers(new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance()));
 
 const middleware = [isJourneyAllowedMiddleware];
 

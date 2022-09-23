@@ -3,7 +3,7 @@ import {
   getConfirmCaseDetails,
   getEnterCaseReference, getEnterSecurityCode,
   getStartRepresentingYourself, postConfirmCaseDetails, postEnterCaseReference, postValidateAccess,
-  setupStartRepresentingMyselfPublicControllers
+  setupStartRepresentingMyselfControllers
 } from '../../../app/controllers/start-represent-yourself';
 import { paths } from '../../../app/paths';
 import CcdSystemService from '../../../app/service/ccd-system-service';
@@ -41,7 +41,7 @@ describe('start-representing-yourself', () => {
     const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
     const ccdSystemService: CcdSystemService = null;
 
-    setupStartRepresentingMyselfPublicControllers(ccdSystemService);
+    setupStartRepresentingMyselfControllers(ccdSystemService);
 
     expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.start);
     expect(routerGetStub).to.have.been.calledWith(paths.startRepresentingYourself.enterCaseNumber);
@@ -169,6 +169,7 @@ describe('start-representing-yourself', () => {
       pipValidation: sandbox.spy()
     };
 
+    req.session.startRepresentingYourself = { id: '1234123412341234' };
     req.body.accessCode = 'INVALID';
 
     await postValidateAccess(ccdSystemServiceStub as unknown as CcdSystemService)(req as Request, res as Response, next);
@@ -211,6 +212,10 @@ describe('start-representing-yourself', () => {
   });
 
   it('postConfirmCaseDetails', () => {
+    req.session.startRepresentingYourself = {
+      id: '1234123412341234',
+      accessValidated: true
+    };
     postConfirmCaseDetails(req as Request, res as Response, next);
     expect(res.redirect).to.have.been.calledWith(paths.common.login);
   });

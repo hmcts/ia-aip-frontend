@@ -99,7 +99,7 @@ describe('session-middleware', () => {
   });
 
   it('startRepresentingYourself redirects to start if start-representing-yourself flow in incomplete', async () => {
-    req.session.startRepresentingYourself = {id: '1234123412341234'} as any;
+    req.session.startRepresentingYourself = { id: '1234123412341234' } as any;
     await startRepresentingYourself(req as Request, res as Response, next);
 
     expect(res.redirect).to.have.been.calledWith(paths.startRepresentingYourself.start);
@@ -116,7 +116,7 @@ describe('session-middleware', () => {
   });
 
   it('startRepresentingYourself call next with error if givenAppellantAccess fails', async () => {
-    const error = new Error('the error');;
+    const error = new Error('the error');
     req.session.startRepresentingYourself = {
       id: '1234123412341234',
       accessValidated: true,

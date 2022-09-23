@@ -74,7 +74,7 @@ export default class CcdSystemService {
       return PIP_VALIDATION_FAILED;
     });
   }
-  
+
   async givenAppellantAccess(caseId: string, appellantId: string): Promise<any> {
     const userToken = await this._authenticationService.getCaseworkSystemToken();
     const userId = await this._authenticationService.getCaseworkSystemUUID(userToken);

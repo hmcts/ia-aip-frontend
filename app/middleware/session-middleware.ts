@@ -49,10 +49,6 @@ async function startRepresentingYourself(req: Request, res: Response, next: Next
   }
 }
 
-async function completeStartRepresentingYourself(req: Request) {
-
-}
-
 async function initSession(req: Request, res: Response, next: NextFunction) {
   try {
     await updateAppealService.loadAppeal(req);

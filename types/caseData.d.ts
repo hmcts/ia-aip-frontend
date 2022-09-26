@@ -26,6 +26,10 @@ interface CcdCaseDetails {
   last_modified?: string;
 }
 
+interface PinInPost {
+  pinUsed: 'Yes' | 'No';
+}
+
 interface CaseData {
   appellantInUk: string;
   appellantOutOfCountryAddress: string;
@@ -141,6 +145,7 @@ interface CaseData {
   sponsorEmail?: string;
   sponsorMobileNumber?: string;
   sponsorAuthorisation?: string;
+  appellantPinInPost?: PinInPost;
 }
 
 interface Application<T> {

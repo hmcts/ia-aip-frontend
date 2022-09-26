@@ -66,6 +66,25 @@ export default class UpdateAppealService {
     return null;
   }
 
+  async submitSimpleEvent(event, caseId: string, data, userId: string, userToken: string): Promise<Appeal> {
+    const securityHeaders: SecurityHeaders = {
+      userToken: userToken,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const updateEventResponse = await this._ccdService.startUpdateAppeal(userId, caseId, event.id, securityHeaders);
+    const ccdCase: CcdCaseDetails = await this._ccdService.submitUpdateAppeal(userId, caseId, securityHeaders, {
+      event: {
+        id: updateEventResponse.event_id,
+        summary: event.summary,
+        description: event.description
+      },
+      data: data,
+      event_token: updateEventResponse.token,
+      ignore_warning: true
+    });
+    return this.mapCcdCaseToAppeal(ccdCase);
+  }
+
   // TODO: remove submitEvent when all app is refactored using new submitEvent
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);

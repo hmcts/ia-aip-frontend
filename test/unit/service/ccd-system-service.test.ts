@@ -117,18 +117,21 @@ describe('ccd-system-service', () => {
 
     describe('pipValidation in time', () => {
       beforeEach(() => {
-        axiosStub = sandbox.stub(axios, 'get').returns(Promise.resolve({ data: {
-          id: caseId,
-          case_data: {
-            appellantGivenNames: 'James',
-            appellantFamilyName: 'Bond',
-            appellantDateOfBirth: '1980-12-31',
-            appellantPinInPost: {
-              pinUsed: 'No',
-              accessCode: accessCode,
-              expiryDate: addDaysToDate(+1)
+        axiosStub = sandbox.stub(axios, 'get').returns(Promise.resolve({
+          data: {
+            id: caseId,
+            case_data: {
+              appellantGivenNames: 'James',
+              appellantFamilyName: 'Bond',
+              appellantDateOfBirth: '1980-12-31',
+              appellantPinInPost: {
+                pinUsed: 'No',
+                accessCode: accessCode,
+                expiryDate: addDaysToDate(+1)
+              }
             }
-          }}}));
+          }
+        }));
       });
 
       it('should return validation failed response', async () => {
@@ -155,17 +158,34 @@ describe('ccd-system-service', () => {
 
     describe('pipValidation expired', () => {
       it('should return validation failed response when expired', async () => {
-        axiosStub = sandbox.stub(axios, 'get').returns(Promise.resolve({ data: {
-          case_data: {
-            appellantPinInPost: {
-              pinUsed: 'No',
-              accessCode: accessCode,
-              expiryDate: addDaysToDate(-1)
+        axiosStub = sandbox.stub(axios, 'get').returns(Promise.resolve({
+          data: {
+            case_data: {
+              appellantPinInPost: {
+                pinUsed: 'No',
+                accessCode: accessCode,
+                expiryDate: addDaysToDate(-1)
+              }
             }
           }
-        }}));
+        }));
         const response = await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).pipValidation(caseId, invalidCode);
         expect(response).to.eql(failedResponse);
+      });
+    });
+
+    describe('givenAppellantAccess', () => {
+      it('successful', async () => {
+        const appellantId = 'appellant-uuid';
+        axiosStub = sandbox.stub(axios, 'post').returns(Promise.resolve());
+        await new CcdSystemService(authenticationServiceStub as SystemAuthenticationService, s2sServiceStub as S2SService).givenAppellantAccess(caseId, appellantId);
+        expect(axiosStub).to.be.calledWith(sinon.match(/.+\/caseworkers\/abc-123-efg\/jurisdictions\/IA\/case-types\/Asylum\/cases\/1234123412341234\/users/),
+          { id: appellantId },
+          { headers: {
+            Authorization: 'Bearer user-token',
+            ServiceAuthorization: 'service-token',
+            'content-type': 'application/json'
+          }});
       });
     });
   });

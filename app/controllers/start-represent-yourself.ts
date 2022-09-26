@@ -53,7 +53,7 @@ function postEnterCaseReference(req: Request, res: Response, next: NextFunction)
 
     Object.assign(req.session, {
       startRepresentingYourself: {
-        id: id
+        id: id.replace(/-/g, '')
       }
     });
 
@@ -92,18 +92,26 @@ function getEnterSecurityCode(req: Request, res: Response, next: NextFunction) {
 function postValidateAccess(ccdSystemService: CcdSystemService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      if (req.session.startRepresentingYourself.id === undefined) {
+        res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
+        return;
+      }
+
       const accessCode = req.body['accessCode'];
       if (!validAccessCode(accessCode)) {
         res.redirect(paths.startRepresentingYourself.enterSecurityCode + '?error=accessCode');
         return;
       }
+
       const caseId = req.session.startRepresentingYourself.id;
-      const pipValidation = await ccdSystemService.pipValidation(caseId.replace(/-/g, ''), accessCode);
+      const pipValidation = await ccdSystemService.pipValidation(caseId, accessCode);
+
       if (pipValidation.accessValidated) {
         Object.assign(req.session.startRepresentingYourself, pipValidation);
         res.redirect(paths.startRepresentingYourself.confirmDetails);
         return;
       }
+
       res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=pipValidationFailed');
     } catch (error) {
       next(error);
@@ -118,6 +126,9 @@ function validAccessCode(value: string): boolean {
 
 function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) {
   try {
+    if (!req.session.startRepresentingYourself.accessValidated) {
+      res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
+    }
     const details = req.session.startRepresentingYourself.caseSummary;
     res.render('start-representing-yourself/confirm-case-details.njk', {
       caseDetails: [
@@ -142,13 +153,17 @@ function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) 
 
 function postConfirmCaseDetails(req: Request, res: Response, next: NextFunction) {
   try {
+    if (!req.session.startRepresentingYourself.accessValidated) {
+      res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
+    }
+    req.session.startRepresentingYourself.detailsConfirmed = true;
     res.redirect(paths.common.login);
   } catch (error) {
     next(error);
   }
 }
 
-function setupStartRepresentingMyselfPublicControllers(ccdSystemService: CcdSystemService): Router {
+function setupStartRepresentingMyselfControllers(ccdSystemService: CcdSystemService): Router {
   const router = Router();
   router.get(paths.startRepresentingYourself.start, getStartRepresentingYourself);
   router.get(paths.startRepresentingYourself.enterCaseNumber, getEnterCaseReference);
@@ -161,7 +176,7 @@ function setupStartRepresentingMyselfPublicControllers(ccdSystemService: CcdSyst
 }
 
 export {
-  setupStartRepresentingMyselfPublicControllers,
+  setupStartRepresentingMyselfControllers,
   getStartRepresentingYourself,
   getEnterCaseReference,
   postEnterCaseReference,

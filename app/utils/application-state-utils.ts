@@ -259,6 +259,16 @@ async function getAppealApplicationNextStep(req: Request) {
         allowedAskForMoreTime: false
       };
       break;
+    case 'caseUnderReview':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.caseUnderReview.detailsSent,
+          i18n.pages.overviewPage.doThisNext.caseUnderReview.dueDate
+        ],
+        cta: null,
+        allowedAskForMoreTime: false
+      };
+      break;
     case 'respondentReview':
       doThisNextSection = {
         descriptionParagraphs: [

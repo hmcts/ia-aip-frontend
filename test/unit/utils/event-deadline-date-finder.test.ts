@@ -59,6 +59,10 @@ describe('event-deadline-date-finder', () => {
               'createdDate': '2020-02-18T16:00:00.000'
             },
             {
+              'id': 'buildCase',
+              'createdDate': '2020-02-18T16:00:00.000'
+            },
+            {
               'id': 'requestRespondentReview',
               'createdDate': '2020-02-18T16:00:00.000'
             },
@@ -136,6 +140,14 @@ describe('event-deadline-date-finder', () => {
     it('reasonsForAppealSubmitted should return a formatted date with 14 days offset from the submitReasonsForAppeal event', () => {
 
       const currentAppealStatus = 'reasonsForAppealSubmitted';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('03 March 2020');
+    });
+
+    it('caseUnderReview should return a formatted date with 14 days offset from the buildCase event', () => {
+
+      const currentAppealStatus = 'caseUnderReview';
       const result = getDeadline(currentAppealStatus, req as Request);
 
       expect(result).to.be.equal('03 March 2020');

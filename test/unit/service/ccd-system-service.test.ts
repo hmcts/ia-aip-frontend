@@ -62,7 +62,7 @@ describe('ccd-system-service', () => {
     it('should return case summary with accessValidated set to true', () => {
       const caseDetails = {
         appellantGivenNames: 'James',
-        appellantFamilyName: 'Bond',
+        appellantFamilyName: 'Bond'
       };
       const response = getPipValidationSuccess(caseId, caseDetails as CaseData);
       expect(response).to.eql({

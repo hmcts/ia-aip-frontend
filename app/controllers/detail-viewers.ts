@@ -52,7 +52,6 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     }
 
     rowsCont = [
-      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [application.homeOfficeRefNumber], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [application.personalDetails.givenNames, application.personalDetails.familyName], null, Delimiter.SPACE),

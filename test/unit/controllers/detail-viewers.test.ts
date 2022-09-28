@@ -442,10 +442,6 @@ describe('Detail viewer Controller', () => {
           value: { html: 'A1234567' }
         },
         {
-          key: { text: 'Home Office reference number' },
-          value: { html: 'A1234567' }
-        },
-        {
           key: { text: 'Date letter sent' },
           value: { html: '16 February 2020' }
         },

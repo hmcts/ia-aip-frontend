@@ -473,7 +473,7 @@
       },
       "confirmDetails": {
         "title": "Case details",
-        "instructions": "These are your case details. If these are ot the correct details, you should contact the Tribunal.",
+        "instructions": "These are your case details. If these are not the correct details, you should contact the Tribunal.",
         "fieldName": "Name",
         "fieldDateOfBirth": "Date of birth",
         "fieldReferenceNumber": "Online case reference number",

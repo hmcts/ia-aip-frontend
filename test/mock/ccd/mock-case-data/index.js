@@ -14,6 +14,7 @@ const outOfTimeDecisionGranted = require('./data/out-of-time-decision-granted');
 const outOfTimeDecisionRejected = require('./data/out-of-time-decision-rejected');
 const outOfTimeDecisionInTime = require('./data/out-of-time-decision-in-time');
 const uploadAddendumEvidence = require('./data/upload-addendum-evidence');
+const startRepresentingYourself = require('./data/start-representing-yourself');
 
 module.exports = {
   partialAppealStartedCaseData,
@@ -31,5 +32,6 @@ module.exports = {
   outOfTimeDecisionGranted,
   outOfTimeDecisionRejected,
   outOfTimeDecisionInTime,
-  uploadAddendumEvidence
+  uploadAddendumEvidence,
+  startRepresentingYourself
 };

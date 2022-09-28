@@ -12,7 +12,6 @@ const appellantPinInPost = {
       'accessCode': 'ABCD1234EFGH',
       'expiryDate': undefined
     },
-    'appellantDateOfBirth': '1980-05-12',
     'appellantGivenNames': 'John',
     'appellantFamilyName': 'Smith'
   }

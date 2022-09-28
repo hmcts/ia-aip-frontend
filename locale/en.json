@@ -475,7 +475,6 @@
         "title": "Case details",
         "instructions": "These are your case details. If these are not the correct details, you should contact the Tribunal.",
         "fieldName": "Name",
-        "fieldDateOfBirth": "Date of birth",
         "fieldReferenceNumber": "Online case reference number",
         "nextStepTitle": "Access your case",
         "nextStepInstructions": "You can now access your case. You will first need to create an account or sign in if you already have one."

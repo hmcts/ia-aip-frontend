@@ -63,14 +63,12 @@ describe('ccd-system-service', () => {
       const caseDetails = {
         appellantGivenNames: 'James',
         appellantFamilyName: 'Bond',
-        appellantDateOfBirth: '1980-12-31'
       };
       const response = getPipValidationSuccess(caseId, caseDetails as CaseData);
       expect(response).to.eql({
         accessValidated: true,
         caseSummary: {
           name: 'James Bond',
-          dateOfBirth: '1980-12-31',
           referenceNumber: caseId
         }
       });
@@ -90,7 +88,6 @@ describe('ccd-system-service', () => {
       accessValidated: true,
       caseSummary: {
         name: 'James Bond',
-        dateOfBirth: '1980-12-31',
         referenceNumber: caseId
       }
     };
@@ -123,7 +120,6 @@ describe('ccd-system-service', () => {
             case_data: {
               appellantGivenNames: 'James',
               appellantFamilyName: 'Bond',
-              appellantDateOfBirth: '1980-12-31',
               appellantPinInPost: {
                 pinUsed: 'No',
                 accessCode: accessCode,

@@ -34,7 +34,7 @@ Feature: Start Representing Yourself
     When I fill "accessCode" field with "ABCD1234EFGH"
     And I click "Continue" button
     Then I see "/start-representing-yourself/enter-case-number?error=pipValidationFailed" in current url
-    And Then I should see error summary
+    And I should see error summary
 
     # case with valid pip
     # entered valid case reference number
@@ -47,7 +47,7 @@ Feature: Start Representing Yourself
     When I fill "accessCode" field with "ABCD1234EFGH"
     And I click "Continue" button
     Then I see "/start-representing-yourself/confirm-case-details" in current url
-    And I should see "Confirm case details" in title
+    And I see "Confirm case details" in title
 
     # confirm case details
     And I click "Confirm" button

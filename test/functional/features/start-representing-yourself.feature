@@ -5,14 +5,13 @@ Feature: Start Representing Yourself
   I want to be able to enter the case reference and access code to take over the case
 
   Scenario: Complete the Start Representing Yourself process
-    Given I have received a Pin in Post notification
-    When I visit the "startRepresentingYourself.start" page
+    When I visit the start-representing-yourself page
     Then I see "Start representing yourself" in title
 
     # proceed to enter case reference number page
     When I click the "Start now" button
     Then I see "/start-representing-yourself/enter-case-number" in current url
-    And I should see "Enter your online case reference number" in title
+    And I see "Enter your online case reference number" in title
 
     # entered incorrectly formatted case reference number
     When I fill "caseReferenceNumber" field with "1234-invalid-1234"

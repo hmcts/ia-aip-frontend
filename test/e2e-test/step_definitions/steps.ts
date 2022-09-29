@@ -40,6 +40,7 @@ const { uploadAddendumEvidence } = require('../pages/provide-more-evidence/uploa
 const { makeHearingApplication } = require('../pages/make-application/make-hearing-application');
 const { makeAppealApplication } = require('../pages/make-application/make-appeal-application');
 const { changeRepresentation } = require('../pages/change-representation/change-representation');
+const { startRepresentingYourself } = require('../pages/start-representing-yourself/start-representing-yourself');
 
 const { I } = inject();
 
@@ -87,3 +88,4 @@ uploadAddendumEvidence(I);
 makeHearingApplication(I);
 makeAppealApplication(I);
 changeRepresentation(I);
+startRepresentingYourself(I);

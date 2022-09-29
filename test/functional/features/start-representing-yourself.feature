@@ -33,7 +33,7 @@ Feature: Start Representing Yourself
     # entered correctly formatted access code
     When I fill "accessCode" field with "ABCD1234EFGH"
     And I click "Continue" button
-    Then I see "/start-representing-yourself/confirm-case-details?error=pipValidation" in current url
+    Then I see "/start-representing-yourself/confirm-case-details?error=pipValidationFailed" in current url
     And Then I should see error summary
 
     # case with valid pip

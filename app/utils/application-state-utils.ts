@@ -139,11 +139,18 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'listing':
-      doThisNextSection = {
-        descriptionParagraphs: [
+      const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
+        ? [
+          i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction1,
+          i18n.pages.overviewPage.doThisNext.listing.providedByLr.direction2,
+          i18n.pages.overviewPage.doThisNext.listing.dueDate
+        ]
+        : [
           i18n.pages.overviewPage.doThisNext.listing.detailsSent,
           i18n.pages.overviewPage.doThisNext.listing.dueDate
-        ],
+        ];
+      doThisNextSection = {
+        descriptionParagraphs: paragraphs,
         info: {
           title: i18n.pages.overviewPage.doThisNext.listing.info.title,
           url: i18n.pages.overviewPage.doThisNext.listing.info.url
@@ -436,9 +443,13 @@ async function getAppealApplicationNextStep(req: Request) {
           ]
         };
       }
+      const description = eventByLegalRep(req, Events.CREATE_CASE_SUMMARY.id, 'finalBundling')
+        ? i18n.pages.overviewPage.doThisNext.prepareForHearing.providedByLr.description
+        : i18n.pages.overviewPage.doThisNext.prepareForHearing.description;
+
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.prepareForHearing.description,
+          description,
           i18n.pages.overviewPage.doThisNext.prepareForHearing.date,
           i18n.pages.overviewPage.doThisNext.prepareForHearing.time,
           i18n.pages.overviewPage.doThisNext.prepareForHearing.hearingCentre,
@@ -536,10 +547,19 @@ function isPreAddendumEvidenceUploadState(appealStatus: string): Boolean {
   return [States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id].includes(appealStatus);
 }
 
+function eventByLegalRep(req: Request, eventId: string, state: string): boolean {
+  return (req.session.appeal.history || []).filter(event => event.id === eventId
+    && event.state
+    && event.state.id === state
+    && event.user
+    && event.user.id !== req.idam.userDetails.uid).length > 0;
+}
+
 export {
   getAppealApplicationNextStep,
   getAppealStatus,
   getMoveAppealOfflineReason,
   getMoveAppealOfflineDate,
-  isPreAddendumEvidenceUploadState
+  isPreAddendumEvidenceUploadState,
+  eventByLegalRep
 };

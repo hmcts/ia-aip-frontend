@@ -902,6 +902,10 @@
           }
         },
         "listing": {
+          "providedByLr": {
+            "direction1": "Your hearing needs were sent to the Tribunal.",
+            "direction2": "A Tribunal Caseworker is looking at the answers and will contact you with the details of your hearing and tell you what to do next."
+          },
           "detailsSent": "A Tribunal Caseworker is looking at your answers and will contact you with the details of your hearing and to tell you what to do next.",
           "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.",
           "info": {
@@ -910,6 +914,9 @@
           }
         },
         "prepareForHearing": {
+          "providedByLr": {
+            "description": "The hearing bundle is ready to view. This is a record of all the information and evidence about this appeal. You should read it carefully."
+          },
           "description": "The Tribunal has set a date for your hearing. Here are the details:",
           "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
           "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
@@ -970,6 +977,16 @@
           ]
         },
         "uploadAdditionalEvidence": {
+          "providedByLr": {
+            "text": "More evidence was provided.",
+            "links": [
+              {
+                "title": "What was provided",
+                "text": "Your evidence",
+                "href": "{{ paths.common.yourEvidence }}"
+              }
+            ]
+          },
           "text": "You provided more evidence.",
           "links": [
             {
@@ -1000,6 +1017,16 @@
           ]
         },
         "uploadAddendumEvidenceLegalRep": {
+          "providedByLr": {
+            "text": "More evidence was provided.",
+            "links": [
+              {
+                "title": "What was provided",
+                "text": "Your evidence",
+                "href": "{{ paths.common.yourAddendumEvidence }}"
+              }
+            ]
+          },
           "text": "You provided more evidence.",
           "links": [
             {

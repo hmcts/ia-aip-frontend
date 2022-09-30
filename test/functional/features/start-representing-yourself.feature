@@ -47,8 +47,8 @@ Feature: Start Representing Yourself
     When I fill "accessCode" field with "ABCD1234EFGH"
     And I click "Continue" button
     Then I see "/start-representing-yourself/confirm-case-details" in current url
-    And I see "Confirm case details" in title
+    And I see "Case details" in title
 
     # confirm case details
-    And I click "Confirm" button
+    And I click "Continue" button
     Then I see "/login" in current url

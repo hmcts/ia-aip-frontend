@@ -1,9 +1,9 @@
-import moment from 'moment';
+const moment = require('moment');
 
 const mockData = require('../mock-case-data');
 const yearMonthDayFormat = 'YYYY-MM-DD';
 
-function expiryDaysFromNow(days: number) {
+function expiryDaysFromNow(days) {
   return moment().add(days,'days').format(yearMonthDayFormat);
 }
 
@@ -12,8 +12,9 @@ module.exports = {
   method: 'GET',
   cache: false,
   template: params => {
+    console.log(params);
     const caseData = mockData.startRepresentingYourself;
-    const expiryDate = (params.caseId === 1111222233334444)
+    const expiryDate = (params.caseId === '1111222233334444')
       ? expiryDaysFromNow(-10)
       : expiryDaysFromNow(10);
     caseData.id = params.caseId;

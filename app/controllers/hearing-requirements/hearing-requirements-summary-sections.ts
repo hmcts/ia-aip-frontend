@@ -50,9 +50,56 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
   );
 
   witnessesSectionSummaryList.push({
-    title: i18n.pages.hearingRequirements.taskList.sections.witnesses,
+    title: i18n.pages.cmaRequirementsCYA.rows.witnessesTitle,
     summaryRows: witnessesRows
   });
+
+  // Appellant present at hearing?
+  if(hearingRequirements.isAppellantAttendingTheHearing) {
+    const appellantRows: SummaryRow[] = [];
+
+    appellantRows.push(
+        addSummaryRow(
+            i18n.common.cya.questionRowTitle,
+            [i18n.pages.hearingRequirements.witnessesSection.appellantPresent.title]
+        )
+    );
+
+    appellantRows.push(
+        getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+            [boolToYesNo(hearingRequirements.isAppellantAttendingTheHearing)],
+            paths.submitHearingRequirements.appellantAttendingHearing + editParameter)
+    );
+
+    witnessesSectionSummaryList.push({
+      title: i18n.pages.cmaRequirementsCYA.rows.appellantTitle,
+      summaryRows: appellantRows
+    });
+  }
+
+  // Appellant oral evidence?
+  if(hearingRequirements.isAppellantGivingOralEvidence) {
+    const evidenceRows: SummaryRow[] = [];
+
+    evidenceRows.push(
+        addSummaryRow(
+            i18n.common.cya.questionRowTitle,
+            [i18n.pages.hearingRequirements.witnessesSection.oralEvidence.title]
+        )
+    );
+
+    evidenceRows.push(
+        getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+            [boolToYesNo(hearingRequirements.isAppellantGivingOralEvidence)],
+            paths.submitHearingRequirements.appellantOralEvidence + editParameter)
+    );
+
+    witnessesSectionSummaryList.push({
+      title: i18n.pages.cmaRequirementsCYA.rows.evidenceTitle,
+      summaryRows: evidenceRows
+    });
+  }
+
   return witnessesSectionSummaryList;
 }
 
@@ -470,10 +517,13 @@ export function buildHearingRequirementsSummarySections(hearingRequirements: Hea
 
   const witnessesSectionList: SummaryList[] = buildWitnessesSectionSummaryList(hearingRequirements, visibleChangeLink);
 
+  const title = (hearingRequirements.isAppellantGivingOralEvidence || hearingRequirements.isAppellantAttendingTheHearing) ?
+      `${i18n.pages.hearingRequirements.taskList.sections.attendance}` : `${i18n.pages.hearingRequirements.taskList.sections.witnesses}`;
   hearingRequirementsSummarySections.push({
-    title: `1. ${i18n.pages.hearingRequirements.taskList.sections.witnesses}`,
-    summaryLists: witnessesSectionList
+    title: `1. ` + title,
+      summaryLists: witnessesSectionList
   });
+
 
   const accessNeedsSummaryLists: SummaryList[] = buildAccessNeedsSummaryList(hearingRequirements, visibleChangeLink);
 

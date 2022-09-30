@@ -146,6 +146,8 @@ interface CaseData {
   sponsorMobileNumber?: string;
   sponsorAuthorisation?: string;
   appellantPinInPost?: PinInPost;
+  isAppellantAttendingTheHearing?: 'Yes' | 'No';
+  isAppellantGivingOralEvidence?: 'Yes' | 'No';
 }
 
 interface Application<T> {

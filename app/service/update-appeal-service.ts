@@ -376,12 +376,6 @@ export default class UpdateAppealService {
     if (caseData.isWitnessesAttending) {
       hearingRequirements.witnessesOnHearing = yesNoToBool(caseData.isWitnessesAttending);
     }
-    if (caseData.isAppellantAttendingTheHearing) {
-      hearingRequirements.isAppellantAttendingTheHearing = yesNoToBool(caseData.isAppellantAttendingTheHearing);
-    }
-    if (caseData.isAppellantGivingOralEvidence) {
-      hearingRequirements.isAppellantGivingOralEvidence = yesNoToBool(caseData.isAppellantGivingOralEvidence);
-    }
     if (caseData.isEvidenceFromOutsideUkInCountry) {
       hearingRequirements.witnessesOutsideUK = yesNoToBool(caseData.isEvidenceFromOutsideUkInCountry);
     }

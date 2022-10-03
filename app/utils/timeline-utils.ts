@@ -43,7 +43,6 @@ function constructEventObject(event: HistoryEvent, req: Request) {
  * @param req the request containing the session to update the timeExtensionsMap
  */
 function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request) {
-
   const filteredEvents = states
     ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
     : events.filter(event => eventsToLookFor.includes(event.id));
@@ -148,6 +147,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
   const appealArgumentSectionEvents = [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
     Events.SUBMIT_REASONS_FOR_APPEAL.id,
+    Events.BUILD_CASE.id,
     Events.REQUEST_RESPONDENT_REVIEW.id,
     Events.REQUEST_RESPONDENT_REVIEW.id,
     Events.REQUEST_RESPONSE_REVIEW.id,
@@ -163,6 +163,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
     States.APPEAL_SUBMITTED.id,
     States.CLARIFYING_QUESTIONS_SUBMITTED.id,
     States.REASONS_FOR_APPEAL_SUBMITTED.id,
+    States.CASE_UNDER_REVIEW.id,
     States.AWAITING_REASONS_FOR_APPEAL.id,
     States.RESPONDENT_REVIEW.id,
     States.AWAITING_CLARIFYING_QUESTIONS.id,

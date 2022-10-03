@@ -844,6 +844,10 @@
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
         },
+        "caseUnderReview": {
+          "detailsSent": "The reasons you think the Home Office decision to refuse your claim is wrong were sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+        },
         "clarifyingQuestions": {
           "description": "You need to answer some questions about your appeal.",
           "descriptionAskForMoreTime": "You might not get more time. You need to finish answering the Tribunal’s questions by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
@@ -1073,6 +1077,26 @@
             }
           ]
         },
+        "buildCase": {
+          "text": "The reasons you think the Home Office decision is wrong were sent to the Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Why you think the Home Office is wrong",
+              "href": "{{ paths.common.lrReasonsForAppealViewer }}"
+            },
+            {
+              "title": "Useful documents",
+              "text": "Home Office documents about your case",
+              "href": "{{ paths.common.homeOfficeDocumentsViewer }}"
+            },
+            {
+              "title": "Helpful information",
+              "text": "Understanding your Home Office documents",
+              "href": "{{ paths.common.homeOfficeDocuments }}"
+            }
+          ]
+        },
         "makeAnApplication": {
           "text": "You sent the Tribunal a request.",
           "links": [
@@ -1214,8 +1238,13 @@
       },
       "reasonsForAppealCheckAnswersHistory": {
         "title": "Why you think the Home Office is wrong",
+        "hint": "The following document(s) were sent to the Tribunal to argue why you think the<br />Home Office decision to refuse your claim is wrong",
         "question": "Question",
-        "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
+        "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?",
+        "uploadDateLabel": "Date uploaded",
+        "documentLabel": "Document",
+        "additionalDocumentLabel": "Additional evidence",
+        "documentDescriptionLabel": "Document description"
       },
       "makeAnApplication": {
         "title": "Your request",
@@ -1255,10 +1284,8 @@
           "askWithdraw": {
             "granted": "The Tribunal will end the appeal. The Tribunal will contact you when this happens."
           },
-          "askUpdateDetails": {
-          },
-          "askSomethingElse": {
-          },
+          "askUpdateDetails": {},
+          "askSomethingElse": {},
           "askChangeHearing": {
             "granted": "The details of you hearing will be updated. The Tribunal will contact you when this happens."
           }

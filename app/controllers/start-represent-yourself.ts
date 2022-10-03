@@ -137,10 +137,6 @@ function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) 
           [ details.name ]
         ),
         addSummaryRow(
-          i18n.pages.startRepresentingYourself.confirmDetails.fieldDateOfBirth,
-          [ formatDate(details.dateOfBirth) ]
-        ),
-        addSummaryRow(
           i18n.pages.startRepresentingYourself.confirmDetails.fieldReferenceNumber,
           [ formatCaseId(details.referenceNumber) ]
         )

@@ -195,7 +195,6 @@ describe('start-representing-yourself', () => {
     req.session.startRepresentingYourself = {
       caseSummary: {
         name: 'James Bond',
-        dateOfBirth: '1980-12-31',
         referenceNumber: 1234123412341234
       }
     };
@@ -205,7 +204,6 @@ describe('start-representing-yourself', () => {
     expect(res.render).to.have.been.calledWith('start-representing-yourself/confirm-case-details.njk', {
       caseDetails: [
         { key: { text: i18n.pages.startRepresentingYourself.confirmDetails.fieldName }, value: { html: 'James Bond' } },
-        { key: { text: i18n.pages.startRepresentingYourself.confirmDetails.fieldDateOfBirth }, value: { html: '31 December 1980' } },
         { key: { text: i18n.pages.startRepresentingYourself.confirmDetails.fieldReferenceNumber }, value: { html: '1234-1234-1234-1234' } }
       ]
     });

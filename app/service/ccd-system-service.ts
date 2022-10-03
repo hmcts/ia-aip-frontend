@@ -15,7 +15,6 @@ export interface PipValidation {
   accessValidated: boolean;
   caseSummary?: {
     name: string,
-    dateOfBirth: string,
     referenceNumber: string
   };
 }
@@ -40,7 +39,6 @@ export function getPipValidationSuccess(id: string, caseDetails: CaseData): PipV
     accessValidated: true,
     caseSummary: {
       name: `${caseDetails.appellantGivenNames} ${caseDetails.appellantFamilyName}`,
-      dateOfBirth: caseDetails.appellantDateOfBirth,
       referenceNumber: id
     }
   };

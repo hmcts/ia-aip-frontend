@@ -165,5 +165,10 @@ export const Events = {
     id: 'pipActivation',
     summary: 'PiP Activation',
     description: 'Appellant is now representing themselves'
+  },
+  CREATE_CASE_SUMMARY: {
+    id: 'createCaseSummary',
+    summary: 'Create case summary',
+    description: 'Create case summary'
   }
 };

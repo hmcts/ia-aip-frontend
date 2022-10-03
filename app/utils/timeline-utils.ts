@@ -16,7 +16,9 @@ import { getAppellantApplications } from './utils';
  */
 function constructEventObject(event: HistoryEvent, req: Request) {
 
-  const eventContent = i18n.pages.overviewPage.timeline[event.id];
+  const eventContent = [Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id].includes(event.id) && event.user.id !== req.idam.userDetails.uid
+    ? i18n.pages.overviewPage.timeline[event.id]['providedByLr']
+    : i18n.pages.overviewPage.timeline[event.id];
 
   let eventObject = {
     date: moment(event.createdDate).format('DD MMMM YYYY'),
@@ -143,7 +145,12 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 }
 
 function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, hearingBundleFeatureEnabled: boolean) {
-  const appealHearingRequirementsSectionEvents = [Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, Events.STITCHING_BUNDLE_COMPLETE.id];
+  const appealHearingRequirementsSectionEvents = [
+    Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
+    Events.STITCHING_BUNDLE_COMPLETE.id,
+    Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+    Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id
+  ];
   const appealArgumentSectionEvents = [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
     Events.SUBMIT_REASONS_FOR_APPEAL.id,

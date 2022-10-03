@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import {
@@ -79,6 +80,7 @@ describe('application-state-utils', () => {
       },
       idam: {
         userDetails: {
+          uid: 'appellant',
           forename: 'forename',
           surname: 'surname'
         }
@@ -177,6 +179,39 @@ describe('application-state-utils', () => {
         deadline: '25 January 2022',
         descriptionParagraphs: [
           'A Tribunal Caseworker is looking at your answers and will contact you with the details of your hearing and to tell you what to do next.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
+        ],
+        info: {
+          title: 'Helpful Information',
+          url: "<a class='govuk-link' href='{{ paths.common.whatToExpectAtHearing }}'>What to expect at a hearing</a>"
+        },
+        allowedAskForMoreTime: false
+      });
+    });
+
+    it('when application status is listing and appellant just took over the case should get correct \'Do This next section\'', async () => {
+      req.session.appeal.appealStatus = 'listing';
+      req.session.appeal.history = req.session.appeal.history.filter(event => event.id !== 'draftHearingRequirements');
+      let event = {
+        'id': 'draftHearingRequirements',
+        'createdDate': '2022-01-11T16:00:00.000',
+        'state': {
+          'id': 'listing'
+        },
+        'user': {
+          'id': 'legal-rep'
+        }
+      } as HistoryEvent;
+      req.session.appeal.history.push(event);
+
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '25 January 2022',
+        descriptionParagraphs: [
+          'Your hearing needs were sent to the Tribunal.',
+          'A Tribunal Caseworker is looking at the answers and will contact you with the details of your hearing and tell you what to do next.',
           'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.'
         ],
         info: {
@@ -918,6 +953,29 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = getPreHearingAndFinalBundling();
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application status is finalBundling and appellant just took over case should get correct Do this next section.', async () => {
+    req.session.appeal.appealStatus = 'finalBundling';
+    req.session.appeal.history = req.session.appeal.history.filter(event => event.id !== 'createCaseSummary');
+    let event = {
+      'id': 'createCaseSummary',
+      'createdDate': '2022-01-11T16:00:00.000',
+      'state': {
+        'id': 'finalBundling'
+      },
+      'user': {
+        'id': 'legal-rep'
+      }
+    } as HistoryEvent;
+    req.session.appeal.history.push(event);
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = getPreHearingAndFinalBundling();
+    expected['descriptionParagraphs'][0] = 'The hearing bundle is ready to view. This is a record of all the information and evidence about this appeal. You should read it carefully.';
 
     expect(result).to.eql(expected);
   });

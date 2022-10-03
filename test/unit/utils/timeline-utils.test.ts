@@ -27,7 +27,8 @@ describe('timeline-utils', () => {
       idam: {
         userDetails: {
           forename: 'forename',
-          surname: 'surname'
+          surname: 'surname',
+          uid: 'appellant'
         }
       },
       app: {
@@ -64,6 +65,54 @@ describe('timeline-utils', () => {
             'title': 'Helpful information',
             'text': 'What is a Tribunal Caseworker?',
             'href': '{{ paths.common.tribunalCaseworker }}'
+          }]
+        }]
+      );
+    });
+
+    it('Should construct the appeal hearing requirements section when appellant takes over', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      const appealHearingRequirementsSectionEvents = [
+        Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+        Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id
+      ];
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        }
+      ] as HistoryEvent[];
+      req.session.appeal.history = history;
+      const result = constructSection(appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req as Request);
+
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'More evidence was provided.',
+          'links': [{
+            'title': 'What was provided',
+            'text': 'Your evidence',
+            'href': '{{ paths.common.yourEvidence }}'
+          }]
+        }, {
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'More evidence was provided.',
+          'links': [{
+            'title': 'What was provided',
+            'text': 'Your evidence',
+            'href': '{{ paths.common.yourAddendumEvidence }}'
           }]
         }]
       );
@@ -175,19 +224,13 @@ describe('timeline-utils', () => {
     });
 
     it('should return relevant events when hearingBundle feature enabled', () => {
-      const appealHearingRequirementsSectionEvents = [
-        Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
-        Events.STITCHING_BUNDLE_COMPLETE.id,
-        Events.LIST_CASE.id
-      ];
-      const expectedEvents = { appealHearingRequirementsSectionEvents };
       const eventsAndStates = getEventsAndStates(true, true);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(3);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
     });
 
     it('should return relevant events when hearingBundle feature disabled', () => {
       const eventsAndStates = getEventsAndStates(true, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(2);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
     });
   });
 });

@@ -62,13 +62,16 @@ describe('start-representing-yourself', () => {
 
   it('getEnterCaseReference', () => {
     getEnterCaseReference(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', { });
+    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
+      previousPage: paths.startRepresentingYourself.start
+    });
   });
 
   it('getEnterCaseReference with error error caseReferenceNumber', () => {
     req.query.error = 'caseReferenceNumber';
     getEnterCaseReference(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
+      previousPage: paths.startRepresentingYourself.start,
       error: {
         caseReferenceNumber: {
           key: 'caseReferenceNumber',
@@ -90,6 +93,7 @@ describe('start-representing-yourself', () => {
     req.query.error = 'pipValidationFailed';
     getEnterCaseReference(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
+      previousPage: paths.startRepresentingYourself.start,
       error: {
         pipValidationFailed: {
           key: 'pipValidationFailed',
@@ -121,13 +125,16 @@ describe('start-representing-yourself', () => {
 
   it('getEnterSecurityCode', () => {
     getEnterSecurityCode(req as Request, res as Response, next);
-    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-security-code.njk', { });
+    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-security-code.njk', {
+      previousPage: paths.startRepresentingYourself.enterCaseNumber
+    });
   });
 
   it('getEnterSecurityCode with error message', () => {
     req.query.error = 'accessCode';
     getEnterSecurityCode(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-security-code.njk', {
+      previousPage: paths.startRepresentingYourself.enterCaseNumber,
       error: {
         accessCode: {
           key: 'accessCode',
@@ -203,6 +210,7 @@ describe('start-representing-yourself', () => {
     getConfirmCaseDetails(req as Request, res as Response, next);
 
     expect(res.render).to.have.been.calledWith('start-representing-yourself/confirm-case-details.njk', {
+      previousPage: paths.startRepresentingYourself.enterSecurityCode,
       caseDetails: [
         { key: { text: i18n.pages.startRepresentingYourself.confirmDetails.fieldName }, value: { html: 'James Bond' } },
         { key: { text: i18n.pages.startRepresentingYourself.confirmDetails.fieldDateOfBirth }, value: { html: '31 December 1980' } },

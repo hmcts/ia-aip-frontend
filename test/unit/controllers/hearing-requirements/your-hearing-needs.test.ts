@@ -186,12 +186,12 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
           }, {
             'title': 'Appellant',
             'summaryRows': [{
-            'key': {
-              'text': 'Question'
-            },
-            'value': {
-              'html': 'Will the appellant come to the hearing?'
-            }
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Will the appellant come to the hearing?'
+              }
             }, {
               'key': {
                 'text': 'Answer'
@@ -211,13 +211,13 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               }
             }, {
               'key': {
-                  'text': 'Answer'
-                },
-                'value': {
-                  'html': 'Yes'
-                }
-              }]
-            }
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Yes'
+              }
+            }]
+          }
           ]
         }, {
           'title': '2. Access needs',

@@ -55,7 +55,7 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
   });
 
   // Appellant present at hearing?
-  if(hearingRequirements.isAppellantAttendingTheHearing) {
+  if (hearingRequirements.isAppellantAttendingTheHearing) {
     const appellantRows: SummaryRow[] = [];
 
     appellantRows.push(
@@ -78,7 +78,7 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
   }
 
   // Appellant oral evidence?
-  if(hearingRequirements.isAppellantGivingOralEvidence) {
+  if (hearingRequirements.isAppellantGivingOralEvidence) {
     const evidenceRows: SummaryRow[] = [];
 
     evidenceRows.push(
@@ -521,9 +521,8 @@ export function buildHearingRequirementsSummarySections(hearingRequirements: Hea
       `${i18n.pages.hearingRequirements.taskList.sections.attendance}` : `${i18n.pages.hearingRequirements.taskList.sections.witnesses}`;
   hearingRequirementsSummarySections.push({
     title: `1. ` + title,
-      summaryLists: witnessesSectionList
+    summaryLists: witnessesSectionList
   });
-
 
   const accessNeedsSummaryLists: SummaryList[] = buildAccessNeedsSummaryList(hearingRequirements, visibleChangeLink);
 

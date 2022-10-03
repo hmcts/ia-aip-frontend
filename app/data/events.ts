@@ -97,6 +97,11 @@ export const Events = {
     summary: 'Review Home Office response',
     description: 'Review Home Office response'
   },
+  BUILD_CASE: {
+    id: 'buildCase',
+    summary: 'Build your case',
+    description: 'Build your case'
+  },
   UPLOAD_ADDITIONAL_EVIDENCE: {
     id: 'uploadAdditionalEvidence',
     summary: 'Upload additional evidence for AIP',

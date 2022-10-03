@@ -87,6 +87,10 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       formattedDeadline = getFormattedEventHistoryDate(history, 'submitReasonsForAppeal', daysToWaitAfterReasonsForAppeal);
       break;
     }
+    case 'caseUnderReview': {
+      formattedDeadline = getFormattedEventHistoryDate(history, 'buildCase', daysToWaitAfterReasonsForAppeal);
+      break;
+    }
     case 'awaitingClarifyingQuestionsAnswersPartial':
     case 'awaitingClarifyingQuestionsAnswers': {
       formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestClarifyingQuestions');
@@ -120,7 +124,7 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       break;
     }
     case 'submitHearingRequirements':
-      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions,'legalRepresentativeHearingRequirements');
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'legalRepresentativeHearingRequirements');
       break;
     case 'decided':
       formattedDeadline = getDueDateForAppellantToRespondToJudgeDecision(req);

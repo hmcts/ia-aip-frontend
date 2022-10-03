@@ -110,7 +110,7 @@ const paths = {
     confirmation: '/hearing-success',
     yourHearingNeeds: '/your-hearing-needs',
     appellantAttendingHearing: '/appellant-attending-hearing',
-    appellantOralEvidence: 'appellant-oral-evidence'
+    appellantOralEvidence: '/appellant-oral-evidence'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',

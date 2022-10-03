@@ -108,7 +108,9 @@ const paths = {
     hearingDateToAvoidReasonsWithId: '/hearing-dates-avoid-reasons/:id',
     hearingDateToAvoidNew: '/hearing-dates-avoid-new',
     confirmation: '/hearing-success',
-    yourHearingNeeds: '/your-hearing-needs'
+    yourHearingNeeds: '/your-hearing-needs',
+    appellantAttendingHearing: '/appellant-attending-hearing',
+    appellantOralEvidence: '/appellant-oral-evidence'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',

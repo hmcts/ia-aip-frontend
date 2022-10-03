@@ -34,8 +34,14 @@ function getEnterCaseReference(req: Request, res: Response, next: NextFunction) 
       }
     }
 
+    let caseReferenceNumber = '';
+    if (req.session.startRepresentingYourself) {
+      caseReferenceNumber = formatCaseId(req.session.startRepresentingYourself.id);
+    }
+
     res.render('start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
+      caseReferenceNumber: caseReferenceNumber,
       ...validationErrors && { error: validationErrors },
       ...validationErrors && { errorList: Object.values(validationErrors) }
     });

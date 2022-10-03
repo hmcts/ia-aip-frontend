@@ -63,7 +63,19 @@ describe('start-representing-yourself', () => {
   it('getEnterCaseReference', () => {
     getEnterCaseReference(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
-      previousPage: paths.startRepresentingYourself.start
+      previousPage: paths.startRepresentingYourself.start,
+      caseReferenceNumber: ''
+    });
+  });
+
+  it('getEnterCaseReference with case reference number from session', () => {
+    req.session.startRepresentingYourself = {
+      id: 1234123412341234
+    };
+    getEnterCaseReference(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
+      previousPage: paths.startRepresentingYourself.start,
+      caseReferenceNumber: '1234-1234-1234-1234'
     });
   });
 
@@ -72,6 +84,7 @@ describe('start-representing-yourself', () => {
     getEnterCaseReference(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
+      caseReferenceNumber: '',
       error: {
         caseReferenceNumber: {
           key: 'caseReferenceNumber',
@@ -94,6 +107,7 @@ describe('start-representing-yourself', () => {
     getEnterCaseReference(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
+      caseReferenceNumber: '',
       error: {
         pipValidationFailed: {
           key: 'pipValidationFailed',

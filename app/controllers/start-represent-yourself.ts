@@ -35,6 +35,7 @@ function getEnterCaseReference(req: Request, res: Response, next: NextFunction) 
     }
 
     res.render('start-representing-yourself/enter-case-reference.njk', {
+      previousPage: paths.startRepresentingYourself.start,
       ...validationErrors && { error: validationErrors },
       ...validationErrors && { errorList: Object.values(validationErrors) }
     });
@@ -64,8 +65,9 @@ function postEnterCaseReference(req: Request, res: Response, next: NextFunction)
 }
 
 function validCaseReferenceNumber(value: string): boolean {
-  const CASE_REFERENCE_NUMBER_REGEX = /^\d{4}\-\d{4}\-\d{4}\-\d{4}$/;
-  return value && CASE_REFERENCE_NUMBER_REGEX.test(value);
+  const CASE_REFERENCE_NUMBER_REGEX = /^\d{16}$/;
+  const CASE_REFERENCE_NUMBER_WITH_DASHES_REGEX = /^\d{4}\-\d{4}\-\d{4}\-\d{4}$/;
+  return value && (CASE_REFERENCE_NUMBER_REGEX.test(value) || CASE_REFERENCE_NUMBER_WITH_DASHES_REGEX.test(value));
 }
 
 function getEnterSecurityCode(req: Request, res: Response, next: NextFunction) {
@@ -81,6 +83,7 @@ function getEnterSecurityCode(req: Request, res: Response, next: NextFunction) {
     }
 
     res.render('start-representing-yourself/enter-security-code.njk', {
+      previousPage: paths.startRepresentingYourself.enterCaseNumber,
       ...validationErrors && { error: validationErrors },
       ...validationErrors && { errorList: Object.values(validationErrors) }
     });
@@ -131,6 +134,7 @@ function getConfirmCaseDetails(req: Request, res: Response, next: NextFunction) 
     }
     const details = req.session.startRepresentingYourself.caseSummary;
     res.render('start-representing-yourself/confirm-case-details.njk', {
+      previousPage: paths.startRepresentingYourself.enterSecurityCode,
       caseDetails: [
         addSummaryRow(
           i18n.pages.startRepresentingYourself.confirmDetails.fieldName,

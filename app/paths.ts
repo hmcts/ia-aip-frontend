@@ -189,6 +189,7 @@ const paths = {
     homeOfficeDocumentsViewer: '/view/home-office-documents',
     appealDetailsViewer: '/appeal-details',
     reasonsForAppealViewer: '/appeal-reasons',
+    lrReasonsForAppealViewer: '/appeal-reasons/lr',
     makeAnApplicationViewer: '/view/make-an-application',
     timeExtensionDecisionViewer: '/view/time-extension-decision',
     cmaRequirementsAnswerViewer: '/your-appointment-needs',

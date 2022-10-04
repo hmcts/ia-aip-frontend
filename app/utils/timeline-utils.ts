@@ -52,7 +52,7 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
   return filteredEvents.map(event => constructEventObject(event, req));
 }
 
-function getTimeExtensionsEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
+function getApplicationEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
   const makeDirectionsFlatMap = makeAnApplications ? makeAnApplications.flatMap(application => {
     const request = {
       id: application.id,
@@ -117,7 +117,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const appealArgumentSection = constructSection(eventsAndStates.appealArgumentSectionEvents, req.session.appeal.history, eventsAndStates.appealArgumentSectionStates, req);
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
-  const timeExtensions = getTimeExtensionsEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
+  const applicationEvents = getApplicationEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
@@ -131,7 +131,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
   }
 
-  const argumentSection = appealArgumentSection.concat(timeExtensions, paymentEvent, submitCQHistory)
+  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
@@ -206,7 +206,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
 export {
   getAppealApplicationHistory,
   getSubmitClarifyingQuestionsEvents,
-  getTimeExtensionsEvents,
+  getApplicationEvents,
   constructSection,
   getEventsAndStates
 };

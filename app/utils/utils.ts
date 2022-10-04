@@ -63,7 +63,9 @@ export function yesNoToBool(answer: string): boolean {
 }
 
 export function getAppellantApplications(applications: Collection<Application<Evidence>>[]): any[] {
-  return applications ? applications.filter(application => application.value.applicant === 'Appellant') : [];
+  return applications ? applications.filter(application =>
+    application.value.applicant === 'Appellant' ||
+    application.value.applicant === 'Legal representative') : [];
 }
 
 export function getApplicationType(type: string): any {

@@ -1,9 +1,8 @@
 import { Request } from 'express';
 import { Events } from '../../../app/data/events';
-import { States } from '../../../app/data/states';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { constructSection, getEventsAndStates, getSubmitClarifyingQuestionsEvents, getTimeExtensionsEvents } from '../../../app/utils/timeline-utils';
+import { constructSection, getApplicationEvents, getEventsAndStates, getSubmitClarifyingQuestionsEvents } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -119,8 +118,8 @@ describe('timeline-utils', () => {
     });
   });
 
-  describe('getTimeExtensionsEvents', () => {
-    it('should get timeExtensions', () => {
+  describe('getApplicationEvents', () => {
+    it('should get application events', () => {
       const makeAnApplications: Collection<Application<Evidence>>[] = [
         {
           id: '2',
@@ -138,8 +137,8 @@ describe('timeline-utils', () => {
         {
           id: '1',
           value: {
-            applicant: 'Appellant',
-            applicantRole: 'citizen',
+            applicant: 'Legal representative',
+            applicantRole: 'caseworker-ia-legalrep-solicitor',
             date: '2021-07-10',
             decision: 'Refused',
             decisionDate: '2021-07-12',
@@ -152,9 +151,9 @@ describe('timeline-utils', () => {
           }
         }
       ];
-      const timeExtensions = getTimeExtensionsEvents(makeAnApplications);
+      const applicationEvents = getApplicationEvents(makeAnApplications);
 
-      expect(timeExtensions.length).to.be.eq(3);
+      expect(applicationEvents.length).to.be.eq(3);
     });
   });
 

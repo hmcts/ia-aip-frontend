@@ -463,13 +463,13 @@
         "instructions": "Enter the online case reference number from the email, text message or letter we sent you.",
         "fieldName": "Online case reference number",
         "fieldHint": "For example, 1234-1234-1234-1234",
-        "error": "Please enter the online case reference number."
+        "error": "Please enter the correct online case reference number."
       },
       "enterSecurityCode": {
         "title": "Enter your security code",
         "instructions": "Enter the security code from the email, text message or letter we sent you.",
         "fieldName": "Security code",
-        "error": "Please enter the security code."
+        "error": "Please enter the correct security code."
       },
       "confirmDetails": {
         "title": "Case details",

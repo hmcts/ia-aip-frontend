@@ -69,13 +69,14 @@ describe('start-representing-yourself', () => {
   });
 
   it('getEnterCaseReference with case reference number from session', () => {
+    const caseReferenceNumber = '1234123412341234';
     req.session.startRepresentingYourself = {
-      id: 1234123412341234
+      caseReferenceNumber: caseReferenceNumber
     };
     getEnterCaseReference(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledWith('start-representing-yourself/enter-case-reference.njk', {
       previousPage: paths.startRepresentingYourself.start,
-      caseReferenceNumber: '1234-1234-1234-1234'
+      caseReferenceNumber: caseReferenceNumber
     });
   });
 
@@ -237,6 +238,6 @@ describe('start-representing-yourself', () => {
       accessValidated: true
     };
     postConfirmCaseDetails(req as Request, res as Response, next);
-    expect(res.redirect).to.have.been.calledWith(paths.common.login);
+    expect(res.redirect).to.have.been.calledWith(paths.common.login + '?register=true');
   });
 });

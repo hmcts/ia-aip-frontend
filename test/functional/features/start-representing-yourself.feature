@@ -51,4 +51,4 @@ Feature: Start Representing Yourself
 
     # confirm case details
     And I click "Continue" button
-    Then I see "/login" in current url
+    Then I see "/users/selfRegister" in current url

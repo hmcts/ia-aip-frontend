@@ -2,7 +2,6 @@ import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../locale/en.json';
 import { paths } from '../paths';
 import CcdSystemService from '../service/ccd-system-service';
-import { formatDate } from '../utils/date-utils';
 import { addSummaryRow } from '../utils/summary-list';
 import { formatCaseId } from '../utils/utils';
 import { createStructuredError } from '../utils/validations/fields-validations';
@@ -36,7 +35,7 @@ function getEnterCaseReference(req: Request, res: Response, next: NextFunction) 
 
     let caseReferenceNumber = '';
     if (req.session.startRepresentingYourself) {
-      caseReferenceNumber = formatCaseId(req.session.startRepresentingYourself.id);
+      caseReferenceNumber = req.session.startRepresentingYourself.caseReferenceNumber;
     }
 
     res.render('start-representing-yourself/enter-case-reference.njk', {
@@ -52,15 +51,21 @@ function getEnterCaseReference(req: Request, res: Response, next: NextFunction) 
 
 function postEnterCaseReference(req: Request, res: Response, next: NextFunction) {
   try {
-    const id = req.body['caseReferenceNumber'];
-    if (!validCaseReferenceNumber(id)) {
+    const caseReferenceNumber = req.body['caseReferenceNumber'];
+    if (!validCaseReferenceNumber(caseReferenceNumber)) {
+      Object.assign(req.session, {
+        startRepresentingYourself: {
+          caseReferenceNumber: caseReferenceNumber
+        }
+      });
       res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
       return;
     }
 
     Object.assign(req.session, {
       startRepresentingYourself: {
-        id: id.replace(/-/g, '')
+        caseReferenceNumber: caseReferenceNumber,
+        id: caseReferenceNumber.replace(/-/g, '')
       }
     });
 
@@ -163,7 +168,7 @@ function postConfirmCaseDetails(req: Request, res: Response, next: NextFunction)
       res.redirect(paths.startRepresentingYourself.enterCaseNumber + '?error=caseReferenceNumber');
     }
     req.session.startRepresentingYourself.detailsConfirmed = true;
-    res.redirect(paths.common.login);
+    res.redirect(paths.common.login + '?register=true');
   } catch (error) {
     next(error);
   }

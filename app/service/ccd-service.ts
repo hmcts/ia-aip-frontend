@@ -44,7 +44,8 @@ class CcdService {
       headers: {
         Authorization: headers.userToken,
         ServiceAuthorization: headers.serviceToken,
-        'content-type': 'application/json'
+        'content-type': 'application/json',
+        UserId: userId // Hack param to prove RIA-5761.
       },
       json: true
     };

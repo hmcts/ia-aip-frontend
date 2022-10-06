@@ -21,7 +21,7 @@ const usersToCaseData = {
 };
 
 module.exports = {
- // path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases',
+  // path: '/citizens/:userId/jurisdictions/:jurisdictionId/case-types/:caseType/cases',
   path: '/searchCases',
   method: 'POST',
   cache: false,
@@ -29,7 +29,10 @@ module.exports = {
     if (headers['userid'] === '999') {
       const caseData = cache.get('caseData');
       if (caseData) {
-        return caseData;
+        return {
+          "total": 1,
+          "cases": caseData
+        };
       }
       return {};
     } else {

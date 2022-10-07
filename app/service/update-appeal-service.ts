@@ -376,6 +376,15 @@ export default class UpdateAppealService {
     if (caseData.isWitnessesAttending) {
       hearingRequirements.witnessesOnHearing = yesNoToBool(caseData.isWitnessesAttending);
     }
+    if (caseData.isAppellantAttendingTheHearing) {
+      hearingRequirements.isAppellantAttendingTheHearing = yesNoToBool(caseData.isAppellantAttendingTheHearing);
+    }
+    if (caseData.isAppellantGivingOralEvidence) {
+      hearingRequirements.isAppellantGivingOralEvidence = yesNoToBool(caseData.isAppellantGivingOralEvidence);
+    }
+    if (caseData.isWitnessesAttending) {
+      hearingRequirements.witnessesOnHearing = yesNoToBool(caseData.isWitnessesAttending);
+    }
     if (caseData.isEvidenceFromOutsideUkInCountry) {
       hearingRequirements.witnessesOutsideUK = yesNoToBool(caseData.isEvidenceFromOutsideUkInCountry);
     }
@@ -811,6 +820,12 @@ export default class UpdateAppealService {
     if (_.has(appeal, 'hearingRequirements')) {
       if (_.has(appeal.hearingRequirements, 'witnessesOnHearing')) {
         caseData.isWitnessesAttending = boolToYesNo(appeal.hearingRequirements.witnessesOnHearing);
+      }
+      if (_.has(appeal.hearingRequirements, 'isAppellantAttendingTheHearing')) {
+        caseData.isAppellantAttendingTheHearing = boolToYesNo(appeal.hearingRequirements.isAppellantAttendingTheHearing);
+      }
+      if (_.has(appeal.hearingRequirements, 'isAppellantGivingOralEvidence')) {
+        caseData.isAppellantGivingOralEvidence = boolToYesNo(appeal.hearingRequirements.isAppellantGivingOralEvidence);
       }
 
       if (_.has(appeal.hearingRequirements, 'witnessesOutsideUK')) {

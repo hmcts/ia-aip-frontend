@@ -51,13 +51,17 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
       rows.push(homeOfficeRefNumberRow);
     }
 
+    const address = application.personalDetails.address
+      && _.isEmpty(application.personalDetails.address)
+        ? null : application.personalDetails.address;
+
     rowsCont = [
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [application.personalDetails.givenNames, application.personalDetails.familyName], null, Delimiter.SPACE),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [formatDate(toIsoDate(application.personalDetails.dob))], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [nation], null),
-      application.personalDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [...Object.values(application.personalDetails.address)], null, Delimiter.BREAK_LINE),
+      address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [...Object.values(application.personalDetails.address)], null, Delimiter.BREAK_LINE),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [
         ...(application.contactDetails.wantsEmail ? [application.contactDetails.email] : []),
         ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])

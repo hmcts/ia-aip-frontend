@@ -1,5 +1,25 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { buildAddendumEvidenceDocumentsSummaryList, buildAdditionalEvidenceDocumentsSummaryList, buildUploadedAddendumEvidenceDocumentsSummaryList, buildUploadedAdditionalEvidenceDocumentsSummaryList, deleteProvideMoreEvidence, getAddendumEvidenceDocuments, getAdditionalEvidenceDocuments, getAppellantAddendumEvidenceDocuments, getConfirmation, getHomeOfficeEvidenceDocuments, getProvideMoreEvidence, getReasonForLateEvidence, getUploadedAddendumEvidenceDocuments, postProvideMoreEvidence, postProvideMoreEvidenceCheckAndSend, postReasonForLateEvidence, setupProvideMoreEvidenceController, uploadProvideMoreEvidence, validate } from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
+import {
+  buildAddendumEvidenceDocumentsSummaryList,
+  buildAdditionalEvidenceDocumentsSummaryList,
+  buildUploadedAddendumEvidenceDocumentsSummaryList,
+  buildUploadedAdditionalEvidenceDocumentsSummaryList,
+  deleteProvideMoreEvidence,
+  getAddendumEvidenceDocuments,
+  getAdditionalEvidenceDocuments,
+  getAppellantAddendumEvidenceDocuments,
+  getConfirmation,
+  getHomeOfficeEvidenceDocuments,
+  getLrAdditionalEvidenceDocuments,
+  getProvideMoreEvidence,
+  getReasonForLateEvidence,
+  getUploadedAddendumEvidenceDocuments,
+  postProvideMoreEvidence,
+  postProvideMoreEvidenceCheckAndSend,
+  postReasonForLateEvidence,
+  setupProvideMoreEvidenceController,
+  uploadProvideMoreEvidence, validate
+} from '../../../app/controllers/upload-evidence/provide-more-evidence-controller';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
@@ -226,7 +246,7 @@ describe('Provide more evidence controller', () => {
       };
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
-      req.session.appeal.documentMap = [ documentMap ];
+      req.session.appeal.documentMap = [documentMap];
 
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
@@ -253,7 +273,7 @@ describe('Provide more evidence controller', () => {
       };
 
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
-      req.session.appeal.documentMap = [ documentMap ];
+      req.session.appeal.documentMap = [documentMap];
 
       documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
 
@@ -345,7 +365,7 @@ describe('Provide more evidence controller', () => {
       };
       const documentMap: DocumentMap = { id: '1', url: 'docStoreURLToFile' };
       req.session.appeal.additionalEvidence = [{ fileId: '1', name: 'name' } as AdditionalEvidenceDocument];
-      req.session.appeal.documentMap = [ { ...documentMap } ];
+      req.session.appeal.documentMap = [{ ...documentMap }];
       req.query.id = '1';
       const appeal: Appeal = { ...req.session.appeal };
 
@@ -363,7 +383,7 @@ describe('Provide more evidence controller', () => {
       const documentMap: DocumentMap = { id: '1', url: 'docStoreURLToFile' };
       req.session.appeal.appealStatus = States.DECIDED.id;
       req.session.appeal.addendumEvidence = [{ fileId: '1', name: 'name' } as AdditionalEvidenceDocument];
-      req.session.appeal.documentMap = [ { ...documentMap } ];
+      req.session.appeal.documentMap = [{ ...documentMap }];
       req.query.id = '1';
       const appeal: Appeal = { ...req.session.appeal };
 
@@ -380,7 +400,7 @@ describe('Provide more evidence controller', () => {
       };
       const documentMap: DocumentMap = { id: '1', url: 'docStoreURLToFile' };
       req.session.appeal.additionalEvidence = [{ fileId: '1', name: 'name' } as AdditionalEvidenceDocument];
-      req.session.appeal.documentMap = [ { ...documentMap } ];
+      req.session.appeal.documentMap = [{ ...documentMap }];
       const appeal: Appeal = { ...req.session.appeal };
 
       await deleteProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);
@@ -412,8 +432,23 @@ describe('Provide more evidence controller', () => {
       req.session.appeal.additionalEvidenceDocuments = [];
       getAdditionalEvidenceDocuments(req as Request, res as Response, next);
 
-      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk',{
+      expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', {
         pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
+        previousPage: paths.common.overview,
+        summaryLists: summaryList
+      });
+    });
+  });
+
+  describe('getLrAdditionalEvidenceDocuments', () => {
+    it('should render when additional evidence by Legal Reap', () => {
+      const summaryList: SummaryList[] = [{ summaryRows: [] }];
+      req.session.appeal.additionalEvidenceDocuments = [];
+      getLrAdditionalEvidenceDocuments(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('upload-evidence/addendum-evidence-detail-page.njk', {
+        pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
+        description: i18n.pages.provideMoreEvidence.yourEvidence.description,
         previousPage: paths.common.overview,
         summaryLists: summaryList
       });
@@ -715,10 +750,68 @@ describe('Provide more evidence controller', () => {
         }
       ];
 
-      const result = buildUploadedAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments);
+      const result = buildUploadedAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments, false);
 
       expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
       expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
+    });
+
+    it('should build a list in correct format for legal rep additional evidence', () => {
+      const mockEvidenceDocuments: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName',
+          dateUploaded: 'dateUploaded',
+          description: 'description'
+        }
+      ];
+
+      const expectedSummaryList: SummaryList[] = [
+        {
+          'summaryRows': [
+            {
+              'actions': {
+                'items': []
+              },
+              'key': {
+                'text': 'Date uploaded'
+              },
+              'value': {
+                'html': '<p>dateUploaded</p>'
+              }
+            },
+            {
+              'actions': {
+                'items': []
+              },
+              'key': {
+                'text': 'Document'
+              },
+              'value': {
+                'html': '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/aFileId\'>fileName</a>'
+              }
+            },
+            {
+              'actions': {
+                'items': []
+              },
+              'key': {
+                'text': 'Reason for uploading evidence'
+              },
+              'value': {
+                'html': '<p>description</p>'
+              }
+            }
+          ]
+        }
+      ];
+
+      const result = buildUploadedAdditionalEvidenceDocumentsSummaryList(mockEvidenceDocuments, true);
+
+      expect(result[0].summaryRows[0].key.text).to.equal(expectedSummaryList[0].summaryRows[0].key.text);
+      expect(result[0].summaryRows[0].value.html).to.equal(expectedSummaryList[0].summaryRows[0].value.html);
+      expect(result[0].summaryRows[2].key.text).to.equal(expectedSummaryList[0].summaryRows[2].key.text);
+      expect(result[0].summaryRows[2].value.html).to.equal(expectedSummaryList[0].summaryRows[2].value.html);
     });
   });
 

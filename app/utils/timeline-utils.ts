@@ -16,7 +16,7 @@ import { getAppellantApplications } from './utils';
  */
 function constructEventObject(event: HistoryEvent, req: Request) {
 
-  const eventContent = [Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id].includes(event.id) && event.user.id !== req.idam.userDetails.uid
+  const eventContent = isUploadEvidenceEventByLegalRep(req, event)
     ? i18n.pages.overviewPage.timeline[event.id]['providedByLr']
     : i18n.pages.overviewPage.timeline[event.id];
 
@@ -113,8 +113,18 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
-  const appealHearingRequirementsSection = constructSection(eventsAndStates.appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req);
-  const appealArgumentSection = constructSection(eventsAndStates.appealArgumentSectionEvents, req.session.appeal.history, eventsAndStates.appealArgumentSectionStates, req);
+  const appealHearingRequirementsSection = constructSection(
+    eventsAndStates.appealHearingRequirementsSectionEvents,
+    req.session.appeal.history.filter(event =>
+      ![Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id].includes(event.id)
+      || isUploadEvidenceEventByLegalRep(req, event)),
+    null, req
+  );
+  const appealArgumentSection = constructSection(
+    eventsAndStates.appealArgumentSectionEvents,
+    req.session.appeal.history.filter(event => !isUploadEvidenceEventByLegalRep(req, event)),
+    eventsAndStates.appealArgumentSectionStates, req
+  );
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
   const applicationEvents = getApplicationEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
@@ -148,8 +158,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,
-    Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
-    Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id
+    Events.UPLOAD_ADDITIONAL_EVIDENCE.id
   ];
   const appealArgumentSectionEvents = [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
@@ -191,6 +200,9 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
       Events.UPLOAD_ADDENDUM_EVIDENCE.id,
       Events.UPLOAD_ADDENDUM_EVIDENCE_ADMIN_OFFICER.id
     );
+
+    appealHearingRequirementsSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id);
+
     appealArgumentSectionStates.push(States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id);
   }
 
@@ -201,6 +213,13 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
     appealDetailsSectionEvents,
     appealArgumentSectionStates
   };
+}
+
+function isUploadEvidenceEventByLegalRep(req: Request, event: HistoryEvent) {
+  return [
+    Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+    Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id
+  ].includes(event.id) && event.user.id !== req.idam.userDetails.uid;
 }
 
 export {

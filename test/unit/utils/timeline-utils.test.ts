@@ -102,7 +102,7 @@ describe('timeline-utils', () => {
           'links': [{
             'title': 'What was provided',
             'text': 'Your evidence',
-            'href': '{{ paths.common.yourEvidence }}'
+            'href': '{{ paths.common.lrEvidence }}'
           }]
         }, {
           'date': '14 April 2020',
@@ -223,6 +223,11 @@ describe('timeline-utils', () => {
     });
 
     it('should return relevant events when hearingBundle feature enabled', () => {
+      const eventsAndStates = getEventsAndStates(false, true);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
+    });
+
+    it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
       const eventsAndStates = getEventsAndStates(true, true);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
     });

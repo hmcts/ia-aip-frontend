@@ -55,7 +55,7 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
   });
 
   // Appellant present at hearing?
-  if (hearingRequirements.isAppellantAttendingTheHearing) {
+  if (typeof hearingRequirements.isAppellantAttendingTheHearing !== 'undefined') {
     const appellantRows: SummaryRow[] = [];
 
     appellantRows.push(
@@ -78,7 +78,7 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
   }
 
   // Appellant oral evidence?
-  if (hearingRequirements.isAppellantGivingOralEvidence) {
+  if (typeof hearingRequirements.isAppellantGivingOralEvidence !== 'undefined') {
     const evidenceRows: SummaryRow[] = [];
 
     evidenceRows.push(
@@ -517,7 +517,7 @@ export function buildHearingRequirementsSummarySections(hearingRequirements: Hea
 
   const witnessesSectionList: SummaryList[] = buildWitnessesSectionSummaryList(hearingRequirements, visibleChangeLink);
 
-  const title = (hearingRequirements.isAppellantGivingOralEvidence || hearingRequirements.isAppellantAttendingTheHearing) ?
+  const title = ((typeof hearingRequirements.isAppellantGivingOralEvidence !== 'undefined') || (typeof hearingRequirements.isAppellantAttendingTheHearing !== 'undefined')) ?
       `${i18n.pages.hearingRequirements.taskList.sections.attendance}` : `${i18n.pages.hearingRequirements.taskList.sections.witnesses}`;
   hearingRequirementsSummarySections.push({
     title: `1. ` + title,

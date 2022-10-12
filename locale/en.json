@@ -515,7 +515,13 @@
         ]
       },
       "yourEvidence": {
-        "title": "Your evidence"
+        "title": "Your evidence",
+        "description": [
+          "This is evidence that was provided to support your appeal."
+        ],
+        "uploadedDateLabel": "Date uploaded",
+        "documentLabel": "Document",
+        "reasonLabel": "Reason for uploading evidence"
       },
       "newEvidence": {
         "title": "New evidence",
@@ -527,8 +533,11 @@
       "yourAddendumEvidence": {
         "title": "Your evidence",
         "description": [
-          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
-        ]
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why your evidence is late and decide if it can be part of your appeal."
+        ],
+        "uploadedDateLabel": "Date uploaded",
+        "documentLabel": "Document",
+        "reasonLabel": "Reason evidence is late"
       },
       "homeOfficeEvidence": {
         "title": "Home Office evidence",
@@ -983,7 +992,7 @@
               {
                 "title": "What was provided",
                 "text": "Your evidence",
-                "href": "{{ paths.common.yourEvidence }}"
+                "href": "{{ paths.common.lrEvidence }}"
               }
             ]
           },
@@ -2524,9 +2533,9 @@
         "pastExperiencesTitle": "Past experiences",
         "anythingElseTitle": "Anything else",
         "datesToAvoidTitle": "Dates to avoid",
-        "witnessesTitle" : "Witnesses",
-        "appellantTitle" : "Appellant",
-        "evidenceTitle" : "Evidence"
+        "witnessesTitle": "Witnesses",
+        "appellantTitle": "Appellant",
+        "evidenceTitle": "Evidence"
       }
     },
     "cmaRequirementsConfirmation": {

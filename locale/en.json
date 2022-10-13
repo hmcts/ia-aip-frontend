@@ -1070,6 +1070,21 @@
             }
           ]
         },
+        "payAndSubmitAppeal": {
+          "text": "You sent your appeal details to the Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
+            },
+            {
+              "title": "Helpful information",
+              "text": "What is a Tribunal Caseworker?",
+              "href": "{{ paths.common.tribunalCaseworker }}"
+            }
+          ]
+        },
         "requestResponseReview": {
           "text": "The Home Office sent its response to your appeal.",
           "links": [

@@ -174,7 +174,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
     Events.RECORD_OUT_OF_TIME_DECISION.id
   ];
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
-  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id];
+  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];
   const appealArgumentSectionStates = [
     States.APPEAL_SUBMITTED.id,
     States.CLARIFYING_QUESTIONS_SUBMITTED.id,

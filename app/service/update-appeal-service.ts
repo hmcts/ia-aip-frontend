@@ -1142,6 +1142,11 @@ export default class UpdateAppealService {
         if (caseData.multimediaEvidenceDescription) {
           hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason = caseData.multimediaEvidenceDescription;
         }
+      } else if (caseData.multimediaEvidenceDescription) {
+        hearingRequirements.otherNeeds.bringOwnMultimediaEquipment = false;
+        hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason = caseData.multimediaEvidenceDescription;
+      } else {
+        hearingRequirements.otherNeeds.bringOwnMultimediaEquipment = true;
       }
     }
 

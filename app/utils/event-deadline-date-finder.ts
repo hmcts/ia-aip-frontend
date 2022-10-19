@@ -12,10 +12,10 @@ const daysToWaitAfterCQSubmission = config.get('daysToWait.afterCQSubmission');
  * @param directions the directions
  * @param directionTagToLookFor the direction to find
  */
-function getFormattedDirectionDueDate(directions: Direction[], directionTagToLookFor: string) {
+function getFormattedDirectionDueDate(directions: Direction[], directionTagsToLookFor: string[]) {
   let formattedDeadline = null;
   if (directions) {
-    const direction = directions.find(d => d.tag === directionTagToLookFor);
+    const direction = directions.find(d => directionTagsToLookFor.includes(d.tag));
     if (direction) {
       const dueDate = direction.dateDue;
       formattedDeadline = moment(dueDate).format(dayMonthYearFormat);
@@ -80,7 +80,7 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
     }
     case 'awaitingReasonsForAppeal':
     case 'awaitingReasonsForAppealPartial': {
-      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestReasonsForAppeal');
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, ['requestReasonsForAppeal','requestCaseBuilding']);
       break;
     }
     case 'reasonsForAppealSubmitted': {
@@ -93,7 +93,7 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
     }
     case 'awaitingClarifyingQuestionsAnswersPartial':
     case 'awaitingClarifyingQuestionsAnswers': {
-      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestClarifyingQuestions');
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, ['requestClarifyingQuestions']);
       break;
     }
     case 'clarifyingQuestionsAnswersSubmitted': {
@@ -101,7 +101,7 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       break;
     }
     case 'awaitingCmaRequirements': {
-      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'requestCmaRequirements');
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, ['requestCmaRequirements']);
       break;
     }
     case 'cmaAdjustmentsAgreed':
@@ -124,7 +124,7 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
       break;
     }
     case 'submitHearingRequirements':
-      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, 'legalRepresentativeHearingRequirements');
+      formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, ['legalRepresentativeHearingRequirements']);
       break;
     case 'decided':
       formattedDeadline = getDueDateForAppellantToRespondToJudgeDecision(req);
@@ -139,5 +139,6 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
 }
 
 export {
-  getDeadline
+  getDeadline,
+  getFormattedDirectionDueDate
 };

@@ -889,7 +889,9 @@ describe('update-appeal-service', () => {
         ]
       });
     });
+  });
 
+  describe('mapCcdCaseToAppeal', () => {
     describe('legalRepresentativeDocuments @legal', () => {
       const caseData: Partial<CaseData> = {
         'tribunalDocuments': [
@@ -1024,6 +1026,41 @@ describe('update-appeal-service', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
         expect(mappedAppeal.addendumEvidenceDocuments).to.be.length(1);
+      });
+    });
+
+    describe('mapHearingOtherNeedsFromCCDCase should map multimediaEvidence correctly to appeal', () => {
+      it('when taken case over from legalrep, not bringing own equipment', () => {
+        const caseData: Partial<CaseData> = {
+          'remoteVideoCall': 'No',
+          'multimediaEvidence': 'Yes',
+          'multimediaEvidenceDescription': 'description'
+        };
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).eq(true);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).eq(false);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).eq('description');
+      });
+
+      it('when taken case over from legalrep, bringing own equipment', () => {
+        const caseData: Partial<CaseData> = {
+          'remoteVideoCall': 'No',
+          'multimediaEvidence': 'Yes'
+        };
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).eq(true);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.eq(true);
+        expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).is.undefined;
       });
     });
   });

@@ -20,7 +20,8 @@ function buildProgressBarStages(state: string) {
         States.CMA_REQUIREMENTS_SUBMITTED.id,
         States.CMA_ADJUSTMENTS_AGREED.id,
         States.CMA_LISTED.id,
-        States.RESPONDENT_REVIEW.id
+        States.RESPONDENT_REVIEW.id,
+        States.CASE_UNDER_REVIEW.id
       ]
     },
     yourHearingDetails: {

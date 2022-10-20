@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from '../../../app/utils/cma-hearing-details';
-import { getDeadline } from '../../../app/utils/event-deadline-date-finder';
+import { getDeadline, getFormattedDirectionDueDate } from '../../../app/utils/event-deadline-date-finder';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
 describe('event-deadline-date-finder', () => {
@@ -47,6 +47,12 @@ describe('event-deadline-date-finder', () => {
               'tag': 'legalRepresentativeHearingRequirements',
               'dateDue': '2020-07-28',
               'dateSent': '2020-07-23'
+            },
+            {
+              'id': 5,
+              'tag': 'requestCaseBuilding',
+              'dateDue': '2020-08-28',
+              'dateSent': '2020-08-23'
             }
           ],
           history: [
@@ -56,6 +62,10 @@ describe('event-deadline-date-finder', () => {
             },
             {
               'id': 'submitReasonsForAppeal',
+              'createdDate': '2020-02-18T16:00:00.000'
+            },
+            {
+              'id': 'buildCase',
               'createdDate': '2020-02-18T16:00:00.000'
             },
             {
@@ -136,6 +146,14 @@ describe('event-deadline-date-finder', () => {
     it('reasonsForAppealSubmitted should return a formatted date with 14 days offset from the submitReasonsForAppeal event', () => {
 
       const currentAppealStatus = 'reasonsForAppealSubmitted';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('03 March 2020');
+    });
+
+    it('caseUnderReview should return a formatted date with 14 days offset from the buildCase event', () => {
+
+      const currentAppealStatus = 'caseUnderReview';
       const result = getDeadline(currentAppealStatus, req as Request);
 
       expect(result).to.be.equal('03 March 2020');
@@ -393,6 +411,16 @@ describe('event-deadline-date-finder', () => {
     it('cmaListed should return the formatted hearing centre', () => {
       const result = getHearingTime(req as Request);
       expect(result).to.be.equal('10:00 am');
+    });
+
+    it('getFormattedDirectionDueDate should return due date from first directive with matching tag (multiple tags)', () => {
+      const result = getFormattedDirectionDueDate(req.session.appeal.directions, ['requestReasonsForAppeal', 'requestCaseBuilding']);
+      expect(result).to.be.equal('01 September 2020');
+    });
+
+    it('getFormattedDirectionDueDate should return due date from first directive with matching tag', () => {
+      const result = getFormattedDirectionDueDate(req.session.appeal.directions, ['requestCaseBuilding']);
+      expect(result).to.be.equal('28 August 2020');
     });
   });
 });

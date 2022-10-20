@@ -63,7 +63,27 @@ export function yesNoToBool(answer: string): boolean {
 }
 
 export function getAppellantApplications(applications: Collection<Application<Evidence>>[]): any[] {
-  return applications ? applications.filter(application => application.value.applicant === 'Appellant') : [];
+  return applications ? applications.filter(application =>
+    application.value.applicant === 'Appellant' ||
+    application.value.applicant === 'Legal representative') : [];
+}
+
+export function getApplicationType(type: string): any {
+  let applicationType = undefined;
+  Object.keys(applicationTypes).forEach(key => {
+    if (applicationTypes[key].type === type) {
+      applicationType = applicationTypes[key];
+    }
+  });
+  return applicationType;
+}
+
+export function formatCaseId(caseId: any) {
+  let caseStr = new String(caseId);
+  if (caseStr.length === 16) {
+    caseStr = caseStr.substring(0,4) + '-' + caseStr.substring(4,8) + '-' + caseStr.substring(8,12) + '-' + caseStr.substring(12,16);
+  }
+  return caseStr.toString();
 }
 
 export function getApplicationType(type: string): any {

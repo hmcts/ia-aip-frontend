@@ -85,13 +85,3 @@ export function formatCaseId(caseId: any) {
   }
   return caseStr.toString();
 }
-
-export function getApplicationType(type: string): any {
-  let applicationType = undefined;
-  Object.keys(applicationTypes).forEach(key => {
-    if (applicationTypes[key].type === type) {
-      applicationType = applicationTypes[key];
-    }
-  });
-  return applicationType;
-}

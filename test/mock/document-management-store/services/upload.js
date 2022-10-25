@@ -1,7 +1,7 @@
 const multiparty = require('multiparty');
 
 module.exports = {
-  path: '/documents',
+  path: '/cases/documents',
   method: 'POST',
   status: (req, res, next) => {
     const form = new multiparty.Form();
@@ -9,7 +9,6 @@ module.exports = {
         const { size, originalFilename } = files.files[0];
         res.send(
           {
-            "_embedded": {
               "documents": [
                 {
                   "size": size,
@@ -65,7 +64,6 @@ module.exports = {
                   }
                 }
               ]
-            }
           }
         )
     });

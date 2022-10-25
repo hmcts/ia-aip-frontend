@@ -1,4 +1,4 @@
 module.exports = {
-    path: '/documents/:documentId',
+    path: '/cases/documents/:documentId',
     method: 'DELETE',
 }  

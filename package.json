@@ -187,7 +187,6 @@
     "@babel/core/resolve/path-parse": "^1.0.7",
     "@stryker-mutator/core/log4js": "^6.4.0",
     "nodemon/update-notifier/latest-version/package-json/got": "^11.8.5",
-    "webdriverio/webdriver/got": "^11.8.5",
-    "**/**/minimatch": ">=3.0.5"
+    "webdriverio/webdriver/got": "^11.8.5"
   }
 }

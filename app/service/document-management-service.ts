@@ -162,24 +162,17 @@ class DocumentManagementService {
   }
 
   private async delete(headers: SecurityHeaders, fileLocation: string): Promise<any> {
-    const prefix = 'documents/';
-    const docId = fileLocation.substring(fileLocation.lastIndexOf(prefix) + prefix.length);
-    const caseDocumentUrl = `${documentManagementBaseUrl}/cases/documents/${docId}`;
-
     const options: any = this.createOptions(
       headers,
-      caseDocumentUrl
+      fileLocation
     );
     return rp.delete(options);
   }
 
   private async fetchBinaryFile(headers: SecurityHeaders, fileLocation: string): Promise<any> {
-    const prefix = 'documents/';
-    const docId = fileLocation.substring(fileLocation.lastIndexOf(prefix) + prefix.length);
-    const caseDocumentUrl = `${documentManagementBaseUrl}/cases/documents/${docId}/binary`;
     let options: any = this.createOptions(
       headers,
-      caseDocumentUrl
+        fileLocation
     );
     options.headers = { role: 'citizen', classification: Classification.restricted, ...options.headers };
     options = { encoding: 'binary', resolveWithFullResponse: true, ...options };
@@ -227,7 +220,10 @@ class DocumentManagementService {
     const documentLocationUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
     req.session.appeal.documentMap = removeFromDocumentMapper(fileId, req.session.appeal.documentMap);
     logger.trace(`Received call from user '${userId}' to delete`, logLabel);
-    return this.delete(headers, documentLocationUrl);
+    const prefix = 'documents/';
+    const docId = documentLocationUrl.substring(documentLocationUrl.lastIndexOf(prefix) + prefix.length);
+    const caseDocumentUrl = `${documentManagementBaseUrl}/cases/documents/${docId}`;
+    return this.delete(headers, caseDocumentUrl);
   }
 
   /**
@@ -240,7 +236,10 @@ class DocumentManagementService {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.uid;
     logger.trace(`Received call from user '${userId}' to fetch file`, logLabel);
-    return this.fetchBinaryFile(headers, fileLocation);
+    const prefix = 'documents/';
+    const docId = fileLocation.substring(fileLocation.lastIndexOf(prefix) + prefix.length);
+    const caseDocumentUrl = `${documentManagementBaseUrl}/cases/documents/${docId}/binary`;
+    return this.fetchBinaryFile(headers, caseDocumentUrl);
   }
 }
 

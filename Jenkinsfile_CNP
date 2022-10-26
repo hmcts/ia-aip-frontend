@@ -22,7 +22,7 @@ def secrets = [
         secret('test-homeoffice-generic-username', 'TEST_HOMEOFFICE_GENERIC_USERNAME'),
         secret('test-homeoffice-generic-password', 'TEST_HOMEOFFICE_GENERIC_PASSWORD'),
         secret('pcq-token-key', 'PCQ_TOKEN_KEY'),
-        secret('case-doc-am-url', 'CASE_DOCUMENT_AM_URL')
+        secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL')
     ]
 ]
 

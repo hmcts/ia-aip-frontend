@@ -51,7 +51,7 @@ describe('document-management-service', () => {
       req.session.appeal.documentMap = [
         {
           id: 'fileId',
-          url: 'file-url.com'
+          url: 'http://store/documents/ID'
         }
       ];
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
@@ -59,7 +59,7 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'fileId');
 
-      expect(deleteStub).to.have.been.calledWith(sinon.match.any, 'file-url.com');
+      expect(deleteStub).to.have.been.calledWith(sinon.match.any, 'CASE_DOCUMENT_AM_URL/cases/documents/ID');
       expect(req.session.appeal.documentMap.length).to.be.eq(0);
     });
 
@@ -70,9 +70,9 @@ describe('document-management-service', () => {
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
       const fetchStub = sandbox.stub(DocumentManagementService.prototype, 'fetchBinaryFile' as any);
       const documentManagementService = new DocumentManagementService(authenticationService);
-      await documentManagementService.fetchFile(req as Request, 'file-url.com');
+      await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'file-url.com');
+      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'CASE_DOCUMENT_AM_URL/cases/documents/ID/binary');
     });
 
   });

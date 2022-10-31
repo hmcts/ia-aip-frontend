@@ -1,8 +1,9 @@
 import axios from 'axios';
-import config from 'config';
+import { setupSecrets } from '../setupSecrets';
 import { isJWTExpired } from '../utils/jwt-utils';
 import Logger, { getLogLabel } from '../utils/logger';
 
+const config = setupSecrets();
 const idamBaseUrl: string = config.get('idam.apiUrl');
 const idamClientId: string = config.get('microservice');
 const idamClientSecret: string = config.get('idam.secret');

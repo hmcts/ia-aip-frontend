@@ -41,7 +41,6 @@ module.exports = {
 
       await I.wait(5);
       const numOfPCQElements = await I.retry(3).grabNumberOfVisibleElements('form[action="/start-page"] button[formaction="/opt-out"]');
-      console.log('No of elements: ' + numOfPCQElements);
       if (numOfPCQElements === 1) {
         await I.retry(3).click("I don't want to answer these questions");
       }

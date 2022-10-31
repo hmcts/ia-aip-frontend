@@ -7,7 +7,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   startRepresentingYourself(I) {
     When(/^I visit the start-representing-yourself page$/, async () => {
-      await I.amOnPage(testUrl + paths.startRepresentingYourself.start);
+      await I.amOnPage(testUrl + 'start-representing-yourself');
       await I.see('You no longer have a legal representative for this appeal. To start representing yourself, you must enter the online case reference number and security code from the email, text message or letter we sent you.');
     });
 

@@ -5,8 +5,8 @@ async function signInHelper() {
   const environment: string = process.env.NODE_ENV;
   if (environment !== ('test' || 'development')) {
     const userDetails = await createUser();
-    I.fillField('#username', userDetails.email);
-    I.fillField('#password', userDetails.password);
+    I.fillField('#username','aipuser27@gmail.com');
+    I.fillField('#password', 'Apassword123');
   }
   I.click('Sign in');
   I.wait(5);

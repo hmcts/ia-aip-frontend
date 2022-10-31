@@ -11,6 +11,7 @@ const textToId = {
 module.exports = {
   taskList(I) {
     Then('I should see the task-list page', async () => {
+      I.wait(5);
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 

@@ -19,6 +19,7 @@ module.exports = {
     });
 
     When(/^I enter "([^"]*)" "([^"]*)" "([^"]*)" as my DOB and click Save and continue$/, (day,month,year) => {
+      I.wait(3);
       fillInDate(day,month,year);
       I.click('Save and continue');
     });

@@ -14,7 +14,8 @@ module.exports = {
       await I.fillField('#email-value', email);
     });
 
-    When(/^I enter text message number "([^"]*)"$/, async (phoneNumber) => {
+    When(/^I Enter a phone number "([^"]*)"$/, async (phoneNumber) => {
+      I.wait(5);
       await I.checkOption('#contactDetails-2');
       await I.fillField('#text-message-value', phoneNumber);
     });

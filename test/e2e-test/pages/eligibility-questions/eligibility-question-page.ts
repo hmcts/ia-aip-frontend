@@ -8,10 +8,16 @@ module.exports = {
       await I.checkOption('#answer');
       await I.click('Continue');
     });
+    When('I select I want the appeal to be decided without a hearing and click continue', async () => {
+      await I.checkOption('#answer-2');
+    });
 
     When('I select No and click continue', async () => {
       await I.checkOption('#answer-2');
       await I.click('Continue');
+    });
+    When('I select No, I will pay later and click continue', async () => {
+      await I.checkOption('#answer-2');
     });
 
     When('I go to the second eligibility question without answering the first', async () => {

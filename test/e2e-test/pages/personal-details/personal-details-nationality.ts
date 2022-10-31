@@ -10,11 +10,14 @@ module.exports = {
     });
 
     Then(/^I should be taken to nationality page$/, async () => {
+      I.wait(3);
       await I.seeInCurrentUrl(paths.appealStarted.nationality);
     });
 
     When(/^I pick "([^"]*)" from the Nationalities drop down and click continue$/, async (nation) => {
+      I.wait(3);
       await I.selectOption('#nationality', nation);
+      I.wait(3);
       await I.click('Save and continue');
     });
 

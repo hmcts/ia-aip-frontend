@@ -7,7 +7,7 @@ const i18n = require('../../../locale/en.json');
 module.exports = {
   signIn(I) {
     Given('I am on home page', () => {
-      I.amOnPage(testUrl);
+      I.retry(3).amOnPage(testUrl);
     });
 
     When('I click start now', async () => {
@@ -24,6 +24,9 @@ module.exports = {
 
     When('I click Sign in to your account', async () => {
       await I.click('Sign in to your account.');
+    });
+    When('I click  Sign in to continue with your appeal', async () => {
+      await I.retry(3).click('Sign in to continue with your appeal');
     });
 
     When('I enter creds and click sign in', async () => {

@@ -28,6 +28,9 @@
     "testCaseOfficerUserName": "ia-caseofficer@fake.hmcts.net",
     "testCaseOfficerPassword": "London01",
     "testHomeOfficeGenericUserName": "ia-respondentgen@fake.hmcts.net",
-    "testHomeOfficeGenericPassword": "London13"
+    "testHomeOfficeGenericPassword": "London13",
+    "testLawFirmAUsername": "ia-law-firm-a-sc@fake.hmcts.net",
+    "testLawFirmAPassword": "London03"
+
   }
 }

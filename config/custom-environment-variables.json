@@ -71,7 +71,9 @@
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",
     "testCaseOfficerPassword": "TEST_CASEOFFICER_PASSWORD",
     "testHomeOfficeGenericUserName": "TEST_HOMEOFFICE_GENERIC_USERNAME",
-    "testHomeOfficeGenericPassword": "TEST_HOMEOFFICE_GENERIC_PASSWORD"
+    "testHomeOfficeGenericPassword": "TEST_HOMEOFFICE_GENERIC_PASSWORD",
+    "testLawFirmAUsername": "TEST_LAW_FIRM_SHARE_CASE_A_USERNAME",
+    "testLawFirmAPassword": "TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD"
   },
   "hearingCentres": {
     "bradfordEmail": "IA_HEARING_CENTRE_BRADFORD_EMAIL",

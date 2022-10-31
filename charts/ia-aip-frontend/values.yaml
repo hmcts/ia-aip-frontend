@@ -40,6 +40,8 @@ nodejs:
         - hearing-centre-hatton-cross-email
         - hearing-centre-glasgow-email
         - pcq-token-key
+        - system-username
+        - system-password
 redis:
   enabled: false
   architecture: standalone

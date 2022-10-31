@@ -21,7 +21,9 @@ def secrets = [
         secret('test-caseofficer-password', 'TEST_CASEOFFICER_PASSWORD'),
         secret('test-homeoffice-generic-username', 'TEST_HOMEOFFICE_GENERIC_USERNAME'),
         secret('test-homeoffice-generic-password', 'TEST_HOMEOFFICE_GENERIC_PASSWORD'),
-        secret('pcq-token-key', 'PCQ_TOKEN_KEY')
+        secret('pcq-token-key', 'PCQ_TOKEN_KEY'),
+        secret('system-username', 'IA_SYSTEM_USERNAME'),
+        secret('system-password', 'IA_SYSTEM_PASSWORD')
     ]
 ]
 

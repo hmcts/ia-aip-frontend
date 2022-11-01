@@ -1,4 +1,4 @@
-@start-representing-yourself
+@start-representing-yourself @lr-to-aip-noc
 Feature: Legal Rep to Appellant in person Notice of change
 
 Scenario: Complete NoC Happy path

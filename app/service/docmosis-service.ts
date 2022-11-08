@@ -1,5 +1,7 @@
 import axios from 'axios';
-import config from 'config';
+import {setupSecrets} from "../setupSecrets";
+
+const config = setupSecrets();
 
 const renderURL: string = config.get('docmosis.renderUrl');
 const accessKey: string = config.get('docmosis.accessKey');

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {setupSecrets} from "../setupSecrets";
+import { setupSecrets } from '../setupSecrets';
 
 const config = setupSecrets();
 

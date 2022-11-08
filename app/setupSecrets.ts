@@ -29,6 +29,9 @@ const setupSecrets = () => {
   setSecret('secrets.ia.pcq-token-key', 'pcq.tokenKey');
   setSecret('secrets.ia.system-username', 'systemUser.username');
   setSecret('secrets.ia.system-password', 'systemUser.password');
+  setSecret('secrets.ia.docmosis-access-key', 'docmosis.accessKey');
+  setSecret('secrets.ia.customer-services-telephone', 'customerServices.telephone');
+  setSecret('secrets.ia.customer-services-email', 'customerServices.email');
 
   return config;
 };

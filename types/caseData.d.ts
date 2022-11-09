@@ -57,7 +57,6 @@ interface CaseData {
   reasonsForAppealDateUploaded?: string;
   reasonsForAppealDocuments: Collection<DocumentWithMetaData>[];
   respondentDocuments: Collection<RespondentEvidenceDocument>[];
-  hearingDocuments: Collection<RespondentEvidenceDocument>[];
   timeExtensions: Collection<CcdTimeExtension>[];
   reviewTimeExtensionRequired?: 'Yes' | 'No';
   directions: Collection<CcdDirection>[];
@@ -66,7 +65,6 @@ interface CaseData {
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
   clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
   isInterpreterServicesNeeded?: string;
-  interpreterLanguage?: Collection<AdditionalLanguage>[];
   isHearingRoomNeeded?: string;
   isHearingLoopNeeded?: string;
   multimediaEvidence: 'Yes' | 'No';
@@ -201,29 +199,9 @@ interface SponsorSubscriptionCollection {
   value: Subscription;
 }
 
-interface SupportingEvidenceCollection {
-  id?: number;
-  value: DocumentWithMetaData;
-}
-
 interface TimeExtensionEvidenceCollection {
   id?: number;
   value: SupportingDocument;
-}
-
-interface RespondentEvidenceCollection {
-  id?: number;
-  value: RespondentEvidenceDocument;
-}
-
-interface TimeExtensionCollection {
-  id?: number;
-  value: CcdTimeExtension;
-}
-
-interface DirectionCollection {
-  id?: number;
-  value: CcdDirection;
 }
 
 interface PreviousDateCollection {

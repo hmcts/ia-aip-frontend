@@ -76,7 +76,8 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
             ...req.session.appeal.cmaRequirements,
             accessNeeds: {
               ...req.session.appeal.cmaRequirements.accessNeeds,
-              isInterpreterServicesNeeded: false
+              isInterpreterServicesNeeded: false,
+              interpreterLanguage: []
             }
           };
           await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { getAccessNeeds,getAdditionalLanguage,getHearingLoopPage, getNeedInterpreterPage, getStepFreeAccessPage, postAdditionalLanguage, postHearingLoopPage, postNeedInterpreterPage, postStepFreeAccessPage, setupAccessNeedsController } from '../../../../../app/controllers/cma-requirements/access-needs/access-needs';
+import { getAccessNeeds, getAdditionalLanguage, getHearingLoopPage, getNeedInterpreterPage, getStepFreeAccessPage, postAdditionalLanguage, postHearingLoopPage, postNeedInterpreterPage, postStepFreeAccessPage, setupAccessNeedsController } from '../../../../../app/controllers/cma-requirements/access-needs/access-needs';
 import { Events } from '../../../../../app/data/events';
 import { isoLanguages } from '../../../../../app/data/isoLanguages';
 import { paths } from '../../../../../app/paths';
@@ -62,7 +62,7 @@ describe('case management appointment controller', () => {
 
       const routerGetStub: sinon.SinonStub = sandbox.stub(express.Router, 'get');
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router, 'post');
-      setupAccessNeedsController(middleware,updateAppealService as UpdateAppealService);
+      setupAccessNeedsController(middleware, updateAppealService as UpdateAppealService);
       expect(routerGetStub).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
       expect(routerPOSTStub).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
     });
@@ -193,7 +193,7 @@ describe('case management appointment controller', () => {
         await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
         expect(res.render).to.have.been.calledWith('templates/radio-question-page.njk', {
           errorList: [{ href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' }],
-          error: {  'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
+          error: { 'answer': { href: '#answer', key: 'answer', text: '"answer" is not allowed to be empty' } },
           formAction: '/appointment-interpreter',
           pageTitle: 'Will you or anyone coming with you need an interpreter?',
           previousPage: paths.awaitingCmaRequirements.accessNeeds,
@@ -247,7 +247,7 @@ describe('case management appointment controller', () => {
 
         expect(res.render).to.have.been.calledWith('case-management-appointment/additional-language.njk', {
           errorList: [{ href: '#language', key: 'language', text: 'Select a language' }],
-          errors: {  'language': { href: '#language', key: 'language', text: 'Select a language' } },
+          errors: { 'language': { href: '#language', key: 'language', text: 'Select a language' } },
           previousPage: paths.appealStarted.taskList,
           items: isoLanguages
         });
@@ -295,6 +295,13 @@ describe('case management appointment controller', () => {
 
       expect(updateAppealService.submitEvent).to.have.been.calledWith(Events.EDIT_CMA_REQUIREMENTS, req);
       expect(res.redirect).to.have.been.calledWith(paths.awaitingCmaRequirements.accessNeedsStepFreeAccess);
+    });
+
+    it('should set InterpreterLanugage to empty list if no is selected', async () => {
+      req.body.answer = 'no';
+      await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.cmaRequirements.accessNeeds.interpreterLanguage.length).to.equal(0);
     });
 
     it('should show validation error if no option is selected post additional answer', async () => {

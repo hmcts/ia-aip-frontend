@@ -139,6 +139,13 @@ describe('Hearing requirements access needs controller', () => {
       });
     });
 
+    it('postNeedInterpreterPage should set InterpreterLanugage to empty list if no', async () => {
+      req.body.answer = 'no';
+      await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(req.session.appeal.hearingRequirements.interpreterLanguages.length).to.equal(0);
+    });
+
     it('should redirect to overview page if save for later and not validation required', async () => {
       req.body.saveForLater = 'saveForLater';
       await postNeedInterpreterPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

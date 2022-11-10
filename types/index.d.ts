@@ -281,7 +281,7 @@ interface CmaRequirements {
 
 interface AccessNeeds {
   isInterpreterServicesNeeded?: boolean;
-  interpreterLanguage?: InterpreterLanguage;
+  interpreterLanguage?: InterpreterLanguage[];
   isHearingRoomNeeded?: boolean;
   isHearingLoopNeeded?: boolean;
 }

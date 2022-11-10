@@ -117,14 +117,16 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
           previousPage: paths.appealStarted.taskList
         });
       }
+      let interpreterLanguages: InterpreterLanguage[] = req.session.appeal.cmaRequirements.accessNeeds.interpreterLanguage || [];
+      interpreterLanguages.push({
+        language: req.body['language'],
+        languageDialect: req.body['dialect']
+      });
       req.session.appeal.cmaRequirements = {
         ...req.session.appeal.cmaRequirements,
         accessNeeds: {
           ...req.session.appeal.cmaRequirements.accessNeeds,
-          interpreterLanguage: {
-            language: req.body.language,
-            languageDialect: req.body.dialect
-          }
+          interpreterLanguage: interpreterLanguages
         }
       };
       await updateAppealService.submitEvent(Events.EDIT_CMA_REQUIREMENTS, req);

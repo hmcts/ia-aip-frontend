@@ -461,10 +461,8 @@ describe('update-appeal-service', () => {
         'accessNeeds': {
           'interpreterLanguage': [
             {
-              'value': {
-                'language': 'Afar',
-                'languageDialect': 'A dialect'
-              }
+              'language': 'Afar',
+              'languageDialect': 'A dialect'
             }
           ],
           'isHearingLoopNeeded': true,
@@ -1293,10 +1291,12 @@ describe('update-appeal-service', () => {
       req.session.appeal.cmaRequirements = {
         accessNeeds: {
           isInterpreterServicesNeeded: true,
-          interpreterLanguage: {
-            language: 'Afar',
-            languageDialect: 'A dialect'
-          },
+          'interpreterLanguage': [
+            {
+              'language': 'Afar',
+              'languageDialect': 'A dialect'
+            }
+          ],
           isHearingRoomNeeded: true,
           isHearingLoopNeeded: true
         },

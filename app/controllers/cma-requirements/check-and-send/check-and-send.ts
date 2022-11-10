@@ -28,16 +28,20 @@ function buildAccessNeedsSummaryList(accessNeeds: AccessNeeds) {
   );
 
   if (accessNeeds.isInterpreterServicesNeeded) {
+    const interpreterLanguage: InterpreterLanguage[] = accessNeeds.interpreterLanguage || [];
     interpreterRows.push(
       addSummaryRow(i18n.pages.cmaRequirementsCYA.rows.language,
-        [ accessNeeds.interpreterLanguage.language ],
+          interpreterLanguage.map(item => item.language),
         paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage + editParameter)
     );
 
-    if (accessNeeds.interpreterLanguage.languageDialect) {
+    const languageDialects = interpreterLanguage
+        .filter(item => item.languageDialect != null)
+        .map(item => item.languageDialect);
+    if (languageDialects.length > 0) {
       interpreterRows.push(
         addSummaryRow(i18n.pages.cmaRequirementsCYA.rows.dialect,
-          [ accessNeeds.interpreterLanguage.languageDialect ],
+            languageDialects,
           paths.awaitingCmaRequirements.accessNeedsAdditionalLanguage + editParameter)
       );
     }

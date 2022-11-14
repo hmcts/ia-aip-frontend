@@ -11,6 +11,7 @@ const logger: Logger = new Logger();
 const logLabel: string = getLogLabel(__filename);
 
 function setupSession() {
+  logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
   if (useRedis) {
     logger.trace(`connecting to reddis on [${config.get('session.redis.url')}]`, logLabel);
     let RedisStore = require('connect-redis')(session);

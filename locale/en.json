@@ -340,7 +340,8 @@
         {
           "title": "If you got your decision by email",
           "description": "Enter the date the email was sent by the Home Office."
-        }, {
+        },
+        {
           "title": "If you got your decision by post",
           "description": "Enter the date stamped on the front of the envelope. If you don't have the envelope, enter the date on the first page of the decision letter."
         }
@@ -391,7 +392,7 @@
       "outOfTime": {
         "panel": "Your late appeal details have been sent",
         "askHomeOffice": "A Tribunal Caseworker will look at the reasons your appeal was late and decide if your appeal can continue",
-        "whatToDoNext": "You will be sent a notification to tell you what the Tribunal has decided and what you can do next" ,
+        "whatToDoNext": "You will be sent a notification to tell you what the Tribunal has decided and what you can do next",
         "timescale": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might be later than that"
       },
       "inTime": {
@@ -438,6 +439,7 @@
       "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
     },
     "provideMoreEvidence": {
+      "additionalEvidenceDefaultDescription": "Additional evidence",
       "form": {
         "title": "Provide more evidence",
         "content": [
@@ -450,18 +452,181 @@
         ],
         "moreInfo": "<a target=\"_blank\" href=\"/supporting-evidence\">Find out more about evidence to support your appeal</a>"
       },
+      "whyEvidenceLate": {
+        "title": "Why is this evidence late?",
+        "content": "Evidence should be provided before the hearing bundle is produced. Tell us why you weren't able to provide this evidence before now."
+      },
       "checkYourAnswers": {
-        "title": "Check your answers"
+        "title": "Check your answers",
+        "evidenceTitle": "Supporting evidence",
+        "evidenceDescription": "Reason evidence is late"
       },
       "confirmation": {
         "title": "You have provided more evidence",
         "whatNextListItems": [
           "The evidence is now part of your appeal and can be seen by the Tribunal and the Home Office",
           "If your appeal goes to a hearing, the judge will consider this evidence when deciding your appeal"
+        ],
+        "whatNextContent": [
+          "A Tribunal judge will look at the reasons why your evidence is late and decide if the evidence can be part of your appeal."
         ]
       },
       "yourEvidence": {
         "title": "Your evidence"
+      },
+      "newEvidence": {
+        "title": "New evidence",
+        "description": [
+          "The Tribunal has uploaded new evidence for you/the Home Office.",
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
+        ]
+      },
+      "yourAddendumEvidence": {
+        "title": "Your evidence",
+        "description": [
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
+        ]
+      },
+      "homeOfficeEvidence": {
+        "title": "Home Office evidence",
+        "description": [
+          "The Home Office has uploaded new evidence for this appeal.",
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
+        ]
+      }
+    },
+    "makeApplication": {
+      "askChangeHearing": {
+        "title": "Ask to change something about your hearing",
+        "question": {
+          "heading": "Select what you want to change about your hearing.",
+          "name": "hearingApplicationType",
+          "options": {
+            "askHearingSooner": {
+              "text": "I want to ask for the hearing to be sooner",
+              "value": "expedite"
+            },
+            "askChangeDate": {
+              "text": "I want to ask for the hearing to be later",
+              "value": "adjourn"
+            },
+            "askChangeLocation": {
+              "text": "I want to change the hearing location",
+              "value": "transfer"
+            },
+            "askUpdateHearingRequirements": {
+              "text": "I want to ask for something at the hearing",
+              "value": "updateHearingRequirements"
+            }
+          }
+        }
+      },
+      "askHearingSooner": {
+        "title": "Ask for the hearing to be sooner",
+        "description": "<p>If something changes and you need the hearing to take place sooner, you can ask the Tribunal to change the date.</p><p>Explain why you want the hearing to be sooner and tell us the latest date you want the hearing to take place.<br />You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "What is the latest date you want the hearing to take place and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want the hearing to be sooner",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askChangeDate": {
+        "title": "Ask for the hearing to be later",
+        "description": "<p>If something changes and you need the hearing to take place later, you can ask the Tribunal to change the date.</p><p>Tell us the date you want to change the hearing to and explain why. You should provide supporting evidence for your answer if you have any.</p><div class='govuk-inset-text'>if You don't know the exact date you want the hearing to take place, tell us the latest date that you can go to a hearing.</div>",
+        "hint": "When do you want to change the hearing to and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to change the hearing date",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askChangeLocation": {
+        "title": "Ask to change the location of the hearing",
+        "description": "<p>If something changes and you need the hearing to take place at a different location, you can ask the Tribunal to change the location.</p><p>Tell us where you want the hearing to take place and explain the reasons why. You should provide supporting evidence for your answer if you have any.</p><div class='govuk-inset-text'>You can ask the hearing to take place at a different hearing centre or by video call. You can also ask to change a video hearing to an in-person hearing at a hearing centre.</div>",
+        "hint": "Where do you want the hearing to take place and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to change the hearing location",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askUpdateHearingRequirements": {
+        "title": "Ask for something at the hearing",
+        "description": "<p>If something changes and you, or any witnesses, need something to be provided at your hearing, you can ask the Tribunal.</p><p>Tell us what you, or any witnesses will need and explain why it is needed. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "What do you need at the hearing and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want something at your hearing",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askWithdraw": {
+        "title": "Ask to withdraw the appeal",
+        "description": "<p>If you no longer want to appeal the Home Office decision to refuse your application to stay in or enter the UK, you can ask to withdraw the appeal.</p><p>You need to tell the Tribunal why you want to withdraw the appeal. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "Why do you want to withdraw the appeal?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to withdraw the appeal",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askUpdateDetails": {
+        "title": "Ask to change some of your details",
+        "description": "<p>You can ask the Tribunal to change some or all of the following details:</p><ul><li>Your name</li><li>Your date of birth</li><li>Your Home Office reference number</li><li>The date your Home Office decision letter was sent</li><li>Your address</li><li>Your nationality</li><li>Your email address or phone number</li></ul><p>You must tell us why you want to make any changes. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "What changes do you want to make to your details and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to change some details",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askLinkUnlink": {
+        "title": "Ask to link or unlink this appeal",
+        "description": "<p>If you want your appeal to be decided together with one or more appeals, you can ask the Tribunal to link the appeals.</p><p>If your appeal is linked to any other appeals, you can ask the Tribunal to unlink your appeal from some or all those appeals.</p><p>Tell us why you want to link or unlink this appeal. You should provide supporting evidence if you have any.</p><div class='govuk-inset-text'>Include the name of the person making the appeal and the appeal reference for each appeal, if you know them.</div>",
+        "hint": "Which appeal, or appeals, do you want to link to or unlink from and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to link or unlink this appeal",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askJudgeReview": {
+        "title": "Ask for a judge to review a decision",
+        "description": "<p>If a Tribunal Caseworker made a decision about your appeal that you don't agree with, you can ask for a judge to look again at the decision.</p><p>Tell us which decision you want a judge to review and explain why. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "Which decision do you want a judge to review and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want a judge to review a decision",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askSomethingElse": {
+        "title": "Ask for something else",
+        "description": "<p>Tell us what you want to ask for and explain why you need it. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "What do you need and why?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you need what you are asking for",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "askReinstate": {
+        "title": "Ask for the appeal to be reinstated",
+        "description": "<p>If the Tribunal has ended your appeal, you can ask for the appeal to be reinstated. This means that it will start again from the point it was ended.</p><p>You need to explain why you think the Tribunal should reinstate the appeal. You should provide supporting evidence for your answer if you have any.</p>",
+        "hint": "Why do you want the appeal to be reinstated?",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want the appeal to be reinstated",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
+      "provideSupportingEvidenceYesOrNo": {
+        "title": "Do you want to provide supporting evidence for this request?",
+        "options": {
+          "yes": {
+            "text": "Yes",
+            "value": "yes"
+          },
+          "no": {
+            "text": "No",
+            "value": "no"
+          }
+        }
+      },
+      "provideSupportingEvidence": {
+        "title": "Provide supporting evidence",
+        "adviceHeader": "Advice on providing supporting evidence",
+        "advice": [
+          "It will be helpful to <a href='/supporting-evidence'>read our information about supporting evidence</a>",
+          "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
+          "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
+        ],
+        "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+      },
+      "checkYourAnswers": {
+        "title": "Check your answer",
+        "rows": [
+          "Question",
+          "Answer",
+          "Supporting evidence"
+        ]
+      },
+      "requestSent": {
+        "title": "Your request has been sent to the Tribunal",
+        "whatNextContent": [
+          "The Tribunal should contact you within five working days to tell you if it will grant or refuse your request but it might take longer than that."
+        ]
       }
     },
     "reasonsForAppealUpload": {
@@ -508,6 +673,19 @@
       "savedAndAskedForMoreTime": "You have saved your answers and asked for more time",
       "weAimTo": "We aim to get back to you within 5 days.",
       "iWantTo": "I want to...",
+      "withdrawAppeal": "Withdraw my appeal",
+      "appealRequests": {
+        "sectionHeading": "Appeal requests",
+        "askToChangeDetails": "Ask to change some of your details",
+        "askToLinkOrUnlink": "Ask to link or unlink with another appeal",
+        "askJudgeToReview": "Ask for a judge to review a decision by a Tribunal Caseworker",
+        "askForSomethingElse": "Ask for something else",
+        "askReinstateAppeal": "Ask to reinstate the appeal"
+      },
+      "hearingRequests": {
+        "sectionHeading": "Hearing requests",
+        "askToChangeYourHearing": "Ask to change your hearing date, location or needs"
+      },
       "payForAppeal": "Pay for this appeal",
       "doThisNext": {
         "toDo": "Do this next",
@@ -655,8 +833,7 @@
           "dueDate": "ended  should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that.",
           "ctaTitle": "Your appeal has now ended",
           "ctaInstruction": "Review your <a href=\"{{ paths.common.noticeEndedAppealViewer }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.",
-          "ctaReview": "If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to ask for the decision to be reviewed by a judge.",
-          "ctaContact": "You can do this by emailing <a href=\"mailto:{{ applicationNextStep.hearingCentreEmail }}\">{{ applicationNextStep.hearingCentreEmail }}</a>. Please include your Appeal reference in the subject line of the email.",
+          "ctaReview": "If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review the decision</a>.",
           "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
           "ctaFeedbackDescription": "<a href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
         },
@@ -714,7 +891,7 @@
           "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
           "ctaFeedbackDescription": "<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
         }
-    },
+      },
       "timeline": {
         "completed": "Completed",
         "sections": {
@@ -750,6 +927,46 @@
               "title": "What you sent",
               "text": "Your evidence",
               "href": "{{ paths.common.yourEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidence": {
+          "text": "The Tribunal uploaded new evidence.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "New evidence",
+              "href": "{{ paths.common.newEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidenceAdminOfficer": {
+          "text": "The Tribunal uploaded new evidence.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "New evidence",
+              "href": "{{ paths.common.newEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidenceLegalRep": {
+          "text": "You provided more evidence.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your evidence",
+              "href": "{{ paths.common.yourAddendumEvidence }}"
+            }
+          ]
+        },
+        "uploadAddendumEvidenceHomeOffice": {
+          "text": "The Home Office uploaded new evidence.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Home Office evidence",
+              "href": "{{ paths.common.homeOfficeAddendumEvidence }}"
             }
           ]
         },
@@ -817,7 +1034,7 @@
             {
               "title": "What you sent",
               "text": "Your request",
-              "href": "{{ paths.common.timeExtensionViewer }}"
+              "href": "{{ paths.common.makeAnApplicationViewer }}"
             }
           ]
         },
@@ -828,7 +1045,7 @@
             {
               "title": "What the Tribunal said",
               "text": "Reason for decision",
-              "href": "{{ paths.common.timeExtensionViewer }}"
+              "href": "{{ paths.common.makeAnApplicationViewer }}"
             }
           ]
         },
@@ -838,7 +1055,7 @@
             {
               "title": "What you sent",
               "text": "Reason you needed more time",
-              "href": "{{ paths.common.timeExtensionViewer }}"
+              "href": "{{ paths.common.makeAnApplicationViewer }}"
             }
           ]
         },
@@ -911,7 +1128,7 @@
         },
         "listCase": {
           "text": "Your hearing was listed.",
-          "textForEditListCase" : "Your hearing details were updated.",
+          "textForEditListCase": "Your hearing details were updated.",
           "links": [
             {
               "title": "Useful documents",
@@ -922,7 +1139,7 @@
         },
         "sendDecisionAndReasons": {
           "text": "The Decision and Reasons documents is ready to view.",
-          "textForEditListCase" : "The Decision and Reasons documents is ready to view.",
+          "textForEditListCase": "The Decision and Reasons documents is ready to view.",
           "links": [
             {
               "title": "Useful documents",
@@ -955,16 +1172,54 @@
         "question": "Question",
         "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
       },
-      "timeExtension": {
+      "makeAnApplication": {
         "title": "Your request",
+        "requestTypes": {
+          "askForMoreTime": "I want more time",
+          "askHearingSooner": "Ask for the hearing to be sooner",
+          "askChangeDate": "Ask for the hearing to be later",
+          "askChangeLocation": "Ask to change the location of the hearing",
+          "askJudgeReview": "Ask for a judge to review a decision",
+          "askLinkUnlink": "Ask to link or unlink this appeal",
+          "askReinstate": "Ask to reinstate the appeal",
+          "askWithdraw": "Ask to withdraw the appeal",
+          "askUpdateDetails": "Ask to change some of your details",
+          "askUpdateHearingRequirements": "Ask for something at the hearing",
+          "askSomethingElse": "Ask for something else"
+        },
         "whatNext": {
           "title": "What happens next",
-          "Refused": "Your appeal will continue. If a Tribunal Caseworker made this decision you can ask for it to be reviewed by a judge by emailing <a class='govuk-link' href='mailto:{{ hearingCentreEmail }}'>{{ hearingCentreEmail }}</a> within 14 days of the date of decision.",
-          "Granted": "A Tribunal Caseworker will give you more time to complete your next task. You will get a notification with the new date soon."
+          "default": {
+            "granted": "The Tribunal will contact you when it makes the changes requested.",
+            "refused": "Your appeal will continue. If a Tribunal Caseworker made this decision you can <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for the judge to review</a> it within 14 days of the date of the decision."
+          },
+          "askForMoreTime": {
+            "granted": "A Tribunal Caseworker will give you more time to complete your next task. You will get a notification with the new date soon."
+          },
+          "askJudgeReview": {
+            "refused": "Your appeal will continue.",
+            "granted": "The decision on your request will be overturned. The Tribunal will contact you if there is something you need to do next."
+          },
+          "askLinkUnlink": {
+            "granted": "This appeal will be linked or unlinked. The Tribunal will contact you when this happens."
+          },
+          "askReinstate": {
+            "refused": "If a Tribunal Caseworker made this decision you can <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review</a> it within 14 days of the date of the decision.",
+            "granted": "This appeal will be reinstated and will continue from the point where it was ended. The Tribunal will contact you when this happens."
+          },
+          "askWithdraw": {
+            "granted": "The Tribunal will end the appeal. The Tribunal will contact you when this happens."
+          },
+          "askUpdateDetails": {
+          },
+          "askSomethingElse": {
+          },
+          "askChangeHearing": {
+            "granted": "The details of you hearing will be updated. The Tribunal will contact you when this happens."
+          }
         },
         "request": {
           "whatYouAskedFor": "What you asked for",
-          "wantMoreTime": "I want more time",
           "reason": "Why you need it",
           "date": "Date requested",
           "evidence": "Supporting evidence"
@@ -1048,17 +1303,17 @@
         "documentDescription": "Document description",
         "additionalEvidence": "Additional evidence"
       },
-      "hearingNotice" : {
+      "hearingNotice": {
         "title": "Notice of Hearing"
       },
-      "hearingBundle" : {
+      "hearingBundle": {
         "title": "Hearing Bundle",
         "dateUploaded": "Date uploaded",
         "document": "Document"
       },
-      "decisionsAndReasons" : {
-         "title": "Decision and Reasons",
-         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
+      "decisionsAndReasons": {
+        "title": "Decision and Reasons",
+        "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
       }
     },
     "guidancePages": {
@@ -1309,7 +1564,7 @@
           {
             "title": "Before the hearing",
             "content": [
-               "If the hearing takes place at a hearing centre, you must arrive at least 15 minutes before your hearing is due to start. First go to reception and tell them why you are there. They will check you in and show you where the waiting area is. You may have to wait several hours as the order the hearings take place is decided on the day. ",
+              "If the hearing takes place at a hearing centre, you must arrive at least 15 minutes before your hearing is due to start. First go to reception and tell them why you are there. They will check you in and show you where the waiting area is. You may have to wait several hours as the order the hearings take place is decided on the day. ",
               "If the hearing takes place by video call, be ready at least 20 minutes before the hearing starts. If you do not join the call, the hearing may continue without you."
             ]
           },
@@ -1346,9 +1601,9 @@
           {
             "title": "During your hearing",
             "content": [
-               "The judge will introduce everyone and explain how the hearing will work.  ",
-               "If there is a Home Office Presenting Officer they will tell the judge why they think the Home Office decision is right. The Home Office Presenting Officer may also ask you some questions. ",
-               "If there are any witnesses they will then be asked to speak. The judge and the Home Office Presenting Officer may ask the witnesses some questions. You can also ask witnesses questions."
+              "The judge will introduce everyone and explain how the hearing will work.  ",
+              "If there is a Home Office Presenting Officer they will tell the judge why they think the Home Office decision is right. The Home Office Presenting Officer may also ask you some questions. ",
+              "If there are any witnesses they will then be asked to speak. The judge and the Home Office Presenting Officer may ask the witnesses some questions. You can also ask witnesses questions."
             ]
           },
           {
@@ -1360,9 +1615,8 @@
           {
             "title": "Advice on preparing for a hearing",
             "content": [
-            "If the hearing takes place at a hearing centre ",
-
-            "<ul class='govuk-list govuk-list--bullet'>",
+              "If the hearing takes place at a hearing centre ",
+              "<ul class='govuk-list govuk-list--bullet'>",
               "<li>If you can, visit the hearing centre before your hearing day </li>",
               "<li>Go to a hearing during your visit – they are usually open to the public</li>",
               "<li>Everyone has to go through a security check when entering the hearing centre – do not take any sprays, perfumes, deodorants or mirrors as they will be kept by security <br /><a href='https://www.gov.uk/entering-court-or-tribunal-building' target='_blank' class=\"govuk-link\">See the full list of items you’re not allowed to take in (opens in a new window)</a></li>",
@@ -1375,7 +1629,7 @@
           {
             "title": "If the hearing takes place by video call ",
             "content": [
-            "<ul class='govuk-list govuk-list--bullet'>",
+              "<ul class='govuk-list govuk-list--bullet'>",
               "<li>Make sure you have any documents you will need before the day of the hearing</li>",
               "<li>If you have any electronic documents, make sure you have downloaded them and you are able to easily see them</li>",
               "<li>Try to be somewhere private and quiet for the hearing </li>",
@@ -1573,14 +1827,12 @@
             }
           ]
         },
-
-
-      {
-        "title": "Allow cookies that measure website usage?",
-        "content": [
-          "<div class='govuk-radios'>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-on' value='true' class='govuk-radios__input'>  <label for='radio-analytics-on' class='govuk-label govuk-radios__label' id='radio-analytics-on-label'>  <span>Use cookies that measure my website usage</span>   </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-analytics-off' class='govuk-label govuk-radios__label' id='radio-analytics-off-label'>  <span>Do not use cookies that measure my website usage</span>  </label> </input> </div> </div>"
-        ]
-      },
+        {
+          "title": "Allow cookies that measure website usage?",
+          "content": [
+            "<div class='govuk-radios'>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-on' value='true' class='govuk-radios__input'>  <label for='radio-analytics-on' class='govuk-label govuk-radios__label' id='radio-analytics-on-label'>  <span>Use cookies that measure my website usage</span>   </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='analytics' id='radio-analytics-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-analytics-off' class='govuk-label govuk-radios__label' id='radio-analytics-off-label'>  <span>Do not use cookies that measure my website usage</span>  </label> </input> </div> </div>"
+          ]
+        },
         {
           "title": "Cookies used to measure application performance",
           "content": [
@@ -1674,7 +1926,9 @@
         },
         {
           "title": "Allow cookies that measure website application performance monitoring?",
-          "content" : [ "<div class='govuk-radios'> <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-on' value='true' class='govuk-radios__input'>  <label for='radio-apm-on' class='govuk-label govuk-radios__label' id='radio-apm-on-label'> <span>Use cookies that measure website application performance monitoring</span>  </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-apm-off' class='govuk-label govuk-radios__label' id='radio-apm-off-label'>  <span>Do not use cookies that measure website application performance monitoring</span> </label> </input> </div> </div>"]
+          "content": [
+            "<div class='govuk-radios'> <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-on' value='true' class='govuk-radios__input'>  <label for='radio-apm-on' class='govuk-label govuk-radios__label' id='radio-apm-on-label'> <span>Use cookies that measure website application performance monitoring</span>  </label>  </input> </div>  <div class='govuk-radios__item'>  <input type='radio' name='apm' id='radio-apm-off' value='false' class='govuk-radios__input' checked='checked'>  <label for='radio-apm-off' class='govuk-label govuk-radios__label' id='radio-apm-off-label'>  <span>Do not use cookies that measure website application performance monitoring</span> </label> </input> </div> </div>"
+          ]
         },
         {
           "title": "Essential cookies",
@@ -1756,7 +2010,9 @@
         },
         {
           "title": "",
-          "content": ["<p id='save-cookie-preferences' class='govuk-body govuk-button-group'><a id='saveCookies' class='govuk-button' href='cookie-policy'>Save</a></p>"]
+          "content": [
+            "<p id='save-cookie-preferences' class='govuk-body govuk-button-group'><a id='saveCookies' class='govuk-button' href='cookie-policy'>Save</a></p>"
+          ]
         }
       ]
     },
@@ -2278,7 +2534,6 @@
           "title": "Would you be able to join the hearing by video call?",
           "question": "Would you be able to join the hearing by video call?",
           "description": "<p>The Tribunal may decide to have the hearing by video call.  Answer no if there are reasons<br>you would not be able to join a video call.</p>",
-
           "hintsTitle": "Why you might not be able to join a video call?",
           "hintDescription": "For example, if you:",
           "hints": [
@@ -2289,8 +2544,8 @@
           ]
         },
         "joinHearingByVideoCallReason": {
-           "title": "Tell us the reasons you would not be able to join a video call",
-           "heading": "Tell us the reasons you would not be able to join a video call"
+          "title": "Tell us the reasons you would not be able to join a video call",
+          "heading": "Tell us the reasons you would not be able to join a video call"
         },
         "multimediaEvidence": {
           "title": "Will you bring any video or audio evidence to the hearing?",
@@ -2300,7 +2555,7 @@
         "bringEquipment": {
           "title": "Will you bring the equipment to play this evidence?",
           "question": "Will you bring the equipment to play this evidence?",
-          "description" : "For example, a laptop computer or DVD player"
+          "description": "For example, a laptop computer or DVD player"
         },
         "bringEquipmentReason": {
           "title": "Tell us why it is not possible to bring the equipment to play this evidence and what you will need to play it",
@@ -2340,7 +2595,6 @@
           "title": "Will you need anything else at the hearing?",
           "question": "Will you need anything else at the hearing?"
         },
-
         "privateHearingReason": {
           "title": "Tell us why you need a private hearing",
           "heading": "Tell us why you need a private hearing"
@@ -2358,7 +2612,6 @@
           "heading": "Tell us what you will need and why you need it",
           "text": "If you or any witnesses are in a wheelchair or have any other mobility issues, we will provide step-free access at the hearing."
         }
-
       },
       "datesToAvoidSection": {
         "questionPage": {
@@ -2393,7 +2646,7 @@
           "url": "<a href='{{ paths.common.whatToExpectAtCMA }}'>What to expect at a case management appointment</a>"
         }
       },
-      "yourHearingNeeds" : {
+      "yourHearingNeeds": {
         "title": "Your hearing needs"
       }
     },
@@ -2653,11 +2906,11 @@
         "feedbackText": "We also hope you can attend feedback sessions, along with any appellants you have supported that are happy to take part. This will help us understand more about your experience and identify ways to improve the service."
       }
     },
-    "gwfReference" : {
-       "title": "What is your Global Web Form (GWF) reference number?",
-       "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the UK. For example, GWF12345678",
-       "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find your GWF reference number.",
-       "homeOfficeReferenceNumberLabel": "Enter your GWF reference number"
+    "gwfReference": {
+      "title": "What is your Global Web Form (GWF) reference number?",
+      "label": "You can find your GWF reference number on any letters or emails from the Home Office about your application to enter the UK. For example, GWF12345678",
+      "footNote": "Call the Home Office on <strong>+44 (0)161 877 5919</strong> (9am-3pm, Monday to Friday) if you cannot find your GWF reference number.",
+      "homeOfficeReferenceNumberLabel": "Enter your GWF reference number"
     },
     "hrInside": {
       "title": "What date did you leave the UK after your application to stay in the country was refused?",
@@ -2773,7 +3026,7 @@
       "townCityRequired": "Enter a Town or City",
       "postcodeRequired": "Enter your postcode"
     },
-    "outOfCountryAddress":{
+    "outOfCountryAddress": {
       "addressRequired": "Enter your address"
     },
     "homeOfficeReference": {
@@ -2801,6 +3054,7 @@
       "incorrectFormat": "The selected file must be a {{ supportedFormats | join(', ') }}",
       "fileCannotBeUploaded": "The file cannot be uploaded"
     },
+    "whyEvidenceLate": "Enter the reason the evidence is late",
     "askForMoreTime": "Enter how much time you need and why you need it",
     "clarifyingQuestions": {
       "emptyAnswer": "Please enter an answer for the question",
@@ -2883,6 +3137,20 @@
           "incorrectFormat": "Enter the date in the correct format"
         }
       }
+    },
+    "makeApplication": {
+      "askChangeHearing": "Select what you want to ask to change about your hearing",
+      "askHearingSooner": "Enter the latest date you want the hearing to take place and why",
+      "askChangeDate": "Enter when you want to change the hearing to and why",
+      "askChangeLocation": "Enter where you want the hearing to take place and why",
+      "askWithdraw": "Enter why you want to withdraw the appeal",
+      "askUpdateDetails": "Enter the changes you want to make to your appeal details and why",
+      "askSomethingElse": "Enter what you need and why",
+      "askUpdateHearingRequirements": "Enter what you need at the hearing and why",
+      "askLinkUnlink": "Enter which appeal, or appeals, you want to link to or unlink from and why",
+      "askJudgeReview": "Enter which decision you want a judge to review and why",
+      "askReinstate": "Enter why you want the appeal to be reinstated",
+      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
     }
   },
   "components": {
@@ -3046,18 +3314,18 @@
       "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
     },
     {
-    "title": "There is a fee for this appeal",
-    "description": "It costs:",
-    "optionsList": [
-      "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
-      "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
-      "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
-      "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
-      "In all other cases, you should use the new service."
-    ],
-    "cta": "link",
-    "hideMoreInfo": true,
-    "showHelp": true
+      "title": "There is a fee for this appeal",
+      "description": "It costs:",
+      "optionsList": [
+        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
+        "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
+        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
+        "In all other cases, you should use the new service."
+      ],
+      "cta": "link",
+      "hideMoreInfo": true,
+      "showHelp": true
     }
   ],
   "eligibilityOOCFlag": [
@@ -3101,18 +3369,18 @@
       "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
     },
     {
-    "title": "There is a fee for this appeal",
-    "description": "It costs:",
-    "optionsList": [
-      "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
-      "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
-      "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
-      "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
-      "In all other cases, you should use the new service."
-    ],
-    "cta": "link",
-    "hideMoreInfo": true,
-    "showHelp": true
+      "title": "There is a fee for this appeal",
+      "description": "It costs:",
+      "optionsList": [
+        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
+        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
+        "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
+        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
+        "In all other cases, you should use the new service."
+      ],
+      "cta": "link",
+      "hideMoreInfo": true,
+      "showHelp": true
     }
   ]
 }

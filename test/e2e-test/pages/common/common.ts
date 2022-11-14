@@ -60,7 +60,11 @@ const PATHS = {
   'reasons for appeal check your answers': paths.awaitingReasonsForAppeal.checkAndSend,
   'Out of time appeal': paths.appealStarted.appealLate,
   'Task list': paths.appealStarted.taskList,
-  'Check and send': paths.appealStarted.checkAndSend
+  'Check and send': paths.appealStarted.checkAndSend,
+  'provide more evidence': paths.common.provideMoreEvidenceForm,
+  'provide more evidence check': paths.common.provideMoreEvidenceCheck,
+  'provide more evidence sent': paths.common.provideMoreEvidenceConfirmation,
+  'why evidence late': paths.common.whyEvidenceLate
 };
 
 module.exports = {
@@ -279,7 +283,7 @@ module.exports = {
       await fillInDate(day, month, year);
     });
 
-    Then(/^I should see error summary$/, async () => {
+    Then(/^I should see error summary$/,async () => {
       await I.seeElementInDOM('.govuk-error-summary');
       await I.seeInTitle('Error: ');
     });

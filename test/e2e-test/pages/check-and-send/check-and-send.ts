@@ -17,7 +17,7 @@ module.exports = {
       await I.see('Check your answer', 'h1');
     });
     Then('I click Reason for late appeal change button', async () => {
-      await I.click('(//a[contains(text(),'Change')])[10]');
+      await I.click('(//a[contains(text(),"Change")])[10]');
     });
     When('I click send', async () => {
       await I.click('Send');

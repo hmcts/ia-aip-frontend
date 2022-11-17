@@ -26,6 +26,10 @@ module.exports = {
       await I.click('Sign in to your account.');
     });
 
+    When('I click Sign in to continue with your appeal', async () => {
+      await I.click('Sign in to continue with your appeal');
+    });
+
     When('I enter creds and click sign in', async () => {
       await signInHelper();
     });

@@ -38,5 +38,21 @@ module.exports = {
     Then('I should see the appeal payment page', async () => {
       I.seeInCurrentUrl(paths.appealStarted.payNow);
     });
+    When(/^I select a decision (with|without) a hearing for a (non PA|PA pay now|PA pay later) appeal$/, async (hearingChoice, paChoice) => {
+      if (hearingChoice === 'with') {
+        await I.checkOption('answer');
+      } else {
+        await I.checkOption('answer-2');
+      }
+      if (paChoice !== 'non PA') {
+        await I.click('Save and continue');
+        await I.seeInCurrentUrl(paths.appealStarted.payNow);
+        if (paChoice === 'PA pay now') {
+          await I.checkOption('answer');
+        } else {
+          await I.checkOption('answer-2');
+        }
+      }
+    });
   }
 };

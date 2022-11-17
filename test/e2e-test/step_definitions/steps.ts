@@ -1,4 +1,5 @@
 const { checkAndSend } = require('../pages/check-and-send/check-and-send');
+const { pcqQuestions } = require('../pages/pcq-questions/pcq-questions');
 const { typeOfAppeal } = require('../pages/type-of-appeal/type-of-appeal');
 const { decisionType } = require('../pages/decision-type/decision-type');
 const { oocProtectionDepartureDate } = require('../pages/ooc-details/out-of-country');
@@ -68,6 +69,7 @@ decisionType(I);
 oocProtectionDepartureDate(I);
 outOfTimeAppeal(I);
 checkAndSend(I);
+pcqQuestions(I);
 reasonsForAppeal(I);
 reasonsForAppealCYA(I);
 reasonsForAppealConfirmation(I);

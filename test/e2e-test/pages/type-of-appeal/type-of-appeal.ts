@@ -8,6 +8,12 @@ module.exports = {
     When(/^I click on the type-of-appeal link$/, async () => {
       await I.click('Appeal type');
     });
+    Then(/^I should be taken to the Is the appellant in the UK page$/, async () => {
+      await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
+    });
+    When(/^I select Yes$/, async () => {
+      await I.click('Yes');
+    });
     Then(/^I should be taken to the appeal page$/, async () => {
       await I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });

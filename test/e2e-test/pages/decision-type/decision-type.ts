@@ -14,7 +14,7 @@ module.exports = {
     });
 
     When(/^I click on Decision with hearing as my type of decision and click Save and continue$/, async () => {
-      await I.checkOption('decisionWithHearing');
+      await I.checkOption('#decisionWithHearing');
       await I.click('Save and continue');
     });
 
@@ -22,7 +22,7 @@ module.exports = {
       I.amOnPage(testUrl + paths.appealStarted.decisionType);
     });
     When('I select I want the appeal to be decided with a hearing', async () => {
-      await I.checkOption('answer');
+      await I.checkOption('#answer');
       await I.click('Continue');
     });
     Then('I should see the the decision type page', async () => {
@@ -40,17 +40,17 @@ module.exports = {
     });
     When(/^I select a decision (with|without) a hearing for a (non PA|PA pay now|PA pay later) appeal$/, async (hearingChoice, paChoice) => {
       if (hearingChoice === 'with') {
-        await I.checkOption('answer');
+        await I.checkOption('#answer');
       } else {
-        await I.checkOption('answer-2');
+        await I.checkOption('#answer-2');
       }
       if (paChoice !== 'non PA') {
         await I.click('Save and continue');
         await I.seeInCurrentUrl(paths.appealStarted.payNow);
         if (paChoice === 'PA pay now') {
-          await I.checkOption('answer');
+          await I.checkOption('#answer');
         } else {
-          await I.checkOption('answer-2');
+          await I.checkOption('#answer-2');
         }
       }
     });

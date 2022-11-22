@@ -284,7 +284,6 @@ module.exports = {
     });
 
     Then(/^I should see error summary$/,async () => {
-      await I.waitForElement('.govuk-error-summary', 5);
       await I.seeElementInDOM('.govuk-error-summary');
       await I.seeInTitle('Error: ');
     });

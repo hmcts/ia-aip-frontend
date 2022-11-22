@@ -32,15 +32,6 @@ Feature: Home office reference page
     And I click "Save and continue" button
 
     Then I see "Upload your Home Office decision letter" in title
-    When I click "Upload file" button
-    Then I should see error summary
-
-    When I click "Continue" button
-    Then I should see error summary
-
-    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
-    Then I should see error summary
-
     And I choose a file that is "VALID"
     And I click "Upload file" button
     And I click "Save and continue" button

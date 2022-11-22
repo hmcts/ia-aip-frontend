@@ -284,12 +284,12 @@ module.exports = {
     });
 
     Then(/^I should see error summary$/,async () => {
-      await I.seeElementInDOM('.govuk-error-summary');
+      await I.seeElement('.govuk-error-summary');
       await I.seeInTitle('Error: ');
     });
 
     Then(/^I shouldnt see error summary$/, async () => {
-      I.dontSeeElementInDOM('.govuk-error-summary');
+      I.dontSeeElement('.govuk-error-summary');
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {

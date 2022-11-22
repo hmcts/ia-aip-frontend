@@ -26,9 +26,6 @@ Feature: Reason for appeal
     Then I click "Upload file" button
     Then I should see error summary
 
-    When I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
-    Then I should see error summary
-
     When I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
     Then I should see error summary
 

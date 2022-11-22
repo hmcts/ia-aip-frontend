@@ -31,8 +31,7 @@ Feature: Make Application to link or unlink an appeal
     When I click "Continue" button
     Then I should see error summary
 
-    Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
-    Then I should see error summary
+
 
     Given I choose a file that is "INVALID_FORMAT" and click the "Upload file" button
     Then I should see error summary

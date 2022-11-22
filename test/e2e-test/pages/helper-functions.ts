@@ -10,7 +10,6 @@ async function signInHelper() {
   }
   I.click('Sign in');
   I.wait(5);
-  I.waitForNavigation();
 }
 
 function signInForUser(email: string) {

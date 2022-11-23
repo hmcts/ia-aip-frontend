@@ -187,6 +187,13 @@
     "@babel/core/resolve/path-parse": "^1.0.7",
     "@stryker-mutator/core/log4js": "^6.4.0",
     "nodemon/update-notifier/latest-version/package-json/got": "^11.8.5",
-    "webdriverio/webdriver/got": "^11.8.5"
+    "webdriverio/webdriver/got": "^11.8.5",
+    "mocha/minimatch": "^3.0.5",
+    "node-sass/gaze/globule/minimatch": "^3.0.5",
+    "codeceptjs/glob/minimatch": "^3.0.5",
+    "loader-utils": "^1.4.2",
+    "style-loader/loader-utils": "^2.0.4",
+    "json-schema": "^0.4.0",
+    "busboy": "^1.0.0"
   }
 }

@@ -10,7 +10,6 @@ properties([
     cron('15 5 * * *')
     ])
 ])
-
 @Library("Infrastructure")
 
 def type      = "nodejs"

@@ -4,7 +4,9 @@ const { I } = inject();
 async function signInHelper() {
   const environment: string = process.env.NODE_ENV;
   if (environment !== ('test' || 'development')) {
-    const userDetails = await createUser();
+    if (!userDetails) {
+      const userDetails = await createUser();
+    }
     I.fillField('#username', userDetails.email);
     I.fillField('#password', userDetails.password);
   }

@@ -49,9 +49,9 @@ module.exports = {
         await I.click('Save and continue');
         await I.seeInCurrentUrl(paths.appealStarted.payNow);
         if (paChoice === 'PA pay now') {
-          await I.checkOption('payNow');
+          await I.checkOption('#answer');
         } else {
-          await I.checkOption('payLater');
+          await I.checkOption('#answer-2');
         }
       }
     });

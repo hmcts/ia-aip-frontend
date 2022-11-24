@@ -49,6 +49,14 @@ module.exports = {
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
+    Given(/^I sign in as an appellant$/, async () => {
+      await I.fillField('#username', 'ia_citizen8943692@hmcts.net');
+      await I.fillField('#password', 'Apassword123');
+      await I.click('Sign in');
+      await I.waitForText('Nothing to do next', 30);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
     Given('I have logged in', async () => {
       I.amOnPage(testUrl + paths.common.login);
       signInForUser('setupcase@example.com');

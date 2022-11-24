@@ -8,6 +8,17 @@ import { getS2sToken } from './s2s-service';
 
 const config = require('config');
 const testUrl = config.get('testUrl');
+let exUiUrl;
+let caseUrl;
+
+if (testUrl.includes('localhost')) {
+  exUiUrl = 'http://localhost:3002';
+} else if (testUrl.includes('aat') || testUrl.includes('preview')) {
+  exUiUrl = 'https://manage-case.aat.platform.hmcts.net/';
+} else if (testUrl.includes('demo')) {
+  exUiUrl = 'https://manage-case.demo.platform.hmcts.net/';
+}
+let appealReference;
 const docStoreUrl = config.get('documentManagement.apiUrl');
 
 const authenticationService = new AuthenticationService();
@@ -23,25 +34,11 @@ async function fetchAipUserCaseData() {
   const serviceToken = await getS2sToken();
   const securityHeaders = { userToken, serviceToken };
   return ccdService.loadCasesForUser(userId, securityHeaders);
-
 }
 
 module.exports = {
 
   caseProgression(I) {
-
-    Given(/^I sign in as the Appellant$/, async () => {
-      console.log('logout signing in as appellant?????   ia_citizen9894270@hmcts.net  / Apassword123');
-      console.log(testUrl + paths.common.logout);
-      await I.amOnPage(testUrl + paths.common.logout);
-      console.log('login in as appellant????? ');
-      console.log(testUrl + paths.common.login);
-      I.amOnPage(testUrl + paths.common.login);
-      await I.seeInTitle('Sign in - HMCTS Access');
-      I.fillField('#username', aipCurrentUser.email);
-      I.fillField('#password', aipCurrentUser.password);
-      I.click('.button');
-    });
 
     Then(/^I sign in as a Case Officer and request HO Bundle$/, async () => {
 
@@ -225,6 +222,84 @@ module.exports = {
         ...caseDetails[0].case_data
       };
       await updateAppeal(Events.SEND_DIRECTION_WITH_QUESTIONS, userId, caseDetails[0], securityHeaders);
+    });
+
+    Then(/^I grab the Appeal Reference$/, async () => {
+      let source = await I.grabSource();
+      let startIndex = source.indexOf('Appeal reference: ');
+      let endIndex = startIndex + 40;
+      appealReference = source.slice(startIndex, endIndex).split('<')[0].split('Appeal reference: ')[1];
+    });
+
+    Then(/^I sign in as a Case Officer and Request Home Office data$/, async () => {
+      await I.amOnPage(exUiUrl);
+      await I.waitForText('Sign in or create an account', 30);
+      await I.fillField('#username', 'ia.caseofficer.ccd@gmail.com');
+      await I.fillField('#password', 'AldgateT0wer');
+      await I.click('Sign in');
+      await I.waitForText('Case list', 30);
+      await I.click('Case list');
+      await I.waitForText('Reset', 30);
+      await I.click('Reset');
+      await I.waitForText('Your cases', 30);
+      await I.waitForElement('#appealReferenceNumber', 30);
+      await I.fillField('#appealReferenceNumber', appealReference);
+      await I.click('Apply');
+      await I.waitForText('Random User', 30);
+      await I.click(locate('tbody').find('span').withText(appealReference));
+      await I.waitForText('Do this next', 30);
+      caseUrl = await I.grabCurrentUrl();
+      await I.selectOption('#next-step', 'Request Home Office data');
+      await I.click('Go');
+      await I.waitForText('Match appellant details', 30);
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Request Home Office data');
+      await I.waitForText('You have matched the appellant details', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('Do this next', 30);
+      await I.see('Do this next');
+    });
+
+    Then(/^I Request respondent evidence$/, async () => {
+      await I.selectOption('#next-step', 'Request respondent evidence');
+      await I.click('Go');
+      await I.waitForText('You are directing the Home Office to supply their documents and evidence.', 30);
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Send direction');
+      await I.waitForText('You have sent a direction', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('What happens next', 30);
+      await I.see('What happens next');
+    });
+
+    Then(/^I Request the reasons for appeal$/, async () => {
+      await I.selectOption('#next-step', 'AiP - Request Appeal Reasons');
+      await I.click('Go');
+      await I.waitForText('Explain the direction you are issuing', 30);
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Submit');
+      await I.waitForText('You have sent a direction', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('Do this next', 30);
+      await I.see('Do this next');
+    });
+
+    Then(/^I sign in as a Case Officer and Ask Clarifying Questions$/, async () => {
+      await I.selectOption('#next-step', 'AiP - Ask clarifying questions');
+      await I.click('Go');
+      await I.waitForText('Direct the appellant to answer clarifying questions', 30);
+      await I.click('Add new');
+      await I.fillField('#sendDirectionQuestions_0_question', 'This is question that is to be answered');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Submit');
+      await I.waitForText('Your direction has been sent', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('Do this next', 30);
+      await I.see('Do this next');
     });
   }
 };

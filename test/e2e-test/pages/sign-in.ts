@@ -44,6 +44,7 @@ module.exports = {
     Given('I sign in as the appellant', async () => {
       await I.fillField('#username', currentUserDetails.email);
       await I.fillField('#password', currentUserDetails.password);
+      await I.click('Sign in');
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });

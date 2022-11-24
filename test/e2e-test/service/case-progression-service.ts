@@ -238,7 +238,7 @@ module.exports = {
       await I.fillField('#password', 'AldgateT0wer');
       await I.click('Sign in');
       await I.waitForText('Case list', 30);
-      await I.click('Case list');
+      await I.amOnPage(exUiUrl + 'cases');
       await I.waitForText('Reset', 30);
       await I.click('Reset');
       await I.waitForText('Your cases', 30);

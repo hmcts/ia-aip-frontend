@@ -6,6 +6,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   decisionType(I) {
     Given('I should be taken to the decision type page', async () => {
+      await I.waitInUrl(paths.appealStarted.decisionType,10);
       await I.seeInCurrentUrl(paths.appealStarted.decisionType);
     });
 
@@ -47,6 +48,7 @@ module.exports = {
       }
       if (paChoice !== 'non PA') {
         await I.click('Save and continue');
+        await I.waitInUrl(paths.appealStarted.payNow,10);
         await I.seeInCurrentUrl(paths.appealStarted.payNow);
         if (paChoice === 'PA pay now') {
           await I.checkOption('#answer');

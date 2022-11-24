@@ -11,6 +11,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the DOB page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.dob,10);
       await I.seeInCurrentUrl(paths.appealStarted.dob);
     });
 

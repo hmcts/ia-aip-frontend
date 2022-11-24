@@ -12,6 +12,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the enter your name page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.name,10);
       await I.seeInCurrentUrl(paths.appealStarted.name);
     });
 

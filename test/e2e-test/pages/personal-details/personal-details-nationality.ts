@@ -10,6 +10,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to nationality page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.nationality,10);
       await I.seeInCurrentUrl(paths.appealStarted.nationality);
     });
 

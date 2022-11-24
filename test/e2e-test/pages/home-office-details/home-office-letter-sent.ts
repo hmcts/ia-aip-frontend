@@ -16,10 +16,12 @@ module.exports = {
     });
 
     Then(/^I should see letter sent page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.letterSent,10);
       await I.seeInCurrentUrl(paths.appealStarted.letterSent);
     });
 
     Then(/^I should see letter received page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.letterReceived,10);
       await I.seeInCurrentUrl(paths.appealStarted.letterReceived);
     });
 

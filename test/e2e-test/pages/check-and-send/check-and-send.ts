@@ -13,6 +13,7 @@ module.exports = {
       await I.click('Check and send your appeal');
     });
     Then(/^I should be taken to the check-and-send page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.checkAndSend,10);
       await I.seeInCurrentUrl(paths.appealStarted.checkAndSend);
       await I.see('Check your answer', 'h1');
     });

@@ -30,26 +30,32 @@ module.exports = {
     });
 
     Then(/^I should see the Ask to withdraw the appeal page$/, async (text: string) => {
+      await I.waitInUrl(paths.makeApplication.withdraw,10);
       await I.seeInCurrentUrl(paths.makeApplication.withdraw);
     });
 
     Then(/^I should see the Ask to change some of your details page$/, async (text: string) => {
+      await I.waitInUrl(paths.makeApplication.updateAppealDetails,10);
       await I.seeInCurrentUrl(paths.makeApplication.updateAppealDetails);
     });
 
     Then(/^I should see the Ask to link or unlink this appeal page$/, async (text: string) => {
+      await I.waitInUrl(paths.makeApplication.linkOrUnlink,10);
       await I.seeInCurrentUrl(paths.makeApplication.linkOrUnlink);
     });
 
     Then(/^I should see the Ask for a judge to review a decision page$/, async (text: string) => {
+      await I.waitInUrl(paths.makeApplication.judgesReview,10);
       await I.seeInCurrentUrl(paths.makeApplication.judgesReview);
     });
 
     Then(/^I should see the Ask for something else page$/, async (text: string) => {
+      await I.waitInUrl(paths.makeApplication.other,10);
       await I.seeInCurrentUrl(paths.makeApplication.other);
     });
 
     Then(/^I should see the Ask for the appeal to be reinstated page$/, async (text: string) => {
+      await I.waitInUrl(paths.makeApplication.reinstate,10);
       await I.seeInCurrentUrl(paths.makeApplication.reinstate);
     });
   }

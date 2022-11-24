@@ -293,14 +293,17 @@ module.exports = {
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
+      await I.waitInUrl(paths.appealStarted.taskList,10);
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 
     Then(/^I see "([^"]*)" in current url$/, async (key: string) => {
+      await I.waitInUrl(key,10);
       await I.seeInCurrentUrl(key);
     });
 
     When(/^I visit the "([^"]*)" page$/, async (key: string) => {
+      await I.waitInUrl(`${PATHS[key]}`,10);
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });
@@ -314,6 +317,7 @@ module.exports = {
     });
 
     Given(/^I am on the "([^"]*)" page$/, async (key: string) => {
+      await I.waitInUrl(`${PATHS[key]}`,10);
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`${testUrl}${PATHS[key]}`);
     });

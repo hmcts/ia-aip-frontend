@@ -225,10 +225,12 @@ module.exports = {
     });
 
     Then(/^I grab the Appeal Reference$/, async () => {
+      await I.click('See your appeal progress');
+      await I.waitForText('Appeal reference', 30);
       let source = await I.grabSource();
-      let startIndex = source.indexOf('Appeal reference: ');
+      let startIndex = await source.indexOf('Appeal reference: ');
       let endIndex = startIndex + 40;
-      appealReference = source.slice(startIndex, endIndex).split('<')[0].split('Appeal reference: ')[1];
+      appealReference = await source.slice(startIndex, endIndex).split('<')[0].split('Appeal reference: ')[1];
     });
 
     Then(/^I sign in as a Case Officer and Request Home Office data$/, async () => {

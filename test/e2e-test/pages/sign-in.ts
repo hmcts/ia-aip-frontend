@@ -1,5 +1,5 @@
 import { paths } from '../../../app/paths';
-import { userDetails } from './helper-functions';
+import { currentUserDetails } from './helper-functions';
 const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
@@ -42,8 +42,8 @@ module.exports = {
     });
 
     Given('I sign in as the appellant', async () => {
-      await I.fillField('#username', userDetails.email);
-      await I.fillField('#password', userDetails.password);
+      await I.fillField('#username', currentUserDetails.email);
+      await I.fillField('#password', currentUserDetails.password);
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });

@@ -1,13 +1,10 @@
 import { createUser } from '../service/idam-service';
 const { I } = inject();
-let userDetails = { '', '', '', '' };
 
 async function signInHelper() {
   const environment: string = process.env.NODE_ENV;
   if (environment !== ('test' || 'development')) {
-    if (userDetails.email === '') {
-      userDetails = await createUser();
-    }
+    userDetails = await createUser();
     I.fillField('#username', userDetails.email);
     I.fillField('#password', userDetails.password);
   }
@@ -35,5 +32,6 @@ export {
   signInHelper,
   signInForUser,
   fillInDate,
-  enterRefNumber
+  enterRefNumber,
+  userDetails
 };

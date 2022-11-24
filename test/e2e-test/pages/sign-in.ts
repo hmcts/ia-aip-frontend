@@ -1,5 +1,5 @@
 import { paths } from '../../../app/paths';
-
+import { userDetails } from './helper-functions';
 const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
@@ -37,6 +37,13 @@ module.exports = {
     Given('I am authenticated as a valid appellant', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await signInHelper();
+      await I.waitForText('Do this next', 30);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
+    Given('I sign in as the appellant', async () => {
+      await I.fillField('#username', userDetails.email);
+      await I.fillField('#password', userDetails.password);
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });

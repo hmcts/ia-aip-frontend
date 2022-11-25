@@ -138,25 +138,10 @@ Scenario: Complete appeal application
 
   When I click "Do you want to tell us anything else about your case?" link
   Then I see "Do you want to tell us anything else about your case?" in title
-  Then I fill textarea with "my answer for question 2"
-  Then I click "Save and continue" button
-  Then I see "Do you want to provide supporting evidence?" in title
   Then I click "No" button
   Then I click "Continue" button
   Then I see "Questions about your appeal" in title
   Then I see clarifying question "2" saved
-  And I see "Do you want to tell us anything else about your case?" link
-
-  When I click "Do you want to tell us anything else about your case?" link
-  Then I see "Do you want to tell us anything else about your case?" in title
-  Then I click "Yes" button
-  Then I click "Continue" button
-  Then I see "Do you want to tell us anything else about your case?" in title
-  Then I click "No" button
-  Then I click "Continue" button
-  Then I see "Questions about your appeal" in title
-  Then I see anything else clarifying question saved
-  And I see "Check and send your answers" link
 
   When I click "Check and send your answers" link
   Then I see "You have answered the Tribunal's questions" in title

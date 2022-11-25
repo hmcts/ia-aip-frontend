@@ -39,6 +39,8 @@ const { cmaRequirements } = require('../pages/cma-requirements/cma-requirements'
 const { uploadAddendumEvidence } = require('../pages/provide-more-evidence/upload-addendum-evidence');
 const { makeHearingApplication } = require('../pages/make-application/make-hearing-application');
 const { makeAppealApplication } = require('../pages/make-application/make-appeal-application');
+const { changeRepresentation } = require('../pages/change-representation/change-representation');
+const { startRepresentingYourself } = require('../pages/start-representing-yourself/start-representing-yourself');
 
 const { I } = inject();
 
@@ -85,3 +87,5 @@ cmaRequirements(I);
 uploadAddendumEvidence(I);
 makeHearingApplication(I);
 makeAppealApplication(I);
+changeRepresentation(I);
+startRepresentingYourself(I);

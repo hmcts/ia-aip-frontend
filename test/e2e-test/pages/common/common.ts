@@ -313,6 +313,10 @@ module.exports = {
       await I.click('Continue');
     });
 
+    Then(/^I click the "([^"]*)" button$/, async (text) => {
+      await I.click(text);
+    });
+
     Given(/^I am on the "([^"]*)" page$/, async (key: string) => {
       await I.seeInCurrentUrl(`${PATHS[key]}`);
       await I.amOnPage(`${testUrl}${PATHS[key]}`);

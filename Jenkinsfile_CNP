@@ -23,6 +23,8 @@ def secrets = [
         secret('test-homeoffice-generic-password', 'TEST_HOMEOFFICE_GENERIC_PASSWORD'),
         secret('pcq-token-key', 'PCQ_TOKEN_KEY'),
         secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL')
+        secret('system-username', 'IA_SYSTEM_USERNAME'),
+        secret('system-password', 'IA_SYSTEM_PASSWORD')
     ]
 ]
 
@@ -38,7 +40,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withPipeline("nodejs", product, component) {
-//    The following code was commented temporarily to stop using Jenkins resources, due to the AiP project being paused.  The expectation is that it will be resumed and the commented code will be required
 
   after('checkout') { sh 'yarn cache clean' }
   after('build') { sh 'yarn build' }

@@ -290,6 +290,8 @@ module.exports = {
     });
 
     Then(/^I sign in as a Case Officer and Ask Clarifying Questions$/, async () => {
+      await I.amOnPage(caseUrl);
+      await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'AiP - Ask clarifying questions');
       await I.click('Go');
       await I.waitForText('Direct the appellant to answer clarifying questions', 30);

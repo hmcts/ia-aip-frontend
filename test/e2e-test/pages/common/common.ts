@@ -335,10 +335,7 @@ module.exports = {
     });
 
     Then(/^I see "([^"]*)" in title$/, async (title: string) => {
-      await I.see(title, 'h1');
-    });
-
-    Then(/^I see "([^"]*)" in title$/, async (title: string) => {
+      await I.waitForText(title, 30);
       await I.see(title, 'h1');
     });
 

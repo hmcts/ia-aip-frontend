@@ -7,6 +7,13 @@ import { aipCurrentUser, getUserId, getUserToken } from './idam-service';
 import { getS2sToken } from './s2s-service';
 
 const config = require('config');
+const caseOfficerUserName = config.get('testAccounts.testCaseOfficerUserName');
+const caseOfficerPassword = config.get('testAccounts.testCaseOfficerPassword');
+const adminOfficerUserName = config.get('testAccounts.testAdminOfficerUserName');
+const adminOfficerPassword = config.get('testAccounts.testAdminOfficerPassword');
+const judgeUserName = config.get('testAccounts.testJudgeUserName');
+const judgePassword = config.get('testAccounts.testJudgePassword');
+
 const testUrl = config.get('testUrl');
 let exUiUrl;
 let caseUrl;
@@ -236,8 +243,8 @@ module.exports = {
     Then(/^I sign in as a Case Officer and Request Home Office data$/, async () => {
       await I.amOnPage(exUiUrl);
       await I.waitForText('Sign in or create an account', 30);
-      await I.fillField('#username', 'ia.caseofficer.ccd@gmail.com');
-      await I.fillField('#password', 'AldgateT0wer');
+      await I.fillField('#username', caseOfficerUserName);
+      await I.fillField('#password', caseOfficerPassword);
       await I.click('Sign in');
       await I.waitForText('Case list', 30);
       await I.amOnPage(exUiUrl + 'cases');
@@ -304,6 +311,189 @@ module.exports = {
       await I.click('Close and Return to case details');
       await I.waitForText('Do this next', 30);
       await I.see('Do this next');
+    });
+
+    Then(/^I sign in as a Case Officer and Request respondent review$/, async () => {
+      await I.amOnPage(caseUrl);
+      await I.waitForText('Current progress of the case', 30);
+      await I.selectOption('#next-step', 'Request respondent review');
+      await I.click('Go');
+      await I.waitForText('You are directing the respondent to review and respond to the appeal skeleton argument.', 30);
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Send direction');
+      await I.waitForText('You have sent a direction', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('Do this next', 30);
+      await I.see('Do this next');
+    });
+
+    Then(/^I Force the case to submit hearing requirements$/, async () => {
+      await I.selectOption('#next-step', 'Force case - hearing reqs');
+      await I.click('Go');
+      await I.waitForText('Reasons to force the case progression', 30);
+      await I.click('Continue');
+      await I.fillField('#reasonToForceCaseToSubmitHearingRequirements', 'this is a reason to force case to submit hearing requirements');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Submit');
+      await I.waitForText("You've forced the case progression to submit hearing requirements", 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('What happens next', 30);
+      await I.see('What happens next');
+    });
+
+    Then(/^I sign in as a Case Officer and Review and record the hearing requirements$/, async () => {
+      await I.amOnPage(caseUrl);
+      await I.waitForText('Current progress of the case', 30);
+      await I.selectOption('#next-step', 'Hearing requirements');
+      await I.click('Go');
+      await I.waitForText('Review the appellant\'s hearing requirements and select length of hearing.', 30);
+      await I.selectOption('#listCaseHearingLength', '1 hour');
+      await I.click('Continue');
+      await I.waitForText('Additional adjustments', 30);
+      await I.fillField('#remoteVideoCallTribunalResponse', 'Some adjustments the Tribunal will need to provide.');
+      await I.click('Continue');
+      await I.waitForText('Does the appellant have any physical or mental health issues that may impact them on the day?', 30);
+      await I.click('Continue');
+      await I.waitForText('Do you have multimedia evidence?', 30);
+      await I.click('Continue');
+      await I.waitForText('Does the appellant need a single-sex court?', 30);
+      await I.click('Continue');
+      await I.waitForText('Does the appellant need an in camera court?', 30);
+      await I.click('Continue');
+      await I.waitForText('Is there anything else you would like to request?', 30);
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Submit');
+      await I.waitForText('You\'ve recorded the agreed hearing adjustments', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('What happens next', 30);
+      await I.see('What happens next');
+    });
+
+    Then(/^I sign in as an Admin Officer and List the case$/, async () => {
+      await I.click('Sign out');
+      await I.fillField('#username', adminOfficerUserName);
+      await I.fillField('#password', adminOfficerPassword);
+      await I.click('Sign in');
+      await I.waitForText('Case list', 30);
+      await I.amOnPage(caseUrl);
+      await I.waitForText('Current progress of the case', 30);
+      await I.selectOption('#next-step', 'List the case');
+      await I.click('Go');
+      await I.waitForText('Add the hearing details below.', 30);
+      await I.fillField('#ariaListingReference', 'LP/12345/2022');
+      await I.fillField('#listCaseHearingDate-day', '10');
+      await I.fillField('#listCaseHearingDate-month', '10');
+      await I.fillField('#listCaseHearingDate-year', '2025');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('List case');
+      await I.waitForText('You have listed the case', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('What happens next', 30);
+      await I.see('What happens next');
+    });
+
+    Then(/^I sign in as a Case Officer and Create the case summary$/, async () => {
+      await I.click('Sign out');
+      await I.fillField('#username', caseOfficerUserName);
+      await I.fillField('#password', caseOfficerPassword);
+      await I.click('Sign in');
+      await I.waitForText('Case list', 30);
+      await I.amOnPage(caseUrl);
+      await I.waitForText('Current progress of the case', 30);
+      await I.selectOption('#next-step', 'Create case summary');
+      await I.click('Go');
+      await I.waitForText('Create a case summary and upload it below', 30);
+      await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
+      await I.fillField('#caseSummaryDescription', 'case summary document');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Upload');
+      await I.waitForText('You have uploaded the case summary', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('Do this next', 30);
+      await I.see('Do this next');
+    });
+
+    Then(/^I Generate the hearing bundle$/, async () => {
+      await I.selectOption('#next-step', 'Generate hearing bundle');
+      await I.click('Go');
+      await I.waitForText('Generate hearing bundle', 30);
+      await I.see('Generate hearing bundle', 'h1');
+      await I.click('Generate');
+      await I.waitForText('The hearing bundle is being generated', 30);
+      await I.wait(10);
+      await I.click('Close and Return to case details');
+      await I.wait(2);
+      await I.refreshPage();
+      await I.waitForText('Do this next', 30);
+    });
+
+    Then(/^I Start decision and reasons$/, async () => {
+      await I.selectOption('#next-step', 'Start decision and reasons');
+      await I.click('Go');
+      await I.waitForText('Write a brief introduction to the case', 30);
+      await I.click('Continue');
+      await I.waitForText('Add the appellant\'s case summary', 30);
+      await I.click('Continue');
+      await I.waitForText('Do both parties agree the immigration history?', 30);
+      await I.click('No');
+      await I.click('Continue');
+      await I.waitForText('Do both parties agree the schedule of issues?', 30);
+      await I.click('No');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Save');
+      await I.waitForText('You have started the decision and reasons process', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('What happens next', 30);
+      await I.see('What happens next');
+    });
+
+    Then(/^I sign in as a Judge and Prepare Decision and Reasons$/, async () => {
+      await I.click('Sign out');
+      await I.fillField('#username', judgeUserName);
+      await I.fillField('#password', judgePassword);
+      await I.click('Sign in');
+      await I.waitForText('Case list', 30);
+      await I.amOnPage(caseUrl);
+      await I.waitForText('Current progress of the case', 30);
+      await I.selectOption('#next-step', 'Prepare Decision and Reasons');
+      await I.click('Go');
+      await I.waitForText('Are you giving an anonymity direction?', 30);
+      await I.click('No');
+      await I.click('Continue');
+      await I.waitForText('Give the names of the legal representatives in this case', 30);
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Generate');
+      await I.waitForText('The Decision and Reasons document is ready to download', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('Do this next', 30);
+      await I.see('Do this next');
+    });
+
+    Then(/^I Complete the Decision and Reasons$/, async () => {
+      await I.waitForText('Current progress of the case', 30);
+      await I.selectOption('#next-step', 'Complete decision and reasons');
+      await I.click('Go');
+      await I.waitForText('What is your decision?', 30);
+      await I.checkOption('#isDecisionAllowed-allowed');
+      await I.click('Continue');
+      await I.waitForText('Upload your decision and reasons', 30);
+      await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
+      await I.checkOption('#isDocumentSignedToday_values-isDocumentSignedToday');
+      await I.checkOption('#isFeeConsistentWithDecision_values-isFeeConsistentWithDecision');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Upload');
+      await I.waitForText('You\'ve uploaded the Decision and Reasons document', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('No further action required.', 30);
+      await I.see('No further action required.');
     });
   }
 };

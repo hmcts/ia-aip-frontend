@@ -125,5 +125,10 @@ module.exports = {
 
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
+
+    Given('I sign out', async () => {
+      await I.click('Sign out');
+      await I.wait(5);
+    });
   }
 };

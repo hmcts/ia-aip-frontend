@@ -80,84 +80,88 @@ Scenario: Complete appeal application
   Given I am on home page
   When I click Sign in to continue with your appeal
   Then I should see the sign in page
+  And I sign out
   And I sign in as the appellant
   When I visit the overview page
   Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
   Then I should see the 'ask for more time' link
-    When I click 'ask for more time'
-    Then I should see the ask-for-more-time page
-    When I enter a time extensions reason
-    And I click continue
-    Then I should see do you want to upload evidence page
-    When I select No and click continue
-    Then I should see the ask for more time check you answers page
-    When I click send
-    Then I am on the overview page
+  When I click 'ask for more time'
+  Then I should see the ask-for-more-time page
+  When I enter a time extensions reason
+  And I click continue
+  Then I should see do you want to upload evidence page
+  When I select No and click continue
+  Then I should see the ask for more time check you answers page
+  When I click send
+  Then I am on the overview page
 
-   Then I click continue
-   Then I should see the reasons for appeal decision page
-   When I visit reasons for appeal
+  Then I click continue
+  Then I should see the reasons for appeal decision page
+  When I visit reasons for appeal
 
-   Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
-   Then I should see the "supporting evidence question" page
+  Then I enter "A description of why I think the appeal is wrong" into the reason for appeal text box and click Save and Continue
+  Then I should see the "supporting evidence question" page
 
-   When I select No and click continue
-   Then I should see the reasons for appeal CYA page
+  When I select No and click continue
+  Then I should see the reasons for appeal CYA page
 
-   When I click "Send" button
-   Then I should see the reasons for appeal confirmation page
-   And I see the respond by date is 2 weeks in the future
+  When I click "Send" button
+  Then I should see the reasons for appeal confirmation page
+  And I see the respond by date is 2 weeks in the future
 
 ##   # Case Progression
-   Then I sign in as a Case Officer and Ask Clarifying Questions
+  Then I sign in as a Case Officer and Ask Clarifying Questions
 #
 #   # Appellant
-   Given I sign in as the Appellant
-   When I visit the overview page
-   Then I see "You need to answer some questions about your appeal." description in overview banner
-   Then I click "Continue" button
-   Then I see "Questions about your appeal" in title
-   Then I see "Answer question 1" item in list
-   Then I see "Answer question 2" item in list
+  Given I am on home page
+  When I click Sign in to continue with your appeal
+  Then I should see the sign in page
+  And I sign in as the appellant
+  When I visit the overview page
+  Then I see "You need to answer some questions about your appeal." description in overview banner
+  Then I click "Continue" button
+  Then I see "Questions about your appeal" in title
+  Then I see "Answer question 1" item in list
+  Then I see "Answer question 2" item in list
 
-   When I click "Answer question 1" link
-   Then I see "Question 1" in title
-   Then I fill textarea with "my answer for question 1"
-   Then I click "Save and continue" button
-   Then I see "Do you want to provide supporting evidence?" in title
-   Then I click "No" button
-   Then I click "Continue" button
-   Then I see "Questions about your appeal" in title
-   And I see clarifying question "1" saved
+  When I click "Answer question 1" link
+  Then I see "Question 1" in title
+  Then I fill textarea with "my answer for question 1"
+  Then I click "Save and continue" button
+  Then I see "Do you want to provide supporting evidence?" in title
+  Then I click "No" button
+  Then I click "Continue" button
+  Then I see "Questions about your appeal" in title
+  And I see clarifying question "1" saved
 
-   When I click "Answer question 2" link
-   Then I see "Question 2" in title
-   Then I fill textarea with "my answer for question 2"
-   Then I click "Save and continue" button
-   Then I see "Do you want to provide supporting evidence?" in title
-   Then I click "No" button
-   Then I click "Continue" button
-   Then I see "Questions about your appeal" in title
-   Then I see clarifying question "2" saved
-   And I see "Do you want to tell us anything else about your case?" link
+  When I click "Answer question 2" link
+  Then I see "Question 2" in title
+  Then I fill textarea with "my answer for question 2"
+  Then I click "Save and continue" button
+  Then I see "Do you want to provide supporting evidence?" in title
+  Then I click "No" button
+  Then I click "Continue" button
+  Then I see "Questions about your appeal" in title
+  Then I see clarifying question "2" saved
+  And I see "Do you want to tell us anything else about your case?" link
 
-   When I click "Do you want to tell us anything else about your case?" link
-   Then I see "Do you want to tell us anything else about your case?" in title
-   Then I click "Yes" button
-   Then I click "Continue" button
-   Then I see "Do you want to tell us anything else about your case?" in title
-   Then I fill textarea with "my answer for anything else question"
-   Then I click "Save and continue" button
-   Then I see "Do you want to provide supporting evidence?" in title
-   Then I click "No" button
-   Then I click "Continue" button
-   Then I see "Questions about your appeal" in title
-   Then I see anything else clarifying question saved
-   And I see "Check and send your answers" link
+  When I click "Do you want to tell us anything else about your case?" link
+  Then I see "Do you want to tell us anything else about your case?" in title
+  Then I click "Yes" button
+  Then I click "Continue" button
+  Then I see "Do you want to tell us anything else about your case?" in title
+  Then I fill textarea with "my answer for anything else question"
+  Then I click "Save and continue" button
+  Then I see "Do you want to provide supporting evidence?" in title
+  Then I click "No" button
+  Then I click "Continue" button
+  Then I see "Questions about your appeal" in title
+  Then I see anything else clarifying question saved
+  And I see "Check and send your answers" link
 
-   When I click "Check and send your answers" link
-   Then I see "You have answered the Tribunal's questions" in title
-   Then I click "Send" button
-   And I see "You have answered the Tribunal's questions" in title
-   Then I click "See your appeal progress" button
-   And I see "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next" description in overview banner
+  When I click "Check and send your answers" link
+  Then I see "You have answered the Tribunal's questions" in title
+  Then I click "Send" button
+  And I see "You have answered the Tribunal's questions" in title
+  Then I click "See your appeal progress" button
+  And I see "A Tribunal Caseworker is looking at your answers and will contact you to tell you what to do next" description in overview banner

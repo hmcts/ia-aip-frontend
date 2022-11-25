@@ -231,9 +231,6 @@ module.exports = {
       let startIndex = await source.indexOf('Appeal reference: ');
       let endIndex = startIndex + 40;
       appealReference = await source.slice(startIndex, endIndex).split('<')[0].split('Appeal reference: ')[1];
-      await I.clearCookie();
-      await I.refreshPage();
-      await I.waitForText('Sign in or create an account', 60);
     });
 
     Then(/^I sign in as a Case Officer and Request Home Office data$/, async () => {

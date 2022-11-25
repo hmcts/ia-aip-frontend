@@ -78,9 +78,9 @@ Scenario: Complete appeal application
 
 #   # Appellant
   Given I am on home page
+  And I sign out
   When I click Sign in to continue with your appeal
   Then I should see the sign in page
-  And I sign out
   And I sign in as the appellant
   When I visit the overview page
   Then I should see the 'do this next section' for 'Awaiting reasons for appeal'
@@ -114,6 +114,7 @@ Scenario: Complete appeal application
 #
 #   # Appellant
   Given I am on home page
+  And I sign out
   When I click Sign in to continue with your appeal
   Then I should see the sign in page
   And I sign in as the appellant

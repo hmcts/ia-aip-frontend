@@ -58,7 +58,9 @@ Scenario: Complete appeal application
   And I click "Save and continue" button
   Then I should be taken to the pcq-questions page
   When I click "I don't want to answer these questions" button
-  And I sign in as the appellant
+  Given I am on home page
+  When I click Sign in to continue with your appeal
+#  And I sign in as the appellant
   And I click continue
   Then I should be taken to the task-list page
   When I click on the check and send your appeal link

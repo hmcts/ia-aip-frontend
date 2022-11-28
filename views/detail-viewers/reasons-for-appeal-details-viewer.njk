@@ -4,6 +4,9 @@
 
 {% block content %}
     <h1 class="govuk-heading-xl">{{ i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.title  }}</h1>
+    {% if hint %}
+        <p>{{ hint | eval | safe }}</p>
+    {% endif %}
     {{ govukSummaryList({
         rows: data
     }) }}

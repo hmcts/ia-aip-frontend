@@ -16,7 +16,9 @@ import { getAppellantApplications } from './utils';
  */
 function constructEventObject(event: HistoryEvent, req: Request) {
 
-  const eventContent = i18n.pages.overviewPage.timeline[event.id];
+  const eventContent = isUploadEvidenceEventByLegalRep(req, event)
+    ? i18n.pages.overviewPage.timeline[event.id]['providedByLr']
+    : i18n.pages.overviewPage.timeline[event.id];
 
   let eventObject = {
     date: moment(event.createdDate).format('DD MMMM YYYY'),
@@ -43,7 +45,6 @@ function constructEventObject(event: HistoryEvent, req: Request) {
  * @param req the request containing the session to update the timeExtensionsMap
  */
 function constructSection(eventsToLookFor: string[], events: HistoryEvent[], states: string[] | null, req: Request) {
-
   const filteredEvents = states
     ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
     : events.filter(event => eventsToLookFor.includes(event.id));
@@ -51,7 +52,7 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
   return filteredEvents.map(event => constructEventObject(event, req));
 }
 
-function getTimeExtensionsEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
+function getApplicationEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
   const makeDirectionsFlatMap = makeAnApplications ? makeAnApplications.flatMap(application => {
     const request = {
       id: application.id,
@@ -112,11 +113,21 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
-  const appealHearingRequirementsSection = constructSection(eventsAndStates.appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req);
-  const appealArgumentSection = constructSection(eventsAndStates.appealArgumentSectionEvents, req.session.appeal.history, eventsAndStates.appealArgumentSectionStates, req);
+  const appealHearingRequirementsSection = constructSection(
+    eventsAndStates.appealHearingRequirementsSectionEvents,
+    req.session.appeal.history.filter(event =>
+      ![Events.UPLOAD_ADDITIONAL_EVIDENCE.id, Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id].includes(event.id)
+      || isUploadEvidenceEventByLegalRep(req, event)),
+    null, req
+  );
+  const appealArgumentSection = constructSection(
+    eventsAndStates.appealArgumentSectionEvents,
+    req.session.appeal.history.filter(event => !isUploadEvidenceEventByLegalRep(req, event)),
+    eventsAndStates.appealArgumentSectionStates, req
+  );
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
-  const timeExtensions = getTimeExtensionsEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
+  const applicationEvents = getApplicationEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
@@ -130,7 +141,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
   }
 
-  const argumentSection = appealArgumentSection.concat(timeExtensions, paymentEvent, submitCQHistory)
+  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
@@ -144,10 +155,15 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 }
 
 function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, hearingBundleFeatureEnabled: boolean) {
-  const appealHearingRequirementsSectionEvents = [Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, Events.STITCHING_BUNDLE_COMPLETE.id];
+  const appealHearingRequirementsSectionEvents = [
+    Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
+    Events.STITCHING_BUNDLE_COMPLETE.id,
+    Events.UPLOAD_ADDITIONAL_EVIDENCE.id
+  ];
   const appealArgumentSectionEvents = [
     Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
     Events.SUBMIT_REASONS_FOR_APPEAL.id,
+    Events.BUILD_CASE.id,
     Events.REQUEST_RESPONDENT_REVIEW.id,
     Events.REQUEST_RESPONDENT_REVIEW.id,
     Events.REQUEST_RESPONSE_REVIEW.id,
@@ -158,11 +174,12 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
     Events.RECORD_OUT_OF_TIME_DECISION.id
   ];
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
-  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id];
+  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];
   const appealArgumentSectionStates = [
     States.APPEAL_SUBMITTED.id,
     States.CLARIFYING_QUESTIONS_SUBMITTED.id,
     States.REASONS_FOR_APPEAL_SUBMITTED.id,
+    States.CASE_UNDER_REVIEW.id,
     States.AWAITING_REASONS_FOR_APPEAL.id,
     States.RESPONDENT_REVIEW.id,
     States.AWAITING_CLARIFYING_QUESTIONS.id,
@@ -183,6 +200,9 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
       Events.UPLOAD_ADDENDUM_EVIDENCE.id,
       Events.UPLOAD_ADDENDUM_EVIDENCE_ADMIN_OFFICER.id
     );
+
+    appealHearingRequirementsSectionEvents.push(Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id);
+
     appealArgumentSectionStates.push(States.PRE_HEARING.id, States.DECISION.id, States.DECIDED.id);
   }
 
@@ -195,10 +215,17 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
   };
 }
 
+function isUploadEvidenceEventByLegalRep(req: Request, event: HistoryEvent) {
+  return [
+    Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+    Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id
+  ].includes(event.id) && event.user.id !== req.idam.userDetails.uid;
+}
+
 export {
   getAppealApplicationHistory,
   getSubmitClarifyingQuestionsEvents,
-  getTimeExtensionsEvents,
+  getApplicationEvents,
   constructSection,
   getEventsAndStates
 };

@@ -317,6 +317,10 @@ module.exports = {
       await I.click('Continue');
     });
 
+    Then(/^I click the "([^"]*)" button$/, async (text) => {
+      await I.click(text);
+    });
+
     Given(/^I am on the "([^"]*)" page$/, async (key: string) => {
       await I.waitInUrl(`${PATHS[key]}`,10);
       await I.seeInCurrentUrl(`${PATHS[key]}`);

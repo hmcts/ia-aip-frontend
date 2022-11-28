@@ -108,7 +108,9 @@ const paths = {
     hearingDateToAvoidReasonsWithId: '/hearing-dates-avoid-reasons/:id',
     hearingDateToAvoidNew: '/hearing-dates-avoid-new',
     confirmation: '/hearing-success',
-    yourHearingNeeds: '/your-hearing-needs'
+    yourHearingNeeds: '/your-hearing-needs',
+    appellantAttendingHearing: '/appellant-attending-hearing',
+    appellantOralEvidence: '/appellant-oral-evidence'
   },
   awaitingCmaRequirements: {
     taskList: '/appointment-needs',
@@ -144,6 +146,13 @@ const paths = {
   cmaRequirementsSubmitted: {
     confirmation: '/appointment-success'
   },
+  // Start Representing Yourself
+  startRepresentingYourself: {
+    start: '/start-representing-yourself',
+    enterCaseNumber: '/start-representing-yourself/enter-case-number',
+    enterSecurityCode: '/start-representing-yourself/enter-security-code',
+    confirmDetails: '/start-representing-yourself/confirm-case-details'
+  },
   common: {
     // index, start, idam endpoints and overview
     index: '/',
@@ -173,6 +182,7 @@ const paths = {
     provideMoreEvidenceConfirmation: '/provide-more-evidence-sent',
     yourEvidence: '/your-evidence',
     yourAddendumEvidence: '/your-evidence/addendum',
+    lrEvidence: '/lr/your-evidence',
     homeOfficeAddendumEvidence: '/home-office-evidence/addendum',
     newEvidence: '/new-evidence',
     whyEvidenceLate: '/why-evidence-late',
@@ -182,6 +192,7 @@ const paths = {
     homeOfficeDocumentsViewer: '/view/home-office-documents',
     appealDetailsViewer: '/appeal-details',
     reasonsForAppealViewer: '/appeal-reasons',
+    lrReasonsForAppealViewer: '/lr/appeal-reasons',
     makeAnApplicationViewer: '/view/make-an-application',
     timeExtensionDecisionViewer: '/view/time-extension-decision',
     cmaRequirementsAnswerViewer: '/your-appointment-needs',
@@ -207,6 +218,10 @@ const paths = {
     finishPayment: '/finish-payment',
     payLater: '/pay-later',
     confirmationPayLater: '/confirmation-payment',
+
+    // Change Representation
+    changeRepresentation: '/change-representation',
+    changeRepresentationDownload: '/change-representation-download',
 
     // Session extension
     extendSession: '/extend-session',

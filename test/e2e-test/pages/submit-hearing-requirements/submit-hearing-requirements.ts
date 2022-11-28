@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { paths } from '../../../../app/paths';
 import { dayMonthYearFormat } from '../../../../app/utils/date-utils';
 
 module.exports = {
@@ -8,7 +9,11 @@ module.exports = {
     });
 
     Then('I see Are there any dates between today\'s date and 6 weeks time that you or any witnesses cannot go to the hearing?', async () => {
-      await I.seeInSource(moment().add(42,'days').format(dayMonthYearFormat));
+      await I.waitInUrl(paths.common.hearingDatesToAvoidQuestion,10);
+      await I.seeInCurrentUrl(paths.common.hearingDatesToAvoidQuestion);
+      let today = moment().format(dayMonthYearFormat);
+      let finalDate = moment().add(42,'days').format(dayMonthYearFormat);
+      await I.see('Are there any dates between ' + today + ' and ' + finalDate + ' that you or any witnesses cannot go to the hearing?','h1');
     });
   }
 };

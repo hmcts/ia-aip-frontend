@@ -9,6 +9,11 @@ export const Events = {
     summary: 'Submit appeal case AIP',
     description: 'Submit Appeal case AIP'
   },
+  PAY_AND_SUBMIT_APPEAL: {
+    id: 'payAndSubmitAppeal',
+    summary: 'Pay and submit',
+    description: 'Pay and submit'
+  },
   PAYMENT_APPEAL: {
     id: 'paymentAppeal',
     summary: 'Make a payment',
@@ -97,6 +102,11 @@ export const Events = {
     summary: 'Review Home Office response',
     description: 'Review Home Office response'
   },
+  BUILD_CASE: {
+    id: 'buildCase',
+    summary: 'Build your case',
+    description: 'Build your case'
+  },
   UPLOAD_ADDITIONAL_EVIDENCE: {
     id: 'uploadAdditionalEvidence',
     summary: 'Upload additional evidence for AIP',
@@ -155,5 +165,15 @@ export const Events = {
     id: 'sendDecisionAndReasons',
     summary: 'Send decision and reasons',
     description: 'Send decision and reasons'
+  },
+  PIP_ACTIVATION: {
+    id: 'pipActivation',
+    summary: 'PiP Activation',
+    description: 'Appellant is now representing themselves'
+  },
+  CREATE_CASE_SUMMARY: {
+    id: 'createCaseSummary',
+    summary: 'Create case summary',
+    description: 'Create case summary'
   }
 };

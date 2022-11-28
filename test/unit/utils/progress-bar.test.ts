@@ -75,6 +75,16 @@ describe('progress-bar utils', () => {
       expect(expectedStages).to.deep.equal(stages);
     });
 
+    it('caseUnderReview', () => {
+      const stages = buildProgressBarStages('caseUnderReview');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expectedStages[1].active = true;
+      expectedStages[1].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
     it('awaitingClarifyingQuestionsAnswers', () => {
       const stages = buildProgressBarStages('awaitingClarifyingQuestionsAnswers');
       let expectedStages = defaultStages;

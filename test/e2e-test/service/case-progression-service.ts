@@ -409,6 +409,7 @@ module.exports = {
       await I.waitForText('Create a case summary and upload it below', 30);
       await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
       await I.fillField('#caseSummaryDescription', 'case summary document');
+      await I.wait(5);
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('Upload');
@@ -425,7 +426,7 @@ module.exports = {
       await I.see('Generate hearing bundle', 'h1');
       await I.click('Generate');
       await I.waitForText('The hearing bundle is being generated', 30);
-      await I.wait(10);
+      await I.wait(15);
       await I.click('Close and Return to case details');
       await I.wait(2);
       await I.refreshPage();
@@ -485,6 +486,7 @@ module.exports = {
       await I.click('Continue');
       await I.waitForText('Upload your decision and reasons', 30);
       await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
+      await I.wait(5);
       await I.checkOption('#isDocumentSignedToday_values-isDocumentSignedToday');
       await I.checkOption('#isFeeConsistentWithDecision_values-isFeeConsistentWithDecision');
       await I.click('Continue');

@@ -51,6 +51,10 @@
     "jurisdictionId": "IA",
     "caseType": "Asylum"
   },
+  "systemUser": {
+    "username": "IA_SYSTEM_USERNAME",
+    "password": "IA_SYSTEM_PASSWORD"
+  },
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
   },
@@ -112,5 +116,16 @@
     "path": "/service-endpoint",
     "returnUrl": "PCQ_RETURN_URL",
     "tokenKey": "PCQ_TOKEN_KEY"
+  },
+  "docmosis": {
+    "renderUrl": "DOCMOSIS_RENDER_URL",
+    "accessKey": "DOCMOSIS_ACCESS_KEY",
+    "templates": {
+      "noticeOfChangeDetails": "TB-IAC-GNO-ENG-00804.docx"
+    }
+  },
+  "customerServices": {
+    "telephone": "IA_CUSTOMER_SERVICES_TELEPHONE",
+    "email": "IA_CUSTOMER_SERVICES_EMAIL"
   }
 }

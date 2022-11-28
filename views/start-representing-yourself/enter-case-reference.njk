@@ -1,0 +1,46 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {% if errorList %}
+      {{ govukErrorSummary({
+        titleText: i18n.validationErrors.errorSummary,
+        errorList: errorList
+      }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-xl">{{ i18n.pages.startRepresentingYourself.enterCaseReference.title }}</h1>
+
+  <p>{{ i18n.pages.startRepresentingYourself.enterCaseReference.instructions }}</p>
+
+  <form action="{{ paths.startRepresentingYourself.enterCaseNumber }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+      label: {
+        text: i18n.pages.startRepresentingYourself.enterCaseReference.fieldName,
+        classes: "govuk-label--l",
+        isPageHeading: false
+      },
+      classes: "govuk-input--width-10",
+      hint: {
+        text: i18n.pages.startRepresentingYourself.enterCaseReference.fieldHint
+      },
+      id: "caseReferenceNumber",
+      name: "caseReferenceNumber",
+      value: caseReferenceNumber,
+      inputmode: "numeric",
+      spellcheck: false,
+      errorMessage: {
+        text: error['caseReferenceNumber'].text
+      } if error['caseReferenceNumber']
+    }) }}
+
+    {{ govukButton({
+      text: i18n.pages.startRepresentingYourself.continueButton
+    }) }}
+  </form>
+
+  {{ contactUs() }}
+{% endblock %}

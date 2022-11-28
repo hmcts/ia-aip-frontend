@@ -1,0 +1,41 @@
+{% set pageTitleName = pageTitle %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {% if errorList %}
+      {{ govukErrorSummary({
+        titleText: i18n.validationErrors.errorSummary,
+        errorList: errorList
+      }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-xl">{{ i18n.pages.startRepresentingYourself.enterSecurityCode.title }}</h1>
+
+  <p>{{ i18n.pages.startRepresentingYourself.enterSecurityCode.instructions }}</p>
+
+  <form action="{{ paths.startRepresentingYourself.enterSecurityCode.enterSecurityCode }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+      label: {
+        text: i18n.pages.startRepresentingYourself.enterSecurityCode.fieldName,
+        classes: "govuk-label--l",
+        isPageHeading: false
+      },
+      classes: "govuk-input--width-10",
+      id: "accessCode",
+      name: "accessCode",
+      inputmode: "numeric",
+      spellcheck: false,
+      errorMessage: {
+        text: error['accessCode'].text
+      } if error['accessCode']
+    }) }}
+
+  {{ govukButton({
+    text: i18n.pages.startRepresentingYourself.continueButton
+  }) }}
+  </form>
+
+  {{ contactUs() }}
+{% endblock %}

@@ -24,7 +24,7 @@ module.exports = {
       await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
     });
     When(/^I click on Protection as my type of appeal and click Save and continue$/, async () => {
-      await I.checkOption('#appealType');
+      await I.click('#appealType');
       await I.click('Save and continue');
     });
 
@@ -40,7 +40,7 @@ module.exports = {
       I.amOnPage(testUrl + paths.common.whatIsIt);
     });
     When('I select appeal type Protection', async () => {
-      I.checkOption('#appealType');
+      I.click('#appealType');
     });
 
     Then('I should see the type of appeal page', async () => {

@@ -141,7 +141,6 @@ Scenario: Complete appeal application
   Then I click "No" button
   Then I click "Continue" button
   Then I see "Questions about your appeal" in title
-  Then I see clarifying question "2" saved
 
   When I click "Check and send your answers" link
   Then I see "You have answered the Tribunal's questions" in title

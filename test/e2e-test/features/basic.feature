@@ -222,7 +222,7 @@ Scenario: Complete appeal application
   And I see hearing requirement section "3" saved
 
   When I click "Are there any dates you or any witnesses cannot go to the hearing?" link
-  Then I see Are there any dates between today\'s date and 6 weeks time that you or any witnesses cannot go to the hearing?
+  Then I see Are there any dates between today's date and 6 weeks time that you or any witnesses cannot go to the hearing?
   Then I click "No" button
   Then I click "Save and continue" button
   Then I see "Tell us what you will need at the hearing" in title

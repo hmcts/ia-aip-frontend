@@ -1,4 +1,4 @@
-@aip-to-lr-noc
+@aip-to-lr-noc @nightly-test
 Feature: Appellant in person to Legal Rep Notice of change
 
 Scenario: Complete NoC Happy path

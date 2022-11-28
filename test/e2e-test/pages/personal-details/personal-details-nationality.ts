@@ -15,9 +15,7 @@ module.exports = {
     });
 
     When(/^I pick "([^"]*)" from the Nationalities drop down and click continue$/, async (nation) => {
-      I.wait(1);
       await I.selectOption('#nationality', nation);
-      I.wait(1);
       await I.click('Save and continue');
     });
 

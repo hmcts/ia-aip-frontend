@@ -15,9 +15,5 @@ module.exports = {
     Then('I see the respond by date is 5 days in the future', async () => {
       I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
     });
-
-    When('I click on the See your appeal progress link', async () => {
-      I.click('See your appeal progress');
-    });
   }
 };

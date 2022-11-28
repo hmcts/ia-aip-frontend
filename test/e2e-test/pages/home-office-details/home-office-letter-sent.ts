@@ -47,9 +47,7 @@ module.exports = {
 
     When('I upload a Home Office decision letter', async () => {
       await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
-      I.wait(3);
       I.click('Upload file');
-      I.wait(3);
     });
 
     Then('I should see the no file found page', async () => {

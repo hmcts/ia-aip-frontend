@@ -19,9 +19,6 @@ exports.config = {
     steps: ['./test/e2e-test/step_definitions/steps.ts']
   },
   plugins: {
-    retryFailedStep: {
-       enabled: true
-    },
     stepByStepReport: {
       enabled: true,
       fullPageScreenshots: true,

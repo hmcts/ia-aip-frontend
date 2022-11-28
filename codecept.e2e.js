@@ -6,7 +6,8 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
-      show: config.get('showTests'),
+      show: true,
+      windowSize: '1280x960',
       "chrome": {
         "ignoreHTTPSErrors": true
       }
@@ -17,6 +18,9 @@ exports.config = {
     steps: ['./test/e2e-test/step_definitions/steps.ts']
   },
   plugins: {
+    retryFailedStep: {
+       enabled: true
+    },
     stepByStepReport: {
       enabled: true,
       fullPageScreenshots: true,

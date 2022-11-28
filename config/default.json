@@ -98,7 +98,9 @@
     "testAdminOfficerUserName": "TEST_ADMINOFFICER_USERNAME",
     "testAdminOfficerPassword": "TEST_ADMINOFFICER_PASSWORD",
     "testJudgeUserName": "TEST_JUDGE_X_USERNAME",
-    "testJudgePassword": "TEST_JUDGE_X_PASSWORD"
+    "testJudgePassword": "TEST_JUDGE_X_PASSWORD",
+    "testLawFirmAUsername": "TEST_LAW_FIRM_SHARE_CASE_A_USERNAME",
+    "testLawFirmAPassword": "TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD"
   },
   "hearingCentres": {
     "bradfordEmail": "IA_HEARING_CENTRE_BRADFORD_EMAIL",

@@ -32,6 +32,8 @@
     "testAdminOfficerUserName": "ia-adminofficer@fake.hmcts.net",
     "testAdminOfficerPassword": "London06",
     "testJudgeUserName": "ia.iacjudge.ccd@fake.hmcts.net",
-    "testJudgePassword": "London20"
+    "testJudgePassword": "London20",
+    "testLawFirmAUsername": "ia-law-firm-a-sc@fake.hmcts.net",
+    "testLawFirmAPassword": "London03"
   }
 }

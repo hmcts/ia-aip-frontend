@@ -43,6 +43,7 @@ const { makeHearingApplication } = require('../pages/make-application/make-heari
 const { makeAppealApplication } = require('../pages/make-application/make-appeal-application');
 const { changeRepresentation } = require('../pages/change-representation/change-representation');
 const { startRepresentingYourself } = require('../pages/start-representing-yourself/start-representing-yourself');
+const { aipToLegalRepNoC } = require('../pages/aip-to-legal-rep-noc/aip-to-legal-rep-noc');
 
 const { I } = inject();
 
@@ -93,3 +94,4 @@ makeHearingApplication(I);
 makeAppealApplication(I);
 changeRepresentation(I);
 startRepresentingYourself(I);
+aipToLegalRepNoC(I);

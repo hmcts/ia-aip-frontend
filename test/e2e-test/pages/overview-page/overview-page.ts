@@ -81,5 +81,9 @@ module.exports = {
     Then(/^I see the respond by date is "([^"]*)"$/, async (respondByDate) => {
       I.seeInSource(respondByDate);
     });
+
+    When(/^I click the I am no longer representing myself link'$/, () => {
+      I.click('I am no longer representing myself');
+    });
   }
 };

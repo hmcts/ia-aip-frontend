@@ -3,7 +3,7 @@ Feature: Appellant in person to Legal Rep Notice of change
 
 Scenario: Complete NoC Happy path
    Given I am on home page
-   When I click  Sign in to continue with your appeal
+   When I click Sign in to continue with your appeal
    Then I should see the sign in page
    When I am authenticated as a valid appellant
    Then I should see the appeal overview page
@@ -11,8 +11,9 @@ Scenario: Complete NoC Happy path
    When I click continue
    Then I should see the task-list page
    When I click on the type-of-appeal link
-   Then I should see the "Are you currently living in the United Kingdom" eligibility page
-   When I select Yes and click continue
+   Then I should be taken to the Is the appellant in the UK page
+   When I select Yes
+   And I click "Continue" button
    Then I should be taken to the appeal page
    When I select appeal type Protection
    And I click "Save and continue" button
@@ -44,19 +45,23 @@ Scenario: Complete NoC Happy path
    Then I should be taken to the task-list page
    Given I click the contact details link
    Then I should be taken to the contact-details page
-   And I check the "Mobile phone" option
    And I enter text message number "07899999999"
    Then I click "Save and continue" button
    Then I should be taken to the task-list page
    And I click on the decision-type link
-   And I select I want the appeal to be decided with a hearing and click Save and continue
-   And I select No, I will pay later and click Save and continue
-   And I should be taken to the pcq page
+   Then I should be taken to the decision type page
+   When I select a decision with a hearing for a PA pay later appeal
+   And I click "Save and continue" button
+   Then I should be taken to the pcq-questions page
+   When I click "I don't want to answer these questions" button
+   Given I am on home page
+   When I click Sign in to continue with your appeal
+   And I click continue
    Then I should be taken to the task-list page
    When I click on the check and send your appeal link
    Then I should be taken to the check-and-send page
    When I check the statement of truth
-   Then I click send
+   And I submit appeal for a decision with hearing non paid appeal
 
    Then I am on the appeal details sent page
    And I see "You have sent your appeal details" in title
@@ -71,7 +76,3 @@ Scenario: Complete NoC Happy path
    And I enter the saved first and last names
    And I complete the notice of change
    Then I should see the success screen
-
-
-
-

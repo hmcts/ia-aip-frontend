@@ -19,7 +19,7 @@ let exUiUrl;
 let caseUrl;
 
 if (testUrl.includes('localhost')) {
-  exUiUrl = 'http://localhost:3002';
+  exUiUrl = 'http://localhost:3002/';
 } else if (testUrl.includes('aat') || testUrl.includes('preview')) {
   exUiUrl = 'https://manage-case.aat.platform.hmcts.net/';
 } else if (testUrl.includes('demo')) {

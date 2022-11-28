@@ -253,4 +253,4 @@ Scenario: Complete appeal application
   When I visit the overview page
   Then I see "A judge has allowed your appeal." description in overview banner
   And I click "Read the Decision and Reasons document" link
-  Then I see "Decision and Reasons" in Title
+  Then I see "Decision and Reasons" in title

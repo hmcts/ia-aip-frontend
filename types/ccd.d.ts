@@ -19,4 +19,5 @@ interface SubmitEventData {
   data: Partial<CaseData>;
   event_token: string;
   ignore_warning: boolean;
+  supplementary_data_request: Record<String, Record<String,String>>
 }

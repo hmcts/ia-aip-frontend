@@ -82,6 +82,7 @@ describe('idam-service', () => {
           journeyType: 'aip'
         },
         event_token: 'token',
+        supplementary_data_request: null,
         ignore_warning: true
       }).resolves(expectedResult);
 
@@ -112,6 +113,7 @@ describe('idam-service', () => {
         },
         data: caseData,
         event_token: 'token',
+        supplementary_data_request: null,
         ignore_warning: true
       }).resolves(expectedResult);
 

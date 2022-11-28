@@ -6,8 +6,7 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
-      show: true,
-      windowSize: '1280x960',
+      show: config.get('showTests'),
       "chrome": {
         "ignoreHTTPSErrors": true
       }

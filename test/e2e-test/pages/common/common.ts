@@ -272,6 +272,7 @@ module.exports = {
     });
 
     When(/^I click "([^"]*)" button$/, async (selector: string) => {
+      await I.wait(1);
       await I.click(selector);
     });
 

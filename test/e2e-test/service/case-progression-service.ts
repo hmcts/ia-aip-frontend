@@ -422,7 +422,7 @@ module.exports = {
     Then(/^I Generate the hearing bundle$/, async () => {
       await I.selectOption('#next-step', 'Generate hearing bundle');
       await I.click('Go');
-      await I.waitForText('Generate hearing bundle', 30);
+      await I.waitInUrl('/trigger/generateHearingBundle/submit', 30);
       await I.see('Generate hearing bundle', 'h1');
       await I.click('Generate');
       await I.waitForText('The hearing bundle is being generated', 30);

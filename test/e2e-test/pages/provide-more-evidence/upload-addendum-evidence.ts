@@ -10,6 +10,7 @@ module.exports = {
     });
 
     Then(/^I should see the provide more evidence page$/, async () => {
+      await I.waitInUrl(paths.common.provideMoreEvidenceForm,10);
       await I.seeInCurrentUrl(paths.common.provideMoreEvidenceForm);
     });
 

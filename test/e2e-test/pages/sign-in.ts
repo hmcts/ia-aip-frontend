@@ -1,5 +1,5 @@
 import { paths } from '../../../app/paths';
-
+import { currentUserDetails } from './helper-functions';
 const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
@@ -7,7 +7,7 @@ const i18n = require('../../../locale/en.json');
 module.exports = {
   signIn(I) {
     Given('I am on home page', () => {
-      I.amOnPage(testUrl);
+      I.retry(3).amOnPage(testUrl);
     });
 
     When('I click start now', async () => {
@@ -26,6 +26,10 @@ module.exports = {
       await I.click('Sign in to your account.');
     });
 
+    When('I click Sign in to continue with your appeal', async () => {
+      await I.retry(3).click('Sign in to continue with your appeal');
+    });
+
     When('I enter creds and click sign in', async () => {
       await signInHelper();
     });
@@ -33,6 +37,23 @@ module.exports = {
     Given('I am authenticated as a valid appellant', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await signInHelper();
+      await I.waitForText('Do this next', 30);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
+    Given('I sign in as the appellant', async () => {
+      await I.fillField('#username', currentUserDetails.email);
+      await I.fillField('#password', currentUserDetails.password);
+      await I.click('Sign in');
+      await I.waitForText('Do this next', 30);
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
+    Given(/^I sign in as an appellant$/, async () => {
+      await I.fillField('#username', 'ia_citizen8943692@hmcts.net');
+      await I.fillField('#password', 'Apassword123');
+      await I.click('Sign in');
+      await I.waitForText('Nothing to do next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -103,6 +124,11 @@ module.exports = {
       }
 
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
+    Given('I sign out', async () => {
+      await I.click('Sign out');
+      await I.wait(5);
     });
   }
 };

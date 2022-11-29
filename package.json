@@ -23,8 +23,9 @@
     "sonar-scan": "sonar-scanner",
     "test:smoke": "yarn codecept:e2e -g @smoke",
     "test:smoke-local": "yarn codecept:e2e-local -g @smoke",
+    "test:nightly": "yarn codecept:e2e -g @nightly-test",
+    "test:fullfunctional": "yarn test:nightly",
     "test:functional": "yarn test:e2e",
-    "test:fullfunctional": "yarn test:functional",
     "test:e2e": "yarn codecept:e2e -g @e2e",
     "test:all": "yarn lint && yarn test && yarn test:a11y && yarn test:smoke && yarn test:functional && yarn test:e2e",
     "test:crossbrowser": "cross-env NODE_ENV=ci IDAM_API_URL=https://idam-api.aat.platform.hmcts.net codeceptjs run-multiple -c test/crossbrowser/saucelabs.config.js --all --steps",
@@ -187,6 +188,9 @@
     "@babel/core/resolve/path-parse": "^1.0.7",
     "@stryker-mutator/core/log4js": "^6.4.0",
     "nodemon/update-notifier/latest-version/package-json/got": "^11.8.5",
-    "webdriverio/webdriver/got": "^11.8.5"
+    "webdriverio/webdriver/got": "^11.8.5",
+    "style-loader/loader-utils": "^2.0.3",
+    "*/loader-utils": "^1.4.1",
+    "minimatch": "^3.0.5"
   }
 }

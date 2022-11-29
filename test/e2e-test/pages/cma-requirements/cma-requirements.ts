@@ -10,11 +10,13 @@ module.exports = {
   cmaRequirements(I) {
 
     Then(/^I should see the cma requirements task-list page$/, async () => {
+      await I.waitInUrl(paths.awaitingCmaRequirements.taskList,10);
       await I.seeInCurrentUrl(paths.awaitingCmaRequirements.taskList);
       await I.see('Tell us your appointment needs', 'h1');
     });
 
     Then(/^I should see the cma requirements detail viewer page$/, async () => {
+      await I.waitInUrl(paths.common.cmaRequirementsAnswerViewer,10);
       await I.seeInCurrentUrl(paths.common.cmaRequirementsAnswerViewer);
       await I.see('Your appointment needs', 'h1');
     });

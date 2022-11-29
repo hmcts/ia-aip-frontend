@@ -1,7 +1,7 @@
 @start-representing-yourself @lr-to-aip-noc @nightly-test
 Feature: Legal Rep to Appellant in person Notice of change
 
-Scenario: Complete NoC Happy path
+Scenario: NoC Happy path LR to AiP
    Given I visit the start-representing-yourself page
    When I click start now
 

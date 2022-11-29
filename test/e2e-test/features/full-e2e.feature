@@ -59,7 +59,8 @@ Scenario: Complete appeal application
   When I click "I don't want to answer these questions" button
   Given I am on home page
   When I click Sign in to continue with your appeal
-  And I click continue
+  Then I should see the appeal overview page
+  When I click continue
   Then I should be taken to the task-list page
   When I click on the check and send your appeal link
   Then I should be taken to the check-and-send page

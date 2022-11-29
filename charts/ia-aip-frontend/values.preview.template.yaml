@@ -8,13 +8,13 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-    IDAM_WEB_URL: https://idam-web-public.demo.platform.hmcts.net
-    IDAM_API_URL: https://idam-api.demo.platform.hmcts.net
-    S2S_URL: http://rpe-service-auth-provider-demo.service.core-compute-demo.internal
-    CCD_API_URL: http://ccd-data-store-api-demo.service.core-compute-demo.internal
+    IDAM_WEB_URL: https://idam-web-public.aat.platform.hmcts.net
+    IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
+    S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+    CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
     REDIS_URL: redis://{{ .Release.Name }}-redis-master
-    PCQ_URL: https://pcq.demo.platform.hmcts.net
-    PCQ_RETURN_URL: immigration-appeal.demo.platform.hmcts.net/about-appeal
+    PCQ_URL: https://pcq.aat.platform.hmcts.net
+    PCQ_RETURN_URL: immigration-appeal.aat.platform.hmcts.net/about-appeal
   keyVaults:
     ia:
       secrets:

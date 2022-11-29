@@ -33,6 +33,9 @@ module.exports = {
 
     Then(/^I am on the self register page$/, async () => {
       await I.seeInCurrentUrl('users/selfRegister');
+      await I.waitForText('Sign in to your account.', 30);
+      await I.click('Sign in to your account');
+      await I.waitForElement('#username', 30);
     });
 
     When(/^I should see the appeal reference `?([^\s`]+)`?$/, async (appealRef) => {

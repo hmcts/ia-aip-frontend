@@ -55,10 +55,10 @@ withPipeline("nodejs", product, component) {
   disableLegacyDeployment()
 
   env.S2S_MICROSERVICE_NAME = 'iac'
-  env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
-  env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+  env.S2S_URL = 'http://rpe-service-auth-provider-demo.service.core-compute-demo.internal'
+  env.CCD_API_URL = 'http://ccd-data-store-api-demo.service.core-compute-demo.internal'
 
   before("functionalTest") {
-    env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
+    env.IDAM_API_URL = 'https://idam-api.demo.platform.hmcts.net'
   }
 }

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { asBooleanValue } from '../../../app/utils/utils';
 
 const rp = require('request-promise');

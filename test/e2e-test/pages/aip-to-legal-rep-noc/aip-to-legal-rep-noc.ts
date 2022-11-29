@@ -7,12 +7,14 @@ let lastName;
 let exuiBaseUrl;
 
 const testUrl = config.get('testUrl');
-if (testUrl === 'https://localhost:3000') {
-  exuiBaseUrl = 'http://localhost:3002';
-} else {
-  exuiBaseUrl = 'https://manage-case.aat.platform.hmcts.net/';
-}
 
+if (testUrl.includes('localhost')) {
+  exuiBaseUrl = 'http://localhost:3002/';
+} else if (testUrl.includes('aat') || testUrl.includes('preview')) {
+  exuiBaseUrl = 'https://manage-case.aat.platform.hmcts.net/';
+} else if (testUrl.includes('demo')) {
+  exuiBaseUrl = 'https://manage-case.demo.platform.hmcts.net/';
+}
 module.exports = {
   aipToLegalRepNoC(I) {
     When(/^I get and save the Case Reference number and names$/, async () => {

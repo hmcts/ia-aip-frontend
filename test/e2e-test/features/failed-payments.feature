@@ -63,7 +63,7 @@ Feature: Failed payments
 
   Scenario: Card type not accepted
     And I submit a failed payment appeal with Card type not accepted
-    Then I see a Maestro is not supported error message
+    Then I see a This card type is not accepted error message
 
   Scenario: Card declined
     And I submit a failed payment appeal with Card declined

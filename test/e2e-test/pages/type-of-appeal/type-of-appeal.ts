@@ -6,9 +6,9 @@ const testUrl = config.get('testUrl');
 module.exports = {
   typeOfAppeal(I) {
     When(/^I click on the type-of-appeal link$/, async () => {
+      await I.click('Appeal type');
       await I.waitInUrl(paths.appealStarted.appealOutOfCountry,20);
       await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
-      await I.click('Appeal type');
     });
     Then(/^I should be taken to the Is the appellant in the UK page$/, async () => {
       await I.waitInUrl(paths.appealStarted.appealOutOfCountry,20);

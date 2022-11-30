@@ -54,7 +54,8 @@ Feature: Failed payments
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     Given I am on home page
-    When I click Sign in to continue with your appeal
+    When I click Sign in to continue with your appeal after answering PCQ questions
+    Then I should see the appeal overview page
     And I click continue
     Then I should be taken to the task-list page
     When I click on the check and send your appeal link

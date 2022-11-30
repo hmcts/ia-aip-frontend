@@ -38,10 +38,11 @@ module.exports = {
       await I.waitForElement('#username', 30);
     });
 
-    When(/^I should see the appeal reference `?([^\s`]+)`?$/, async (appealRef) => {
-      await I.waitForText('Your appeal details', 60);
-      await I.seeInCurrentUrl('appeal-overview');
-      await I.see(appealRef);
+    When(/^I should see the name Random User and the case number `?([^\s`]+)`?$/, async (caseNumber) => {
+      await I.waitForText('Case details', 60);
+      await I.seeInCurrentUrl('start-representing-yourself/confirm-case-details');
+      await I.see('Random User');
+      await I.see(caseNumber);
     });
   }
 };

@@ -62,22 +62,27 @@ Feature: Failed payments
     Then I should be taken to the check-and-send page
     When I check the statement of truth
 
+  @nightly-test
   Scenario: Card type not accepted
     And I submit a failed payment appeal with Card type not accepted
     Then I see a This card type is not accepted error message
 
+  @nightly-test
   Scenario: Card declined
     And I submit a failed payment appeal with Card declined
     Then I see the Your payment has been declined error page
 
+  @nightly-test
   Scenario: Card expired
     And I submit a failed payment appeal with Card expired
     Then I see the Your payment has been declined error page
 
+  @nightly-test
   Scenario: Invalid CVC code
     And I submit a failed payment appeal with Invalid CVC code
     Then I see the Your payment has been declined error page
 
+  @nightly-test
   Scenario: General error
     And I submit a failed payment appeal with General error
     Then I see the We’re experiencing technical problems error page

@@ -26,5 +26,23 @@ exports.config = {
       deleteSuccessful: true
     }
   },
+    "mocha": {
+        "reporterOptions": {
+            "codeceptjs-cli-reporter": {
+                "stdout": "-",
+                "options": {
+                    "verbose": true,
+                    "steps": true,
+                }
+            },
+           "mochawesome": {
+                "stdout": "./functional-output/e2e/reports/console.log",
+                "options": {
+                    "reportDir": "./functional-output/e2e/reports/",
+                    "reportFilename": "report"
+                }
+            }
+        }
+    },
   require: ['ts-node/register/transpile-only']
 };

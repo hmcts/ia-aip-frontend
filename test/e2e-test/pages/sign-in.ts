@@ -30,6 +30,11 @@ module.exports = {
       await I.retry(3).click('Sign in to continue with your appeal');
     });
 
+    When('I click Sign in to continue with your appeal after answering PCQ questions', async () => {
+      await I.click('Sign in to continue with your appeal');
+      await I.waitInUrl('/appeal-overview', 10);
+    });
+
     When('I enter creds and click sign in', async () => {
       await signInHelper();
     });

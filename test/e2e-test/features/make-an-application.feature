@@ -54,7 +54,8 @@ Feature: Make an application
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     Given I am on home page
-    When I click Sign in to continue with your appeal
+    When I click Sign in to continue with your appeal after answering PCQ questions
+    Then I should see the appeal overview page
     And I click continue
     Then I should be taken to the task-list page
     When I click on the check and send your appeal link
@@ -63,8 +64,9 @@ Feature: Make an application
     And I submit appeal for a decision with hearing paid appeal
 
     Then I am on the appeal details sent page
-    And I see "You have sent your appeal details" in title
+    And I see "Your appeal details have been sent" in title
 
+  @nightly-test
   Scenario: Ask to withdraw the appeal
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -82,6 +84,7 @@ Feature: Make an application
     When I click "Your request" link
     Then I should see the Ask to withdraw the appeal request page
 
+  @nightly-test
   Scenario: Ask to change some of your details
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -99,6 +102,7 @@ Feature: Make an application
     When I click "Your request" link
     Then I should see the Ask to change some of your details request page
 
+  @nightly-test
   Scenario: Ask to link or unlink with another appeal
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -116,6 +120,7 @@ Feature: Make an application
     When I click "Your request" link
     Then I should see the Ask to link or unlink this appeal request page
 
+  @nightly-test
   Scenario: Ask for a judge to review a decision
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -133,6 +138,7 @@ Feature: Make an application
     When I click "Your request" link
     Then I should see the Ask for a judge to review a decision request page
 
+  @nightly-test
   Scenario: Ask for something else
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -150,6 +156,7 @@ Feature: Make an application
     When I click "Your request" link
     Then I should see the Ask for something else request page
 
+  @nightly-test
   Scenario: Ask for the appeal to be reinstated
     And I grab the Appeal Reference
     Then I sign in as a Case Officer and End the appeal

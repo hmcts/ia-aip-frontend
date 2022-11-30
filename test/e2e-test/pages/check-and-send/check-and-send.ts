@@ -75,22 +75,20 @@ module.exports = {
         cardNumber = '4000000000000119';
       }
       await I.fillField('#card-no', cardNumber);
-      if (cardError !== 'Card type not accepted') {
-        await I.fillField('#expiry-month','10');
-        await I.fillField('#expiry-year','23');
-        await I.fillField('#cardholder-name','Successful payment');
-        await I.fillField('#cvc','123');
-        await I.fillField('#address-line-1','123 Bond Street');
-        await I.fillField('#address-city','Bondsthorpe');
-        await I.fillField('#address-postcode','BO0 0ND');
-        await I.fillField('#email', 'test@mail.com');
-        await I.click('Continue');
-        await I.wait(2);
-      }
+      await I.fillField('#expiry-month','10');
+      await I.fillField('#expiry-year','23');
+      await I.fillField('#cardholder-name','Successful payment');
+      await I.fillField('#cvc','123');
+      await I.fillField('#address-line-1','123 Bond Street');
+      await I.fillField('#address-city','Bondsthorpe');
+      await I.fillField('#address-postcode','BO0 0ND');
+      await I.fillField('#email', 'test@mail.com');
+      await I.click('Continue');
+      await I.wait(2);
     });
 
-    Then('I see a Maestro is not supported error message', async () => {
-      await I.see('Maestro is not supported');
+    Then('I see a This card type is not accepted error message', async () => {
+      await I.see('This card type is not accepted');
     });
 
     Then('I see the Your payment has been declined error page', async () => {

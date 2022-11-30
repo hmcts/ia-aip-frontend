@@ -38,7 +38,7 @@ module.exports = {
       await I.waitForElement('#username', 30);
     });
 
-    When(/^I should see the name `?([^\s`]+)`? and the case number `?([^\s`]+)`?$/, async (name, caseNumber) => {
+    When(/^I should see the name `([^"]*)` and the case number `?([^\s`]+)`?$/, async (name, caseNumber) => {
       await I.waitForText('Case details', 60);
       await I.seeInCurrentUrl('start-representing-yourself/confirm-case-details');
       await I.see(name);

@@ -9,6 +9,6 @@ Scenario: NoC Happy path LR to AiP
    And I enter the case reference number `1669775244030851`
    And I enter the access code `G9628F2ERFMN`
 
-   Then I should see the name Random User and the case number `1669-7752-4403-0851`
+   Then I should see the name `José González` and the case number `1669-7752-4403-0851`
    When I complete the case details page
    Then I am on the self register page

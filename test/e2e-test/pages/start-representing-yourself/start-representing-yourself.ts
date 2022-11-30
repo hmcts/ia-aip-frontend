@@ -38,10 +38,10 @@ module.exports = {
       await I.waitForElement('#username', 30);
     });
 
-    When(/^I should see the name Random User and the case number `?([^\s`]+)`?$/, async (caseNumber) => {
+    When(/^I should see the name `([^"]*)` and the case number `?([^\s`]+)`?$/, async (name, caseNumber) => {
       await I.waitForText('Case details', 60);
       await I.seeInCurrentUrl('start-representing-yourself/confirm-case-details');
-      await I.see('Random User');
+      await I.see(name);
       await I.see(caseNumber);
     });
   }

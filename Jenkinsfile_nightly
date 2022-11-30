@@ -88,8 +88,8 @@ withNightlyPipeline(type, product, component) {
                 allowMissing         : true,
                 alwaysLinkToLastBuild: true,
                 keepAll              : true,
-                reportDir            : "reports/tests/functional/",
-                reportFiles          : 'index.html',
+                reportDir            : "functional-output/e2e/reports/",
+                reportFiles          : 'report.html',
                 reportName           : 'AIP Frontend Functional Test'
         ])
     }

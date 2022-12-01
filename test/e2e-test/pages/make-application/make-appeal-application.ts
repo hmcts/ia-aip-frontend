@@ -120,8 +120,8 @@ module.exports = {
     });
 
     Then(/^I should see the Do you want to provide supporting evidence for this request page$/, async (text: string) => {
-      await I.waitInUrl(paths.makeApplication.supportingEvidenceUpdateAppealDetails,10);
-      await I.seeInCurrentUrl(paths.makeApplication.supportingEvidenceUpdateAppealDetails);
+      await I.waitInUrl('supporting-evidence',10);
+      await I.seeInCurrentUrl('supporting-evidence');
     });
 
     Then(/^I should see the Your request has been sent to the Tribunal page$/, async (text: string) => {

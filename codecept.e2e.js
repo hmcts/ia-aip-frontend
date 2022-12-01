@@ -19,11 +19,6 @@ exports.config = {
   plugins: {
     retryFailedStep: {
        enabled: true
-    },
-    stepByStepReport: {
-      enabled: true,
-      fullPageScreenshots: true,
-      deleteSuccessful: true
     }
   },
     "mocha": {

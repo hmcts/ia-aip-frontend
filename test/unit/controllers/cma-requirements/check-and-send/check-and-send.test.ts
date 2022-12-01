@@ -18,10 +18,12 @@ describe('CMA Requirements Check and Send controller', () => {
   const cmaRequirements: CmaRequirements = {
     'accessNeeds': {
       'isInterpreterServicesNeeded': true,
-      'interpreterLanguage': {
-        'language': 'Afar',
-        'languageDialect': 'A dialect'
-      },
+      'interpreterLanguage': [
+        {
+          'language': 'Afar',
+          'languageDialect': 'A dialect'
+        }
+      ],
       'isHearingRoomNeeded': true,
       'isHearingLoopNeeded': true
     },

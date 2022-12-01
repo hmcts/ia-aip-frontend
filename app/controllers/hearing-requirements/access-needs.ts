@@ -80,6 +80,9 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
 
       const onSuccess = async (answer: boolean) => {
         req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = answer;
+        if (!answer) {
+          req.session.appeal.hearingRequirements.interpreterLanguages = [];
+        }
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
           ...req.session.appeal,

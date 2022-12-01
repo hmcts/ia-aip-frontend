@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { string } from 'joi';
 import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
@@ -243,7 +242,7 @@ export default class UpdateAppealService {
 
     if (caseData.isInterpreterServicesNeeded) {
       let isInterpreterServicesNeeded: boolean = yesNoToBool(caseData.isInterpreterServicesNeeded);
-      let interpreterLanguage = {};
+      let interpreterLanguage = [];
       let isHearingRoomNeeded: boolean = null;
       let isHearingLoopNeeded: boolean = null;
       if (caseData.isHearingRoomNeeded) {
@@ -253,7 +252,12 @@ export default class UpdateAppealService {
         isHearingLoopNeeded = yesNoToBool(caseData.isHearingLoopNeeded);
       }
       if (caseData.interpreterLanguage) {
-        interpreterLanguage = caseData.interpreterLanguage;
+        interpreterLanguage = caseData.interpreterLanguage.map(item => {
+          return {
+            language: item.value.language,
+            languageDialect: item.value.languageDialect
+          } as InterpreterLanguage;
+        });
       }
       cmaRequirements.accessNeeds = {
         isInterpreterServicesNeeded,
@@ -725,12 +729,14 @@ export default class UpdateAppealService {
 
         if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
           if (_.has(accessNeeds, 'interpreterLanguage')) {
-            caseData.interpreterLanguage = [{
-              value: {
-                language: accessNeeds.interpreterLanguage.language,
-                languageDialect: accessNeeds.interpreterLanguage.languageDialect || null
-              }
-            }];
+            caseData.interpreterLanguage = accessNeeds.interpreterLanguage.map(interpreterLanguage => {
+              return {
+                value: {
+                  language: interpreterLanguage.language,
+                  languageDialect: interpreterLanguage.languageDialect || null
+                } as InterpreterLanguage
+              } as Collection<InterpreterLanguage>;
+            });
           }
         }
 
@@ -852,8 +858,8 @@ export default class UpdateAppealService {
               value: {
                 language: interpreterLanguage.language,
                 languageDialect: interpreterLanguage.languageDialect || null
-              } as AdditionalLanguage
-            } as Collection<AdditionalLanguage>;
+              } as InterpreterLanguage
+            } as Collection<InterpreterLanguage>;
           });
         }
       }

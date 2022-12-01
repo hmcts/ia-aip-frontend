@@ -115,7 +115,6 @@ interface Appeal {
   reasonsForAppeal?: ReasonsForAppeal;
   hearingRequirements?: HearingRequirements;
   respondentDocuments?: Evidence[];
-  hearingDocuments?: Evidence[];
   cmaRequirements?: CmaRequirements;
   documentMap?: DocumentMap[];
   history?: HistoryEvent[];
@@ -282,7 +281,7 @@ interface CmaRequirements {
 
 interface AccessNeeds {
   isInterpreterServicesNeeded?: boolean;
-  interpreterLanguage?: AdditionalLanguage;
+  interpreterLanguage?: InterpreterLanguage[];
   isHearingRoomNeeded?: boolean;
   isHearingLoopNeeded?: boolean;
 }
@@ -347,11 +346,6 @@ interface HearingRequirements {
   // [key: string]: any;
 }
 
-interface RespondentDocument {
-  dateUploaded: string;
-  evidence: Evidence;
-}
-
 interface AppealType {
   value: string;
   name: string;
@@ -404,10 +398,6 @@ interface ClarifyingQuestion<T> {
   };
 }
 
-interface AdditionalLanguage {
-  language?: string;
-  languageDialect?: string;
-}
 type Middleware = (req: Express.Request, res: Express.Response, next: any) => void;
 
 interface ApplicationStatus {

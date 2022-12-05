@@ -186,7 +186,8 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
-      hearingDetails: null
+      hearingDetails: null,
+      showChangeRepresentation: false
     });
   });
 
@@ -242,7 +243,8 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
-      hearingDetails: null
+      hearingDetails: null,
+      showChangeRepresentation: false
     });
   });
 
@@ -299,7 +301,8 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
-      hearingDetails: null
+      hearingDetails: null,
+      showChangeRepresentation: false
     });
   });
 
@@ -368,7 +371,8 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
-      hearingDetails: null
+      hearingDetails: null,
+      showChangeRepresentation: false
     });
   });
 
@@ -439,7 +443,8 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       payLater: false,
-      hearingDetails: null
+      hearingDetails: null,
+      showChangeRepresentation: false
     });
   });
 

@@ -16,6 +16,7 @@ import { setupTaskListController } from './controllers/appeal-application/task-l
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupChangeRepresentationControllers } from './controllers/changing-representation';
 import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
 import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
 import { setupClarifyingQuestionsCheckSendController } from './controllers/clarifying-questions/check-and-send';
@@ -93,6 +94,7 @@ import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-c
 import { setupCheckAndSendController as setupReasonsForAppealCheckAndSendController } from './controllers/reasons-for-appeal/check-and-send';
 import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
 import { setupSessionController } from './controllers/session';
+import { setupStartRepresentingMyselfControllers } from './controllers/start-represent-yourself';
 import { setupStartController } from './controllers/startController';
 import { setupProvideMoreEvidenceController } from './controllers/upload-evidence/provide-more-evidence-controller';
 import { PageSetup } from './interfaces/PageSetup';
@@ -101,11 +103,13 @@ import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middle
 import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
+import CcdSystemService from './service/ccd-system-service';
 import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import PaymentService from './service/payments-service';
 import PcqService from './service/pcq-service';
 import S2SService from './service/s2s-service';
+import { SystemAuthenticationService } from './service/system-authentication-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
 
@@ -126,6 +130,7 @@ const startController = setupStartController();
 const healthController = setupHealthController();
 const notFoundController = setupNotFoundController();
 const idamController = setupIdamController();
+const startRepresentingMyselfPublicControllers = setupStartRepresentingMyselfControllers(new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance()));
 
 const middleware = [isJourneyAllowedMiddleware];
 
@@ -214,6 +219,7 @@ const yourHearingNeedsController = setupYourHearingNeedsController(middleware, u
 const hearingRequirementConfirmationController = setupHearingRequirementsConfirmationPage(middleware);
 const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
 const makeApplicationControllers = setupMakeApplicationControllers(middleware, updateAppealService, documentManagementService);
+const changeRepresentationControllers = setupChangeRepresentationControllers(middleware);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
 const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleController(middleware);
@@ -229,6 +235,7 @@ router.use(GuidancePages);
 router.use(footerController);
 router.use(sessionController);
 router.use(notFoundController);
+router.use(startRepresentingMyselfPublicControllers);
 
 // protected by idam
 router.use(idamController);
@@ -324,6 +331,7 @@ router.use(whatToExpectAtCmaNextController);
 router.use(provideMoreEvidence);
 router.use(outOfCountryController);
 router.use(makeApplicationControllers);
+router.use(changeRepresentationControllers);
 
 router.use(hearingBundleFeatureToggleController);
 router.use(outOfCountryFeatureToggleController);

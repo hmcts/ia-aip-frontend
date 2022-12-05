@@ -17,11 +17,27 @@ exports.config = {
     steps: ['./test/e2e-test/step_definitions/steps.ts']
   },
   plugins: {
-    stepByStepReport: {
-      enabled: true,
-      fullPageScreenshots: true,
-      deleteSuccessful: true
+    retryFailedStep: {
+       enabled: true
     }
   },
+    "mocha": {
+        "reporterOptions": {
+            "codeceptjs-cli-reporter": {
+                "stdout": "-",
+                "options": {
+                    "verbose": true,
+                    "steps": true,
+                }
+            },
+           "mochawesome": {
+                "stdout": "./functional-output/e2e/reports/console.log",
+                "options": {
+                    "reportDir": "./functional-output/e2e/reports/",
+                    "reportFilename": "report"
+                }
+            }
+        }
+    },
   require: ['ts-node/register/transpile-only']
 };

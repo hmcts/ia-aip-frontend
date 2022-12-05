@@ -329,6 +329,8 @@ interface ReasonsForAppeal {
 
 interface HearingRequirements {
   witnessesOnHearing?: boolean;
+  isAppellantAttendingTheHearing?: boolean;
+  isAppellantGivingOralEvidence?: boolean;
   witnessNames?: string[];
   witnessesOutsideUK?: boolean;
   isInterpreterServicesNeeded?: boolean;

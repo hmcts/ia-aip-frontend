@@ -116,7 +116,7 @@ function postProvideMoreEvidence(req: Request, res: Response, next: NextFunction
   }
 }
 
-function validate (redirectToUrl: string) {
+function validate(redirectToUrl: string) {
   return (_req: Request, res: Response, next: NextFunction) => {
     try {
       let errorCode: string;
@@ -218,10 +218,27 @@ function getAdditionalEvidenceDocuments(req: Request, res: Response, next: NextF
   try {
     const additionalEvidenceDocuments = (req.session.appeal.additionalEvidenceDocuments || [])
       .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
-    const summaryList: SummaryList[] = buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments);
+    const summaryList: SummaryList[] = buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments, false);
 
     return res.render('templates/check-and-send.njk', {
       pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
+      previousPage: paths.common.overview,
+      summaryLists: summaryList
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+function getLrAdditionalEvidenceDocuments(req: Request, res: Response, next: NextFunction) {
+  try {
+    const additionalEvidenceDocuments = (req.session.appeal.additionalEvidenceDocuments || [])
+      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+    const summaryList: SummaryList[] = buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments, true);
+
+    return res.render('upload-evidence/addendum-evidence-detail-page.njk', {
+      pageTitle: i18n.pages.provideMoreEvidence.yourEvidence.title,
+      description: i18n.pages.provideMoreEvidence.yourEvidence.description,
       previousPage: paths.common.overview,
       summaryLists: summaryList
     });
@@ -273,6 +290,7 @@ function setupProvideMoreEvidenceController(middleware: Middleware[], updateAppe
   router.post(paths.common.provideMoreEvidenceCheck, middleware, validate(paths.common.provideMoreEvidenceForm), postProvideMoreEvidenceCheckAndSend(updateAppealService, documentManagementService));
   router.get(paths.common.provideMoreEvidenceConfirmation, getConfirmation);
   router.get(paths.common.yourEvidence, getAdditionalEvidenceDocuments);
+  router.get(paths.common.lrEvidence, getLrAdditionalEvidenceDocuments);
   router.get(paths.common.yourAddendumEvidence, getAppellantAddendumEvidenceDocuments);
   router.get(paths.common.homeOfficeAddendumEvidence, getHomeOfficeEvidenceDocuments);
   router.get(paths.common.newEvidence, getAddendumEvidenceDocuments);
@@ -328,7 +346,7 @@ function buildAddendumEvidenceDocumentsSummaryList(addendumEvidenceDocuments: Ev
   return addendumEvidenceSummaryLists;
 }
 
-function buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments: Evidence[]): SummaryList[] {
+function buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceDocuments: Evidence[], isLegalRepEvidence: boolean): SummaryList[] {
   const additionalEvidenceSummaryLists: SummaryList[] = [];
   const additionalEvidenceRows: SummaryRow[] = [];
 
@@ -337,16 +355,24 @@ function buildUploadedAdditionalEvidenceDocumentsSummaryList(additionalEvidenceD
     additionalEvidenceDocuments.forEach((evidence: Evidence) => {
       additionalEvidenceRows.push(
         addSummaryRow(
-          'Date uploaded',
+          i18n.pages.provideMoreEvidence.yourEvidence.uploadedDateLabel,
           [`<p>${evidence.dateUploaded}</p>`]
         )
       );
       additionalEvidenceRows.push(
         addSummaryRow(
-          'Document',
+          i18n.pages.provideMoreEvidence.yourEvidence.documentLabel,
           [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`], null, Delimiter.BREAK_LINE
         )
       );
+      if (isLegalRepEvidence && evidence.description) {
+        additionalEvidenceRows.push(
+          addSummaryRow(
+            i18n.pages.provideMoreEvidence.yourEvidence.reasonLabel,
+            [`<p>${evidence.description}</p>`]
+          )
+        );
+      }
     });
 
     additionalEvidenceSummaryLists.push({
@@ -366,19 +392,19 @@ function buildUploadedAddendumEvidenceDocumentsSummaryList(addendumEvidenceDocum
     addendumEvidenceDocuments.forEach((evidence: Evidence) => {
       addendumEvidenceRows.push(
         addSummaryRow(
-          'Date uploaded',
+          i18n.pages.provideMoreEvidence.yourAddendumEvidence.uploadedDateLabel,
           [`<p>${evidence.dateUploaded}</p>`]
         )
       );
       addendumEvidenceRows.push(
         addSummaryRow(
-          'Document',
+          i18n.pages.provideMoreEvidence.yourAddendumEvidence.documentLabel,
           [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`], null, Delimiter.BREAK_LINE
         )
       );
       addendumEvidenceRows.push(
         addSummaryRow(
-          'Reason evidence is late',
+          i18n.pages.provideMoreEvidence.yourAddendumEvidence.reasonLabel,
           [`<p>${evidence.description}</p>`]
         )
       );
@@ -529,21 +555,19 @@ async function isUploadAddendumEvidenceFeatureEnabled(req: Request) {
 }
 
 function getUploadedAddendumEvidenceDocuments(req: Request, uploadedBy: string): Evidence[] {
+  let documents = [];
   if (uploadedBy === 'TCW') {
-    return (req.session.appeal.addendumEvidenceDocuments || [])
-      .filter(doc => doc.uploadedBy === 'TCW')
-      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+    documents = (req.session.appeal.addendumEvidenceDocuments || [])
+      .filter(doc => doc.uploadedBy === 'TCW');
   } else if (uploadedBy === 'Appellant') {
     return (req.session.appeal.addendumEvidenceDocuments || [])
-      .filter(doc => doc.suppliedBy === 'The appellant' && doc.uploadedBy !== 'TCW')
-      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
+      .filter(doc => doc.suppliedBy === 'The appellant' && doc.uploadedBy !== 'TCW');
   } else if (uploadedBy === 'Respondent') {
     return (req.session.appeal.addendumEvidenceDocuments || [])
-      .filter(doc => doc.suppliedBy === 'The respondent' && doc.uploadedBy !== 'TCW')
-      .sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
-  } else {
-    return [];
+      .filter(doc => doc.suppliedBy === 'The respondent' && doc.uploadedBy !== 'TCW');
   }
+
+  return documents.sort((doc1: Evidence, doc2: Evidence) => moment(doc2.dateUploaded).diff(doc1.dateUploaded));
 }
 
 export {
@@ -566,5 +590,6 @@ export {
   buildAddendumEvidenceDocumentsSummaryList,
   buildUploadedAdditionalEvidenceDocumentsSummaryList,
   buildUploadedAddendumEvidenceDocumentsSummaryList,
-  validate
+  validate,
+  getLrAdditionalEvidenceDocuments
 };

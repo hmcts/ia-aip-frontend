@@ -10,10 +10,12 @@ module.exports = {
     });
 
     Then(/^I should see the reasons for appeal decision page$/, async () => {
+      await I.waitInUrl(paths.awaitingReasonsForAppeal.decision,10);
       await I.seeInCurrentUrl(paths.awaitingReasonsForAppeal.decision);
     });
 
     Then(/^I should see the "supporting evidence question" page$/, async () => {
+      await I.waitInUrl(paths.awaitingReasonsForAppeal.supportingEvidence,10);
       await I.seeInCurrentUrl(paths.awaitingReasonsForAppeal.supportingEvidence);
     });
 
@@ -26,6 +28,7 @@ module.exports = {
       await I.click('Save and continue');
     });
     Then(/^I should see the additional supporting evidence page$/, async () => {
+      await I.waitInUrl(paths.awaitingReasonsForAppeal.supportingEvidence,10);
       await I.seeInCurrentUrl(paths.awaitingReasonsForAppeal.supportingEvidence);
     });
     // TODO send back button to timeline screen and also click continue to get back to reasons for appeal
@@ -33,6 +36,7 @@ module.exports = {
       await I.click('.govuk-back-link');
     });
     Then(/^I should be taken to the appellant timeline$/, async () => {
+      await I.waitInUrl('appellant-timeline',10);
       await I.seeInCurrentUrl('appellant-timeline');
     });
   }

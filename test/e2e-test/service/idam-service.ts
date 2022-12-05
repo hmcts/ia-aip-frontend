@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { asBooleanValue } from '../../../app/utils/utils';
 
 const rp = require('request-promise');
@@ -19,7 +20,7 @@ async function createUser() {
   console.info('======================');
   console.info('Creating User');
   console.info('======================');
-  const randomNumber = parseInt(Math.random() * 10000000 + '', 10);
+  const randomNumber = moment().format().replace(/-/g,'').replace('T','').replace(/:/g,'').split('+')[0];
   aipCurrentUser.email = `ia_citizen${randomNumber}@hmcts.net`;
   aipCurrentUser.password = 'Apassword123';
   aipCurrentUser.forename = 'ATestForename';
@@ -31,7 +32,7 @@ async function createUser() {
     body: {
       email: aipCurrentUser.email,
       forename: aipCurrentUser.forename,
-      id: randomNumber.toString(),
+      id: randomNumber,
       password: aipCurrentUser.password,
       roles: [
         {

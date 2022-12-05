@@ -51,14 +51,17 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
       rows.push(homeOfficeRefNumberRow);
     }
 
+    const address = application.personalDetails.address
+      && _.isEmpty(application.personalDetails.address)
+        ? null : application.personalDetails.address;
+
     rowsCont = [
-      addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [application.homeOfficeRefNumber], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [application.personalDetails.givenNames, application.personalDetails.familyName], null, Delimiter.SPACE),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [formatDate(toIsoDate(application.personalDetails.dob))], null),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [nation], null),
-      application.personalDetails.address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [...Object.values(application.personalDetails.address)], null, Delimiter.BREAK_LINE),
+      address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [...Object.values(application.personalDetails.address)], null, Delimiter.BREAK_LINE),
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [
         ...(application.contactDetails.wantsEmail ? [application.contactDetails.email] : []),
         ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])
@@ -156,16 +159,33 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   return rows;
 }
 
-function setupAnswersReasonsForAppeal(req: Request): Array<any> {
+function setupAnswersReasonsForAppeal(req: Request, fromLegalRep: boolean): Array<any> {
   const array = [];
   const data = req.session.appeal.reasonsForAppeal;
-  array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [data.applicationReason], null));
-  if (data.evidences !== null) {
-    const evidenceText = data.evidences.map((evidence) => {
-      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
-    });
-    array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.titleNew, evidenceText, null, Delimiter.BREAK_LINE));
+  if (fromLegalRep) {
+    array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.uploadDateLabel, [data.uploadDate], null));
+    if (data.evidences) {
+      for (let index = 0; index < data.evidences.length; index++) {
+        let label = i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.documentLabel;
+        const evidence = data.evidences[index];
+        if (index > 0) {
+          label = i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.additionalDocumentLabel;
+        }
+        const evidenceText = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+        array.push(addSummaryRow(label, [evidenceText], null));
+        array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.documentDescriptionLabel, [evidence.description], null));
+      }
+    }
+  } else {
+    array.push(addSummaryRow(i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.whyYouThinkHomeOfficeIsWrong, [data.applicationReason], null));
+    if (data.evidences !== null) {
+      const evidenceText = data.evidences.map((evidence) => {
+        return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+      });
+      array.push(addSummaryRow(i18n.pages.reasonsForAppealUpload.titleNew, evidenceText, null, Delimiter.BREAK_LINE));
+    }
   }
+
   return array;
 }
 
@@ -355,8 +375,22 @@ async function getAppealDetailsViewer(req: Request, res: Response, next: NextFun
 function getReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    const data = setupAnswersReasonsForAppeal(req);
+    const data = setupAnswersReasonsForAppeal(req, false);
     return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      previousPage: previousPage,
+      data: data
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function getLrReasonsForAppealViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const data = setupAnswersReasonsForAppeal(req, true);
+    return res.render('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+      hint: i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.hint,
       previousPage: previousPage,
       data: data
     });
@@ -640,6 +674,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.hearingNoticeViewer, getHearingNoticeViewer);
   router.get(paths.common.hearingBundleViewer, getHearingBundle);
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
+  router.get(paths.common.lrReasonsForAppealViewer, getLrReasonsForAppealViewer);
   return router;
 }
 
@@ -661,5 +696,6 @@ export {
   getHomeOfficeResponse,
   getHearingNoticeViewer,
   getHearingBundle,
-  getDecisionAndReasonsViewer
+  getDecisionAndReasonsViewer,
+  getLrReasonsForAppealViewer
 };

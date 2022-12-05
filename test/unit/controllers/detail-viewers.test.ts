@@ -10,6 +10,7 @@ import {
   getHoEvidenceDetailsViewer,
   getHomeOfficeResponse,
   getHomeOfficeWithdrawLetter,
+  getLrReasonsForAppealViewer,
   getMakeAnApplicationSummaryRows,
   getMakeAnApplicationViewer,
   getMakeAnApplicationWhatNext,
@@ -92,6 +93,7 @@ describe('Detail viewer Controller', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.common.makeAnApplicationViewer + '/:id');
       expect(routerGetStub).to.have.been.calledWith(paths.common.cmaRequirementsAnswerViewer);
       expect(routerGetStub).to.have.been.calledWith(paths.common.homeOfficeWithdrawLetter);
+      expect(routerGetStub).to.have.been.calledWith(paths.common.lrReasonsForAppealViewer);
     });
   });
 
@@ -320,6 +322,97 @@ describe('Detail viewer Controller', () => {
     });
   });
 
+  describe('getLrReasonsForAppealViewer', () => {
+    it('should render detail-viewers/reasons-for-appeal-details-viewer.njk', () => {
+
+      req.session.appeal.reasonsForAppeal = {
+        'applicationReason': 'appeal argument',
+        'uploadDate': '2022-09-27',
+        'evidences': [
+          {
+            'fileId': '00000',
+            'name': 'test.txt',
+            'dateUploaded': '2022-09-27',
+            'description': 'Appeal Reasons supporting evidence'
+          },
+          {
+            'fileId': '00001',
+            'name': 'test1.txt',
+            'dateUploaded': '2022-09-27',
+            'description': 'Additional supporting evidence'
+          }
+        ]
+      };
+
+      req.session.appeal.documentMap = [{
+        id: '00000',
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      }];
+
+      const expectedSummaryRows = [{
+        'key': { 'text': 'Date uploaded' },
+        'value': { 'html': '2022-09-27' }
+      }, {
+        'key': { 'text': 'Document' },
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00000'>test.txt</a>" }
+      }, {
+        'key': { 'text': 'Document description' },
+        'value': { 'html': 'Appeal Reasons supporting evidence' }
+      }, {
+        'key': { 'text': 'Additional evidence' },
+        'value': { 'html': "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/00001'>test1.txt</a>" }
+      }, {
+        'key': { 'text': 'Document description' },
+        'value': { 'html': 'Additional supporting evidence' }
+      }];
+
+      getLrReasonsForAppealViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/reasons-for-appeal-details-viewer.njk', {
+        hint: i18n.pages.detailViewers.reasonsForAppealCheckAnswersHistory.hint,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRows
+      });
+    });
+
+    it('getLrReasonsForAppealViewer should catch exception and call next with the error', () => {
+
+      req.session.appeal.reasonsForAppeal = {
+        'applicationReason': 'appeal argument',
+        'uploadDate': '2022-09-27',
+        'evidences': [
+          {
+            'fileId': '00000',
+            'name': 'test.txt',
+            'dateUploaded': '2022-09-27',
+            'description': 'Appeal Reasons supporting evidence'
+          },
+          {
+            'fileId': '00001',
+            'name': 'test1.txt',
+            'dateUploaded': '2022-09-27',
+            'description': 'Additional supporting evidence'
+          }
+        ]
+      };
+
+      req.session.appeal.documentMap = [{
+        id: '00000',
+        url: 'http://dm-store:4506/documents/3867d40b-f1eb-477b-af49-b9a03bc27641'
+      }, {
+        id: '00001',
+        url: 'http://dm-store:4506/documents/1dc61149-db68-4bda-8b70-e5720f627192'
+      }];
+
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+      getLrReasonsForAppealViewer(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWith(error);
+    });
+  });
+
   describe('getAppealDetailsViewer', () => {
     let expectedSummaryRows;
 
@@ -437,10 +530,6 @@ describe('Detail viewer Controller', () => {
 
       expectedSummaryRows = [
         { key: { text: 'In the UK' }, value: { html: 'Yes' } },
-        {
-          key: { text: 'Home Office reference number' },
-          value: { html: 'A1234567' }
-        },
         {
           key: { text: 'Home Office reference number' },
           value: { html: 'A1234567' }
@@ -1061,15 +1150,18 @@ describe('Detail viewer Controller', () => {
             key: { text: i18n.pages.detailViewers.makeAnApplication.request.whatYouAskedFor },
             value: { html: i18n.pages.detailViewers.makeAnApplication.requestTypes.askJudgeReview }
           },
-          { key: { text: i18n.pages.detailViewers.makeAnApplication.request.reason },
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.request.reason },
             value: { html: 'application-details' }
           },
           {
             key: { text: i18n.pages.detailViewers.makeAnApplication.request.evidence },
             value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/4bc22a7b-48f6-45c0-8072-2ddbc1e418b9\'>evidence.pdf</a>' }
           },
-          { key: { text: i18n.pages.detailViewers.makeAnApplication.request.date },
-            value: { html: '18 July 2022' } }
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.request.date },
+            value: { html: '18 July 2022' }
+          }
         ],
         response: [
           {

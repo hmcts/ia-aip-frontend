@@ -42,6 +42,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask to change something about your hearing page$/, async () => {
+      await I.waitInUrl(paths.makeApplication.askChangeHearing,10);
       await I.seeInCurrentUrl(paths.makeApplication.askChangeHearing);
     });
 

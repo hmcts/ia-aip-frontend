@@ -9,10 +9,7 @@ exports.config = {
       show: config.get('showTests'),
       chrome: {
         ignoreHTTPSErrors: true
-      },
-      args: [
-        '--disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure'
-      ]
+      }
     }
   },
   gherkin: {

@@ -256,7 +256,7 @@ module.exports = {
       await I.click('Apply');
       await I.waitForText('Random User', 30);
       await I.click(locate('tbody').find('span').withText(appealReference));
-      await I.waitForText('Do this next', 30);
+      await I.waitForText('Do this next', 60);
       caseUrl = await I.grabCurrentUrl();
       await I.selectOption('#next-step', 'Request Home Office data');
       await I.click('Go');

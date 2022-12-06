@@ -1,5 +1,4 @@
 @crossbrowser
-@e2e
 Feature: Business rules
 In order to achieve my goals
 As a person

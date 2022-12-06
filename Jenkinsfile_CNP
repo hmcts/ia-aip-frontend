@@ -61,4 +61,5 @@ withPipeline("nodejs", product, component) {
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
   }
+  
 }

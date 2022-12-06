@@ -9,7 +9,9 @@ exports.config = {
       show: config.get('showTests'),
       chrome: {
         ignoreHTTPSErrors: true
-      }
+      },
+      ignoreDefaultArgs: true,
+      args: ["--disable-web-security"]
     }
   },
   gherkin: {

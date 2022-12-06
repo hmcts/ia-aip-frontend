@@ -10,8 +10,9 @@ exports.config = {
       chrome: {
         ignoreHTTPSErrors: true
       },
-      ignoreDefaultArgs: true,
-      args: ["--disable-web-security"]
+      args: [
+        '--disable-features=SameSiteByDefaultCookies,CookiesWithoutSameSiteMustBeSecure'
+      ]
     }
   },
   gherkin: {

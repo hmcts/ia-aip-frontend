@@ -11,7 +11,7 @@ exports.config = {
       show: config.get('showTests'),
       chrome: {
         ignoreHTTPSErrors: true,
-        args: ['--disable-web-security']
+        args: ['--disable-web-security', "--user-data-dir=/tmp/crm"]
       }
     }
   },

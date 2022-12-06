@@ -45,11 +45,7 @@ exports.config = {
       region: 'eu',
       user: SAUCE_USERNAME,
       key: SAUCE_ACCESS_KEY,
-      desiredCapabilities: {
-        "goog:chromeOptions": {
-          args: ["--disable-web-security --user-data-dir=C:/Users/Google/Chrome/User Data"]
-        }
-      },
+      desiredCapabilities: {},
 },
     SauceLabsReportingHelper: {
       require: './helpers/SauceLabsReportingHelper.js'

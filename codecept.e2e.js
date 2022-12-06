@@ -7,8 +7,9 @@ exports.config = {
     Puppeteer: {
       url: config.get('testUrl'),
       show: config.get('showTests'),
-      "chrome": {
-        "ignoreHTTPSErrors": true
+      chrome: {
+        ignoreHTTPSErrors: true,
+        args: ['--disable-web-security']
       }
     }
   },

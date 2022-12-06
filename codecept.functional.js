@@ -10,8 +10,7 @@ exports.config = {
       url: config.get('testUrl'),
       show: config.get('showTests'),
       chrome: {
-        ignoreHTTPSErrors: true,
-        args: ['--disable-web-security', '--user-data-dir=/tmp/crm']
+        ignoreHTTPSErrors: true
       }
     }
   },

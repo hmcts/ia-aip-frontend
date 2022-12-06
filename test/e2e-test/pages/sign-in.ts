@@ -42,7 +42,7 @@ module.exports = {
     Given('I am authenticated as a valid appellant', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await signInHelper();
-      await I.waitForText('Do this next', 30);
+      await I.waitForText('Do this next', 60);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 
@@ -50,7 +50,7 @@ module.exports = {
       await I.fillField('#username', currentUserDetails.email);
       await I.fillField('#password', currentUserDetails.password);
       await I.click('Sign in');
-      await I.waitForText('Do this next', 30);
+      await I.waitForText('Do this next', 60);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 

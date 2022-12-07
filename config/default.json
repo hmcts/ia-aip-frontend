@@ -51,6 +51,10 @@
     "jurisdictionId": "IA",
     "caseType": "Asylum"
   },
+  "systemUser": {
+    "username": "IA_SYSTEM_USERNAME",
+    "password": "IA_SYSTEM_PASSWORD"
+  },
   "launchDarkly": {
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
   },
@@ -90,7 +94,13 @@
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",
     "testCaseOfficerPassword": "TEST_CASEOFFICER_PASSWORD",
     "testHomeOfficeGenericUserName": "TEST_HOMEOFFICE_GENERIC_USERNAME",
-    "testHomeOfficeGenericPassword": "TEST_HOMEOFFICE_GENERIC_PASSWORD"
+    "testHomeOfficeGenericPassword": "TEST_HOMEOFFICE_GENERIC_PASSWORD",
+    "testAdminOfficerUserName": "TEST_ADMINOFFICER_USERNAME",
+    "testAdminOfficerPassword": "TEST_ADMINOFFICER_PASSWORD",
+    "testJudgeUserName": "TEST_JUDGE_X_USERNAME",
+    "testJudgePassword": "TEST_JUDGE_X_PASSWORD",
+    "testLawFirmAUsername": "TEST_LAW_FIRM_SHARE_CASE_A_USERNAME",
+    "testLawFirmAPassword": "TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD"
   },
   "hearingCentres": {
     "bradfordEmail": "IA_HEARING_CENTRE_BRADFORD_EMAIL",
@@ -108,5 +118,16 @@
     "path": "/service-endpoint",
     "returnUrl": "PCQ_RETURN_URL",
     "tokenKey": "PCQ_TOKEN_KEY"
+  },
+  "docmosis": {
+    "renderUrl": "DOCMOSIS_RENDER_URL",
+    "accessKey": "DOCMOSIS_ACCESS_KEY",
+    "templates": {
+      "noticeOfChangeDetails": "TB-IAC-GNO-ENG-00804.docx"
+    }
+  },
+  "customerServices": {
+    "telephone": "IA_CUSTOMER_SERVICES_TELEPHONE",
+    "email": "IA_CUSTOMER_SERVICES_EMAIL"
   }
 }

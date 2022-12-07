@@ -12,6 +12,7 @@ module.exports = {
     });
 
     Then(/^I should see the ask-for-more-time page$/, async () => {
+      await I.waitInUrl(paths.common.askForMoreTimeReason,10);
       await I.seeInCurrentUrl(paths.common.askForMoreTimeReason);
     });
 

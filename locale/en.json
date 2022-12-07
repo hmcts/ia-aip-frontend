@@ -438,6 +438,49 @@
       "title": "Do you want to provide supporting evidence?",
       "provideSupportingEvidenceQuestion": "Do you want to provide supporting evidence?"
     },
+    "changeRepresentation": {
+      "title": "If you are no longer representing yourself",
+      "instructions": "If you have hired a legal representative to take on your appeal, you will need to give them some information so they can access your case.",
+      "detailsInstruction": "Give your legal representative the following information",
+      "details": {
+        "caseReferenceNumber": "Online case reference number",
+        "name": "Name",
+        "dateOfBirth": "Date of birth"
+      },
+      "detailsUseOf": "Your legal representative will use this information to tell the Tribunal that they are now appealing on your behalf and get access to your case.",
+      "downloadHeading": "Download a document to give to your legal representative",
+      "downloadInstructions": "Click the download button to save a document that you can email or post to your legal representative. The document includes all the information your legal representative will need to access your case.",
+      "downloadButton": "Document download"
+    },
+    "startRepresentingYourself": {
+      "title": "Start representing yourself",
+      "instructions": "You no longer have a legal representative for this appeal. To start representing yourself, you must enter the online case reference number and security code from the email, text message or letter we sent you.",
+      "summary": "This will give you access to all the details of your case so far.",
+      "startButton": "Start now",
+      "continueButton": "Continue",
+      "enterCaseReference": {
+        "title": "Enter your online case reference number",
+        "instructions": "Enter the online case reference number from the email, text message or letter we sent you.",
+        "fieldName": "Online case reference number",
+        "fieldHint": "For example, 1234-1234-1234-1234",
+        "error": "Please enter the correct online case reference number."
+      },
+      "enterSecurityCode": {
+        "title": "Enter your security code",
+        "instructions": "Enter the security code from the email, text message or letter we sent you.",
+        "fieldName": "Security code",
+        "error": "Please enter the correct security code."
+      },
+      "confirmDetails": {
+        "title": "Case details",
+        "instructions": "These are your case details. If these are not the correct details, you should contact the Tribunal.",
+        "fieldName": "Name",
+        "fieldReferenceNumber": "Online case reference number",
+        "nextStepTitle": "Access your case",
+        "nextStepInstructions": "You can now access your case. You will first need to create an account or sign in if you already have one."
+      },
+      "pipValidationFailed": "Access validation failed, please try again."
+    },
     "provideMoreEvidence": {
       "additionalEvidenceDefaultDescription": "Additional evidence",
       "form": {
@@ -472,7 +515,13 @@
         ]
       },
       "yourEvidence": {
-        "title": "Your evidence"
+        "title": "Your evidence",
+        "description": [
+          "This is evidence that was provided to support your appeal."
+        ],
+        "uploadedDateLabel": "Date uploaded",
+        "documentLabel": "Document",
+        "reasonLabel": "Reason for uploading evidence"
       },
       "newEvidence": {
         "title": "New evidence",
@@ -484,8 +533,11 @@
       "yourAddendumEvidence": {
         "title": "Your evidence",
         "description": [
-          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why the evidence is late and decide if it can be part of the appeal."
-        ]
+          "This evidence is late and will not be in the hearing bundle. A Tribunal judge will look at the reasons why your evidence is late and decide if it can be part of your appeal."
+        ],
+        "uploadedDateLabel": "Date uploaded",
+        "documentLabel": "Document",
+        "reasonLabel": "Reason evidence is late"
       },
       "homeOfficeEvidence": {
         "title": "Home Office evidence",
@@ -672,6 +724,8 @@
       "askedForMoreTime": "You have asked for more time",
       "savedAndAskedForMoreTime": "You have saved your answers and asked for more time",
       "weAimTo": "We aim to get back to you within 5 days.",
+      "changingRepresentation": "Changing Representation",
+      "noLongerRepresentingMyself": "I am no longer representing myself",
       "iWantTo": "I want to...",
       "withdrawAppeal": "Withdraw my appeal",
       "appealRequests": {
@@ -799,6 +853,10 @@
           "detailsSent": "You have told us why you think the Home Office decision is wrong.",
           "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
         },
+        "caseUnderReview": {
+          "detailsSent": "The reasons you think the Home Office decision to refuse your claim is wrong were sent to the Tribunal.",
+          "dueDate": "A Tribunal Caseworker will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that."
+        },
         "clarifyingQuestions": {
           "description": "You need to answer some questions about your appeal.",
           "descriptionAskForMoreTime": "You might not get more time. You need to finish answering the Tribunal’s questions by <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> if you can.",
@@ -853,6 +911,10 @@
           }
         },
         "listing": {
+          "providedByLr": {
+            "direction1": "Your hearing needs were sent to the Tribunal.",
+            "direction2": "A Tribunal Caseworker is looking at the answers and will contact you with the details of your hearing and tell you what to do next."
+          },
           "detailsSent": "A Tribunal Caseworker is looking at your answers and will contact you with the details of your hearing and to tell you what to do next.",
           "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it may take longer than that.",
           "info": {
@@ -861,6 +923,9 @@
           }
         },
         "prepareForHearing": {
+          "providedByLr": {
+            "description": "The hearing bundle is ready to view. This is a record of all the information and evidence about this appeal. You should read it carefully."
+          },
           "description": "The Tribunal has set a date for your hearing. Here are the details:",
           "date": "<span class=\"govuk-!-font-weight-bold\">Date:</span> {{ applicationNextStep.date }}",
           "time": "<span class=\"govuk-!-font-weight-bold\">Time:</span> {{ applicationNextStep.time }}",
@@ -921,6 +986,16 @@
           ]
         },
         "uploadAdditionalEvidence": {
+          "providedByLr": {
+            "text": "More evidence was provided.",
+            "links": [
+              {
+                "title": "What was provided",
+                "text": "Your evidence",
+                "href": "{{ paths.common.lrEvidence }}"
+              }
+            ]
+          },
           "text": "You provided more evidence.",
           "links": [
             {
@@ -951,6 +1026,16 @@
           ]
         },
         "uploadAddendumEvidenceLegalRep": {
+          "providedByLr": {
+            "text": "More evidence was provided.",
+            "links": [
+              {
+                "title": "What was provided",
+                "text": "Your evidence",
+                "href": "{{ paths.common.yourAddendumEvidence }}"
+              }
+            ]
+          },
           "text": "You provided more evidence.",
           "links": [
             {
@@ -971,6 +1056,21 @@
           ]
         },
         "submitAppeal": {
+          "text": "You sent your appeal details to the Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
+            },
+            {
+              "title": "Helpful information",
+              "text": "What is a Tribunal Caseworker?",
+              "href": "{{ paths.common.tribunalCaseworker }}"
+            }
+          ]
+        },
+        "payAndSubmitAppeal": {
           "text": "You sent your appeal details to the Tribunal.",
           "links": [
             {
@@ -1015,6 +1115,26 @@
               "title": "What you sent",
               "text": "Why you think the Home Office is wrong",
               "href": "{{ paths.common.reasonsForAppealViewer }}"
+            },
+            {
+              "title": "Useful documents",
+              "text": "Home Office documents about your case",
+              "href": "{{ paths.common.homeOfficeDocumentsViewer }}"
+            },
+            {
+              "title": "Helpful information",
+              "text": "Understanding your Home Office documents",
+              "href": "{{ paths.common.homeOfficeDocuments }}"
+            }
+          ]
+        },
+        "buildCase": {
+          "text": "The reasons you think the Home Office decision is wrong were sent to the Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Why you think the Home Office is wrong",
+              "href": "{{ paths.common.lrReasonsForAppealViewer }}"
             },
             {
               "title": "Useful documents",
@@ -1169,8 +1289,13 @@
       },
       "reasonsForAppealCheckAnswersHistory": {
         "title": "Why you think the Home Office is wrong",
+        "hint": "The following document(s) were sent to the Tribunal to argue why you think the<br />Home Office decision to refuse your claim is wrong",
         "question": "Question",
-        "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?"
+        "whyYouThinkHomeOfficeIsWrong": "Why do you think the Home Office decision is wrong?",
+        "uploadDateLabel": "Date uploaded",
+        "documentLabel": "Document",
+        "additionalDocumentLabel": "Additional evidence",
+        "documentDescriptionLabel": "Document description"
       },
       "makeAnApplication": {
         "title": "Your request",
@@ -1210,10 +1335,8 @@
           "askWithdraw": {
             "granted": "The Tribunal will end the appeal. The Tribunal will contact you when this happens."
           },
-          "askUpdateDetails": {
-          },
-          "askSomethingElse": {
-          },
+          "askUpdateDetails": {},
+          "askSomethingElse": {},
           "askChangeHearing": {
             "granted": "The details of you hearing will be updated. The Tribunal will contact you when this happens."
           }
@@ -2424,7 +2547,10 @@
         "healthConditionsTitle": "Physical or mental health conditions",
         "pastExperiencesTitle": "Past experiences",
         "anythingElseTitle": "Anything else",
-        "datesToAvoidTitle": "Dates to avoid"
+        "datesToAvoidTitle": "Dates to avoid",
+        "witnessesTitle": "Witnesses",
+        "appellantTitle": "Appellant",
+        "evidenceTitle": "Evidence"
       }
     },
     "cmaRequirementsConfirmation": {
@@ -2445,6 +2571,7 @@
         "header": "Tell us what you will need at the hearing",
         "sections": {
           "witnesses": "Witnesses",
+          "attendance": "Attendance",
           "accessNeeds": "Access needs",
           "otherNeeds": "Other needs",
           "datesToAvoid": "Dates to avoid",
@@ -2492,6 +2619,12 @@
           "pageTitle": "Will you or any witnesses take part in the hearing from outside the UK?",
           "title": "Will you or any witnesses take part in the hearing from outside the UK?",
           "text": "If you answer yes, a Tribunal Caseworker will contact you to ask for more information about where you or any witnesses will be for the hearing."
+        },
+        "appellantPresent": {
+          "title": "Will the appellant come to the hearing?"
+        },
+        "oralEvidence": {
+          "title": "Will the appellant give oral evidence at the hearing?"
         }
       },
       "accessNeedsSection": {

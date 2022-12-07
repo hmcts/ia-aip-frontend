@@ -11,6 +11,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the DOB page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.dob,10);
       await I.seeInCurrentUrl(paths.appealStarted.dob);
     });
 
@@ -19,6 +20,7 @@ module.exports = {
     });
 
     When(/^I enter "([^"]*)" "([^"]*)" "([^"]*)" as my DOB and click Save and continue$/, (day,month,year) => {
+      I.wait(3);
       fillInDate(day,month,year);
       I.click('Save and continue');
     });

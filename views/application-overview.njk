@@ -97,6 +97,12 @@
       </div>
       <div class="govuk-grid-column-one-third">
         <div class="side-menu">
+          {% if showChangeRepresentation %}
+            <div class="side-menu__section">
+                <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.changingRepresentation }}</h2>
+                <p><a class='govuk-link' href='{{ paths.common.changeRepresentation }}'>{{ i18n.pages.overviewPage.noLongerRepresentingMyself }}</a></p>
+            </div>
+          {% endif %}
           {% if payLater or provideMoreEvidenceSection or showAppealRequests %}
             <div class="side-menu__section">
               <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.iWantTo }}</h2>

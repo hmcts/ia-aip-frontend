@@ -66,6 +66,25 @@ export default class UpdateAppealService {
     return null;
   }
 
+  async submitSimpleEvent(event, caseId: string, data, userId: string, userToken: string): Promise<Appeal> {
+    const securityHeaders: SecurityHeaders = {
+      userToken: userToken,
+      serviceToken: await this._s2sService.getServiceToken()
+    };
+    const updateEventResponse = await this._ccdService.startUpdateAppeal(userId, caseId, event.id, securityHeaders);
+    const ccdCase: CcdCaseDetails = await this._ccdService.submitUpdateAppeal(userId, caseId, securityHeaders, {
+      event: {
+        id: updateEventResponse.event_id,
+        summary: event.summary,
+        description: event.description
+      },
+      data: data,
+      event_token: updateEventResponse.token,
+      ignore_warning: true
+    });
+    return this.mapCcdCaseToAppeal(ccdCase);
+  }
+
   // TODO: remove submitEvent when all app is refactored using new submitEvent
   async submitEvent(event, req: Request): Promise<CcdCaseDetails> {
     const securityHeaders: SecurityHeaders = await this._authenticationService.getSecurityHeaders(req);
@@ -354,6 +373,15 @@ export default class UpdateAppealService {
       };
     }
 
+    if (caseData.isWitnessesAttending) {
+      hearingRequirements.witnessesOnHearing = yesNoToBool(caseData.isWitnessesAttending);
+    }
+    if (caseData.isAppellantAttendingTheHearing) {
+      hearingRequirements.isAppellantAttendingTheHearing = yesNoToBool(caseData.isAppellantAttendingTheHearing);
+    }
+    if (caseData.isAppellantGivingOralEvidence) {
+      hearingRequirements.isAppellantGivingOralEvidence = yesNoToBool(caseData.isAppellantGivingOralEvidence);
+    }
     if (caseData.isWitnessesAttending) {
       hearingRequirements.witnessesOnHearing = yesNoToBool(caseData.isWitnessesAttending);
     }
@@ -794,6 +822,12 @@ export default class UpdateAppealService {
       if (_.has(appeal.hearingRequirements, 'witnessesOnHearing')) {
         caseData.isWitnessesAttending = boolToYesNo(appeal.hearingRequirements.witnessesOnHearing);
       }
+      if (_.has(appeal.hearingRequirements, 'isAppellantAttendingTheHearing')) {
+        caseData.isAppellantAttendingTheHearing = boolToYesNo(appeal.hearingRequirements.isAppellantAttendingTheHearing);
+      }
+      if (_.has(appeal.hearingRequirements, 'isAppellantGivingOralEvidence')) {
+        caseData.isAppellantGivingOralEvidence = boolToYesNo(appeal.hearingRequirements.isAppellantGivingOralEvidence);
+      }
 
       if (_.has(appeal.hearingRequirements, 'witnessesOutsideUK')) {
         caseData.isEvidenceFromOutsideUkInCountry = boolToYesNo(appeal.hearingRequirements.witnessesOutsideUK);
@@ -1109,6 +1143,11 @@ export default class UpdateAppealService {
         if (caseData.multimediaEvidenceDescription) {
           hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason = caseData.multimediaEvidenceDescription;
         }
+      } else if (caseData.multimediaEvidenceDescription) {
+        hearingRequirements.otherNeeds.bringOwnMultimediaEquipment = false;
+        hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason = caseData.multimediaEvidenceDescription;
+      } else {
+        hearingRequirements.otherNeeds.bringOwnMultimediaEquipment = true;
       }
     }
 

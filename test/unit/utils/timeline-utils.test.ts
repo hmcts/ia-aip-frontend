@@ -3,7 +3,7 @@ import { Events } from '../../../app/data/events';
 import { States } from '../../../app/data/states';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { constructSection, getEventsAndStates, getSubmitClarifyingQuestionsEvents, getTimeExtensionsEvents } from '../../../app/utils/timeline-utils';
+import { constructSection, getApplicationEvents, getEventsAndStates, getSubmitClarifyingQuestionsEvents } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -27,7 +27,8 @@ describe('timeline-utils', () => {
       idam: {
         userDetails: {
           forename: 'forename',
-          surname: 'surname'
+          surname: 'surname',
+          uid: 'appellant'
         }
       },
       app: {
@@ -68,10 +69,58 @@ describe('timeline-utils', () => {
         }]
       );
     });
+
+    it('Should construct the appeal hearing requirements section when appellant takes over', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      const appealHearingRequirementsSectionEvents = [
+        Events.UPLOAD_ADDITIONAL_EVIDENCE.id,
+        Events.UPLOAD_ADDENDUM_EVIDENCE_LEGAL_REP.id
+      ];
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        }
+      ] as HistoryEvent[];
+      req.session.appeal.history = history;
+      const result = constructSection(appealHearingRequirementsSectionEvents, req.session.appeal.history, null, req as Request);
+
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'More evidence was provided.',
+          'links': [{
+            'title': 'What was provided',
+            'text': 'Your evidence',
+            'href': '{{ paths.common.lrEvidence }}'
+          }]
+        }, {
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'More evidence was provided.',
+          'links': [{
+            'title': 'What was provided',
+            'text': 'Your evidence',
+            'href': '{{ paths.common.yourAddendumEvidence }}'
+          }]
+        }]
+      );
+    });
   });
 
-  describe('getTimeExtensionsEvents', () => {
-    it('should get timeExtensions', () => {
+  describe('getApplicationEvents', () => {
+    it('should get application events', () => {
       const makeAnApplications: Collection<Application<Evidence>>[] = [
         {
           id: '2',
@@ -89,8 +138,8 @@ describe('timeline-utils', () => {
         {
           id: '1',
           value: {
-            applicant: 'Appellant',
-            applicantRole: 'citizen',
+            applicant: 'Legal representative',
+            applicantRole: 'caseworker-ia-legalrep-solicitor',
             date: '2021-07-10',
             decision: 'Refused',
             decisionDate: '2021-07-12',
@@ -103,9 +152,9 @@ describe('timeline-utils', () => {
           }
         }
       ];
-      const timeExtensions = getTimeExtensionsEvents(makeAnApplications);
+      const applicationEvents = getApplicationEvents(makeAnApplications);
 
-      expect(timeExtensions.length).to.be.eq(3);
+      expect(applicationEvents.length).to.be.eq(3);
     });
   });
 
@@ -164,30 +213,29 @@ describe('timeline-utils', () => {
   describe('getEventsAndStates', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
       const eventsAndStates = getEventsAndStates(true, true);
-      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(14);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(13);
+      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(15);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(14);
     });
 
     it('should return relevant events and states when uploadAddendumEvidence feature disabled', () => {
       const eventsAndStates = getEventsAndStates(false, true);
-      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(10);
-      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(10);
+      expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(11);
+      expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(11);
     });
 
     it('should return relevant events when hearingBundle feature enabled', () => {
-      const appealHearingRequirementsSectionEvents = [
-        Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
-        Events.STITCHING_BUNDLE_COMPLETE.id,
-        Events.LIST_CASE.id
-      ];
-      const expectedEvents = { appealHearingRequirementsSectionEvents };
+      const eventsAndStates = getEventsAndStates(false, true);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
+    });
+
+    it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
       const eventsAndStates = getEventsAndStates(true, true);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(3);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
     });
 
     it('should return relevant events when hearingBundle feature disabled', () => {
       const eventsAndStates = getEventsAndStates(true, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(2);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
     });
   });
 });

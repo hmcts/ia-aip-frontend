@@ -142,7 +142,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     const { paAppealTypeAipPaymentOption = null, paymentStatus = null } = req.session.appeal;
     if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
       decisionType = req.session.appeal.application.rpDcAppealHearingOption;
-    } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(application.appealType)) {
+    } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType)) {
       decisionType = req.session.appeal.application.decisionHearingFeeOption;
       if (paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid') {
         paymentTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentType, [i18n.pages.checkYourAnswers.payLater]);

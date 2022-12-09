@@ -32,6 +32,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the contact\-details page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.contactDetails,10);
       await I.seeInCurrentUrl(paths.appealStarted.contactDetails);
     });
   }

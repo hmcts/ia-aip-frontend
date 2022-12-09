@@ -23,6 +23,16 @@ Scenario: Explain the reason why my appeal is late
   And I enter an out of time letter sent date and click Save and continue
 
   Then I see "Upload your Home Office decision letter" in title
+
+  When I click "Upload file" button
+  Then I should see error summary
+
+  When I click "Save and continue" button
+  Then I should see error summary
+
+  Given I choose a file that is "INVALID_TOO_BIG" and click the "Upload file" button
+  Then I should see error summary
+
   And I choose a file that is "VALID" and click the "Upload file" button
   And I click "Save and continue" button
 

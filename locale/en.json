@@ -767,6 +767,11 @@
             "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
+        "pendingPayment": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "dueDate": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+          "dueDate1": "The Tribunal may end your appeal if you do not pay."
+        },
         "appealTakenOffline": {
           "description": "Your appeal was removed from the online service on <date of removal>. The reason for this is:",
           "reason": "",
@@ -1394,8 +1399,6 @@
         "title": "Your appointment needs",
         "accessNeedsTitle": "1. Access needs",
         "InterpreterTitle": "Interpreter",
-        "stepFreeAccessTitle": "Step free access",
-        "hearingLoopTitle": "Hearing loop",
         "datesToAvoidTitle": "3. Dates to avoid",
         "otherNeedsTitle": "2. Other needs",
         "multiMediaViewTitle": "Multimedia evidence",

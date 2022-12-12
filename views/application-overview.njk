@@ -79,6 +79,12 @@
                 {% endif %}
               </p>
             {% endif %}
+            {% if applicationNextStep.cta.link %}
+              {{ govukButton({
+                text: applicationNextStep.cta.link.text,
+                  href: applicationNextStep.cta.link.url
+              }) }}
+            {% endif %}
           {% endif %}
           {% if applicationNextStep.usefulDocuments %}
             <p><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>

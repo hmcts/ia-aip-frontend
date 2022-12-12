@@ -118,7 +118,7 @@ function showHearingRequests(appealStatus: string, featureEnabled: boolean) {
 }
 
 function isAppealInProgress(appealStatus: string) {
-  return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.ENDED.id;
+  return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.PENDING_PAYMENT.id && appealStatus !== States.ENDED.id;
 }
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {

@@ -747,7 +747,7 @@
         "sectionHeading": "Hearing requests",
         "askToChangeYourHearing": "Ask to change your hearing date, location or needs"
       },
-      "payForAppeal": "Pay for this appeal",
+      "payForAppeal": "Pay for appeal",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
@@ -766,6 +766,11 @@
             "title": "Helpful Information",
             "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
+        },
+        "pendingPayment": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "dueDate": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+          "dueDate1": "The Tribunal may end your appeal if you do not pay."
         },
         "appealTakenOffline": {
           "description": "Your appeal was removed from the online service on <date of removal>. The reason for this is:",

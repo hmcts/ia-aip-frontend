@@ -21,11 +21,15 @@ interface DoThisNextSection {
     url: string;
   };
   cta?: {
-    url?: string;
+    link?: {
+      text: string,
+      url: string
+    },
+    url?: string,
     respondBy?: string,
     respondByText?: string,
-    respondByTextAskForMoreTime?: string;
-    ctaTitle?: string;
+    respondByTextAskForMoreTime?: string,
+    ctaTitle?: string
   };
   allowedAskForMoreTime?: boolean;
   deadline?: string;
@@ -522,6 +526,22 @@ async function getAppealApplicationNextStep(req: Request) {
           url: i18n.pages.overviewPage.doThisNext.decided.info.url
         },
         cta: {},
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'pendingPayment':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
+          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
+          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
+        ],
+        cta: {
+          link: {
+            text: i18n.pages.overviewPage.payForAppeal,
+            url: paths.common.payLater
+          }
+        },
         allowedAskForMoreTime: false
       };
       break;

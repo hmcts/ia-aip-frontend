@@ -201,7 +201,7 @@ async function createSummaryRowsFrom(req: Request) {
     let decisionType: string;
     if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
       decisionType = req.session.appeal.application.rpDcAppealHearingOption;
-    } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(application.appealType)) {
+    } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType)) {
       decisionType = req.session.appeal.application.decisionHearingFeeOption;
     }
     const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [i18n.pages.checkYourAnswers[decisionType]], paths.appealStarted.decisionType);

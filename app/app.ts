@@ -104,7 +104,7 @@ function configureHelmet(app) {
             ? `'unsafe-inline'`
             : `'nonce-${res.locals.nonce}'`
       ],
-      connectSrc: [ '\'self\'', '*.gov.uk', '*.google-analytics.com' ],
+      connectSrc: [ '\'self\'', '*.gov.uk', '*.google-analytics.com', '*.platform.hmcts.net' ],
       mediaSrc: [ '\'self\'' ],
       frameSrc: [
         '\'self\'',

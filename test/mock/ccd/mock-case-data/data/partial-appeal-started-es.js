@@ -1,5 +1,4 @@
 const partialAppealStartedCaseDataES = {
-  "total": 1,
   "cases": [
     {
       'id': 2,

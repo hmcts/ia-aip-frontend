@@ -1,5 +1,4 @@
 const submittedCmaRequirementsES = {
-  "total": 1,
   "cases": [
     {
       'id': 11,

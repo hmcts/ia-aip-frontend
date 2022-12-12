@@ -1,5 +1,4 @@
 const uploadAddendumEvidenceES = {
-  "total": 1,
   "cases": [
     {
       'id': 17,

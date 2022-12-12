@@ -1,5 +1,4 @@
 const clarifyingQuestionsCaseDataES = {
-  "total": 1,
   "cases": [
     {
       'id': 6,
@@ -108,4 +107,3 @@ const clarifyingQuestionsCaseDataES = {
   };
   
   module.exports = { ...clarifyingQuestionsCaseDataES };
-  

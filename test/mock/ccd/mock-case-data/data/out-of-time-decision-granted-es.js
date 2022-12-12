@@ -1,5 +1,4 @@
 const outOfTimeDecisionGrantedCaseDataES = {
-  "total": 1,
   "cases": [
     {
       "id": 14,

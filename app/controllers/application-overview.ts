@@ -117,6 +117,10 @@ function showHearingRequests(appealStatus: string, featureEnabled: boolean) {
   return featureEnabled ? showHearingRequestsStates.includes(appealStatus) : featureEnabled;
 }
 
+function isAppealInProgress(appealStatus: string) {
+  return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.ENDED.id;
+}
+
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -141,6 +145,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const appealEnded = checkAppealEnded(req.session.appeal.appealStatus);
       const payLater = payLaterForApplicationNeeded(req);
       const hearingDetails = getHearingDetails(req);
+      const showChangeRepresentation = isAppealInProgress(req.session.appeal.appealStatus);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -158,7 +163,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showAppealRequestsInAppealEndedStatus: showAppealRequestsInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         showHearingRequests: showHearingRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         payLater,
-        hearingDetails
+        hearingDetails,
+        showChangeRepresentation
       });
     } catch (e) {
       next(e);

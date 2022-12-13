@@ -18,6 +18,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the home office ref number page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.details,10);
       await I.seeInCurrentUrl(paths.appealStarted.details);
     });
 

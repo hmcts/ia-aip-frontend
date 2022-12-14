@@ -1,4 +1,5 @@
 const outOfTimeDecisionRejectedCaseDataES = {
+  "total": 1,
   "cases": [
     {
       "id": 15,

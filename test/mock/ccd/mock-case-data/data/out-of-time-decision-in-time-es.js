@@ -1,4 +1,5 @@
 const outOfTimeDecisionInTimeCaseDataES = {
+  "total": 1,
   "cases": [
     {
       "id": 16,

@@ -1,4 +1,5 @@
 const endedAppealES = {
+  "total": 1,
   "cases": [
     {
       "id": 13,

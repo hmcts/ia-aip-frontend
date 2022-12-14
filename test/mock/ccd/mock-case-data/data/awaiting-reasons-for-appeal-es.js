@@ -1,4 +1,5 @@
 const awaitingReasonsForAppealCaseDataES = {
+  "total": 1,
   "cases": [
     {
       'id': 7,

@@ -1,4 +1,5 @@
 const partialAwaitingReasonsForAppealCaseDataES = {
+  "total": 1,
   "cases": [
     {
       'id': 5,

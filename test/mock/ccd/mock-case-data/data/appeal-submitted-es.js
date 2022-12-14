@@ -1,4 +1,5 @@
 const appealSubmittedCaseDataES = {
+  "total": 1,
   "cases": [
     {
       'id': 3,

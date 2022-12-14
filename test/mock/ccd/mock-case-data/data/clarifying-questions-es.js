@@ -1,4 +1,5 @@
 const clarifyingQuestionsCaseDataES = {
+  "total": 1,
   "cases": [
     {
       'id': 6,

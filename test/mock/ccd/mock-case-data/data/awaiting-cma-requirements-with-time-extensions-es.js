@@ -1,4 +1,5 @@
 const awaitingCmaRequirementsWithTimeExtensionsES = {
+  "total": 1,
   "cases": [
     {
       'id': 10,

@@ -1,4 +1,5 @@
 const awaitingCmaRequirementsES = {
+  "total": 1,
   "cases": [
     {
       'id': 9,

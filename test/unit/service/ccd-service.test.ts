@@ -72,7 +72,7 @@ describe('idam-service', () => {
 
       const submitCreateCaseStub = sinon.stub(ccdService, 'submitCreateCase');
       const expectedResult = {} as any;
-      const serviceId = { $set: { HMCTSServiceId : 'BFA1' }};
+      const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
 
       submitCreateCaseStub.withArgs(userId, headers, {
         event: {
@@ -107,7 +107,7 @@ describe('idam-service', () => {
 
       const submitUpdateCaseStub = sinon.stub(ccdService, 'submitUpdateAppeal');
       const caseData = { journeyType: 'AIP' } as Partial<CaseData>;
-      const serviceId = { $set: { HMCTSServiceId : 'BFA1' }};
+      const serviceId = { $set: { HMCTSServiceId : 'BFA1' } };
       submitUpdateCaseStub.withArgs(userId, caseId, headers, {
         event: {
           id: 'eventId',

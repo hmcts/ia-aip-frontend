@@ -2,7 +2,7 @@
 {% set pageTitleName = i18n.pages.successPage.title %}
 {% block content %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
-  {% if payLaterEaEuHuAppeal %}
+  {% if payLaterEuEussHuAppeal %}
      {% set panelTitle = i18n.pages.successPage.payLaterEuEussHu.panel %}
   {% elif payLater %}
     {% set panelTitle = i18n.pages.successPage.payLater.panel %}
@@ -15,11 +15,11 @@
     titleText: panelTitle,
     classes: mainClasses
   }) }}
-  {% if payLaterEaEuHuAppeal %}
+  {% if payLaterEuEussHuAppeal %}
     <p>{{i18n.pages.successPage.payLaterEuEussHu.description}}</p>
   {% endif %}
   <h2 class="govuk-heading-m">{{i18n.pages.successPage.whatHappensNext}}</h2>
-  {% if payLaterEaEuHuAppeal %}
+  {% if payLaterEuEussHuAppeal %}
     <ul class="govuk-list govuk-list--bullet">
       <li>{{ i18n.pages.successPage.payLaterEuEussHu.whatHappensNextContent1 | eval | safe }}</li>
       <li>{{ i18n.pages.successPage.payLaterEuEussHu.whatHappensNextContent2 }}</li>
@@ -40,7 +40,7 @@
       <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
     </ul>
   {% endif %}
-  {% if payLaterEaEuHuAppeal %}
+  {% if payLaterEuEussHuAppeal %}
     {{ govukButton({
       text: i18n.pages.overviewPage.payForAppeal,
       href: paths.common.payLater

@@ -223,8 +223,7 @@ async function createSummaryRowsFrom(req: Request) {
 function getCheckAndSend(paymentService: PaymentService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       const summaryRows = await createSummaryRowsFrom(req);
       const { paymentReference = null } = req.session.appeal;
       let fee;
@@ -252,8 +251,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
   return async (req: Request, res: Response, next: NextFunction) => {
     const request = req.body;
     try {
-      const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       const payNow = payNowForApplicationNeeded(req);
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {
@@ -268,12 +266,10 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
         }
         return res.render('appeal-application/check-and-send.njk', {
           summaryRows,
-          error: validationResult,
+          previousPage: paths.appealStarted.taskList,
           ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
           ...(paymentsFlag && !appealPaid) && { payNow },
-          ...(paymentsFlag && appealPaid) && { appealPaid },
-          errorList: Object.values(validationResult),
-          previousPage: paths.appealStarted.taskList
+          ...(paymentsFlag && appealPaid) && { appealPaid }
         });
       }
       const { appeal } = req.session;

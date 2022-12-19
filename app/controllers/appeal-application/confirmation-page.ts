@@ -12,14 +12,14 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const isLate = () => application.isAppealLate;
     const payLater = payLaterForApplicationNeeded(req);
-    const payLaterEaEuHuAppeal = payLater && application.appealType !== 'protection';
-    const daysToWait: number = payLaterEaEuHuAppeal ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
+    const payLaterEuEussHuAppeal = payLater && application.appealType !== 'protection';
+    const daysToWait: number = payLaterEuEussHuAppeal ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
 
     res.render('confirmation-page.njk', {
       date: addDaysToDate(daysToWait),
       late: isLate(),
       payLater,
-      payLaterEaEuHuAppeal
+      payLaterEuEussHuAppeal
     });
   } catch (e) {
     next(e);

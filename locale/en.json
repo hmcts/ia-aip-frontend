@@ -403,7 +403,7 @@
         "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
       },
       "payLaterEuEussHu": {
-        "panel": "Your appeal has been submitted",
+        "panel": "You have sent your appeal details",
         "description": "You have sent an unpaid appeal",
         "whatHappensNextContent1": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span>.",
         "whatHappensNextContent2": "Your appeal will not progress until you have paid",

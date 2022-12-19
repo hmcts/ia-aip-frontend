@@ -2,7 +2,9 @@
 {% set pageTitleName = i18n.pages.successPage.title %}
 {% block content %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
-  {% if payLater %}
+  {% if payLaterEuEussHuAppeal %}
+     {% set panelTitle = i18n.pages.successPage.payLaterEuEussHu.panel %}
+  {% elif payLater %}
     {% set panelTitle = i18n.pages.successPage.payLater.panel %}
   {% elif late %}
     {% set panelTitle = i18n.pages.successPage.outOfTime.panel %}
@@ -13,8 +15,17 @@
     titleText: panelTitle,
     classes: mainClasses
   }) }}
+  {% if payLaterEuEussHuAppeal %}
+    <p>{{i18n.pages.successPage.payLaterEuEussHu.description}}</p>
+  {% endif %}
   <h2 class="govuk-heading-m">{{i18n.pages.successPage.whatHappensNext}}</h2>
-  {% if payLater %}
+  {% if payLaterEuEussHuAppeal %}
+    <ul class="govuk-list govuk-list--bullet">
+      <li>{{ i18n.pages.successPage.payLaterEuEussHu.whatHappensNextContent1 | eval | safe }}</li>
+      <li>{{ i18n.pages.successPage.payLaterEuEussHu.whatHappensNextContent2 }}</li>
+      <li>{{ i18n.pages.successPage.payLaterEuEussHu.whatHappensNextContent3 }}</li>
+    </ul>
+  {% elif payLater %}
     {{ i18n.pages.successPage.payLater.whatHappensNextContent }}
   {% elif late %}
     <ul class="govuk-list govuk-list--bullet">
@@ -29,17 +40,24 @@
       <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
     </ul>
   {% endif %}
-  <div class="panel-background">
+  {% if payLaterEuEussHuAppeal %}
+    {{ govukButton({
+      text: i18n.pages.overviewPage.payForAppeal,
+      href: paths.common.payLater
+    }) }}
+  {% else %}
+    <div class="panel-background">
       <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>
       <ul class="govuk-list govuk-list--bullet">
-          <li><a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/immigration-asylum-tribunal"> {{ i18n.pages.successPage.readMore | safe }}</a></li>
-          <li><a class="govuk-link govuk-link--no-visited-state" href="{{ paths.common.moreHelp }}">{{ i18n.pages.successPage.findOutMore | safe }}</a></li>
+        <li><a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/immigration-asylum-tribunal"> {{ i18n.pages.successPage.readMore | safe }}</a></li>
+        <li><a class="govuk-link govuk-link--no-visited-state" href="{{ paths.common.moreHelp }}">{{ i18n.pages.successPage.findOutMore | safe }}</a></li>
       </ul>
     </div>
     {{ govukButton({
-        text: i18n.pages.successPage.seeProgress,
-        href: paths.common.overview
+      text: i18n.pages.successPage.seeProgress,
+      href: paths.common.overview
     }) }}
     {{ contactUs() }}
+  {% endif %}
 {% endblock %}
 

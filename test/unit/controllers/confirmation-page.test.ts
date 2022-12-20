@@ -71,7 +71,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       late: false,
       payLater: false,
-      payLaterEaEuHuAppeal: false
+      payLaterEuEussHuAppeal: false
     });
   });
 
@@ -87,7 +87,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       late: false,
       payLater: true,
-      payLaterEaEuHuAppeal: false
+      payLaterEuEussHuAppeal: false
     });
   });
 
@@ -103,7 +103,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       late: false,
       payLater: false,
-      payLaterEaEuHuAppeal: false
+      payLaterEuEussHuAppeal: false
     });
   });
 
@@ -118,7 +118,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(14),
       late: false,
       payLater: true,
-      payLaterEaEuHuAppeal: true
+      payLaterEuEussHuAppeal: true
     });
   });
 
@@ -133,7 +133,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(14),
       late: false,
       payLater: true,
-      payLaterEaEuHuAppeal: true
+      payLaterEuEussHuAppeal: true
     });
   });
 
@@ -148,7 +148,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(14),
       late: false,
       payLater: true,
-      payLaterEaEuHuAppeal: true
+      payLaterEuEussHuAppeal: true
     });
   });
 
@@ -164,7 +164,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       late: true,
       payLater: false,
-      payLaterEaEuHuAppeal: false
+      payLaterEuEussHuAppeal: false
     });
   });
 

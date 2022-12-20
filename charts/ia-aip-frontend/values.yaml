@@ -6,7 +6,6 @@ nodejs:
   cpuRequests: 0.2
   memoryLimits: 512Mi
   cpuLimits: 1
-  disableTraefikTls: false
   environment:
     HTTP_PROTOCOL: http
     NODE_ENV: production

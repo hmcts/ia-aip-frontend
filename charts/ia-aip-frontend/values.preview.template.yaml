@@ -7,6 +7,7 @@ idam-pr:
 nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  disableTraefikTls: false
   environment:
     IDAM_WEB_URL: https://idam-web-public.aat.platform.hmcts.net
     IDAM_API_URL: https://idam-api.aat.platform.hmcts.net

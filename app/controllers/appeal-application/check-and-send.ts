@@ -266,10 +266,12 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
         }
         return res.render('appeal-application/check-and-send.njk', {
           summaryRows,
-          previousPage: paths.appealStarted.taskList,
+          error: validationResult,
           ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
           ...(paymentsFlag && !appealPaid) && { payNow },
-          ...(paymentsFlag && appealPaid) && { appealPaid }
+          ...(paymentsFlag && appealPaid) && { appealPaid },
+          errorList: Object.values(validationResult),
+          previousPage: paths.appealStarted.taskList
         });
       }
       const { appeal } = req.session;

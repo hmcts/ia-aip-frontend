@@ -1399,6 +1399,8 @@
         "title": "Your appointment needs",
         "accessNeedsTitle": "1. Access needs",
         "InterpreterTitle": "Interpreter",
+        "stepFreeAccessTitle": "Step free access",
+        "hearingLoopTitle": "Hearing loop",
         "datesToAvoidTitle": "3. Dates to avoid",
         "otherNeedsTitle": "2. Other needs",
         "multiMediaViewTitle": "Multimedia evidence",

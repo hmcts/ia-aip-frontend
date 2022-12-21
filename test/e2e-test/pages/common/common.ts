@@ -351,6 +351,10 @@ module.exports = {
       await I.amOnPage(`${testUrl}/health`);
     });
 
+    When(/^I visit the overview page$/, async () => {
+      await I.amOnPage(`${testUrl}/appeal-overview`);
+    });
+
     Then(/^I click continue$/, async () => {
       await I.click('Continue');
     });

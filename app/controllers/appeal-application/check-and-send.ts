@@ -223,7 +223,8 @@ async function createSummaryRowsFrom(req: Request) {
 function getCheckAndSend(paymentService: PaymentService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+      const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
       const summaryRows = await createSummaryRowsFrom(req);
       const { paymentReference = null } = req.session.appeal;
       let fee;
@@ -251,7 +252,8 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
   return async (req: Request, res: Response, next: NextFunction) => {
     const request = req.body;
     try {
-      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+      const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+      const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
       const payNow = payNowForApplicationNeeded(req);
       const validationResult = statementOfTruthValidation(request);
       if (validationResult) {

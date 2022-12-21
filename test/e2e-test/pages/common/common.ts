@@ -271,6 +271,44 @@ module.exports = {
       });
     });
 
+    Given('I have an EU or EUSS or HU appeal with home office details, name, date of birth, nationality, address and reason for appeal', async () => {
+      await setupData({
+        homeOfficeReferenceNumber: 'A1111111',
+        homeOfficeDecisionDate: moment().format('YYYY-MM-DD'),
+        appellantGivenNames: 'givenName',
+        appellantFamilyName: 'familyName',
+        appellantDateOfBirth: '1981-01-01',
+        appellantNationalities: [
+          {
+            id: '1',
+            value: {
+              code: 'FI'
+            }
+          }
+        ],
+        appellantAddress: {
+          AddressLine1: 'Address line 1',
+          PostTown: 'Town',
+          PostCode: 'CM15 9BN'
+        },
+        subscriptions: [ {
+          id: 1,
+          value: {
+            subscriber: 'appellant',
+            wantsEmail: 'No',
+            email: null,
+            wantsSms: 'Yes',
+            mobileNumber: '07899999999'
+          }
+        } ],
+        appealType: 'refusalOfHumanRights',
+        feeWithoutHearing: '80',
+        feeCode: 'abc',
+        feeVersion: '2',
+        uploadTheNoticeOfDecisionDocs: []
+      });
+    });
+
     When(/^I click "([^"]*)" button$/, async (selector: string) => {
       await I.wait(1);
       await I.click(selector);

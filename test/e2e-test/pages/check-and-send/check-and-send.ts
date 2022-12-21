@@ -28,6 +28,14 @@ module.exports = {
       await I.click('Send');
     });
 
+    When('I click submit your appeal', async () => {
+      await I.click('Submit your appeal');
+    });
+
+    When('I click Submit and continue to pay £80 by debit or credit card', async () => {
+      await I.click('Submit and continue to pay £80 by debit or credit card');
+    });
+
     Then('I check the statement of truth', async () => {
       await I.click('I believe the information I have given is true');
     });

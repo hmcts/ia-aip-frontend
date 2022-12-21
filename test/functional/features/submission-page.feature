@@ -27,3 +27,7 @@ Feature: submission
     Then I am on the appeal details sent page
     And I see "Your appeal has been submitted" in title
     And I see the pay by date is 14 days in the future
+    When I visit the overview page
+    Then I see "Pay for appeal" link
+    And I see "Your appeal details have been sent to the Tribunal" description in overview banner
+    And I see "The Tribunal may end your appeal if you do not pay" description in overview banner

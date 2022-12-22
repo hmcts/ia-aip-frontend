@@ -143,7 +143,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(req.session.appeal.appealStatus);
-      const payLater = payLaterForApplicationNeeded(req);
+      const payLater = payLaterForApplicationNeeded(req) || isUnpaidPayNowProtectionAppeal(req);
       const hearingDetails = getHearingDetails(req);
       const showChangeRepresentation = isAppealInProgress(req.session.appeal.appealStatus);
 
@@ -172,6 +172,14 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
   };
 }
 
+function isUnpaidPayNowProtectionAppeal(req: Request): boolean {
+  const appeal = req.session.appeal;
+  const paymentStatus = appeal.paymentStatus;
+  const appealType = appeal.application.appealType;
+  const paAppealTypeAipPaymentOption = appeal.paAppealTypeAipPaymentOption;
+  return appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow' && paymentStatus !== 'Paid';
+}
+
 function setupApplicationOverviewController(updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.common.overview, getApplicationOverview(updateAppealService));
@@ -185,6 +193,7 @@ export {
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
   getHearingDetails,
+  isUnpaidPayNowProtectionAppeal,
   showAppealRequests,
   showHearingRequests,
   showAppealRequestsInAppealEndedStatus

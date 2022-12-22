@@ -5,6 +5,7 @@ import {
   getAppealRefNumber,
   getApplicationOverview,
   getHearingDetails,
+  isUnpaidPayNowProtectionAppeal,
   setupApplicationOverviewController,
   showAppealRequests,
   showAppealRequestsInAppealEndedStatus,
@@ -589,5 +590,21 @@ describe('Confirmation Page Controller', () => {
   it('showAppealRequestsInAppealEndedStatus should return true when in ended state', () => {
     const result = showAppealRequestsInAppealEndedStatus(States.ENDED.id, true);
     expect(result).to.equal(true);
+  });
+
+  it('isUnpaidPayNowProtectionAppeal should return true', () => {
+    req.session.appeal.paymentStatus = 'Unpaid';
+    req.session.appeal.application.appealType = 'protection';
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+    const result = isUnpaidPayNowProtectionAppeal(req as Request);
+    expect(result).to.equal(true);
+  });
+
+  it('isUnpaidPayNowProtectionAppeal should return false', () => {
+    req.session.appeal.paymentStatus = 'Paid';
+    req.session.appeal.application.appealType = 'protection';
+    req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+    const result = isUnpaidPayNowProtectionAppeal(req as Request);
+    expect(result).to.equal(false);
   });
 });

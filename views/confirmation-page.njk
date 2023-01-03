@@ -2,8 +2,8 @@
 {% set pageTitleName = i18n.pages.successPage.title %}
 {% block content %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
-  {% if payLaterEaEuHuAppeal %}
-     {% set panelTitle = i18n.pages.successPage.payLaterEuEussHu.panel %}
+  {% if payNow %}
+     {% set panelTitle = i18n.pages.successPage.payNow.panel %}
   {% elif payLater %}
     {% set panelTitle = i18n.pages.successPage.payLater.panel %}
   {% elif late %}
@@ -15,15 +15,15 @@
     titleText: panelTitle,
     classes: mainClasses
   }) }}
-  {% if payLaterEaEuHuAppeal %}
-    <p>{{i18n.pages.successPage.payLaterEuEussHu.description}}</p>
+  {% if payNow %}
+    <p>{{i18n.pages.successPage.payNow.description}}</p>
   {% endif %}
   <h2 class="govuk-heading-m">{{i18n.pages.successPage.whatHappensNext}}</h2>
-  {% if payLaterEaEuHuAppeal %}
+  {% if payNow %}
     <ul class="govuk-list govuk-list--bullet">
-      <li>{{ i18n.pages.successPage.payLaterEuEussHu.whatHappensNextContent1 | eval | safe }}</li>
-      <li>{{ i18n.pages.successPage.payLaterEuEussHu.whatHappensNextContent2 }}</li>
-      <li>{{ i18n.pages.successPage.payLaterEuEussHu.whatHappensNextContent3 }}</li>
+      <li>{{ i18n.pages.successPage.payNow.whatHappensNextContent1 | eval | safe }}</li>
+      <li>{{ i18n.pages.successPage.payNow.whatHappensNextContent2 }}</li>
+      <li>{{ i18n.pages.successPage.payNow.whatHappensNextContent3 }}</li>
     </ul>
   {% elif payLater %}
     {{ i18n.pages.successPage.payLater.whatHappensNextContent }}
@@ -40,7 +40,7 @@
       <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
     </ul>
   {% endif %}
-  {% if payLaterEaEuHuAppeal %}
+  {% if payNow %}
     {{ govukButton({
       text: i18n.pages.overviewPage.payForAppeal,
       href: paths.common.payLater

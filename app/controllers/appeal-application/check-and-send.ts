@@ -283,11 +283,7 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
         ...req.session.appeal,
         ...appealUpdated
       };
-      if (paymentsFlag && payNow && isProtectionAppeal) {
-        return await paymentService.initiatePayment(req, res, getFee(req.session.appeal));
-      } else {
-        return res.redirect(paths.appealSubmitted.confirmation);
-      }
+      return res.redirect(paths.appealSubmitted.confirmation);
     } catch (error) {
       next(error);
     }

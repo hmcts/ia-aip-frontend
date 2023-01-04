@@ -3497,18 +3497,6 @@
         "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
         "In all other cases, you should use the new service."
       ],
-      "insetText": "You can only appeal an EU Settlement Scheme decision if your application was made after 11pm on 31 January 2020."
-    },
-    {
-      "title": "There is a fee for this appeal",
-      "description": "It costs:",
-      "optionsList": [
-        "<ul class='govuk-list govuk-list--bullet'><li>£80 without a hearing</li><li>£140 with a hearing</li></ul>",
-        "<a target=\"_blank\" href=\"https://www.gov.uk/guidance/get-help-to-pay-or-reduce-your-visa-or-immigration-appeal-fee\">Read more about tribunal fees (opens in a new window)</a> ",
-        "If you think you do not have to pay the fee, or could get help to reduce the fee, you cannot use the new service to submit your appeal. In this case, you should:",
-        "<ul class='govuk-list govuk-list--bullet'><li> <a target=\"_blank\" href=\"https://immigrationappealsonline.justice.gov.uk/IACFees/\">Use the current online service instead (opens in new window).</a></li></ul>",
-        "In all other cases, you should use the new service."
-      ],
       "cta": "link",
       "hideMoreInfo": true,
       "showHelp": true

@@ -338,7 +338,7 @@ describe('Check and Send Controller', () => {
       expect(res.redirect).to.have.been.called;
     });
 
-    it('should initiate payment for "protection" appeal type and payNow', async () => {
+    it('should not initiate payment for "protection" appeal type and payNow', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
@@ -347,13 +347,24 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(paymentService.initiatePayment).to.have.been.called;
+      expect(paymentService.initiatePayment).not.to.have.been.called;
     });
 
     it('should submit appeal for "protection" appeal type and payLater', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should submit appeal for "protection" appeal type and payNow', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
@@ -402,17 +413,6 @@ describe('Check and Send Controller', () => {
 
       expect(updateAppealService.submitEventRefactored).to.have.been.called;
       expect(res.redirect).to.have.been.called;
-    });
-
-    it('should catch exception if no fee present', async () => {
-      const error = new Error('Fee is not available');
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
-      req.session.appeal = createDummyAppealApplication();
-      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
-      req.body = { statement: 'acceptance' };
-      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
-
-      expect(next).to.have.been.called;
     });
 
     it('should catch exception and call next with the error', async () => {

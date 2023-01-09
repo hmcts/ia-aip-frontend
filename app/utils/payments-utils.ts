@@ -28,7 +28,6 @@ export function payNowForApplicationNeeded(req: Request): boolean {
 export function payLaterForApplicationNeeded(req: Request): boolean {
   const { appealType } = req.session.appeal.application;
   const { paAppealTypeAipPaymentOption = null, paymentStatus = null, appealStatus } = req.session.appeal;
-  const payLaterEaHuEuss = appealStatus === States.PENDING_PAYMENT.id && EA_HU_EUSS_APPEAL_TYPES.includes(appealType);
   const payLaterProtection = appealStatus !== States.APPEAL_STARTED.id && appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater' && paymentStatus !== 'Paid';
-  return payLaterProtection || payLaterEaHuEuss;
+  return payLaterProtection;
 }

@@ -44,7 +44,8 @@ class CcdService {
       headers: {
         Authorization: headers.userToken,
         ServiceAuthorization: headers.serviceToken,
-        'content-type': 'application/json'
+        'content-type': 'application/json',
+        UserId: userId // Hack param to prove RIA-5761.
       },
       json: true
     };
@@ -86,15 +87,18 @@ class CcdService {
     return rp.post(options);
   }
 
-  loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails[]> {
-    // tslint:disable:no-console
-    console.log(userId);
-    console.log(headers);
-    return rp.get(this.createOptions(
+  loadCasesForUser(userId: string, headers: SecurityHeaders): Promise<ES<CcdCaseDetails>> {
+    const query = {
+      query: { match_all: {} },
+      sort: [{ id: { order: 'asc' } }]
+    };
+    const options: any = this.createOptions(
       userId,
       headers,
-      `${ccdBaseUrl}/citizens/${userId}/jurisdictions/${jurisdictionId}/case-types/${caseType}/cases`)
-    );
+        `${ccdBaseUrl}/searchCases?ctid=${caseType}`);
+    options.body = query;
+    let response = rp.post(options);
+    return response;
   }
 
   retrieveCaseHistoryV2(userId: string, caseId: string, headers: SecurityHeaders): Promise<any> {
@@ -146,10 +150,9 @@ class CcdService {
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
-    const cases: CcdCaseDetails[] = await this.loadCasesForUser(userId, headers);
-    if (cases.length > 0) {
-      logger.trace(`found [${cases.length}] cases`, logLabel);
-      return cases[0];
+    let data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
+    if (data.total > 0) {
+      return data.cases[0];
     } else {
       logger.trace('Did not find a case', logLabel);
       const newCase: CcdCaseDetails = await this.createCase(userId, headers);
@@ -167,6 +170,11 @@ class CcdService {
     }
     return history;
   }
+}
+interface ES<T> {
+  length: number;
+  cases: T[];
+  total: number;
 }
 
 export {

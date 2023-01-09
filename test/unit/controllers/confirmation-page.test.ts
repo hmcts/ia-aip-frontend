@@ -68,10 +68,10 @@ describe('Confirmation Page Controller', () => {
 
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
-      date: addDaysToDate(14),
+      date: addDaysToDate(5),
       late: false,
       payLater: false,
-      payNow: true
+      payLaterEaEuHuAppeal: false
     });
   });
 
@@ -87,7 +87,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       late: false,
       payLater: true,
-      payNow: false
+      payLaterEaEuHuAppeal: false
     });
   });
 
@@ -103,7 +103,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       late: false,
       payLater: false,
-      payNow: false
+      payLaterEaEuHuAppeal: false
     });
   });
 
@@ -117,8 +117,8 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
       late: false,
-      payLater: false,
-      payNow: true
+      payLater: true,
+      payLaterEaEuHuAppeal: true
     });
   });
 
@@ -132,8 +132,8 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
       late: false,
-      payLater: false,
-      payNow: true
+      payLater: true,
+      payLaterEaEuHuAppeal: true
     });
   });
 
@@ -147,8 +147,8 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
       late: false,
-      payLater: false,
-      payNow: true
+      payLater: true,
+      payLaterEaEuHuAppeal: true
     });
   });
 
@@ -161,10 +161,10 @@ describe('Confirmation Page Controller', () => {
 
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
-      date: addDaysToDate(14),
+      date: addDaysToDate(5),
       late: true,
       payLater: false,
-      payNow: true
+      payLaterEaEuHuAppeal: false
     });
   });
 

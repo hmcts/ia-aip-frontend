@@ -95,15 +95,15 @@ describe('payment-utils', () => {
 
       expect(payLater).to.eql(false);
     });
-    it('should return payLater = true for refusalOfHumanRights or refusalOfEu or euSettlementScheme appeals when appeal status is paymentPending', () => {
+    it('should return payLater = false for refusalOfHumanRights or refusalOfEu or euSettlementScheme appeals when appeal status is paymentPending', () => {
       req.session.appeal.appealStatus = 'pendingPayment';
-      let payLater = true;
+      let payLater: boolean;
       ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].forEach(appealTye => {
         req.session.appeal.application.appealType = appealTye;
-        payLater = payLater && payLaterForApplicationNeeded(req as Request);
+        payLater = payLaterForApplicationNeeded(req as Request);
       });
 
-      expect(payLater).to.eql(true);
+      expect(payLater).to.eql(false);
     });
     it('should return payLater = false for refusalOfHumanRights or refusalOfEu or euSettlementScheme appeals when appeal status is not paymentPending', () => {
       let payLater = true;

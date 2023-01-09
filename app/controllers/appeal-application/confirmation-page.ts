@@ -3,7 +3,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { addDaysToDate } from '../../utils/date-utils';
-import { payLaterForApplicationNeeded } from '../../utils/payments-utils';
+import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../../utils/payments-utils';
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   req.app.locals.logger.trace(`Successful AIP appeal submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
@@ -12,14 +12,14 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const isLate = () => application.isAppealLate;
     const payLater = payLaterForApplicationNeeded(req);
-    const payLaterEaEuHuAppeal = payLater && application.appealType !== 'protection';
-    const daysToWait: number = payLaterEaEuHuAppeal ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
+    const payNow = payNowForApplicationNeeded(req);
+    const daysToWait: number = payNow ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
 
     res.render('confirmation-page.njk', {
       date: addDaysToDate(daysToWait),
       late: isLate(),
       payLater,
-      payLaterEaEuHuAppeal
+      payNow
     });
   } catch (e) {
     next(e);

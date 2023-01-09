@@ -83,6 +83,7 @@
   },
   "daysToWait": {
     "afterSubmission": 5,
+    "pendingPayment": 14,
     "afterReasonsForAppeal": 14,
     "afterCQSubmission": 7
   },

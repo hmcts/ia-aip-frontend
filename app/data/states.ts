@@ -3,6 +3,10 @@ export const States = {
     id: 'appealStarted',
     name: 'Appeal started'
   },
+  PENDING_PAYMENT: {
+    id: 'pendingPayment',
+    name: 'Payment pending'
+  },
   APPEAL_SUBMITTED: {
     id: 'appealSubmitted',
     name: 'Appeal submitted'

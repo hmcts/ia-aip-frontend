@@ -11,11 +11,6 @@ describe('idam-service', () => {
   const userId = 'userId';
   const caseId = 'caseId';
   const expectedCase = { caseId: 1 };
-  const elasticSearchResponse = {
-    length: 1,
-    cases: [ expectedCase ],
-    total: 1
-  };
   let loadedCase;
   let loadCaseStub;
   let createCaseStub;
@@ -26,7 +21,7 @@ describe('idam-service', () => {
     before(async () => {
       loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
       loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve(elasticSearchResponse);
+        resolve([ expectedCase ]);
       }));
 
       createCaseStub = sinon.mock(ccdService).expects('createCase').never();
@@ -49,8 +44,9 @@ describe('idam-service', () => {
     before(async () => {
       loadCaseStub = sinon.stub(ccdService, 'loadCasesForUser');
       loadCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
-        resolve(elasticSearchResponse);
+        resolve([]);
       }));
+
       createCaseStub = sinon.stub(ccdService, 'createCase');
       createCaseStub.withArgs(userId, headers).returns(new Promise((resolve) => {
         resolve(expectedCase);
@@ -191,7 +187,7 @@ describe('idam-service', () => {
     it('loadCasesForUser', async () => {
       await ccdService.loadCasesForUser(userId, headers);
 
-      expect(postRequest).to.have.been.called;
+      expect(getRequest).to.have.been.called;
     });
 
     it('startUpdateAppeal with "editAppeal"', async () => {
@@ -212,5 +208,4 @@ describe('idam-service', () => {
       expect(getRequest).to.have.been.called;
     });
   });
-
 });

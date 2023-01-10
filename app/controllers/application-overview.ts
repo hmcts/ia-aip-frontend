@@ -136,10 +136,10 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
-      const { appealReferenceNumber, appealStatus, paymentStatus } = req.session.appeal;
+      const { appealReferenceNumber, appealStatus } = req.session.appeal;
       const loggedInUserFullName: string = getAppellantName(req);
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
-      const stagesStatus = buildProgressBarStages(appealStatus, paymentStatus);
+      const stagesStatus = buildProgressBarStages(appealStatus);
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);

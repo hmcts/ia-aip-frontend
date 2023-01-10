@@ -6,6 +6,7 @@ function buildProgressBarStages(state: string) {
     yourAppealDetails: {
       activeStatus: [
         States.APPEAL_STARTED.id,
+        States.PENDING_PAYMENT.id,
         States.APPEAL_SUBMITTED.id,
         States.AWAITING_RESPONDENT_EVIDENCE.id
       ]

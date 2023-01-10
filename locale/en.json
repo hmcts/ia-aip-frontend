@@ -747,7 +747,7 @@
         "sectionHeading": "Hearing requests",
         "askToChangeYourHearing": "Ask to change your hearing date, location or needs"
       },
-      "payForAppeal": "Pay for your appeal",
+      "payForAppeal": "Pay for this appeal",
       "doThisNext": {
         "toDo": "Do this next",
         "nothingToDo": "Nothing to do next",
@@ -768,6 +768,7 @@
           }
         },
         "pendingPayment": {
+          "payForYourAppeal": "Pay for your appeal",
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
           "dueDate": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
           "dueDate1": "The Tribunal may end your appeal if you do not pay."

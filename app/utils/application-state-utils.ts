@@ -538,7 +538,7 @@ async function getAppealApplicationNextStep(req: Request) {
         ],
         cta: {
           link: {
-            text: i18n.pages.overviewPage.payForAppeal,
+            text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
             url: paths.common.payLater
           }
         },

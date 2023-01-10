@@ -61,6 +61,10 @@ describe('event-deadline-date-finder', () => {
               'createdDate': '2020-02-08T16:00:00.000'
             },
             {
+              'id': 'pendingPayment',
+              'createdDate': '2020-02-08T16:00:00.000'
+            },
+            {
               'id': 'submitReasonsForAppeal',
               'createdDate': '2020-02-18T16:00:00.000'
             },
@@ -111,12 +115,20 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.null;
     });
 
-    it('appealSubmitted should return a formatted date with 14 days offset from the appealSubmission date', () => {
+    it('appealSubmitted should return a formatted date with 5 days offset from the appealSubmission date', () => {
 
       const currentAppealStatus = 'appealSubmitted';
       const result = getDeadline(currentAppealStatus, req as Request);
 
       expect(result).to.be.equal('13 February 2020');
+    });
+
+    it('pendingPayment should return a formatted date with 14 days offset from the appealSubmission date', () => {
+
+      const currentAppealStatus = 'pendingPayment';
+      const result = getDeadline(currentAppealStatus, req as Request);
+
+      expect(result).to.be.equal('22 February 2020');
     });
 
     it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date', () => {

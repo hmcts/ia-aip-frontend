@@ -132,7 +132,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
   let paymentEvent = [];
-  if (paymentStatus === 'Paid' && paAppealTypeAipPaymentOption === 'payLater') {
+  if (paymentStatus === 'Paid') {
     paymentEvent = [{
       date: moment(paymentDate).format('DD MMMM YYYY'),
       dateObject: new Date(paymentDate),

@@ -67,7 +67,7 @@
     "joi": "^17.4.0",
     "jsdom": "^16.2.2",
     "jsdom-global": "^3.0.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "launchdarkly-node-server-sdk": "^6.4.0",
     "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^0.12.0",

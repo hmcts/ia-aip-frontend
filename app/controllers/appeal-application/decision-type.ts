@@ -18,7 +18,7 @@ function getDecisionTypeQuestion(appeal: Appeal) {
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
     hint = i18n.pages.decisionTypePage.hint.withoutFee;
     decision = appeal.application.rpDcAppealHearingOption || null;
-  } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(appeal.application.appealType)) {
+  } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appeal.application.appealType)) {
     hint = i18n.pages.decisionTypePage.hint.withFee;
     decision = appeal.application.decisionHearingFeeOption || null;
   }
@@ -94,7 +94,7 @@ function postDecisionType(updateAppealService: UpdateAppealService) {
         application: {
           ...req.session.appeal.application,
           rpDcAppealHearingOption: ['revocationOfProtection', 'deprivation'].includes(appealType) ? req.body['answer'] : '',
-          decisionHearingFeeOption: ['protection', 'refusalOfHumanRights', 'refusalOfEu'].includes(appealType) ? req.body['answer'] : ''
+          decisionHearingFeeOption: ['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appealType) ? req.body['answer'] : ''
         }
       };
 

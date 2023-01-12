@@ -39,6 +39,10 @@
     "webUrl": "IDAM_WEB_URL",
     "secret": "IDAM_SECRET"
   },
+  "systemUser": {
+    "username": "IA_SYSTEM_USERNAME",
+    "password": "IA_SYSTEM_PASSWORD"
+  },
   "payments": {
     "apiUrl": "PAYMENTS_API_URL"
   },
@@ -71,7 +75,13 @@
     "testCaseOfficerUserName": "TEST_CASEOFFICER_USERNAME",
     "testCaseOfficerPassword": "TEST_CASEOFFICER_PASSWORD",
     "testHomeOfficeGenericUserName": "TEST_HOMEOFFICE_GENERIC_USERNAME",
-    "testHomeOfficeGenericPassword": "TEST_HOMEOFFICE_GENERIC_PASSWORD"
+    "testHomeOfficeGenericPassword": "TEST_HOMEOFFICE_GENERIC_PASSWORD",
+    "testAdminOfficerUserName": "TEST_ADMINOFFICER_USERNAME",
+    "testAdminOfficerPassword": "TEST_ADMINOFFICER_PASSWORD",
+    "testJudgeUserName": "TEST_JUDGE_X_USERNAME",
+    "testJudgePassword": "TEST_JUDGE_X_PASSWORD",
+    "testLawFirmAUsername": "TEST_LAW_FIRM_SHARE_CASE_A_USERNAME",
+    "testLawFirmAPassword": "TEST_LAW_FIRM_SHARE_CASE_A_PASSWORD"
   },
   "hearingCentres": {
     "bradfordEmail": "IA_HEARING_CENTRE_BRADFORD_EMAIL",
@@ -82,6 +92,14 @@
     "birminghamEmail": "IA_HEARING_CENTRE_BIRMINGHAM_EMAIL",
     "hattonCrossEmail": "IA_HEARING_CENTRE_HATTON_CROSS_EMAIL",
     "glasgowEmail": "IA_HEARING_CENTRE_GLASGOW_EMAIL"
+  },
+  "docmosis": {
+    "renderUrl": "DOCMOSIS_RENDER_URL",
+    "accessKey": "DOCMOSIS_ACCESS_KEY"
+  },
+  "customerServices": {
+    "telephone": "IA_CUSTOMER_SERVICES_TELEPHONE",
+    "email": "IA_CUSTOMER_SERVICES_EMAIL"
   },
   "pcq": {
     "url": "PCQ_URL",

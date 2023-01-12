@@ -14,27 +14,27 @@ const logLabel: string = getLogLabel(__filename);
 
 function extractHistoryDetails(historyEvents: any[]): HistoryEvent[] {
   return historyEvents
-      .filter(event => event.id !== 'editAppeal')
-      .filter(event => event.id !== 'editAipHearingRequirements')
-  .map(event => ({
-    id: event.id,
-    event: {
-      eventName: event.event_name,
-      description: event.description
-    },
-    user: {
-      id: event.user_id,
-      lastName: event.user_last_name,
-      firstName: event.user_first_name
-    },
-    createdDate: event.created_date,
-    caseTypeVersion: event.case_type_version,
-    state: {
-      id: event.state_id,
-      name: event.state_name
-    },
-    data: event.data
-  }));
+    .filter(event => event.id !== 'editAppeal')
+    .filter(event => event.id !== 'editAipHearingRequirements')
+    .map(event => ({
+      id: event.id,
+      event: {
+        eventName: event.event_name,
+        description: event.description
+      },
+      user: {
+        id: event.user_id,
+        lastName: event.user_last_name,
+        firstName: event.user_first_name
+      },
+      createdDate: event.created_date,
+      caseTypeVersion: event.case_type_version,
+      state: {
+        id: event.state_id,
+        name: event.state_name
+      },
+      data: event.data
+    }));
 }
 
 class CcdService {

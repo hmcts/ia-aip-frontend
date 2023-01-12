@@ -10,6 +10,7 @@ module.exports = {
     });
 
     Then(/^I should be taken to the out of country address page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.oocAddress,10);
       await I.seeInCurrentUrl(paths.appealStarted.oocAddress);
     });
 

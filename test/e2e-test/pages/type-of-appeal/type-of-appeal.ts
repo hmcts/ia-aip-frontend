@@ -7,15 +7,26 @@ module.exports = {
   typeOfAppeal(I) {
     When(/^I click on the type-of-appeal link$/, async () => {
       await I.click('Appeal type');
+      await I.waitInUrl(paths.appealStarted.appealOutOfCountry,20);
+      await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
+    });
+    Then(/^I should be taken to the Is the appellant in the UK page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.appealOutOfCountry,20);
+      await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
+    });
+    When(/^I select Yes$/, async () => {
+      await I.click('Yes');
     });
     Then(/^I should be taken to the appeal page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.typeOfAppeal,10);
       await I.seeInCurrentUrl(paths.appealStarted.typeOfAppeal);
     });
     Then(/^I should be taken to the currently living in the United Kingdom page$/, async () => {
+      await I.waitInUrl(paths.appealStarted.appealOutOfCountry,10);
       await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
     });
     When(/^I click on Protection as my type of appeal and click Save and continue$/, async () => {
-      await I.checkOption('Protection');
+      await I.checkOption('#appealType');
       await I.click('Save and continue');
     });
 

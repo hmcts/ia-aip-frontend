@@ -108,4 +108,3 @@ const clarifyingQuestionsCaseDataES = {
   };
   
   module.exports = { ...clarifyingQuestionsCaseDataES };
-  

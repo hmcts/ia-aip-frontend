@@ -14,6 +14,7 @@ const outOfTimeDecisionGranted = require('./data/out-of-time-decision-granted');
 const outOfTimeDecisionRejected = require('./data/out-of-time-decision-rejected');
 const outOfTimeDecisionInTime = require('./data/out-of-time-decision-in-time');
 const uploadAddendumEvidence = require('./data/upload-addendum-evidence');
+const startRepresentingYourself = require('./data/start-representing-yourself');
 const partialAppealStartedCaseDataES = require('./data/partial-appeal-started-es');
 const appealSubmittedCaseDataES = require('./data/appeal-submitted-es');
 const awaitingReasonsForAppealCaseDataES = require('./data/awaiting-reasons-for-appeal-es');
@@ -44,10 +45,12 @@ module.exports = {
   submittedCmaRequirements,
   cmaListed,
   endedAppeal,
+  endedAppealES,
   outOfTimeDecisionGranted,
   outOfTimeDecisionRejected,
   outOfTimeDecisionInTime,
   uploadAddendumEvidence,
+  startRepresentingYourself,
   partialAppealStartedCaseDataES,
   appealSubmittedCaseDataES,
   awaitingReasonsForAppealCaseDataES,

@@ -98,6 +98,7 @@ class CcdService {
         `${ccdBaseUrl}/searchCases?ctid=${caseType}`);
     options.body = query;
     let response = rp.post(options);
+    logger.trace('Loading case for user', JSON.stringify(response));
     return response;
   }
 
@@ -150,7 +151,7 @@ class CcdService {
 
   async loadOrCreateCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     logger.trace('Loading or creating case', logLabel);
-    const data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
+    let data: ES<CcdCaseDetails> = await this.loadCasesForUser(userId, headers);
     if (data.total > 0) {
       return data.cases[0];
     } else {

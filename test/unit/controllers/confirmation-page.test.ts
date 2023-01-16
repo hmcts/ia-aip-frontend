@@ -68,7 +68,7 @@ describe('Confirmation Page Controller', () => {
 
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
-      date: addDaysToDate(5),
+      date: addDaysToDate(14),
       late: false,
       payLater: false,
       payLaterEuEussHuAppeal: false
@@ -162,6 +162,67 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(5),
+      late: false,
+      payLater: false,
+      payNow: false
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for an on time, refusalOfHumanRights appeal', () => {
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.PENDING_PAYMENT.id;
+    appeal.application.appealType = 'refusalOfHumanRights';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(14),
+      late: false,
+      payLater: false,
+      payNow: true
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for an on time, refusalOfEu appeal', () => {
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.PENDING_PAYMENT.id;
+    appeal.application.appealType = 'refusalOfEu';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(14),
+      late: false,
+      payLater: false,
+      payNow: true
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for an on time, euSettlementScheme appeal', () => {
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.PENDING_PAYMENT.id;
+    appeal.application.appealType = 'euSettlementScheme';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(14),
+      late: false,
+      payLater: false,
+      payNow: true
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for a late appeal', () => {
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = true;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(14),
       late: true,
       payLater: false,
       payLaterEuEussHuAppeal: false

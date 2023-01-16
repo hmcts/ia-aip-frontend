@@ -15,6 +15,22 @@ const outOfTimeDecisionRejected = require('./data/out-of-time-decision-rejected'
 const outOfTimeDecisionInTime = require('./data/out-of-time-decision-in-time');
 const uploadAddendumEvidence = require('./data/upload-addendum-evidence');
 const startRepresentingYourself = require('./data/start-representing-yourself');
+const partialAppealStartedCaseDataES = require('./data/partial-appeal-started-es');
+const appealSubmittedCaseDataES = require('./data/appeal-submitted-es');
+const awaitingReasonsForAppealCaseDataES = require('./data/awaiting-reasons-for-appeal-es');
+const awaitingReasonsForAppealCaseDataWithTimeExtensionES = require('./data/awaiting-reasons-for-appeal-with-time-extension-es');
+const partialAwaitingReasonsForAppealCaseDataES = require('./data/partial-awaiting-reasons-for-appeal-es');
+const clarifyingQuestionsCaseDataES = require('./data/clarifying-questions-es');
+const clarifyingQuestionsCaseDataWithTimeExtensionsES = require('./data/clarifying-questions-with-time-extensions-es');
+const awaitingCmaRequirementsES = require('./data/awaiting-cma-requirements-es');
+const awaitingCmaRequirementsWithTimeExtensionsES = require('./data/awaiting-cma-requirements-with-time-extensions-es');
+const submittedCmaRequirementsES = require('./data/submitted-cma-requirements-es');
+const cmaListedES = require('./data/cmaListed-es');
+const endedAppealES = require('./data/endedAppeal-es');
+const outOfTimeDecisionGrantedES = require('./data/out-of-time-decision-granted-es');
+const outOfTimeDecisionRejectedES = require('./data/out-of-time-decision-rejected-es');
+const outOfTimeDecisionInTimeES = require('./data/out-of-time-decision-in-time-es');
+const uploadAddendumEvidenceES = require('./data/upload-addendum-evidence-es');
 
 module.exports = {
   partialAppealStartedCaseData,
@@ -29,9 +45,25 @@ module.exports = {
   submittedCmaRequirements,
   cmaListed,
   endedAppeal,
+  endedAppealES,
   outOfTimeDecisionGranted,
   outOfTimeDecisionRejected,
   outOfTimeDecisionInTime,
   uploadAddendumEvidence,
-  startRepresentingYourself
+  startRepresentingYourself,
+  partialAppealStartedCaseDataES,
+  appealSubmittedCaseDataES,
+  awaitingReasonsForAppealCaseDataES,
+  partialAwaitingReasonsForAppealCaseDataES,
+  clarifyingQuestionsCaseDataES,
+  awaitingReasonsForAppealCaseDataWithTimeExtensionES,
+  clarifyingQuestionsCaseDataWithTimeExtensionsES,
+  awaitingCmaRequirementsES,
+  awaitingCmaRequirementsWithTimeExtensionsES,
+  submittedCmaRequirementsES,
+  cmaListedES,
+  outOfTimeDecisionGrantedES,
+  outOfTimeDecisionRejectedES,
+  outOfTimeDecisionInTimeES,
+  uploadAddendumEvidenceES
 };

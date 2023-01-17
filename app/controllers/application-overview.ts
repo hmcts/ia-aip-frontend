@@ -162,7 +162,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showAppealRequests: showAppealRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         showAppealRequestsInAppealEndedStatus: showAppealRequestsInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         showHearingRequests: showHearingRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
-        payLater,
+        showPayLaterLink,
         hearingDetails,
         showChangeRepresentation
       });

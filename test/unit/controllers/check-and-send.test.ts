@@ -361,7 +361,7 @@ describe('Check and Send Controller', () => {
       expect(res.redirect).to.have.been.called;
     });
 
-    it('should submit appeal for "protection" appeal type and payNow', async () => {
+    it('should first submit appeal for "protection" appeal type and payNow before initiating payment', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
@@ -369,10 +369,43 @@ describe('Check and Send Controller', () => {
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
       expect(updateAppealService.submitEventRefactored).to.have.been.called;
+    });
+
+    it('should submit appeal for "euSettlementScheme"', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.appealType = 'euSettlementScheme';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
       expect(res.redirect).to.have.been.called;
     });
 
-    it('should first submit appeal for "protection" appeal type and payNow before initiating payment', async () => {
+    it('should submit appeal for "refusalOfHumanRights"', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.appealType = 'refusalOfHumanRights';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should submit appeal for "refusalOfEu"', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.appealType = 'refusalOfEu';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should catch exception if no fee present', async () => {
+      const error = new Error('Fee is not available');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';

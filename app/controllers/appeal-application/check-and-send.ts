@@ -277,12 +277,17 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
         });
       }
       const { appeal } = req.session;
+      const isProtectionAppeal = req.session.appeal.application.appealType === 'protection';
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
-      return res.redirect(paths.appealSubmitted.confirmation);
+      if (paymentsFlag && payNow && isProtectionAppeal) {
+        return await paymentService.initiatePayment(req, res, getFee(req.session.appeal));
+      } else {
+        return res.redirect(paths.appealSubmitted.confirmation);
+      }
     } catch (error) {
       next(error);
     }

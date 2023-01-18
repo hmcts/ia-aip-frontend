@@ -19,10 +19,10 @@ export function getFee(appeal: Appeal) {
 
 export function payNowForApplicationNeeded(req: Request): boolean {
   const { appealType } = req.session.appeal.application;
-  const { paAppealTypeAipPaymentOption } = req.session.appeal;
+  const { paAppealTypeAipPaymentOption, paymentStatus } = req.session.appeal;
   const payNowProtection = appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow';
   const payNowEaHuEuss = EA_HU_EUSS_APPEAL_TYPES.includes(appealType);
-  return payNowProtection || payNowEaHuEuss;
+  return (payNowProtection || payNowEaHuEuss) && paymentStatus !== 'Paid';
 }
 
 export function payLaterForApplicationNeeded(req: Request): boolean {

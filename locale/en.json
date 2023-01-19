@@ -410,11 +410,29 @@
         "whatHappensNextContent3": "The Tribunal may end the appeal if you do not pay"
       }
     },
-    "confirmationPayLater": {
+    "confirmationPaidLater": {
       "title": "You have paid for the appeal",
       "content": [
-        "Your appeal will continue"
+        "Your appeal will continue."
       ]
+    },
+    "confirmationPaid": {
+      "title": "You have paid for the appeal",
+      "content": [
+        "{{ i18n.pages.successPage.askHomeOffice }}",
+        "{{ i18n.pages.successPage.whatToDoNext }}",
+        "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might be later than that"
+      ],
+      "contentLate": [
+        "{{ i18n.pages.successPage.outOfTime.askHomeOffice }}",
+        "{{ i18n.pages.successPage.outOfTime.whatToDoNext }}",
+        "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might be later than that"
+      ],
+      "thingsYouCanDoAfterPaying": {
+        "thingsYouCanDo": "Things you can do now",
+        "readMore": "Read more about appealing an immigration or asylum decision",
+        "findOutMore": "Find organisations that can help with your appeal"
+      }
     },
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",

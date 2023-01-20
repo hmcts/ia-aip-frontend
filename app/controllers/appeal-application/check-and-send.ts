@@ -322,7 +322,7 @@ function getFinishPayment(updateAppealService: UpdateAppealService, paymentServi
           redirectUrl = paths.appealSubmitted.confirmation;
         } else {
           event = Events.PAYMENT_APPEAL;
-          redirectUrl = paths.common.confirmationPayLater;
+          redirectUrl = paths.common.confirmationPayment;
         }
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(event, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {

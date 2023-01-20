@@ -3,9 +3,17 @@
 {% block content %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
   {% if payNow %}
-     {% set panelTitle = i18n.pages.successPage.payNow.panel %}
+    {% if late %}
+      {% set panelTitle = i18n.pages.successPage.payNow.panelLate %}
+    {% else %}
+     {% set panelTitle = i18n.pages.successPage.payNow.panel %}  
+    {% endif %}  
   {% elif payLater %}
-    {% set panelTitle = i18n.pages.successPage.payLater.panel %}
+    {% if late %}
+      {% set panelTitle = i18n.pages.successPage.payLater.panelLate %}
+    {% else %}  
+      {% set panelTitle = i18n.pages.successPage.payLater.panel %}
+    {% endif %}
   {% elif late %}
     {% set panelTitle = i18n.pages.successPage.outOfTime.panel %}
   {% else %}

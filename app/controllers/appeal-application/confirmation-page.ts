@@ -26,7 +26,8 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction) {  req.app.locals.logger.trace(`Successful AIP pay later submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
+function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction) {
+  req.app.locals.logger.trace(`Successful AIP pay later submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
 
   try {
     const { application, paAppealTypeAipPaymentOption = null } = req.session.appeal;
@@ -39,7 +40,7 @@ function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction
       res.render('templates/confirmation-page.njk', {
         date: addDaysToDate(daysToWait),
         title: i18n.pages.confirmationPaid.title,
-        whatNextContent: i18n.pages.confirmationPaidLater.content,
+        whatNextContent: i18n.pages.confirmationPaidLater.content
       });
     } else {
       res.render('templates/confirmation-page.njk', {

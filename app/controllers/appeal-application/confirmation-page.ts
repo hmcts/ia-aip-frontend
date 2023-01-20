@@ -58,7 +58,7 @@ function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction
 function setConfirmationController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.appealSubmitted.confirmation, middleware, getConfirmationPage);
-  router.get(paths.common.confirmationPayLater, middleware, getConfirmationPaidPage);
+  router.get(paths.common.confirmationPayment, middleware, getConfirmationPaidPage);
   return router;
 }
 

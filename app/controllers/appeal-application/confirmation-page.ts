@@ -26,14 +26,29 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getConfirmationPayLaterPage(req: Request, res: Response, next: NextFunction) {
-  req.app.locals.logger.trace(`Successful AIP pay later submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
+function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction) {  req.app.locals.logger.trace(`Successful AIP pay later submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
 
   try {
-    res.render('templates/confirmation-page.njk', {
-      title: i18n.pages.confirmationPayLater.title,
-      whatNextContent: i18n.pages.confirmationPayLater.content
-    });
+    const { application, paAppealTypeAipPaymentOption = null } = req.session.appeal;
+    const isLate = () => application.isAppealLate;
+    const payNow = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType) || paAppealTypeAipPaymentOption === 'payNow';
+    const isPa = application.appealType === 'protection';
+    const daysToWait: number = payNow ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
+
+    if (isPa) {
+      res.render('templates/confirmation-page.njk', {
+        date: addDaysToDate(daysToWait),
+        title: i18n.pages.confirmationPaid.title,
+        whatNextContent: i18n.pages.confirmationPaidLater.content,
+      });
+    } else {
+      res.render('templates/confirmation-page.njk', {
+        date: addDaysToDate(daysToWait),
+        title: i18n.pages.confirmationPaid.title,
+        whatNextListItems: isLate ? i18n.pages.confirmationPaid.contentLate : i18n.pages.confirmationPaid.content,
+        thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+      });
+    }
   } catch (e) {
     next(e);
   }
@@ -42,7 +57,7 @@ function getConfirmationPayLaterPage(req: Request, res: Response, next: NextFunc
 function setConfirmationController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.appealSubmitted.confirmation, middleware, getConfirmationPage);
-  router.get(paths.common.confirmationPayLater, middleware, getConfirmationPayLaterPage);
+  router.get(paths.common.confirmationPayLater, middleware, getConfirmationPaidPage);
   return router;
 }
 

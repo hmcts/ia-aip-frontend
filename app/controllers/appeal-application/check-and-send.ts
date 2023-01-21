@@ -289,12 +289,13 @@ function postCheckAndSend(updateAppealService: UpdateAppealService, paymentServi
   };
 }
 
-function getPayLater(paymentService: PaymentService) {
+function getPayLater(paymentService: PaymentService, payingImmediately: boolean) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
       if (!paymentsFlag) return res.redirect(paths.common.overview);
       const fee = getFee(req.session.appeal);
+      req.session.payingImmediately = payingImmediately;
       return await paymentService.initiatePayment(req, res, fee);
     } catch (error) {
       next(error);
@@ -346,7 +347,8 @@ function setupCheckAndSendController(middleware: Middleware[], updateAppealServi
   router.get(paths.appealStarted.checkAndSend, middleware, appealOutOfTimeMiddleware, getCheckAndSend(paymentService));
   router.post(paths.appealStarted.checkAndSend, middleware, postCheckAndSend(updateAppealService, paymentService));
   router.get(paths.common.finishPayment, middleware, getFinishPayment(updateAppealService, paymentService));
-  router.get(paths.common.payLater, middleware, getPayLater(paymentService));
+  router.get(paths.common.payLater, middleware, getPayLater(paymentService, false));
+  router.get(paths.common.payImmediately, middleware, getPayLater(paymentService, true));
   return router;
 }
 

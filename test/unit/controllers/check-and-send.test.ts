@@ -509,7 +509,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.feeCode = 'aCode';
-      await getPayLater(paymentService as PaymentService)(req as Request, res as Response, next);
+      await getPayLater(paymentService as PaymentService, false)(req as Request, res as Response, next);
 
       expect(paymentService.initiatePayment).to.have.been.called;
     });
@@ -521,7 +521,7 @@ describe('Check and Send Controller', () => {
       paymentService.initiatePayment = sandbox.stub().throws(error);
       updateAppealService.submitEventRefactored = sandbox.stub().throws(error);
 
-      await getPayLater(paymentService as PaymentService)(req as Request, res as Response, next);
+      await getPayLater(paymentService as PaymentService, false)(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

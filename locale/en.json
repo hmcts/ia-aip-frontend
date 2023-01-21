@@ -380,6 +380,7 @@
     },
     "successPage": {
       "title": "Your appeal details have been sent",
+      "payNowTitle": "Your appeal has been submitted",
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
@@ -398,18 +399,23 @@
       "inTime": {
         "panel": "Your appeal details have been sent"
       },
-      "payLater": {
-        "panel": "Your appeal has been submitted",
-        "panelLate": "Your late appeal has been submitted",
-        "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
+      "pa": {
+        "payNow": {
+          "description": "You still have to pay for your appeal.",
+          "whatHappensNextContent": "You still have to <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.payImmediately }}'>Pay for your appeal</a>."
+        },
+        "payLater": {
+          "panel": "You have sent your appeal details",
+          "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
+        }
       },
-      "payNow": {
-        "panel": "Your appeal has been submitted",
-        "panelLate": "Your late appeal has been submitted",
-        "description": "You have sent an unpaid appeal",
-        "whatHappensNextContent1": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span>.",
-        "whatHappensNextContent2": "Your appeal will not progress until you have paid",
-        "whatHappensNextContent3": "The Tribunal may end the appeal if you do not pay"
+      "eaHuEu": {
+        "payNow": {
+          "description": "You have sent an unpaid appeal.",
+          "whatHappensNextContent1": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span>.",
+          "whatHappensNextContent2": "Your appeal will not progress until you have paid",
+          "whatHappensNextContent3": "The Tribunal may end the appeal if you do not pay"
+        }
       }
     },
     "confirmationPaidLater": {
@@ -790,6 +796,7 @@
         "pendingPayment": {
           "payForYourAppeal": "Pay for your appeal",
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "detailsSentLate": "Your late appeal details have been sent to the Tribunal.",
           "dueDate": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
           "dueDate1": "The Tribunal may end your appeal if you do not pay."
         },

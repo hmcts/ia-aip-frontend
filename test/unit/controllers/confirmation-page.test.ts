@@ -1,12 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   getConfirmationPage,
+  getConfirmationPaidPage,
   setConfirmationController
 } from '../../../app/controllers/appeal-application/confirmation-page';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { addDaysToDate } from '../../../app/utils/date-utils';
 import Logger from '../../../app/utils/logger';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
@@ -68,10 +70,11 @@ describe('Confirmation Page Controller', () => {
 
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
-      date: addDaysToDate(14),
+      date: addDaysToDate(5),
       late: false,
-      payLater: false,
-      payNow: true
+      paPayLater: false,
+      paPayNow: true,
+      eaHuEu: false
     });
   });
 
@@ -86,8 +89,9 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(5),
       late: false,
-      payLater: true,
-      payNow: false
+      paPayLater: true,
+      paPayNow: false,
+      eaHuEu: false
     });
   });
 
@@ -102,8 +106,9 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(5),
       late: false,
-      payLater: false,
-      payNow: false
+      paPayLater: false,
+      paPayNow: false,
+      eaHuEu: false
     });
   });
 
@@ -117,8 +122,9 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
       late: false,
-      payLater: false,
-      payNow: true
+      paPayLater: false,
+      paPayNow: false,
+      eaHuEu: true
     });
   });
 
@@ -132,8 +138,9 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
       late: false,
-      payLater: false,
-      payNow: true
+      paPayLater: false,
+      paPayNow: false,
+      eaHuEu: true
     });
   });
 
@@ -147,8 +154,9 @@ describe('Confirmation Page Controller', () => {
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
       date: addDaysToDate(14),
       late: false,
-      payLater: false,
-      payNow: true
+      paPayLater: false,
+      paPayNow: false,
+      eaHuEu: true
     });
   });
 
@@ -161,10 +169,11 @@ describe('Confirmation Page Controller', () => {
 
     getConfirmationPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
-      date: addDaysToDate(14),
+      date: addDaysToDate(5),
       late: true,
-      payLater: false,
-      payNow: true
+      paPayLater: false,
+      paPayNow: true,
+      eaHuEu: false
     });
   });
 
@@ -174,4 +183,105 @@ describe('Confirmation Page Controller', () => {
     getConfirmationPage(req as Request, res as Response, next);
     expect(next).to.have.been.calledOnce.calledWith(error);
   });
+
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayLater appeal', () => {
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payLater';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+      date: addDaysToDate(5),
+      title: i18n.pages.confirmationPaid.title,
+      whatNextContent: i18n.pages.confirmationPaidLater.content
+    });
+  });
+
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow in-time appeal paid immediately after submission', () => {
+    req.session.payingImmediately = true;
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+      date: addDaysToDate(5),
+      title: i18n.pages.successPage.inTime.panel,
+      whatNextListItems: i18n.pages.confirmationPaid.content,
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+    });
+  });
+
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow out-of-time appeal paid immeditaley after submission', () => {
+    req.session.payingImmediately = true;
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = true;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+      date: addDaysToDate(5),
+      title: i18n.pages.successPage.outOfTime.panel,
+      whatNextListItems: i18n.pages.confirmationPaid.contentLate,
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+    });
+  });
+
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow in-time appeal paid not immediately', () => {
+    req.session.payingImmediately = false;
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+      date: addDaysToDate(5),
+      title: i18n.pages.confirmationPaidLater.title,
+      whatNextListItems: i18n.pages.confirmationPaidLater.content,
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+    });
+  });
+
+  it('getConfirmationPaidPage should render confirmation.njk for a paPayNow out-of-time appeal paid not immediately', () => {
+    req.session.payingImmediately = false;
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = true;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+      date: addDaysToDate(5),
+      title: i18n.pages.confirmationPaidLater.title,
+      whatNextListItems: i18n.pages.confirmationPaidLater.content,
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+    });
+  });
+
+  it('getConfirmationPaidPage should render confirmation.njk for a EA appeal', () => {
+    req.session.payingImmediately = false;
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = false;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'refusalOfEu';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+      date: addDaysToDate(14),
+      title: i18n.pages.confirmationPaid.title,
+      whatNextListItems: i18n.pages.confirmationPaid.content,
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+    });
+  });
+
 });

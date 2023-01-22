@@ -12,7 +12,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const isLate = () => application.isAppealLate;
     const paPayLater = payLaterForApplicationNeeded(req);
-    const paPayNow = payNowForApplicationNeeded(req);
+    const paPayNow = payNowForApplicationNeeded(req) && application.appealType === 'protection';
     const eaHuEu = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType);
     const daysToWait: number = eaHuEu ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
 
@@ -79,5 +79,6 @@ function setConfirmationController(middleware: Middleware[]): Router {
 
 export {
   setConfirmationController,
-  getConfirmationPage
+  getConfirmationPage,
+  getConfirmationPaidPage
 };

@@ -220,7 +220,8 @@ const paths = {
     // Payments
     finishPayment: '/finish-payment',
     payLater: '/pay-later',
-    confirmationPayLater: '/confirmation-payment',
+    payImmediately: '/pay-immediately',
+    confirmationPayment: '/confirmation-payment',
 
     // Change Representation
     changeRepresentation: '/change-representation',

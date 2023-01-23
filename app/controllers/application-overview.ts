@@ -9,7 +9,7 @@ import UpdateAppealService from '../service/update-appeal-service';
 import { getAppealApplicationNextStep, isPreAddendumEvidenceUploadState } from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
-import { payLaterForApplicationNeeded } from '../utils/payments-utils';
+import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
 import { hasPendingTimeExtension } from '../utils/utils';
@@ -143,7 +143,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
-      const showPayLaterLink = payLaterForApplicationNeeded(req) || appealStatus === States.PENDING_PAYMENT.id;
+      const showPayLaterLink = payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req);
       const hearingDetails = getHearingDetails(req);
       const showChangeRepresentation = isAppealInProgress(appealStatus);
 

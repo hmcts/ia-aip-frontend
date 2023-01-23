@@ -98,6 +98,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const decisionGranted = applications.length > 0 && applications[0].value.decision === 'Granted' || null;
   const decisionRefused = applications.length > 0 && applications[0].value.decision === 'Refused' || null;
   let doThisNextSection: DoThisNextSection;
+  const isLate = req.session.appeal.application.isAppealLate;
 
   let descriptionParagraphs;
   let respondBy;
@@ -532,7 +533,7 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'pendingPayment':
       doThisNextSection = {
         descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
+          isLate ? i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSentLate : i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
           i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
           i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
         ],

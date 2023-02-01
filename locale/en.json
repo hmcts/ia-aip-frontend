@@ -2416,7 +2416,7 @@
         "additionalLanguagePage": {
           "pageTitle": "Add language details",
           "title": "Add language details",
-          "hint": "Dialect (Optional)",
+          "hint": "Dialect (Enter N/A if no dialect required)",
           "text": "A dialect is a form of a language spoken in a part of a country or by groups of people in a country."
         },
         "needInterpreterPage": {
@@ -2641,7 +2641,7 @@
         "additionalLanguagePage": {
           "pageTitle": "Add language details",
           "title": "Add language details",
-          "text": "Dialect (Optional)",
+          "text": "Dialect (Enter N/A if no dialect required)",
           "languages": "Languages",
           "language": "Language",
           "dialect": "Dialect",
@@ -3198,6 +3198,7 @@
         "emptyAnswer": "Please enter an answer for the question",
         "selectInterpreter": "Select yes if anyone will need an interpreter",
         "addLanguage": "Select a language",
+        "addLanguageDialect": "Select language and add dialect",
         "stepFreeAccess": "Select yes if you or anyone coming with will you need step-free access",
         "hearingLoop": "Select yes if you or anyone coming with you will need a hearing loop"
       },
@@ -3237,6 +3238,7 @@
       "accessNeeds": {
         "selectInterpreter": "Select yes if you or any witnesses will need an interpreter at the hearing",
         "addLanguage": "Select a language",
+        "addLanguageDialect": "Select language and add dialect",
         "stepFreeAccess": "Select yes if you or any witnesses will need step-free access",
         "hearingLoop": "Select yes if you or any witnesses will need a hearing loop"
       },

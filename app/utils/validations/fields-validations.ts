@@ -210,7 +210,7 @@ function witnessNamesValidation(obj: object) {
 
 function interpreterLanguagesValidation(obj: object) {
   const schema = Joi.object({
-    language: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.hearingRequirements.accessNeeds.addLanguage })
+    language: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.hearingRequirements.accessNeeds.addLanguageDialect })
   }).unknown();
   return validate({ language: obj }, schema);
 }
@@ -414,6 +414,13 @@ function selectedRequiredValidation(obj: object, errorMessage: string) {
   return validate(obj, schema);
 }
 
+function selectedRequiredValidationDialect(obj: object, errorMessage: string) {
+  const schema = Joi.object({
+    dialect: Joi.string().required().messages({ 'string.empty': errorMessage })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function askForMoreTimeValidation(obj: object) {
   const schema = Joi.object({
     askForMoreTime: Joi.string().required().messages({
@@ -565,5 +572,6 @@ export {
   sponsorAddressValidation,
   sponsorContactDetailsValidation,
   sponsorAuthorisationValidation,
-  gwfReferenceNumberValidation
+  gwfReferenceNumberValidation,
+  selectedRequiredValidationDialect
 };

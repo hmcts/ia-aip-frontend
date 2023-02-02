@@ -246,8 +246,8 @@ describe('case management appointment controller', () => {
         await postAdditionalLanguage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
         expect(res.render).to.have.been.calledWith('case-management-appointment/additional-language.njk', {
-          errorList: [{ href: '#language', key: 'language', text: 'Select a language' }],
-          errors: {  'language': { href: '#language', key: 'language', text: 'Select a language' } },
+          errorList: [{ href: '#language', key: 'language', text: 'Select language and add dialect' }],
+          errors: {  'language': { href: '#language', key: 'language', text: 'Select language and add dialect' } },
           previousPage: paths.appealStarted.taskList,
           items: isoLanguages
         });

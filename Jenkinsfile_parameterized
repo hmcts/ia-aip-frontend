@@ -14,7 +14,7 @@ properties([
 ])
 
 withParameterizedPipeline(params.TYPE, params.PRODUCT_NAME, params.APP, params.ENVIRONMENT, params.SUBSCRIPTION) {
-  after('checkout') { sh 'yarn cache clean' }
-  after('build') { sh 'yarn build' }
+  afterAlways('checkout') { sh 'yarn cache clean' }
+  afterAlways('build') { sh 'yarn build' }
 //  before('securitychecks') {sh 'yarn test:audit'}
 }

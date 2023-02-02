@@ -69,11 +69,11 @@ withNightlyPipeline(type, product, component) {
     enableMutationTest()
     enableFullFunctionalTest(120)
 
-    after('crossBrowserTest') {
+    afterAlways('crossBrowserTest') {
         yarnBuilder.yarn('test:a11y')
     }
 
-    after('mutationTest') {
+    afterAlways('mutationTest') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -84,7 +84,7 @@ withNightlyPipeline(type, product, component) {
         ])
     }
 
-    after('fullFunctionalTest') {
+    afterAlways('fullFunctionalTest') {
         publishHTML([
                 allowMissing         : true,
                 alwaysLinkToLastBuild: true,

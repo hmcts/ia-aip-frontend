@@ -29,16 +29,15 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
 }
 
 function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction) {
-  req.app.locals.logger.trace(`Successful AIP pay later submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
+  req.app.locals.logger.trace(`Successful AIP paid after submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
 
   try {
     const { application, paAppealTypeAipPaymentOption = null } = req.session.appeal;
     const { payingImmediately = false } = req.session;
     const isLate = application.isAppealLate;
-    const isEaHuEu = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType);
     const isPaPayNow = application.appealType === 'protection' && paAppealTypeAipPaymentOption === 'payNow';
     const isPaPayLater = application.appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater';
-    const daysToWait: number = isEaHuEu ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
+    const daysToWait: number = config.get('daysToWait.afterSubmission');
 
     if (isPaPayLater) {
       res.render('templates/confirmation-page.njk', {
@@ -60,7 +59,7 @@ function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction
     } else {
       res.render('templates/confirmation-page.njk', {
         date: addDaysToDate(daysToWait),
-        title: i18n.pages.confirmationPaid.title,
+        title: isLate ? i18n.pages.successPage.outOfTime.panel : i18n.pages.successPage.inTime.panel,
         whatNextListItems: isLate ? i18n.pages.confirmationPaid.contentLate : i18n.pages.confirmationPaid.content,
         thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
       });

@@ -112,7 +112,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, refusalOfHumanRights appeal', () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, refusalOfHumanRights appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.PENDING_PAYMENT.id;
@@ -128,7 +128,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, refusalOfEu appeal', () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, refusalOfEu appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.PENDING_PAYMENT.id;
@@ -144,7 +144,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, euSettlementScheme appeal', () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, euSettlementScheme appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.PENDING_PAYMENT.id;
@@ -267,19 +267,34 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPaidPage should render confirmation.njk for a EA appeal', () => {
+  it('getConfirmationPaidPage should render confirmation.njk for on time EA appeal', () => {
     req.session.payingImmediately = false;
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
     appeal.application.appealType = 'refusalOfEu';
-    appeal.paAppealTypeAipPaymentOption = 'payNow';
 
     getConfirmationPaidPage(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
-      date: addDaysToDate(14),
-      title: i18n.pages.confirmationPaid.title,
+      date: addDaysToDate(5),
+      title: i18n.pages.successPage.inTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.content,
+      thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
+    });
+  });
+
+  it('getConfirmationPaidPage should render confirmation.njk for a late EA appeal', () => {
+    req.session.payingImmediately = false;
+    const { appeal } = req.session;
+    appeal.application.isAppealLate = true;
+    appeal.appealStatus = States.APPEAL_SUBMITTED.id;
+    appeal.application.appealType = 'refusalOfEu';
+
+    getConfirmationPaidPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('templates/confirmation-page.njk', {
+      date: addDaysToDate(5),
+      title: i18n.pages.successPage.outOfTime.panel,
+      whatNextListItems: i18n.pages.confirmationPaid.contentLate,
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying
     });
   });

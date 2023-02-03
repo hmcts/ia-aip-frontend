@@ -4,6 +4,9 @@ import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 
 async function hearingRequirementsMiddleware(req: Request, res: Response, next: NextFunction) {
+  if (req.idam && req.idam.userDetails) {
+    req.idam.userDetails.uid = req.idam.userDetails.id;
+  }
   const hearingRequirementsEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_REQUIREMENTS, false);
   if (hearingRequirementsEnabled) {
     return next();

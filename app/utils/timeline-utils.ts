@@ -171,6 +171,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
     Events.LIST_CMA.id,
     Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id,
     Events.END_APPEAL.id,
+    Events.END_APPEAL_AUTOMATICALLY.id,
     Events.RECORD_OUT_OF_TIME_DECISION.id
   ];
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];

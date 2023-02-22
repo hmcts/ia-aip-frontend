@@ -79,6 +79,12 @@
                 {% endif %}
               </p>
             {% endif %}
+            {% if applicationNextStep.cta.link %}
+              {{ govukButton({
+                text: applicationNextStep.cta.link.text,
+                  href: applicationNextStep.cta.link.url
+              }) }}
+            {% endif %}
           {% endif %}
           {% if applicationNextStep.usefulDocuments %}
             <p><b>{{ applicationNextStep.usefulDocuments.title }}</b></p>
@@ -103,10 +109,10 @@
                 <p><a class='govuk-link' href='{{ paths.common.changeRepresentation }}'>{{ i18n.pages.overviewPage.noLongerRepresentingMyself }}</a></p>
             </div>
           {% endif %}
-          {% if payLater or provideMoreEvidenceSection or showAppealRequests %}
+          {% if showPayLaterLink or provideMoreEvidenceSection or showAppealRequests %}
             <div class="side-menu__section">
               <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.iWantTo }}</h2>
-              {% if payLater %}
+              {% if showPayLaterLink %}
                 <p><a class='govuk-link' href='{{ paths.common.payLater }}'>{{ i18n.pages.overviewPage.payForAppeal }}</a></p>
               {% endif %}
               {% if provideMoreEvidenceSection %}

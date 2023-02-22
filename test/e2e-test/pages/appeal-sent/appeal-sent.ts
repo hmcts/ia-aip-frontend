@@ -16,6 +16,10 @@ module.exports = {
       I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
     });
 
+    Then('I see the pay by date is 14 days in the future', async () => {
+      I.seeInSource(moment().add(14,'days').format(dayMonthYearFormat));
+    });
+
     When('I click on the See your appeal progress link', async () => {
       I.click('See your appeal progress');
     });

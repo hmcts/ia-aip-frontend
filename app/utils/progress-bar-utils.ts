@@ -1,11 +1,12 @@
 import i18n from '../../locale/en.json';
 import { States } from '../data/states';
 
-function buildProgressBarStages(state: string) {
+function buildProgressBarStages(state: string, paymentStatus?: string) {
   const stages = {
     yourAppealDetails: {
       activeStatus: [
         States.APPEAL_STARTED.id,
+        States.PENDING_PAYMENT.id,
         States.APPEAL_SUBMITTED.id,
         States.AWAITING_RESPONDENT_EVIDENCE.id
       ]
@@ -42,15 +43,15 @@ function buildProgressBarStages(state: string) {
   const yourAppealDetailsStage = {
     title: i18n.components.progressBar.yourAppealDetails.title,
     ariaLabel: i18n.components.progressBar.yourAppealDetails.ariaLabel,
-    active: stages.yourAppealDetails.activeStatus.includes(state),
-    completed: !stages.yourAppealDetails.activeStatus.includes(state)
+    active: stages.yourAppealDetails.activeStatus.includes(state) && paymentStatus !== 'Paid',
+    completed: !stages.yourAppealDetails.activeStatus.includes(state) || paymentStatus === 'Paid'
   };
 
   const yourAppealArgumentStage = {
     title: i18n.components.progressBar.yourAppealArgument.title,
     ariaLabel: i18n.components.progressBar.yourAppealArgument.ariaLabel,
     active: stages.yourAppealArgument.activeStatus.includes(state),
-    completed: yourAppealDetailsStage.completed && !stages.yourAppealArgument.activeStatus.includes(state)
+    completed: yourAppealDetailsStage.completed && !stages.yourAppealArgument.activeStatus.includes(state) && !stages.yourAppealDetails.activeStatus.includes(state)
   };
 
   const yourHearingDetailsStage = {

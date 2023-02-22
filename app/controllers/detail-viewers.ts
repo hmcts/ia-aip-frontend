@@ -507,7 +507,7 @@ function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunctio
 function getNoticeEndedAppeal(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    const endedAppealDoc = req.session.appeal.tribunalDocuments.find(doc => doc.tag === 'endAppeal');
+    const endedAppealDoc = req.session.appeal.tribunalDocuments.find(doc => ['endAppeal', 'endAppealAutomatically'].includes(doc.tag));
     const fileNameFormatted = fileNameFormatter(endedAppealDoc.name);
     const data = [
       addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(endedAppealDoc.dateUploaded).format(dayMonthYearFormat)]),

@@ -380,6 +380,7 @@
     },
     "successPage": {
       "title": "Your appeal details have been sent",
+      "payNowTitle": "Your appeal has been submitted",
       "seeProgress": "See your appeal progress",
       "whatHappensNext": "What happens next",
       "info": "You will receive a notification to confirm that the Tribunal has received your appeal details",
@@ -398,16 +399,48 @@
       "inTime": {
         "panel": "Your appeal details have been sent"
       },
-      "payLater": {
-        "panel": "You have sent your appeal details",
-        "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
+      "pa": {
+        "payNow": {
+          "description": "You still have to pay for your appeal.",
+          "whatHappensNextContent": "You still have to <a class=\"govuk-link\" target='_blank' rel='noopener noreferrer' href='{{ paths.common.payImmediately }}'>Pay for your appeal</a>."
+        },
+        "payLater": {
+          "panel": "You have sent your appeal details",
+          "whatHappensNextContent": "You still have to pay for this appeal. You can do this by clicking the Pay for my appeal link on your appeal page and following the instructions."
+        }
+      },
+      "eaHuEu": {
+        "payNow": {
+          "description": "You have sent an unpaid appeal.",
+          "whatHappensNextContent1": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span>.",
+          "whatHappensNextContent2": "Your appeal will not progress until you have paid",
+          "whatHappensNextContent3": "The Tribunal may end the appeal if you do not pay"
+        }
       }
     },
-    "confirmationPayLater": {
+    "confirmationPaidLater": {
       "title": "You have paid for the appeal",
       "content": [
         "Your appeal will continue"
       ]
+    },
+    "confirmationPaid": {
+      "title": "You have paid for the appeal",
+      "content": [
+        "{{ i18n.pages.successPage.askHomeOffice }}",
+        "{{ i18n.pages.successPage.whatToDoNext }}",
+        "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might be later than that"
+      ],
+      "contentLate": [
+        "{{ i18n.pages.successPage.outOfTime.askHomeOffice }}",
+        "{{ i18n.pages.successPage.outOfTime.whatToDoNext }}",
+        "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might be later than that"
+      ],
+      "thingsYouCanDoAfterPaying": {
+        "thingsYouCanDo": "Things you can do now",
+        "readMore": "Read more about appealing an immigration or asylum decision",
+        "findOutMore": "Find organisations that can help with your appeal"
+      }
     },
     "reasonForAppeal": {
       "title": "Why do you think the Home Office decision is wrong?",
@@ -759,6 +792,13 @@
             "title": "Helpful Information",
             "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
+        },
+        "pendingPayment": {
+          "payForYourAppeal": "Pay for your appeal",
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "detailsSentLate": "Your late appeal details have been sent to the Tribunal.",
+          "dueDate": "You must pay for your appeal by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span>.",
+          "dueDate1": "The Tribunal may end your appeal if you do not pay."
         },
         "appealTakenOffline": {
           "description": "Your appeal was removed from the online service on <date of removal>. The reason for this is:",
@@ -1213,6 +1253,16 @@
           "text": "Your case management appointment was listed."
         },
         "endAppeal": {
+          "text": "Your appeal was ended",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Notice of Ended Appeal",
+              "href": "{{ paths.common.noticeEndedAppealViewer }}"
+            }
+          ]
+        },
+        "endAppealAutomatically": {
           "text": "Your appeal was ended",
           "links": [
             {

@@ -92,6 +92,11 @@ export const Events = {
     summary: 'End appeal',
     description: 'End appeal'
   },
+  END_APPEAL_AUTOMATICALLY: {
+    id: 'endAppealAutomatically',
+    summary: 'End appeal automatically',
+    description: 'End appeal automatically'
+  },
   RECORD_OUT_OF_TIME_DECISION: {
     id: 'recordOutOfTimeDecision',
     summary: 'Record out of time decision',

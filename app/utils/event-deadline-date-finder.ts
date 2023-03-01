@@ -6,6 +6,7 @@ import { dayMonthYearFormat } from './date-utils';
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');
 const daysToWaitAfterCQSubmission = config.get('daysToWait.afterCQSubmission');
+const daysToWaitPendingPayment = config.get('daysToWait.pendingPayment');
 
 /**
  * Finds a targeted direction, retrieves it's due date and returns it as a string with the correct date format
@@ -76,6 +77,10 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
     case 'lateAppealSubmitted':
     case 'awaitingRespondentEvidence': {
       formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);
+      break;
+    }
+    case 'pendingPayment': {
+      formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitPendingPayment);
       break;
     }
     case 'awaitingReasonsForAppeal':

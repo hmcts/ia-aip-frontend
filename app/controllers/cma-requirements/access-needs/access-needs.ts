@@ -108,7 +108,7 @@ function postAdditionalLanguage(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
-      const validation = selectedRequiredValidation(req.body, i18n.validationErrors.cmaRequirements.accessNeeds.addLanguage);
+      const validation = selectedRequiredValidation(req.body, i18n.validationErrors.cmaRequirements.accessNeeds.addLanguageDialect);
       if (validation) {
         return res.render('case-management-appointment/additional-language.njk', {
           items: isoLanguages,

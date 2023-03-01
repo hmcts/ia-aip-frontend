@@ -9,7 +9,7 @@ import UpdateAppealService from '../service/update-appeal-service';
 import { getAppealApplicationNextStep, isPreAddendumEvidenceUploadState } from '../utils/application-state-utils';
 import { getHearingCentre } from '../utils/cma-hearing-details';
 import { formatDate, timeFormat } from '../utils/date-utils';
-import { payLaterForApplicationNeeded } from '../utils/payments-utils';
+import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
 import { hasPendingTimeExtension } from '../utils/utils';
@@ -118,7 +118,7 @@ function showHearingRequests(appealStatus: string, featureEnabled: boolean) {
 }
 
 function isAppealInProgress(appealStatus: string) {
-  return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.ENDED.id;
+  return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.PENDING_PAYMENT.id && appealStatus !== States.ENDED.id;
 }
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {
@@ -136,16 +136,16 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
       const saveAndAskForMoreTime = _.has(req.query, 'save-and-ask-for-more-time');
-      const { appealReferenceNumber } = req.session.appeal;
+      const { appealReferenceNumber, appealStatus, paymentStatus } = req.session.appeal;
       const loggedInUserFullName: string = getAppellantName(req);
       const appealRefNumber = getAppealRefNumber(appealReferenceNumber);
-      const stagesStatus = buildProgressBarStages(req.session.appeal.appealStatus);
+      const stagesStatus = buildProgressBarStages(appealStatus, paymentStatus);
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
-      const appealEnded = checkAppealEnded(req.session.appeal.appealStatus);
-      const payLater = payLaterForApplicationNeeded(req);
+      const appealEnded = checkAppealEnded(appealStatus);
+      const showPayLaterLink = payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req);
       const hearingDetails = getHearingDetails(req);
-      const showChangeRepresentation = isAppealInProgress(req.session.appeal.appealStatus);
+      const showChangeRepresentation = isAppealInProgress(appealStatus);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -162,7 +162,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showAppealRequests: showAppealRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         showAppealRequestsInAppealEndedStatus: showAppealRequestsInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         showHearingRequests: showHearingRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
-        payLater,
+        showPayLaterLink,
         hearingDetails,
         showChangeRepresentation
       });

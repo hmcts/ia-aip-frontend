@@ -18,10 +18,8 @@
 
   {% if payNow %}
     {% set buttonCopy = i18n.common.buttons.payNow  %}
-  {% elif appealPaid %}
-    {% set buttonCopy = i18n.common.buttons.submitYourAppeal  %}
   {% else %}
-    {% set buttonCopy = i18n.common.buttons.send  %}
+    {% set buttonCopy = i18n.common.buttons.submitYourAppeal  %}
   {% endif %}
 
   <h1 class="govuk-heading-xl">{{ i18n.pages.checkYourAnswers.header }}</h1>

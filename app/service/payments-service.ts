@@ -20,7 +20,7 @@ export default class PaymentService {
     const securityHeaders: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const body = {
       amount: fee.calculated_amount,
-      case_reference: req.session.appeal.ccdCaseId,
+      case_reference: req.session.appeal.appealReferenceNumber,
       ccd_case_number: req.session.appeal.ccdCaseId,
       channel: 'online',
       currency: 'GBP',

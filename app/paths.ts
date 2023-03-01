@@ -36,6 +36,9 @@ const paths = {
   appealSubmitted: {
     confirmation: '/appeals-details-sent'
   },
+  pendingPayment: {
+    confirmation: '/appeals-details-sent'
+  },
   awaitingReasonsForAppeal: {
     decision: '/case-building/home-office-decision-wrong',
     supportingEvidence: '/case-building/supporting-evidence',
@@ -217,7 +220,8 @@ const paths = {
     // Payments
     finishPayment: '/finish-payment',
     payLater: '/pay-later',
-    confirmationPayLater: '/confirmation-payment',
+    payImmediately: '/pay-immediately',
+    confirmationPayment: '/confirmation-payment',
 
     // Change Representation
     changeRepresentation: '/change-representation',

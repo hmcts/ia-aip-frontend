@@ -1,9 +1,10 @@
 function getNextState(body) {
+  const appealType = body.data.appealType;
   switch (body.event.id) {
     case 'editAppeal':
       return 'appealStarted';
     case 'submitAppeal':
-      return 'appealSubmitted';
+      return ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appealType) ? 'pendingPayment' : 'appealSubmitted';
     case 'editReasonsForAppeal':
       return 'awaitingReasonsForAppeal';
     case 'submitReasonsForAppeal':

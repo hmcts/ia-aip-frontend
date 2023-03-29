@@ -180,5 +180,10 @@ export const Events = {
     id: 'createCaseSummary',
     summary: 'Create case summary',
     description: 'Create case summary'
+  },
+  APPLY_FOR_FTPA_APPELLANT: {
+    id: 'applyForFTPAAppellant',
+    summary: 'Apply for FTPA Appellant',
+    description: 'Apply for FTPA Appellant'
   }
 };

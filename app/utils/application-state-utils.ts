@@ -18,6 +18,7 @@ interface DoThisNextSection {
   };
   info?: {
     title: string,
+    text?: string,
     url: string;
   };
   cta?: {
@@ -40,6 +41,8 @@ interface DoThisNextSection {
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   decision?: string;
+  feedbackTitle?: string;
+  feedbackDescription?: string;
 }
 
 /**
@@ -518,15 +521,16 @@ async function getAppealApplicationNextStep(req: Request) {
         decision: req.session.appeal.isDecisionAllowed,
         descriptionParagraphs: [
           i18n.pages.overviewPage.doThisNext.decided.decision,
-          i18n.pages.overviewPage.doThisNext.decided.description,
-          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackTitle,
-          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackDescription
+          i18n.pages.overviewPage.doThisNext.decided.description
         ],
         info: {
           title: i18n.pages.overviewPage.doThisNext.decided.info.title,
+          text: i18n.pages.overviewPage.doThisNext.decided.info.text,
           url: i18n.pages.overviewPage.doThisNext.decided.info.url
         },
         cta: {},
+        feedbackTitle: i18n.pages.overviewPage.doThisNext.decided.feedbackTitle,
+        feedbackDescription: i18n.pages.overviewPage.doThisNext.decided.feedbackDescription,
         allowedAskForMoreTime: false
       };
       break;
@@ -544,6 +548,11 @@ async function getAppealApplicationNextStep(req: Request) {
           }
         },
         allowedAskForMoreTime: false
+      };
+      break;
+    case 'ftpaSubmitted':
+      doThisNextSection = {
+        descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description
       };
       break;
     default:

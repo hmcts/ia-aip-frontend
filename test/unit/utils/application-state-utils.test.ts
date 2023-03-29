@@ -1049,14 +1049,15 @@ describe('application-state-utils', () => {
       'decision': 'allowed',
       'descriptionParagraphs': [
         'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
-        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>',
-        '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>',
-        '<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>.'
+        '<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>'
       ],
       'info': {
-        'title': 'Helpful Information',
-        'url': '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>'
-      }
+        'title': 'Appeal Information',
+        'text': 'If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.',
+        'url': '<a href=\"{{ paths.common.ftpaReason}}\">Apply for permission to appeal to the Upper Tribunal</a>'
+      },
+      'feedbackTitle': '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>',
+      'feedbackDescription': '<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>.'
     };
 
     expect(result).to.eql(expected);

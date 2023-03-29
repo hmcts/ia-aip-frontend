@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { AuthenticationService } from '../../../app/service/authentication-service';
-import { addToDocumentMapper, documentIdToDocStoreUrl, DocumentManagementService, removeFromDocumentMapper } from '../../../app/service/document-management-service';
+import { addToDocumentMapper, docStoreUrlToHtmlLink, documentIdToDocStoreUrl, DocumentManagementService, documentToHtmlLink, removeFromDocumentMapper } from '../../../app/service/document-management-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import Logger from '../../../app/utils/logger';

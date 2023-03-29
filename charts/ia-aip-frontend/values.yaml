@@ -18,7 +18,6 @@ nodejs:
     PAYMENTS_API_URL: "http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     PCQ_URL: "https://pcq.{{ .Values.global.environment }}.platform.hmcts.net"
     PCQ_RETURN_URL: "immigration-appeal.{{ .Values.global.environment }}.platform.hmcts.net/about-appeal"
-    CASE_DOCUMENT_AM_URL: "http://ccd-case-document-am-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     DOCMOSIS_RENDER_URL: "https://docmosis.{{ .Values.global.environment }}.platform.hmcts.net/rs/render"
     SECURE_SESSION: true
     TRACKING_SCRIPTS: false

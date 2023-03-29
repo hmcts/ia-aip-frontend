@@ -27,7 +27,7 @@ S2S_URL=http://localhost:4502
 CCD_API_URL=http://localhost:4452
 S2S_MICROSERVICE_NAME=iac
 MICROSERVICE=ccd_gateway
-CASE_DOCUMENT_AM_URL=http://localhost:4455
+DOC_MANAGEMENT_URL=http://dm-store:4506
 ADDRESS_LOOKUP_TOKEN=THE_ADDRESS_LOOKUP_TOKEN
 ```
 Specific features, the app contains some toggleable features to enable these use the following environment variables according to your needs.

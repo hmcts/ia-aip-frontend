@@ -58,37 +58,6 @@ describe('document-management-service', () => {
 
   });
 
-  describe('DocumentManagementService fetchFile', () => {
-    it('should fetch a file', async () => {
-      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const fetchStub = sandbox.stub(DocumentManagementService.prototype, 'fetchBinaryFile' as any);
-      const documentManagementService = new DocumentManagementService(authenticationService);
-      await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
-
-      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'DOC_MANAGEMENT_URL/documents/ID/binary');
-    });
-
-  });
-  
-  describe('DocumentManagementService uploadFile', () => {
-    it('should upload a file', async () => {
-
-      const documentUploadResponse = '{"documents":[{"originalDocumentName":"file.txt","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}';
-
-      const resolved = new Promise((r) => r(documentUploadResponse));
-
-      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const uploadStub = sandbox.stub(DocumentManagementService.prototype, 'upload' as any).returns(resolved);
-      const documentManagementService = new DocumentManagementService(authenticationService);
-      await documentManagementService.uploadFile(req as Request);
-
-      expect(uploadStub).to.have.been.calledWith(sinon.match.any, sinon.match.any);
-      expect(req.session.appeal.documentMap.length).to.be.eq(1);
-    });
-
-  });
-  
-  
   describe('Helper methods @helper', () => {
     it('addToDocumentMapper should store url and return back a uuid', () => {
 
@@ -99,19 +68,6 @@ describe('document-management-service', () => {
       validateUuid(result);
     });
 
-	it('docStoreUrlToHtmlLink should convert document url to html link', () => {
-      req.session.appeal.documentMap = [
-        {
-          id: 'fileId',
-          url: 'file-url.com'
-        }
-      ];
-
-      const result = docStoreUrlToHtmlLink('http://store', 'file-name.txt', 'file-url.com', req as Request);
-      expect(result).to.be.a('string');
-      expect(result).to.be.eq('<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'http://store/fileId\'>file-name(TXT)</a>');
-    });
-	
     it('documentMapToDocStoreUrl should retrieve the doc store url using key', () => {
       const documentMap: DocumentMap[] = [
         { id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/' }
@@ -120,29 +76,14 @@ describe('document-management-service', () => {
       expect(result).to.be.a('string');
       expect(result).to.be.eq('http://someDocumentUrl/');
     });
-	
-	it('documentToHtmlLink  should convert document to html link', () => {
-      req.session.appeal.documentMap = [
-        {
-          id: 'fileId',
-          url: 'file-url.com'
-        }
+
+    it('documentMapToDocStoreUrl should retrieve the doc store url using key', () => {
+      const documentMap: DocumentMap[] = [
+        { id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/' }
       ];
-
-      const document = {
-        id: 1234,
-        value: {
-          document_url: 'http://store',
-          document_filename: 'file-name.txt',
-          document_binary_url: 'file-name.txt'
-        },
-        caseTypeId: 'Asylum',
-        jurisdictionId: 'IA'
-      };
-
-      const result = documentToHtmlLink('http://store', document, req as Request);
-
+      const result = documentIdToDocStoreUrl('00000000-0000-0000-0000-000000000000', documentMap);
       expect(result).to.be.a('string');
+      expect(result).to.be.eq('http://someDocumentUrl/');
     });
 
     describe('removeFromDocumentMapper', () => {

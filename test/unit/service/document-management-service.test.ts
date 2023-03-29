@@ -69,7 +69,7 @@ describe('document-management-service', () => {
     });
 
   });
-  
+
   describe('DocumentManagementService uploadFile', () => {
     it('should upload a file', async () => {
 
@@ -87,8 +87,7 @@ describe('document-management-service', () => {
     });
 
   });
-  
-  
+
   describe('Helper methods @helper', () => {
     it('addToDocumentMapper should store url and return back a uuid', () => {
 
@@ -99,7 +98,7 @@ describe('document-management-service', () => {
       validateUuid(result);
     });
 
-	it('docStoreUrlToHtmlLink should convert document url to html link', () => {
+    it('docStoreUrlToHtmlLink should convert document url to html link', () => {
       req.session.appeal.documentMap = [
         {
           id: 'fileId',
@@ -111,7 +110,7 @@ describe('document-management-service', () => {
       expect(result).to.be.a('string');
       expect(result).to.be.eq('<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'http://store/fileId\'>file-name(TXT)</a>');
     });
-	
+
     it('documentMapToDocStoreUrl should retrieve the doc store url using key', () => {
       const documentMap: DocumentMap[] = [
         { id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/' }
@@ -120,8 +119,8 @@ describe('document-management-service', () => {
       expect(result).to.be.a('string');
       expect(result).to.be.eq('http://someDocumentUrl/');
     });
-	
-	it('documentToHtmlLink  should convert document to html link', () => {
+
+    it('documentToHtmlLink  should convert document to html link', () => {
       req.session.appeal.documentMap = [
         {
           id: 'fileId',

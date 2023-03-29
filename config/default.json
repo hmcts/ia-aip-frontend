@@ -59,7 +59,7 @@
     "sdkKey": "LAUNCH_DARKLY_SDK_KEY"
   },
   "documentManagement": {
-    "apiUrl": "CASE_DOCUMENT_AM_URL"
+    "apiUrl": "DOC_MANAGEMENT_URL"
   },
   "addressLookup": {
     "token": "ADDRESS_LOOKUP_TOKEN",

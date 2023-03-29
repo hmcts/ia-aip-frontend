@@ -18,7 +18,7 @@
     "caseType": "Asylum"
   },
   "documentManagement": {
-    "apiUrl": "http://dm-store:4506"
+    "apiUrl": "http://localhost:4455"
   },
     "features": {
     "askForMoreTime": true,

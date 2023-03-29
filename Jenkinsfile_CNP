@@ -28,6 +28,7 @@ def secrets = [
         secret('test-judge-x-username', 'TEST_JUDGE_X_USERNAME'),
         secret('test-judge-x-password', 'TEST_JUDGE_X_PASSWORD'),
         secret('pcq-token-key', 'PCQ_TOKEN_KEY'),
+        secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL'),
         secret('system-username', 'IA_SYSTEM_USERNAME'),
         secret('system-password', 'IA_SYSTEM_PASSWORD')
     ]

@@ -31,14 +31,6 @@ interface Document {
   _links: Links;
 }
 
-interface Embedded {
-  documents: Document[];
-}
-
-interface DocumentManagementStoreResponse {
-  _embedded: Embedded;
-}
-
 enum Classification {
   public = 'PUBLIC',
   private = 'PRIVATE',
@@ -47,8 +39,9 @@ enum Classification {
 
 class UploadData {
   file: Express.Multer.File;
-  role: string;
   classification: Classification;
+  caseTypeId: string;
+  jurisdictionId: string;
 }
 
 /**
@@ -136,22 +129,20 @@ class DocumentManagementService {
     this.authenticationService = authenticationService;
   }
 
-  private createOptions(userId: string, headers: SecurityHeaders, uri: string) {
+  private createOptions(headers: SecurityHeaders, uri: string) {
     return {
       uri: uri,
       headers: {
         Authorization: headers.userToken,
-        ServiceAuthorization: headers.serviceToken,
-        'user-id': userId
+        ServiceAuthorization: headers.serviceToken
       }
     };
   }
 
-  private async upload(userId: string, headers: SecurityHeaders, uploadData: UploadData): Promise<any> {
+  private async upload(headers: SecurityHeaders, uploadData: UploadData): Promise<any> {
     const options: any = this.createOptions(
-      userId,
       headers,
-      `${documentManagementBaseUrl}/documents`
+      `${documentManagementBaseUrl}/cases/documents`
     );
 
     options.formData = {
@@ -163,28 +154,27 @@ class DocumentManagementService {
         }
       } ],
       classification: uploadData.classification,
-      roles: uploadData.role
+      caseTypeId: uploadData.caseTypeId,
+      jurisdictionId: uploadData.jurisdictionId
     };
 
     return rp.post(options);
   }
 
-  private async delete(userId: string, headers: SecurityHeaders, fileLocation: string): Promise<any> {
+  private async delete(headers: SecurityHeaders, fileLocation: string): Promise<any> {
     const options: any = this.createOptions(
-      userId,
       headers,
       fileLocation
     );
     return rp.delete(options);
   }
 
-  private async fetchBinaryFile(userId: string, headers: SecurityHeaders, fileLocation: string): Promise<any> {
+  private async fetchBinaryFile(headers: SecurityHeaders, fileLocation: string): Promise<any> {
     let options: any = this.createOptions(
-      userId,
       headers,
-      fileLocation + '/binary'
+        fileLocation
     );
-    options.headers = { 'user-roles': 'caseworker-ia', ...options.headers };
+    options.headers = { role: 'citizen', classification: Classification.restricted, ...options.headers };
     options = { encoding: 'binary', resolveWithFullResponse: true, ...options };
     return rp.get(options);
   }
@@ -194,7 +184,6 @@ class DocumentManagementService {
    * this endpoint takes one file at a time.
    * @param req - the request that contains all necessary information
    * @property {Express.Multer.File} req.file - the file to be uploaded
-   * @property {string} req.idam.userDetails.uid - the user id
    */
   async uploadFile(req: Request): Promise<DocumentUploadResponse> {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
@@ -204,16 +193,17 @@ class DocumentManagementService {
 
     const uploadData = {
       file: req.file,
-      role: 'citizen',
-      classification: Classification.restricted
+      classification: Classification.restricted,
+      caseTypeId: 'Asylum',
+      jurisdictionId: 'IA'
     };
-    return this.upload(userId, headers, uploadData)
+    return this.upload(headers, uploadData)
       .then(response => {
-        const res: DocumentManagementStoreResponse = JSON.parse(response);
-        const documentMapperId: string = addToDocumentMapper(res._embedded.documents[0]._links.self.href, req.session.appeal.documentMap);
+        const res = JSON.parse(response);
+        const documentMapperId: string = addToDocumentMapper(res.documents[0]._links.self.href, req.session.appeal.documentMap);
         return {
           fileId: documentMapperId,
-          name: res._embedded.documents[0].originalDocumentName
+          name: res.documents[0].originalDocumentName
         } as DocumentUploadResponse;
       });
   }
@@ -230,7 +220,10 @@ class DocumentManagementService {
     const documentLocationUrl: string = documentIdToDocStoreUrl(fileId, req.session.appeal.documentMap);
     req.session.appeal.documentMap = removeFromDocumentMapper(fileId, req.session.appeal.documentMap);
     logger.trace(`Received call from user '${userId}' to delete`, logLabel);
-    return this.delete(userId, headers, documentLocationUrl);
+    const prefix = 'documents/';
+    const docId = documentLocationUrl.substring(documentLocationUrl.lastIndexOf(prefix) + prefix.length);
+    const caseDocumentUrl = `${documentManagementBaseUrl}/cases/documents/${docId}`;
+    return this.delete(headers, caseDocumentUrl);
   }
 
   /**
@@ -243,7 +236,10 @@ class DocumentManagementService {
     const headers: SecurityHeaders = await this.authenticationService.getSecurityHeaders(req);
     const userId: string = req.idam.userDetails.uid;
     logger.trace(`Received call from user '${userId}' to fetch file`, logLabel);
-    return this.fetchBinaryFile(userId, headers, fileLocation);
+    const prefix = 'documents/';
+    const docId = fileLocation.substring(fileLocation.lastIndexOf(prefix) + prefix.length);
+    const caseDocumentUrl = `${documentManagementBaseUrl}/cases/documents/${docId}/binary`;
+    return this.fetchBinaryFile(headers, caseDocumentUrl);
   }
 }
 

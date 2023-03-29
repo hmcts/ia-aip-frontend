@@ -56,7 +56,7 @@
     "apiUrl": "CCD_API_URL"
   },
   "documentManagement": {
-    "apiUrl": "DOC_MANAGEMENT_URL"
+    "apiUrl": "CASE_DOCUMENT_AM_URL"
   },
   "addressLookup": {
     "token": "ADDRESS_LOOKUP_TOKEN",

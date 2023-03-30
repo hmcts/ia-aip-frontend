@@ -65,7 +65,7 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'DOC_MANAGEMENT_URL/documents/ID/binary');
+      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'http://store/documents/ID/binary');
     });
 
   });
@@ -73,7 +73,7 @@ describe('document-management-service', () => {
   describe('DocumentManagementService uploadFile', () => {
     it('should upload a file', async () => {
 
-      const documentUploadResponse = '{"documents":[{"originalDocumentName":"file.txt","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}';
+      const documentUploadResponse = '{"_embeded":{"documents":[{"originalDocumentName":"file.txt","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}}';
 
       const resolved = new Promise((r) => r(documentUploadResponse));
 

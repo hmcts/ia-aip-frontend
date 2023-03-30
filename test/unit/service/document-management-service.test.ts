@@ -65,7 +65,7 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'http://store/documents/ID/binary');
+      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'http://store/documents/ID/');
     });
 
   });

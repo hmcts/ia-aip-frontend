@@ -65,7 +65,7 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(fetchStub).to.have.been.calledWith('anUID', sinon.match.any, 'http://store/documents/ID/');
+      expect(fetchStub).to.have.been.calledWith('anUID', sinon.match.any, 'http://store/documents/ID');
     });
 
   });
@@ -82,7 +82,7 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 
-      expect(uploadStub).to.have.been.calledWith(sinon.match.any, sinon.match.any);
+      expect(uploadStub).to.have.been.calledWith('anUID', sinon.match.any, sinon.match.any);
       expect(req.session.appeal.documentMap.length).to.be.eq(1);
     });
 

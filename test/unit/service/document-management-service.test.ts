@@ -73,7 +73,7 @@ describe('document-management-service', () => {
   describe('DocumentManagementService uploadFile', () => {
     it('should upload a file', async () => {
 
-      const documentUploadResponse = '{"_embeded":{"documents":[{"originalDocumentName":"file.txt","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}}';
+      const documentUploadResponse = '{"fileId":"1", "name":"file.txt"}';
 
       const resolved = new Promise((r) => r(documentUploadResponse));
 

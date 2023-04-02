@@ -331,8 +331,8 @@ function buildSummaryList(req: Request): SummaryList[] {
         )
     );
   }
-  if (ftpaGrounds && ftpaEvidence.length > 0) {
-    ftpaEvidence.forEach((evidence: Evidence) => {
+  if (ftpaGrounds && ftpaGrounds.length > 0) {
+    ftpaGrounds.forEach((evidence: Evidence) => {
       summaryRows.push(
         addSummaryRow(
           i18n.pages.ftpaApplication.checkYourAnswers.ftpaGrounds,
@@ -429,6 +429,9 @@ export {
   postFtpaGrounds,
   postFtpaEvidence,
   getConfirmation,
+  getProvideGroundsDocument,
+  getProvideEvidenceDocument,
+  getFtpaCheckAndSend,
   buildSummaryList,
   isFtpaApplicationOutOfTime,
   setupFtpaApplicationController

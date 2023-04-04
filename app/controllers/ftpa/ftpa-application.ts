@@ -3,14 +3,19 @@ import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getDueDateForAppellantToRespondToJudgeDecision } from '../../utils/event-deadline-date-finder';
 import { addSummaryRow } from '../../utils/summary-list';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
+async function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
+  const ftpaFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
+  if (!ftpaFlag) return res.redirect(paths.common.overview);
+
   try {
     let redirectPath = paths.ftpa.ftpaReason;
 
@@ -25,7 +30,10 @@ function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function getFtpaReason(req: Request, res: Response, next: NextFunction) {
+async function getFtpaReason(req: Request, res: Response, next: NextFunction) {
+  const ftpaFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
+  if (!ftpaFlag) return res.redirect(paths.common.overview);
+
   let previousPage = paths.common.overview;
 
   try {

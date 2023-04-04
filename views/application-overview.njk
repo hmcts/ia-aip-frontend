@@ -96,15 +96,15 @@
           {% endif %}
           {% if applicationNextStep.info %}
             <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span></p>
-            {% if applicationNextStep.info.text %}
+            {% if applicationNextStep.info.text and ftpaFeatureEnabled %}
               <p>{{ applicationNextStep.info.text | eval | safe }}</p>
             {% endif %}
             <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
-          {% if applicationNextStep.feedbackTitle %}
+          {% if applicationNextStep.feedbackTitle and ftpaFeatureEnabled %}
             <p>{{ applicationNextStep.feedbackTitle | eval | safe }}</p>
           {% endif %}
-          {% if applicationNextStep.feedbackDescription %}
+          {% if applicationNextStep.feedbackDescription and ftpaFeatureEnabled  %}
             <p>{{ applicationNextStep.feedbackDescription | eval | safe }}</span></p>
           {% endif %}
         </div>

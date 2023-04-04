@@ -7,5 +7,6 @@ export const FEATURE_FLAGS = {
   HEARING_BUNDLE: 'aip-hearing-bundle-feature',
   OUT_OF_COUNTRY: 'aip-ooc-feature',
   UPLOAD_ADDENDUM_EVIDENCE: 'aip-upload-addendum-evidence-feature',
-  MAKE_APPLICATION: 'aip-make-application-feature'
+  MAKE_APPLICATION: 'aip-make-application-feature',
+  FTPA: 'aip-ftpa-feature'
 };

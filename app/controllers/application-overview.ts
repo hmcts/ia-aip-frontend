@@ -132,6 +132,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const makeApplicationFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.MAKE_APPLICATION, false);
       const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+      const ftpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
 
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
@@ -146,6 +147,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const showPayLaterLink = payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req);
       const hearingDetails = getHearingDetails(req);
       const showChangeRepresentation = isAppealInProgress(appealStatus);
+
+      console.log('FTPA ENABLED: ', ftpaFeatureEnabled);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -163,6 +166,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showAppealRequestsInAppealEndedStatus: showAppealRequestsInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         showHearingRequests: showHearingRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
         showPayLaterLink,
+        ftpaFeatureEnabled,
         hearingDetails,
         showChangeRepresentation
       });

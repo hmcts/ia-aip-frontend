@@ -517,17 +517,40 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'decided':
+      const ftpaEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
+
+      let decidedDescriptionParagraphs;
+      let decidedInfo;
+
+      if (ftpaEnabled) {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.descriptionFtpaEnabled
+        ];
+
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
+          text: i18n.pages.overviewPage.doThisNext.decided.info.text,
+          url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
+        }
+
+      } else {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.description,
+          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackTitle,
+          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackDescription
+        ];
+
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.info.title,
+          url: i18n.pages.overviewPage.doThisNext.decided.info.url
+        }
+      }
+
       doThisNextSection = {
         decision: req.session.appeal.isDecisionAllowed,
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.decided.decision,
-          i18n.pages.overviewPage.doThisNext.decided.description
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.decided.info.title,
-          text: i18n.pages.overviewPage.doThisNext.decided.info.text,
-          url: i18n.pages.overviewPage.doThisNext.decided.info.url
-        },
+        descriptionParagraphs: decidedDescriptionParagraphs,
+        info: decidedInfo,
         cta: {},
         feedbackTitle: i18n.pages.overviewPage.doThisNext.decided.feedbackTitle,
         feedbackDescription: i18n.pages.overviewPage.doThisNext.decided.feedbackDescription,

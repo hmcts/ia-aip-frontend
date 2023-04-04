@@ -9,6 +9,7 @@ import {
 } from '../../../app/controllers/ftpa/ftpa-application';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
+import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { formatDate } from '../../../app/utils/date-utils';
 import i18n from '../../../locale/en.json';
@@ -54,6 +55,8 @@ describe('Ftpa application controllers setup', () => {
       updateAppealService: sandbox.stub()
     } as Partial<UpdateAppealService>;
     documentManagementService = { deleteFile: sandbox.stub() };
+
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
   });
 
   afterEach(() => {
@@ -61,6 +64,13 @@ describe('Ftpa application controllers setup', () => {
   });
 
   describe('makeFtpaApplication', () => {
+    it('should redirect to overview page if feature disabled', () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
+      makeFtpaApplication(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
+    });
+
     it('should redirect to ftpa reason page when in time application', () => {
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         {
@@ -112,6 +122,15 @@ describe('Ftpa application controllers setup', () => {
       expect(res.render).to.have.been.calledWith('ftpa-application/reason-for-application-page.njk', {
         ...expectedRenderPayload
       });
+    });
+
+    it('should redirect to overview page is feature disabled', () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
+      makeFtpaApplication(req as Request, res as Response, next);
+
+      getFtpaReason(req as Request, res as Response, next);
+
+      expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 
     it('should catch an error and redirect with error', () => {

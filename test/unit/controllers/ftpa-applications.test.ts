@@ -7,9 +7,6 @@ import {
   makeFtpaApplication, postFtpaCheckAndSend, postFtpaEvidence, postFtpaGrounds,
   postFtpaReason, postProvideEvidenceQuestion, setupFtpaApplicationController, uploadEvidence
 } from '../../../app/controllers/ftpa/ftpa-application';
-import {
-  setupAppealRequestControllers
-} from '../../../app/controllers/make-application/appeal-requests/setup-appeal-application-controllers';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';

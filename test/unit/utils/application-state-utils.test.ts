@@ -1063,6 +1063,21 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
+  it('when application status is ftpaSubmitted should get correct Do this next section.', async () => {
+    req.session.appeal.appealStatus = 'ftpaSubmitted';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'A judge will decide your application for permission to appeal to the Upper Tribunal.',
+        'The Tribunal will contact you when the judge has made a decision.'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;

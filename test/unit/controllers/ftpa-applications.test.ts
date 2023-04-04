@@ -9,7 +9,7 @@ import {
 } from '../../../app/controllers/ftpa/ftpa-application';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
-import LaunchDarklyService from '../service/launchDarkly-service';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { formatDate } from '../../../app/utils/date-utils';
 import i18n from '../../../locale/en.json';
@@ -64,14 +64,14 @@ describe('Ftpa application controllers setup', () => {
   });
 
   describe('makeFtpaApplication', () => {
-    it('should redirect to overview page if feature disabled', () => {
+    it('should redirect to overview page if feature disabled', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
-      makeFtpaApplication(req as Request, res as Response, next);
+      await makeFtpaApplication(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 
-    it('should redirect to ftpa reason page when in time application', () => {
+    it('should redirect to ftpa reason page when in time application', async () => {
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         {
           fileId: 'fileId',
@@ -81,12 +81,12 @@ describe('Ftpa application controllers setup', () => {
         }
       ];
 
-      makeFtpaApplication(req as Request, res as Response, next);
+      await makeFtpaApplication(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.ftpa.ftpaReason);
     });
 
-    it('should redirect to ftpa out of time reason page when out of time application', () => {
+    it('should redirect to ftpa out of time reason page when out of time application', async () => {
       req.session.appeal.finalDecisionAndReasonsDocuments = [
         {
           fileId: 'fileId',
@@ -96,14 +96,14 @@ describe('Ftpa application controllers setup', () => {
         }
       ];
 
-      makeFtpaApplication(req as Request, res as Response, next);
+      await makeFtpaApplication(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.ftpa.ftpaOutOfTimereason);
     });
   });
 
   describe('getFtpaReason', () => {
-    it('should render reason-for-application-page', () => {
+    it('should render reason-for-application-page', async () => {
 
       req.session.appeal.ftpaReason = '';
 
@@ -117,27 +117,27 @@ describe('Ftpa application controllers setup', () => {
         previousPage: paths.common.overview
       };
 
-      getFtpaReason(req as Request, res as Response, next);
+      await getFtpaReason(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/reason-for-application-page.njk', {
         ...expectedRenderPayload
       });
     });
 
-    it('should redirect to overview page is feature disabled', () => {
+    it('should redirect to overview page is feature disabled', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
-      makeFtpaApplication(req as Request, res as Response, next);
+      await makeFtpaApplication(req as Request, res as Response, next);
 
-      getFtpaReason(req as Request, res as Response, next);
+      await getFtpaReason(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.common.overview);
     });
 
-    it('should catch an error and redirect with error', () => {
+    it('should catch an error and redirect with error', async () => {
       const error = new Error('the error');
       res.render = sandbox.stub().throws(error);
 
-      getFtpaReason(req as Request, res as Response, next);
+      await getFtpaReason(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledWith(error);
     });

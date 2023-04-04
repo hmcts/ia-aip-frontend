@@ -532,7 +532,7 @@ async function getAppealApplicationNextStep(req: Request) {
           title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
           text: i18n.pages.overviewPage.doThisNext.decided.info.text,
           url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
-        }
+        };
 
       } else {
         decidedDescriptionParagraphs = [
@@ -544,7 +544,7 @@ async function getAppealApplicationNextStep(req: Request) {
         decidedInfo = {
           title: i18n.pages.overviewPage.doThisNext.decided.info.title,
           url: i18n.pages.overviewPage.doThisNext.decided.info.url
-        }
+        };
       }
 
       doThisNextSection = {

@@ -10,10 +10,12 @@ import {
   showAppealRequestsInAppealEndedStatus,
   showHearingRequests
 } from '../../../app/controllers/application-overview';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -94,6 +96,7 @@ describe('Confirmation Page Controller', () => {
       getAuthenticationService: sandbox.stub().returns(mockAuthenticationService),
       getCcdService: sandbox.stub().returns(mockCcdService)
     };
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false);
     req = {
       session: {
         appeal: {
@@ -186,6 +189,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });
@@ -243,6 +247,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });
@@ -301,6 +306,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });
@@ -371,6 +377,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });
@@ -443,6 +450,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });

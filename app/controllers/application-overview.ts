@@ -148,8 +148,6 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const hearingDetails = getHearingDetails(req);
       const showChangeRepresentation = isAppealInProgress(appealStatus);
 
-      console.log('FTPA ENABLED: ', ftpaFeatureEnabled);
-
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,

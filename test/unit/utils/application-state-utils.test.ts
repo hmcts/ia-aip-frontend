@@ -1058,7 +1058,10 @@ describe('application-state-utils', () => {
         'title': 'Helpful Information',
         'url': '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>'
       }
-    }
+    };
+
+    expect(result).to.eql(expected);
+  });
 
   it('when application status is decided should get correct Do this next section - FTPA enabled.', async () => {
     req.session.appeal.appealStatus = 'decided';
@@ -1074,7 +1077,6 @@ describe('application-state-utils', () => {
     ];
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-hearing-bundle-feature', false).resolves(true);
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
-    
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {

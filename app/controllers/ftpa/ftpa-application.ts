@@ -12,8 +12,14 @@ import { getDueDateForAppellantToRespondToJudgeDecision } from '../../utils/even
 import { addSummaryRow } from '../../utils/summary-list';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
+async function isFtpaFeatureEnabled(req: Request) {
+  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
+  return isFtpaFeatureEnabled;
+}
+
 async function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
-  const ftpaFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
+  const ftpaFlag = await isFtpaFeatureEnabled(req);
   if (!ftpaFlag) return res.redirect(paths.common.overview);
 
   try {
@@ -31,7 +37,7 @@ async function makeFtpaApplication(req: Request, res: Response, next: NextFuncti
 }
 
 async function getFtpaReason(req: Request, res: Response, next: NextFunction) {
-  const ftpaFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
+  const ftpaFlag = await isFtpaFeatureEnabled(req);
   if (!ftpaFlag) return res.redirect(paths.common.overview);
 
   let previousPage = paths.common.overview;

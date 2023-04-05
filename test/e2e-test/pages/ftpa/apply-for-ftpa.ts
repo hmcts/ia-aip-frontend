@@ -6,7 +6,7 @@ const testUrl = config.get('testUrl');
 module.exports = {
   applyForFTPAAppellant(I) {
     When(/^I click the Apply for permission to appeal to the Upper Tribunal link$/, async () => {
-      await I.amOnPage(testUrl + paths.ftpa.ftpaApplication);
+      await I.click('Apply for permission to appeal to the Upper Tribunal');
     });
 
     Then(/^I should see the ftpa reason page$/, async () => {

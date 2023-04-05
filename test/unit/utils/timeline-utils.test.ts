@@ -212,29 +212,29 @@ describe('timeline-utils', () => {
 
   describe('getEventsAndStates', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(true, true);
+      const eventsAndStates = getEventsAndStates(true, true, false);
       expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(16);
       expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(14);
     });
 
     it('should return relevant events and states when uploadAddendumEvidence feature disabled', () => {
-      const eventsAndStates = getEventsAndStates(false, true);
+      const eventsAndStates = getEventsAndStates(false, true, false);
       expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(12);
       expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(11);
     });
 
     it('should return relevant events when hearingBundle feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(false, true);
+      const eventsAndStates = getEventsAndStates(false, true, false);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
     });
 
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
-      const eventsAndStates = getEventsAndStates(true, true);
+      const eventsAndStates = getEventsAndStates(true, true, false);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
     });
 
     it('should return relevant events when hearingBundle feature disabled', () => {
-      const eventsAndStates = getEventsAndStates(true, false);
+      const eventsAndStates = getEventsAndStates(true, false, false);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
     });
   });

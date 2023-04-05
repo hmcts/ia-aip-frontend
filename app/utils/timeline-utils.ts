@@ -110,7 +110,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
-  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled);
+  const ftpaFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
+  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(
@@ -154,7 +155,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   };
 }
 
-function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, hearingBundleFeatureEnabled: boolean) {
+function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
+  hearingBundleFeatureEnabled: boolean,
+  ftpaFeatureEnabled: boolean) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,
@@ -174,7 +177,12 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, heari
     Events.END_APPEAL_AUTOMATICALLY.id,
     Events.RECORD_OUT_OF_TIME_DECISION.id
   ];
-  const appealDecisionSectionEvents = [Events.APPLY_FOR_FTPA_APPELLANT.id, Events.SEND_DECISION_AND_REASONS.id];
+  const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
+
+  if (ftpaFeatureEnabled) {
+    appealDecisionSectionEvents.push(Events.APPLY_FOR_FTPA_APPELLANT.id);
+  }
+
   const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];
   const appealArgumentSectionStates = [
     States.APPEAL_SUBMITTED.id,

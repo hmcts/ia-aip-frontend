@@ -536,6 +536,7 @@ async function getAppealApplicationNextStep(req: Request) {
 
       } else {
         decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
           i18n.pages.overviewPage.doThisNext.decided.description,
           i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackTitle,
           i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackDescription

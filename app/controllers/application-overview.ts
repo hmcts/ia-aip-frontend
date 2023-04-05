@@ -132,7 +132,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const makeApplicationFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.MAKE_APPLICATION, false);
       const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
-      const ftpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
+      const ftpaFeatureEnabled = !! await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, false);
 
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');

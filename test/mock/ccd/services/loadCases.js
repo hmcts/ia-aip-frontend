@@ -17,7 +17,8 @@ const usersToCaseData = {
   '14': [ mockData.outOfTimeDecisionGranted ],
   '15': [ mockData.outOfTimeDecisionRejected ],
   '16': [ mockData.outOfTimeDecisionInTime ],
-  '17': [ mockData.uploadAddendumEvidence ]
+  '17': [ mockData.uploadAddendumEvidence ],
+  '18': [ mockData.decided ]
 };
 
 module.exports = {

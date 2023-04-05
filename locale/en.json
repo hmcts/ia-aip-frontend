@@ -2320,7 +2320,7 @@
           "title": "Reporting accessibility problems with this website",
           "content": [
             "We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page, or think we’re not meeting accessibility requirements, contact:",
-            "<ul><li>email <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a>,</li><li>call +44 (0) 300 123 1711</li><li>Opening Hours - Monday to Friday, 8:30am to 5pm</li></ul>"
+            "<ul><li>email <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a></li><li>call +44 (0) 300 123 1711</li><li>Opening Hours - Monday to Friday, 8:30am to 5pm</li></ul>"
 
           ]
         },

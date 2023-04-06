@@ -2296,7 +2296,7 @@
         {
           "content": [
             "This service is run by HM Courts and Tribunals. We want as many people as possible to be able to use it, so we've designed it to be accessible. For example, you should be able to:",
-            "<ul><li>change colours, contrast levels and fonts</li><li>zoom in up to 300% without the text spilling off the screen</li><li>navigate most of the website using just a keyboard</li><li>navigate most of the website using speech recognition software</li><li>listen to most of the website using a screen reader(including the most recent versions of JAWS, NVDA and VoiceOver)</li></ul>",
+            "<ul><li>change colours, contrast levels and fonts</li><li>zoom in up to 300% without the text spilling off the screen</li><li>navigate most of the website using just a keyboard</li><li>navigate most of the website using speech recognition software</li><li>listen to most of the website using a screen reader (including the most recent versions of JAWS, NVDA and VoiceOver)</li></ul>",
             "We've also made the text as simple as possible to understand.",
             "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://mcmw.abilitynet.org.uk/'>AbilityNet</a> has advice on making your device easier to use if you have a disability."
           ]
@@ -2369,7 +2369,7 @@
           "content": [
             "<span class='govuk-!-font-weight-bold'>PDFs and other documents</span>",
             "Some of our PDFs and Word documents are essential to providing our services. For example, we have PDFs with information on how users can access our services, and forms published as PDF/Word documents.",
-            "The accessibility regulations <a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made'>do not require us to fix PDFs or other documents published before 23 September 2018</a>if they are not essential to providing our services.",
+            "The accessibility regulations <a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made'>do not require us to fix PDFs or other documents published before 23 September 2018</a> if they are not essential to providing our services.",
             "Any new PDFs or Word documents we publish will meet accessibility standards."
           ]
         },

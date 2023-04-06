@@ -2305,7 +2305,7 @@
           "title": "How accessible this website is",
           "content": [
             "We know some parts of this service may not be accessible:",
-            "<ul><li>most older PDF documents are not fully accessible to screen reader software</li><li>on certain pages links don’t have clear descriptions of their purpose and destinations, for example lack of information on whether the link opens in a new tab</li><li>some fields do not have associated radio buttons, labels or are labelled incorrectly which affects screen readers</li><li>on certain pages, duplicate ID values have been found, which can cause issues for users of assistive technology</li><li>on certain pages, lists aren’t structured correctly which affects screen readers</li><li>some non-text contrast does not meet the 3:1 minimum contrast</li></ul>"
+            "<ul><li>most older PDF documents are not fully accessible to screen reader software</li><li>on certain pages links don’t have clear descriptions of their purpose and destinations, for example lack of information on whether the link opens in a new tab</li><li>some fields do not have associated radio buttons, labels or are labelled incorrectly which affects screen readers</li><li>on certain pages, duplicate ID values have been found, which can cause issues for users of assistive technology</li><li>on certain pages, lists aren’t structured correctly which affects screen readers</li><li>some non-text contrast does not meet the 3:1 minimum contrast.</li></ul>"
           ]
         },
         {

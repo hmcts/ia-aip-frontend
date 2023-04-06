@@ -30,7 +30,6 @@ Feature: Apply for FTPA as an appellant in person
     Then I should see "Do you want to provide supporting evidence" on the page
     Then I see "/ftpa-evidence-question" in current url
 
-    # Path with supporting evidence
     When I select Yes and click continue
     Then I see "/ftpa-evidence" in current url
     Then I should see "Provide supporting evidence" on the page
@@ -52,13 +51,10 @@ Feature: Apply for FTPA as an appellant in person
     Then I see "/ftpa-check-answer" in current url
     Then I should see "Check your answer" on the page
 
-    # Path with no supporting evidence
-    When I select No and click continue
-    Then I see "/ftpa-check-answer" in current url
-    Then I should see "Check your answer" on the page
+    When I click "Confirm and send" button
+    Then I see "/ftpa-confirmation" in current url
 
-    # Common path with or without supporting evidence
-    When I click "send" button
-    Then I should see "Your application for permission to appeal to the Upper Tribunal has been sent" on the page
-    Then I should see "A judge will look at your application and decide what will happen next" on the page
+    When I click "See your appeal progress" link
+    Then I am on the overview page
+    Then I see "A judge will decide your application for permission to appeal to the Upper Tribunal." on the page
 

@@ -26,7 +26,7 @@ function getCurrentState(params) {
       return 'awaitingReasonsForAppeal';
     case 'uploadAddendumEvidenceLegalRep':
       return 'preHearing';
-    case 'decided':
+    case 'applyForFTPAAppellant':
       return 'ftpaSubmitted';
     default:
       throw `Event type ${params.eventType} no current state set`

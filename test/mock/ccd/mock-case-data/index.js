@@ -15,6 +15,7 @@ const outOfTimeDecisionRejected = require('./data/out-of-time-decision-rejected'
 const outOfTimeDecisionInTime = require('./data/out-of-time-decision-in-time');
 const uploadAddendumEvidence = require('./data/upload-addendum-evidence');
 const decided = require('./data/decided');
+const ftpaOutOfTimeApplicationStarted = require('./data/ftpa-out-of-time-application-started');
 const startRepresentingYourself = require('./data/start-representing-yourself');
 const partialAppealStartedCaseDataES = require('./data/partial-appeal-started-es');
 const appealSubmittedCaseDataES = require('./data/appeal-submitted-es');
@@ -33,6 +34,7 @@ const outOfTimeDecisionRejectedES = require('./data/out-of-time-decision-rejecte
 const outOfTimeDecisionInTimeES = require('./data/out-of-time-decision-in-time-es');
 const uploadAddendumEvidenceES = require('./data/upload-addendum-evidence-es');
 const decidedES = require('./data/decided-es');
+const ftpaOutOfTimeApplicationStartedES = require('./data/ftpa-out-of-time-application-started-es');
 
 module.exports = {
   partialAppealStartedCaseData,
@@ -53,6 +55,7 @@ module.exports = {
   outOfTimeDecisionInTime,
   uploadAddendumEvidence,
   decided,
+  ftpaOutOfTimeApplicationStarted,
   startRepresentingYourself,
   partialAppealStartedCaseDataES,
   appealSubmittedCaseDataES,
@@ -69,5 +72,6 @@ module.exports = {
   outOfTimeDecisionRejectedES,
   outOfTimeDecisionInTimeES,
   uploadAddendumEvidenceES,
-  decidedES
+  decidedES,
+  ftpaOutOfTimeApplicationStartedES
 };

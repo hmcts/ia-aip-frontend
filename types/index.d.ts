@@ -165,8 +165,11 @@ interface Appeal {
   ftpaAppellantEvidenceDocuments?: Evidence[];
   ftpaAppellantDocuments?: Evidence[];
   ftpaReason?: string;
-  ftpaProvideEvidence?: string;
+  ftpaProvideEvidence?: 'Yes' | 'No';
   ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
+  ftpaAppellantOutOfTimeExplanation?: string;
+  ftpaOutOfTimeProvideEvidence?: 'Yes' | 'No';
+  ftpaAppellantOutOfTimeDocuments?: Evidence[];
 }
 
 interface Hearing {

@@ -128,6 +128,10 @@ module.exports = {
           signInForUser('decided@example.com');
           break;
         }
+        case 'ftpaOutOfTimeApplicationStarted': {
+          signInForUser('ftpa-out-of-time-application-started@example.com');
+          break;
+        }
         default:
           break;
       }

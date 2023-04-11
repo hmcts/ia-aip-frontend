@@ -715,6 +715,11 @@
       }
     },
     "ftpaApplication": {
+      "ftpaOutOfTimeReason": {
+        "title": "Your application is late",
+        "content": "<p>The deadline to apply for permission to appeal to the Upper Tribunal was {{ ftpaDeadline }}.</p><p>You may still be able to apply. You need to tell us the reasons why your application is late. You can provide supporting evidence on the next page, if you have it.</p>",
+        "hint": "Why is your application late?"
+      },
       "ftpaReason": {
         "title": "Why do you think the Tribunal's decision is wrong?",
         "content": "Tell us what you think the Tribunal got wrong when deciding your appeal and explain why you think it is wrong. You can provide supporting evidence for your answer on the next page, if you have it.",
@@ -725,11 +730,11 @@
         "options": {
           "yes": {
             "text": "Yes",
-            "value": "yes"
+            "value": "Yes"
           },
           "no": {
             "text": "No",
-            "value": "no"
+            "value": "No"
           }
         }
       },
@@ -753,7 +758,9 @@
         "title": "Check your answer",
         "ftpaReason": "Why do you think the Tribunal's decision is wrong?",
         "ftpaGrounds": "Why do you think the Tribunal's decision is wrong?",
-        "ftpaEvidence": "Supporting evidence"
+        "ftpaEvidence": "Supporting evidence",
+        "ftpaOutOfTimeExplanation": "Reason application is late",
+        "ftpaOutOfTimeEvidence": "Supporting evidence for late application"
       },
       "ftpaConfirmation": {
         "title": "Your application for permission to appeal to the Upper Tribunal has been sent",
@@ -3398,7 +3405,8 @@
     },
     "ftpaApplication": {
       "ftpaReason": "Enter the reasons you think the Tribunal's decision is wrong?",
-      "ftpaEvidenceQuestion": "Select Yes if you want to provide supporting evidence"
+      "ftpaEvidenceQuestion": "Select Yes if you want to provide supporting evidence",
+      "ftpaOutOfTimeReason": "Enter the reason the application is late"
     }
   },
   "components": {

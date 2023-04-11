@@ -465,10 +465,13 @@ function buildSummaryList(req: Request): SummaryList[] {
     );
   }
   if (ftpaOutOfTimeEvidence && ftpaOutOfTimeEvidence.length > 0) {
-    ftpaOutOfTimeEvidence.forEach((evidence: Evidence) => {
+    ftpaOutOfTimeEvidence.forEach((evidence: Evidence, index: Number) => {
+      let label = index === 0
+          ? i18n.pages.ftpaApplication.checkYourAnswers.ftpaOutOfTimeEvidence
+          : '';
       summaryRows.push(
           addSummaryRow(
-              i18n.pages.ftpaApplication.checkYourAnswers.ftpaOutOfTimeEvidence,
+              label,
               [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
               paths.ftpa.ftpaOutOfTimeEvidence.slice(1)
           )
@@ -488,7 +491,7 @@ function buildSummaryList(req: Request): SummaryList[] {
     ftpaGrounds.forEach((evidence: Evidence) => {
       summaryRows.push(
         addSummaryRow(
-          i18n.pages.ftpaApplication.checkYourAnswers.ftpaGrounds,
+          '',
           [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
           paths.ftpa.ftpaGrounds.slice(1)
         )
@@ -496,10 +499,13 @@ function buildSummaryList(req: Request): SummaryList[] {
     });
   }
   if (ftpaEvidence && ftpaEvidence.length > 0) {
-    ftpaEvidence.forEach((evidence: Evidence) => {
+    ftpaEvidence.forEach((evidence: Evidence, index: Number) => {
+      let label = index === 0
+          ? i18n.pages.ftpaApplication.checkYourAnswers.ftpaEvidence
+          : '';
       summaryRows.push(
         addSummaryRow(
-          i18n.pages.ftpaApplication.checkYourAnswers.ftpaEvidence,
+          label,
           [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
           paths.ftpa.ftpaEvidence.slice(1)
         )

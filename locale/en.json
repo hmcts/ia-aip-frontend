@@ -1385,6 +1385,16 @@
               "href": "{{ paths.common.decisionAndReasonsViewer }}"
             }
           ]
+        },
+        "applyForFTPAAppellant": {
+          "text": "You applied for permission to appeal to the Upper Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your application",
+              "href": "{{ paths.common.ftpaApplicationViewer }}"
+            }
+          ]
         }
       }
     },

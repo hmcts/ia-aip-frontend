@@ -24,9 +24,9 @@
         name: id,
         id: id,
         label: {
-          text: content
+          text: content | eval | safe
         } if (content),
-        value: ftpaReason,
+        value: reason,
         hint: {
           text: hint
         } if (hint),

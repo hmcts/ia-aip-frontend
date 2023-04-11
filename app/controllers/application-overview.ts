@@ -12,7 +12,7 @@ import { formatDate, timeFormat } from '../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../utils/payments-utils';
 import { buildProgressBarStages } from '../utils/progress-bar-utils';
 import { getAppealApplicationHistory } from '../utils/timeline-utils';
-import { hasPendingTimeExtension } from '../utils/utils';
+import { hasPendingTimeExtension, isFtpaFeatureEnabled } from '../utils/utils';
 
 function getAppealRefNumber(appealRef: string) {
   if (appealRef && appealRef.toUpperCase() === 'DRAFT') {
@@ -119,12 +119,6 @@ function showHearingRequests(appealStatus: string, featureEnabled: boolean) {
 
 function isAppealInProgress(appealStatus: string) {
   return appealStatus !== States.APPEAL_STARTED.id && appealStatus !== States.PENDING_PAYMENT.id && appealStatus !== States.ENDED.id;
-}
-
-async function isFtpaFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return isFtpaFeatureEnabled;
 }
 
 function getApplicationOverview(updateAppealService: UpdateAppealService) {

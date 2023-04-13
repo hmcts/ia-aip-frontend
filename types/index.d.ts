@@ -161,6 +161,12 @@ interface Appeal {
   pcqId?: string;
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;
+  ftpaAppellantGroundsDocuments?: Evidence[];
+  ftpaAppellantEvidenceDocuments?: Evidence[];
+  ftpaAppellantDocuments?: Evidence[];
+  ftpaReason?: string;
+  ftpaProvideEvidence?: string;
+  ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
 }
 
 interface Hearing {

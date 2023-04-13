@@ -149,6 +149,21 @@ const paths = {
   cmaRequirementsSubmitted: {
     confirmation: '/appointment-success'
   },
+  ftpa: {
+    ftpaApplication: '/apply-for-ftpa',
+    ftpaReason: '/ftpa-reason',
+    ftpaEvidenceQuestion: '/ftpa-evidence-question',
+    ftpaEvidence: '/ftpa-evidence',
+    ftpaGrounds: '/ftpa-grounds',
+    ftpaCheckAndSend: '/ftpa-check-answers',
+    ftpaOutOfTimereason: '/ftpa-out-of-time-reason',
+    ftpaOutOfTimeEvidence: '/ftpa-out-of-time-evidence',
+    ftpaEvidenceUploadFile: '/ftpa-evidence/upload/file',
+    ftpaEvidenceDeleteFile: '/ftpa-evidence/delete/file',
+    ftpaGroundsUploadFile: '/ftpa-grounds/upload/file',
+    ftpaGroundsDeleteFile: '/ftpa-grounds/delete/file',
+    ftpaConfirmation: '/ftpa-confirmation'
+  },
   // Start Representing Yourself
   startRepresentingYourself: {
     start: '/start-representing-yourself',
@@ -206,6 +221,7 @@ const paths = {
     hearingNoticeViewer: '/hearing-notice',
     hearingBundleViewer: '/hearing-bundle',
     decisionAndReasonsViewer: '/decision-reasons',
+    ftpaApplicationViewer: '/ftpa-application',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

@@ -714,6 +714,55 @@
         ]
       }
     },
+    "ftpaApplication": {
+      "ftpaReason": {
+        "title": "Why do you think the Tribunal's decision is wrong?",
+        "content": "Tell us what you think the Tribunal got wrong when deciding your appeal and explain why you think it is wrong. You can provide supporting evidence for your answer on the next page, if you have it.",
+        "hint": "Explain why you think the Tribunal's decision is wrong."
+      },
+      "ftpaEvidenceQuestion": {
+        "title": "Do you want to provide supporting evidence?",
+        "options": {
+          "yes": {
+            "text": "Yes",
+            "value": "yes"
+          },
+          "no": {
+            "text": "No",
+            "value": "no"
+          }
+        }
+      },
+      "ftpaDocumentUpload": {
+        "ftpaGrounds": {
+          "title": "Why do you think the Tribunal's decision is wrong?",
+          "advice": "Upload a document that explains what you think the Tribunal got wrong when deciding your appeal and why you think it is wrong. You can provide supporting evidence on the next page, if you have it."
+        },
+        "ftpaEvidence": {
+          "title": "Provide supporting evidence",
+          "adviceHeader": "Advice on providing supporting evidence",
+          "advice": [
+            "It will be helpful to <a href='/supporting-evidence'>read our information about supporting evidence</a>",
+            "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
+            "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
+          ]
+        },
+        "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+      },
+      "checkYourAnswers": {
+        "title": "Check your answer",
+        "ftpaReason": "Why do you think the Tribunal's decision is wrong?",
+        "ftpaGrounds": "Why do you think the Tribunal's decision is wrong?",
+        "ftpaEvidence": "Supporting evidence"
+      },
+      "ftpaConfirmation": {
+        "title": "Your application for permission to appeal to the Upper Tribunal has been sent",
+        "whatNextListItems": [
+          "A judge will look at your application and decide what will happen next",
+          "The Tribunal will contact you when the judge has made a decision"
+        ]
+      }
+    },
     "reasonsForAppealUpload": {
       "title": "Provide supporting evidence",
       "titleNew": "Supporting evidence",
@@ -989,12 +1038,24 @@
         "decided": {
           "decision": "A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>",
           "description": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>",
+          "descriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
           "info": {
             "title": "Helpful Information",
-            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>"
+            "titleFtpaEnabled": "Appeal Information",
+            "text": "If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
+            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
+            "urlFtpaEnabled": "<a href=\"{{ paths.ftpa.ftpaApplication }}\">Apply for permission to appeal to the Upper Tribunal</a>"
           },
           "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
-          "ctaFeedbackDescription": "<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
+          "ctaFeedbackDescription": "<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>.",
+          "feedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
+          "feedbackDescription": "<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
+        },
+        "ftpaSubmitted":{
+          "description": [
+            "A judge will decide your application for permission to appeal to the Upper Tribunal.",
+            "The Tribunal will contact you when the judge has made a decision."
+          ]
         }
       },
       "timeline": {
@@ -3334,6 +3395,10 @@
       "askJudgeReview": "Enter which decision you want a judge to review and why",
       "askReinstate": "Enter why you want the appeal to be reinstated",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
+    },
+    "ftpaApplication": {
+      "ftpaReason": "Enter the reasons you think the Tribunal's decision is wrong?",
+      "ftpaEvidenceQuestion": "Select Yes if you want to provide supporting evidence"
     }
   },
   "components": {

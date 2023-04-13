@@ -27,6 +27,8 @@ function getNextState(body) {
       return 'awaitingReasonsForAppeal';
     case 'uploadAddendumEvidenceLegalRep':
       return 'preHearing';
+    case 'applyForFTPAAppellant':
+      return 'ftpaSubmitted';
     default:
       throw `Event type ${body.eventType} no next state set`
   }

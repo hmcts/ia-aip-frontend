@@ -148,6 +148,11 @@ interface CaseData {
   appellantPinInPost?: PinInPost;
   isAppellantAttendingTheHearing?: 'Yes' | 'No';
   isAppellantGivingOralEvidence?: 'Yes' | 'No';
+  ftpaAppellantGroundsDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  ftpaAppellantEvidenceDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
+  ftpaAppellantDocuments?: Collection<DocumentWithMetaData>[];
+  ftpaAppellantApplicationDate?: string;
 }
 
 interface Application<T> {

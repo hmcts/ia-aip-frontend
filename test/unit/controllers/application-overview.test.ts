@@ -186,6 +186,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });
@@ -243,6 +244,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });
@@ -301,6 +303,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });
@@ -371,6 +374,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });
@@ -443,6 +447,7 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
       showChangeRepresentation: false
     });

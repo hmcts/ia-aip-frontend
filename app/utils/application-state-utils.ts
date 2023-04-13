@@ -18,6 +18,7 @@ interface DoThisNextSection {
   };
   info?: {
     title: string,
+    text?: string,
     url: string;
   };
   cta?: {
@@ -40,6 +41,8 @@ interface DoThisNextSection {
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   decision?: string;
+  feedbackTitle?: string;
+  feedbackDescription?: string;
 }
 
 /**
@@ -514,19 +517,44 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'decided':
-      doThisNextSection = {
-        decision: req.session.appeal.isDecisionAllowed,
-        descriptionParagraphs: [
+      const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
+
+      let decidedDescriptionParagraphs;
+      let decidedInfo;
+
+      if (ftpaEnabled) {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.descriptionFtpaEnabled
+        ];
+
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
+          text: i18n.pages.overviewPage.doThisNext.decided.info.text,
+          url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
+        };
+
+      } else {
+        decidedDescriptionParagraphs = [
           i18n.pages.overviewPage.doThisNext.decided.decision,
           i18n.pages.overviewPage.doThisNext.decided.description,
           i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackTitle,
           i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackDescription
-        ],
-        info: {
+        ];
+
+        decidedInfo = {
           title: i18n.pages.overviewPage.doThisNext.decided.info.title,
           url: i18n.pages.overviewPage.doThisNext.decided.info.url
-        },
+        };
+      }
+
+      doThisNextSection = {
+        decision: req.session.appeal.isDecisionAllowed,
+        descriptionParagraphs: decidedDescriptionParagraphs,
+        info: decidedInfo,
         cta: {},
+        feedbackTitle: i18n.pages.overviewPage.doThisNext.decided.feedbackTitle,
+        feedbackDescription: i18n.pages.overviewPage.doThisNext.decided.feedbackDescription,
         allowedAskForMoreTime: false
       };
       break;
@@ -546,6 +574,11 @@ async function getAppealApplicationNextStep(req: Request) {
         allowedAskForMoreTime: false
       };
       break;
+    case 'ftpaSubmitted':
+      doThisNextSection = {
+        descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description
+      };
+      break;
     default:
       // default message to avoid app crashing on events that are to be implemented.
       doThisNextSection = {
@@ -557,6 +590,12 @@ async function getAppealApplicationNextStep(req: Request) {
   }
   doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
   return doThisNextSection;
+}
+
+async function isFtpaFeatureEnabled(req: Request) {
+  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
+  return isFtpaFeatureEnabled;
 }
 
 function isPreAddendumEvidenceUploadState(appealStatus: string): Boolean {

@@ -124,6 +124,10 @@ module.exports = {
           signInForUser('preHearing@example.com');
           break;
         }
+        case 'decided': {
+          signInForUser('decided@example.com');
+          break;
+        }
         default:
           break;
       }

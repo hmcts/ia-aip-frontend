@@ -58,7 +58,6 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
     States.FINAL_BUNDLING.id,
     States.PRE_HEARING.id,
     States.DECISION.id,
-    States.DECIDED.id,
     States.REASONS_FOR_APPEAL_SUBMITTED.id,
     States.AWAITING_CMA_REQUIREMENTS.id,
     States.CMA_REQUIREMENTS_SUBMITTED.id,
@@ -87,10 +86,7 @@ function showAppealRequests(appealStatus: string, featureEnabled: boolean) {
     States.FINAL_BUNDLING.id,
     States.PRE_HEARING.id,
     States.DECISION.id,
-    States.DECIDED.id,
     States.APPEAL_TAKEN_OFFLINE.id,
-    States.FTPA_SUBMITTED.id,
-    States.FTPA_DECIDED.id,
     States.AWAITING_CLARIFYING_QUESTIONS_ANSWERS.id,
     States.CLARIFYING_QUESTIONS_ANSWERED_SUBMITTED.id,
     States.AWAITING_CMA_REQUIREMENTS.id,
@@ -133,6 +129,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const makeApplicationFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.MAKE_APPLICATION, false);
       const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
       const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
+      const postDecisionStates = [ States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ];
 
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
@@ -144,7 +141,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
-      const showPayLaterLink = payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req);
+      const showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !postDecisionStates.includes(appealStatus);
       const hearingDetails = getHearingDetails(req);
       const showChangeRepresentation = isAppealInProgress(appealStatus);
 

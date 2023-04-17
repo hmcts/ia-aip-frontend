@@ -7,7 +7,7 @@ import { States } from '../data/states';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppellantApplications } from './utils';
+import { getAppellantApplications, isFtpaFeatureEnabled } from './utils';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -100,12 +100,6 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
       }]
     };
   });
-}
-
-async function isFtpaFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return isFtpaFeatureEnabled;
 }
 
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {

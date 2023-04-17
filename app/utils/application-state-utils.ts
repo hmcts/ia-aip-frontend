@@ -6,7 +6,7 @@ import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
-import { getAppellantApplications, hasPendingTimeExtension } from '../utils/utils';
+import { getAppellantApplications, hasPendingTimeExtension, isFtpaFeatureEnabled } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
 
@@ -590,12 +590,6 @@ async function getAppealApplicationNextStep(req: Request) {
   }
   doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
   return doThisNextSection;
-}
-
-async function isFtpaFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return isFtpaFeatureEnabled;
 }
 
 function isPreAddendumEvidenceUploadState(appealStatus: string): Boolean {

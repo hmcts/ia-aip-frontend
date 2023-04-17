@@ -2,21 +2,14 @@ import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
-import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
-import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getDueDateForAppellantToRespondToJudgeDecision } from '../../utils/event-deadline-date-finder';
 import { addSummaryRow } from '../../utils/summary-list';
+import { isFtpaFeatureEnabled } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
-
-async function isFtpaFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return isFtpaFeatureEnabled;
-}
 
 async function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
   const ftpaFlag = await isFtpaFeatureEnabled(req);

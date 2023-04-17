@@ -341,22 +341,25 @@ function buildSummaryList(req: Request): SummaryList[] {
   if (ftpaGrounds && ftpaGrounds.length > 0) {
     ftpaGrounds.forEach((evidence: Evidence) => {
       summaryRows.push(
-        addSummaryRow(
-          i18n.pages.ftpaApplication.checkYourAnswers.ftpaGrounds,
-          [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
-          paths.ftpa.ftpaGrounds.slice(1)
-        )
+          addSummaryRow(
+              '',
+              [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
+              paths.ftpa.ftpaGrounds.slice(1)
+          )
       );
     });
   }
   if (ftpaEvidence && ftpaEvidence.length > 0) {
-    ftpaEvidence.forEach((evidence: Evidence) => {
+    ftpaEvidence.forEach((evidence: Evidence, index: Number) => {
+      let label = index === 0
+          ? i18n.pages.ftpaApplication.checkYourAnswers.ftpaEvidence
+          : '';
       summaryRows.push(
-        addSummaryRow(
-          i18n.pages.ftpaApplication.checkYourAnswers.ftpaEvidence,
-          [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
-          paths.ftpa.ftpaEvidence.slice(1)
-        )
+          addSummaryRow(
+              label,
+              [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
+              paths.ftpa.ftpaEvidence.slice(1)
+          )
       );
     });
   }

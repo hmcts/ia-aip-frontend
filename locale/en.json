@@ -1378,6 +1378,17 @@
               "href": "{{ paths.common.decisionAndReasonsViewer }}"
             }
           ]
+        },
+        "applyForFTPAAppellant": {
+          "text": "The Decision and Reasons documents is ready to view.",
+          "textForEditListCase": "The Decision and Reasons documents is ready to view.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Decision and Reasons",
+              "href": "{{ paths.common.decisionAndReasonsViewer }}"
+            }
+          ]
         }
       }
     },

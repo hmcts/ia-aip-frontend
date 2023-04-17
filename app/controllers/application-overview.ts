@@ -58,6 +58,7 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
     States.FINAL_BUNDLING.id,
     States.PRE_HEARING.id,
     States.DECISION.id,
+    States.DECIDED.id,
     States.REASONS_FOR_APPEAL_SUBMITTED.id,
     States.AWAITING_CMA_REQUIREMENTS.id,
     States.CMA_REQUIREMENTS_SUBMITTED.id,
@@ -72,7 +73,7 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
   return featureEnabled && preAddendumEvidenceUploadState;
 }
 
-function showAppealRequests(appealStatus: string, featureEnabled: boolean) {
+function showAppealRequestSection(appealStatus: string, featureEnabled: boolean) {
   const showAppealRequestsStates = [
     States.APPEAL_SUBMITTED.id,
     States.AWAITING_RESPONDENT_EVIDENCE.id,
@@ -86,7 +87,10 @@ function showAppealRequests(appealStatus: string, featureEnabled: boolean) {
     States.FINAL_BUNDLING.id,
     States.PRE_HEARING.id,
     States.DECISION.id,
+    States.DECIDED.id,
     States.APPEAL_TAKEN_OFFLINE.id,
+    States.FTPA_SUBMITTED.id,
+    States.FTPA_DECIDED.id,
     States.AWAITING_CLARIFYING_QUESTIONS_ANSWERS.id,
     States.CLARIFYING_QUESTIONS_ANSWERED_SUBMITTED.id,
     States.AWAITING_CMA_REQUIREMENTS.id,
@@ -98,11 +102,11 @@ function showAppealRequests(appealStatus: string, featureEnabled: boolean) {
   return featureEnabled ? showAppealRequestsStates.includes(appealStatus) : featureEnabled;
 }
 
-function showAppealRequestsInAppealEndedStatus(appealStatus: string, featureEnabled: boolean): boolean {
+function showAppealRequestSectionInAppealEndedStatus(appealStatus: string, featureEnabled: boolean): boolean {
   return featureEnabled ? States.ENDED.id === appealStatus : featureEnabled;
 }
 
-function showHearingRequests(appealStatus: string, featureEnabled: boolean) {
+function showHearingRequestSection(appealStatus: string, featureEnabled: boolean) {
   const showHearingRequestsStates = [
     States.PREPARE_FOR_HEARING.id,
     States.FINAL_BUNDLING.id,
@@ -129,7 +133,6 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const makeApplicationFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.MAKE_APPLICATION, false);
       const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
       const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
-      const postDecisionStates = [ States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ];
 
       const isPartiallySaved = _.has(req.query, 'saved');
       const askForMoreTime = _.has(req.query, 'ask-for-more-time');
@@ -141,9 +144,17 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
-      const showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !postDecisionStates.includes(appealStatus);
+      const showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
       const hearingDetails = getHearingDetails(req);
       const showChangeRepresentation = isAppealInProgress(appealStatus);
+      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled)
+          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+      const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -156,10 +167,10 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal),
         askForMoreTime,
         saveAndAskForMoreTime,
-        provideMoreEvidenceSection: checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled),
-        showAppealRequests: showAppealRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
-        showAppealRequestsInAppealEndedStatus: showAppealRequestsInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
-        showHearingRequests: showHearingRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
+        provideMoreEvidenceSection,
+        showAppealRequests,
+        showAppealRequestsInAppealEndedStatus,
+        showHearingRequests,
         showPayLaterLink,
         ftpaFeatureEnabled,
         hearingDetails,
@@ -169,6 +180,12 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       next(e);
     }
   };
+}
+
+function hideLinkForFtpa(appealStatus: string, ftpaEnabled: boolean) {
+  const postDecisionStates = [ States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ];
+
+  return postDecisionStates.includes(appealStatus) && ftpaEnabled;
 }
 
 function setupApplicationOverviewController(updateAppealService: UpdateAppealService): Router {
@@ -184,7 +201,8 @@ export {
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
   getHearingDetails,
-  showAppealRequests,
-  showHearingRequests,
-  showAppealRequestsInAppealEndedStatus
+  showAppealRequestSection,
+  showHearingRequestSection,
+  hideLinkForFtpa,
+  showAppealRequestSectionInAppealEndedStatus
 };

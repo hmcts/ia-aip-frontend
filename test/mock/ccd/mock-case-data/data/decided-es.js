@@ -528,7 +528,7 @@ const decidedES = {
               },
               "suppliedBy":"",
               "description":"",
-              "dateUploaded":"2023-04-04"
+              "dateUploaded": new Date().toLocaleDateString()
             }
           },
           {
@@ -542,7 +542,7 @@ const decidedES = {
               },
               "suppliedBy":"",
               "description":"",
-              "dateUploaded":"2023-04-04"
+              "dateUploaded": new Date().toLocaleDateString()
             }
           }
         ],

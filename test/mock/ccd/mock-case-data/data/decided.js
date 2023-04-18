@@ -503,7 +503,7 @@ const decided = {
           },
           "suppliedBy": "",
           "description": "",
-          "dateUploaded": "2023-04-04"
+          "dateUploaded": new Date().toLocaleDateString()
         }
       },
       {
@@ -517,7 +517,7 @@ const decided = {
           },
           "suppliedBy": "",
           "description": "",
-          "dateUploaded": "2023-04-04"
+          "dateUploaded": new Date().toLocaleDateString()
         }
       }
     ],

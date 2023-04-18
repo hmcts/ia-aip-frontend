@@ -164,7 +164,7 @@ interface Appeal {
   ftpaAppellantGroundsDocuments?: Evidence[];
   ftpaAppellantEvidenceDocuments?: Evidence[];
   ftpaAppellantDocuments?: Evidence[];
-  ftpaReason?: string;
+  ftpaAppellantGrounds?: string;
   ftpaProvideEvidence?: 'Yes' | 'No';
   ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
   ftpaAppellantOutOfTimeExplanation?: string;

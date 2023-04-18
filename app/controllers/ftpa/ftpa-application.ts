@@ -105,7 +105,7 @@ async function getFtpaReason(req: Request, res: Response, next: NextFunction) {
     content: i18n.pages.ftpaApplication.ftpaReason.content,
     hint: i18n.pages.ftpaApplication.ftpaReason.hint,
     formSubmitAction: paths.ftpa.ftpaReason,
-    reason: req.session.appeal.ftpaReason,
+    reason: req.session.appeal.ftpaAppellantGrounds,
     id: 'ftpaReason',
     previousPage,
     validationErrors: {
@@ -123,7 +123,7 @@ function postFtpaReason(req: Request, res: Response, next: NextFunction) {
       return res.redirect(`${paths.ftpa.ftpaReason}?error=ftpaReason`);
     }
 
-    req.session.appeal.ftpaReason = ftpaReason;
+    req.session.appeal.ftpaAppellantGrounds = ftpaReason;
     return res.redirect(paths.ftpa.ftpaGrounds);
   } catch (e) {
     next(e);
@@ -407,28 +407,19 @@ function getFtpaCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postFtpaCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      delete (req.session.appeal.ftpaProvideEvidence);
-      delete (req.session.appeal.ftpaOutOfTimeProvideEvidence);
-      const ftpaReason = req.session.appeal.ftpaReason;
-      delete (req.session.appeal.ftpaReason);
       const appeal: Appeal = {
         ...req.session.appeal
       };
-      appeal.ftpaAppellantGroundsDocuments = (appeal.ftpaAppellantGroundsDocuments || []).map(doc => {
-        return {
-          ...doc,
-          'description': ftpaReason
-        };
-      });
+
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.APPLY_FOR_FTPA_APPELLANT, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
-      req.session.appeal.ftpaAppellantEvidenceDocuments = [];
-      req.session.appeal.ftpaAppellantGroundsDocuments = [];
-      req.session.appeal.ftpaAppellantOutOfTimeDocuments = [];
+
+      delete (req.session.appeal.ftpaProvideEvidence);
+      delete (req.session.appeal.ftpaOutOfTimeProvideEvidence);
 
       return res.redirect(paths.ftpa.ftpaConfirmation);
     } catch (e) {
@@ -478,11 +469,11 @@ function buildSummaryList(req: Request): SummaryList[] {
       );
     });
   }
-  if (req.session.appeal.ftpaReason) {
+  if (req.session.appeal.ftpaAppellantGrounds) {
     summaryRows.push(
         addSummaryRow(
             i18n.pages.ftpaApplication.checkYourAnswers.ftpaReason,
-            [`<p>${req.session.appeal.ftpaReason}</p>`],
+            [`<p>${req.session.appeal.ftpaAppellantGrounds}</p>`],
             paths.ftpa.ftpaReason.slice(1)
         )
     );

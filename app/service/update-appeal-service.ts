@@ -515,6 +515,7 @@ export default class UpdateAppealService {
       ...caseData.ftpaAppellantGroundsDocuments && { ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantGroundsDocuments, documentMap) },
       ...caseData.ftpaAppellantOutOfTimeDocuments && { ftpaAppellantOutOfTimeDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantOutOfTimeDocuments, documentMap) },
       ...caseData.ftpaAppellantDocuments && { ftpaAppellantDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.ftpaAppellantDocuments, documentMap) },
+      ...caseData.ftpaAppellantGrounds && { ftpaAppellantGrounds: caseData.ftpaAppellantGrounds },
       ...caseData.ftpaAppellantApplicationDate && { ftpaAppellantApplicationDate: caseData.ftpaAppellantApplicationDate },
       ...caseData.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: caseData.ftpaAppellantSubmissionOutOfTime },
       ...caseData.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: caseData.ftpaAppellantOutOfTimeExplanation },
@@ -950,6 +951,7 @@ export default class UpdateAppealService {
       ...appeal.ftpaAppellantOutOfTimeDocuments && {
         ftpaAppellantOutOfTimeDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantOutOfTimeDocuments, appeal.documentMap, 'ftpaAppellantOutOfTimeDocuments')
       },
+      ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
       ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime }
     };

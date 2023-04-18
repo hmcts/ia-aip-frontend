@@ -130,14 +130,14 @@ describe('Ftpa application controllers setup', () => {
     it('should render correctly when in time', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
-      req.session.appeal.ftpaReason = '';
+      req.session.appeal.ftpaAppellantGrounds = '';
 
       const expectedRenderPayload = {
         title: i18n.pages.ftpaApplication.ftpaReason.title,
         content: i18n.pages.ftpaApplication.ftpaReason.content,
         hint: i18n.pages.ftpaApplication.ftpaReason.hint,
         formSubmitAction: paths.ftpa.ftpaReason,
-        reason: req.session.appeal.ftpaReason,
+        reason: req.session.appeal.ftpaAppellantGrounds,
         id: 'ftpaReason',
         previousPage: paths.common.overview
       };
@@ -154,7 +154,7 @@ describe('Ftpa application controllers setup', () => {
 
       req.session.appeal = {
         ...req.session.appeal,
-        ftpaReason: '',
+        ftpaAppellantGrounds: '',
         ftpaAppellantSubmissionOutOfTime: 'Yes'
       };
 
@@ -163,7 +163,7 @@ describe('Ftpa application controllers setup', () => {
         content: i18n.pages.ftpaApplication.ftpaReason.content,
         hint: i18n.pages.ftpaApplication.ftpaReason.hint,
         formSubmitAction: paths.ftpa.ftpaReason,
-        reason: req.session.appeal.ftpaReason,
+        reason: req.session.appeal.ftpaAppellantGrounds,
         id: 'ftpaReason',
         previousPage: paths.ftpa.ftpaOutOfTimeEvidenceQuestion
       };
@@ -180,7 +180,7 @@ describe('Ftpa application controllers setup', () => {
 
       req.session.appeal = {
         ...req.session.appeal,
-        ftpaReason: '',
+        ftpaAppellantGrounds: '',
         ftpaAppellantSubmissionOutOfTime: 'Yes',
         ftpaOutOfTimeProvideEvidence: 'Yes'
       };
@@ -190,7 +190,7 @@ describe('Ftpa application controllers setup', () => {
         content: i18n.pages.ftpaApplication.ftpaReason.content,
         hint: i18n.pages.ftpaApplication.ftpaReason.hint,
         formSubmitAction: paths.ftpa.ftpaReason,
-        reason: req.session.appeal.ftpaReason,
+        reason: req.session.appeal.ftpaAppellantGrounds,
         id: 'ftpaReason',
         previousPage: paths.ftpa.ftpaOutOfTimeEvidence
       };
@@ -901,7 +901,7 @@ describe('Ftpa application controllers setup', () => {
         }
       ] as Evidence[];
       req.session.appeal.ftpaProvideEvidence = 'Yes';
-      req.session.appeal.ftpaReason = 'Reason for ftpa application';
+      req.session.appeal.ftpaAppellantGrounds = 'Reason for ftpa application';
       req.session.appeal.ftpaAppellantEvidenceDocuments = evidence;
       req.session.appeal.ftpaAppellantGroundsDocuments = evidence;
       req.session.appeal.ftpaAppellantOutOfTimeDocuments = evidence;
@@ -909,11 +909,7 @@ describe('Ftpa application controllers setup', () => {
       await postFtpaCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.ftpa.ftpaConfirmation);
-      expect(req.session.appeal.ftpaAppellantEvidenceDocuments.length).to.eq(0);
-      expect(req.session.appeal.ftpaAppellantGroundsDocuments.length).to.eq(0);
-      expect(req.session.appeal.ftpaAppellantOutOfTimeDocuments.length).to.eq(0);
       expect(req.session.appeal.ftpaProvideEvidence).to.eq(undefined);
-      expect(req.session.appeal.ftpaReason).to.eq(undefined);
       expect(req.session.appeal.ftpaOutOfTimeProvideEvidence).to.eq(undefined);
     });
   });
@@ -975,7 +971,7 @@ describe('Ftpa application controllers setup', () => {
       ];
       req.session.appeal.ftpaAppellantEvidenceDocuments = mockEvidenceDocuments;
       req.session.appeal.ftpaAppellantGroundsDocuments = mockEvidenceDocuments;
-      req.session.appeal.ftpaReason = 'Grounds for ftpa application';
+      req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
 
       const result = buildSummaryList(req as Request);
 
@@ -991,7 +987,7 @@ describe('Ftpa application controllers setup', () => {
           name: 'fileName'
         }
       ];
-      req.session.appeal.ftpaReason = 'Grounds for ftpa application';
+      req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
 
       const result = buildSummaryList(req as Request);
 

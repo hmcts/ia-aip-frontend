@@ -677,7 +677,7 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
     attachFtpaDocuments(ftpaGroundsDocuments, data, i18n.pages.detailViewers.ftpaApplication.groundsDocuments);
     attachFtpaDocuments(ftpaEvidenceDocuments, data, i18n.pages.detailViewers.ftpaApplication.evidence);
     if (ftpaAppellantApplicationDate) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment().format(dayMonthYearFormat)]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat)]));
     }
     if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length > 0) {
       data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ftpaOutOfTimeApplicationReason]));

@@ -170,6 +170,7 @@ interface Appeal {
   ftpaAppellantOutOfTimeExplanation?: string;
   ftpaOutOfTimeProvideEvidence?: 'Yes' | 'No';
   ftpaAppellantOutOfTimeDocuments?: Evidence[];
+  ftpaAppellantApplicationDate?: string;
 }
 
 interface Hearing {

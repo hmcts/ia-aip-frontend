@@ -1392,7 +1392,7 @@
             {
               "title": "What you sent",
               "text": "Your application",
-              "href": "{{ paths.common.ftpaApplicationViewer }}"
+              "href": "{{ paths.common.ftpaAppellantApplicationViewer }}"
             }
           ]
         }
@@ -1565,6 +1565,17 @@
       "decisionsAndReasons": {
         "title": "Decision and Reasons",
         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
+      },
+      "ftpaApplication": {
+        "title": {
+          "appellant": "Your Application",
+          "respondent": "Application details"
+        },
+        "grounds": "Why do you think the Tribunal's decision is wrong?",
+        "groundsDocuments": "Reasons for the application",
+        "outOfTimeReason": "Reason application is late",
+        "evidence": "Supporting evidence",
+        "outOfTimeEvidence": "Supporting evidence for late application"
       }
     },
     "guidancePages": {

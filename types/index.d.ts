@@ -161,7 +161,6 @@ interface Appeal {
   pcqId?: string;
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;
-  ftpaAppellantGroundsDocuments?: Evidence[];
   ftpaAppellantEvidenceDocuments?: Evidence[];
   ftpaAppellantDocuments?: Evidence[];
   ftpaAppellantGrounds?: string;

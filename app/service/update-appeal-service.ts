@@ -513,7 +513,6 @@ export default class UpdateAppealService {
       ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
       ...caseData.ftpaAppellantEvidenceDocuments && { ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantEvidenceDocuments, documentMap) },
       ...caseData.ftpaAppellantGroundsDocuments && { ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantGroundsDocuments, documentMap) },
-      ...caseData.ftpaAppellantOutOfTimeDocuments && { ftpaAppellantOutOfTimeDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantOutOfTimeDocuments, documentMap) },
       ...caseData.ftpaAppellantDocuments && { ftpaAppellantDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.ftpaAppellantDocuments, documentMap) },
       ...caseData.ftpaAppellantGrounds && { ftpaAppellantGrounds: caseData.ftpaAppellantGrounds },
       ...caseData.ftpaAppellantApplicationDate && { ftpaAppellantApplicationDate: caseData.ftpaAppellantApplicationDate },
@@ -942,9 +941,6 @@ export default class UpdateAppealService {
       ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
       ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
       ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) },
-      ...appeal.ftpaAppellantGroundsDocuments && {
-        ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantGroundsDocuments, appeal.documentMap, 'ftpaAppellantGroundsDocument')
-      },
       ...appeal.ftpaAppellantEvidenceDocuments && {
         ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantEvidenceDocuments, appeal.documentMap, 'ftpaAppellantEvidenceDocuments')
       },

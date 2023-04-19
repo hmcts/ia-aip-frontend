@@ -1950,11 +1950,9 @@ describe('Detail viewer Controller', () => {
       }
     ];
     it('should render templates/details-viewer.njk with ftpa appellant application documents', () => {
-      req.session.appeal.ftpaAppellantGroundsDocuments = [ ...documents ];
       req.session.appeal = {
         ...req.session.appeal,
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
-        ftpaAppellantGroundsDocuments: [ ...documents ],
         ftpaAppellantApplicationDate: '2023-03-20',
         ftpaAppellantEvidenceDocuments: [ ...documents ],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
@@ -1964,14 +1962,6 @@ describe('Detail viewer Controller', () => {
         {
           key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
           value: { html: 'ftpaAppellantGrounds' }
-        },
-        {
-          key: { text: i18n.pages.detailViewers.ftpaApplication.groundsDocuments },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc(PDF)</a>` }
-        },
-        {
-          key: { text: '' },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc(PDF)</a>` }
         },
         {
           key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
@@ -2008,11 +1998,9 @@ describe('Detail viewer Controller', () => {
     });
     it('should catch error and call next with it', () => {
       const error = new Error('an error');
-      req.session.appeal.ftpaAppellantGroundsDocuments = [ ...documents ];
       req.session.appeal = {
         ...req.session.appeal,
         ftpaAppellantGrounds: 'ftpaAppellantGrounds',
-        ftpaAppellantGroundsDocuments: [ ...documents ],
         ftpaAppellantApplicationDate: '2023-03-20',
         ftpaAppellantEvidenceDocuments: [ ...documents ],
         ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',

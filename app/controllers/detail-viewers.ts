@@ -662,7 +662,6 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
 function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    const ftpaGroundsDocuments = req.session.appeal.ftpaAppellantGroundsDocuments;
     const ftpaGrounds = req.session.appeal.ftpaAppellantGrounds;
     const ftpaEvidenceDocuments = req.session.appeal.ftpaAppellantEvidenceDocuments;
     const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaAppellantOutOfTimeExplanation;
@@ -674,7 +673,6 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
     if (ftpaGrounds && ftpaGrounds.length > 0) {
       data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ftpaGrounds]));
     }
-    attachFtpaDocuments(ftpaGroundsDocuments, data, i18n.pages.detailViewers.ftpaApplication.groundsDocuments);
     attachFtpaDocuments(ftpaEvidenceDocuments, data, i18n.pages.detailViewers.ftpaApplication.evidence);
     if (ftpaAppellantApplicationDate) {
       data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat)]));

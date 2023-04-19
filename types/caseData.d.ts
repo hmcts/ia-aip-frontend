@@ -153,7 +153,6 @@ interface CaseData {
   ftpaAppellantGrounds?: string;
   ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
   ftpaAppellantOutOfTimeExplanation?: string;
-  ftpaAppellantOutOfTimeDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantDocuments?: Collection<DocumentWithMetaData>[];
   ftpaAppellantApplicationDate?: string;
 }

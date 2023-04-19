@@ -154,7 +154,6 @@ const paths = {
     ftpaReason: '/ftpa-reason',
     ftpaEvidenceQuestion: '/ftpa-evidence-question',
     ftpaEvidence: '/ftpa-evidence',
-    ftpaGrounds: '/ftpa-grounds',
     ftpaCheckAndSend: '/ftpa-check-answers',
     ftpaOutOfTimeReason: '/ftpa-out-of-time-reason',
     ftpaOutOfTimeEvidenceQuestion: '/ftpa-out-of-time-evidence-question',
@@ -163,8 +162,6 @@ const paths = {
     ftpaOutOfTimeEvidenceDeleteFile: '/ftpa-out-of-time-evidence/delete/file',
     ftpaEvidenceUploadFile: '/ftpa-evidence/upload/file',
     ftpaEvidenceDeleteFile: '/ftpa-evidence/delete/file',
-    ftpaGroundsUploadFile: '/ftpa-grounds/upload/file',
-    ftpaGroundsDeleteFile: '/ftpa-grounds/delete/file',
     ftpaConfirmation: '/ftpa-confirmation'
   },
   // Start Representing Yourself

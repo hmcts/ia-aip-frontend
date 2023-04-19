@@ -124,7 +124,7 @@ function postFtpaReason(req: Request, res: Response, next: NextFunction) {
     }
 
     req.session.appeal.ftpaAppellantGrounds = ftpaReason;
-    return res.redirect(paths.ftpa.ftpaGrounds);
+    return res.redirect(paths.ftpa.ftpaEvidenceQuestion);
   } catch (e) {
     next(e);
   }
@@ -206,7 +206,7 @@ function postProvideOutOfTimeEvidenceQuestion(req: Request, res: Response, next:
 function getProvideFtpaEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
   const config = {
     provideEvidence: 'ftpaProvideEvidence',
-    previousPage: paths.ftpa.ftpaGrounds,
+    previousPage: paths.ftpa.ftpaReason,
     formAction: paths.ftpa.ftpaEvidenceQuestion
   };
 
@@ -287,18 +287,6 @@ function postFtpaEvidence(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postFtpaGrounds(req: Request, res: Response, next: NextFunction) {
-  try {
-    if ((req.session.appeal.ftpaAppellantGroundsDocuments || []).length > 0) {
-      res.redirect(paths.ftpa.ftpaEvidenceQuestion);
-    } else {
-      res.redirect(`${paths.ftpa.ftpaGrounds}?error=noFileSelected`);
-    }
-  } catch (error) {
-    next(error);
-  }
-}
-
 function getProvideOutOfTimeEvidenceDocument(req: Request, res: Response, next: NextFunction) {
   const config = {
     title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.title,
@@ -309,20 +297,6 @@ function getProvideOutOfTimeEvidenceDocument(req: Request, res: Response, next: 
     evidenceCTA: paths.ftpa.ftpaOutOfTimeEvidenceDeleteFile,
     previousPage: paths.ftpa.ftpaOutOfTimeEvidenceQuestion,
     formSubmitAction: paths.ftpa.ftpaOutOfTimeEvidence
-  };
-
-  return getProvideDocument(req, res, next, config);
-}
-
-function getProvideGroundsDocument(req: Request, res: Response, next: NextFunction) {
-  const config = {
-    title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaGrounds.title,
-    advice: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaGrounds.advice,
-    evidenceUploadAction: paths.ftpa.ftpaGroundsUploadFile,
-    evidences: req.session.appeal.ftpaAppellantGroundsDocuments || [],
-    evidenceCTA: paths.ftpa.ftpaGroundsDeleteFile,
-    previousPage: paths.ftpa.ftpaReason,
-    formSubmitAction: paths.ftpa.ftpaGrounds
   };
 
   return getProvideDocument(req, res, next, config);
@@ -443,7 +417,6 @@ function buildSummaryList(req: Request): SummaryList[] {
   const summaryLists: SummaryList[] = [];
   const summaryRows: SummaryRow[] = [];
   const ftpaEvidence = req.session.appeal.ftpaAppellantEvidenceDocuments;
-  const ftpaGrounds = req.session.appeal.ftpaAppellantGroundsDocuments;
   const ftpaOutOfTimeEvidence = req.session.appeal.ftpaAppellantOutOfTimeDocuments;
 
   if (req.session.appeal.ftpaAppellantOutOfTimeExplanation) {
@@ -477,17 +450,6 @@ function buildSummaryList(req: Request): SummaryList[] {
             paths.ftpa.ftpaReason.slice(1)
         )
     );
-  }
-  if (ftpaGrounds && ftpaGrounds.length > 0) {
-    ftpaGrounds.forEach((evidence: Evidence) => {
-      summaryRows.push(
-          addSummaryRow(
-              '',
-              [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
-              paths.ftpa.ftpaGrounds.slice(1)
-          )
-      );
-    });
   }
   if (ftpaEvidence && ftpaEvidence.length > 0) {
     ftpaEvidence.forEach((evidence: Evidence, index: Number) => {
@@ -538,7 +500,6 @@ function setupFtpaApplicationController(
   router.get(paths.ftpa.ftpaReason, middleware, getFtpaReason);
   router.get(paths.ftpa.ftpaEvidenceQuestion, middleware, getProvideFtpaEvidenceQuestion);
   router.get(paths.ftpa.ftpaOutOfTimeEvidenceQuestion, middleware, getProvideFtpaOutOfTimeEvidenceQuestion);
-  router.get(paths.ftpa.ftpaGrounds, middleware, getProvideGroundsDocument);
   router.get(paths.ftpa.ftpaEvidence, middleware, getProvideEvidenceDocument);
   router.get(paths.ftpa.ftpaOutOfTimeEvidence, middleware, getProvideOutOfTimeEvidenceDocument);
   router.get(paths.ftpa.ftpaCheckAndSend, middleware, getFtpaCheckAndSend);
@@ -546,7 +507,6 @@ function setupFtpaApplicationController(
   router.get(paths.ftpa.ftpaApplication, middleware, makeFtpaApplication);
   router.post(paths.ftpa.ftpaOutOfTimeReason, middleware, postFtpaOutOfTimeReason);
   router.post(paths.ftpa.ftpaReason, middleware, postFtpaReason);
-  router.post(paths.ftpa.ftpaGrounds, middleware, postFtpaGrounds);
   router.post(paths.ftpa.ftpaEvidenceQuestion, middleware, postProvideEvidenceQuestion);
   router.post(paths.ftpa.ftpaOutOfTimeEvidenceQuestion, middleware, postProvideOutOfTimeEvidenceQuestion);
   router.post(paths.ftpa.ftpaEvidence, middleware, postFtpaEvidence);
@@ -568,14 +528,6 @@ function setupFtpaApplicationController(
       middleware,
       validate(paths.ftpa.ftpaEvidence),
       uploadEvidence(documentManagementService, 'ftpaEvidence', 'ftpaAppellantEvidenceDocuments'));
-  router.get(paths.ftpa.ftpaGroundsDeleteFile,
-      middleware,
-      deleteEvidence(documentManagementService, 'ftpaGrounds', 'ftpaAppellantGroundsDocuments'));
-  router.post(
-      paths.ftpa.ftpaGroundsUploadFile,
-      middleware,
-      validate(paths.ftpa.ftpaGrounds),
-      uploadEvidence(documentManagementService, 'ftpaGrounds', 'ftpaAppellantGroundsDocuments'));
 
   return router;
 }
@@ -596,11 +548,9 @@ export {
   uploadEvidence,
   deleteEvidence,
   postFtpaOutOfTimeEvidence,
-  postFtpaGrounds,
   postFtpaEvidence,
   getConfirmation,
   getProvideOutOfTimeEvidenceDocument,
-  getProvideGroundsDocument,
   getProvideEvidenceDocument,
   getFtpaCheckAndSend,
   buildSummaryList,

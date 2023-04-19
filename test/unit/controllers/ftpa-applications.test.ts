@@ -10,12 +10,12 @@ import {
   getProvideEvidenceDocument,
   getProvideFtpaEvidenceQuestion,
   getProvideFtpaOutOfTimeEvidenceQuestion,
-  getProvideGroundsDocument, getProvideOutOfTimeEvidenceDocument,
+  getProvideOutOfTimeEvidenceDocument,
   isFtpaApplicationOutOfTime,
   makeFtpaApplication,
   postFtpaCheckAndSend,
   postFtpaEvidence,
-  postFtpaGrounds, postFtpaOutOfTimeEvidence,
+  postFtpaOutOfTimeEvidence,
   postFtpaOutOfTimeReason,
   postFtpaReason,
   postProvideEvidenceQuestion, postProvideOutOfTimeEvidenceQuestion,
@@ -275,14 +275,14 @@ describe('Ftpa application controllers setup', () => {
 
   describe('postFtpaReason', () => {
 
-    it('should redirect to provide grounds document page', () => {
+    it('should redirect to provide evidence question page', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.body['ftpaReason'] = 'Grounds for ftpa application';
 
       postFtpaReason(req as Request, res as Response, next);
 
-      expect(res.redirect).to.have.been.calledWith(paths.ftpa.ftpaGrounds);
+      expect(res.redirect).to.have.been.calledWith(paths.ftpa.ftpaEvidenceQuestion);
     });
 
     it('should redirect to reason-for-application-page with error', () => {
@@ -363,7 +363,7 @@ describe('Ftpa application controllers setup', () => {
       };
 
       const expectedRenderPayload = {
-        previousPage: paths.ftpa.ftpaGrounds,
+        previousPage: paths.ftpa.ftpaReason,
         pageTitle: i18n.pages.ftpaApplication.ftpaEvidenceQuestion.title,
         formAction: paths.ftpa.ftpaEvidenceQuestion,
         question,
@@ -568,39 +568,6 @@ describe('Ftpa application controllers setup', () => {
     });
   });
 
-  describe('getProvideGroundsDocument', () => {
-    it('should render grounds document upload page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
-
-      const expectedRenderPayload = {
-        title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaGrounds.title,
-        advice: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaGrounds.advice,
-        evidenceUploadAction: paths.ftpa.ftpaGroundsUploadFile,
-        evidences: [],
-        evidenceCTA: paths.ftpa.ftpaGroundsDeleteFile,
-        previousPage: paths.ftpa.ftpaReason,
-        formSubmitAction: paths.ftpa.ftpaGrounds
-      };
-
-      getProvideGroundsDocument(req as Request, res as Response, next);
-
-      expect(res.render).to.have.been.calledWith('ftpa-application/document-upload-page.njk', {
-        ...expectedRenderPayload
-      });
-    });
-
-    it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
-
-      const error = new Error('the error');
-      res.render = sandbox.stub().throws(error);
-
-      getProvideGroundsDocument(req as Request, res as Response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
   describe('getProvideEvidenceDocument', () => {
     it('should render evidence document upload page', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
@@ -708,45 +675,6 @@ describe('Ftpa application controllers setup', () => {
     });
   });
 
-  describe('postFtpaGrounds', () => {
-
-    it('should redirect to evidence-question-page', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
-
-      req.session.appeal.ftpaAppellantGroundsDocuments = [
-        {
-          id: 'docId',
-          fileId: 'fileId',
-          name: 'ftpaDoc',
-          tag: 'ftpaAppellant'
-        }
-      ];
-
-      postFtpaGrounds(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(paths.ftpa.ftpaEvidenceQuestion);
-    });
-
-    it('should redirect to grounds document upload page with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
-
-      postFtpaGrounds(req as Request, res as Response, next);
-
-      expect(res.redirect).to.have.been.calledWith(`${paths.ftpa.ftpaGrounds}?error=noFileSelected`);
-    });
-
-    it('should catch an error and redirect with error', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
-
-      const error = new Error('the error');
-      res.redirect = sandbox.stub().throws(error);
-
-      postFtpaGrounds(req as Request, res as Response, next);
-
-      expect(next).to.have.been.calledWith(error);
-    });
-  });
-
   describe('postFtpaOutOfTimeEvidence', () => {
 
     it('should redirect to ftpa-reason-page', () => {
@@ -831,18 +759,18 @@ describe('Ftpa application controllers setup', () => {
     it('should delete evidence successfully', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
-      req.session.appeal.ftpaAppellantGroundsDocuments = [{ fileId: '1', name: 'name' } as Evidence];
+      req.session.appeal.ftpaAppellantEvidenceDocuments = [{ fileId: '1', name: 'name' } as Evidence];
       req.session.appeal.documentMap = [{ id: '1', url: 'docStoreURLToFile' }];
       req.query.id = '1';
 
       await deleteEvidence(
           documentManagementService as DocumentManagementService,
-          'ftpaGrounds',
-          'ftpaAppellantGroundsDocuments')(req as Request, res as Response, next);
+          'ftpaEvidence',
+          'ftpaAppellantEvidenceDocuments')(req as Request, res as Response, next);
 
-      expect(req.session.appeal.ftpaAppellantGroundsDocuments.length).to.eq(0);
+      expect(req.session.appeal.ftpaAppellantEvidenceDocuments.length).to.eq(0);
       expect(req.session.appeal.documentMap.length).to.eq(0);
-      expect(res.redirect).to.have.been.calledWith(paths.ftpa.ftpaGrounds);
+      expect(res.redirect).to.have.been.calledWith(paths.ftpa.ftpaEvidence);
     });
   });
 
@@ -903,7 +831,6 @@ describe('Ftpa application controllers setup', () => {
       req.session.appeal.ftpaProvideEvidence = 'Yes';
       req.session.appeal.ftpaAppellantGrounds = 'Reason for ftpa application';
       req.session.appeal.ftpaAppellantEvidenceDocuments = evidence;
-      req.session.appeal.ftpaAppellantGroundsDocuments = evidence;
       req.session.appeal.ftpaAppellantOutOfTimeDocuments = evidence;
 
       await postFtpaCheckAndSend(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -970,28 +897,21 @@ describe('Ftpa application controllers setup', () => {
         }
       ];
       req.session.appeal.ftpaAppellantEvidenceDocuments = mockEvidenceDocuments;
-      req.session.appeal.ftpaAppellantGroundsDocuments = mockEvidenceDocuments;
-      req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
-
-      const result = buildSummaryList(req as Request);
-
-      expect(result[0].summaryRows).to.be.lengthOf(3);
-    });
-
-    it('should return summary list without supporting evidence', () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
-
-      req.session.appeal.ftpaAppellantGroundsDocuments = [
-        {
-          fileId: 'aFileId',
-          name: 'fileName'
-        }
-      ];
       req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
 
       const result = buildSummaryList(req as Request);
 
       expect(result[0].summaryRows).to.be.lengthOf(2);
+    });
+
+    it('should return summary list without supporting evidence', () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
+      req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
+
+      const result = buildSummaryList(req as Request);
+
+      expect(result[0].summaryRows).to.be.lengthOf(1);
     });
   });
 
@@ -1009,16 +929,13 @@ describe('Ftpa application controllers setup', () => {
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaOutOfTimeReason);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaEvidenceQuestion);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaOutOfTimeEvidenceQuestion);
-      expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaGrounds);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaEvidence);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaOutOfTimeEvidence);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaCheckAndSend);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaConfirmation);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaApplication);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaEvidenceDeleteFile);
-      expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaGroundsDeleteFile);
       expect(routerGetStub).to.have.been.calledWith(paths.ftpa.ftpaOutOfTimeEvidenceDeleteFile);
-      expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaGrounds);
       expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaEvidence);
       expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaOutOfTimeEvidence);
       expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaReason);
@@ -1026,7 +943,6 @@ describe('Ftpa application controllers setup', () => {
       expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaEvidenceQuestion);
       expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaOutOfTimeEvidenceQuestion);
       expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaEvidenceUploadFile);
-      expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaGroundsUploadFile);
       expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaOutOfTimeEvidenceUploadFile);
       expect(routerPostStub).to.have.been.calledWith(paths.ftpa.ftpaCheckAndSend);
     });

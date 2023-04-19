@@ -739,10 +739,6 @@
         }
       },
       "ftpaDocumentUpload": {
-        "ftpaGrounds": {
-          "title": "Why do you think the Tribunal's decision is wrong?",
-          "advice": "Upload a document that explains what you think the Tribunal got wrong when deciding your appeal and why you think it is wrong. You can provide supporting evidence on the next page, if you have it."
-        },
         "ftpaEvidence": {
           "title": "Provide supporting evidence",
           "adviceHeader": "Advice on providing supporting evidence",
@@ -757,7 +753,6 @@
       "checkYourAnswers": {
         "title": "Check your answer",
         "ftpaReason": "Why do you think the Tribunal's decision is wrong?",
-        "ftpaGrounds": "Why do you think the Tribunal's decision is wrong?",
         "ftpaEvidence": "Supporting evidence",
         "ftpaOutOfTimeExplanation": "Reason application is late",
         "ftpaOutOfTimeEvidence": "Supporting evidence for late application"
@@ -1572,7 +1567,6 @@
           "respondent": "Application details"
         },
         "grounds": "Why do you think the Tribunal's decision is wrong?",
-        "groundsDocuments": "Reasons for the application",
         "outOfTimeReason": "Reason application is late",
         "evidence": "Supporting evidence",
         "outOfTimeEvidence": "Supporting evidence for late application"

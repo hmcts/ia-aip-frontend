@@ -167,6 +167,7 @@ interface Appeal {
   ftpaReason?: string;
   ftpaProvideEvidence?: string;
   ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
+  ftpaAppellantDecisionOutcomeType?: string;
 }
 
 interface Hearing {

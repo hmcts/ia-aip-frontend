@@ -1120,6 +1120,24 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
+  it('when application status is ftpaDecided should get correct Do this next section.', async () => {
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaAppellantDecisionOutcomeType = 'granted';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'cta': {},
+      'deadline': 'TBC',
+      'decision': 'granted',
+      'descriptionParagraphs': [
+        'A judge has <b> {{ applicationNextStep.decision }} </b> your application for permission to appeal to the Upper Tribunal.<br> <p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p> <p><a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> </p>',
+        `<p><b>What happens next</b></p> <p>The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.</p>`
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;

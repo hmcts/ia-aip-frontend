@@ -579,6 +579,36 @@ async function getAppealApplicationNextStep(req: Request) {
         descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description
       };
       break;
+    case 'ftpaDecided':
+
+      let ftpadDecidedDescriptionParagraphs;
+
+      if (req.session.appeal.ftpaAppellantDecisionOutcomeType === 'granted') {
+        ftpadDecidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.ftpaDecided.decision,
+          i18n.pages.overviewPage.doThisNext.ftpaDecided.infoGranted
+        ];
+      } else if (req.session.appeal.ftpaAppellantDecisionOutcomeType === 'partiallyGranted') {
+        ftpadDecidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.ftpaDecided.decision,
+          i18n.pages.overviewPage.doThisNext.ftpaDecided.infoPartiallyGranted
+        ];
+      } else {
+        ftpadDecidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.ftpaDecided.decision,
+          i18n.pages.overviewPage.doThisNext.ftpaDecided.infoNotAdmittedOrRefused
+        ];
+      }
+
+      let text: string = req.session.appeal.ftpaAppellantDecisionOutcomeType;
+      const result = text.replace(/([A-Z])/g, ' $1');
+      const finalResult = result.toLowerCase();
+      doThisNextSection = {
+        decision: finalResult,
+        cta: {},
+        descriptionParagraphs: ftpadDecidedDescriptionParagraphs
+      };
+      break;
     default:
       // default message to avoid app crashing on events that are to be implemented.
       doThisNextSection = {

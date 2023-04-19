@@ -1056,6 +1056,12 @@
             "A judge will decide your application for permission to appeal to the Upper Tribunal.",
             "The Tribunal will contact you when the judge has made a decision."
           ]
+        }, 
+        "ftpaDecided":{
+          "decision":  "A judge has <b> {{ applicationNextStep.decision }} </b> your application for permission to appeal to the Upper Tribunal.<br> <p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p> <p><a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> </p>",
+          "infoGranted": "<p><b>What happens next</b></p> <p>The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.</p>",
+          "infoPartiallyGranted": "<p><b>What happens next</b></p><p>The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.<br></p> <p>If you think your application should have been fully granted, you can send an application for permission to appeal directly to the Upper Tribunal.<br></p><a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply</a><br><p>You must send your application by [[14 or 28 days from date of notification<br></p>",
+          "infoNotAdmittedOrRefused": "<p><b>What happens next</b></p><p>If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.<br></p><a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a><p>You must send your application by [[14 or 28 days from date of notification<br></p>"
         }
       },
       "timeline": {

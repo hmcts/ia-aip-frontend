@@ -516,6 +516,7 @@ export default class UpdateAppealService {
       ...caseData.ftpaAppellantDocuments && { ftpaAppellantDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.ftpaAppellantDocuments, documentMap) },
       ...caseData.ftpaAppellantApplicationDate && { ftpaAppellantApplicationDate: caseData.ftpaAppellantApplicationDate },
       ...caseData.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: caseData.ftpaAppellantSubmissionOutOfTime },
+      ...caseData.ftpaAppellantDecisionOutcomeType && { ftpaAppellantDecisionOutcomeType: caseData.ftpaAppellantDecisionOutcomeType },
       hearingCentre: caseData.hearingCentre || null,
       documentMap: documentMap.map(doc => {
         return {

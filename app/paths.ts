@@ -222,6 +222,7 @@ const paths = {
     hearingBundleViewer: '/hearing-bundle',
     decisionAndReasonsViewer: '/decision-reasons',
     ftpaAppellantApplicationViewer: '/ftpa-appellant-application',
+    ftpaRespondentDecisionViewer: '/ftpa-respondent-decision',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

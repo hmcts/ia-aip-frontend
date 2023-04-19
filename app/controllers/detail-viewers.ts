@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
-import { FEATURE_FLAGS } from '../data/constants';
+import { FEATURE_FLAGS, FTPA_DECISION_OUTCOME_TYPE } from '../data/constants';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import {
@@ -16,7 +16,7 @@ import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
-import { boolToYesNo, getAppellantApplications, getApplicationType, toIsoDate } from '../utils/utils';
+import { boolToYesNo, formatTextForCYA, getAppellantApplications, getApplicationType, toIsoDate } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {
   const history: HistoryEvent[] = req.session.appeal.history;
@@ -670,15 +670,15 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
 
     const data = [];
 
-    if (ftpaGrounds && ftpaGrounds.length > 0) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ftpaGrounds]));
+    if (ftpaGrounds && ftpaGrounds.length) {
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ formatTextForCYA(ftpaGrounds) ]));
     }
     attachFtpaDocuments(ftpaEvidenceDocuments, data, i18n.pages.detailViewers.ftpaApplication.evidence);
     if (ftpaAppellantApplicationDate) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat)]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat)) ]));
     }
-    if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length > 0) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ftpaOutOfTimeApplicationReason]));
+    if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length) {
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
     }
     attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
 
@@ -692,12 +692,62 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
   }
 }
 
-function attachFtpaDocuments(documents: Evidence[], documentCollection, docLabel: string) {
-  if (documents && documents.length > 0) {
-    documents.forEach((doc, index) => {
-      const label = index === 0 ? docLabel : '';
-      documentCollection.push(addSummaryRow(label, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${fileNameFormatter(doc.name)}</a>`]));
+function getFtpaRespondentApplicationDetails(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const ftpaGroundsDocuments = req.session.appeal.ftpaRespondentGroundsDocuments;
+    const ftpaEvidenceDocuments = req.session.appeal.ftpaRespondentEvidenceDocuments;
+    const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaRespondentOutOfTimeExplanation;
+    const ftpaOutOfTimeApplicationDocuments = req.session.appeal.ftpaRespondentOutOfTimeDocuments;
+    const ftpaApplicationDate = req.session.appeal.ftpaRespondentApplicationDate;
+    const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType;
+    const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaRespondentDecisionDocument;
+    const ftpaDecisionDate = req.session.appeal.ftpaRespondentDecisionDate;
+
+    const data = {
+      application: [],
+      decision: []
+    };
+
+    const isGrantedOrPartiallyGranted = [FTPA_DECISION_OUTCOME_TYPE.GRANTED, FTPA_DECISION_OUTCOME_TYPE.PARTIALLY_GRANTED].includes(ftpaDecision);
+    if (isGrantedOrPartiallyGranted) {
+      attachFtpaDocuments(ftpaGroundsDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.groundsDocument);
+      attachFtpaDocuments(ftpaEvidenceDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.evidence);
+    }
+    if (ftpaApplicationDate) {
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat)) ]));
+    }
+    if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length && isGrantedOrPartiallyGranted) {
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
+    }
+    if (isGrantedOrPartiallyGranted) {
+      attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
+    }
+    if (ftpaDecision && ftpaDecision.length) {
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [ formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision]) ]));
+    }
+    attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+    if (ftpaDecisionDate) {
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [ formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat)) ]));
+    }
+
+    return res.render('ftpa-application/ftpa-decision-details-viewer.njk', {
+      title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+      subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+      data,
+      previousPage
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function attachFtpaDocuments(documents: Evidence[], documentCollection, docLabel: string) {
+  if (documents && documents.length) {
+    const evidenceText = documents.map((evidence) => {
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
+    });
+    documentCollection.push(addSummaryRow(docLabel, evidenceText, null, Delimiter.BREAK_LINE));
   }
 }
 
@@ -718,6 +768,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
   router.get(paths.common.lrReasonsForAppealViewer, getLrReasonsForAppealViewer);
   router.get(paths.common.ftpaAppellantApplicationViewer, getFtpaAppellantApplication);
+  router.get(paths.common.ftpaRespondentDecisionViewer, getFtpaRespondentApplicationDetails);
   return router;
 }
 
@@ -741,5 +792,6 @@ export {
   getHearingBundle,
   getDecisionAndReasonsViewer,
   getLrReasonsForAppealViewer,
-  getFtpaAppellantApplication
+  getFtpaAppellantApplication,
+  getFtpaRespondentApplicationDetails
 };

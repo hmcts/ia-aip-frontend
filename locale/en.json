@@ -1058,6 +1058,26 @@
             "A judge will decide your application for permission to appeal to the Upper Tribunal.",
             "The Tribunal will contact you when the judge has made a decision."
           ]
+        },
+        "ftpaDecided": {
+          "respondent": {
+            "granted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been granted.",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+            ],
+            "partiallyGranted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+            ],
+            "notAdmitted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.",
+              "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ],
+            "refused": [
+              "The HOme Office application for permission to appeal to the Upper Tribunal has been refused.",
+              "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ]
+          }
         }
       },
       "timeline": {
@@ -1390,6 +1410,18 @@
               "href": "{{ paths.common.ftpaAppellantApplicationViewer }}"
             }
           ]
+        },
+        "decideFtpa": {
+          "respondent": {
+            "text": "The Home Office application for permission to appeal to the Upper Tribunal was decided.",
+            "links": [
+              {
+                "title": "What the Tribunal said",
+                "text": "Reason for the decision",
+                "href": "{{ paths.common.ftpaRespondentDecisionViewer }}"
+              }
+            ]
+          }
         }
       }
     },
@@ -1567,9 +1599,23 @@
           "respondent": "Application details"
         },
         "grounds": "Why do you think the Tribunal's decision is wrong?",
+        "groundsDocument": "Reasons for the application",
         "outOfTimeReason": "Reason application is late",
         "evidence": "Supporting evidence",
-        "outOfTimeEvidence": "Supporting evidence for late application"
+        "outOfTimeEvidence": "Supporting evidence for late application",
+        "date": "Date application sent"
+      },
+      "ftpaDecision": {
+        "title": "Decision details",
+        "decision": "What the Tribunal decided",
+        "decisionDocument": "Decision and reasons document",
+        "date": "Date of decision",
+        "decisionOutcomeType": {
+          "granted": "Granted",
+          "partiallyGranted": "Partially granted",
+          "notAdmitted": "Not admitted",
+          "refused": "Refused"
+        }
       }
     },
     "guidancePages": {

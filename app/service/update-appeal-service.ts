@@ -511,6 +511,7 @@ export default class UpdateAppealService {
       ...caseData.feeDescription && { feeDescription: caseData.feeDescription },
       ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
       ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
+      ...caseData.ftpaApplicantType && { ftpaApplicantType: caseData.ftpaApplicantType },
       ...caseData.ftpaAppellantEvidenceDocuments && { ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantEvidenceDocuments, documentMap) },
       ...caseData.ftpaAppellantGroundsDocuments && { ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantGroundsDocuments, documentMap) },
       ...caseData.ftpaAppellantDocuments && { ftpaAppellantDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.ftpaAppellantDocuments, documentMap) },
@@ -518,6 +519,14 @@ export default class UpdateAppealService {
       ...caseData.ftpaAppellantApplicationDate && { ftpaAppellantApplicationDate: caseData.ftpaAppellantApplicationDate },
       ...caseData.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: caseData.ftpaAppellantSubmissionOutOfTime },
       ...caseData.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: caseData.ftpaAppellantOutOfTimeExplanation },
+      ...caseData.ftpaRespondentEvidenceDocuments && { ftpaRespondentEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaRespondentEvidenceDocuments, documentMap) },
+      ...caseData.ftpaRespondentGroundsDocuments && { ftpaRespondentGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaRespondentGroundsDocuments, documentMap) },
+      ...caseData.ftpaRespondentOutOfTimeExplanation && { ftpaRespondentOutOfTimeExplanation: caseData.ftpaRespondentOutOfTimeExplanation },
+      ...caseData.ftpaRespondentOutOfTimeDocuments && { ftpaRespondentOutOfTimeDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaRespondentOutOfTimeDocuments, documentMap) },
+      ...caseData.ftpaRespondentApplicationDate && { ftpaRespondentApplicationDate: caseData.ftpaRespondentApplicationDate },
+      ...caseData.ftpaRespondentDecisionOutcomeType && { ftpaRespondentDecisionOutcomeType: caseData.ftpaRespondentDecisionOutcomeType },
+      ...caseData.ftpaRespondentDecisionDocument && { ftpaRespondentDecisionDocument: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaRespondentDecisionDocument, documentMap) },
+      ...caseData.ftpaRespondentDecisionDate && { ftpaRespondentDecisionDate: caseData.ftpaRespondentDecisionDate },
       hearingCentre: caseData.hearingCentre || null,
       documentMap: documentMap.map(doc => {
         return {

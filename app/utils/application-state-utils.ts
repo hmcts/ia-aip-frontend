@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import _ from 'lodash';
 import i18n from '../../locale/en.json';
-import { FEATURE_FLAGS } from '../data/constants';
+import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
@@ -67,6 +67,11 @@ function getAppealStatus(req: Request) {
       return req.session.appeal.appealReviewOutcome;
     }
     return req.session.appeal.appealStatus;
+  } else if (req.session.appeal.appealStatus === States.FTPA_SUBMITTED.id) {
+    if (req.session.appeal.history.find(event => event.id === Events.APPLY_FOR_FTPA_RESPONDENT.id)) {
+      return 'RESPONDENT_FTPA_SUBMITTED';
+    }
+    return req.session.appeal.appealStatus;
   } else {
     return req.session.appeal.appealStatus;
   }
@@ -102,6 +107,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const decisionRefused = applications.length > 0 && applications[0].value.decision === 'Refused' || null;
   let doThisNextSection: DoThisNextSection;
   const isLate = req.session.appeal.application.isAppealLate;
+  const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
 
   let descriptionParagraphs;
   let respondBy;
@@ -517,7 +523,6 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'decided':
-      const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
 
       let decidedDescriptionParagraphs;
       let decidedInfo;
@@ -576,7 +581,18 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'ftpaSubmitted':
       doThisNextSection = {
-        descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description
+        descriptionParagraphs: ftpaEnabled
+            ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description
+            : [ `Nothing to do next` ]
+      };
+      break;
+    case 'ftpaDecided':
+      const ftpaApplicantType = req.session.appeal.ftpaApplicantType;
+      const ftpaDecision = APPLICANT_TYPE.RESPONDENT === ftpaApplicantType ? req.session.appeal.ftpaRespondentDecisionOutcomeType : '';
+      doThisNextSection = {
+        descriptionParagraphs: ftpaEnabled
+            ? i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][ftpaDecision]
+            : [ `Nothing to do next` ]
       };
       break;
     default:

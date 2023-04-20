@@ -514,8 +514,10 @@ export default class UpdateAppealService {
       ...caseData.ftpaAppellantEvidenceDocuments && { ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantEvidenceDocuments, documentMap) },
       ...caseData.ftpaAppellantGroundsDocuments && { ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantGroundsDocuments, documentMap) },
       ...caseData.ftpaAppellantDocuments && { ftpaAppellantDocuments: this.mapDocsWithMetadataToEvidenceArray(caseData.ftpaAppellantDocuments, documentMap) },
+      ...caseData.ftpaAppellantGrounds && { ftpaAppellantGrounds: caseData.ftpaAppellantGrounds },
       ...caseData.ftpaAppellantApplicationDate && { ftpaAppellantApplicationDate: caseData.ftpaAppellantApplicationDate },
       ...caseData.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: caseData.ftpaAppellantSubmissionOutOfTime },
+      ...caseData.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: caseData.ftpaAppellantOutOfTimeExplanation },
       hearingCentre: caseData.hearingCentre || null,
       documentMap: documentMap.map(doc => {
         return {
@@ -939,24 +941,26 @@ export default class UpdateAppealService {
       ...appeal.makeAnApplicationTypes && { makeAnApplicationTypes: appeal.makeAnApplicationTypes },
       ...appeal.makeAnApplicationDetails && { makeAnApplicationDetails: appeal.makeAnApplicationDetails },
       ...appeal.makeAnApplicationEvidence && { makeAnApplicationEvidence: this.mapAppealEvidencesToDocumentsCaseData(appeal.makeAnApplicationEvidence, appeal.documentMap) },
-      ...appeal.ftpaAppellantGroundsDocuments && {
-        ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantGroundsDocuments, appeal.documentMap)
-      },
       ...appeal.ftpaAppellantEvidenceDocuments && {
-        ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantEvidenceDocuments, appeal.documentMap)
+        ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantEvidenceDocuments, appeal.documentMap, 'ftpaAppellantEvidenceDocuments')
       },
+      ...appeal.ftpaAppellantOutOfTimeDocuments && {
+        ftpaAppellantOutOfTimeDocuments: this.mapAdditionalEvidenceDocumentsToDocumentsCaseData(appeal.ftpaAppellantOutOfTimeDocuments, appeal.documentMap, 'ftpaAppellantOutOfTimeDocuments')
+      },
+      ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
+      ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
       ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime }
     };
     return caseData;
   }
 
-  mapAdditionalEvidenceDocumentsToDocumentsCaseData = (evidences: AdditionalEvidenceDocument[], documentMap: DocumentMap[]): Collection<Document>[] => {
+  mapAdditionalEvidenceDocumentsToDocumentsCaseData = (evidences: AdditionalEvidenceDocument[], documentMap: DocumentMap[], description = 'additionalEvidenceDocument'): Collection<Document>[] => {
     return evidences.map((evidence: AdditionalEvidenceDocument) => {
       const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, documentMap);
       return {
         id: evidence.fileId,
         value: {
-          description: evidence.description || 'additionalEvidenceDocument',
+          description: evidence.description || description,
           document: {
             document_filename: evidence.name,
             document_url: documentLocationUrl,

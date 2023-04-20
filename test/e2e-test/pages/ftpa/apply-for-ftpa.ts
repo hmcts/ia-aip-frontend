@@ -9,6 +9,11 @@ module.exports = {
       await I.click('Apply for permission to appeal to the Upper Tribunal');
     });
 
+    Then(/^I should see the ftpa out of time reason page$/, async () => {
+      await I.waitInUrl(paths.ftpa.ftpaOutOfTimeReason,10);
+      await I.seeInCurrentUrl(paths.ftpa.ftpaOutOfTimeReason);
+    });
+
     Then(/^I should see the ftpa reason page$/, async () => {
       await I.waitInUrl(paths.ftpa.ftpaReason,10);
       await I.seeInCurrentUrl(paths.ftpa.ftpaReason);
@@ -16,6 +21,10 @@ module.exports = {
 
     Then(/^I fill in the textarea with "([^"]*)"$/, async (text: string) => {
       await I.fillField('#ftpaReason', text);
+    });
+
+    Then(/^I fill in the out of time reason textarea with "([^"]*)"$/, async (text: string) => {
+      await I.fillField('#ftpaOutOfTimeReason', text);
     });
   }
 };

@@ -2,21 +2,14 @@ import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../../locale/en.json';
-import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
-import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getDueDateForAppellantToRespondToJudgeDecision } from '../../utils/event-deadline-date-finder';
 import { addSummaryRow } from '../../utils/summary-list';
+import { isFtpaFeatureEnabled } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
-
-async function isFtpaFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return isFtpaFeatureEnabled;
-}
 
 async function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
   const ftpaFlag = await isFtpaFeatureEnabled(req);
@@ -27,10 +20,72 @@ async function makeFtpaApplication(req: Request, res: Response, next: NextFuncti
 
     if (isFtpaApplicationOutOfTime(req)) {
       req.session.appeal.ftpaAppellantSubmissionOutOfTime = 'Yes';
-      redirectPath = paths.ftpa.ftpaOutOfTimereason;
+      redirectPath = paths.ftpa.ftpaOutOfTimeReason;
     }
 
     return res.redirect(redirectPath);
+  } catch (e) {
+    next(e);
+  }
+}
+
+async function getReason(req: Request, res: Response, next: NextFunction, config: any) {
+
+  try {
+    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    let validationErrors: ValidationErrors;
+    if (req.query.error) {
+      validationErrors = {
+        ...config.validationErrors
+      };
+    }
+    return res.render('ftpa-application/reason-page.njk', {
+      title: config.title,
+      content: config.content,
+      hint: config.hint,
+      formSubmitAction: config.formSubmitAction,
+      reason: config.reason,
+      id: config.id,
+      ...config.ftpaDeadline && { ftpaDeadline:  config.ftpaDeadline },
+      previousPage: config.previousPage,
+      ...validationErrors && { error: validationErrors },
+      ...validationErrors && { errorList: Object.values(validationErrors) }
+    });
+  } catch (e) {
+    next(e);
+  }
+}
+
+async function getFtpaOutOfTimeReason(req: Request, res: Response, next: NextFunction) {
+  const ftpaFlag = await isFtpaFeatureEnabled(req);
+  if (!ftpaFlag) return res.redirect(paths.common.overview);
+
+  const config = {
+    title: i18n.pages.ftpaApplication.ftpaOutOfTimeReason.title,
+    content: i18n.pages.ftpaApplication.ftpaOutOfTimeReason.content,
+    hint: i18n.pages.ftpaApplication.ftpaOutOfTimeReason.hint,
+    formSubmitAction: paths.ftpa.ftpaOutOfTimeReason,
+    reason: req.session.appeal.ftpaAppellantOutOfTimeExplanation,
+    id: 'ftpaOutOfTimeReason',
+    ftpaDeadline: getDueDateForAppellantToRespondToJudgeDecision(req),
+    previousPage: paths.common.overview,
+    validationErrors: {
+      ftpaOutOfTimeReason: createStructuredError('ftpaOutOfTimeReason', i18n.validationErrors.ftpaApplication.ftpaOutOfTimeReason)
+    }
+  };
+
+  return getReason(req, res, next, config);
+}
+
+function postFtpaOutOfTimeReason(req: Request, res: Response, next: NextFunction) {
+  try {
+    const ftpaOutOfTimeReason = req.body['ftpaOutOfTimeReason'];
+    if (!ftpaOutOfTimeReason) {
+      return res.redirect(`${paths.ftpa.ftpaOutOfTimeReason}?error=ftpaOutOfTimeReason`);
+    }
+
+    req.session.appeal.ftpaAppellantOutOfTimeExplanation = ftpaOutOfTimeReason;
+    return res.redirect(paths.ftpa.ftpaOutOfTimeEvidenceQuestion);
   } catch (e) {
     next(e);
   }
@@ -40,30 +95,25 @@ async function getFtpaReason(req: Request, res: Response, next: NextFunction) {
   const ftpaFlag = await isFtpaFeatureEnabled(req);
   if (!ftpaFlag) return res.redirect(paths.common.overview);
 
-  let previousPage = paths.common.overview;
-
-  try {
-    req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-    let validationErrors: ValidationErrors;
-    if (req.query.error) {
-      validationErrors = {
-        ftpaReason: createStructuredError('ftpaReason', i18n.validationErrors.ftpaApplication.ftpaReason)
-      };
+  const previousPage = req.session.appeal.ftpaAppellantSubmissionOutOfTime === 'Yes'
+      ? (req.session.appeal.ftpaOutOfTimeProvideEvidence === 'Yes'
+          ? paths.ftpa.ftpaOutOfTimeEvidence
+          : paths.ftpa.ftpaOutOfTimeEvidenceQuestion)
+      : paths.common.overview;
+  const config = {
+    title: i18n.pages.ftpaApplication.ftpaReason.title,
+    content: i18n.pages.ftpaApplication.ftpaReason.content,
+    hint: i18n.pages.ftpaApplication.ftpaReason.hint,
+    formSubmitAction: paths.ftpa.ftpaReason,
+    reason: req.session.appeal.ftpaAppellantGrounds,
+    id: 'ftpaReason',
+    previousPage,
+    validationErrors: {
+      ftpaReason: createStructuredError('ftpaReason', i18n.validationErrors.ftpaApplication.ftpaReason)
     }
-    return res.render('ftpa-application/reason-for-application-page.njk', {
-      title: i18n.pages.ftpaApplication.ftpaReason.title,
-      content: i18n.pages.ftpaApplication.ftpaReason.content,
-      hint: i18n.pages.ftpaApplication.ftpaReason.hint,
-      formSubmitAction: paths.ftpa.ftpaReason,
-      ftpaReason: req.session.appeal.ftpaReason,
-      id: 'ftpaReason',
-      previousPage,
-      ...validationErrors && { error: validationErrors },
-      ...validationErrors && { errorList: Object.values(validationErrors) }
-    });
-  } catch (e) {
-    next(e);
-  }
+  };
+
+  return getReason(req, res, next, config);
 }
 
 function postFtpaReason(req: Request, res: Response, next: NextFunction) {
@@ -73,14 +123,14 @@ function postFtpaReason(req: Request, res: Response, next: NextFunction) {
       return res.redirect(`${paths.ftpa.ftpaReason}?error=ftpaReason`);
     }
 
-    req.session.appeal.ftpaReason = ftpaReason;
-    return res.redirect(paths.ftpa.ftpaGrounds);
+    req.session.appeal.ftpaAppellantGrounds = ftpaReason;
+    return res.redirect(paths.ftpa.ftpaEvidenceQuestion);
   } catch (e) {
     next(e);
   }
 }
 
-function getProvideEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+function getProvideEvidenceQuestion(req: Request, res: Response, next: NextFunction, config: any) {
   try {
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
@@ -90,7 +140,7 @@ function getProvideEvidenceQuestion(req: Request, res: Response, next: NextFunct
       };
     }
 
-    const ftpaProvideEvidence = req.session.appeal.ftpaProvideEvidence;
+    const ftpaProvideEvidence = req.session.appeal[config.provideEvidence];
     const question = {
       title: i18n.pages.ftpaApplication.ftpaEvidenceQuestion.title,
       name: 'answer',
@@ -111,9 +161,9 @@ function getProvideEvidenceQuestion(req: Request, res: Response, next: NextFunct
     };
 
     return res.render('ftpa-application/evidence-question-page.njk', {
-      previousPage: paths.ftpa.ftpaGrounds,
+      previousPage: config.previousPage,
       pageTitle: i18n.pages.ftpaApplication.ftpaEvidenceQuestion.title,
-      formAction: paths.ftpa.ftpaEvidenceQuestion,
+      formAction: config.formAction,
       question,
       ...validationErrors && { errorList: Object.values(validationErrors) },
       ...validationErrors && { error: validationErrors },
@@ -122,6 +172,45 @@ function getProvideEvidenceQuestion(req: Request, res: Response, next: NextFunct
   } catch (error) {
     next(error);
   }
+}
+
+function getProvideFtpaOutOfTimeEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+  const config = {
+    provideEvidence: 'ftpaOutOfTimeProvideEvidence',
+    previousPage: paths.ftpa.ftpaOutOfTimeReason,
+    formAction: paths.ftpa.ftpaOutOfTimeEvidenceQuestion
+  };
+
+  return getProvideEvidenceQuestion(req, res, next, config);
+}
+
+function postProvideOutOfTimeEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+  try {
+    const ftpaOutOfTimeProvideEvidence = req.body['answer'];
+
+    if (ftpaOutOfTimeProvideEvidence) {
+      const redirectTo = ftpaOutOfTimeProvideEvidence === i18n.pages.ftpaApplication.ftpaEvidenceQuestion.options.yes.value
+          ? paths.ftpa.ftpaOutOfTimeEvidence
+          : paths.ftpa.ftpaReason;
+
+      req.session.appeal.ftpaOutOfTimeProvideEvidence = ftpaOutOfTimeProvideEvidence;
+      res.redirect(redirectTo);
+    } else {
+      res.redirect(`${paths.ftpa.ftpaOutOfTimeEvidenceQuestion}?error=ftpaEvidenceQuestion`);
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+function getProvideFtpaEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
+  const config = {
+    provideEvidence: 'ftpaProvideEvidence',
+    previousPage: paths.ftpa.ftpaReason,
+    formAction: paths.ftpa.ftpaEvidenceQuestion
+  };
+
+  return getProvideEvidenceQuestion(req, res, next, config);
 }
 
 function postProvideEvidenceQuestion(req: Request, res: Response, next: NextFunction) {
@@ -156,9 +245,9 @@ function getProvideDocument(req: Request, res: Response, next: NextFunction, con
 
     const content = {
       title: config.title,
-      adviceHeader: config.adviceHeader,
-      advice: config.advice,
-      adviceList: config.adviceList,
+      ...config.adviceHeader && { adviceHeader: config.adviceHeader },
+      ...config.advice && { advice: config.advice },
+      ...config.adviceList && { adviceList: config.adviceList },
       evidenceUploadAction: config.evidenceUploadAction,
       evidences: config.evidences || [],
       evidenceCTA: config.evidenceCTA,
@@ -174,6 +263,18 @@ function getProvideDocument(req: Request, res: Response, next: NextFunction, con
   }
 }
 
+function postFtpaOutOfTimeEvidence(req: Request, res: Response, next: NextFunction) {
+  try {
+    if ((req.session.appeal.ftpaAppellantOutOfTimeDocuments || []).length > 0) {
+      res.redirect(paths.ftpa.ftpaReason);
+    } else {
+      res.redirect(`${paths.ftpa.ftpaOutOfTimeEvidence}?error=noFileSelected`);
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
 function postFtpaEvidence(req: Request, res: Response, next: NextFunction) {
   try {
     if ((req.session.appeal.ftpaAppellantEvidenceDocuments || []).length > 0) {
@@ -186,27 +287,16 @@ function postFtpaEvidence(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postFtpaGrounds(req: Request, res: Response, next: NextFunction) {
-  try {
-    if ((req.session.appeal.ftpaAppellantGroundsDocuments || []).length > 0) {
-      res.redirect(paths.ftpa.ftpaEvidenceQuestion);
-    } else {
-      res.redirect(`${paths.ftpa.ftpaGrounds}?error=noFileSelected`);
-    }
-  } catch (error) {
-    next(error);
-  }
-}
-
-function getProvideGroundsDocument(req: Request, res: Response, next: NextFunction) {
+function getProvideOutOfTimeEvidenceDocument(req: Request, res: Response, next: NextFunction) {
   const config = {
-    title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaGrounds.title,
-    advice: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaGrounds.advice,
-    evidenceUploadAction: paths.ftpa.ftpaGroundsUploadFile,
-    evidences: req.session.appeal.ftpaAppellantGroundsDocuments || [],
-    evidenceCTA: paths.ftpa.ftpaGroundsDeleteFile,
-    previousPage: paths.ftpa.ftpaReason,
-    formSubmitAction: paths.ftpa.ftpaGrounds
+    title: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.title,
+    adviceHeader: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.adviceHeader,
+    adviceList: i18n.pages.ftpaApplication.ftpaDocumentUpload.ftpaEvidence.advice,
+    evidenceUploadAction: paths.ftpa.ftpaOutOfTimeEvidenceUploadFile,
+    evidences: req.session.appeal.ftpaAppellantOutOfTimeDocuments || [],
+    evidenceCTA: paths.ftpa.ftpaOutOfTimeEvidenceDeleteFile,
+    previousPage: paths.ftpa.ftpaOutOfTimeEvidenceQuestion,
+    formSubmitAction: paths.ftpa.ftpaOutOfTimeEvidence
   };
 
   return getProvideDocument(req, res, next, config);
@@ -291,26 +381,19 @@ function getFtpaCheckAndSend(req: Request, res: Response, next: NextFunction) {
 function postFtpaCheckAndSend(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      delete (req.session.appeal.ftpaProvideEvidence);
-      const ftpaReason = req.session.appeal.ftpaReason;
-      delete (req.session.appeal.ftpaReason);
       const appeal: Appeal = {
         ...req.session.appeal
       };
-      appeal.ftpaAppellantGroundsDocuments = (appeal.ftpaAppellantGroundsDocuments || []).map(doc => {
-        return {
-          ...doc,
-          'description': ftpaReason
-        };
-      });
+
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.APPLY_FOR_FTPA_APPELLANT, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
 
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
-      req.session.appeal.ftpaAppellantEvidenceDocuments = [];
-      req.session.appeal.ftpaAppellantGroundsDocuments = [];
+
+      delete (req.session.appeal.ftpaProvideEvidence);
+      delete (req.session.appeal.ftpaOutOfTimeProvideEvidence);
 
       return res.redirect(paths.ftpa.ftpaConfirmation);
     } catch (e) {
@@ -334,36 +417,51 @@ function buildSummaryList(req: Request): SummaryList[] {
   const summaryLists: SummaryList[] = [];
   const summaryRows: SummaryRow[] = [];
   const ftpaEvidence = req.session.appeal.ftpaAppellantEvidenceDocuments;
-  const ftpaGrounds = req.session.appeal.ftpaAppellantGroundsDocuments;
+  const ftpaOutOfTimeEvidence = req.session.appeal.ftpaAppellantOutOfTimeDocuments;
 
-  if (req.session.appeal.ftpaReason) {
+  if (req.session.appeal.ftpaAppellantOutOfTimeExplanation) {
+    summaryRows.push(
+        addSummaryRow(
+            i18n.pages.ftpaApplication.checkYourAnswers.ftpaOutOfTimeExplanation,
+            [`<p>${req.session.appeal.ftpaAppellantOutOfTimeExplanation}</p>`],
+            paths.ftpa.ftpaOutOfTimeReason.slice(1)
+        )
+    );
+  }
+  if (ftpaOutOfTimeEvidence && ftpaOutOfTimeEvidence.length > 0) {
+    ftpaOutOfTimeEvidence.forEach((evidence: Evidence, index: Number) => {
+      let label = index === 0
+          ? i18n.pages.ftpaApplication.checkYourAnswers.ftpaOutOfTimeEvidence
+          : '';
+      summaryRows.push(
+          addSummaryRow(
+              label,
+              [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
+              paths.ftpa.ftpaOutOfTimeEvidence.slice(1)
+          )
+      );
+    });
+  }
+  if (req.session.appeal.ftpaAppellantGrounds) {
     summaryRows.push(
         addSummaryRow(
             i18n.pages.ftpaApplication.checkYourAnswers.ftpaReason,
-            [`<p>${req.session.appeal.ftpaReason}</p>`],
+            [`<p>${req.session.appeal.ftpaAppellantGrounds}</p>`],
             paths.ftpa.ftpaReason.slice(1)
         )
     );
   }
-  if (ftpaGrounds && ftpaGrounds.length > 0) {
-    ftpaGrounds.forEach((evidence: Evidence) => {
-      summaryRows.push(
-        addSummaryRow(
-          i18n.pages.ftpaApplication.checkYourAnswers.ftpaGrounds,
-          [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
-          paths.ftpa.ftpaGrounds.slice(1)
-        )
-      );
-    });
-  }
   if (ftpaEvidence && ftpaEvidence.length > 0) {
-    ftpaEvidence.forEach((evidence: Evidence) => {
+    ftpaEvidence.forEach((evidence: Evidence, index: Number) => {
+      let label = index === 0
+          ? i18n.pages.ftpaApplication.checkYourAnswers.ftpaEvidence
+          : '';
       summaryRows.push(
-        addSummaryRow(
-          i18n.pages.ftpaApplication.checkYourAnswers.ftpaEvidence,
-          [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
-          paths.ftpa.ftpaEvidence.slice(1)
-        )
+          addSummaryRow(
+              label,
+              [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
+              paths.ftpa.ftpaEvidence.slice(1)
+          )
       );
     });
   }
@@ -398,16 +496,30 @@ function setupFtpaApplicationController(
     updateAppealService: UpdateAppealService,
     documentManagementService: DocumentManagementService): Router {
   const router = Router();
+  router.get(paths.ftpa.ftpaOutOfTimeReason, middleware, getFtpaOutOfTimeReason);
   router.get(paths.ftpa.ftpaReason, middleware, getFtpaReason);
-  router.get(paths.ftpa.ftpaEvidenceQuestion, middleware, getProvideEvidenceQuestion);
-  router.get(paths.ftpa.ftpaGrounds, middleware, getProvideGroundsDocument);
+  router.get(paths.ftpa.ftpaEvidenceQuestion, middleware, getProvideFtpaEvidenceQuestion);
+  router.get(paths.ftpa.ftpaOutOfTimeEvidenceQuestion, middleware, getProvideFtpaOutOfTimeEvidenceQuestion);
   router.get(paths.ftpa.ftpaEvidence, middleware, getProvideEvidenceDocument);
+  router.get(paths.ftpa.ftpaOutOfTimeEvidence, middleware, getProvideOutOfTimeEvidenceDocument);
   router.get(paths.ftpa.ftpaCheckAndSend, middleware, getFtpaCheckAndSend);
   router.get(paths.ftpa.ftpaConfirmation, middleware, getConfirmation);
   router.get(paths.ftpa.ftpaApplication, middleware, makeFtpaApplication);
+  router.post(paths.ftpa.ftpaOutOfTimeReason, middleware, postFtpaOutOfTimeReason);
   router.post(paths.ftpa.ftpaReason, middleware, postFtpaReason);
-  router.post(paths.ftpa.ftpaGrounds, middleware, postFtpaGrounds);
   router.post(paths.ftpa.ftpaEvidenceQuestion, middleware, postProvideEvidenceQuestion);
+  router.post(paths.ftpa.ftpaOutOfTimeEvidenceQuestion, middleware, postProvideOutOfTimeEvidenceQuestion);
+  router.post(paths.ftpa.ftpaEvidence, middleware, postFtpaEvidence);
+  router.post(paths.ftpa.ftpaOutOfTimeEvidence, middleware, postFtpaOutOfTimeEvidence);
+  router.post(paths.ftpa.ftpaCheckAndSend, middleware, validate(paths.ftpa.ftpaEvidence), postFtpaCheckAndSend(updateAppealService));
+  router.get(paths.ftpa.ftpaOutOfTimeEvidenceDeleteFile,
+      middleware,
+      deleteEvidence(documentManagementService, 'ftpaOutOfTimeEvidence', 'ftpaAppellantOutOfTimeDocuments'));
+  router.post(
+      paths.ftpa.ftpaOutOfTimeEvidenceUploadFile,
+      middleware,
+      validate(paths.ftpa.ftpaOutOfTimeEvidence),
+      uploadEvidence(documentManagementService, 'ftpaOutOfTimeEvidence', 'ftpaAppellantOutOfTimeDocuments'));
   router.get(paths.ftpa.ftpaEvidenceDeleteFile,
       middleware,
       deleteEvidence(documentManagementService, 'ftpaEvidence', 'ftpaAppellantEvidenceDocuments'));
@@ -416,37 +528,33 @@ function setupFtpaApplicationController(
       middleware,
       validate(paths.ftpa.ftpaEvidence),
       uploadEvidence(documentManagementService, 'ftpaEvidence', 'ftpaAppellantEvidenceDocuments'));
-  router.get(paths.ftpa.ftpaGroundsDeleteFile,
-      middleware,
-      deleteEvidence(documentManagementService, 'ftpaGrounds', 'ftpaAppellantGroundsDocuments'));
-  router.post(
-      paths.ftpa.ftpaGroundsUploadFile,
-      middleware,
-      validate(paths.ftpa.ftpaGrounds),
-      uploadEvidence(documentManagementService, 'ftpaGrounds', 'ftpaAppellantGroundsDocuments'));
-  router.post(paths.ftpa.ftpaEvidence, middleware, postFtpaEvidence);
-  router.post(paths.ftpa.ftpaCheckAndSend, middleware, validate(paths.ftpa.ftpaEvidence), postFtpaCheckAndSend(updateAppealService));
 
   return router;
 }
 
 export {
   makeFtpaApplication,
+  getReason,
+  getFtpaOutOfTimeReason,
+  postFtpaOutOfTimeReason,
   getFtpaReason,
   postFtpaReason,
-  getProvideEvidenceQuestion,
+  getProvideFtpaOutOfTimeEvidenceQuestion,
+  postProvideOutOfTimeEvidenceQuestion,
+  getProvideFtpaEvidenceQuestion,
   postProvideEvidenceQuestion,
   postFtpaCheckAndSend,
   getProvideDocument,
   uploadEvidence,
   deleteEvidence,
-  postFtpaGrounds,
+  postFtpaOutOfTimeEvidence,
   postFtpaEvidence,
   getConfirmation,
-  getProvideGroundsDocument,
+  getProvideOutOfTimeEvidenceDocument,
   getProvideEvidenceDocument,
   getFtpaCheckAndSend,
   buildSummaryList,
   isFtpaApplicationOutOfTime,
+  isFtpaFeatureEnabled,
   setupFtpaApplicationController
 };

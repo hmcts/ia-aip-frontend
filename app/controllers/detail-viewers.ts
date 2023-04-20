@@ -659,6 +659,48 @@ function getHearingBundle(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const ftpaGrounds = req.session.appeal.ftpaAppellantGrounds;
+    const ftpaEvidenceDocuments = req.session.appeal.ftpaAppellantEvidenceDocuments;
+    const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaAppellantOutOfTimeExplanation;
+    const ftpaOutOfTimeApplicationDocuments = req.session.appeal.ftpaAppellantOutOfTimeDocuments;
+    const ftpaAppellantApplicationDate = req.session.appeal.ftpaAppellantApplicationDate;
+
+    const data = [];
+
+    if (ftpaGrounds && ftpaGrounds.length > 0) {
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ftpaGrounds]));
+    }
+    attachFtpaDocuments(ftpaEvidenceDocuments, data, i18n.pages.detailViewers.ftpaApplication.evidence);
+    if (ftpaAppellantApplicationDate) {
+      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat)]));
+    }
+    if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length > 0) {
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ftpaOutOfTimeApplicationReason]));
+    }
+    attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
+
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function attachFtpaDocuments(documents: Evidence[], documentCollection, docLabel: string) {
+  if (documents && documents.length > 0) {
+    documents.forEach((doc, index) => {
+      const label = index === 0 ? docLabel : '';
+      documentCollection.push(addSummaryRow(label, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${fileNameFormatter(doc.name)}</a>`]));
+    });
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
@@ -675,6 +717,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.hearingBundleViewer, getHearingBundle);
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
   router.get(paths.common.lrReasonsForAppealViewer, getLrReasonsForAppealViewer);
+  router.get(paths.common.ftpaAppellantApplicationViewer, getFtpaAppellantApplication);
   return router;
 }
 
@@ -697,5 +740,6 @@ export {
   getHearingNoticeViewer,
   getHearingBundle,
   getDecisionAndReasonsViewer,
-  getLrReasonsForAppealViewer
+  getLrReasonsForAppealViewer,
+  getFtpaAppellantApplication
 };

@@ -1,11 +1,11 @@
-const decidedES = {
+const ftpaOutOfTimeApplicationStartedES = {
   "total": 1,
   "cases":[
     {
-      "id":18,
+      "id":19,
       "jurisdiction":"IA",
       "state":"decided",
-      "version":18,
+      "version":19,
       "case_type_id":"Asylum",
       "created_date":"2023-04-05T12:00:00.00000",
       "last_modified":"2023-04-05T12:02:00.000000",
@@ -28,7 +28,7 @@ const decidedES = {
               "uniqueId":"54188ea2-ce30-4bbd-8796-635bdd0cf09c",
               "explanation":"The Home Office has replied to your Appeal Skeleton Argument and evidence. You should review their response.\n\n# Next steps\n\nReview the Home Office response. If you want to respond to what they have said, you should email the Tribunal.\n\nIf you do not respond by the date indicated below, the case will automatically go to hearing.",
               "previousDates":[
-                
+
               ]
             }
           },
@@ -43,7 +43,7 @@ const decidedES = {
               "explanation":"You have until the date indicated below to review the appellant's argument and evidence. You must explain whether the appellant makes a valid case for overturning the original decision.\n\nYou must respond to the Tribunal and tell them:\n\n- whether you oppose all or parts of the appellant's case\n- what your grounds are for opposing the case\n- which of the issues are agreed or not agreed\n- whether there are any further issues you wish to raise\n- whether you are prepared to withdraw to grant\n- whether the appeal can be resolved without a hearing\n\nNext steps\n\nIf you do not respond in time the Tribunal will decide how the case should proceed.",
               "directionType":"requestRespondentReview",
               "previousDates":[
-                
+
               ]
             }
           },
@@ -58,7 +58,7 @@ const decidedES = {
               "explanation":"You must now tell us why you think the Home Office decision to refuse your claim is wrong.",
               "directionType":"requestReasonsForAppeal",
               "previousDates":[
-                
+
               ]
             }
           },
@@ -73,7 +73,7 @@ const decidedES = {
               "explanation":"A notice of appeal has been lodged against this decision.\n\nYou must now upload all documents to the Tribunal. The Tribunal will make them accessible to the other party. You have until the date indicated below to supply the documents.\n\nYou must include:\n- the notice of decision\n- any other document provided to the appellant giving reasons for that decision\n- any statements of evidence\n- the application form\n- any record of interview with the appellant in relation to the decision being appealed\n- any other unpublished documents on which you rely\n- the notice of any other appealable decision made in relation to the appellant",
               "directionType":"requestRespondentEvidence",
               "previousDates":[
-                
+
               ]
             }
           }
@@ -91,7 +91,7 @@ const decidedES = {
                   "value":{
                     "name":"Hearing documents",
                     "documents":[
-                      
+
                     ],
                     "sortIndex":0
                   }
@@ -143,7 +143,7 @@ const decidedES = {
                   "value":{
                     "name":"Clarifying Questions",
                     "documents":[
-                      
+
                     ],
                     "sortIndex":3
                   }
@@ -153,7 +153,7 @@ const decidedES = {
                   "value":{
                     "name":"Additional evidence from appellant",
                     "documents":[
-                      
+
                     ],
                     "sortIndex":4
                   }
@@ -194,7 +194,7 @@ const decidedES = {
               ],
               "fileName":"HU 50051 2023-ttt-hearing-bundle.pdf",
               "documents":[
-                
+
               ],
               "stitchStatus":"DONE",
               "hasCoversheets":"Yes",
@@ -382,7 +382,7 @@ const decidedES = {
         "feePaymentAppealType":"Yes",
         "localAuthorityPolicy":{
           "Organisation":{
-            
+
           },
           "OrgPolicyCaseAssignedRole":"[LEGALREPRESENTATIVE]"
         },
@@ -404,7 +404,7 @@ const decidedES = {
           "uniqueId":"54188ea2-ce30-4bbd-8796-635bdd0cf09c",
           "explanation":"The Home Office has replied to your Appeal Skeleton Argument and evidence. You should review their response.\n\n# Next steps\n\nReview the Home Office response. If you want to respond to what they have said, you should email the Tribunal.\n\nIf you do not respond by the date indicated below, the case will automatically go to hearing.",
           "previousDates":[
-            
+
           ]
         },
         "listCaseHearingCentre":"decisionWithoutHearing",
@@ -423,7 +423,7 @@ const decidedES = {
         "homeOfficeDecisionDate":"2023-04-01",
         "appealDecisionAvailable":"Yes",
         "appealGroundsForDisplay":[
-          
+
         ],
         "appealResponseAvailable":"Yes",
         "appellantNameForDisplay":"fff ttt",
@@ -528,7 +528,7 @@ const decidedES = {
               },
               "suppliedBy":"",
               "description":"",
-              "dateUploaded": new Date().toLocaleDateString()
+              "dateUploaded":"2022-04-04"
             }
           },
           {
@@ -542,7 +542,7 @@ const decidedES = {
               },
               "suppliedBy":"",
               "description":"",
-              "dateUploaded": new Date().toLocaleDateString()
+              "dateUploaded":"2022-04-04"
             }
           }
         ],
@@ -594,7 +594,7 @@ const decidedES = {
                 "explanation":"PUBLIC",
                 "previousDates":{
                   "value":[
-                    
+
                   ],
                   "classification":"PUBLIC"
                 }
@@ -612,7 +612,7 @@ const decidedES = {
                 "directionType":"PUBLIC",
                 "previousDates":{
                   "value":[
-                    
+
                   ],
                   "classification":"PUBLIC"
                 }
@@ -630,7 +630,7 @@ const decidedES = {
                 "directionType":"PUBLIC",
                 "previousDates":{
                   "value":[
-                    
+
                   ],
                   "classification":"PUBLIC"
                 }
@@ -648,7 +648,7 @@ const decidedES = {
                 "directionType":"PUBLIC",
                 "previousDates":{
                   "value":[
-                    
+
                   ],
                   "classification":"PUBLIC"
                 }
@@ -673,7 +673,7 @@ const decidedES = {
                         "name":"PUBLIC",
                         "documents":{
                           "value":[
-                            
+
                           ],
                           "classification":"PUBLIC"
                         },
@@ -726,7 +726,7 @@ const decidedES = {
                         "name":"PUBLIC",
                         "documents":{
                           "value":[
-                            
+
                           ],
                           "classification":"PUBLIC"
                         },
@@ -739,7 +739,7 @@ const decidedES = {
                         "name":"PUBLIC",
                         "documents":{
                           "value":[
-                            
+
                           ],
                           "classification":"PUBLIC"
                         },
@@ -780,7 +780,7 @@ const decidedES = {
                 "fileName":"PUBLIC",
                 "documents":{
                   "value":[
-                    
+
                   ],
                   "classification":"PUBLIC"
                 },
@@ -982,7 +982,7 @@ const decidedES = {
           "value":{
             "Organisation":{
               "value":{
-                
+
               },
               "classification":"PUBLIC"
             },
@@ -1011,7 +1011,7 @@ const decidedES = {
             "explanation":"PUBLIC",
             "previousDates":{
               "value":[
-                
+
               ],
               "classification":"PUBLIC"
             }
@@ -1172,4 +1172,5 @@ const decidedES = {
   ]
 }
 
-module.exports = { ...decidedES };
+module.exports = { ...ftpaOutOfTimeApplicationStartedES };
+

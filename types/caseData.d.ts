@@ -150,7 +150,9 @@ interface CaseData {
   isAppellantGivingOralEvidence?: 'Yes' | 'No';
   ftpaAppellantGroundsDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantEvidenceDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  ftpaAppellantGrounds?: string;
   ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
+  ftpaAppellantOutOfTimeExplanation?: string;
   ftpaAppellantDocuments?: Collection<DocumentWithMetaData>[];
   ftpaAppellantApplicationDate?: string;
 }

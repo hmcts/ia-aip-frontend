@@ -887,15 +887,19 @@ describe('Ftpa application controllers setup', () => {
   });
 
   describe('buildSummaryList', () => {
+    const mockEvidenceDocuments: Evidence[] = [
+      {
+        fileId: 'aFileId',
+        name: 'fileName'
+      },
+      {
+        fileId: 'aFileId1',
+        name: 'fileName1'
+      }
+    ];
     it('should return summary list with supporting evidence', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
-      const mockEvidenceDocuments: Evidence[] = [
-        {
-          fileId: 'aFileId',
-          name: 'fileName'
-        }
-      ];
       req.session.appeal.ftpaAppellantEvidenceDocuments = mockEvidenceDocuments;
       req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
 
@@ -912,6 +916,31 @@ describe('Ftpa application controllers setup', () => {
       const result = buildSummaryList(req as Request);
 
       expect(result[0].summaryRows).to.be.lengthOf(1);
+    });
+
+    it('should return out of time summary list with supporting evidence', () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
+      req.session.appeal.ftpaAppellantEvidenceDocuments = mockEvidenceDocuments;
+      req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
+      req.session.appeal.ftpaAppellantOutOfTimeExplanation = 'Out of time explanations';
+      req.session.appeal.ftpaAppellantOutOfTimeDocuments = mockEvidenceDocuments;
+
+      const result = buildSummaryList(req as Request);
+
+      expect(result[0].summaryRows).to.be.lengthOf(4);
+    });
+
+    it('should return out of time summary list without supporting evidence', () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
+      req.session.appeal.ftpaAppellantGrounds = 'Grounds for ftpa application';
+      req.session.appeal.ftpaAppellantOutOfTimeExplanation = 'Out of time explanations';
+      req.session.appeal.ftpaAppellantOutOfTimeDocuments = mockEvidenceDocuments;
+
+      const result = buildSummaryList(req as Request);
+
+      expect(result[0].summaryRows).to.be.lengthOf(3);
     });
   });
 

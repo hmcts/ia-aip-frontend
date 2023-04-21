@@ -7,8 +7,8 @@ import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getDueDateForAppellantToRespondToJudgeDecision } from '../../utils/event-deadline-date-finder';
-import { addSummaryRow } from '../../utils/summary-list';
-import { isFtpaFeatureEnabled } from '../../utils/utils';
+import { addSummaryRow, Delimiter } from '../../utils/summary-list';
+import { formatTextForCYA, isFtpaFeatureEnabled } from '../../utils/utils';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
 async function makeFtpaApplication(req: Request, res: Response, next: NextFunction) {
@@ -423,47 +423,31 @@ function buildSummaryList(req: Request): SummaryList[] {
     summaryRows.push(
         addSummaryRow(
             i18n.pages.ftpaApplication.checkYourAnswers.ftpaOutOfTimeExplanation,
-            [`<p>${req.session.appeal.ftpaAppellantOutOfTimeExplanation}</p>`],
+            [ formatTextForCYA(req.session.appeal.ftpaAppellantOutOfTimeExplanation) ],
             paths.ftpa.ftpaOutOfTimeReason.slice(1)
         )
     );
   }
   if (ftpaOutOfTimeEvidence && ftpaOutOfTimeEvidence.length > 0) {
-    ftpaOutOfTimeEvidence.forEach((evidence: Evidence, index: Number) => {
-      let label = index === 0
-          ? i18n.pages.ftpaApplication.checkYourAnswers.ftpaOutOfTimeEvidence
-          : '';
-      summaryRows.push(
-          addSummaryRow(
-              label,
-              [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
-              paths.ftpa.ftpaOutOfTimeEvidence.slice(1)
-          )
-      );
+    const evidenceText = ftpaOutOfTimeEvidence.map((evidence) => {
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
     });
+    summaryRows.push(addSummaryRow(i18n.pages.ftpaApplication.checkYourAnswers.ftpaOutOfTimeEvidence, evidenceText, paths.ftpa.ftpaOutOfTimeEvidence.slice(1), Delimiter.BREAK_LINE));
   }
   if (req.session.appeal.ftpaAppellantGrounds) {
     summaryRows.push(
         addSummaryRow(
             i18n.pages.ftpaApplication.checkYourAnswers.ftpaReason,
-            [`<p>${req.session.appeal.ftpaAppellantGrounds}</p>`],
+            [ formatTextForCYA(req.session.appeal.ftpaAppellantGrounds) ],
             paths.ftpa.ftpaReason.slice(1)
         )
     );
   }
   if (ftpaEvidence && ftpaEvidence.length > 0) {
-    ftpaEvidence.forEach((evidence: Evidence, index: Number) => {
-      let label = index === 0
-          ? i18n.pages.ftpaApplication.checkYourAnswers.ftpaEvidence
-          : '';
-      summaryRows.push(
-          addSummaryRow(
-              label,
-              [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`],
-              paths.ftpa.ftpaEvidence.slice(1)
-          )
-      );
+    const evidenceText = ftpaEvidence.map((evidence) => {
+      return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`;
     });
+    summaryRows.push(addSummaryRow(i18n.pages.ftpaApplication.checkYourAnswers.ftpaEvidence, evidenceText, paths.ftpa.ftpaEvidence.slice(1), Delimiter.BREAK_LINE));
   }
   summaryLists.push({
     summaryRows

@@ -8,7 +8,7 @@ import {
   homeOfficeNumberValidation,
   isDateInRange,
   reasonForAppealDecisionValidation,
-  selectedRequiredValidation,
+  selectedRequiredValidation, selectedRequiredValidationDialect,
   statementOfTruthValidation,
   textAreaValidation,
   yesOrNoRequiredValidation
@@ -473,6 +473,21 @@ describe('fields-validations', () => {
       };
       expect(validationResult).to.deep.equal(expectedResponse);
     });
+
+    it('should fail dialect validation and return "string.empty" ', () => {
+      const object = { 'dialect': '' };
+      const validationResult = selectedRequiredValidationDialect(object, 'test');
+      const expectedResponse = {
+
+        dialect: {
+          href: '#dialect',
+          key: 'dialect',
+          text: 'test'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
   });
 
   describe('isDateInRange', () => {

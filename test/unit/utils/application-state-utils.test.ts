@@ -63,6 +63,10 @@ describe('application-state-utils', () => {
               'createdDate': '2020-02-08T16:00:00.000'
             },
             {
+              'id': 'pendingPayment',
+              'createdDate': '2020-02-08T16:00:00.000'
+            },
+            {
               'id': 'submitReasonsForAppeal',
               'createdDate': '2020-02-18T16:00:00.000'
             },
@@ -166,6 +170,27 @@ describe('application-state-utils', () => {
           url: "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
         },
         allowedAskForMoreTime: false
+      });
+    });
+
+    it('get correct \'Do This next section\' when application status is pendingPayment', async () => {
+      req.session.appeal.appealStatus = 'pendingPayment';
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        descriptionParagraphs: [
+          i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
+          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
+          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
+        ],
+        cta: {
+          link: {
+            text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
+            url: paths.common.payLater
+          }
+        },
+        allowedAskForMoreTime: false,
+        deadline: '22 February 2020'
       });
     });
 

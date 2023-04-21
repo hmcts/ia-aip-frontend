@@ -338,7 +338,7 @@ describe('Check and Send Controller', () => {
       expect(res.redirect).to.have.been.called;
     });
 
-    it('should initiate payment for "protection" appeal type and payNow', async () => {
+    it('should not initiate payment for "protection" appeal type and payNow', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
@@ -347,7 +347,7 @@ describe('Check and Send Controller', () => {
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(paymentService.initiatePayment).to.have.been.called;
+      expect(paymentService.initiatePayment).not.to.have.been.called;
     });
 
     it('should submit appeal for "protection" appeal type and payLater', async () => {
@@ -361,15 +361,58 @@ describe('Check and Send Controller', () => {
       expect(res.redirect).to.have.been.called;
     });
 
-    it('should catch exception if no fee present', async () => {
-      const error = new Error('Fee is not available');
+    it('should submit appeal for "protection" appeal type and payNow', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.body = { statement: 'acceptance' };
       await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
 
-      expect(next).to.have.been.called;
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should first submit appeal for "protection" appeal type and payNow before initiating payment', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+    });
+
+    it('should submit appeal for "euSettlementScheme"', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.appealType = 'euSettlementScheme';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should submit appeal for "refusalOfHumanRights"', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.appealType = 'refusalOfHumanRights';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
+    });
+
+    it('should submit appeal for "refusalOfEu"', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.appealType = 'refusalOfEu';
+      req.body = { statement: 'acceptance' };
+      await postCheckAndSend(updateAppealService as UpdateAppealService, paymentService as PaymentService)(req as Request, res as Response, next);
+
+      expect(updateAppealService.submitEventRefactored).to.have.been.called;
+      expect(res.redirect).to.have.been.called;
     });
 
     it('should catch exception and call next with the error', async () => {
@@ -417,7 +460,7 @@ describe('Check and Send Controller', () => {
       expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
       expect(req.session.appeal.paymentDate).to.be.eql('aDate');
       expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayLater);
+      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayment);
     });
 
     it('should finish a payment and redirect to confirmation pay later', async () => {
@@ -434,7 +477,7 @@ describe('Check and Send Controller', () => {
       expect(req.session.appeal.paymentStatus).to.be.eql('Paid');
       expect(req.session.appeal.paymentDate).to.be.eql('aDate');
       expect(req.session.appeal.isFeePaymentEnabled).to.be.eql('Yes');
-      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayLater);
+      expect(res.redirect).to.have.been.calledWith(paths.common.confirmationPayment);
     });
 
     it('should redirect to check your answers page if payment has failed @finish', async () => {
@@ -466,7 +509,7 @@ describe('Check and Send Controller', () => {
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.feeCode = 'aCode';
-      await getPayLater(paymentService as PaymentService)(req as Request, res as Response, next);
+      await getPayLater(paymentService as PaymentService, false)(req as Request, res as Response, next);
 
       expect(paymentService.initiatePayment).to.have.been.called;
     });
@@ -478,7 +521,7 @@ describe('Check and Send Controller', () => {
       paymentService.initiatePayment = sandbox.stub().throws(error);
       updateAppealService.submitEventRefactored = sandbox.stub().throws(error);
 
-      await getPayLater(paymentService as PaymentService)(req as Request, res as Response, next);
+      await getPayLater(paymentService as PaymentService, false)(req as Request, res as Response, next);
 
       expect(next).to.have.been.calledOnce.calledWith(error);
     });

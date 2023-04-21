@@ -47,6 +47,22 @@ describe('progress-bar utils', () => {
       expect(expectedStages).to.deep.equal(stages);
     });
 
+    it('appealSubmitted and not Paid', () => {
+      const stages = buildProgressBarStages('appealSubmitted', 'Payment pending');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = true;
+      expectedStages[0].completed = false;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
+    it('appealSubmitted and Paid', () => {
+      const stages = buildProgressBarStages('appealSubmitted', 'Paid');
+      let expectedStages = defaultStages;
+      expectedStages[0].active = false;
+      expectedStages[0].completed = true;
+      expect(expectedStages).to.deep.equal(stages);
+    });
+
     it('awaitingRespondentEvidence', () => {
       const stages = buildProgressBarStages('awaitingRespondentEvidence');
       let expectedStages = defaultStages;

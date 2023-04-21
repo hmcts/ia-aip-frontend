@@ -4,11 +4,11 @@ import {
   checkEnableProvideMoreEvidenceSection,
   getAppealRefNumber,
   getApplicationOverview,
-  getHearingDetails,
+  getHearingDetails, hideLinkForFtpa,
   setupApplicationOverviewController,
-  showAppealRequests,
-  showAppealRequestsInAppealEndedStatus,
-  showHearingRequests
+  showAppealRequestSection,
+  showAppealRequestSectionInAppealEndedStatus,
+  showHearingRequestSection
 } from '../../../app/controllers/application-overview';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
@@ -572,27 +572,47 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('showAppealRequests should return true when in appealSubmitted state', () => {
-    const result = showAppealRequests(States.APPEAL_SUBMITTED.id, true);
+    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequests should return false when in ended state', () => {
-    const result = showAppealRequests(States.ENDED.id, true);
+    const result = showAppealRequestSection(States.ENDED.id, true);
     expect(result).to.equal(false);
   });
 
   it('showHearingRequests should return false when in appealSubmitted state', () => {
-    const result = showHearingRequests(States.APPEAL_SUBMITTED.id, true);
+    const result = showHearingRequestSection(States.APPEAL_SUBMITTED.id, true);
     expect(result).to.equal(false);
   });
 
   it('showHearingRequests should return true when in prepareForHearing state', () => {
-    const result = showHearingRequests(States.PREPARE_FOR_HEARING.id, true);
+    const result = showHearingRequestSection(States.PREPARE_FOR_HEARING.id, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequestsInAppealEndedStatus should return true when in ended state', () => {
-    const result = showAppealRequestsInAppealEndedStatus(States.ENDED.id, true);
+    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true);
     expect(result).to.equal(true);
+  });
+
+  it('hideLinkForFtpa should return true when in decided state', () => {
+    const result = hideLinkForFtpa(States.DECIDED.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('hideLinkForFtpa should return true when in ftpaDecided state', () => {
+    const result = hideLinkForFtpa(States.FTPA_DECIDED.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('hideLinkForFtpa should return true when in ftpaSubmitted state', () => {
+    const result = hideLinkForFtpa(States.FTPA_SUBMITTED.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('hideLinkForFtpa should return false when in state other than decided, ftpaDecided or ftpaSubmitted', () => {
+    const result = hideLinkForFtpa(States.APPEAL_SUBMITTED.id, true);
+    expect(result).to.equal(false);
   });
 });

@@ -73,7 +73,7 @@ function checkEnableProvideMoreEvidenceSection(appealStatus: string, featureEnab
   return featureEnabled && preAddendumEvidenceUploadState;
 }
 
-function showAppealRequests(appealStatus: string, featureEnabled: boolean) {
+function showAppealRequestSection(appealStatus: string, featureEnabled: boolean) {
   const showAppealRequestsStates = [
     States.APPEAL_SUBMITTED.id,
     States.AWAITING_RESPONDENT_EVIDENCE.id,
@@ -102,11 +102,11 @@ function showAppealRequests(appealStatus: string, featureEnabled: boolean) {
   return featureEnabled ? showAppealRequestsStates.includes(appealStatus) : featureEnabled;
 }
 
-function showAppealRequestsInAppealEndedStatus(appealStatus: string, featureEnabled: boolean): boolean {
+function showAppealRequestSectionInAppealEndedStatus(appealStatus: string, featureEnabled: boolean): boolean {
   return featureEnabled ? States.ENDED.id === appealStatus : featureEnabled;
 }
 
-function showHearingRequests(appealStatus: string, featureEnabled: boolean) {
+function showHearingRequestSection(appealStatus: string, featureEnabled: boolean) {
   const showHearingRequestsStates = [
     States.PREPARE_FOR_HEARING.id,
     States.FINAL_BUNDLING.id,
@@ -144,9 +144,17 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
-      const showPayLaterLink = payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req);
+      const showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
       const hearingDetails = getHearingDetails(req);
       const showChangeRepresentation = isAppealInProgress(appealStatus);
+      const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled)
+          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+      const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+      const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+      const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
+          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -159,10 +167,10 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         askForMoreTimeInFlight: hasPendingTimeExtension(req.session.appeal),
         askForMoreTime,
         saveAndAskForMoreTime,
-        provideMoreEvidenceSection: checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled),
-        showAppealRequests: showAppealRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
-        showAppealRequestsInAppealEndedStatus: showAppealRequestsInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
-        showHearingRequests: showHearingRequests(req.session.appeal.appealStatus, makeApplicationFeatureEnabled),
+        provideMoreEvidenceSection,
+        showAppealRequests,
+        showAppealRequestsInAppealEndedStatus,
+        showHearingRequests,
         showPayLaterLink,
         ftpaFeatureEnabled,
         hearingDetails,
@@ -172,6 +180,12 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       next(e);
     }
   };
+}
+
+function hideLinkForFtpa(appealStatus: string, ftpaEnabled: boolean) {
+  const postDecisionStates = [ States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ];
+
+  return postDecisionStates.includes(appealStatus) && ftpaEnabled;
 }
 
 function setupApplicationOverviewController(updateAppealService: UpdateAppealService): Router {
@@ -187,7 +201,8 @@ export {
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
   getHearingDetails,
-  showAppealRequests,
-  showHearingRequests,
-  showAppealRequestsInAppealEndedStatus
+  showAppealRequestSection,
+  showHearingRequestSection,
+  hideLinkForFtpa,
+  showAppealRequestSectionInAppealEndedStatus
 };

@@ -93,8 +93,8 @@ class CcdService {
       sort: [{ id: { order: 'asc' } }]
     };
     const options: any = this.createOptions(
-      userId,
-      headers,
+        userId,
+        headers,
         `${ccdBaseUrl}/searchCases?ctid=${caseType}`);
     options.body = query;
     let response = rp.post(options);
@@ -176,7 +176,6 @@ interface ES<T> {
   cases: T[];
   total: number;
 }
-
 export {
   CcdService
 };

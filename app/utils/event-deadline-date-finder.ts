@@ -160,6 +160,6 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
 export {
   getDeadline,
   getDueDateForAppellantToRespondToJudgeDecision,
-  getFormattedDirectionDueDate, 
+  getFormattedDirectionDueDate,
   getDueDateForAppellantToRespondToFtpaDecision
 };

@@ -1105,8 +1105,11 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
-  it('when application status is ftpaSubmitted should get correct Do this next section.', async () => {
+  it('when application status is ftpaSubmitted after appellant ftpa application should get correct Do this next section.', async () => {
     req.session.appeal.appealStatus = 'ftpaSubmitted';
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
@@ -1136,6 +1139,115 @@ describe('application-state-utils', () => {
     const result = getAppealStatus(req as Request);
 
     expect(result).to.eql('appealSubmitted');
+  });
+
+  it('when application status is ftpaSubmitted after respondent ftpa application should get correct Do this next section.', async () => {
+    req.session.appeal.appealStatus = 'ftpaSubmitted';
+    req.session.appeal.history = [
+      {
+        id: 'applyForFTPARespondent',
+        event: {
+          eventName: 'applyForFTPARespondent',
+          description: 'description'
+        },
+        user: {
+          id: 'userId',
+          lastName: 'test',
+          firstName: 'test'
+        },
+        createdDate: 'createDate',
+        caseTypeVersion: 5,
+        state: {
+          id: 'ftpaSubmitted',
+          name: 'ftpaSubmitted'
+        },
+        data: {}
+      }
+    ];
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [ `Nothing to do next` ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is granted for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'granted';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'The Home Office application for permission to appeal to the Upper Tribunal has been granted.',
+        "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is refused for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'refused';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'The HOme Office application for permission to appeal to the Upper Tribunal has been refused.',
+        "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is partially granted for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'partiallyGranted';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.',
+        "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is not admitted for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'notAdmitted';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.',
+        "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+      ]
+    };
+
+    expect(result).to.eql(expected);
   });
 
   it('when application status is appealTakenOffline and removeAppealFromOnlineReason and date can be read.', () => {

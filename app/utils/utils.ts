@@ -91,5 +91,5 @@ export function formatCaseId(caseId: any) {
 export async function isFtpaFeatureEnabled(req: Request) {
   const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
   const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return (process.env.NODE_ENV === 'dev' && defaultFlag) ? true : isFtpaFeatureEnabled;
+  return isFtpaFeatureEnabled;
 }

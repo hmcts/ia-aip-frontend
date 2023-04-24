@@ -10,3 +10,15 @@ export const FEATURE_FLAGS = {
   MAKE_APPLICATION: 'aip-make-application-feature',
   FTPA: 'aip-ftpa-feature'
 };
+
+export const APPLICANT_TYPE = {
+  APPELLANT: 'appellant',
+  RESPONDENT: 'respondent'
+};
+
+export const FTPA_DECISION_OUTCOME_TYPE = {
+  GRANTED: 'granted',
+  PARTIALLY_GRANTED: 'partiallyGranted',
+  NOT_ADMITTED: 'notAdmitted',
+  REFUSED: 'refused'
+};

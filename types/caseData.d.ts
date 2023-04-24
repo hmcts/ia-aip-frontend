@@ -148,6 +148,7 @@ interface CaseData {
   appellantPinInPost?: PinInPost;
   isAppellantAttendingTheHearing?: 'Yes' | 'No';
   isAppellantGivingOralEvidence?: 'Yes' | 'No';
+  ftpaApplicantType?: string;
   ftpaAppellantGroundsDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantEvidenceDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantGrounds?: string;
@@ -155,6 +156,14 @@ interface CaseData {
   ftpaAppellantOutOfTimeExplanation?: string;
   ftpaAppellantDocuments?: Collection<DocumentWithMetaData>[];
   ftpaAppellantApplicationDate?: string;
+  ftpaRespondentEvidenceDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  ftpaRespondentGroundsDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  ftpaRespondentOutOfTimeExplanation?: string;
+  ftpaRespondentOutOfTimeDocuments?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  ftpaRespondentApplicationDate?: string;
+  ftpaRespondentDecisionOutcomeType?: string;
+  ftpaRespondentDecisionDocument?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  ftpaRespondentDecisionDate?: string;
 }
 
 interface Application<T> {

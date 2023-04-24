@@ -18,7 +18,8 @@ const usersToCaseData = {
   '15': [ mockData.outOfTimeDecisionRejected ],
   '16': [ mockData.outOfTimeDecisionInTime ],
   '17': [ mockData.uploadAddendumEvidence ],
-  '18': [ mockData.decided ]
+  '18': [ mockData.decided ],
+  '19': [ mockData.ftpaOutOfTimeApplicationStarted ]
 };
 
 module.exports = {

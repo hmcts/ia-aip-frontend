@@ -715,6 +715,11 @@
       }
     },
     "ftpaApplication": {
+      "ftpaOutOfTimeReason": {
+        "title": "Your application is late",
+        "content": "<p>The deadline to apply for permission to appeal to the Upper Tribunal was {{ ftpaDeadline }}.</p><p>You may still be able to apply. You need to tell us the reasons why your application is late. You can provide supporting evidence on the next page, if you have it.</p>",
+        "hint": "Why is your application late?"
+      },
       "ftpaReason": {
         "title": "Why do you think the Tribunal's decision is wrong?",
         "content": "Tell us what you think the Tribunal got wrong when deciding your appeal and explain why you think it is wrong. You can provide supporting evidence for your answer on the next page, if you have it.",
@@ -725,19 +730,15 @@
         "options": {
           "yes": {
             "text": "Yes",
-            "value": "yes"
+            "value": "Yes"
           },
           "no": {
             "text": "No",
-            "value": "no"
+            "value": "No"
           }
         }
       },
       "ftpaDocumentUpload": {
-        "ftpaGrounds": {
-          "title": "Why do you think the Tribunal's decision is wrong?",
-          "advice": "Upload a document that explains what you think the Tribunal got wrong when deciding your appeal and why you think it is wrong. You can provide supporting evidence on the next page, if you have it."
-        },
         "ftpaEvidence": {
           "title": "Provide supporting evidence",
           "adviceHeader": "Advice on providing supporting evidence",
@@ -752,8 +753,9 @@
       "checkYourAnswers": {
         "title": "Check your answer",
         "ftpaReason": "Why do you think the Tribunal's decision is wrong?",
-        "ftpaGrounds": "Why do you think the Tribunal's decision is wrong?",
-        "ftpaEvidence": "Supporting evidence"
+        "ftpaEvidence": "Supporting evidence",
+        "ftpaOutOfTimeExplanation": "Reason application is late",
+        "ftpaOutOfTimeEvidence": "Supporting evidence for late application"
       },
       "ftpaConfirmation": {
         "title": "Your application for permission to appeal to the Upper Tribunal has been sent",
@@ -1056,12 +1058,63 @@
             "A judge will decide your application for permission to appeal to the Upper Tribunal.",
             "The Tribunal will contact you when the judge has made a decision."
           ]
-        }, 
-        "ftpaDecided":{
-          "decision":  "A judge has <b> {{ applicationNextStep.decision }} </b> your application for permission to appeal to the Upper Tribunal.<br> <p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p> <p><a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> </p>",
-          "infoGranted": "<p><b>What happens next</b></p> <p>The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.</p>",
-          "infoPartiallyGranted": "<p><b>What happens next</b></p><p>The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.<br></p> <p>If you think your application should have been fully granted, you can send an application for permission to appeal directly to the Upper Tribunal.<br></p><a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply</a><br><p>You must send your application by [[14 or 28 days from date of notification<br></p>",
-          "infoNotAdmittedOrRefused": "<p><b>What happens next</b></p><p>If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.<br></p><a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a><p>You must send your application by [[14 or 28 days from date of notification<br></p>"
+        },
+        "ftpaDecided": {
+          "respondent": {
+            "granted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been granted.",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+            ],
+            "partiallyGranted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+            ],
+            "notAdmitted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.",
+              "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ],
+            "refused": [
+              "The HOme Office application for permission to appeal to the Upper Tribunal has been refused.",
+              "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ]
+          },
+          "appellant": {
+            "granted": [
+              "A judge has <b> granted </b> your application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next."
+            ],
+            "partiallyGranted": [
+              "A judge has <b> partially granted </b> your application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.",
+              "If you think your application should have been fully granted, you can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply</a>",
+              "You must send your application by {{ applicationNextStep.deadline }}"
+            ],
+            "notAdmitted": [
+              "A judge has <b> not admitted </b> your application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
+              "You must send your application by {{ applicationNextStep.deadline }}"
+            ],
+            "refused": [
+              "A judge has <b> refused </b> your application for permission to appeal to the Upper Tribunal.<br>",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
+              "You must send your application by {{ applicationNextStep.deadline }}"
+            ]
+          }
         }
       },
       "timeline": {
@@ -1384,6 +1437,28 @@
               "href": "{{ paths.common.decisionAndReasonsViewer }}"
             }
           ]
+        },
+        "applyForFTPAAppellant": {
+          "text": "You applied for permission to appeal to the Upper Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your application",
+              "href": "{{ paths.common.ftpaAppellantApplicationViewer }}"
+            }
+          ]
+        },
+        "decideFtpa": {
+          "respondent": {
+            "text": "The Home Office application for permission to appeal to the Upper Tribunal was decided.",
+            "links": [
+              {
+                "title": "What the Tribunal said",
+                "text": "Reason for the decision",
+                "href": "{{ paths.common.ftpaRespondentDecisionViewer }}"
+              }
+            ]
+          }
         }
       }
     },
@@ -1554,6 +1629,30 @@
       "decisionsAndReasons": {
         "title": "Decision and Reasons",
         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
+      },
+      "ftpaApplication": {
+        "title": {
+          "appellant": "Your Application",
+          "respondent": "Application details"
+        },
+        "grounds": "Why do you think the Tribunal's decision is wrong?",
+        "groundsDocument": "Reasons for the application",
+        "outOfTimeReason": "Reason application is late",
+        "evidence": "Supporting evidence",
+        "outOfTimeEvidence": "Supporting evidence for late application",
+        "date": "Date application sent"
+      },
+      "ftpaDecision": {
+        "title": "Decision details",
+        "decision": "What the Tribunal decided",
+        "decisionDocument": "Decision and reasons document",
+        "date": "Date of decision",
+        "decisionOutcomeType": {
+          "granted": "Granted",
+          "partiallyGranted": "Partially granted",
+          "notAdmitted": "Not admitted",
+          "refused": "Refused"
+        }
       }
     },
     "guidancePages": {
@@ -3404,7 +3503,8 @@
     },
     "ftpaApplication": {
       "ftpaReason": "Enter the reasons you think the Tribunal's decision is wrong?",
-      "ftpaEvidenceQuestion": "Select Yes if you want to provide supporting evidence"
+      "ftpaEvidenceQuestion": "Select Yes if you want to provide supporting evidence",
+      "ftpaOutOfTimeReason": "Enter the reason the application is late"
     }
   },
   "components": {

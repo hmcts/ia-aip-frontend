@@ -161,13 +161,26 @@ interface Appeal {
   pcqId?: string;
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;
-  ftpaAppellantGroundsDocuments?: Evidence[];
+  ftpaApplicantType?: string;
   ftpaAppellantEvidenceDocuments?: Evidence[];
   ftpaAppellantDocuments?: Evidence[];
-  ftpaReason?: string;
-  ftpaProvideEvidence?: string;
+  ftpaAppellantGrounds?: string;
+  ftpaProvideEvidence?: 'Yes' | 'No';
   ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
+  ftpaAppellantOutOfTimeExplanation?: string;
+  ftpaOutOfTimeProvideEvidence?: 'Yes' | 'No';
+  ftpaAppellantOutOfTimeDocuments?: Evidence[];
+  ftpaAppellantApplicationDate?: string;
+  ftpaRespondentEvidenceDocuments?: Evidence[];
+  ftpaRespondentGroundsDocuments?: Evidence[];
+  ftpaRespondentOutOfTimeExplanation?: string;
+  ftpaRespondentOutOfTimeDocuments?: Evidence[];
+  ftpaRespondentApplicationDate?: string;
+  ftpaRespondentDecisionOutcomeType?: string;
+  ftpaRespondentDecisionDocument?: Evidence[];
+  ftpaRespondentDecisionDate?: string;
   ftpaAppellantDecisionOutcomeType?: string;
+  ftpaAppellantDecisionDate?: string;
 }
 
 interface Hearing {

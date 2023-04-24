@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import { Events } from '../../../app/data/events';
-import { States } from '../../../app/data/states';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import { constructSection, getApplicationEvents, getEventsAndStates, getSubmitClarifyingQuestionsEvents } from '../../../app/utils/timeline-utils';
@@ -236,6 +235,16 @@ describe('timeline-utils', () => {
     it('should return relevant events when hearingBundle feature disabled', () => {
       const eventsAndStates = getEventsAndStates(true, false, false);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
+    });
+
+    it('should return relevant events when ftpa feature disabled', () => {
+      const eventsAndStates = getEventsAndStates(false, false, false);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(1);
+    });
+
+    it('should return relevant events when ftpa feature enabled', () => {
+      const eventsAndStates = getEventsAndStates(false, false, true);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(4);
     });
   });
 });

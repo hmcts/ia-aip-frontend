@@ -1,7 +1,9 @@
-import _ from 'lodash';
+import { Request } from 'express';
 import nl2br from 'nl2br';
 import { applicationTypes } from '../data/application-types';
+import { FEATURE_FLAGS } from '../data/constants';
 import { paths } from '../paths';
+import LaunchDarklyService from '../service/launchDarkly-service';
 
 /**
  * Translate primitive values to Boolean value
@@ -84,4 +86,10 @@ export function formatCaseId(caseId: any) {
     caseStr = caseStr.substring(0,4) + '-' + caseStr.substring(4,8) + '-' + caseStr.substring(8,12) + '-' + caseStr.substring(12,16);
   }
   return caseStr.toString();
+}
+
+export async function isFtpaFeatureEnabled(req: Request) {
+  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
+  return true;
 }

@@ -58,6 +58,17 @@ function getDueDateForAppellantToRespondToJudgeDecision(req: Request) {
 }
 
 /**
+ * @param req the request containing the appeal information
+ * @returns deadline for the appeallant to respond to FTPA decision
+ */
+function getDueDateForAppellantToRespondToFtpaDecision(req: Request) {
+  let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+  // if it's out of country appeal it's 28 days otherwise it's 14 days
+  let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
+  return moment(req.session.appeal.ftpaAppellantDecisionDate).add(noOfDays, 'days').format(dayMonthYearFormat);
+}
+
+/**
  * Given the current case status it retrieves deadlines based on the business logic.
  * @param currentAppealStatus the appeal status
  * @param req the request containing  all the directions in session
@@ -134,6 +145,9 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
     case 'decided':
       formattedDeadline = getDueDateForAppellantToRespondToJudgeDecision(req);
       break;
+    case 'ftpaDecided':
+      formattedDeadline = getDueDateForAppellantToRespondToFtpaDecision(req);
+      break;
     default: {
       formattedDeadline = 'TBC';
       break;
@@ -146,5 +160,6 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
 export {
   getDeadline,
   getDueDateForAppellantToRespondToJudgeDecision,
-  getFormattedDirectionDueDate
+  getFormattedDirectionDueDate, 
+  getDueDateForAppellantToRespondToFtpaDecision
 };

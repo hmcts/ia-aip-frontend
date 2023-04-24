@@ -1,8 +1,8 @@
-const decided = {
-  "id": 18,
+const ftpaOutOfTimeApplicationStarted = {
+  "id": 19,
   "jurisdiction": "IA",
   "state": "decided",
-  "version": 18,
+  "version": 19,
   "case_type_id": "Asylum",
   "created_date": "2023-04-05T12:00:00.00000",
   "last_modified": "2023-04-05T12:02:00.000000",
@@ -503,7 +503,7 @@ const decided = {
           },
           "suppliedBy": "",
           "description": "",
-          "dateUploaded": new Date().toLocaleDateString()
+          "dateUploaded": "2022-04-04"
         }
       },
       {
@@ -517,7 +517,7 @@ const decided = {
           },
           "suppliedBy": "",
           "description": "",
-          "dateUploaded": new Date().toLocaleDateString()
+          "dateUploaded": "2022-04-04"
         }
       }
     ],
@@ -1125,5 +1125,5 @@ const decided = {
   }
 }
 
-module.exports = { ...decided };
+module.exports = { ...ftpaOutOfTimeApplicationStarted };
 

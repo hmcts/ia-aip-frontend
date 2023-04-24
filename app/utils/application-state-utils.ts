@@ -1,12 +1,12 @@
 import { Request } from 'express';
 import _ from 'lodash';
 import i18n from '../../locale/en.json';
-import { FEATURE_FLAGS } from '../data/constants';
+import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
-import { getAppellantApplications, hasPendingTimeExtension } from '../utils/utils';
+import { getAppellantApplications, hasPendingTimeExtension, isFtpaFeatureEnabled } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline } from './event-deadline-date-finder';
 
@@ -67,6 +67,11 @@ function getAppealStatus(req: Request) {
       return req.session.appeal.appealReviewOutcome;
     }
     return req.session.appeal.appealStatus;
+  } else if (req.session.appeal.appealStatus === States.FTPA_SUBMITTED.id) {
+    if (req.session.appeal.history.find(event => event.id === Events.APPLY_FOR_FTPA_RESPONDENT.id)) {
+      return 'RESPONDENT_FTPA_SUBMITTED';
+    }
+    return req.session.appeal.appealStatus;
   } else {
     return req.session.appeal.appealStatus;
   }
@@ -102,6 +107,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const decisionRefused = applications.length > 0 && applications[0].value.decision === 'Refused' || null;
   let doThisNextSection: DoThisNextSection;
   const isLate = req.session.appeal.application.isAppealLate;
+  const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
 
   let descriptionParagraphs;
   let respondBy;
@@ -517,7 +523,6 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'decided':
-      const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
 
       let decidedDescriptionParagraphs;
       let decidedInfo;
@@ -576,38 +581,27 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'ftpaSubmitted':
       doThisNextSection = {
-        descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description
+        descriptionParagraphs: ftpaEnabled
+            ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description
+            : [ `Nothing to do next` ]
       };
       break;
     case 'ftpaDecided':
-
-      let ftpadDecidedDescriptionParagraphs;
-
-      if (req.session.appeal.ftpaAppellantDecisionOutcomeType === 'granted') {
-        ftpadDecidedDescriptionParagraphs = [
-          i18n.pages.overviewPage.doThisNext.ftpaDecided.decision,
-          i18n.pages.overviewPage.doThisNext.ftpaDecided.infoGranted
-        ];
-      } else if (req.session.appeal.ftpaAppellantDecisionOutcomeType === 'partiallyGranted') {
-        ftpadDecidedDescriptionParagraphs = [
-          i18n.pages.overviewPage.doThisNext.ftpaDecided.decision,
-          i18n.pages.overviewPage.doThisNext.ftpaDecided.infoPartiallyGranted
-        ];
+      const ftpaApplicantType = req.session.appeal.ftpaApplicantType;
+      if (ftpaEnabled && APPLICANT_TYPE.APPELLANT === ftpaApplicantType) {
+        doThisNextSection = {
+          cta: {},
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][req.session.appeal.ftpaAppellantDecisionOutcomeType]
+        };
+      } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
+        doThisNextSection = {
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][req.session.appeal.ftpaRespondentDecisionOutcomeType]
+        };
       } else {
-        ftpadDecidedDescriptionParagraphs = [
-          i18n.pages.overviewPage.doThisNext.ftpaDecided.decision,
-          i18n.pages.overviewPage.doThisNext.ftpaDecided.infoNotAdmittedOrRefused
-        ];
+        doThisNextSection = {
+          descriptionParagraphs: [ `Nothing to do next` ]
+        };
       }
-
-      let text: string = req.session.appeal.ftpaAppellantDecisionOutcomeType;
-      const result = text.replace(/([A-Z])/g, ' $1');
-      const finalResult = result.toLowerCase();
-      doThisNextSection = {
-        decision: finalResult,
-        cta: {},
-        descriptionParagraphs: ftpadDecidedDescriptionParagraphs
-      };
       break;
     default:
       // default message to avoid app crashing on events that are to be implemented.
@@ -620,12 +614,6 @@ async function getAppealApplicationNextStep(req: Request) {
   }
   doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
   return doThisNextSection;
-}
-
-async function isFtpaFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return isFtpaFeatureEnabled;
 }
 
 function isPreAddendumEvidenceUploadState(appealStatus: string): Boolean {

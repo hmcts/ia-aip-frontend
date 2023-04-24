@@ -19,6 +19,7 @@ const emailToUserId = {
   'outOfTimeDecisionInTime@example.com': '16',
   'preHearing@example.com': '17',
   'decided@example.com': '18',
+  'ftpa-out-of-time-application-started@example.com': '19',
   'setupcase@example.com': '999'
 };
 

@@ -180,6 +180,7 @@ interface Appeal {
   ftpaRespondentDecisionDocument?: Evidence[];
   ftpaRespondentDecisionDate?: string;
   ftpaAppellantDecisionOutcomeType?: string;
+  ftpaAppellantDecisionDocument?: Evidence[];
   ftpaAppellantDecisionDate?: string;
 }
 

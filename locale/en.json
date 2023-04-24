@@ -1455,7 +1455,17 @@
               {
                 "title": "What the Tribunal said",
                 "text": "Reason for the decision",
-                "href": "{{ paths.common.ftpaRespondentDecisionViewer }}"
+                "href": "{{ paths.common.ftpaDecisionViewer }}"
+              }
+            ]
+          },
+          "appellant": {
+            "text": "Your application for permission to appeal to the Upper Tribunal was decided.",
+            "links": [
+              {
+                "title": "What the Tribunal said",
+                "text": "Reason for the decision",
+                "href": "{{ paths.common.ftpaDecisionViewer }}"
               }
             ]
           }

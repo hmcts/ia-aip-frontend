@@ -4,7 +4,9 @@ import {
   getApplicationTitle,
   getCmaRequirementsViewer,
   getDecisionAndReasonsViewer,
-  getDocumentViewer, getFtpaAppellantApplication, getFtpaRespondentApplicationDetails,
+  getDocumentViewer,
+  getFtpaAppellantApplication,
+  getFtpaDecisionDetails,
   getHearingBundle,
   getHearingNoticeViewer,
   getHoEvidenceDetailsViewer,
@@ -2001,7 +2003,7 @@ describe('Detail viewer Controller', () => {
     });
   });
 
-  describe('getFtpaRespondentApplicationDetails', () => {
+  describe('getFtpaDecisionDetails', () => {
     const documents = [
       {
         fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
@@ -2013,10 +2015,11 @@ describe('Detail viewer Controller', () => {
     it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when granted', () => {
       req.session.appeal = {
         ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
         ftpaRespondentGroundsDocuments: [ ...documents ],
         ftpaRespondentApplicationDate: '2023-03-20',
         ftpaRespondentEvidenceDocuments: [ ...documents ],
-        ftpaRespondentOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
         ftpaRespondentOutOfTimeDocuments: [ ...documents ],
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [ ...documents ],
@@ -2039,7 +2042,7 @@ describe('Detail viewer Controller', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
-            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+            value: { html: 'ftpaRespondentOutOfTimeExplanation' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
@@ -2062,7 +2065,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaRespondentApplicationDetails(req as Request, res as Response, next);
+      getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2075,10 +2078,11 @@ describe('Detail viewer Controller', () => {
     it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when partially granted', () => {
       req.session.appeal = {
         ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
         ftpaRespondentGroundsDocuments: [ ...documents ],
         ftpaRespondentApplicationDate: '2023-03-20',
         ftpaRespondentEvidenceDocuments: [ ...documents ],
-        ftpaRespondentOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
         ftpaRespondentOutOfTimeDocuments: [ ...documents ],
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [ ...documents ],
@@ -2101,7 +2105,7 @@ describe('Detail viewer Controller', () => {
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
-            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+            value: { html: 'ftpaRespondentOutOfTimeExplanation' }
           },
           {
             key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
@@ -2124,7 +2128,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaRespondentApplicationDetails(req as Request, res as Response, next);
+      getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2137,10 +2141,11 @@ describe('Detail viewer Controller', () => {
     it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when not admitted', () => {
       req.session.appeal = {
         ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
         ftpaRespondentGroundsDocuments: [ ...documents ],
         ftpaRespondentApplicationDate: '2023-03-20',
         ftpaRespondentEvidenceDocuments: [ ...documents ],
-        ftpaRespondentOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaRespondentOutOfTimeExplanation: 'ftpaRespondentOutOfTimeExplanation',
         ftpaRespondentOutOfTimeDocuments: [ ...documents ],
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [ ...documents ],
@@ -2170,7 +2175,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaRespondentApplicationDetails(req as Request, res as Response, next);
+      getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2183,6 +2188,7 @@ describe('Detail viewer Controller', () => {
     it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused', () => {
       req.session.appeal = {
         ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
         ftpaRespondentApplicationDate: '2023-03-20',
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [ ...documents ],
@@ -2212,10 +2218,75 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaRespondentApplicationDetails(req as Request, res as Response, next);
+      getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details', () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [ ...documents ],
+        ftpaAppellantDecisionOutcomeType: 'granted'
+      };
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+      documents[0].tag = 'ftpaAppellant';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Granted' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
         subTitle: i18n.pages.detailViewers.ftpaDecision.title,
         data: expectedSummaryRows,
         previousPage: paths.common.overview
@@ -2226,6 +2297,7 @@ describe('Detail viewer Controller', () => {
       const error = new Error('an error');
       req.session.appeal = {
         ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
         ftpaRespondentGroundsDocuments: [ ...documents ],
         ftpaRespondentApplicationDate: '2023-03-20',
         ftpaRespondentEvidenceDocuments: [ ...documents ],
@@ -2237,7 +2309,7 @@ describe('Detail viewer Controller', () => {
       };
       res.render = sandbox.stub().throws(error);
 
-      getFtpaRespondentApplicationDetails(req as Request, res as Response, next);
+      getFtpaDecisionDetails(req as Request, res as Response, next);
       expect(next).to.have.been.calledWith(error);
     });
   });

@@ -46,7 +46,7 @@
     "@hmcts/os-places-client": "^1.1.2",
     "@hmcts/properties-volume": "^0.0.13",
     "applicationinsights": "^1.8.10",
-    "codeceptjs": "^2.6.6",
+    "codeceptjs": "3.4.1",
     "config": "^3.3.6",
     "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.5",
@@ -193,6 +193,14 @@
     "webdriverio/webdriver/got": "^11.8.5",
     "style-loader/loader-utils": "^2.0.3",
     "*/loader-utils": "^1.4.1",
-    "minimatch": "^3.0.5"
+    "minimatch": "^3.0.5",
+    "mocha": "^10.2.0",
+    "flat": "^5.0.2",
+    "qs": "^6.7.3",
+    "json5": "^1.0.2",
+    "decode-uri-component": "^0.2.1",
+    "ua-parser-js": "^0.7.33",
+    "http-cache-semantics": "^4.1.1"
+
   }
 }

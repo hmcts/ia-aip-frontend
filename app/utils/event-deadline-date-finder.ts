@@ -145,9 +145,6 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
     case 'decided':
       formattedDeadline = getDueDateForAppellantToRespondToJudgeDecision(req);
       break;
-    case 'ftpaDecided':
-      formattedDeadline = getDueDateForAppellantToRespondToFtpaDecision(req);
-      break;
     default: {
       formattedDeadline = 'TBC';
       break;

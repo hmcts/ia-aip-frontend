@@ -1183,7 +1183,7 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
-      'deadline': '08 May 2023',
+      'deadline': 'TBC',
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been granted.',
         "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
@@ -1202,7 +1202,7 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
-      'deadline': '08 May 2023',
+      'deadline': 'TBC',
       'descriptionParagraphs': [
         'The HOme Office application for permission to appeal to the Upper Tribunal has been refused.',
         "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
@@ -1221,7 +1221,7 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
-      'deadline': '08 May 2023',
+      'deadline': 'TBC',
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.',
         "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
@@ -1240,7 +1240,7 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
-      'deadline': '08 May 2023',
+      'deadline': 'TBC',
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.',
         "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
@@ -1260,7 +1260,8 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
-      'deadline': '08 May 2023',
+      'ftpaDeadline': '08 May 2023',
+      'deadline': 'TBC',
       'cta': {},
       'descriptionParagraphs': [
         'A judge has <b> granted </b> your application for permission to appeal to the Upper Tribunal.',
@@ -1284,7 +1285,8 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
-      'deadline': '08 May 2023',
+      'ftpaDeadline': '08 May 2023',
+      'deadline': 'TBC',
       'cta': {},
       'descriptionParagraphs': [
         'A judge has <b> refused </b> your application for permission to appeal to the Upper Tribunal.<br>',
@@ -1293,7 +1295,7 @@ describe('application-state-utils', () => {
         '<b>What happens next</b>',
         "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
         '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>',
-        'You must send your application by {{ applicationNextStep.deadline }}'
+        'You must send your application by {{ applicationNextStep.ftpaDeadline }}'
       ]
     };
 
@@ -1310,7 +1312,8 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
-      'deadline': '08 May 2023',
+      'ftpaDeadline': '08 May 2023',
+      'deadline': 'TBC',
       'cta': {},
       'descriptionParagraphs': [
         'A judge has <b> partially granted </b> your application for permission to appeal to the Upper Tribunal.',
@@ -1320,7 +1323,7 @@ describe('application-state-utils', () => {
         "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.",
         'If you think your application should have been fully granted, you can send an application for permission to appeal directly to the Upper Tribunal.',
         '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply</a>',
-        'You must send your application by {{ applicationNextStep.deadline }}'
+        'You must send your application by {{ applicationNextStep.ftpaDeadline }}'
       ]
     };
 
@@ -1334,10 +1337,12 @@ describe('application-state-utils', () => {
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'notAdmitted';
     req.session.appeal.ftpaAppellantDecisionDate = '2023-04-24';
+    req.session.appeal.appealOutOfCountry = 'Yes';
     const result = await getAppealApplicationNextStep(req as Request);
 
     const expected = {
-      'deadline': '08 May 2023',
+      'ftpaDeadline': '22 May 2023',
+      'deadline': 'TBC',
       'cta': {},
       'descriptionParagraphs': [
         'A judge has <b> not admitted </b> your application for permission to appeal to the Upper Tribunal.',
@@ -1346,7 +1351,7 @@ describe('application-state-utils', () => {
         '<b>What happens next</b>',
         "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
         '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>',
-        'You must send your application by {{ applicationNextStep.deadline }}'
+        'You must send your application by {{ applicationNextStep.ftpaDeadline }}'
       ]
     };
 

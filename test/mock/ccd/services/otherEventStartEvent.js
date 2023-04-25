@@ -28,6 +28,8 @@ function getCurrentState(params) {
       return 'preHearing';
     case 'applyForFTPAAppellant':
       return 'ftpaSubmitted';
+    case 'ftpaSubmitted':
+      return 'ftpaDecided';
     default:
       throw `Event type ${params.eventType} no current state set`
   }

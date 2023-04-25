@@ -527,6 +527,8 @@ export default class UpdateAppealService {
       ...caseData.ftpaRespondentDecisionOutcomeType && { ftpaRespondentDecisionOutcomeType: caseData.ftpaRespondentDecisionOutcomeType },
       ...caseData.ftpaRespondentDecisionDocument && { ftpaRespondentDecisionDocument: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaRespondentDecisionDocument, documentMap) },
       ...caseData.ftpaRespondentDecisionDate && { ftpaRespondentDecisionDate: caseData.ftpaRespondentDecisionDate },
+      ...caseData.ftpaAppellantDecisionOutcomeType && { ftpaAppellantDecisionOutcomeType: caseData.ftpaAppellantDecisionOutcomeType },
+      ...caseData.ftpaAppellantDecisionDate && { ftpaAppellantDecisionDate: caseData.ftpaAppellantDecisionDate },
       hearingCentre: caseData.hearingCentre || null,
       documentMap: documentMap.map(doc => {
         return {

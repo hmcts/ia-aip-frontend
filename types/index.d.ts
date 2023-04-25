@@ -179,6 +179,8 @@ interface Appeal {
   ftpaRespondentDecisionOutcomeType?: string;
   ftpaRespondentDecisionDocument?: Evidence[];
   ftpaRespondentDecisionDate?: string;
+  ftpaAppellantDecisionOutcomeType?: string;
+  ftpaAppellantDecisionDate?: string;
 }
 
 interface Hearing {

@@ -8,7 +8,7 @@ import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getAppellantApplications, hasPendingTimeExtension, isFtpaFeatureEnabled } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
-import { getDeadline } from './event-deadline-date-finder';
+import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
 
 interface DoThisNextSection {
   descriptionParagraphs: string[];
@@ -34,6 +34,7 @@ interface DoThisNextSection {
   };
   allowedAskForMoreTime?: boolean;
   deadline?: string;
+  ftpaDeadline?: string;
   date?: string;
   time?: string;
   hearingCentre?: string;
@@ -588,12 +589,21 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'ftpaDecided':
       const ftpaApplicantType = req.session.appeal.ftpaApplicantType;
-      const ftpaDecision = APPLICANT_TYPE.RESPONDENT === ftpaApplicantType ? req.session.appeal.ftpaRespondentDecisionOutcomeType : '';
-      doThisNextSection = {
-        descriptionParagraphs: ftpaEnabled
-            ? i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][ftpaDecision]
-            : [ `Nothing to do next` ]
-      };
+      if (ftpaEnabled && APPLICANT_TYPE.APPELLANT === ftpaApplicantType) {
+        doThisNextSection = {
+          cta: {},
+          ftpaDeadline: getDueDateForAppellantToRespondToFtpaDecision(req),
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][req.session.appeal.ftpaAppellantDecisionOutcomeType]
+        };
+      } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
+        doThisNextSection = {
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][req.session.appeal.ftpaRespondentDecisionOutcomeType]
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [ `Nothing to do next` ]
+        };
+      }
       break;
     default:
       // default message to avoid app crashing on events that are to be implemented.

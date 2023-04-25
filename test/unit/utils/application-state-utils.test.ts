@@ -1231,6 +1231,25 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
+  it('when respondent ftpa application is partially granted by resident judge, should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentRjDecisionOutcomeType = 'partiallyGranted';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.',
+        "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
   it('when application is not admitted for respondent ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
@@ -1336,6 +1355,34 @@ describe('application-state-utils', () => {
     req.session.appeal.appealStatus = 'ftpaDecided';
     req.session.appeal.ftpaApplicantType = 'appellant';
     req.session.appeal.ftpaAppellantDecisionOutcomeType = 'notAdmitted';
+    req.session.appeal.ftpaAppellantDecisionDate = '2023-04-24';
+    req.session.appeal.appealOutOfCountry = 'Yes';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'ftpaDeadline': '22 May 2023',
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has <b> not admitted </b> your application for permission to appeal to the Upper Tribunal.',
+        'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
+        '<a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>',
+        '<b>What happens next</b>',
+        "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
+        '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>',
+        'You must send your application by {{ applicationNextStep.ftpaDeadline }}'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when appellant ftpa application is not admitted by resident judge, should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'appellant';
+    req.session.appeal.ftpaAppellantRjDecisionOutcomeType = 'notAdmitted';
     req.session.appeal.ftpaAppellantDecisionDate = '2023-04-24';
     req.session.appeal.appealOutOfCountry = 'Yes';
     const result = await getAppealApplicationNextStep(req as Request);

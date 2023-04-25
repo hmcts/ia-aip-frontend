@@ -179,6 +179,8 @@ interface Appeal {
   ftpaRespondentDecisionOutcomeType?: string;
   ftpaRespondentDecisionDocument?: Evidence[];
   ftpaRespondentDecisionDate?: string;
+  ftpaRespondentRjDecisionOutcomeType?: string;
+  ftpaAppellantRjDecisionOutcomeType?: string;
   ftpaAppellantDecisionOutcomeType?: string;
   ftpaAppellantDecisionDocument?: Evidence[];
   ftpaAppellantDecisionDate?: string;

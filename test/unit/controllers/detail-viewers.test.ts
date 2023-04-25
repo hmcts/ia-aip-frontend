@@ -2228,6 +2228,49 @@ describe('Detail viewer Controller', () => {
       });
     });
 
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused by resident judge', () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [ ...documents ],
+        ftpaRespondentRjDecisionOutcomeType: 'refused'
+      };
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Refused' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
     it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details', () => {
       req.session.appeal = {
         ...req.session.appeal,
@@ -2240,6 +2283,71 @@ describe('Detail viewer Controller', () => {
         ftpaAppellantDecisionDate: '2023-03-20',
         ftpaAppellantDecisionDocument: [ ...documents ],
         ftpaAppellantDecisionOutcomeType: 'granted'
+      };
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+      documents[0].tag = 'ftpaAppellant';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Granted' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision', () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [ ...documents ],
+        ftpaAppellantRjDecisionOutcomeType: 'granted'
       };
       documents[0].name = 'FTPA_Appellant_Doc.PDF';
       documents[0].tag = 'ftpaAppellant';

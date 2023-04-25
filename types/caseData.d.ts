@@ -164,6 +164,8 @@ interface CaseData {
   ftpaRespondentDecisionOutcomeType?: string;
   ftpaRespondentDecisionDocument?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaRespondentDecisionDate?: string;
+  ftpaRespondentRjDecisionOutcomeType?: string;
+  ftpaAppellantRjDecisionOutcomeType?: string;
   ftpaAppellantDecisionOutcomeType?: string;
   ftpaAppellantDecisionDocument?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantDecisionDate?: string;

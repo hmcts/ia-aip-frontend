@@ -709,7 +709,7 @@ function getFtpaRespondentDecisionDetails(req: Request, res: Response, next: Nex
     const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaRespondentOutOfTimeExplanation;
     const ftpaOutOfTimeApplicationDocuments = req.session.appeal.ftpaRespondentOutOfTimeDocuments;
     const ftpaApplicationDate = req.session.appeal.ftpaRespondentApplicationDate;
-    const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType;
+    const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
     const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaRespondentDecisionDocument;
     const ftpaDecisionDate = req.session.appeal.ftpaRespondentDecisionDate;
 
@@ -759,7 +759,7 @@ function getFtpaAppellantDecisionDetails(req: Request, res: Response, next: Next
     const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaAppellantOutOfTimeExplanation;
     const ftpaOutOfTimeApplicationDocuments = req.session.appeal.ftpaAppellantOutOfTimeDocuments;
     const ftpaApplicationDate = req.session.appeal.ftpaAppellantApplicationDate;
-    const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType;
+    const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType || req.session.appeal.ftpaAppellantRjDecisionOutcomeType;
     const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaAppellantDecisionDocument;
     const ftpaDecisionDate = req.session.appeal.ftpaAppellantDecisionDate;
 

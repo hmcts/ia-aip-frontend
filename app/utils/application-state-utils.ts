@@ -590,14 +590,16 @@ async function getAppealApplicationNextStep(req: Request) {
     case 'ftpaDecided':
       const ftpaApplicantType = req.session.appeal.ftpaApplicantType;
       if (ftpaEnabled && APPLICANT_TYPE.APPELLANT === ftpaApplicantType) {
+        const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType || req.session.appeal.ftpaAppellantRjDecisionOutcomeType;
         doThisNextSection = {
           cta: {},
           ftpaDeadline: getDueDateForAppellantToRespondToFtpaDecision(req),
-          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][req.session.appeal.ftpaAppellantDecisionOutcomeType]
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][ftpaDecision]
         };
       } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
+        const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
         doThisNextSection = {
-          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][req.session.appeal.ftpaRespondentDecisionOutcomeType]
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][ftpaDecision]
         };
       } else {
         doThisNextSection = {

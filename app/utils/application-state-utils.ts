@@ -21,11 +21,15 @@ interface DoThisNextSection {
     url: string;
   };
   cta?: {
-    url?: string;
+    link?: {
+      text: string,
+      url: string
+    },
+    url?: string,
     respondBy?: string,
     respondByText?: string,
-    respondByTextAskForMoreTime?: string;
-    ctaTitle?: string;
+    respondByTextAskForMoreTime?: string,
+    ctaTitle?: string
   };
   allowedAskForMoreTime?: boolean;
   deadline?: string;
@@ -94,6 +98,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const decisionGranted = applications.length > 0 && applications[0].value.decision === 'Granted' || null;
   const decisionRefused = applications.length > 0 && applications[0].value.decision === 'Refused' || null;
   let doThisNextSection: DoThisNextSection;
+  const isLate = req.session.appeal.application.isAppealLate;
 
   let descriptionParagraphs;
   let respondBy;
@@ -522,6 +527,22 @@ async function getAppealApplicationNextStep(req: Request) {
           url: i18n.pages.overviewPage.doThisNext.decided.info.url
         },
         cta: {},
+        allowedAskForMoreTime: false
+      };
+      break;
+    case 'pendingPayment':
+      doThisNextSection = {
+        descriptionParagraphs: [
+          isLate ? i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSentLate : i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
+          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
+          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
+        ],
+        cta: {
+          link: {
+            text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
+            url: paths.common.payLater
+          }
+        },
         allowedAskForMoreTime: false
       };
       break;

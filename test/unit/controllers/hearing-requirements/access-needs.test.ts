@@ -175,8 +175,8 @@ describe('Hearing requirements access needs controller', () => {
 
       expect(res.render).to.have.been.calledWith('hearing-requirements/language-details.njk', {
         items: isoLanguages,
-        error: { language: { key: 'language', text: 'Select a language', href: '#language' } },
-        errorList: [{ key: 'language', text: 'Select a language', href: '#language' }],
+        error: { language: { key: 'language', text: 'Select language and add dialect', href: '#language' } },
+        errorList: [{ key: 'language', text: 'Select language and add dialect', href: '#language' }],
         previousPage: previousPage,
         summaryList: [{ 'summaryRows': [], 'title': 'Languages' }],
         languageAction: '/hearing-language-details'
@@ -217,6 +217,35 @@ describe('Hearing requirements access needs controller', () => {
             key: 'language',
             text: '"language" is required',
             href: '#language'
+          }
+        ],
+        previousPage: previousPage,
+        summaryList: [{ summaryRows: [], title: 'Languages' }],
+        languageAction: '/hearing-language-details'
+      };
+      expect(res.render).to.have.been.calledWith('hearing-requirements/language-details.njk', expectedArgs);
+
+    });
+
+    it('should fail validation and render template with dialect errors', async () => {
+      req.body.language = 'language';
+      req.session.appeal.hearingRequirements.interpreterLanguages = [];
+      await addMoreLanguagePostAction()(req as Request, res as Response, next);
+
+      const expectedArgs = {
+        items: isoLanguages,
+        error: {
+          dialect: {
+            key: 'dialect',
+            text: '"dialect" is required',
+            href: '#dialect'
+          }
+        },
+        errorList: [
+          {
+            key: 'dialect',
+            text: '"dialect" is required',
+            href: '#dialect'
           }
         ],
         previousPage: previousPage,

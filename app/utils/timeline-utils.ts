@@ -7,7 +7,7 @@ import { States } from '../data/states';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppellantApplications } from './utils';
+import { getAppellantApplications, isFtpaFeatureEnabled } from './utils';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -16,9 +16,12 @@ import { getAppellantApplications } from './utils';
  */
 function constructEventObject(event: HistoryEvent, req: Request) {
 
-  const eventContent = isUploadEvidenceEventByLegalRep(req, event)
-    ? i18n.pages.overviewPage.timeline[event.id]['providedByLr']
-    : i18n.pages.overviewPage.timeline[event.id];
+  let eventContent = i18n.pages.overviewPage.timeline[event.id];
+  if (isUploadEvidenceEventByLegalRep(req, event)) {
+    eventContent = i18n.pages.overviewPage.timeline[event.id]['providedByLr'];
+  } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id) {
+    eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][req.session.appeal.ftpaApplicantType];
+  }
 
   let eventObject = {
     date: moment(event.createdDate).format('DD MMMM YYYY'),
@@ -102,12 +105,6 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
   });
 }
 
-async function isFtpaFeatureEnabled(req: Request) {
-  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
-  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
-  return isFtpaFeatureEnabled;
-}
-
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
@@ -186,7 +183,11 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
 
   if (ftpaFeatureEnabled) {
-    appealDecisionSectionEvents.push(Events.APPLY_FOR_FTPA_APPELLANT.id);
+    appealDecisionSectionEvents.push(
+        Events.APPLY_FOR_FTPA_APPELLANT.id,
+        Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
+        Events.RESIDENT_JUDGE_FTPA_DECISION.id
+    );
   }
 
   const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];

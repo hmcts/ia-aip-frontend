@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import * as _ from 'lodash';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
-import { FEATURE_FLAGS, FTPA_DECISION_OUTCOME_TYPE } from '../data/constants';
+import { APPLICANT_TYPE, FEATURE_FLAGS, FTPA_DECISION_OUTCOME_TYPE } from '../data/constants';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
 import {
@@ -692,7 +692,16 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
   }
 }
 
-function getFtpaRespondentApplicationDetails(req: Request, res: Response, next: NextFunction) {
+function getFtpaDecisionDetails(req: Request, res: Response, next: NextFunction) {
+  const applicantType = req.session.appeal.ftpaApplicantType;
+  if (APPLICANT_TYPE.APPELLANT === applicantType) {
+    return getFtpaAppellantDecisionDetails(req, res, next);
+  } else if (APPLICANT_TYPE.RESPONDENT === applicantType) {
+    return getFtpaRespondentDecisionDetails(req, res, next);
+  }
+}
+
+function getFtpaRespondentDecisionDetails(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
     const ftpaGroundsDocuments = req.session.appeal.ftpaRespondentGroundsDocuments;
@@ -700,7 +709,7 @@ function getFtpaRespondentApplicationDetails(req: Request, res: Response, next: 
     const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaRespondentOutOfTimeExplanation;
     const ftpaOutOfTimeApplicationDocuments = req.session.appeal.ftpaRespondentOutOfTimeDocuments;
     const ftpaApplicationDate = req.session.appeal.ftpaRespondentApplicationDate;
-    const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType;
+    const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
     const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaRespondentDecisionDocument;
     const ftpaDecisionDate = req.session.appeal.ftpaRespondentDecisionDate;
 
@@ -742,6 +751,53 @@ function getFtpaRespondentApplicationDetails(req: Request, res: Response, next: 
   }
 }
 
+function getFtpaAppellantDecisionDetails(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const ftpaGrounds = req.session.appeal.ftpaAppellantGrounds;
+    const ftpaEvidenceDocuments = req.session.appeal.ftpaAppellantEvidenceDocuments;
+    const ftpaOutOfTimeApplicationReason = req.session.appeal.ftpaAppellantOutOfTimeExplanation;
+    const ftpaOutOfTimeApplicationDocuments = req.session.appeal.ftpaAppellantOutOfTimeDocuments;
+    const ftpaApplicationDate = req.session.appeal.ftpaAppellantApplicationDate;
+    const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType || req.session.appeal.ftpaAppellantRjDecisionOutcomeType;
+    const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaAppellantDecisionDocument;
+    const ftpaDecisionDate = req.session.appeal.ftpaAppellantDecisionDate;
+
+    const data = {
+      application: [],
+      decision: []
+    };
+
+    if (ftpaGrounds) {
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ formatTextForCYA(ftpaGrounds) ]));
+    }
+    attachFtpaDocuments(ftpaEvidenceDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.evidence);
+    if (ftpaApplicationDate) {
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat)) ]));
+    }
+    if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length) {
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
+    }
+    attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
+    if (ftpaDecision && ftpaDecision.length) {
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [ formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision]) ]));
+    }
+    attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+    if (ftpaDecisionDate) {
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [ formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat)) ]));
+    }
+
+    return res.render('ftpa-application/ftpa-decision-details-viewer.njk', {
+      title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+      subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function attachFtpaDocuments(documents: Evidence[], documentCollection, docLabel: string) {
   if (documents && documents.length) {
     const evidenceText = documents.map((evidence) => {
@@ -768,7 +824,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
   router.get(paths.common.lrReasonsForAppealViewer, getLrReasonsForAppealViewer);
   router.get(paths.common.ftpaAppellantApplicationViewer, getFtpaAppellantApplication);
-  router.get(paths.common.ftpaRespondentDecisionViewer, getFtpaRespondentApplicationDetails);
+  router.get(paths.common.ftpaDecisionViewer, getFtpaDecisionDetails);
   return router;
 }
 
@@ -793,5 +849,5 @@ export {
   getDecisionAndReasonsViewer,
   getLrReasonsForAppealViewer,
   getFtpaAppellantApplication,
-  getFtpaRespondentApplicationDetails
+  getFtpaDecisionDetails
 };

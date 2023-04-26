@@ -527,7 +527,10 @@ export default class UpdateAppealService {
       ...caseData.ftpaRespondentDecisionOutcomeType && { ftpaRespondentDecisionOutcomeType: caseData.ftpaRespondentDecisionOutcomeType },
       ...caseData.ftpaRespondentDecisionDocument && { ftpaRespondentDecisionDocument: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaRespondentDecisionDocument, documentMap) },
       ...caseData.ftpaRespondentDecisionDate && { ftpaRespondentDecisionDate: caseData.ftpaRespondentDecisionDate },
+      ...caseData.ftpaRespondentRjDecisionOutcomeType && { ftpaRespondentRjDecisionOutcomeType: caseData.ftpaRespondentRjDecisionOutcomeType },
+      ...caseData.ftpaAppellantRjDecisionOutcomeType && { ftpaAppellantRjDecisionOutcomeType: caseData.ftpaAppellantRjDecisionOutcomeType },
       ...caseData.ftpaAppellantDecisionOutcomeType && { ftpaAppellantDecisionOutcomeType: caseData.ftpaAppellantDecisionOutcomeType },
+      ...caseData.ftpaAppellantDecisionDocument && { ftpaAppellantDecisionDocument: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantDecisionDocument, documentMap) },
       ...caseData.ftpaAppellantDecisionDate && { ftpaAppellantDecisionDate: caseData.ftpaAppellantDecisionDate },
       hearingCentre: caseData.hearingCentre || null,
       documentMap: documentMap.map(doc => {

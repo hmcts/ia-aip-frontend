@@ -7,7 +7,7 @@ import { States } from '../data/states';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getAppellantApplications, isFtpaFeatureEnabled } from './utils';
+import { getApplicant, isFtpaFeatureEnabled } from './utils';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -57,26 +57,28 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
 
 function getApplicationEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
   const makeDirectionsFlatMap = makeAnApplications ? makeAnApplications.flatMap(application => {
+    const makeAnApplicationContent = i18n.pages.overviewPage.timeline.makeAnApplication[getApplicant(application.value)];
     const request = {
       id: application.id,
       date: moment(application.value.date).format('DD MMMM YYYY'),
       dateObject: new Date(application.value.date),
-      text: i18n.pages.overviewPage.timeline.makeAnApplication.text,
+      text: makeAnApplicationContent.text,
       links: [{
-        ...i18n.pages.overviewPage.timeline.makeAnApplication.links[0],
-        href: `${i18n.pages.overviewPage.timeline.makeAnApplication.links[0].href}/${application.id}`
+        ...makeAnApplicationContent.links[0],
+        href: `${makeAnApplicationContent.links[0].href}/${application.id}`
       }]
     };
     let decision;
     if (application.value.decision !== 'Pending') {
+      const decideAnApplicationContent = i18n.pages.overviewPage.timeline.decideAnApplication[getApplicant(application.value)];
       decision = {
         id: application.id,
         date: moment(application.value.decisionDate).format('DD MMMM YYYY'),
         dateObject: new Date(application.value.decisionDate),
-        text: i18n.pages.overviewPage.timeline.decideAnApplication[application.value.decision],
+        text: decideAnApplicationContent[application.value.decision],
         links: [{
-          ...i18n.pages.overviewPage.timeline.decideAnApplication.links[0],
-          href: `${i18n.pages.overviewPage.timeline.decideAnApplication.links[0].href}/${application.id}`
+          ...decideAnApplicationContent.links[0],
+          href: `${decideAnApplicationContent.links[0].href}/${application.id}`
         }]
       };
       return [decision, request];
@@ -131,7 +133,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   );
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
-  const applicationEvents = getApplicationEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
+  const applicationEvents = getApplicationEvents(req.session.appeal.makeAnApplications);
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;

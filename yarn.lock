@@ -7810,7 +7810,7 @@ __metadata:
     joi: ^17.4.0
     jsdom: ^16.2.2
     jsdom-global: ^3.0.2
-    jsonwebtoken: ^8.5.1
+    jsonwebtoken: ^9.0.0
     launchdarkly-node-server-sdk: ^6.4.0
     lodash: ^4.17.21
     memory-cache: ^0.2.0
@@ -7824,7 +7824,7 @@ __metadata:
     nl2br: ^0.0.3
     node-sass: ^4.14.1
     nodemon: ^2.0.7
-    nunjucks: ^3.2.3
+    nunjucks: ^3.2.4
     nyc: ^15.1.0
     optimize-css-assets-webpack-plugin: ^5.0.6
     otp: ^0.1.3
@@ -8998,21 +8998,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^8.5.1":
-  version: 8.5.1
-  resolution: "jsonwebtoken@npm:8.5.1"
+"jsonwebtoken@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "jsonwebtoken@npm:9.0.0"
   dependencies:
     jws: ^3.2.2
-    lodash.includes: ^4.3.0
-    lodash.isboolean: ^3.0.3
-    lodash.isinteger: ^4.0.4
-    lodash.isnumber: ^3.0.3
-    lodash.isplainobject: ^4.0.6
-    lodash.isstring: ^4.0.1
-    lodash.once: ^4.0.0
+    lodash: ^4.17.21
     ms: ^2.1.1
-    semver: ^5.6.0
-  checksum: 93c9e3f23c59b758ac88ba15f4e4753b3749dfce7a6f7c40fb86663128a1e282db085eec852d4e0cbca4cefdcd3a8275ee255dbd08fcad0df26ad9f6e4cc853a
+    semver: ^7.3.8
+  checksum: b9181cecf9df99f1dc0253f91ba000a1aa4d91f5816d1608c0dba61a5623726a0bfe200b51df25de18c1a6000825d231ad7ce2788aa54fd48dcb760ad9eb9514
   languageName: node
   linkType: hard
 
@@ -9339,20 +9333,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.includes@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "lodash.includes@npm:4.3.0"
-  checksum: 71092c130515a67ab3bd928f57f6018434797c94def7f46aafa417771e455ce3a4834889f4267b17887d7f75297dfabd96231bf704fd2b8c5096dc4a913568b6
-  languageName: node
-  linkType: hard
-
-"lodash.isboolean@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "lodash.isboolean@npm:3.0.3"
-  checksum: b70068b4a8b8837912b54052557b21fc4774174e3512ed3c5b94621e5aff5eb6c68089d0a386b7e801d679cd105d2e35417978a5e99071750aa2ed90bffd0250
-  languageName: node
-  linkType: hard
-
 "lodash.isempty@npm:^4.4.0":
   version: 4.4.0
   resolution: "lodash.isempty@npm:4.4.0"
@@ -9364,20 +9344,6 @@ __metadata:
   version: 3.0.9
   resolution: "lodash.isfunction@npm:3.0.9"
   checksum: 99e54c34b1e8a9ba75c034deb39cedbd2aca7af685815e67a2a8ec4f73ec9748cda6ebee5a07d7de4b938e90d421fd280e9c385cc190f903ac217ac8aff30314
-  languageName: node
-  linkType: hard
-
-"lodash.isinteger@npm:^4.0.4":
-  version: 4.0.4
-  resolution: "lodash.isinteger@npm:4.0.4"
-  checksum: 6034821b3fc61a2ffc34e7d5644bb50c5fd8f1c0121c554c21ac271911ee0c0502274852845005f8651d51e199ee2e0cfebfe40aaa49c7fe617f603a8a0b1691
-  languageName: node
-  linkType: hard
-
-"lodash.isnumber@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "lodash.isnumber@npm:3.0.3"
-  checksum: 913784275b565346255e6ae6a6e30b760a0da70abc29f3e1f409081585875105138cda4a429ff02577e1bc0a7ae2a90e0a3079a37f3a04c3d6c5aaa532f4cab2
   languageName: node
   linkType: hard
 
@@ -9423,7 +9389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.once@npm:^4.0.0, lodash.once@npm:^4.1.1":
+"lodash.once@npm:^4.1.1":
   version: 4.1.1
   resolution: "lodash.once@npm:4.1.1"
   checksum: d768fa9f9b4e1dc6453be99b753906f58990e0c45e7b2ca5a3b40a33111e5d17f6edf2f768786e2716af90a8e78f8f91431ab8435f761fef00f9b0c256f6d245
@@ -10941,9 +10907,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nunjucks@npm:^3.2.3":
-  version: 3.2.3
-  resolution: "nunjucks@npm:3.2.3"
+"nunjucks@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "nunjucks@npm:3.2.4"
   dependencies:
     a-sync-waterfall: ^1.0.0
     asap: ^2.0.3
@@ -10955,7 +10921,7 @@ __metadata:
       optional: true
   bin:
     nunjucks-precompile: bin/precompile
-  checksum: 9d0125acf917166675af2d9b5d525b6d3edaba68ec6f8c92edee8ad05140cfa8aef12feb46f4c3da52ed2836cadfb9d26fbf1fa9d9be6bef4660d03ce1e89dbe
+  checksum: 8b902a9deb9ff0f5c9ebbd2c7f96dfe5800bf42bdfc91d8f829fc0440ec1f87901593e20479f5ba1bddcc9f2472b16a5e932be5863dcdec0899a27c01a03df32
   languageName: node
   linkType: hard
 
@@ -13463,7 +13429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.5":
+"semver@npm:^7.3.5, semver@npm:^7.3.8":
   version: 7.5.0
   resolution: "semver@npm:7.5.0"
   dependencies:

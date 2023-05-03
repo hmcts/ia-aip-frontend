@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import { jwtRepack } from './jwt-repack';
 import Logger, { getLogLabel } from './logger';
 
 const logger: Logger = new Logger();
@@ -7,7 +7,7 @@ const logLabel: string = getLogLabel(__filename);
 export function decodeJWTToken(jwtToken: string) {
   let decoded;
   try {
-    decoded = jwt.decode(jwtToken);
+    decoded = jwtRepack.decode(jwtToken);
   } catch (err) {
     logger.exception(err, logLabel);
     throw new Error(err);

@@ -15,6 +15,15 @@ async function makeFtpaApplication(req: Request, res: Response, next: NextFuncti
   const ftpaFlag = await isFtpaFeatureEnabled(req);
   if (!ftpaFlag) return res.redirect(paths.common.overview);
 
+  req.session.appeal = {
+    ...req.session.appeal,
+    'ftpaAppellantGrounds': '',
+    'ftpaAppellantEvidenceDocuments': [],
+    'ftpaAppellantDocuments': [],
+    'ftpaAppellantOutOfTimeExplanation': '',
+    'ftpaAppellantOutOfTimeDocuments': []
+  };
+
   try {
     let redirectPath = paths.ftpa.ftpaReason;
 

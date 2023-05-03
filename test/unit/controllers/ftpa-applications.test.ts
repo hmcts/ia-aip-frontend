@@ -94,6 +94,35 @@ describe('Ftpa application controllers setup', () => {
   });
 
   describe('makeFtpaApplication', () => {
+    it('should clear local ftpa data', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+
+      const docs = [
+        {
+          id: 'docId',
+          fileId: 'fileId',
+          name: 'ftpaDoc',
+          tag: 'ftpaAppellant'
+        }
+      ];
+      req.session.appeal = {
+        ...req.session.appeal,
+        'ftpaAppellantGrounds': 'ftpaAppellantGrounds',
+        'ftpaAppellantEvidenceDocuments': docs,
+        'ftpaAppellantDocuments': docs,
+        'ftpaAppellantOutOfTimeExplanation': 'ftpaAppellantOutOfTimeExplanation',
+        'ftpaAppellantOutOfTimeDocuments': docs
+      };
+
+      await makeFtpaApplication(req as Request, res as Response, next);
+
+      expect(req.session.appeal.ftpaAppellantGrounds).to.equals('');
+      expect(req.session.appeal.ftpaAppellantEvidenceDocuments).to.deep.equals([]);
+      expect(req.session.appeal.ftpaAppellantDocuments).to.deep.equals([]);
+      expect(req.session.appeal.ftpaAppellantOutOfTimeExplanation).to.equals('');
+      expect(req.session.appeal.ftpaAppellantOutOfTimeDocuments).to.deep.equals([]);
+    });
+
     it('should redirect to overview page if feature disabled', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(false);
       await makeFtpaApplication(req as Request, res as Response, next);

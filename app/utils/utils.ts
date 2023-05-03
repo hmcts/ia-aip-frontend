@@ -65,9 +65,15 @@ export function yesNoToBool(answer: string): boolean {
 }
 
 export function getAppellantApplications(applications: Collection<Application<Evidence>>[]): any[] {
-  return applications ? applications.filter(application =>
-    application.value.applicant === 'Appellant' ||
-    application.value.applicant === 'Legal representative') : [];
+  return (applications || []).filter(app => getApplicant(app.value) === 'Appellant');
+}
+
+export function getRespondentApplication(applications: Collection<Application<Evidence>>[]): any[] {
+  return (applications || []).filter(app => getApplicant(app.value) === 'Respondent');
+}
+
+export function getApplicant(application: Application<Evidence>) {
+  return ['Appellant', 'Legal representative'].includes(application.applicant) ? 'Appellant' : application.applicant;
 }
 
 export function getApplicationType(type: string): any {

@@ -155,6 +155,105 @@ describe('timeline-utils', () => {
 
       expect(applicationEvents.length).to.be.eq(3);
     });
+
+    it('should get application events content for Appellant application', () => {
+      const makeAnApplications: Collection<Application<Evidence>>[] = [
+        {
+          id: '2',
+          value: {
+            applicant: 'Appellant',
+            applicantRole: 'citizen',
+            date: '2021-07-15',
+            decision: 'Pending',
+            details: 'my details',
+            state: 'awaitingReasonsForAppeal',
+            type: 'Time extension',
+            evidence: []
+          }
+        }
+      ];
+      const applicationEvents = getApplicationEvents(makeAnApplications);
+
+      expect(applicationEvents).to.deep.eq(
+        [{
+          'date': '15 July 2021',
+          'dateObject': new Date('2021-07-15T00:00:00.00Z'),
+          'text': 'You sent the Tribunal a request.',
+          'id': '2',
+          'links': [{
+            'title': 'What you sent',
+            'text': 'Your request',
+            'href': '{{ paths.common.makeAnApplicationViewer }}/2'
+          }]
+        }]
+      );
+    });
+
+    it('should get application events content for Legal Rep application', () => {
+      const makeAnApplications: Collection<Application<Evidence>>[] = [
+        {
+          id: '1',
+          value: {
+            applicant: 'Legal representative',
+            applicantRole: 'caseworker-ia-legalrep-solicitor',
+            date: '2021-07-15',
+            decision: 'Pending',
+            details: 'my details',
+            state: 'awaitingReasonsForAppeal',
+            type: 'Time extension',
+            evidence: []
+          }
+        }
+      ];
+      const applicationEvents = getApplicationEvents(makeAnApplications);
+
+      expect(applicationEvents).to.deep.eq(
+        [{
+          'date': '15 July 2021',
+          'dateObject': new Date('2021-07-15T00:00:00.00Z'),
+          'text': 'You sent the Tribunal a request.',
+          'id': '1',
+          'links': [{
+            'title': 'What you sent',
+            'text': 'Your request',
+            'href': '{{ paths.common.makeAnApplicationViewer }}/1'
+          }]
+        }]
+      );
+    });
+
+    it('should get application events content for Respondent application', () => {
+      const makeAnApplications: Collection<Application<Evidence>>[] = [
+        {
+          id: '3',
+          value: {
+            applicant: 'Respondent',
+            applicantRole: 'caseworker-ia-homeofficeapc',
+            date: '2021-07-20',
+            decision: 'Pending',
+            details: 'my details',
+            state: 'awaitingReasonsForAppeal',
+            type: 'Time extension',
+            evidence: []
+          }
+        }
+      ];
+      const applicationEvents = getApplicationEvents(makeAnApplications);
+
+      expect(applicationEvents).to.deep.eq(
+        [{
+          'date': '20 July 2021',
+          'dateObject': new Date('2021-07-20T00:00:00.00Z'),
+          'text': 'The Home Office sent the Tribunal a request.',
+          'id': '3',
+          'links': [{
+            'title': 'What the Home Office sent',
+            'text': 'The Home Office request',
+            'href': '{{ paths.common.makeAnApplicationViewer }}/3'
+          }]
+        }]
+      );
+    });
   });
 
   describe('getSubmitClarifyingQuestionsEvents', () => {

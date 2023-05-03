@@ -18,7 +18,7 @@ import {
   getMakeAnApplicationWhatNext,
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
-  getReasonsForAppealViewer,
+  getReasonsForAppealViewer, getRespondentApplicationSummaryRows,
   setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
@@ -1062,7 +1062,7 @@ describe('Detail viewer Controller', () => {
   });
 
   describe('getMakeAnApplicationViewer', () => {
-    it('should render detail-viewers/make-an-application-details-viewer.njk with no evidences', () => {
+    it('should render detail-viewers/make-an-application-details-viewer.njk with no evidences for appellant', () => {
       const makeAnApplications: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
@@ -1096,7 +1096,8 @@ describe('Detail viewer Controller', () => {
       getMakeAnApplicationViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
-        makeAnApplications,
+        title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
+        whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
         request: sinon.match.any,
         response: sinon.match.any,
         whatNext: null,
@@ -1104,7 +1105,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render detail-viewers/make-an-application-details-viewer.njk with decision', () => {
+    it('should render detail-viewers/make-an-application-details-viewer.njk with decision for Legal rep', () => {
       const makeAnApplications: Collection<Application<Evidence>> = {
         'id': '3',
         'value': {
@@ -1119,9 +1120,9 @@ describe('Detail viewer Controller', () => {
               'name': 'evidence.pdf'
             }
           ],
-          'applicant': 'Appellant',
+          'applicant': 'Legal representative',
           'decisionDate': '2022-07-22',
-          'applicantRole': 'citizen',
+          'applicantRole': 'caseworker-ia-legalrep-solicitor',
           'decisionMaker': 'Judge',
           'decisionReason': 'decision-reason'
         }
@@ -1146,44 +1147,111 @@ describe('Detail viewer Controller', () => {
       getMakeAnApplicationViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
-        makeAnApplications,
+        title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
+        whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
         request: [
           {
-            key: { text: i18n.pages.detailViewers.makeAnApplication.request.whatYouAskedFor },
-            value: { html: i18n.pages.detailViewers.makeAnApplication.requestTypes.askJudgeReview }
+            key: { text: i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor },
+            value: { html: i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askJudgeReview }
           },
           {
-            key: { text: i18n.pages.detailViewers.makeAnApplication.request.reason },
+            key: { text: i18n.pages.detailViewers.makeAnApplication.appellant.request.reason },
             value: { html: 'application-details' }
           },
           {
-            key: { text: i18n.pages.detailViewers.makeAnApplication.request.evidence },
+            key: { text: i18n.pages.detailViewers.makeAnApplication.appellant.request.evidence },
             value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/4bc22a7b-48f6-45c0-8072-2ddbc1e418b9\'>evidence.pdf</a>' }
           },
           {
-            key: { text: i18n.pages.detailViewers.makeAnApplication.request.date },
+            key: { text: i18n.pages.detailViewers.makeAnApplication.appellant.request.date },
             value: { html: '18 July 2022' }
           }
         ],
         response: [
           {
-            key: { text: i18n.pages.detailViewers.makeAnApplication.response.decision },
-            value: { html: i18n.pages.detailViewers.makeAnApplication.response.Refused }
+            key: { text: i18n.pages.detailViewers.makeAnApplication.appellant.response.decision },
+            value: { html: i18n.pages.detailViewers.makeAnApplication.appellant.response.Refused }
           },
           {
-            key: { text: i18n.pages.detailViewers.makeAnApplication.response.reason },
+            key: { text: i18n.pages.detailViewers.makeAnApplication.appellant.response.reason },
             value: { html: 'decision-reason' }
           },
           {
-            key: { text: i18n.pages.detailViewers.makeAnApplication.response.date },
+            key: { text: i18n.pages.detailViewers.makeAnApplication.appellant.response.date },
             value: { html: '22 July 2022' }
           },
           {
-            key: { text: i18n.pages.detailViewers.makeAnApplication.response.maker },
+            key: { text: i18n.pages.detailViewers.makeAnApplication.appellant.response.maker },
             value: { html: 'Judge' }
           }
         ],
-        whatNext: i18n.pages.detailViewers.makeAnApplication.whatNext.askJudgeReview.refused,
+        whatNext: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askJudgeReview.refused,
+        hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
+      });
+    });
+
+    it('should render detail-viewers/make-an-application-details-viewer.njk for respondent', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '3',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Expedite',
+          'state': 'preHearing',
+          'details': 'application-details',
+          'decision': 'Pending',
+          'evidence': [
+            {
+              'fileId': '4bc22a7b-48f6-45c0-8072-2ddbc1e418b9',
+              'name': 'evidence.pdf'
+            }
+          ],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficeapc'
+        }
+      };
+      req.params.id = '3';
+      req.session.appeal.hearing = {
+        hearingCentre: '',
+        date: '',
+        time: ''
+      };
+      req.session.appeal.hearingCentre = 'taylorHouse';
+      req.session.appeal.makeAnApplications = [makeAnApplications];
+      req.session.appeal.makeAnApplicationEvidence = [{
+        id: 'id',
+        fileId: '123456',
+        name: 'name',
+        tag: 'test-tag',
+        suppliedBy: 'test-supplied',
+        description: 'test-description',
+        dateUploaded: 'test-date'
+      }];
+      getMakeAnApplicationViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+        previousPage: paths.common.overview,
+        title: i18n.pages.detailViewers.makeAnApplication.respondent.title,
+        description: i18n.pages.detailViewers.makeAnApplication.respondent.description,
+        whatNextTitle: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext.title,
+        request: [
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.type },
+            value: { html: i18n.pages.detailViewers.makeAnApplication.respondent.request.types.Expedite }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.reason },
+            value: { html: 'application-details' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.evidence },
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/4bc22a7b-48f6-45c0-8072-2ddbc1e418b9\'>evidence.pdf</a>' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.date },
+            value: { html: '18 July 2022' }
+          }
+        ],
+        whatNextList: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext.Expedite,
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
       });
     });
@@ -1384,8 +1452,8 @@ describe('Detail viewer Controller', () => {
 
   describe('getApplicationTitle', () => {
     it('return title based on application type', () => {
-      expect(getApplicationTitle('Time extension')).to.be.eq(i18n.pages.detailViewers.makeAnApplication.requestTypes.askForMoreTime);
-      expect(getApplicationTitle('Link/unlink appeals')).to.be.eq(i18n.pages.detailViewers.makeAnApplication.requestTypes.askLinkUnlink);
+      expect(getApplicationTitle('Time extension')).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime);
+      expect(getApplicationTitle('Link/unlink appeals')).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askLinkUnlink);
     });
 
     it('return undefined for invalid application types', () => {
@@ -1414,7 +1482,7 @@ describe('Detail viewer Controller', () => {
 
       const whatNext = getMakeAnApplicationWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.whatNext.askReinstate.granted);
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askReinstate.granted);
     });
 
     it('refused application should show correct what next message (default message).', () => {
@@ -1437,7 +1505,7 @@ describe('Detail viewer Controller', () => {
 
       const whatNext = getMakeAnApplicationWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.whatNext.default.refused);
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.default.refused);
     });
 
     it('granted application should show correct what next message.', () => {
@@ -1460,7 +1528,7 @@ describe('Detail viewer Controller', () => {
 
       const whatNext = getMakeAnApplicationWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.whatNext.askChangeHearing.granted);
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askChangeHearing.granted);
     });
   });
 
@@ -1491,9 +1559,9 @@ describe('Detail viewer Controller', () => {
 
       getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
       expect(addSummaryRowStub).to.have.been.callCount(4);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.requestTypes.askForMoreTime]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.reason, ['My reason']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.date, ['15 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.date, ['15 July 2021']);
     });
 
     it('should get rows with decision', () => {
@@ -1526,13 +1594,46 @@ describe('Detail viewer Controller', () => {
 
       getMakeAnApplicationSummaryRows(makeAnApplicationPendingDecision);
       expect(addSummaryRowStub).to.have.been.callCount(8);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.requestTypes.askForMoreTime]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.reason, ['My reason']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.request.date, ['14 July 2021']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.response.decision, [i18n.pages.detailViewers.makeAnApplication.response.Refused]);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.response.reason, ['Reason not enough']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.response.date, ['14 July 2021']);
-      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.response.maker, ['Tribunal Caseworker']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.whatYouAskedFor, [i18n.pages.detailViewers.makeAnApplication.appellant.requestTypes.askForMoreTime]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.reason, ['My reason']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.request.date, ['14 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, [i18n.pages.detailViewers.makeAnApplication.appellant.response.Refused]);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.reason, ['Reason not enough']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.date, ['14 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.maker, ['Tribunal Caseworker']);
+    });
+  });
+
+  describe('getRespondentApplicationSummaryRows', () => {
+    it('should get rows for respondent', () => {
+      const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
+      const application: Collection<Application<Evidence>> = {
+        'id': '2',
+        'value': {
+          'date': '2021-07-15',
+          'type': 'Withdraw',
+          'state': 'awaitingReasonsForAppeal',
+          'details': 'My reason',
+          'decision': 'Pending',
+          'evidence': [{
+            id: 'id',
+            fileId: '123456',
+            name: 'name',
+            tag: 'test-tag',
+            suppliedBy: 'test-supplied',
+            description: 'test-description',
+            dateUploaded: 'test-date'
+          }],
+          'applicant': 'Respondent',
+          'applicantRole': 'caseworker-ia-homeofficeapc'
+        }
+      };
+
+      getRespondentApplicationSummaryRows(application);
+      expect(addSummaryRowStub).to.have.been.callCount(4);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021']);
     });
   });
 

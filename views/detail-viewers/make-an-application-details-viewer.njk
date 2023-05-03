@@ -1,21 +1,33 @@
 {% extends '../layout.njk' %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
-{% set pageTitleName = i18n.pages.detailViewers.makeAnApplication.title %}
+{% set pageTitleName = title %}
 
 {% block content %}
-  <h1 class="govuk-heading-xl">{{ i18n.pages.detailViewers.makeAnApplication.title  }}</h1>
+  <h1 class="govuk-heading-xl">{{ title  }}</h1>
+  {% if description %}
+    <p>{{ description }}</p>
+  {% endif %}
   {{ govukSummaryList({
     rows: request
   }) }}
 
   {% if response %}
-    <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.makeAnApplication.response.title }}</h2>
+    <h2 class="govuk-heading-l">{{ responseTitle }}</h2>
     {{ govukSummaryList({
       rows: response
     }) }}
+  {% endif %}
 
-    <h2 class="govuk-heading-l">{{ i18n.pages.detailViewers.makeAnApplication.whatNext.title }}</h2>
+  {% if whatNext %}
+    <h2 class="govuk-heading-l">{{ whatNextTitle }}</h2>
     <p>{{ whatNext | eval | safe }}</p>
+  {% endif %}
+
+  {% if whatNextList %}
+    <h2 class="govuk-heading-l">{{ whatNextTitle }}</h2>
+    {% for paragraph in whatNextList %}
+      <p>{{ paragraph | eval | safe }}</p>
+    {% endfor %}
   {% endif %}
 
   {{ contactUs() }}

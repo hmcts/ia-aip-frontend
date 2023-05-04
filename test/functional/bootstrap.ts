@@ -18,7 +18,7 @@ let idamServer: http.Server;
 let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
-function bootstrap() {
+async function bootstrap() {
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
@@ -106,8 +106,8 @@ async function teardown(done) {
 }
 
 module.exports = {
-  bootstrap: function (done) {
-    bootstrap();
+  bootstrap: async function (done) {
+    await bootstrap();
     done();
   },
   teardown: async function (done) {

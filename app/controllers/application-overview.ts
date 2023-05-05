@@ -144,17 +144,18 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
       const history = await getAppealApplicationHistory(req, updateAppealService);
       const nextSteps = await getAppealApplicationNextStep(req);
       const appealEnded = checkAppealEnded(appealStatus);
-      const showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+      const showPayLaterLink = (payLaterForApplicationNeeded(req) || payNowForApplicationNeeded(req)) && !availableForFtpa(appealStatus, ftpaFeatureEnabled);
       const hearingDetails = getHearingDetails(req);
       const showChangeRepresentation = isAppealInProgress(appealStatus);
       const provideMoreEvidenceSection = checkEnableProvideMoreEvidenceSection(req.session.appeal.appealStatus, uploadAddendumEvidenceFeatureEnabled)
-          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+          && !availableForFtpa(appealStatus, ftpaFeatureEnabled);
       const showAppealRequests = showAppealRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
-          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+          && !availableForFtpa(appealStatus, ftpaFeatureEnabled);
       const showAppealRequestsInAppealEndedStatus = showAppealRequestSectionInAppealEndedStatus(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
-          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+          && !availableForFtpa(appealStatus, ftpaFeatureEnabled);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
-          && !hideLinkForFtpa(appealStatus, ftpaFeatureEnabled);
+          && !availableForFtpa(appealStatus, ftpaFeatureEnabled);
+      const showFtpaApplicationLink = availableForFtpa(req.session.appeal.appealStatus, ftpaFeatureEnabled);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -174,7 +175,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         showPayLaterLink,
         ftpaFeatureEnabled,
         hearingDetails,
-        showChangeRepresentation
+        showChangeRepresentation,
+        showFtpaApplicationLink
       });
     } catch (e) {
       next(e);
@@ -182,7 +184,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
   };
 }
 
-function hideLinkForFtpa(appealStatus: string, ftpaEnabled: boolean) {
+function availableForFtpa(appealStatus: string, ftpaEnabled: boolean) {
   const postDecisionStates = [ States.DECIDED.id, States.FTPA_SUBMITTED.id, States.FTPA_DECIDED.id ];
 
   return postDecisionStates.includes(appealStatus) && ftpaEnabled;
@@ -203,6 +205,6 @@ export {
   getHearingDetails,
   showAppealRequestSection,
   showHearingRequestSection,
-  hideLinkForFtpa,
+  availableForFtpa,
   showAppealRequestSectionInAppealEndedStatus
 };

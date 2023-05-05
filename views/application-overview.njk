@@ -118,6 +118,11 @@
                 <p><a class='govuk-link' href='{{ paths.common.changeRepresentation }}'>{{ i18n.pages.overviewPage.noLongerRepresentingMyself }}</a></p>
             </div>
           {% endif %}
+          {% if showFtpaApplicationLink %}
+            <div class="side-menu__section">
+              <p><a class='govuk-link' href='{{ paths.ftpa.ftpaApplication }}'>{{ i18n.pages.overviewPage.applyForFtpa }}</a></p>
+            </div>
+          {% endif %}
           {% if showPayLaterLink or provideMoreEvidenceSection or showAppealRequests %}
             <div class="side-menu__section">
               <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.iWantTo }}</h2>

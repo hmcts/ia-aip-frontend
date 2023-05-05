@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import {
+  availableForFtpa,
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
   getAppealRefNumber,
-  getApplicationOverview,
-  getHearingDetails, hideLinkForFtpa,
+  getApplicationOverview, getHearingDetails,
   setupApplicationOverviewController,
   showAppealRequestSection,
   showAppealRequestSectionInAppealEndedStatus,
@@ -188,7 +188,8 @@ describe('Confirmation Page Controller', () => {
       showPayLaterLink: false,
       ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -246,7 +247,8 @@ describe('Confirmation Page Controller', () => {
       showPayLaterLink: false,
       ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -305,7 +307,8 @@ describe('Confirmation Page Controller', () => {
       showPayLaterLink: false,
       ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -376,7 +379,8 @@ describe('Confirmation Page Controller', () => {
       showPayLaterLink: false,
       ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -449,7 +453,8 @@ describe('Confirmation Page Controller', () => {
       showPayLaterLink: false,
       ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -596,23 +601,23 @@ describe('Confirmation Page Controller', () => {
     expect(result).to.equal(true);
   });
 
-  it('hideLinkForFtpa should return true when in decided state', () => {
-    const result = hideLinkForFtpa(States.DECIDED.id, true);
+  it('availableForFtpa should return true when in decided state', () => {
+    const result = availableForFtpa(States.DECIDED.id, true);
     expect(result).to.equal(true);
   });
 
-  it('hideLinkForFtpa should return true when in ftpaDecided state', () => {
-    const result = hideLinkForFtpa(States.FTPA_DECIDED.id, true);
+  it('availableForFtpa should return true when in ftpaDecided state', () => {
+    const result = availableForFtpa(States.FTPA_DECIDED.id, true);
     expect(result).to.equal(true);
   });
 
-  it('hideLinkForFtpa should return true when in ftpaSubmitted state', () => {
-    const result = hideLinkForFtpa(States.FTPA_SUBMITTED.id, true);
+  it('availableForFtpa should return true when in ftpaSubmitted state', () => {
+    const result = availableForFtpa(States.FTPA_SUBMITTED.id, true);
     expect(result).to.equal(true);
   });
 
-  it('hideLinkForFtpa should return false when in state other than decided, ftpaDecided or ftpaSubmitted', () => {
-    const result = hideLinkForFtpa(States.APPEAL_SUBMITTED.id, true);
+  it('availableForFtpa should return false when in state other than decided, ftpaDecided or ftpaSubmitted', () => {
+    const result = availableForFtpa(States.APPEAL_SUBMITTED.id, true);
     expect(result).to.equal(false);
   });
 });

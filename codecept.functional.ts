@@ -1,10 +1,16 @@
-const config = require('config');
+import config from 'config';
+import { bootstrap as ourBootStrap, teardown as ourTeardown } from './test/functional/bootstrap';
+// const ourBootstrap = {bootstrap} =  require('./test/functional/bootstrap.ts').bootstrap;
 
 exports.config = {
   name: 'codecept',
   output: './functional-output/functional/reports/',
-  bootstrap: './test/functional/bootstrap.ts',
-  teardown: './test/functional/bootstrap.ts',
+  bootstrap: async () => {
+    await ourBootStrap();
+  },
+  teardown: async () => {
+    await ourTeardown();
+  },
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
@@ -20,7 +26,7 @@ exports.config = {
   },
   plugins: {
     retryFailedStep: {
-       enabled: true
+      enabled: true
     },
     stepByStepReport: {
       enabled: true,

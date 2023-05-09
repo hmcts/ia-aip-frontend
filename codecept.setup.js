@@ -27,4 +27,5 @@ exports.config = {
     }
   },
   require: ['ts-node/register/transpile-only']
+
 };

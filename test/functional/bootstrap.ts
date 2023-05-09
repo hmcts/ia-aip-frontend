@@ -102,4 +102,3 @@ export async function teardown() {
     process.exit();
   }
 }
-

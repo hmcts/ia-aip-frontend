@@ -102,17 +102,4 @@ export async function teardown() {
     process.exit();
   }
 }
-/*
-module.exports = {
-  bootstrap: async function () {
-    await bootstrap();
-  },
-  teardown: async function () {
-    await teardown();
-  }
-};
-*/
-// module.exports = {
-//  bootstrap,
-//  teardown
-// }
+

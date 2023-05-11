@@ -107,6 +107,28 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
   });
 }
 
+function getDirectionHistory(directions: Direction[]): any[] {
+  let directionsHistory = [];
+  if (directions) {
+    const directionsFiltered = directions.filter(direction => (
+      direction.directionType === 'sendDirection'
+      && (direction.parties === 'appellant' || direction.parties === 'respondent')));
+
+    if (directionsFiltered) {
+      directionsFiltered.map(direction => {
+        directionsHistory.push({
+          date: moment(direction.dateSent).format('DD MMMM YYYY'),
+          dateObject: new Date(direction.dateSent),
+          text: i18n.pages.overviewPage.timeline[direction.directionType][direction.parties].text || null,
+          links: i18n.pages.overviewPage.timeline[direction.directionType][direction.parties].links
+        });
+      });
+      return directionsHistory
+    }
+  }
+  return directionsHistory;
+}
+
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
@@ -147,7 +169,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
   }
 
-  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory)
+  const directionsHistory = getDirectionHistory(req.session.appeal.directions);
+
+  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
@@ -244,6 +268,7 @@ export {
   getAppealApplicationHistory,
   getSubmitClarifyingQuestionsEvents,
   getApplicationEvents,
+  getDirectionHistory,
   constructSection,
   getEventsAndStates
 };

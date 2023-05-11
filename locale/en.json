@@ -1495,6 +1495,28 @@
               }
             ]
           }
+        },
+        "sendDirection": {
+          "respondent": {
+            "text": "The Tribunal asked the Home Office to do something",
+            "links": [
+              {
+                "title": "What the Tribunal sent",
+                "text": "Find out what the Home Office must do",
+                "href": "{{ paths.common.directionHistoryViewer }}"
+              }
+            ]
+          },
+          "appellant": {
+            "text": "The Tribunal asked you to do something",
+            "links": [
+              {
+                "title": "What the Tribunal sent",
+                "text": "Find out what you need to do",
+                "href": "{{ paths.common.directionHistoryViewer }}"
+              }
+            ]
+          }
         }
       }
     },

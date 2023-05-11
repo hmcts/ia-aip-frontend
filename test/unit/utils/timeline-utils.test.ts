@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { Events } from '../../../app/data/events';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { constructSection, getApplicationEvents, getEventsAndStates, getSubmitClarifyingQuestionsEvents } from '../../../app/utils/timeline-utils';
+import { constructSection, getApplicationEvents, getEventsAndStates, getSubmitClarifyingQuestionsEvents, getDirectionHistory } from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -305,6 +305,74 @@ describe('timeline-utils', () => {
       const events = getSubmitClarifyingQuestionsEvents([], []);
 
       expect(events.length).to.be.eql(0);
+    });
+  });
+
+  describe('getDirectionHistory', () => {
+    const directions: Direction[] = [
+      {
+        id: '1',
+        parties: 'appellant',
+        tag: '',
+        dateDue: '2023-12-11',
+        dateSent: '2023-05-11',
+        explanation: 'explanation 1',
+        uniqueId: '123456789',
+        directionType: 'sendDirection'
+      },
+      {
+        id: '2',
+        parties: 'respondent',
+        tag: '',
+        dateDue: '2023-12-11',
+        dateSent: '2023-05-11',
+        explanation: 'explanation 2',
+        uniqueId: '987654321',
+        directionType: 'sendDirection'
+      }
+    ];
+    it('should get direction history', () => {
+      const directionsHistory = getDirectionHistory(directions as Direction[]);
+
+      expect(directionsHistory.length).to.be.eql(2);
+      directionsHistory.forEach(direction => {
+        expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
+      });
+    });
+
+    it('should filter history with non sendDirection type and appellant/respondent parties', () => {
+      directions.push(
+          {
+            id: '3',
+            parties: 'appellant',
+            tag: 'respondentEvidence',
+            dateDue: '2023-12-11',
+            dateSent: '2023-05-11',
+            explanation: 'explanation 3',
+            uniqueId: '159159159',
+            directionType: 'requestRespondentEvidence'
+          },
+          {
+            id: '4',
+            parties: 'appellant',
+            tag: '',
+            dateDue: '2023-12-11',
+            dateSent: '2023-05-11',
+            explanation: 'explanation 4',
+            uniqueId: '135135135',
+            directionType: 'sendDirection'
+          },
+        );
+      const directionsHistory = getDirectionHistory(directions as Direction[]);
+      expect(directionsHistory.length).to.be.eql(3);
+      directionsHistory.forEach(direction => {
+        expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
+      });
+    });
+
+    it('should return empty direction history', () => {
+      const directionsHistory = getDirectionHistory([]);
+      expect(directionsHistory.length).to.be.eql(0);
     });
   });
 

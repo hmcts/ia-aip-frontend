@@ -228,7 +228,7 @@ describe('upload evidence controller', () => {
         size: mockSizeInBytes
       } as Partial<Express.Multer.File>;
 
-      req.file = mockFile as Express.Multer.File;
+      req.file = mockFile;
 
       const documentUploadResponse: DocumentUploadResponse = {
         fileId: 'someUUID',

@@ -1,6 +1,6 @@
 {
   "ts-node":{
-    "files":true
+     "files":true
   },
   "compilerOptions": {
     "experimentalDecorators": true,

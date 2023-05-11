@@ -36,11 +36,6 @@
     "test:mutation": "echo 'not implemented'",
     "test:mutation-local": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
-  },
   "dependencies": {
     "@hmcts/ia-idam-express-middleware": "^6.7.5",
     "@hmcts/os-places-client": "^1.1.2",

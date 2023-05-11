@@ -123,7 +123,7 @@ function getDirectionHistory(directions: Direction[]): any[] {
           links: i18n.pages.overviewPage.timeline[direction.directionType][direction.parties].links
         });
       });
-      return directionsHistory
+      return directionsHistory;
     }
   }
   return directionsHistory;

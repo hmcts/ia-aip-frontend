@@ -483,7 +483,7 @@ describe('Make application controllers helper', () => {
         originalname: 'somefile.png',
         size: mockSizeInBytes
       } as Partial<Express.Multer.File>;
-      req.file = mockFile;
+      req.file = mockFile as Express.Multer.File;
       const documentUploadResponse: DocumentUploadResponse = {
         fileId: 'someUUID',
         name: 'name.png'

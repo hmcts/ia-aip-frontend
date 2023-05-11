@@ -5,10 +5,9 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "skipLibCheck": true, // do not check types in node_modules folder
     "target": "esnext",
     "typeRoots": [
-      "**/types/**.d.ts"
+      "./types"
     ]
   }
 }

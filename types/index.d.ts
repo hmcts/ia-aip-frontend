@@ -1,5 +1,3 @@
-console.log("Reading index.d.ts");
-
 interface Href {
   href: string;
   text: string;

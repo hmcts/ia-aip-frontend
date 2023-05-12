@@ -109,23 +109,17 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
 
 function getDirectionHistory(directions: Direction[]): any[] {
   let directionsHistory = [];
-  if (directions) {
-    const directionsFiltered = directions.filter(direction => (
+  (directions || [])
+    .filter(direction => (
       direction.directionType === 'sendDirection'
-      && (direction.parties === 'appellant' || direction.parties === 'respondent')));
-
-    if (directionsFiltered) {
-      directionsFiltered.map(direction => {
+      && (direction.parties === 'appellant' || direction.parties === 'respondent'))).forEach(direction => {
         directionsHistory.push({
           date: moment(direction.dateSent).format('DD MMMM YYYY'),
           dateObject: new Date(direction.dateSent),
-          text: i18n.pages.overviewPage.timeline[direction.directionType][direction.parties].text || null,
-          links: i18n.pages.overviewPage.timeline[direction.directionType][direction.parties].links
+          text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
+          links: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links
         });
       });
-      return directionsHistory;
-    }
-  }
   return directionsHistory;
 }
 

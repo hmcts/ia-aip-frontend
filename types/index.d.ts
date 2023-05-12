@@ -412,6 +412,7 @@ interface Direction {
   explanation: string;
   uniqueId: string;
   clarifyingQuestions?: ClarifyingQuestion;
+  directionType?:  string;
 }
 
 interface ClarifyingQuestion<T> {

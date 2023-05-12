@@ -79,7 +79,8 @@ export default class UpdateAppealService {
       },
       data: data,
       event_token: updateEventResponse.token,
-      ignore_warning: true
+      ignore_warning: true,
+      supplementary_data_request: null
     });
     return this.mapCcdCaseToAppeal(ccdCase);
   }

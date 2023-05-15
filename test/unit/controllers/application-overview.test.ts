@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  availableForFtpa,
   checkAppealEnded,
   checkEnableProvideMoreEvidenceSection,
   getAppealRefNumber,
-  getApplicationOverview, getHearingDetails,
+  getApplicationOverview,
+  getHearingDetails, isPostDecisionState,
   setupApplicationOverviewController,
   showAppealRequestSection,
   showAppealRequestSectionInAppealEndedStatus,
+  showFtpaApplicationLink,
   showHearingRequestSection
 } from '../../../app/controllers/application-overview';
 import { States } from '../../../app/data/states';
@@ -601,23 +602,72 @@ describe('Confirmation Page Controller', () => {
     expect(result).to.equal(true);
   });
 
-  it('availableForFtpa should return true when in decided state', () => {
-    const result = availableForFtpa(States.DECIDED.id, true);
+  it('isPostDecisionState should return true when in decided state', () => {
+    const result = isPostDecisionState(States.DECIDED.id, true);
     expect(result).to.equal(true);
   });
 
-  it('availableForFtpa should return true when in ftpaDecided state', () => {
-    const result = availableForFtpa(States.FTPA_DECIDED.id, true);
+  it('isPostDecisionState should return true when in ftpaDecided state', () => {
+    const result = isPostDecisionState(States.FTPA_DECIDED.id, true);
     expect(result).to.equal(true);
   });
 
-  it('availableForFtpa should return true when in ftpaSubmitted state', () => {
-    const result = availableForFtpa(States.FTPA_SUBMITTED.id, true);
+  it('isPostDecisionState should return true when in ftpaSubmitted state', () => {
+    const result = isPostDecisionState(States.FTPA_SUBMITTED.id, true);
     expect(result).to.equal(true);
   });
 
-  it('availableForFtpa should return false when in state other than decided, ftpaDecided or ftpaSubmitted', () => {
-    const result = availableForFtpa(States.APPEAL_SUBMITTED.id, true);
+  it('isPostDecisionState should return false when in state other than decided, ftpaDecided or ftpaSubmitted', () => {
+    const result = isPostDecisionState(States.APPEAL_SUBMITTED.id, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showFtpaApplicationLink should return false when appellant ftpa appeal is submitted', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_SUBMITTED.id,
+      ftpaAppellantApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showFtpaApplicationLink should return false when appellant ftpa appeal is decided', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_DECIDED.id,
+      ftpaAppellantApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showFtpaApplicationLink should return true when respondent ftpa appeal is submitted', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_SUBMITTED.id,
+      ftpaRespondentApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(true);
+  });
+
+  it('showFtpaApplicationLink should return true when respondent ftpa appeal is decided', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_DECIDED.id,
+      ftpaRespondentApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(true);
+  });
+
+  it('showFtpaApplicationLink should return false before ftpa submitted state', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.DECIDED.id
+    };
+    const result = showFtpaApplicationLink(appeal, true);
     expect(result).to.equal(false);
   });
 });

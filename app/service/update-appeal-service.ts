@@ -520,6 +520,7 @@ export default class UpdateAppealService {
       ...caseData.ftpaAppellantApplicationDate && { ftpaAppellantApplicationDate: caseData.ftpaAppellantApplicationDate },
       ...caseData.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: caseData.ftpaAppellantSubmissionOutOfTime },
       ...caseData.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: caseData.ftpaAppellantOutOfTimeExplanation },
+      ...caseData.ftpaAppellantOutOfTimeDocuments && { ftpaAppellantOutOfTimeDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantOutOfTimeDocuments, documentMap) },
       ...caseData.ftpaRespondentEvidenceDocuments && { ftpaRespondentEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaRespondentEvidenceDocuments, documentMap) },
       ...caseData.ftpaRespondentGroundsDocuments && { ftpaRespondentGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaRespondentGroundsDocuments, documentMap) },
       ...caseData.ftpaRespondentOutOfTimeExplanation && { ftpaRespondentOutOfTimeExplanation: caseData.ftpaRespondentOutOfTimeExplanation },

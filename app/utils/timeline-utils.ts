@@ -4,6 +4,7 @@ import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
+import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
@@ -119,7 +120,7 @@ function getDirectionHistory(directions: Direction[]): any[] {
           text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
           links: [{
             ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-            href: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0].href.replace(':id', direction.uniqueId)
+            href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
           }]
         });
       });

@@ -1503,7 +1503,7 @@
               {
                 "title": "What the Tribunal sent",
                 "text": "Find out what the Home Office must do",
-                "href": "/direction-history/:id"
+                "href": "{{ paths.common.directionHistoryViewer }}"
               }
             ]
           },
@@ -1513,7 +1513,7 @@
               {
                 "title": "What the Tribunal sent",
                 "text": "Find out what you need to do",
-                "href": "/direction-history/:id"
+                "href": "{{ paths.common.directionHistoryViewer }}"
               }
             ]
           }

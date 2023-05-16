@@ -1503,7 +1503,7 @@
               {
                 "title": "What the Tribunal sent",
                 "text": "Find out what the Home Office must do",
-                "href": "{{ paths.common.directionHistoryViewer }}"
+                "href": "/direction-history/:id"
               }
             ]
           },
@@ -1513,7 +1513,7 @@
               {
                 "title": "What the Tribunal sent",
                 "text": "Find out what you need to do",
-                "href": "{{ paths.common.directionHistoryViewer }}"
+                "href": "/direction-history/:id"
               }
             ]
           }
@@ -1793,6 +1793,18 @@
           "partiallyGranted": "Partially granted",
           "notAdmitted": "Not admitted",
           "refused": "Refused"
+        }
+      },
+      "directionHistory": {
+        "title": "What the Tribunal has asked",
+        "dateSent": "Date message sent",
+        "appellant": {
+          "explanation": "What you need to do",
+          "dateDue": "Date it needs to be done by"
+        },
+        "respondent": {
+          "explanation": "What the Home Office must do",
+          "dateDue": "Date it must be done by"
         }
       }
     },

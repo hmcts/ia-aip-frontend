@@ -117,7 +117,10 @@ function getDirectionHistory(directions: Direction[]): any[] {
           date: moment(direction.dateSent).format('DD MMMM YYYY'),
           dateObject: new Date(direction.dateSent),
           text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-          links: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links
+          links: [{
+            ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
+            href: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0].href.replace(':id', direction.uniqueId)
+          }]
         });
       });
   return directionsHistory;

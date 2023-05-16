@@ -863,6 +863,53 @@ function attachFtpaDocuments(documents: Evidence[], documentCollection, docLabel
   }
 }
 
+function getDirectionHistory(req: Request, res: Response, next: NextFunction) {
+  if (req.session.appeal.directions && req.params.id) {
+    let direction: Direction = req.session.appeal.directions.find(direction => (req.params.id === direction.uniqueId));
+    if (direction && APPLICANT_TYPE.APPELLANT === direction.parties) {
+      return getAppellantDirectionHistoryDetails(req, res, next, direction);
+    } else if (direction && APPLICANT_TYPE.RESPONDENT === direction.parties) {
+      return getRespondentDirectionHistoryDetails(req, res, next, direction);
+    }
+  }
+}
+
+function getAppellantDirectionHistoryDetails(req: Request, res: Response, next: NextFunction, direction: Direction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const data = [];
+    data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.appellant.explanation, [formatTextForCYA(direction.explanation)]));
+    data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.appellant.dateDue, [formatTextForCYA(moment(direction.dateDue).format(dayMonthYearFormat))]));
+    data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.dateSent, [formatTextForCYA(moment(direction.dateSent).format(dayMonthYearFormat))]));
+
+    return res.render('detail-viewers/direction-history-viewer.njk', {
+      title: i18n.pages.detailViewers.directionHistory.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function getRespondentDirectionHistoryDetails(req: Request, res: Response, next: NextFunction, direction: Direction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const data = [];
+    data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.respondent.explanation, [formatTextForCYA(direction.explanation)]));
+    data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.respondent.dateDue, [formatTextForCYA(moment(direction.dateDue).format(dayMonthYearFormat))]));
+    data.push(addSummaryRow(i18n.pages.detailViewers.directionHistory.dateSent, [formatTextForCYA(moment(direction.dateSent).format(dayMonthYearFormat))]));
+
+    return res.render('detail-viewers/direction-history-viewer.njk', {
+      title: i18n.pages.detailViewers.directionHistory.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
@@ -881,6 +928,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.lrReasonsForAppealViewer, getLrReasonsForAppealViewer);
   router.get(paths.common.ftpaAppellantApplicationViewer, getFtpaAppellantApplication);
   router.get(paths.common.ftpaDecisionViewer, getFtpaDecisionDetails);
+  router.get(paths.common.directionHistoryViewer, getDirectionHistory);
   return router;
 }
 
@@ -906,5 +954,6 @@ export {
   getLrReasonsForAppealViewer,
   getFtpaAppellantApplication,
   getFtpaDecisionDetails,
+  getDirectionHistory,
   getRespondentApplicationSummaryRows
 };

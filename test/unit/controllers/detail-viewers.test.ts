@@ -4,6 +4,7 @@ import {
   getApplicationTitle,
   getCmaRequirementsViewer,
   getDecisionAndReasonsViewer,
+  getDirectionHistory,
   getDocumentViewer,
   getFtpaAppellantApplication,
   getFtpaDecisionDetails,
@@ -2522,4 +2523,97 @@ describe('Detail viewer Controller', () => {
       expect(next).to.have.been.calledWith(error);
     });
   });
+
+  describe('getDirectionHistory', () => {
+    const directions: Direction[] = [
+      {
+        id: '1',
+        parties: 'appellant',
+        tag: '',
+        dateDue: '2023-12-15',
+        dateSent: '2023-05-15',
+        explanation: 'explanation1',
+        uniqueId: '123456789',
+        directionType: 'sendDirection'
+      },
+      {
+        id: '2',
+        parties: 'respondent',
+        tag: '',
+        dateDue: '2023-12-15',
+        dateSent: '2023-05-15',
+        explanation: 'explanation2',
+        uniqueId: '987654321',
+        directionType: 'sendDirection'
+      }
+    ];
+
+    it('should render detail-viewers/direction-history-viewer.njk for sending direciotn of appellant', () => {
+      req.session.appeal.directions = directions;
+      req.params.id = '123456789';
+
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.directionHistory.appellant.explanation },
+          value: { html: 'explanation1' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.directionHistory.appellant.dateDue },
+          value: { html: '15&nbsp;December&nbsp;2023' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.directionHistory.dateSent },
+          value: { html: '15&nbsp;May&nbsp;2023' }
+        }
+      ];
+
+      getDirectionHistory(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('detail-viewers/direction-history-viewer.njk', {
+        title: i18n.pages.detailViewers.directionHistory.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render detail-viewers/direction-history-viewer.njk for sending direciotn of Home Office', () => {
+      req.session.appeal.directions = directions;
+      req.params.id = '987654321';
+
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.directionHistory.respondent.explanation },
+          value: { html: 'explanation2' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.directionHistory.respondent.dateDue },
+          value: { html: '15&nbsp;December&nbsp;2023' }
+        },
+        {
+          key: { text: i18n.pages.detailViewers.directionHistory.dateSent },
+          value: { html: '15&nbsp;May&nbsp;2023' }
+        }
+      ];
+
+      getDirectionHistory(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('detail-viewers/direction-history-viewer.njk', {
+        title: i18n.pages.detailViewers.directionHistory.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should catch error and call next with it', () => {
+      req.session.appeal.directions = directions;
+      req.params.id = '123456789';
+      const error = new Error('an error');
+      res.render = sandbox.stub().throws(error);
+
+      getDirectionHistory(req as Request, res as Response, next);
+      expect(next).to.have.been.calledWith(error);
+    });
+
+  });
+
 });

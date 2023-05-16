@@ -1794,6 +1794,18 @@
           "notAdmitted": "Not admitted",
           "refused": "Refused"
         }
+      },
+      "directionHistory": {
+        "title": "What the Tribunal has asked",
+        "dateSent": "Date message sent",
+        "appellant": {
+          "explanation": "What you need to do",
+          "dateDue": "Date it needs to be done by"
+        },
+        "respondent": {
+          "explanation": "What the Home Office must do",
+          "dateDue": "Date it must be done by"
+        }
       }
     },
     "guidancePages": {

@@ -69,10 +69,9 @@ function getApplicationEvents(makeAnApplications: Collection<Application<Evidenc
         href: `${makeAnApplicationContent.links[0].href}/${application.id}`
       }]
     };
-    let decision;
-    if (application.value.decision !== 'Pending') {
+    if (application.value.decision !== 'Pending' && ['Appellant', 'Legal representative'].includes(application.value.applicant)) {
       const decideAnApplicationContent = i18n.pages.overviewPage.timeline.decideAnApplication[getApplicant(application.value)];
-      decision = {
+      const appellantApplicationDecision = {
         id: application.id,
         date: moment(application.value.decisionDate).format('DD MMMM YYYY'),
         dateObject: new Date(application.value.decisionDate),
@@ -82,7 +81,7 @@ function getApplicationEvents(makeAnApplications: Collection<Application<Evidenc
           href: `${decideAnApplicationContent.links[0].href}/${application.id}`
         }]
       };
-      return [decision, request];
+      return [appellantApplicationDecision, request];
     }
     return [request];
   }) : [];

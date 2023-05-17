@@ -1618,57 +1618,57 @@
             "Withdraw": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to withdraw, you do not need to do anything.",
-              "If you do not want the Home Office to withdraw, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to withdraw, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Adjourn": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to change the hearing date, you do not need to do anything.",
-              "If you do not want the Home Office to change the hearing date, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to change the hearing date, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Expedite": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to have the hearing sooner, you do not need to do anything.",
-              "If you do not want the Home Office to have the hearing sooner, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to have the hearing sooner, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Judge's review of application decision": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to ask a judge to review a decision, you do not need to do anything.",
-              "If you do not want the Home Office to ask a judge to review a decision, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to ask a judge to review a decision, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Link/unlink appeals": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to link or unlink the appeal, you do not need to do anything.",
-              "If you do not want the Home Office to link or unlink the appeal, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to link or unlink the appeal, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Reinstate": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to reinstate the appeal, you do not need to do anything.",
-              "If you do not want the Home Office to reinstate the appeal, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to reinstate the appeal, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Time extension": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to ask for more time, you do not need to do anything.",
-              "If you do not want the Home Office to ask for more time, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to ask for more time, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Transfer": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to move the hearing to a different location, you do not need to do anything.",
-              "If you do not want the Home Office to move the hearing to a different location, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to move the hearing to a different location, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Update appeal details": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to change some of the appeal details, you do not need to do anything.",
-              "If you do not want the Home Office to change some of the appeal details, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to change some of the appeal details, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Update hearing requirements": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to change some of the hearing requirements, you do not need to do anything.",
-              "If you do not want the Home Office to change some of the hearing requirements, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to change some of the hearing requirements, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
             "Other": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to change something about the appeal, you do not need to do anything.",
-              "If you do not want the Home Office to change something about the appeal, you must contact <a href=\"{{ TCO.NewportIAC@justice.gov.uk }}\">TCO.NewportIAC@justice.gov.uk</a> within 14 days of the days of the request."
+              "If you do not want the Home Office to change something about the appeal, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ]
           },
           "request": {

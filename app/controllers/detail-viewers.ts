@@ -19,7 +19,6 @@ import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
   formatTextForCYA,
-  getAppellantApplications,
   getApplicant,
   getApplicationType,
   toIsoDate

@@ -119,7 +119,7 @@ describe('timeline-utils', () => {
   });
 
   describe('getApplicationEvents', () => {
-    it('should get application events', () => {
+    it('should get application events and decision for appellant', () => {
       const makeAnApplications: Collection<Application<Evidence>>[] = [
         {
           id: '2',
@@ -154,6 +154,27 @@ describe('timeline-utils', () => {
       const applicationEvents = getApplicationEvents(makeAnApplications);
 
       expect(applicationEvents.length).to.be.eq(3);
+    });
+
+    it('should get application events for respondent', () => {
+      const makeAnApplications: Collection<Application<Evidence>>[] = [
+        {
+          id: '3',
+          value: {
+            applicant: 'Respondent',
+            applicantRole: 'caseworker-ia-homeofficeapc',
+            date: '2021-07-20',
+            decision: 'Granted',
+            details: 'my details',
+            state: 'awaitingReasonsForAppeal',
+            type: 'Time extension',
+            evidence: []
+          }
+        }
+      ];
+      const applicationEvents = getApplicationEvents(makeAnApplications);
+
+      expect(applicationEvents.length).to.be.eq(1);
     });
 
     it('should get application events content for Appellant application', () => {

@@ -14,9 +14,9 @@ import {
   getHomeOfficeResponse,
   getHomeOfficeWithdrawLetter,
   getLrReasonsForAppealViewer,
+  getMakeAnApplicationDecisionWhatNext,
   getMakeAnApplicationSummaryRows,
   getMakeAnApplicationViewer,
-  getMakeAnApplicationWhatNext,
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
   getReasonsForAppealViewer, getRespondentApplicationSummaryRows,
@@ -1231,9 +1231,9 @@ describe('Detail viewer Controller', () => {
       getMakeAnApplicationViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
-        title: i18n.pages.detailViewers.makeAnApplication.respondent.title,
-        description: i18n.pages.detailViewers.makeAnApplication.respondent.description,
-        whatNextTitle: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext.title,
+        title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
+        description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
+        whatNextTitle: i18n.pages.detailViewers.makeAnApplication.respondent.request.whatNext.title,
         request: [
           {
             key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.type },
@@ -1252,7 +1252,7 @@ describe('Detail viewer Controller', () => {
             value: { html: '18 July 2022' }
           }
         ],
-        whatNextList: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext.Expedite,
+        whatNextList: i18n.pages.detailViewers.makeAnApplication.respondent.request.whatNext.Expedite,
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
       });
     });
@@ -1528,8 +1528,8 @@ describe('Detail viewer Controller', () => {
     });
   });
 
-  describe('getMakeAnApplicationWhatNext', () => {
-    it('refused application should show correct what next message.', () => {
+  describe('getMakeAnApplicationDecisionWhatNext', () => {
+    it('refused appellant application should show correct what next message.', () => {
       const makeAnApplications: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
@@ -1537,7 +1537,7 @@ describe('Detail viewer Controller', () => {
           'type': 'Reinstate an ended appeal',
           'state': 'preHearing',
           'details': 'test application',
-          'decision': 'Granted',
+          'decision': 'Refused',
           'evidence': [],
           'applicant': 'Appellant',
           'decisionDate': '2022-07-22',
@@ -1547,12 +1547,12 @@ describe('Detail viewer Controller', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
-      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askReinstate.granted);
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askReinstate.refused);
     });
 
-    it('refused application should show correct what next message (default message).', () => {
+    it('refused appellant application should show correct what next message (default message).', () => {
       const makeAnApplications: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
@@ -1570,12 +1570,12 @@ describe('Detail viewer Controller', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
       expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.default.refused);
     });
 
-    it('granted application should show correct what next message.', () => {
+    it('granted appellant application should show correct what next message.', () => {
       const makeAnApplications: Collection<Application<Evidence>> = {
         'id': '1',
         'value': {
@@ -1593,10 +1593,241 @@ describe('Detail viewer Controller', () => {
         }
       };
 
-      const whatNext = getMakeAnApplicationWhatNext(makeAnApplications);
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
 
       expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.askChangeHearing.granted);
     });
+
+    it('refused respondent application should show correct what next message (Reinstate an ended appeal).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Reinstate an ended appeal',
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Refused',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+    });
+
+    it('granted respondent application should show correct what next message (Reinstate an ended appeal).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Reinstate an ended appeal',
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Granted',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askReinstate.granted);
+    });
+
+    it('Granted respondent application should show correct what next message (Judge\'s review of application decision).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': "Judge's review of application decision",
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Granted',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askJudgeReview.granted);
+    });
+
+    it('Refused respondent application should show correct what next message (Judge\'s review of application decision).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': "Judge's review of application decision",
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Refused',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+    });
+
+    it('granted respondent application should show correct what next message (Transfer).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Transfer',
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Granted',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askChangeHearing.granted);
+    });
+
+    it('Refused respondent application should show correct what next message (Transfer).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Transfer',
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Refused',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+    });
+
+    it('Refused respondent application should show correct what next message (Link/unlink appeals).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Link/unlink appeals',
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Refused',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+    });
+
+    it('Granted respondent application should show correct what next message (Link/unlink appeals).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Link/unlink appeals',
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Granted',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.askLinkUnlink.granted);
+    });
+
+    it('Granted respondent application should show correct what next message (Other).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Other',
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Granted',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.granted);
+    });
+
+    it('Refused respondent application should show correct what next message (Other).', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '1',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Other',
+          'state': 'preHearing',
+          'details': 'test application',
+          'decision': 'Refused',
+          'evidence': [],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficepou',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Lorem ipsum dolor sit amet. Sit amet justo donec enim diam.'
+        }
+      };
+
+      const whatNext = getMakeAnApplicationDecisionWhatNext(makeAnApplications);
+
+      expect(whatNext).to.be.eq(i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext.default.refused);
+    });
+
   });
 
   describe('getMakeAnApplicationSummaryRows', () => {
@@ -1652,7 +1883,6 @@ describe('Detail viewer Controller', () => {
           }],
           'applicant': 'Appellant',
           'decisionDate': '2021-07-14',
-
           'applicantRole': 'citizen',
           'decisionMaker': 'Tribunal Caseworker',
           'decisionReason': 'Reason not enough'
@@ -1672,7 +1902,7 @@ describe('Detail viewer Controller', () => {
   });
 
   describe('getRespondentApplicationSummaryRows', () => {
-    it('should get rows for respondent', () => {
+    it('should get rows for respondent pending decision', () => {
       const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
       const application: Collection<Application<Evidence>> = {
         'id': '2',
@@ -1701,6 +1931,44 @@ describe('Detail viewer Controller', () => {
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal']);
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason']);
       expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021']);
+    });
+
+    it('should get rows for respondent after decision', () => {
+      const addSummaryRowStub = sandbox.stub(summaryUtils, 'addSummaryRow');
+      const application: Collection<Application<Evidence>> = {
+        'id': '2',
+        'value': {
+          'date': '2021-07-15',
+          'type': 'Withdraw',
+          'state': 'awaitingReasonsForAppeal',
+          'details': 'My reason',
+          'decision': 'Granted',
+          'evidence': [{
+            id: 'id',
+            fileId: '123456',
+            name: 'name',
+            tag: 'test-tag',
+            suppliedBy: 'test-supplied',
+            description: 'test-description',
+            dateUploaded: 'test-date'
+          }],
+          'applicant': 'Respondent',
+          'applicantRole': 'caseworker-ia-homeofficeapc',
+          'decisionDate': '2021-07-14',
+          'decisionMaker': 'Tribunal Caseworker',
+          'decisionReason': 'Reason not enough'
+        }
+      };
+
+      getRespondentApplicationSummaryRows(application);
+      expect(addSummaryRowStub).to.have.been.callCount(8);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.type, ['Withdraw from the appeal']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.reason, ['My reason']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, ['15 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.appellant.response.decision, ['Granted']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, ['Reason not enough']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, ['14 July 2021']);
+      expect(addSummaryRowStub).to.have.been.calledWith(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, ['Tribunal Caseworker']);
     });
   });
 

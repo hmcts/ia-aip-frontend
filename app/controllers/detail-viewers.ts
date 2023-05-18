@@ -233,7 +233,15 @@ function getRespondentApplicationSummaryRows(application: Collection<Application
   }
   request.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.request.date, [moment(data.date).format(dayMonthYearFormat)]));
 
-  return request;
+  if (data.decision !== 'Pending') {
+    const response = [];
+    response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.decision, [data.decision]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.reason, [data.decisionReason]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.date, [moment(data.decisionDate).format(dayMonthYearFormat)]));
+    response.push(addSummaryRow(i18n.pages.detailViewers.makeAnApplication.respondent.response.maker, [data.decisionMaker]));
+    return { request, response };
+  }
+  return { request };
 }
 
 function getApplicationTitle(type: any): string {
@@ -498,21 +506,34 @@ function getMakeAnApplicationViewer(req: Request, res: Response, next: NextFunct
 }
 
 function getRespondentApplicationDetails(application: Collection<Application<Evidence>>) {
-  const request = getRespondentApplicationSummaryRows(application);
+  const { request, response = null } = getRespondentApplicationSummaryRows(application);
   const applicationType = application.value.type;
-  const whatNextList = i18n.pages.detailViewers.makeAnApplication.respondent.whatNext[applicationType];
-  return {
-    title: i18n.pages.detailViewers.makeAnApplication.respondent.title,
-    description: i18n.pages.detailViewers.makeAnApplication.respondent.description,
-    whatNextTitle: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext.title,
-    request,
-    whatNextList
+  const decision = application.value.decision;
+  const whatNextPending = i18n.pages.detailViewers.makeAnApplication.respondent.request.whatNext[applicationType];
+  const whatNextDecided = getMakeAnApplicationDecisionWhatNext(application);
+  const options = {
+    title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
+    description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
+    whatNextTitle: i18n.pages.detailViewers.makeAnApplication.respondent.request.whatNext.title,
+    request
   };
+
+  return decision === 'Pending'
+      ? {
+        ...options,
+        whatNextList: whatNextPending
+      } : {
+        ...options,
+        response,
+        whatNext: whatNextDecided,
+        responseTitle: i18n.pages.detailViewers.makeAnApplication.respondent.response.title,
+        responseDescription: i18n.pages.detailViewers.makeAnApplication.respondent.response.description
+      };
 }
 
 function getAppellantApplicationDetails(application: Collection<Application<Evidence>>) {
   const { request, response = null } = getMakeAnApplicationSummaryRows(application);
-  const whatNext = getMakeAnApplicationWhatNext(application);
+  const whatNext = getMakeAnApplicationDecisionWhatNext(application);
   return {
     title: i18n.pages.detailViewers.makeAnApplication.appellant.title,
     whatNextTitle: i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.title,
@@ -522,17 +543,16 @@ function getAppellantApplicationDetails(application: Collection<Application<Evid
   };
 }
 
-function getMakeAnApplicationWhatNext(makeAnApplicationEvent: Collection<Application<Evidence>>) {
+function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection<Application<Evidence>>) {
   const data = makeAnApplicationEvent.value;
-  if (data.decision !== 'Pending') {
-    const applicationType = getApplicationType(data.type);
+  const applicationType = getApplicationType(data.type);
+  if (applicationType && data.decision !== 'Pending') {
     const questionKey = applicationType.parent ? applicationType.parent : applicationType.code;
     const decisionKey = data.decision.toLowerCase();
-    if (i18n.pages.detailViewers.makeAnApplication.appellant.whatNext[questionKey][decisionKey]) {
-      return i18n.pages.detailViewers.makeAnApplication.appellant.whatNext[questionKey][decisionKey];
-    } else {
-      return i18n.pages.detailViewers.makeAnApplication.appellant.whatNext.default[decisionKey];
-    }
+    const whatNextSource = data.applicant === 'Respondent'
+        ? i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext
+        : i18n.pages.detailViewers.makeAnApplication.appellant.whatNext;
+    return whatNextSource[questionKey][decisionKey] ? whatNextSource[questionKey][decisionKey] : whatNextSource.default[decisionKey];
   }
   return null;
 }
@@ -941,7 +961,7 @@ export {
   getNoticeEndedAppeal,
   getMakeAnApplicationSummaryRows,
   getMakeAnApplicationViewer,
-  getMakeAnApplicationWhatNext,
+  getMakeAnApplicationDecisionWhatNext,
   setupDetailViewersController,
   setupCmaRequirementsViewer,
   getCmaRequirementsViewer,

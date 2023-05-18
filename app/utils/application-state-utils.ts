@@ -109,6 +109,7 @@ async function getAppealApplicationNextStep(req: Request) {
   let doThisNextSection: DoThisNextSection;
   const isLate = req.session.appeal.application.isAppealLate;
   const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
+  const ftpaApplicantType = req.session.appeal.ftpaApplicantType;
 
   let descriptionParagraphs;
   let respondBy;
@@ -582,13 +583,12 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'ftpaSubmitted':
       doThisNextSection = {
-        descriptionParagraphs: ftpaEnabled
-            ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description
+        descriptionParagraphs: (ftpaEnabled && APPLICANT_TYPE.APPELLANT === ftpaApplicantType)
+            ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description[ftpaApplicantType]
             : [ `Nothing to do next` ]
       };
       break;
     case 'ftpaDecided':
-      const ftpaApplicantType = req.session.appeal.ftpaApplicantType;
       if (ftpaEnabled && APPLICANT_TYPE.APPELLANT === ftpaApplicantType) {
         const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType || req.session.appeal.ftpaAppellantRjDecisionOutcomeType;
         doThisNextSection = {

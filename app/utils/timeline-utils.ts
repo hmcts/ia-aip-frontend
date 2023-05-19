@@ -211,6 +211,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   if (ftpaFeatureEnabled) {
     appealDecisionSectionEvents.push(
         Events.APPLY_FOR_FTPA_APPELLANT.id,
+        Events.APPLY_FOR_FTPA_RESPONDENT.id,
         Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
         Events.RESIDENT_JUDGE_FTPA_DECISION.id
     );

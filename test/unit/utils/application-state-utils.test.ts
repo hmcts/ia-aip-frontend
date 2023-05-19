@@ -1153,7 +1153,7 @@ describe('application-state-utils', () => {
 
     const expected = {
       'deadline': 'TBC',
-      'descriptionParagraphs': [ `Nothing to do next` ]
+      'descriptionParagraphs': [ `The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact you when the judge has decided the application.` ]
     };
 
     expect(result).to.eql(expected);

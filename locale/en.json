@@ -1059,6 +1059,9 @@
             "appellant": [
               "A judge will decide your application for permission to appeal to the Upper Tribunal.",
               "The Tribunal will contact you when the judge has made a decision."
+            ],
+            "respondent": [
+              "The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact you when the judge has decided the application."
             ]
           }
         },
@@ -1475,6 +1478,10 @@
               "href": "{{ paths.common.ftpaAppellantApplicationViewer }}"
             }
           ]
+        },
+        "applyForFTPARespondent": {
+          "text": "The Home Office applied for permission to appeal to the Upper Tribunal.",
+          "links": []
         },
         "decideFtpa": {
           "respondent": {

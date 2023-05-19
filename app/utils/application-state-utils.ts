@@ -68,11 +68,6 @@ function getAppealStatus(req: Request) {
       return req.session.appeal.appealReviewOutcome;
     }
     return req.session.appeal.appealStatus;
-  } else if (req.session.appeal.appealStatus === States.FTPA_SUBMITTED.id) {
-    if (req.session.appeal.history.find(event => event.id === Events.APPLY_FOR_FTPA_RESPONDENT.id)) {
-      return 'RESPONDENT_FTPA_SUBMITTED';
-    }
-    return req.session.appeal.appealStatus;
   } else {
     return req.session.appeal.appealStatus;
   }
@@ -583,7 +578,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'ftpaSubmitted':
       doThisNextSection = {
-        descriptionParagraphs: (ftpaEnabled && APPLICANT_TYPE.APPELLANT === ftpaApplicantType)
+        descriptionParagraphs: (ftpaEnabled)
             ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description[ftpaApplicantType]
             : [ `Nothing to do next` ]
       };
@@ -594,12 +589,12 @@ async function getAppealApplicationNextStep(req: Request) {
         doThisNextSection = {
           cta: {},
           ftpaDeadline: getDueDateForAppellantToRespondToFtpaDecision(req),
-          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][ftpaDecision]
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.appellant[ftpaDecision]
         };
       } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
         const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
         doThisNextSection = {
-          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided[ftpaApplicantType][ftpaDecision]
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]
         };
       } else {
         doThisNextSection = {

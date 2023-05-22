@@ -24,12 +24,13 @@ function constructEventObject(event: HistoryEvent, req: Request) {
     eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][req.session.appeal.ftpaApplicantType];
   }
 
-  let eventObject = {
-    date: moment(event.createdDate).format('DD MMMM YYYY'),
-    dateObject: new Date(event.createdDate),
-    text: eventContent.text || null,
-    links: eventContent.links
-  };
+  let eventObject = eventContent
+      ? {
+        date: moment(event.createdDate).format('DD MMMM YYYY'),
+        dateObject: new Date(event.createdDate),
+        text: eventContent.text || null,
+        links: eventContent.links
+      } : null;
 
   if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
     eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
@@ -53,7 +54,9 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
     ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
     : events.filter(event => eventsToLookFor.includes(event.id));
 
-  return filteredEvents.map(event => constructEventObject(event, req));
+  return filteredEvents
+      .sort((e1, e2) => moment(e1.createdDate).isBefore(moment(e2.createdDate)) ? -1 : 2)
+      .map(event => constructEventObject(event, req));
 }
 
 function getApplicationEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
@@ -69,9 +72,9 @@ function getApplicationEvents(makeAnApplications: Collection<Application<Evidenc
         href: `${makeAnApplicationContent.links[0].href}/${application.id}`
       }]
     };
-    if (application.value.decision !== 'Pending' && ['Appellant', 'Legal representative'].includes(application.value.applicant)) {
+    if (application.value.decision !== 'Pending') {
       const decideAnApplicationContent = i18n.pages.overviewPage.timeline.decideAnApplication[getApplicant(application.value)];
-      const appellantApplicationDecision = {
+      const decision = {
         id: application.id,
         date: moment(application.value.decisionDate).format('DD MMMM YYYY'),
         dateObject: new Date(application.value.decisionDate),
@@ -81,7 +84,7 @@ function getApplicationEvents(makeAnApplications: Collection<Application<Evidenc
           href: `${decideAnApplicationContent.links[0].href}/${application.id}`
         }]
       };
-      return [appellantApplicationDecision, request];
+      return [decision, request];
     }
     return [request];
   }) : [];

@@ -17,6 +17,7 @@ const ftpaOutOfTimeApplicationStartedES = {
         "feeCode":"FEE0372",
         "appealDate":"2023-04-04",
         "appealType":"refusalOfHumanRights",
+        "ftpaApplicantType": "appellant",
         "directions":[
           {
             "id":"4",

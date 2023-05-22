@@ -122,7 +122,7 @@ describe('timeline-utils', () => {
     it('should get application events and decision for appellant', () => {
       const makeAnApplications: Collection<Application<Evidence>>[] = [
         {
-          id: '2',
+          id: '1',
           value: {
             applicant: 'Appellant',
             applicantRole: 'citizen',
@@ -135,12 +135,12 @@ describe('timeline-utils', () => {
           }
         },
         {
-          id: '1',
+          id: '2',
           value: {
             applicant: 'Legal representative',
             applicantRole: 'caseworker-ia-legalrep-solicitor',
             date: '2021-07-10',
-            decision: 'Refused',
+            decision: 'Granted',
             decisionDate: '2021-07-12',
             decisionMaker: 'Tribunal Caseworker',
             decisionReason: 'reason why',
@@ -153,18 +153,55 @@ describe('timeline-utils', () => {
       ];
       const applicationEvents = getApplicationEvents(makeAnApplications);
 
-      expect(applicationEvents.length).to.be.eq(3);
+      expect(applicationEvents).to.deep.eq(
+        [{
+          'date': '15 July 2021',
+          'dateObject': new Date('2021-07-15T00:00:00.00Z'),
+          'text': 'You sent the Tribunal a request.',
+          'id': '1',
+          'links': [{
+            'title': 'What you sent',
+            'text': 'Your request',
+            'href': '{{ paths.common.makeAnApplicationViewer }}/1'
+          }]
+        },
+        {
+          'id': '2',
+          'date': '12 July 2021',
+          'dateObject': new Date('2021-07-12T00:00:00.00Z'),
+          'text': 'Your request was granted.',
+          'links': [{
+            'title': 'What the Tribunal said',
+            'text': 'Reason for decision',
+            'href': '{{ paths.common.makeAnApplicationViewer }}/2'
+          }]
+        },
+        {
+          'date': '10 July 2021',
+          'dateObject': new Date('2021-07-10T00:00:00.00Z'),
+          'text': 'You sent the Tribunal a request.',
+          'id': '2',
+          'links': [{
+            'title': 'What you sent',
+            'text': 'Your request',
+            'href': '{{ paths.common.makeAnApplicationViewer }}/2'
+          }]
+        }]
+      );
     });
 
-    it('should get application events for respondent', () => {
+    it('should get application events and decision for respondent', () => {
       const makeAnApplications: Collection<Application<Evidence>>[] = [
         {
-          id: '3',
+          id: '4',
           value: {
             applicant: 'Respondent',
             applicantRole: 'caseworker-ia-homeofficeapc',
             date: '2021-07-20',
-            decision: 'Granted',
+            decision: 'Refused',
+            decisionDate: '2021-07-25',
+            decisionMaker: 'Tribunal Caseworker',
+            decisionReason: 'reason why',
             details: 'my details',
             state: 'awaitingReasonsForAppeal',
             type: 'Time extension',
@@ -174,7 +211,30 @@ describe('timeline-utils', () => {
       ];
       const applicationEvents = getApplicationEvents(makeAnApplications);
 
-      expect(applicationEvents.length).to.be.eq(1);
+      expect(applicationEvents).to.deep.eq(
+        [{
+          'id': '4',
+          'date': '25 July 2021',
+          'dateObject': new Date('2021-07-25T00:00:00.00Z'),
+          'text': 'The Home Office request was refused.',
+          'links': [{
+            'title': 'What the Tribunal said',
+            'text': 'Reason for decision',
+            'href': '{{ paths.common.makeAnApplicationViewer }}/4'
+          }]
+        },
+        {
+          'date': '20 July 2021',
+          'dateObject': new Date('2021-07-20T00:00:00.00Z'),
+          'text': 'The Home Office sent the Tribunal a request.',
+          'id': '4',
+          'links': [{
+            'title': 'What the Home Office sent',
+            'text': 'The Home Office request',
+            'href': '{{ paths.common.makeAnApplicationViewer }}/4'
+          }]
+        }]
+      );
     });
 
     it('should get application events content for Appellant application', () => {

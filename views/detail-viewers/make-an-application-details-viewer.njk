@@ -3,7 +3,7 @@
 {% set pageTitleName = title %}
 
 {% block content %}
-  <h1 class="govuk-heading-xl">{{ title  }}</h1>
+  <h1>{{ title  }}</h1>
   {% if description %}
     <p>{{ description }}</p>
   {% endif %}
@@ -12,19 +12,22 @@
   }) }}
 
   {% if response %}
-    <h2 class="govuk-heading-l">{{ responseTitle }}</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ responseTitle }}</h2>
+    {% if responseDescription %}
+      <p>{{ responseDescription }}</p>
+    {% endif %}
     {{ govukSummaryList({
       rows: response
     }) }}
   {% endif %}
 
   {% if whatNext %}
-    <h2 class="govuk-heading-l">{{ whatNextTitle }}</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ whatNextTitle }}</h2>
     <p>{{ whatNext | eval | safe }}</p>
   {% endif %}
 
   {% if whatNextList %}
-    <h2 class="govuk-heading-l">{{ whatNextTitle }}</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ whatNextTitle }}</h2>
     {% for paragraph in whatNextList %}
       <p>{{ paragraph | eval | safe }}</p>
     {% endfor %}

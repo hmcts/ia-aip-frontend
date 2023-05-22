@@ -1105,24 +1105,6 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
-  it('when application status is ftpaSubmitted after appellant ftpa application should get correct Do this next section.', async () => {
-    req.session.appeal.appealStatus = 'ftpaSubmitted';
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
-
-    const result = await getAppealApplicationNextStep(req as Request);
-
-    const expected = {
-      'deadline': 'TBC',
-      'descriptionParagraphs': [
-        'A judge will decide your application for permission to appeal to the Upper Tribunal.',
-        'The Tribunal will contact you when the judge has made a decision.'
-      ]
-    };
-
-    expect(result).to.eql(expected);
-  });
-
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;
@@ -1142,7 +1124,10 @@ describe('application-state-utils', () => {
   });
 
   it('when application status is ftpaSubmitted after respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaSubmitted';
+    req.session.appeal.ftpaApplicantType = 'respondent';
     req.session.appeal.history = [
       {
         id: 'applyForFTPARespondent',
@@ -1169,6 +1154,45 @@ describe('application-state-utils', () => {
     const expected = {
       'deadline': 'TBC',
       'descriptionParagraphs': [ `Nothing to do next` ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application status is ftpaSubmitted after appellant ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaSubmitted';
+    req.session.appeal.ftpaApplicantType = 'appellant';
+    req.session.appeal.history = [
+      {
+        id: 'applyForFTPAAppellant',
+        event: {
+          eventName: 'applyForFTPAAppellant',
+          description: 'description'
+        },
+        user: {
+          id: 'userId',
+          lastName: 'test',
+          firstName: 'test'
+        },
+        createdDate: 'createDate',
+        caseTypeVersion: 5,
+        state: {
+          id: 'ftpaSubmitted',
+          name: 'ftpaSubmitted'
+        },
+        data: {}
+      }
+    ];
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'A judge will decide your application for permission to appeal to the Upper Tribunal.',
+        'The Tribunal will contact you when the judge has made a decision.'
+      ]
     };
 
     expect(result).to.eql(expected);

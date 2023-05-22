@@ -54,7 +54,9 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
     ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
     : events.filter(event => eventsToLookFor.includes(event.id));
 
-  return filteredEvents.map(event => constructEventObject(event, req));
+  return filteredEvents
+      .sort((e1, e2) => moment(e1.createdDate).isBefore(moment(e2.createdDate)) ? -1 : 2)
+      .map(event => constructEventObject(event, req));
 }
 
 function getApplicationEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {

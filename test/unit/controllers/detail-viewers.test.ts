@@ -1191,7 +1191,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render detail-viewers/make-an-application-details-viewer.njk for respondent', () => {
+    it('should render detail-viewers/make-an-application-details-viewer.njk for respondent (Expedite)', () => {
       const makeAnApplications: Collection<Application<Evidence>> = {
         'id': '3',
         'value': {
@@ -1253,6 +1253,72 @@ describe('Detail viewer Controller', () => {
           }
         ],
         whatNextList: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext.Expedite,
+        hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
+      });
+    });
+
+    it('should render detail-viewers/make-an-application-details-viewer.njk for respondent (Reinstate an ended appeal)', () => {
+      const makeAnApplications: Collection<Application<Evidence>> = {
+        'id': '3',
+        'value': {
+          'date': '2022-07-18',
+          'type': 'Reinstate an ended appeal',
+          'state': 'preHearing',
+          'details': 'application-details',
+          'decision': 'Pending',
+          'evidence': [
+            {
+              'fileId': '4bc22a7b-48f6-45c0-8072-2ddbc1e418b9',
+              'name': 'evidence.pdf'
+            }
+          ],
+          'applicant': 'Respondent',
+          'decisionDate': '2022-07-22',
+          'applicantRole': 'caseworker-ia-homeofficeapc'
+        }
+      };
+      req.params.id = '3';
+      req.session.appeal.hearing = {
+        hearingCentre: '',
+        date: '',
+        time: ''
+      };
+      req.session.appeal.hearingCentre = 'taylorHouse';
+      req.session.appeal.makeAnApplications = [makeAnApplications];
+      req.session.appeal.makeAnApplicationEvidence = [{
+        id: 'id',
+        fileId: '123456',
+        name: 'name',
+        tag: 'test-tag',
+        suppliedBy: 'test-supplied',
+        description: 'test-description',
+        dateUploaded: 'test-date'
+      }];
+      getMakeAnApplicationViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
+        previousPage: paths.common.overview,
+        title: i18n.pages.detailViewers.makeAnApplication.respondent.title,
+        description: i18n.pages.detailViewers.makeAnApplication.respondent.description,
+        whatNextTitle: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext.title,
+        request: [
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.type },
+            value: { html: i18n.pages.detailViewers.makeAnApplication.respondent.request.types['Reinstate an ended appeal'] }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.reason },
+            value: { html: 'application-details' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.evidence },
+            value: { html: '<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'/view/document/4bc22a7b-48f6-45c0-8072-2ddbc1e418b9\'>evidence.pdf</a>' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.date },
+            value: { html: '18 July 2022' }
+          }
+        ],
+        whatNextList: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext['Reinstate an ended appeal'],
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
       });
     });

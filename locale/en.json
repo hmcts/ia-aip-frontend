@@ -1640,7 +1640,7 @@
               "If you are happy for the Home Office to link or unlink the appeal, you do not need to do anything.",
               "If you do not want the Home Office to link or unlink the appeal, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
             ],
-            "Reinstate": [
+            "Reinstate an ended appeal": [
               "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
               "If you are happy for the Home Office to reinstate the appeal, you do not need to do anything.",
               "If you do not want the Home Office to reinstate the appeal, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
@@ -1678,7 +1678,7 @@
               "Expedite": "Have the hearing sooner",
               "Judge's review of application decision": "Ask a judge to review a decision",
               "Link/unlink appeals": "Link or unlink the appeal",
-              "Reinstate": "Reinstate the appeal",
+              "Reinstate an ended appeal": "Reinstate the appeal",
               "Time extension": "Ask for more time",
               "Transfer": "Move the hearing to a different location",
               "Update appeal details": "Change some of the appeal details",

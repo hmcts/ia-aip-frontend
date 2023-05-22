@@ -29,7 +29,9 @@ function getNextState(body) {
       return 'preHearing';
     case 'applyForFTPAAppellant':
       return 'ftpaSubmitted';
-    case 'ftpaSubmitted':
+    case 'residentJudgeFtpaDecision':
+      return 'ftpaDecided';
+    case 'leadershipJudgeFtpaDecision':
       return 'ftpaDecided';
     default:
       throw `Event type ${body.eventType} no next state set`

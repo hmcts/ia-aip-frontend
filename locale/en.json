@@ -1694,7 +1694,7 @@
           },
           "response": {
             "title": "Decision details",
-            "description": "The Tribunal has decided the Home Office request. Here are the details of the decision",
+            "description": "The Tribunal has decided the Home Office request. Here are the details of the decision.",
             "decision": "What the Tribunal decided",
             "reason": "Reason for the decision",
             "date": "Date of the decision",

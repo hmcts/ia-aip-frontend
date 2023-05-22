@@ -1297,9 +1297,9 @@ describe('Detail viewer Controller', () => {
       getMakeAnApplicationViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('detail-viewers/make-an-application-details-viewer.njk', {
         previousPage: paths.common.overview,
-        title: i18n.pages.detailViewers.makeAnApplication.respondent.title,
-        description: i18n.pages.detailViewers.makeAnApplication.respondent.description,
-        whatNextTitle: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext.title,
+        title: i18n.pages.detailViewers.makeAnApplication.respondent.request.title,
+        description: i18n.pages.detailViewers.makeAnApplication.respondent.request.description,
+        whatNextTitle: i18n.pages.detailViewers.makeAnApplication.respondent.request.whatNext.title,
         request: [
           {
             key: { text: i18n.pages.detailViewers.makeAnApplication.respondent.request.type },
@@ -1318,7 +1318,7 @@ describe('Detail viewer Controller', () => {
             value: { html: '18 July 2022' }
           }
         ],
-        whatNextList: i18n.pages.detailViewers.makeAnApplication.respondent.whatNext['Reinstate an ended appeal'],
+        whatNextList: i18n.pages.detailViewers.makeAnApplication.respondent.request.whatNext['Reinstate an ended appeal'],
         hearingCentreEmail: 'IA_HEARING_CENTRE_TAYLOR_HOUSE_EMAIL'
       });
     });

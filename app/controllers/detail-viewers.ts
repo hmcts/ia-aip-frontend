@@ -20,7 +20,7 @@ import {
   boolToYesNo,
   formatTextForCYA,
   getApplicant,
-  getApplicationType,
+  getApplicationType, getFtpaApplicantType,
   toIsoDate
 } from '../utils/utils';
 
@@ -768,7 +768,7 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
 }
 
 function getFtpaDecisionDetails(req: Request, res: Response, next: NextFunction) {
-  const applicantType = req.session.appeal.ftpaApplicantType;
+  const applicantType = getFtpaApplicantType(req.session.appeal);
   if (APPLICANT_TYPE.APPELLANT === applicantType) {
     return getFtpaAppellantDecisionDetails(req, res, next);
   } else if (APPLICANT_TYPE.RESPONDENT === applicantType) {

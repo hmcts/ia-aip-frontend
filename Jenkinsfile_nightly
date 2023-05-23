@@ -7,7 +7,7 @@ properties([
         projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend/'
     ],
     pipelineTriggers([
-    cron('15 5 * * *')
+    cron('H 7 * * *')
     ])
 ])
 

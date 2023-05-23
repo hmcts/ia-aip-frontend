@@ -492,7 +492,7 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when ftpa feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, true);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(4);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(5);
     });
   });
 });

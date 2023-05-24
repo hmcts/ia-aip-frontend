@@ -1127,7 +1127,7 @@ describe('application-state-utils', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaSubmitted';
-    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentApplicationDate = '2022-01-01';
     req.session.appeal.history = [
       {
         id: 'applyForFTPARespondent',
@@ -1163,7 +1163,7 @@ describe('application-state-utils', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
     req.session.appeal.appealStatus = 'ftpaSubmitted';
-    req.session.appeal.ftpaApplicantType = 'appellant';
+    req.session.appeal.ftpaAppellantApplicationDate = '2022-01-01';
     req.session.appeal.history = [
       {
         id: 'applyForFTPAAppellant',

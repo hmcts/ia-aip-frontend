@@ -8,7 +8,7 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getApplicant, isFtpaFeatureEnabled } from './utils';
+import { getApplicant, getFtpaApplicantType, isFtpaFeatureEnabled } from './utils';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -21,7 +21,8 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   if (isUploadEvidenceEventByLegalRep(req, event)) {
     eventContent = i18n.pages.overviewPage.timeline[event.id]['providedByLr'];
   } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id) {
-    eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][req.session.appeal.ftpaApplicantType];
+    const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
+    eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
   }
 
   let eventObject = eventContent
@@ -55,7 +56,6 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
     : events.filter(event => eventsToLookFor.includes(event.id));
 
   return filteredEvents
-      .sort((e1, e2) => moment(e1.createdDate).isBefore(moment(e2.createdDate)) ? -1 : 2)
       .map(event => constructEventObject(event, req));
 }
 

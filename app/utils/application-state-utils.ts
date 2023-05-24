@@ -6,7 +6,12 @@ import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
-import { getAppellantApplications, hasPendingTimeExtension, isFtpaFeatureEnabled } from '../utils/utils';
+import {
+  getAppellantApplications,
+  getFtpaApplicantType,
+  hasPendingTimeExtension,
+  isFtpaFeatureEnabled
+} from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
 
@@ -104,7 +109,7 @@ async function getAppealApplicationNextStep(req: Request) {
   let doThisNextSection: DoThisNextSection;
   const isLate = req.session.appeal.application.isAppealLate;
   const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
-  const ftpaApplicantType = req.session.appeal.ftpaApplicantType;
+  const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
 
   let descriptionParagraphs;
   let respondBy;

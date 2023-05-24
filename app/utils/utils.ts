@@ -1,7 +1,9 @@
 import { Request } from 'express';
+import moment from 'moment';
 import nl2br from 'nl2br';
 import { applicationTypes } from '../data/application-types';
-import { FEATURE_FLAGS } from '../data/constants';
+import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
+import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
 
@@ -84,6 +86,27 @@ export function getApplicationType(type: string): any {
     }
   });
   return applicationType;
+}
+
+export function getFtpaApplicantType(appeal: Appeal) {
+  if (appeal.appealStatus === States.FTPA_DECIDED.id) {
+    return appeal.ftpaApplicantType;
+  }
+  const ftpaRespondentApplicationDate = appeal.ftpaRespondentApplicationDate;
+  const ftpaAppellantApplicationDate = appeal.ftpaAppellantApplicationDate;
+  let applicantType;
+
+  if (ftpaRespondentApplicationDate && ftpaAppellantApplicationDate) {
+    applicantType = (moment(ftpaAppellantApplicationDate).isAfter(ftpaRespondentApplicationDate)
+        || moment(ftpaAppellantApplicationDate).isSame(ftpaRespondentApplicationDate))
+        ? APPLICANT_TYPE.APPELLANT
+        : APPLICANT_TYPE.RESPONDENT;
+  } else if (ftpaRespondentApplicationDate) {
+    applicantType = APPLICANT_TYPE.RESPONDENT;
+  } else if (ftpaAppellantApplicationDate) {
+    applicantType = APPLICANT_TYPE.APPELLANT;
+  }
+  return applicantType;
 }
 
 export function formatCaseId(caseId: any) {

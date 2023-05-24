@@ -20,7 +20,8 @@ describe('timeline-utils', () => {
         appeal: {
           application: {},
           caseBuilding: {},
-          reasonsForAppeal: {}
+          reasonsForAppeal: {},
+          nonStandardDirectionEnabled: true
         }
       },
       idam: {
@@ -390,30 +391,30 @@ describe('timeline-utils', () => {
   });
 
   describe('getDirectionHistory', () => {
-    const directions: Direction[] = [
-      {
-        id: '1',
-        parties: 'appellant',
-        tag: '',
-        dateDue: '2023-12-11',
-        dateSent: '2023-05-11',
-        explanation: 'explanation 1',
-        uniqueId: '123456789',
-        directionType: 'sendDirection'
-      },
-      {
-        id: '2',
-        parties: 'respondent',
-        tag: '',
-        dateDue: '2023-12-11',
-        dateSent: '2023-05-11',
-        explanation: 'explanation 2',
-        uniqueId: '987654321',
-        directionType: 'sendDirection'
-      }
-    ];
     it('should get direction history', () => {
-      const directionsHistory = getDirectionHistory(directions);
+      req.session.appeal.directions = [
+        {
+          id: '1',
+          parties: 'appellant',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 1',
+          uniqueId: '123456789',
+          directionType: 'sendDirection'
+        },
+        {
+          id: '2',
+          parties: 'respondent',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 2',
+          uniqueId: '987654321',
+          directionType: 'sendDirection'
+        }
+      ];
+      const directionsHistory = getDirectionHistory(req as Request);
 
       expect(directionsHistory.length).to.be.eql(2);
       directionsHistory.forEach(direction => {
@@ -422,7 +423,27 @@ describe('timeline-utils', () => {
     });
 
     it('should filter history with non sendDirection type and appellant/respondent parties', () => {
-      directions.push(
+      req.session.appeal.directions = [
+        {
+          id: '1',
+          parties: 'appellant',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 1',
+          uniqueId: '123456789',
+          directionType: 'sendDirection'
+        },
+        {
+          id: '2',
+          parties: 'respondent',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 2',
+          uniqueId: '987654321',
+          directionType: 'sendDirection'
+        },
         {
           id: '3',
           parties: 'appellant',
@@ -443,8 +464,8 @@ describe('timeline-utils', () => {
           uniqueId: '135135135',
           directionType: 'sendDirection'
         }
-      );
-      const directionsHistory = getDirectionHistory(directions);
+      ];
+      const directionsHistory = getDirectionHistory(req as Request);
       expect(directionsHistory.length).to.be.eql(3);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
@@ -452,7 +473,8 @@ describe('timeline-utils', () => {
     });
 
     it('should return empty direction history', () => {
-      const directionsHistory = getDirectionHistory([]);
+      req.session.appeal.directions = [];
+      const directionsHistory = getDirectionHistory(req as Request);
       expect(directionsHistory.length).to.be.eql(0);
     });
   });

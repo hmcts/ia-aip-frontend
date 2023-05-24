@@ -8,7 +8,7 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getApplicant, getFtpaApplicantType, isFtpaFeatureEnabled } from './utils';
+import { getApplicant, getFtpaApplicantType, isFtpaFeatureEnabled, isNonStandardDirectionEnabled } from './utils';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -110,23 +110,26 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
   });
 }
 
-function getDirectionHistory(directions: Direction[]): any[] {
-  let directionsHistory = [];
-  (directions || [])
-    .filter(direction => (
-      direction.directionType === 'sendDirection'
-      && (direction.parties === 'appellant' || direction.parties === 'respondent'))).forEach(direction => {
-        directionsHistory.push({
-          date: moment(direction.dateSent).format('DD MMMM YYYY'),
-          dateObject: new Date(direction.dateSent),
-          text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-          links: [{
-            ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-            href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-          }]
+function getDirectionHistory(req: Request): any[] {
+  if (isNonStandardDirectionEnabled(req)) {
+    return (req.session.appeal.directions || [])
+        .filter(direction => (
+            direction.directionType === 'sendDirection'
+            && (direction.parties === 'appellant' || direction.parties === 'respondent')))
+        .map(direction => {
+          return {
+            date: moment(direction.dateSent).format('DD MMMM YYYY'),
+            dateObject: new Date(direction.dateSent),
+            text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
+            links: [{
+              ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
+              href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+            }]
+          };
         });
-      });
-  return directionsHistory;
+  } else {
+    return [];
+  }
 }
 
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
@@ -169,7 +172,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
   }
 
-  const directionsHistory = getDirectionHistory(req.session.appeal.directions);
+  const directionsHistory = getDirectionHistory(req);
 
   const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);

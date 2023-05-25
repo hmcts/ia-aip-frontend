@@ -181,24 +181,9 @@ export const Events = {
     summary: 'Create case summary',
     description: 'Create case summary'
   },
-  APPLY_FOR_FTPA_APPELLANT: {
-    id: 'applyForFTPAAppellant',
-    summary: 'Apply for FTPA Appellant',
-    description: 'Apply for FTPA Appellant'
-  },
-  APPLY_FOR_FTPA_RESPONDENT: {
-    id: 'applyForFTPARespondent',
-    summary: 'Apply for FTPA Respondent',
-    description: 'Apply for FTPA Respondent'
-  },
-  RESIDENT_JUDGE_FTPA_DECISION: {
-    id: 'residentJudgeFtpaDecision',
-    summary: 'Resident Judge FTPA decision',
-    description: 'Resident Judge FTPA decision'
-  },
-  LEADERSHIP_JUDGE_FTPA_DECISION: {
-    id: 'leadershipJudgeFtpaDecision',
-    summary: 'Leadership Judge FTPA decision',
-    description: 'Leadership Judge FTPA decision'
+  MARK_AS_READY_FOR_UT_TRANSFER: {
+    id: 'markAsReadyForUtTransfer',
+    summary: 'Transfer appeal to Upper Tribunal',
+    description: 'Transfer appeal to Upper Tribunal'
   }
 };

@@ -161,31 +161,7 @@ interface Appeal {
   pcqId?: string;
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;
-  ftpaApplicantType?: string;
-  ftpaAppellantEvidenceDocuments?: Evidence[];
-  ftpaAppellantDocuments?: Evidence[];
-  ftpaAppellantGrounds?: string;
-  ftpaProvideEvidence?: 'Yes' | 'No';
-  ftpaAppellantSubmissionOutOfTime?: 'Yes' | 'No';
-  ftpaAppellantOutOfTimeExplanation?: string;
-  ftpaOutOfTimeProvideEvidence?: 'Yes' | 'No';
-  ftpaAppellantOutOfTimeDocuments?: Evidence[];
-  ftpaAppellantApplicationDate?: string;
-  ftpaRespondentEvidenceDocuments?: Evidence[];
-  ftpaRespondentGroundsDocuments?: Evidence[];
-  ftpaRespondentOutOfTimeExplanation?: string;
-  ftpaRespondentOutOfTimeDocuments?: Evidence[];
-  ftpaRespondentApplicationDate?: string;
-  ftpaRespondentDecisionOutcomeType?: string;
-  ftpaRespondentDecisionDocument?: Evidence[];
-  ftpaRespondentDecisionDate?: string;
-  ftpaRespondentRjDecisionOutcomeType?: string;
-  ftpaAppellantRjDecisionOutcomeType?: string;
-  ftpaAppellantDecisionOutcomeType?: string;
-  ftpaAppellantDecisionDocument?: Evidence[];
-  ftpaAppellantDecisionDate?: string;
-  nonStandardDirectionEnabled?: boolean;
-  readonlyApplicationEnabled?: boolean;
+  utAppealReferenceNumber?: string;
 }
 
 interface Hearing {
@@ -414,7 +390,6 @@ interface Direction {
   explanation: string;
   uniqueId: string;
   clarifyingQuestions?: ClarifyingQuestion;
-  directionType?:  string;
 }
 
 interface ClarifyingQuestion<T> {

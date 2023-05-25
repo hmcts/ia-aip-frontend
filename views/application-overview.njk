@@ -17,10 +17,14 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <div class="banner-line"></div>
-        {% if ended %}
-        <div class="govuk-inset-text inset-bold">
-          {{ i18n.pages.overviewPage.endedInsert }}
-        </div>      
+        {% if ended and transferredToUt %}
+                <div class="govuk-inset-text inset-bold">
+                  {{ i18n.pages.overviewPage.transferredToUt }}
+                </div>
+        {% elif ended %}
+            <div class="govuk-inset-text inset-bold">
+              {{ i18n.pages.overviewPage.endedInsert }}
+            </div>
         {% else %}
           {{ progressBar(stages) }}
         {% endif %}

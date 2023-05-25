@@ -1,21 +1,14 @@
-import { Request } from 'express';
+import e, { Request } from 'express';
 import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
-import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import {
-  getAppellantApplications,
-  getApplicant,
-  getFtpaApplicantType,
-  isFtpaFeatureEnabled,
-  isNonStandardDirectionEnabled,
-  isReadonlyApplicationEnabled
-} from './utils';
+import { getAppellantApplications } from './utils';
+import {transferredToUpperTribunal} from "./application-state-utils";
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -24,21 +17,16 @@ import {
  */
 function constructEventObject(event: HistoryEvent, req: Request) {
 
-  let eventContent = i18n.pages.overviewPage.timeline[event.id];
-  if (isUploadEvidenceEventByLegalRep(req, event)) {
-    eventContent = i18n.pages.overviewPage.timeline[event.id]['providedByLr'];
-  } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id) {
-    const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
-    eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
-  }
+  const eventContent = isUploadEvidenceEventByLegalRep(req, event)
+    ? i18n.pages.overviewPage.timeline[event.id]['providedByLr']
+    : i18n.pages.overviewPage.timeline[event.id];
 
-  let eventObject = eventContent
-      ? {
-        date: moment(event.createdDate).format('DD MMMM YYYY'),
-        dateObject: new Date(event.createdDate),
-        text: eventContent.text || null,
-        links: eventContent.links
-      } : null;
+  let eventObject = {
+    date: moment(event.createdDate).format('DD MMMM YYYY'),
+    dateObject: new Date(event.createdDate),
+    text: eventContent.text || null,
+    links: eventContent.links
+  };
 
   if (event.id === Events.RECORD_OUT_OF_TIME_DECISION.id) {
     eventObject.text = i18n.pages.overviewPage.timeline[event.id].type[req.session.appeal.outOfTimeDecisionType];
@@ -62,36 +50,31 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
     ? events.filter(event => eventsToLookFor.includes(event.id) && states.includes(event.state.id))
     : events.filter(event => eventsToLookFor.includes(event.id));
 
-  return filteredEvents
-      .map(event => constructEventObject(event, req));
+  return filteredEvents.map(event => constructEventObject(event, req));
 }
 
-function getApplicationEvents(req: Request): any[] {
-  const applicationEvents = isReadonlyApplicationEnabled(req)
-      ? req.session.appeal.makeAnApplications
-      : getAppellantApplications(req.session.appeal.makeAnApplications);
-  const makeDirectionsFlatMap = applicationEvents ? applicationEvents.flatMap(application => {
-    const makeAnApplicationContent = i18n.pages.overviewPage.timeline.makeAnApplication[getApplicant(application.value)];
+function getApplicationEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
+  const makeDirectionsFlatMap = makeAnApplications ? makeAnApplications.flatMap(application => {
     const request = {
       id: application.id,
       date: moment(application.value.date).format('DD MMMM YYYY'),
       dateObject: new Date(application.value.date),
-      text: makeAnApplicationContent.text,
+      text: i18n.pages.overviewPage.timeline.makeAnApplication.text,
       links: [{
-        ...makeAnApplicationContent.links[0],
-        href: `${makeAnApplicationContent.links[0].href}/${application.id}`
+        ...i18n.pages.overviewPage.timeline.makeAnApplication.links[0],
+        href: `${i18n.pages.overviewPage.timeline.makeAnApplication.links[0].href}/${application.id}`
       }]
     };
+    let decision;
     if (application.value.decision !== 'Pending') {
-      const decideAnApplicationContent = i18n.pages.overviewPage.timeline.decideAnApplication[getApplicant(application.value)];
-      const decision = {
+      decision = {
         id: application.id,
         date: moment(application.value.decisionDate).format('DD MMMM YYYY'),
         dateObject: new Date(application.value.decisionDate),
-        text: decideAnApplicationContent[application.value.decision],
+        text: i18n.pages.overviewPage.timeline.decideAnApplication[application.value.decision],
         links: [{
-          ...decideAnApplicationContent.links[0],
-          href: `${decideAnApplicationContent.links[0].href}/${application.id}`
+          ...i18n.pages.overviewPage.timeline.decideAnApplication.links[0],
+          href: `${i18n.pages.overviewPage.timeline.decideAnApplication.links[0].href}/${application.id}`
         }]
       };
       return [decision, request];
@@ -120,28 +103,6 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
   });
 }
 
-function getDirectionHistory(req: Request): any[] {
-  if (isNonStandardDirectionEnabled(req)) {
-    return (req.session.appeal.directions || [])
-        .filter(direction => (
-            direction.directionType === 'sendDirection'
-            && (direction.parties === 'appellant' || direction.parties === 'respondent')))
-        .map(direction => {
-          return {
-            date: moment(direction.dateSent).format('DD MMMM YYYY'),
-            dateObject: new Date(direction.dateSent),
-            text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-            links: [{
-              ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-              href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-            }]
-          };
-        });
-  } else {
-    return [];
-  }
-}
-
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
@@ -150,8 +111,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
-  const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
-  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled);
+  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(
@@ -168,7 +128,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   );
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
-  const applicationEvents = getApplicationEvents(req);
+  const applicationEvents = getApplicationEvents(getAppellantApplications(req.session.appeal.makeAnApplications));
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
@@ -182,9 +142,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
   }
 
-  const directionsHistory = getDirectionHistory(req);
-
-  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
+  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   return {
@@ -197,9 +155,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   };
 }
 
-function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
-  hearingBundleFeatureEnabled: boolean,
-  ftpaFeatureEnabled: boolean) {
+function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean, hearingBundleFeatureEnabled: boolean) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,
@@ -217,19 +173,10 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id,
     Events.END_APPEAL.id,
     Events.END_APPEAL_AUTOMATICALLY.id,
-    Events.RECORD_OUT_OF_TIME_DECISION.id
+    Events.RECORD_OUT_OF_TIME_DECISION.id,
+    Events.MARK_AS_READY_FOR_UT_TRANSFER.id
   ];
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
-
-  if (ftpaFeatureEnabled) {
-    appealDecisionSectionEvents.push(
-        Events.APPLY_FOR_FTPA_APPELLANT.id,
-        Events.APPLY_FOR_FTPA_RESPONDENT.id,
-        Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
-        Events.RESIDENT_JUDGE_FTPA_DECISION.id
-    );
-  }
-
   const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];
   const appealArgumentSectionStates = [
     States.APPEAL_SUBMITTED.id,
@@ -282,7 +229,6 @@ export {
   getAppealApplicationHistory,
   getSubmitClarifyingQuestionsEvents,
   getApplicationEvents,
-  getDirectionHistory,
   constructSection,
   getEventsAndStates
 };

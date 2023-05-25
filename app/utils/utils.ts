@@ -126,3 +126,7 @@ export async function isFtpaFeatureEnabled(req: Request) {
 export function isNonStandardDirectionEnabled(req: Request) {
   return req.session.appeal.nonStandardDirectionEnabled;
 }
+
+export function isReadonlyApplicationEnabled(req: Request) {
+  return req.session.appeal.readonlyApplicationEnabled;
+}

@@ -429,6 +429,7 @@ export default class UpdateAppealService {
       isDecisionAllowed: caseData.isDecisionAllowed,
       appealOutOfCountry: caseData.appealOutOfCountry,
       nonStandardDirectionEnabled: false,
+      readonlyApplicationEnabled: false,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,

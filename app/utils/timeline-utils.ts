@@ -8,7 +8,14 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getApplicant, getFtpaApplicantType, isFtpaFeatureEnabled, isNonStandardDirectionEnabled } from './utils';
+import {
+  getAppellantApplications,
+  getApplicant,
+  getFtpaApplicantType,
+  isFtpaFeatureEnabled,
+  isNonStandardDirectionEnabled,
+  isReadonlyApplicationEnabled
+} from './utils';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -59,8 +66,11 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
       .map(event => constructEventObject(event, req));
 }
 
-function getApplicationEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
-  const makeDirectionsFlatMap = makeAnApplications ? makeAnApplications.flatMap(application => {
+function getApplicationEvents(req: Request): any[] {
+  const applicationEvents = isReadonlyApplicationEnabled(req)
+      ? req.session.appeal.makeAnApplications
+      : getAppellantApplications(req.session.appeal.makeAnApplications);
+  const makeDirectionsFlatMap = applicationEvents ? applicationEvents.flatMap(application => {
     const makeAnApplicationContent = i18n.pages.overviewPage.timeline.makeAnApplication[getApplicant(application.value)];
     const request = {
       id: application.id,
@@ -158,7 +168,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   );
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
 
-  const applicationEvents = getApplicationEvents(req.session.appeal.makeAnApplications);
+  const applicationEvents = getApplicationEvents(req);
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;

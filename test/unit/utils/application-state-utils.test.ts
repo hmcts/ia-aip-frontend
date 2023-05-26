@@ -1488,4 +1488,24 @@ describe('application-state-utils', () => {
     expect(result).to.eql('aappealSubmitted');
   });
 
+  it('when application is in final bundling state after decision without hearing, should return correct do this next.', async() => {
+    req.session.appeal.appealStatus = 'finalBundling';
+    const event = {
+      'id': 'decisionWithoutHearing',
+      'createdDate': '2022-01-11T16:00:00.000'
+    } as HistoryEvent;
+    req.session.appeal.history.push(event);
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'descriptionParagraphs': [
+        'You chose to have your appeal to be decided without a hearing.',
+        'A judge will decide your appeal based on the information and evidence provided by you and the Home Office.',
+        'The Tribunal will contact you when a decision has been made.'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
 });

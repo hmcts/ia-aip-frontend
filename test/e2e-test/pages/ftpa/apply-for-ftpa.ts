@@ -1,0 +1,30 @@
+import { paths } from '../../../../app/paths';
+
+const config = require('config');
+const testUrl = config.get('testUrl');
+
+module.exports = {
+  applyForFTPAAppellant(I) {
+    When(/^I click the Apply for permission to appeal to the Upper Tribunal link$/, async () => {
+      await I.click('Apply for permission to appeal to the Upper Tribunal');
+    });
+
+    Then(/^I should see the ftpa out of time reason page$/, async () => {
+      await I.waitInUrl(paths.ftpa.ftpaOutOfTimeReason,10);
+      await I.seeInCurrentUrl(paths.ftpa.ftpaOutOfTimeReason);
+    });
+
+    Then(/^I should see the ftpa reason page$/, async () => {
+      await I.waitInUrl(paths.ftpa.ftpaReason,10);
+      await I.seeInCurrentUrl(paths.ftpa.ftpaReason);
+    });
+
+    Then(/^I fill in the textarea with "([^"]*)"$/, async (text: string) => {
+      await I.fillField('#ftpaReason', text);
+    });
+
+    Then(/^I fill in the out of time reason textarea with "([^"]*)"$/, async (text: string) => {
+      await I.fillField('#ftpaOutOfTimeReason', text);
+    });
+  }
+};

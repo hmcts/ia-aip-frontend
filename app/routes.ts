@@ -55,6 +55,7 @@ import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
 import { setupFooterController } from './controllers/footer';
 import { setupForbiddenController } from './controllers/forbidden';
+import { setupFtpaApplicationController } from './controllers/ftpa/ftpa-application';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupHearingAccessNeedsController } from './controllers/hearing-requirements/access-needs';
@@ -220,6 +221,7 @@ const hearingRequirementConfirmationController = setupHearingRequirementsConfirm
 const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
 const makeApplicationControllers = setupMakeApplicationControllers(middleware, updateAppealService, documentManagementService);
 const changeRepresentationControllers = setupChangeRepresentationControllers(middleware);
+const ftpaApplicationControlers = setupFtpaApplicationController(middleware, updateAppealService, documentManagementService);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
 const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleController(middleware);
@@ -332,6 +334,7 @@ router.use(provideMoreEvidence);
 router.use(outOfCountryController);
 router.use(makeApplicationControllers);
 router.use(changeRepresentationControllers);
+router.use(ftpaApplicationControlers);
 
 router.use(hearingBundleFeatureToggleController);
 router.use(outOfCountryFeatureToggleController);

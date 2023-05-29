@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import { jwtRepack } from '../../../app/utils/jwt-repack';
 import { isJWTExpired } from '../../../app/utils/jwt-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
@@ -26,7 +26,7 @@ describe('JWT Utils', () => {
       'exp': dateInSeconds
     };
 
-    const stub = sandbox.stub(jwt, 'decode').withArgs(token).callsFake(() => {
+    const stub = sandbox.stub(jwtRepack, 'decode').withArgs(token).callsFake(() => {
       return mockedDecodedToken;
     });
 
@@ -43,7 +43,7 @@ describe('JWT Utils', () => {
       'exp': dateInSeconds
     };
 
-    const stub = sandbox.stub(jwt, 'decode').withArgs(token).callsFake(() => {
+    const stub = sandbox.stub(jwtRepack, 'decode').withArgs(token).callsFake(() => {
       return mockedDecodedToken;
     });
 
@@ -61,7 +61,7 @@ describe('JWT Utils', () => {
       'exp': dateInSeconds
     };
 
-    const stub = sandbox.stub(jwt, 'decode').withArgs(token).callsFake(() => {
+    const stub = sandbox.stub(jwtRepack, 'decode').withArgs(token).callsFake(() => {
       return mockedDecodedToken;
     });
 
@@ -74,7 +74,7 @@ describe('JWT Utils', () => {
 
     const token = 'someIncorrectToken';
 
-    sandbox.stub(jwt, 'decode').withArgs(token).callsFake(() => {
+    sandbox.stub(jwtRepack, 'decode').withArgs(token).callsFake(() => {
       throw new Error('Could not decode token decoding token');
     });
 

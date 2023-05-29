@@ -235,9 +235,9 @@ describe('Provide more evidence controller', () => {
       const mockFile = {
         originalname: 'somefile.png',
         size: mockSizeInBytes
-      } as Partial<Express.Multer.File>;
+      } as Express.Multer.File;
 
-      req.file = mockFile as Express.Multer.File;
+      req.file = mockFile;
       req.session.appeal.appealStatus = States.APPEAL_SUBMITTED.id;
 
       const documentUploadResponse: DocumentUploadResponse = {
@@ -262,9 +262,9 @@ describe('Provide more evidence controller', () => {
       const mockFile = {
         originalname: 'somefile.png',
         size: mockSizeInBytes
-      } as Partial<Express.Multer.File>;
+      } as Express.Multer.File;
 
-      req.file = mockFile as Express.Multer.File;
+      req.file = mockFile;
       req.session.appeal.appealStatus = States.PRE_HEARING.id;
 
       const documentUploadResponse: DocumentUploadResponse = {
@@ -289,9 +289,9 @@ describe('Provide more evidence controller', () => {
       const mockFile = {
         originalname: 'somefile.png',
         size: mockSizeInBytes
-      } as Partial<Express.Multer.File>;
+      } as Express.Multer.File;
 
-      req.file = mockFile as Express.Multer.File;
+      req.file = mockFile;
       req.session.appeal.appealStatus = States.PRE_HEARING.id;
 
       await uploadProvideMoreEvidence(updateAppealService as UpdateAppealService, documentManagementService as DocumentManagementService)(req as Request, res as Response, next);

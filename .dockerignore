@@ -16,3 +16,6 @@ Dockerfile
 LICENSE
 nodemon.json
 sonar-project.properties
+
+.yarn/cache
+.yarn/install-state.gz

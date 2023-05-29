@@ -37,6 +37,14 @@ function extractHistoryDetails(historyEvents: any[]): HistoryEvent[] {
     }));
 }
 
+function generateSupplementaryId(): Record<string, Record<string, string>> {
+  let serviceId: Record<string, string> = {};
+  serviceId['HMCTSServiceId'] = 'BFA1';
+  let request: Record<string, Record<string, string>> = {};
+  request['$set'] = serviceId;
+  return request;
+}
+
 class CcdService {
   private createOptions(userId: string, headers: SecurityHeaders, uri) {
     return {
@@ -115,6 +123,7 @@ class CcdService {
 
   async createCase(userId: string, headers: SecurityHeaders): Promise<CcdCaseDetails> {
     const startEventResponse = await this.startCreateCase(userId, headers);
+    const supplementaryDataRequest = generateSupplementaryId();
 
     const createdCase = await this.submitCreateCase(userId, headers, {
       event: {
@@ -126,7 +135,8 @@ class CcdService {
         journeyType: 'aip'
       },
       event_token: startEventResponse.token,
-      ignore_warning: true
+      ignore_warning: true,
+      supplementary_data_request: supplementaryDataRequest
     });
     return createdCase;
   }
@@ -135,6 +145,7 @@ class CcdService {
     logger.trace(`Received call to update appeal with event '${event.id}', user '${userId}', updatedCase.id '${updatedCase.id}' `, logLabel);
     const updateEventResponse = await this.startUpdateAppeal(userId, updatedCase.id, event.id, headers);
     logger.trace(`Submitting update appeal case with event '${event.id}'`, logLabel);
+    const supplementaryDataRequest = generateSupplementaryId();
 
     return this.submitUpdateAppeal(userId, updatedCase.id, headers, {
       event: {
@@ -144,7 +155,8 @@ class CcdService {
       },
       data: updatedCase.case_data,
       event_token: updateEventResponse.token,
-      ignore_warning: true
+      ignore_warning: true,
+      supplementary_data_request: supplementaryDataRequest
     });
   }
 

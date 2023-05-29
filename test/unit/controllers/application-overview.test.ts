@@ -4,11 +4,12 @@ import {
   checkEnableProvideMoreEvidenceSection,
   getAppealRefNumber,
   getApplicationOverview,
-  getHearingDetails,
+  getHearingDetails, isPostDecisionState,
   setupApplicationOverviewController,
-  showAppealRequests,
-  showAppealRequestsInAppealEndedStatus,
-  showHearingRequests
+  showAppealRequestSection,
+  showAppealRequestSectionInAppealEndedStatus,
+  showFtpaApplicationLink,
+  showHearingRequestSection
 } from '../../../app/controllers/application-overview';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
@@ -186,8 +187,10 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -243,8 +246,10 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -301,8 +306,10 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -371,8 +378,10 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -443,8 +452,10 @@ describe('Confirmation Page Controller', () => {
       showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
       showPayLaterLink: false,
+      ftpaFeatureEnabled: false,
       hearingDetails: null,
-      showChangeRepresentation: false
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false
     });
   });
 
@@ -567,27 +578,96 @@ describe('Confirmation Page Controller', () => {
   });
 
   it('showAppealRequests should return true when in appealSubmitted state', () => {
-    const result = showAppealRequests(States.APPEAL_SUBMITTED.id, true);
+    const result = showAppealRequestSection(States.APPEAL_SUBMITTED.id, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequests should return false when in ended state', () => {
-    const result = showAppealRequests(States.ENDED.id, true);
+    const result = showAppealRequestSection(States.ENDED.id, true);
     expect(result).to.equal(false);
   });
 
   it('showHearingRequests should return false when in appealSubmitted state', () => {
-    const result = showHearingRequests(States.APPEAL_SUBMITTED.id, true);
+    const result = showHearingRequestSection(States.APPEAL_SUBMITTED.id, true);
     expect(result).to.equal(false);
   });
 
   it('showHearingRequests should return true when in prepareForHearing state', () => {
-    const result = showHearingRequests(States.PREPARE_FOR_HEARING.id, true);
+    const result = showHearingRequestSection(States.PREPARE_FOR_HEARING.id, true);
     expect(result).to.equal(true);
   });
 
   it('showAppealRequestsInAppealEndedStatus should return true when in ended state', () => {
-    const result = showAppealRequestsInAppealEndedStatus(States.ENDED.id, true);
+    const result = showAppealRequestSectionInAppealEndedStatus(States.ENDED.id, true);
     expect(result).to.equal(true);
+  });
+
+  it('isPostDecisionState should return true when in decided state', () => {
+    const result = isPostDecisionState(States.DECIDED.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('isPostDecisionState should return true when in ftpaDecided state', () => {
+    const result = isPostDecisionState(States.FTPA_DECIDED.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('isPostDecisionState should return true when in ftpaSubmitted state', () => {
+    const result = isPostDecisionState(States.FTPA_SUBMITTED.id, true);
+    expect(result).to.equal(true);
+  });
+
+  it('isPostDecisionState should return false when in state other than decided, ftpaDecided or ftpaSubmitted', () => {
+    const result = isPostDecisionState(States.APPEAL_SUBMITTED.id, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showFtpaApplicationLink should return false when appellant ftpa appeal is submitted', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_SUBMITTED.id,
+      ftpaAppellantApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showFtpaApplicationLink should return false when appellant ftpa appeal is decided', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_DECIDED.id,
+      ftpaAppellantApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(false);
+  });
+
+  it('showFtpaApplicationLink should return true when respondent ftpa appeal is submitted', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_SUBMITTED.id,
+      ftpaRespondentApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(true);
+  });
+
+  it('showFtpaApplicationLink should return true when respondent ftpa appeal is decided', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.FTPA_DECIDED.id,
+      ftpaRespondentApplicationDate: '2020-01-01'
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(true);
+  });
+
+  it('showFtpaApplicationLink should return false before ftpa submitted state', () => {
+    const appeal = {
+      ...req.session.appeal,
+      appealStatus: States.DECIDED.id
+    };
+    const result = showFtpaApplicationLink(appeal, true);
+    expect(result).to.equal(false);
   });
 });

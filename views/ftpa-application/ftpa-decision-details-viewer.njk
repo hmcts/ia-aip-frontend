@@ -1,0 +1,15 @@
+{% extends '../layout.njk' %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% set pageTitleName = title %}
+
+{% block content %}
+    <h1>{{ title  }}</h1>
+    {{ govukSummaryList({
+        rows: data.application
+    }) }}
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ subTitle }}</h2>
+    {{ govukSummaryList({
+        rows: data.decision
+    }) }}
+  {{ contactUs() }}
+{% endblock %}

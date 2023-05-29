@@ -3,6 +3,7 @@ const config = require('config')
 exports.config = {
   name: 'codecept',
   output: './functional-output/e2e/reports/',
+  teardown: './test/functional/bootstrap.ts',
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),

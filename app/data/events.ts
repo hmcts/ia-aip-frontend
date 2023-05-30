@@ -200,5 +200,10 @@ export const Events = {
     id: 'leadershipJudgeFtpaDecision',
     summary: 'Leadership Judge FTPA decision',
     description: 'Leadership Judge FTPA decision'
+  },
+  MARK_AS_READY_FOR_UT_TRANSFER: {
+    id: 'markAsReadyForUtTransfer',
+    summary: 'Transfer appeal to Upper Tribunal',
+    description: 'Transfer appeal to Upper Tribunal'
   }
 };

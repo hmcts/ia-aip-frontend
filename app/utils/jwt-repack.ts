@@ -1,4 +1,3 @@
-
 import { decode, jwt } from 'jsonwebtoken';
 
 export const jwtRepack = {

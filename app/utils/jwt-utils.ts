@@ -16,7 +16,7 @@ export function decodeJWTToken(jwtToken: string) {
 }
 
 /**
- * Checks whether a JWTToken is expired using an offset of 20 seconds,
+ * Checks whether a JWTToken is expired using an offset of 5 minutes,
  * this offset accounts for delays between sending/receiving requests
  * @param jwtToken the jwt token to be verified
  */

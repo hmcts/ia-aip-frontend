@@ -124,6 +124,14 @@ module.exports = {
           signInForUser('preHearing@example.com');
           break;
         }
+        case 'decided': {
+          signInForUser('decided@example.com');
+          break;
+        }
+        case 'ftpaOutOfTimeApplicationStarted': {
+          signInForUser('ftpa-out-of-time-application-started@example.com');
+          break;
+        }
         default:
           break;
       }

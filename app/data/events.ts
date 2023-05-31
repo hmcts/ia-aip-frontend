@@ -200,5 +200,10 @@ export const Events = {
     id: 'leadershipJudgeFtpaDecision',
     summary: 'Leadership Judge FTPA decision',
     description: 'Leadership Judge FTPA decision'
+  },
+  DECISION_WITHOUT_HEARING: {
+    id: 'decisionWithoutHearing',
+    summary: 'Decision without a hearing',
+    description: 'Decision without a hearing'
   }
 };

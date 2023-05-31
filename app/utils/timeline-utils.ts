@@ -167,11 +167,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     eventsAndStates.appealArgumentSectionStates, req
   );
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
-  
-  const applicationEvents = getApplicationEvents(req);  
-  
+ 
+  const applicationEvents = getApplicationEvents(req);
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
-
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
   let paymentEvent = [];
   if (paymentStatus === 'Paid') {

@@ -8,7 +8,14 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { getApplicant, getFtpaApplicantType, isFtpaFeatureEnabled } from './utils';
+import {
+  getAppellantApplications,
+  getApplicant,
+  getFtpaApplicantType,
+  isFtpaFeatureEnabled,
+  isNonStandardDirectionEnabled,
+  isReadonlyApplicationEnabled
+} from './utils';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -59,8 +66,11 @@ function constructSection(eventsToLookFor: string[], events: HistoryEvent[], sta
       .map(event => constructEventObject(event, req));
 }
 
-function getApplicationEvents(makeAnApplications: Collection<Application<Evidence>>[]): any[] {
-  const makeDirectionsFlatMap = makeAnApplications ? makeAnApplications.flatMap(application => {
+function getApplicationEvents(req: Request): any[] {
+  const applicationEvents = isReadonlyApplicationEnabled(req)
+      ? req.session.appeal.makeAnApplications
+      : getAppellantApplications(req.session.appeal.makeAnApplications);
+  const makeDirectionsFlatMap = applicationEvents ? applicationEvents.flatMap(application => {
     const makeAnApplicationContent = i18n.pages.overviewPage.timeline.makeAnApplication[getApplicant(application.value)];
     const request = {
       id: application.id,
@@ -110,23 +120,26 @@ function getSubmitClarifyingQuestionsEvents(history: HistoryEvent[], directions:
   });
 }
 
-function getDirectionHistory(directions: Direction[]): any[] {
-  let directionsHistory = [];
-  (directions || [])
-    .filter(direction => (
-      direction.directionType === 'sendDirection'
-      && (direction.parties === 'appellant' || direction.parties === 'respondent'))).forEach(direction => {
-        directionsHistory.push({
-          date: moment(direction.dateSent).format('DD MMMM YYYY'),
-          dateObject: new Date(direction.dateSent),
-          text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
-          links: [{
-            ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
-            href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
-          }]
+function getDirectionHistory(req: Request): any[] {
+  if (isNonStandardDirectionEnabled(req)) {
+    return (req.session.appeal.directions || [])
+        .filter(direction => (
+            direction.directionType === 'sendDirection'
+            && (direction.parties === 'appellant' || direction.parties === 'respondent')))
+        .map(direction => {
+          return {
+            date: moment(direction.dateSent).format('DD MMMM YYYY'),
+            dateObject: new Date(direction.dateSent),
+            text: i18n.pages.overviewPage.timeline.sendDirection[direction.parties].text || null,
+            links: [{
+              ...i18n.pages.overviewPage.timeline.sendDirection[direction.parties].links[0],
+              href: paths.common.directionHistoryViewer.replace(':id', direction.uniqueId)
+            }]
+          };
         });
-      });
-  return directionsHistory;
+  } else {
+    return [];
+  }
 }
 
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
@@ -154,8 +167,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     eventsAndStates.appealArgumentSectionStates, req
   );
   const appealDetailsSection = constructSection(eventsAndStates.appealDetailsSectionEvents, req.session.appeal.history, null, req);
-
-  const applicationEvents = getApplicationEvents(req.session.appeal.makeAnApplications);
+  
+  const applicationEvents = getApplicationEvents(req);  
+  
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
 
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
@@ -169,7 +183,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
   }
 
-  const directionsHistory = getDirectionHistory(req.session.appeal.directions);
+  const directionsHistory = getDirectionHistory(req);
 
   const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);

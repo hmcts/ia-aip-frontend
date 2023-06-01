@@ -98,7 +98,6 @@ export async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-
     process.exit();
   }
 }

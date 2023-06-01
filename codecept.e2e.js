@@ -1,9 +1,13 @@
-const config = require('config')
+const config = require('config');
+
 
 exports.config = {
   name: 'codecept',
   output: './functional-output/e2e/reports/',
   //teardown: './test/functional/bootstrap.ts',
+  teardown: async () => {
+     process.exit();
+  },
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),

@@ -14,6 +14,8 @@ const emailToUserId = {
   'cmaRequirementsSubmitted@example.com': '11',
   'cmaListed@example.com': '12',
   'preHearing@example.com': '17',
+  'decided@example.com': '18',
+  'ftpa-out-of-time-application-started@example.com': '19',
   'setupcase@example.com': '999'
 };
 

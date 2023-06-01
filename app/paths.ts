@@ -149,6 +149,21 @@ const paths = {
   cmaRequirementsSubmitted: {
     confirmation: '/appointment-success'
   },
+  ftpa: {
+    ftpaApplication: '/apply-for-ftpa',
+    ftpaReason: '/ftpa-reason',
+    ftpaEvidenceQuestion: '/ftpa-evidence-question',
+    ftpaEvidence: '/ftpa-evidence',
+    ftpaCheckAndSend: '/ftpa-check-answers',
+    ftpaOutOfTimeReason: '/ftpa-out-of-time-reason',
+    ftpaOutOfTimeEvidenceQuestion: '/ftpa-out-of-time-evidence-question',
+    ftpaOutOfTimeEvidence: '/ftpa-out-of-time-evidence',
+    ftpaOutOfTimeEvidenceUploadFile: '/ftpa-out-of-time-evidence/upload/file',
+    ftpaOutOfTimeEvidenceDeleteFile: '/ftpa-out-of-time-evidence/delete/file',
+    ftpaEvidenceUploadFile: '/ftpa-evidence/upload/file',
+    ftpaEvidenceDeleteFile: '/ftpa-evidence/delete/file',
+    ftpaConfirmation: '/ftpa-confirmation'
+  },
   // Start Representing Yourself
   startRepresentingYourself: {
     start: '/start-representing-yourself',
@@ -206,6 +221,9 @@ const paths = {
     hearingNoticeViewer: '/hearing-notice',
     hearingBundleViewer: '/hearing-bundle',
     decisionAndReasonsViewer: '/decision-reasons',
+    ftpaAppellantApplicationViewer: '/ftpa-appellant-application',
+    ftpaDecisionViewer: '/ftpa-decision',
+    directionHistoryViewer: '/direction-history/:id',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

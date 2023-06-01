@@ -60,6 +60,13 @@ describe('isJourneyAllowedMiddleware', () => {
     expect(next).to.have.been.called;
   });
 
+  it('should allow access to page with params', () => {
+    req.path = paths.ftpa.ftpaApplication;
+    req.session.appeal.appealStatus = 'decided';
+    isJourneyAllowedMiddleware(req as Request, res as Response, next);
+    expect(next).to.have.been.called;
+  });
+
   it('should render forbidden page when page not available for that state', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.path = paths.appealSubmitted.confirmation;

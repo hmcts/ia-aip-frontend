@@ -56,7 +56,10 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== States.ENDED.id) {
+  if (req.session.appeal.appealStatus === States.FINAL_BUNDLING.id
+    && req.session.appeal.history.find(event => event.id === Events.DECISION_WITHOUT_HEARING.id)) {
+    return 'decidedWithoutHearing';
+  } else if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== States.ENDED.id) {
     if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
       return 'lateAppealRejected';
     }
@@ -480,6 +483,11 @@ async function getAppealApplicationNextStep(req: Request) {
         date: getHearingDate(req),
         time: getHearingTime(req),
         hearingCentre: getHearingCentre(req)
+      };
+      break;
+    case 'decidedWithoutHearing':
+      doThisNextSection = {
+        descriptionParagraphs: i18n.pages.overviewPage.doThisNext.decidedWithoutHearing.description
       };
       break;
     case 'ended':

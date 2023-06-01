@@ -170,7 +170,6 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   const applicationEvents = getApplicationEvents(req);
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
-
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
   let paymentEvent = [];
   if (paymentStatus === 'Paid') {

@@ -1,5 +1,4 @@
 import config from 'config';
-import { bootstrap as ourBootStrap, teardown as ourTeardown } from './test/functional/bootstrap';
 
 exports.config = {
   name: 'codecept',

@@ -14,7 +14,7 @@ nodejs:
     CCD_API_URL: http://ccd-data-store-api-aat.service.core-compute-aat.internal
     REDIS_URL: redis://{{ .Release.Name }}-redis-master
     PCQ_URL: https://pcq.aat.platform.hmcts.net
-    PCQ_RETURN_URL: immigration-appeal.aat.platform.hmcts.net/about-appeal
+    PCQ_RETURN_URL: https://${SERVICE_FQDN}/about-appeal
   keyVaults:
     ia:
       secrets:

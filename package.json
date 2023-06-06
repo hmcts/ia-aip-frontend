@@ -168,6 +168,7 @@
     "@stryker-mutator/karma-runner": "^6.4.2",
     "style-loader/loader-utils": "^2.0.3",
     "minimatch": "^3.0.5",
+    "node-sass": "^7.0.0",
     "mocha": "^10.2.0",
     "flat": "^5.0.2",
     "qs": "^6.7.3",

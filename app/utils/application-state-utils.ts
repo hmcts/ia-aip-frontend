@@ -76,9 +76,6 @@ function getAppealStatus(req: Request) {
       return req.session.appeal.appealReviewOutcome;
     }
     return req.session.appeal.appealStatus;
-  } else if (req.session.appeal.appealStatus === States.FINAL_BUNDLING.id
-      && req.session.appeal.history.find(event => event.id === Events.DECISION_WITHOUT_HEARING.id)) {
-    return 'decidedWithoutHearing';
   } else {
     return req.session.appeal.appealStatus;
   }

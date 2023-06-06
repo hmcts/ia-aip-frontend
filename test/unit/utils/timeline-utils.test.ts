@@ -2,7 +2,13 @@ import { Request } from 'express';
 import { Events } from '../../../app/data/events';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { constructSection, getApplicationEvents, getDirectionHistory, getEventsAndStates, getSubmitClarifyingQuestionsEvents } from '../../../app/utils/timeline-utils';
+import {
+  constructSection,
+  getApplicationEvents,
+  getDirectionHistory,
+  getEventsAndStates,
+  getSubmitClarifyingQuestionsEvents
+} from '../../../app/utils/timeline-utils';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithTimeExtensionsData } from '../mockData/events/expectation/expected-events-with-time-extensions';
 
@@ -20,7 +26,9 @@ describe('timeline-utils', () => {
         appeal: {
           application: {},
           caseBuilding: {},
-          reasonsForAppeal: {}
+          reasonsForAppeal: {},
+          nonStandardDirectionEnabled: true,
+          readonlyApplicationEnabled: true
         }
       },
       idam: {
@@ -120,7 +128,7 @@ describe('timeline-utils', () => {
 
   describe('getApplicationEvents', () => {
     it('should get application events and decision for appellant', () => {
-      const makeAnApplications: Collection<Application<Evidence>>[] = [
+      req.session.appeal.makeAnApplications = [
         {
           id: '1',
           value: {
@@ -151,7 +159,7 @@ describe('timeline-utils', () => {
           }
         }
       ];
-      const applicationEvents = getApplicationEvents(makeAnApplications);
+      const applicationEvents = getApplicationEvents(req as Request);
 
       expect(applicationEvents).to.deep.eq(
         [{
@@ -191,7 +199,7 @@ describe('timeline-utils', () => {
     });
 
     it('should get application events and decision for respondent', () => {
-      const makeAnApplications: Collection<Application<Evidence>>[] = [
+      req.session.appeal.makeAnApplications = [
         {
           id: '4',
           value: {
@@ -209,7 +217,7 @@ describe('timeline-utils', () => {
           }
         }
       ];
-      const applicationEvents = getApplicationEvents(makeAnApplications);
+      const applicationEvents = getApplicationEvents(req as Request);
 
       expect(applicationEvents).to.deep.eq(
         [{
@@ -238,7 +246,7 @@ describe('timeline-utils', () => {
     });
 
     it('should get application events content for Appellant application', () => {
-      const makeAnApplications: Collection<Application<Evidence>>[] = [
+      req.session.appeal.makeAnApplications = [
         {
           id: '2',
           value: {
@@ -253,7 +261,7 @@ describe('timeline-utils', () => {
           }
         }
       ];
-      const applicationEvents = getApplicationEvents(makeAnApplications);
+      const applicationEvents = getApplicationEvents(req as Request);
 
       expect(applicationEvents).to.deep.eq(
         [{
@@ -271,7 +279,7 @@ describe('timeline-utils', () => {
     });
 
     it('should get application events content for Legal Rep application', () => {
-      const makeAnApplications: Collection<Application<Evidence>>[] = [
+      req.session.appeal.makeAnApplications = [
         {
           id: '1',
           value: {
@@ -286,7 +294,7 @@ describe('timeline-utils', () => {
           }
         }
       ];
-      const applicationEvents = getApplicationEvents(makeAnApplications);
+      const applicationEvents = getApplicationEvents(req as Request);
 
       expect(applicationEvents).to.deep.eq(
         [{
@@ -304,7 +312,7 @@ describe('timeline-utils', () => {
     });
 
     it('should get application events content for Respondent application', () => {
-      const makeAnApplications: Collection<Application<Evidence>>[] = [
+      req.session.appeal.makeAnApplications = [
         {
           id: '3',
           value: {
@@ -319,7 +327,8 @@ describe('timeline-utils', () => {
           }
         }
       ];
-      const applicationEvents = getApplicationEvents(makeAnApplications);
+
+      const applicationEvents = getApplicationEvents(req as Request);
 
       expect(applicationEvents).to.deep.eq(
         [{
@@ -390,30 +399,30 @@ describe('timeline-utils', () => {
   });
 
   describe('getDirectionHistory', () => {
-    const directions: Direction[] = [
-      {
-        id: '1',
-        parties: 'appellant',
-        tag: '',
-        dateDue: '2023-12-11',
-        dateSent: '2023-05-11',
-        explanation: 'explanation 1',
-        uniqueId: '123456789',
-        directionType: 'sendDirection'
-      },
-      {
-        id: '2',
-        parties: 'respondent',
-        tag: '',
-        dateDue: '2023-12-11',
-        dateSent: '2023-05-11',
-        explanation: 'explanation 2',
-        uniqueId: '987654321',
-        directionType: 'sendDirection'
-      }
-    ];
     it('should get direction history', () => {
-      const directionsHistory = getDirectionHistory(directions);
+      req.session.appeal.directions = [
+        {
+          id: '1',
+          parties: 'appellant',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 1',
+          uniqueId: '123456789',
+          directionType: 'sendDirection'
+        },
+        {
+          id: '2',
+          parties: 'respondent',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 2',
+          uniqueId: '987654321',
+          directionType: 'sendDirection'
+        }
+      ];
+      const directionsHistory = getDirectionHistory(req as Request);
 
       expect(directionsHistory.length).to.be.eql(2);
       directionsHistory.forEach(direction => {
@@ -422,7 +431,27 @@ describe('timeline-utils', () => {
     });
 
     it('should filter history with non sendDirection type and appellant/respondent parties', () => {
-      directions.push(
+      req.session.appeal.directions = [
+        {
+          id: '1',
+          parties: 'appellant',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 1',
+          uniqueId: '123456789',
+          directionType: 'sendDirection'
+        },
+        {
+          id: '2',
+          parties: 'respondent',
+          tag: '',
+          dateDue: '2023-12-11',
+          dateSent: '2023-05-11',
+          explanation: 'explanation 2',
+          uniqueId: '987654321',
+          directionType: 'sendDirection'
+        },
         {
           id: '3',
           parties: 'appellant',
@@ -443,8 +472,8 @@ describe('timeline-utils', () => {
           uniqueId: '135135135',
           directionType: 'sendDirection'
         }
-      );
-      const directionsHistory = getDirectionHistory(directions);
+      ];
+      const directionsHistory = getDirectionHistory(req as Request);
       expect(directionsHistory.length).to.be.eql(3);
       directionsHistory.forEach(direction => {
         expect(direction).to.contain.keys('date', 'dateObject', 'text', 'links');
@@ -452,7 +481,8 @@ describe('timeline-utils', () => {
     });
 
     it('should return empty direction history', () => {
-      const directionsHistory = getDirectionHistory([]);
+      req.session.appeal.directions = [];
+      const directionsHistory = getDirectionHistory(req as Request);
       expect(directionsHistory.length).to.be.eql(0);
     });
   });

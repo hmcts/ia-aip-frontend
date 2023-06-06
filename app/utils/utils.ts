@@ -122,3 +122,11 @@ export async function isFtpaFeatureEnabled(req: Request) {
   const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
   return isFtpaFeatureEnabled;
 }
+
+export function isNonStandardDirectionEnabled(req: Request) {
+  return req.session.appeal.nonStandardDirectionEnabled;
+}
+
+export function isReadonlyApplicationEnabled(req: Request) {
+  return req.session.appeal.readonlyApplicationEnabled;
+}

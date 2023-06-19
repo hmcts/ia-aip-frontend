@@ -7,9 +7,6 @@ import { AuthenticationService, SecurityHeaders } from './authentication-service
 import { fileNameFormatter, toHtmlLink, documentIdToDocStoreUrl } from '../utils/utils';
 import { DmDocumentManagementService } from './dm-document-management-service'
 
-const documentManagementBaseUrl = config.get('documentManagement.apiUrl');
-
-
 class DocumentManagementService {
   private dmDocumentManagementService: DmDocumentManagementService;
 

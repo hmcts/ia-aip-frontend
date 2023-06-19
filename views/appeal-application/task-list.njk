@@ -28,7 +28,7 @@
               }) }}
               {% else %}
                 {% if task.active %}
-                    <a class="govuk-link" id='{{ i18n.pages.taskList[task.id].id }}'
+                    <a class="govuk-link" id='{{ i18n.pages.taskList[task.id].id }}-ToDoButton'
                      href='{{ i18n.pages.taskList[task.id].path | path }}'
                      title='{{ i18n.pages.taskList[task.id].title }}'>
                         {{ govukTag({

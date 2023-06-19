@@ -106,6 +106,7 @@ import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
 import CcdSystemService from './service/ccd-system-service';
 import { DocumentManagementService } from './service/document-management-service';
+import { DmDocumentManagementService } from './service/dm-document-management-service';
 import IdamService from './service/idam-service';
 import PaymentService from './service/payments-service';
 import PcqService from './service/pcq-service';
@@ -119,7 +120,8 @@ const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
-const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
+const dmDocumentManagementService: DmDocumentManagementService = new DmDocumentManagementService(authenticationService);
+const documentManagementService: DocumentManagementService = new DocumentManagementService(dmDocumentManagementService);
 const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 const pcqService: PcqService = new PcqService();

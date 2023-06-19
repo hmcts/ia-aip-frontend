@@ -1,12 +1,12 @@
 import { Request } from 'express';
 import { AuthenticationService } from '../../../app/service/authentication-service';
-import { addToDocumentMapper, docStoreUrlToHtmlLink, documentIdToDocStoreUrl, DocumentManagementService, documentToHtmlLink, removeFromDocumentMapper } from '../../../app/service/document-management-service';
+import { DmDocumentManagementService } from '../../../app/service/dm-document-management-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
 
-describe('document-management-service', () => {
+describe('dm-document-management-service', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   const logger: Logger = new Logger();
@@ -39,7 +39,7 @@ describe('document-management-service', () => {
     sandbox.restore();
   });
 
-  describe('DocumentManagementService deleteFile', () => {
+  describe('DmDocumentManagementService deleteFile', () => {
     it('should delete a file and remove it from documentMap', async () => {
       req.session.appeal.documentMap = [
         {
@@ -48,8 +48,8 @@ describe('document-management-service', () => {
         }
       ];
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const deleteStub = sandbox.stub(DocumentManagementService.prototype, 'delete' as any);
-      const documentManagementService = new DocumentManagementService(authenticationService);
+      const deleteStub = sandbox.stub(DmDocumentManagementService.prototype, 'delete' as any);
+      const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'fileId');
 
       expect(deleteStub).to.have.been.calledWith('anUID', sinon.match.any, 'file-url.com');
@@ -58,11 +58,11 @@ describe('document-management-service', () => {
 
   });
 
-  describe('DocumentManagementService fetchFile', () => {
+  describe('DmDocumentManagementService fetchFile', () => {
     it('should fetch a file', async () => {
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const fetchStub = sandbox.stub(DocumentManagementService.prototype, 'fetchBinaryFile' as any);
-      const documentManagementService = new DocumentManagementService(authenticationService);
+      const fetchStub = sandbox.stub(DmDocumentManagementService.prototype, 'fetchBinaryFile' as any);
+      const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
       expect(fetchStub).to.have.been.calledWith(sinon.match.any, sinon.match.any, 'http://store/documents/ID');
@@ -70,7 +70,7 @@ describe('document-management-service', () => {
 
   });
 
-  describe('DocumentManagementService uploadFile', () => {
+  describe('DmDocumentManagementService uploadFile', () => {
     it('should upload a file', async () => {
       req.session.appeal.documentMap = [];
 
@@ -79,8 +79,8 @@ describe('document-management-service', () => {
       const resolved = new Promise((r) => r(documentUploadResponse));
 
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const uploadStub = sandbox.stub(DocumentManagementService.prototype, 'upload' as any).returns(resolved);
-      const documentManagementService = new DocumentManagementService(authenticationService);
+      const uploadStub = sandbox.stub(DmDocumentManagementService.prototype, 'upload' as any).returns(resolved);
+      const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 
       expect(uploadStub).to.have.been.calledWith(sinon.match.any, sinon.match.any);
@@ -95,54 +95,9 @@ describe('document-management-service', () => {
       const documentMap: DocumentMap[] = [];
       const documentUrl: string = 'http://documenturl/';
 
-      const result = addToDocumentMapper(documentUrl, documentMap);
+      const documentManagementService = new DmDocumentManagementService(null);
+      const result = documentManagementService.addToDocumentMapper(documentUrl, documentMap);
       validateUuid(result);
-    });
-
-    it('docStoreUrlToHtmlLink should convert document url to html link', () => {
-      req.session.appeal.documentMap = [
-        {
-          id: 'fileId',
-          url: 'file-url.com'
-        }
-      ];
-
-      const result = docStoreUrlToHtmlLink('http://store', 'file-name.txt', 'file-url.com', req as Request);
-      expect(result).to.be.a('string');
-      expect(result).to.be.eq('<a class=\'govuk-link\' target=\'_blank\' rel=\'noopener noreferrer\' href=\'http://store/fileId\'>file-name(TXT)</a>');
-    });
-
-    it('documentMapToDocStoreUrl should retrieve the doc store url using key', () => {
-      const documentMap: DocumentMap[] = [
-        { id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/' }
-      ];
-      const result = documentIdToDocStoreUrl('00000000-0000-0000-0000-000000000000', documentMap);
-      expect(result).to.be.a('string');
-      expect(result).to.be.eq('http://someDocumentUrl/');
-    });
-
-    it('documentToHtmlLink  should convert document to html link', () => {
-      req.session.appeal.documentMap = [
-        {
-          id: 'fileId',
-          url: 'file-url.com'
-        }
-      ];
-
-      const document = {
-        id: 1234,
-        value: {
-          document_url: 'http://store',
-          document_filename: 'file-name.txt',
-          document_binary_url: 'file-name.txt'
-        },
-        caseTypeId: 'Asylum',
-        jurisdictionId: 'IA'
-      };
-
-      const result = documentToHtmlLink('http://store', document, req as Request);
-
-      expect(result).to.be.a('string');
     });
 
     describe('removeFromDocumentMapper', () => {
@@ -153,7 +108,8 @@ describe('document-management-service', () => {
             url: 'file-url.com'
           }
         ];
-        const documentMap = removeFromDocumentMapper('fileId', req.session.appeal.documentMap);
+        const documentManagementService = new DmDocumentManagementService(null);
+        const documentMap = documentManagementService.removeFromDocumentMapper('fileId', req.session.appeal.documentMap);
         expect(documentMap.length).to.be.eq(0);
       });
 
@@ -164,7 +120,8 @@ describe('document-management-service', () => {
             url: 'file-url.com'
           }
         ];
-        const documentMap = removeFromDocumentMapper('anotherId', req.session.appeal.documentMap);
+        const documentManagementService = new DmDocumentManagementService(null);
+        const documentMap = documentManagementService.removeFromDocumentMapper('anotherId', req.session.appeal.documentMap);
         expect(documentMap.length).to.be.eq(1);
       });
     });

@@ -61,4 +61,13 @@ withPipeline("nodejs", product, component) {
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
   }
+
+  afterAlways('securitychecks') {
+    sh """
+      yarn npm audit --environment production --recursive --json | jq -cr '.advisories| to_entries[] | {"type": "auditAdvisory", "data": { "advisory": .value }}' > yarn-audit-known-issues.txt
+    """
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'yarn-audit-known-issues.txt'
+  }
+
 }
+

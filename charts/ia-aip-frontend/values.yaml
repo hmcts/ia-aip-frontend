@@ -28,8 +28,6 @@ nodejs:
         - idam-secret
         - addressLookupToken
         - s2s-secret
-        - ia-redis-access-key
-        - ia-redis-connection-string
         - launch-darkly-sdk-key
         - AppInsightsInstrumentationKey
         - hearing-centre-bradford-email

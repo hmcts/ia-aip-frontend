@@ -17,18 +17,15 @@ data "azurerm_key_vault" "ia_key_vault" {
   resource_group_name = "${local.key_vault_name}"
 }
 
-data "azurerm_subnet" "core_infra_redis_subnet" {
-  name                 = "core-infra-subnet-2-${var.env}"
-  virtual_network_name = "core-infra-vnet-${var.env}"
-  resource_group_name  = "core-infra-${var.env}"
-}
-
 module "redis-cache" {
   source      = "git@github.com:hmcts/cnp-module-redis?ref=master"
-  product     = "${var.product}-redis"
+  product     = "${var.product}"
   location    = var.location
   env         = var.env
-  subnetid    = data.azurerm_subnet.core_infra_redis_subnet.id
+  private_endpoint_enabled = true
+  redis_version = "6"
+  business_area = "cft" # cft or sds
+  public_network_access_enabled = false
   common_tags = var.common_tags
 }
 

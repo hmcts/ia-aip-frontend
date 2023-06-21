@@ -23,7 +23,7 @@
   },
   "microservice": "iac",
   "session": {
-    "useRedis": true,
+    "useRedis": false,
     "useLogger": false,
     "redis": {
       "url": "redis://127.0.0.1:6379",

@@ -1,14 +1,19 @@
 import { Request } from 'express';
 import _ from 'lodash';
 import i18n from '../../locale/en.json';
-import { FEATURE_FLAGS } from '../data/constants';
+import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
-import { getAppellantApplications, hasPendingTimeExtension } from '../utils/utils';
+import {
+  getAppellantApplications,
+  getFtpaApplicantType,
+  hasPendingTimeExtension,
+  isFtpaFeatureEnabled
+} from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
-import { getDeadline } from './event-deadline-date-finder';
+import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
 
 interface DoThisNextSection {
   descriptionParagraphs: string[];
@@ -18,6 +23,7 @@ interface DoThisNextSection {
   };
   info?: {
     title: string,
+    text?: string,
     url: string;
   };
   cta?: {
@@ -33,6 +39,7 @@ interface DoThisNextSection {
   };
   allowedAskForMoreTime?: boolean;
   deadline?: string;
+  ftpaDeadline?: string;
   date?: string;
   time?: string;
   hearingCentre?: string;
@@ -40,6 +47,8 @@ interface DoThisNextSection {
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   decision?: string;
+  feedbackTitle?: string;
+  feedbackDescription?: string;
 }
 
 /**
@@ -47,7 +56,10 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== States.ENDED.id) {
+  if (req.session.appeal.appealStatus === States.FINAL_BUNDLING.id
+    && req.session.appeal.history.find(event => event.id === Events.DECISION_WITHOUT_HEARING.id)) {
+    return 'decidedWithoutHearing';
+  } else if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== States.ENDED.id) {
     if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
       return 'lateAppealRejected';
     }
@@ -99,6 +111,8 @@ async function getAppealApplicationNextStep(req: Request) {
   const decisionRefused = applications.length > 0 && applications[0].value.decision === 'Refused' || null;
   let doThisNextSection: DoThisNextSection;
   const isLate = req.session.appeal.application.isAppealLate;
+  const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
+  const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
 
   let descriptionParagraphs;
   let respondBy;
@@ -471,6 +485,11 @@ async function getAppealApplicationNextStep(req: Request) {
         hearingCentre: getHearingCentre(req)
       };
       break;
+    case 'decidedWithoutHearing':
+      doThisNextSection = {
+        descriptionParagraphs: i18n.pages.overviewPage.doThisNext.decidedWithoutHearing.description
+      };
+      break;
     case 'ended':
       doThisNextSection = {
         descriptionParagraphs: [
@@ -514,19 +533,43 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'decided':
-      doThisNextSection = {
-        decision: req.session.appeal.isDecisionAllowed,
-        descriptionParagraphs: [
+
+      let decidedDescriptionParagraphs;
+      let decidedInfo;
+
+      if (ftpaEnabled) {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.descriptionFtpaEnabled
+        ];
+
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
+          text: i18n.pages.overviewPage.doThisNext.decided.info.text,
+          url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
+        };
+
+      } else {
+        decidedDescriptionParagraphs = [
           i18n.pages.overviewPage.doThisNext.decided.decision,
           i18n.pages.overviewPage.doThisNext.decided.description,
           i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackTitle,
           i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackDescription
-        ],
-        info: {
+        ];
+
+        decidedInfo = {
           title: i18n.pages.overviewPage.doThisNext.decided.info.title,
           url: i18n.pages.overviewPage.doThisNext.decided.info.url
-        },
+        };
+      }
+
+      doThisNextSection = {
+        decision: req.session.appeal.isDecisionAllowed,
+        descriptionParagraphs: decidedDescriptionParagraphs,
+        info: decidedInfo,
         cta: {},
+        feedbackTitle: i18n.pages.overviewPage.doThisNext.decided.feedbackTitle,
+        feedbackDescription: i18n.pages.overviewPage.doThisNext.decided.feedbackDescription,
         allowedAskForMoreTime: false
       };
       break;
@@ -545,6 +588,32 @@ async function getAppealApplicationNextStep(req: Request) {
         },
         allowedAskForMoreTime: false
       };
+      break;
+    case 'ftpaSubmitted':
+      doThisNextSection = {
+        descriptionParagraphs: (ftpaEnabled)
+            ? i18n.pages.overviewPage.doThisNext.ftpaSubmitted.description[ftpaApplicantType]
+            : [ `Nothing to do next` ]
+      };
+      break;
+    case 'ftpaDecided':
+      if (ftpaEnabled && APPLICANT_TYPE.APPELLANT === ftpaApplicantType) {
+        const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType || req.session.appeal.ftpaAppellantRjDecisionOutcomeType;
+        doThisNextSection = {
+          cta: {},
+          ftpaDeadline: getDueDateForAppellantToRespondToFtpaDecision(req),
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.appellant[ftpaDecision]
+        };
+      } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
+        const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
+        doThisNextSection = {
+          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [ `Nothing to do next` ]
+        };
+      }
       break;
     default:
       // default message to avoid app crashing on events that are to be implemented.

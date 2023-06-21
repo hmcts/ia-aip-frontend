@@ -14,4 +14,10 @@ _output
 stryker.log
 .vscode/
 ia-aip-frontend.iml
-
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

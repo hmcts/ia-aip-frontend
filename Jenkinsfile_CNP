@@ -65,7 +65,7 @@ withPipeline("nodejs", product, component) {
 
   afterAlways('securitychecks') {
     sh """
-      yarn npm audit --environment production --recursive --json | jq -cr '.advisories| to_entries[] | {"type": "auditAdvisory", "data": { "advisory": .value }}' > yarn-audit-known-issues.txt
+      yarn npm audit --recursive --environment production --json > yarn-audit-known-issues.txt
     """
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'yarn-audit-known-issues.txt'
   }

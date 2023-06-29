@@ -16,7 +16,7 @@ describe('update-appeal-service', () => {
   let ccdService: Partial<CcdService>;
   let idamService: Partial<IdamService>;
   let s2sService: Partial<S2SService>;
-  let authenticationService: Partial<AuthenticationService>;
+  let authenticationService: AuthenticationService;
   let updateAppealService: UpdateAppealService;
   let expectedCaseData: Partial<CaseData>;
   let documentManagementService: DocumentManagementService;
@@ -41,7 +41,7 @@ describe('update-appeal-service', () => {
 
     documentManagementService = new DocumentManagementService(authenticationService);
 
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService, documentManagementService);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService, null, documentManagementService);
     req = {
       idam: {
         userDetails: {

@@ -41,7 +41,7 @@ describe('update-appeal-service', () => {
 
     documentManagementService = new DocumentManagementService(authenticationService);
 
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService, null, documentManagementService);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -1202,7 +1202,7 @@ describe('update-appeal-service', () => {
         getServiceToken: sandbox.stub().resolves(serviceToken)
       };
       documentManagementService = new DocumentManagementService(authenticationService);
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService, null, documentManagementService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
       expectedCaseData = {
         journeyType: 'aip',
         appellantInUk: 'undefined',

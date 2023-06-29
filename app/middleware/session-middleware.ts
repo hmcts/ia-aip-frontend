@@ -5,7 +5,7 @@ import { paths } from '../paths';
 import { AuthenticationService } from '../service/authentication-service';
 import { CcdService } from '../service/ccd-service';
 import CcdSystemService from '../service/ccd-system-service';
-import { DocumentManagementService } from './service/document-management-service';
+import { DocumentManagementService } from '../service/document-management-service';
 import IdamService from '../service/idam-service';
 import S2SService from '../service/s2s-service';
 import { SystemAuthenticationService } from '../service/system-authentication-service';

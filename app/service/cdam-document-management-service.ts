@@ -63,7 +63,7 @@ class CdamDocumentManagementService {
     };
   }
 
-  private async upload(headers: SecurityHeaders, uploadData: DmUploadData): Promise<any> {
+  private async upload(headers: SecurityHeaders, uploadData: CdamUploadData): Promise<any> {
     const options: any = this.createOptions(
       headers,
       `${cdamDocumentManagementBaseUrl}/cases/documents`

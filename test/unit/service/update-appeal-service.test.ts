@@ -18,6 +18,7 @@ describe('update-appeal-service', () => {
   let authenticationService: Partial<AuthenticationService>;
   let updateAppealService: UpdateAppealService;
   let expectedCaseData: Partial<CaseData>;
+  let documentManagementService: DocumentManagementService;
 
   const userId = 'userId';
   const userToken = 'userToken';
@@ -39,7 +40,7 @@ describe('update-appeal-service', () => {
 
     documentManagementService = new DocumentManagementService(authenticationService);
 
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService, documentManagementService as DocumentManagementService);
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService, documentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -1200,7 +1201,7 @@ describe('update-appeal-service', () => {
         getServiceToken: sandbox.stub().resolves(serviceToken)
       };
       documentManagementService = new DocumentManagementService(authenticationService);
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService, documentManagementService as DocumentManagementService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService, documentManagementService);
       expectedCaseData = {
         journeyType: 'aip',
         appellantInUk: 'undefined',

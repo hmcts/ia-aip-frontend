@@ -14,13 +14,13 @@ import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
   documentIdToDocStoreUrl
-  formatTextForCYA,
   fileNameFormatter,
+  formatTextForCYA,
   getApplicant,
   getApplicationType,
   getFtpaApplicantType,
   toIsoDate,
-  toHtmlLink,
+  toHtmlLink
 } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {

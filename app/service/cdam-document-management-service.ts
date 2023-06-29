@@ -4,8 +4,8 @@ import * as path from 'path';
 import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';
-import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
+import { AuthenticationService, SecurityHeaders } from './authentication-service';
 
 const cdamDocumentManagementBaseUrl = config.get('cdamDocumentManagement.apiUrl');
 

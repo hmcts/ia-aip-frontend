@@ -2,10 +2,10 @@ import config from 'config';
 import { Request } from 'express';
 import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
+import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 import { AuthenticationService } from './authentication-service';
 import { CdamDocumentManagementService } from './cdam-document-management-service';
 import { DmDocumentManagementService } from './dm-document-management-service';
-import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 
 class DocumentManagementService {
   private dmDocumentManagementService: DmDocumentManagementService;

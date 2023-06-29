@@ -40,7 +40,6 @@ enum Classification {
 
 class CdamUploadData {
   file: Express.Multer.File;
-  role: string;
   classification: Classification;
   caseTypeId: string;
   jurisdictionId: string;

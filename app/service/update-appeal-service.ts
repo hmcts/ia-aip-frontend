@@ -7,7 +7,7 @@ import { formatDate } from '../utils/date-utils';
 import { boolToYesNo, documentIdToDocStoreUrl, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
-import { addToDocumentMapper, DocumentManagementService } from './document-management-service';
+import { DocumentManagementService } from './document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
 import S2SService from './s2s-service';
 

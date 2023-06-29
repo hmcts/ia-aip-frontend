@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { Events } from '../../../app/data/events';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
+import { DocumentManagementService } from '../../../app/service/document-management-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -1201,7 +1202,7 @@ describe('update-appeal-service', () => {
         getServiceToken: sandbox.stub().resolves(serviceToken)
       };
       documentManagementService = new DocumentManagementService(authenticationService);
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService, documentManagementService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService, null, documentManagementService);
       expectedCaseData = {
         journeyType: 'aip',
         appellantInUk: 'undefined',

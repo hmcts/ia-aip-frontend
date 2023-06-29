@@ -37,7 +37,9 @@ describe('update-appeal-service', () => {
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
 
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService);
+    documentManagementService = new DocumentManagementService(authenticationService);
+
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService, documentManagementService as DocumentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -1197,7 +1199,8 @@ describe('update-appeal-service', () => {
       s2sService2 = {
         getServiceToken: sandbox.stub().resolves(serviceToken)
       };
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService);
+      documentManagementService = new DocumentManagementService(authenticationService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService, documentManagementService as DocumentManagementService);
       expectedCaseData = {
         journeyType: 'aip',
         appellantInUk: 'undefined',

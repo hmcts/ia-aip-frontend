@@ -13,7 +13,7 @@ import { getFee } from '../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
-  documentIdToDocStoreUrl
+  documentIdToDocStoreUrl,
   fileNameFormatter,
   formatTextForCYA,
   getApplicant,

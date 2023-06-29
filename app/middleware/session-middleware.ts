@@ -5,6 +5,7 @@ import { paths } from '../paths';
 import { AuthenticationService } from '../service/authentication-service';
 import { CcdService } from '../service/ccd-service';
 import CcdSystemService from '../service/ccd-system-service';
+import { DocumentManagementService } from './service/document-management-service';
 import IdamService from '../service/idam-service';
 import S2SService from '../service/s2s-service';
 import { SystemAuthenticationService } from '../service/system-authentication-service';
@@ -13,7 +14,8 @@ import Logger from '../utils/logger';
 
 const idamService = new IdamService();
 const authenticationService: AuthenticationService = new AuthenticationService(idamService, S2SService.getInstance());
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
+const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance(), documentManagementService);
 const ccdSystemService: CcdSystemService = new CcdSystemService(new SystemAuthenticationService(), S2SService.getInstance());
 
 const PIN_USED_UPDATE = {

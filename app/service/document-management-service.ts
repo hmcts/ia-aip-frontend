@@ -1,17 +1,19 @@
 import config from 'config';
 import { Request } from 'express';
-import * as path from 'path';
 import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
-import { AuthenticationService, SecurityHeaders } from './authentication-service';
+import { AuthenticationService } from './authentication-service';
+import { CdamDocumentManagementService } from './cdam-document-management-service';
 import { DmDocumentManagementService } from './dm-document-management-service';
 import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 
 class DocumentManagementService {
   private dmDocumentManagementService: DmDocumentManagementService;
+  private cdamDocumentManagementService: CdamDocumentManagementService;
 
-  constructor(dmDocumentManagementService: DmDocumentManagementService) {
-    this.dmDocumentManagementService = dmDocumentManagementService;
+  constructor(authenticationService: AuthenticationService) {
+    this.dmDocumentManagementService = new DmDocumentManagementService(authenticationService);
+    this.cdamDocumentManagementService = new CdamDocumentManagementService(authenticationService);
   }
 
   /**
@@ -45,7 +47,7 @@ class DocumentManagementService {
     return this.dmDocumentManagementService.fetchFile(req, fileLocation);
   }
 
-  removeFromDocumentMapper(fileId: string, documentMap: DocumentMap[]): DocumentMap[] {
+  public removeFromDocumentMapper(fileId: string, documentMap: DocumentMap[]): DocumentMap[] {
     return this.dmDocumentManagementService.removeFromDocumentMapper(fileId, documentMap);
   }
 
@@ -54,7 +56,7 @@ class DocumentManagementService {
    * @param documentUrl the document url to be inserted in the map
    * @param documentMap the document map array.
    */
-  addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
+  public addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
     return this.dmDocumentManagementService.addToDocumentMapper(documentUrl, documentMap);
   }
 

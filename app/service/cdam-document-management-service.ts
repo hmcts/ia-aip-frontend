@@ -176,7 +176,7 @@ class CdamDocumentManagementService {
    * @param documentUrl the document url to be inserted in the map
    * @param documentMap the document map array.
    */
-  addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
+  public addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
     const documentId: string = uuid();
     documentMap.push({
       id: documentId,
@@ -189,5 +189,5 @@ class CdamDocumentManagementService {
 }
 
 export {
-  DmDocumentManagementService
+  CdamDocumentManagementService
 };

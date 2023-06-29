@@ -19,8 +19,8 @@ import {
   getApplicant,
   getApplicationType,
   getFtpaApplicantType,
-  toIsoDate,
-  toHtmlLink
+  toHtmlLink,
+  toIsoDate
 } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {

@@ -3,8 +3,8 @@ import i18n from '../../../locale/en.json';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { createStructuredError, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 import { documentIdToDocStoreUrl } from '../../utils/utils';
+import { createStructuredError, yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
 export interface EvidenceUploadConfig {
   evidenceYesNoPath: string;

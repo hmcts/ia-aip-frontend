@@ -4,8 +4,8 @@ import * as path from 'path';
 import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
-import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 import { DmDocumentManagementService } from './dm-document-management-service';
+import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 
 class DocumentManagementService {
   private dmDocumentManagementService: DmDocumentManagementService;

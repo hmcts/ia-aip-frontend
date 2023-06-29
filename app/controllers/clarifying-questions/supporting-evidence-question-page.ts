@@ -2,9 +2,9 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { Events } from '../../../app/data/events';
 import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
-import { documentIdToDocStoreUrl } from '../../utils/utils';
 import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { documentIdToDocStoreUrl } from '../../utils/utils';
 import { yesOrNoRequiredValidation } from '../../utils/validations/fields-validations';
 
 function getSupportingEvidenceQuestionPage(req: Request, res: Response, next: NextFunction) {

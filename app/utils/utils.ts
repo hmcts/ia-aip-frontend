@@ -161,4 +161,3 @@ export function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]):
   const target: DocumentMap = documentMap.find(e => e.id === id);
   return target ? target.url : null;
 }
-

@@ -5,7 +5,7 @@ import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
 import Logger, { getLogLabel } from '../utils/logger';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
-import { fileNameFormatter, toHtmlLink, documentIdToDocStoreUrl } from '../utils/utils';
+import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 
 const cdamDocumentManagementBaseUrl = config.get('cdamDocumentManagement.apiUrl');
 
@@ -164,7 +164,8 @@ class CdamDocumentManagementService {
     const prefix = 'documents/';
     const docId = fileLocation.substring(fileLocation.lastIndexOf(prefix) + prefix.length);
     const caseDocumentUrl = `${cdamDocumentManagementBaseUrl}/cases/documents/${docId}/binary`;
-    return this.fetchBinaryFile(headers, caseDocumentUrl);  }
+    return this.fetchBinaryFile(headers, caseDocumentUrl);
+  }
 
   removeFromDocumentMapper(fileId: string, documentMap: DocumentMap[]): DocumentMap[] {
     return documentMap.filter(document => document.id !== fileId);

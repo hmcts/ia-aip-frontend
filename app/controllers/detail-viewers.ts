@@ -13,13 +13,14 @@ import { getFee } from '../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
-  formatTextForCYA,
-  getApplicant,
-  getApplicationType, getFtpaApplicantType,
-  toIsoDate,
-  fileNameFormatter,
-  toHtmlLink,
   documentIdToDocStoreUrl
+  formatTextForCYA,
+  fileNameFormatter,
+  getApplicant,
+  getApplicationType,
+  getFtpaApplicantType,
+  toIsoDate,
+  toHtmlLink,
 } from '../utils/utils';
 
 const getAppealApplicationData = (eventId: string, req: Request) => {

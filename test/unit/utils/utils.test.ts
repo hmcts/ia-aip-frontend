@@ -3,13 +3,13 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
   asBooleanValue,
+  documentIdToDocStoreUrl,
   formatTextForCYA,
   getApplicationType,
   getFtpaApplicantType,
   hasPendingTimeExtension,
   nowAppealDate,
-  toIsoDate,
-  documentIdToDocStoreUrl
+  toIsoDate
 } from '../../../app/utils/utils';
 import { expect, sinon } from '../../utils/testUtils';
 

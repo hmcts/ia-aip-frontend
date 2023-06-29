@@ -4,7 +4,7 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
-import { boolToYesNo, toIsoDate, yesNoToBool, documentIdToDocStoreUrl } from '../utils/utils';
+import { documentIdToDocStoreUrl, boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
 import { addToDocumentMapper, DocumentManagementService } from './document-management-service';
@@ -29,7 +29,7 @@ export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
   private readonly _s2sService: S2SService;
-  private readonly _documentManagementService : DocumentManagementService;
+  private readonly _documentManagementService: DocumentManagementService;
 
   constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null, documentManagementService: DocumentManagementService) {
     this._ccdService = ccdService;

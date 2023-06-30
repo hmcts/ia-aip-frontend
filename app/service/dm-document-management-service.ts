@@ -59,10 +59,6 @@ class DmDocumentManagementService {
     this.authenticationService = authenticationService;
   }
 
-  private getRp() {
-    return rp;
-  }
-
   private createOptions(userId: string, headers: SecurityHeaders, uri: string) {
     return {
       uri: uri,
@@ -113,7 +109,7 @@ class DmDocumentManagementService {
     );
     options.headers = { 'user-roles': 'caseworker-ia', ...options.headers };
     options = { encoding: 'binary', resolveWithFullResponse: true, ...options };
-    return this.getRp().get(options);
+    return rp.get(options);
   }
 
   /**

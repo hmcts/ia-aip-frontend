@@ -70,15 +70,13 @@ describe('dm-document-management-service', () => {
 
     it('should execute request', async () => {
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const getRpStub = sandbox.stub(DmDocumentManagementService.prototype, 'getRp' as any).returns({
-        get: function(options) {
-          return new Promise(function(success, failure) { success(); });
-        }
+      const getStub = sandbox.stub(rp.prototype, 'get' as any).returns({
+        return new Promise(function(success, failure) { success(); });
       });
       const documentManagementService = new DmDocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(getRpStub).to.have.been.called();
+      expect(getStub).to.have.been.calledWith(sinon.match.any);
     });
   });
 

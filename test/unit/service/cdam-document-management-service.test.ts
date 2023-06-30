@@ -49,7 +49,7 @@ describe('cdam-document-management-service', () => {
         }
       ];
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const deleteStub = sandbox.stub(DmDocumentManagementService.prototype, 'delete' as any);
+      const deleteStub = sandbox.stub(CdamDocumentManagementService.prototype, 'delete' as any);
       const documentManagementService = new CdamDocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'fileId');
 
@@ -62,7 +62,7 @@ describe('cdam-document-management-service', () => {
   describe('CdamDocumentManagementService fetchFile', () => {
     it('should fetch a file', async () => {
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const fetchStub = sandbox.stub(DmDocumentManagementService.prototype, 'fetchBinaryFile' as any);
+      const fetchStub = sandbox.stub(CdamDocumentManagementService.prototype, 'fetchBinaryFile' as any);
       const documentManagementService = new CdamDocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
@@ -80,7 +80,7 @@ describe('cdam-document-management-service', () => {
       const resolved = new Promise((r) => r(documentUploadResponse));
 
       const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const uploadStub = sandbox.stub(DmDocumentManagementService.prototype, 'upload' as any).returns(resolved);
+      const uploadStub = sandbox.stub(CdamDocumentManagementService.prototype, 'upload' as any).returns(resolved);
       const documentManagementService = new CdamDocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 

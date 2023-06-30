@@ -66,7 +66,7 @@ describe('cdam-document-management-service', () => {
       const documentManagementService = new CdamDocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
 
-      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'http://store/documents/ID');
+      expect(fetchStub).to.have.been.calledWith(sinon.match.any, 'CASE_DOCUMENT_AM_URL/cases/documents/ID/binary');
     });
 
   });

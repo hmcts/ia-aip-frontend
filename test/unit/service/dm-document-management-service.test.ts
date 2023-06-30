@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import rp from 'request-promise';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { DmDocumentManagementService } from '../../../app/service/dm-document-management-service';
 import IdamService from '../../../app/service/idam-service';

@@ -113,7 +113,7 @@ class DmDocumentManagementService {
     );
     options.headers = { 'user-roles': 'caseworker-ia', ...options.headers };
     options = { encoding: 'binary', resolveWithFullResponse: true, ...options };
-    return getRp().get(options);
+    return this.getRp().get(options);
   }
 
   /**

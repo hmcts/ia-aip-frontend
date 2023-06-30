@@ -19,7 +19,7 @@ describe('cdam-document-management-service', () => {
           application: {
             contactDetails: {}
           },
-          documntMap: []
+          documentMap: []
         }
       } as Partial<Appeal>,
       cookies: {},
@@ -75,7 +75,7 @@ describe('cdam-document-management-service', () => {
     it('should upload a file', async () => {
       req.session.appeal.documentMap = [];
 
-      const documentUploadResponse = '{"_embedded":{"documents":[{"originalDocumentName":"file.txt","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}}';
+      const documentUploadResponse = '{"documents":[{"originalDocumentName":"file.txt","_links":{"self":{"href":"http://store/documents/doc-id"}}}]}';
 
       const resolved = new Promise((r) => r(documentUploadResponse));
 

@@ -68,7 +68,21 @@ describe('dm-document-management-service', () => {
       expect(fetchStub).to.have.been.calledWith(sinon.match.any, sinon.match.any, 'http://store/documents/ID');
     });
 
+    it('should execute request', async () => {
+      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+      const getRpStub = sandbox.stub(DmDocumentManagementService.prototype, 'getRp' as any).returns({
+        get: function(options) {
+            return new Promise(function(success, failure) { success(); });
+        }
+      });
+      const documentManagementService = new DmDocumentManagementService(authenticationService);
+      await documentManagementService.fetchFile(req as Request, 'http://store/documents/ID');
+
+      expect(fetchStub).to.have.been.called();
+    });
   });
+
+
 
   describe('DmDocumentManagementService uploadFile', () => {
     it('should upload a file', async () => {

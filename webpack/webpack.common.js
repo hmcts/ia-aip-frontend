@@ -57,15 +57,33 @@ const clientConfig = {
                         },
                         {
                             loader: 'ts-loader'
+                        },
+                        {
+                            loader: 'css-loader',
+                            options: {
+                              modules: true,
+                            },
+                        },
+                        {
+                            loader: 'sass-loader'
+                        },
+                        {
+                            loader: MiniCSSExtractPlugin.loader
                         }
                     ]
                 },
                 {
                     test: /\.(sa|sc|c)ss$/,
-        loader: [
-                        MiniCSSExtractPlugin.loader,
-                        'css-loader',
-                        'sass-loader'
+                    use: [
+                        {
+                            loader: 'css-loader'
+                        },
+                        {
+                            loader: 'sass-loader'
+                        },
+                        {
+                            loader: MiniCSSExtractPlugin.loader
+                        }
                     ]
                 }
             ]

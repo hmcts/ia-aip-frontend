@@ -17,4 +17,4 @@ const devConfig = {
   client: clientConfig
 };
 
-module.exports = merge.multiple(commonConfig, devConfig);
+module.exports = merge.merge(commonConfig, devConfig);

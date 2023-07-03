@@ -130,3 +130,9 @@ export function isNonStandardDirectionEnabled(req: Request) {
 export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
 }
+
+export function formatWitnessName(witnessName: WitnessName) {
+  const givenNames = witnessName.witnessGivenNames;
+  const familyName = witnessName.witnessFamilyName;
+  return familyName ? givenNames + ' ' + familyName : givenNames;
+}

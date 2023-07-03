@@ -14,7 +14,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
   let next: NextFunction;
-  let summaryList = [{ summaryRows: [{ key: { text: 'My witness' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=My%20witness' , text : 'Remove' }] } } ], title: 'Added witnesses' } ];
+  let summaryList = [{ summaryRows: [{ key: { text: 'GivenName1 GivenName2 FamilyName' }, value: { html : '' }, actions: { items: [ { href: '/hearing-witness-names/remove?name=GivenName1%20GivenName2%20FamilyName' , text : 'Remove' }] } } ], title: 'Added witnesses' } ];
   const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
   beforeEach(() => {
@@ -33,7 +33,12 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       session: {
         appeal: {
           hearingRequirements: {
-            witnessNames: ['My witness']
+            witnessNames: [
+              {
+                'witnessGivenNames': 'GivenName1 GivenName2',
+                'witnessFamilyName': 'FamilyName'
+              }
+            ]
           }
         }
       }
@@ -91,9 +96,9 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       req.session.appeal.hearingRequirements.witnessNames = [];
       await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       const expectedError = {
-        witnessName: {
-          href: '#witnessName',
-          key: 'witnessName',
+        witnesses: {
+          href: '#witnesses',
+          key: 'witnesses',
           text: 'Enter a witness name'
         }
       };
@@ -111,6 +116,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
 
     it('should validate and redirect to next page', async () => {
       req.body['witnessName'] = 'My witness name';
+      req.body['witnessFamilyName'] = 'Family name';
       await postWitnessNamesPage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.witnessOutsideUK);
     });
@@ -131,9 +137,14 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       await addMoreWitnessPostAction()(req as Request, res as Response, next);
       const expectedError = {
         witnessName: {
-          href: '#witnessName',
           key: 'witnessName',
-          text: '"witnessName" is required'
+          text: '"witnessName" is required',
+          href: '#witnessName'
+        },
+        witnessFamilyName: {
+          key: 'witnessFamilyName',
+          text: '"witnessFamilyName" is required',
+          href: '#witnessFamilyName'
         }
       };
 
@@ -150,8 +161,13 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
 
     it('should add name in session and redirect to names page', async () => {
       req.body['witnessName'] = 'My witness name';
+      req.body['witnessFamilyName'] = 'Family name';
       await addMoreWitnessPostAction()(req as Request, res as Response, next);
-      expect(req.session.appeal.hearingRequirements.witnessNames).to.contain('My witness name');
+      const witnessName: WitnessName = {
+        'witnessGivenNames': 'My witness name',
+        'witnessFamilyName': 'Family name'
+      };
+      expect(req.session.appeal.hearingRequirements.witnessNames).to.deep.include(witnessName);
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
     });
 
@@ -168,9 +184,13 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
   describe('removeWitnessPostAction', () => {
 
     it('should remove witness name from session and redirect to names page', async () => {
-      req.query = { name : 'My witness' };
+      req.query = { name : 'GivenName1 GivenName2 FamilyName' };
       await removeWitnessPostAction()(req as Request, res as Response, next);
-      expect(req.session.appeal.hearingRequirements.witnessNames).to.not.contain('My witness');
+      const witnessName: WitnessName = {
+        'witnessGivenNames': 'GivenName1 GivenName2',
+        'witnessFamilyName': 'FamilyName'
+      };
+      expect(req.session.appeal.hearingRequirements.witnessNames).to.not.deep.include(witnessName);
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
     });
 

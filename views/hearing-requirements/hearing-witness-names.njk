@@ -22,7 +22,7 @@
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
             {{ govukInput({
                 label: {
-                    text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.text
+                    text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.givenNames
                 },
                 classes: "govuk-input--width-20",
                 id: "witnessName",
@@ -30,6 +30,17 @@
                 errorMessage: {
                     text: error["witnessName"].text
                 } if error["witnessName"]
+            }) }}
+            {{ govukInput({
+                label: {
+                    text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.familyName
+                },
+                classes: "govuk-input--width-20",
+                id: "witnessFamilyName",
+                name: "witnessFamilyName",
+                errorMessage: {
+                    text: error["witnessFamilyName"].text
+                } if error["witnessFamilyName"]
             }) }}
 
             {{ govukButton({

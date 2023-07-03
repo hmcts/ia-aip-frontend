@@ -2,7 +2,7 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { formatDate } from '../../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
-import { boolToYesNo } from '../../utils/utils';
+import { boolToYesNo, formatWitnessName } from '../../utils/utils';
 
 const editParameter: string = '?edit';
 
@@ -103,7 +103,7 @@ function buildWitnessesSectionSummaryList(hearingRequirements: HearingRequiremen
   return witnessesSectionSummaryList;
 }
 
-function buildWitnessNamesList(witnessesRows: SummaryRow[], witnessNames: string[], visibleChangeLink: boolean) {
+function buildWitnessNamesList(witnessesRows: SummaryRow[], witnessNames: WitnessName[], visibleChangeLink: boolean) {
   if (witnessesRows && witnessesRows.length > 1) {
     witnessesRows.push(
       getSummaryRow(visibleChangeLink,
@@ -112,11 +112,11 @@ function buildWitnessNamesList(witnessesRows: SummaryRow[], witnessNames: string
         paths.submitHearingRequirements.hearingWitnessNames
       )
     );
-    witnessNames.forEach((name: string) => {
+    witnessNames.forEach((name: WitnessName) => {
       witnessesRows.push(
         addSummaryRow(
           '',
-          [name]
+          [formatWitnessName(name)]
         )
       );
     });

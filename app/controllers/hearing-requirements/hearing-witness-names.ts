@@ -5,18 +5,21 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
+import { formatWitnessName } from '../../utils/utils';
 import {
-  witnessNamesValidation,
+  witnessesValidation,
   witnessNameValidation
 } from '../../utils/validations/fields-validations';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
   try {
-    let witnessNames: string [] = req.session.appeal.hearingRequirements.witnessNames || [];
+    let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
+    const summaryList = buildWitnessNamesList(witnessNames);
+
     return res.render('hearing-requirements/hearing-witness-names.njk', {
-      previousPage: previousPage,
-      summaryList: buildWitnessNamesList(witnessNames),
+      previousPage,
+      summaryList,
       witnessAction: paths.submitHearingRequirements.hearingWitnessNames
     });
   } catch (e) {
@@ -27,8 +30,8 @@ function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
 function postWitnessNamesPage(updateAppealService: UpdateAppealService) {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let witnessNames: string [] = req.session.appeal.hearingRequirements.witnessNames || [];
-      const validation = witnessNamesValidation(witnessNames);
+      let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
+      const validation = witnessesValidation(witnessNames);
       if (validation) {
         return renderPage(res, validation, witnessNames);
       }
@@ -45,7 +48,7 @@ function postWitnessNamesPage(updateAppealService: UpdateAppealService) {
   };
 }
 
-function renderPage (res: Response, validation: ValidationErrors, witnessNames: string[]) {
+function renderPage (res: Response, validation: ValidationErrors, witnessNames: WitnessName[]) {
   return res.render('hearing-requirements/hearing-witness-names.njk', {
     error: validation,
     errorList: Object.values(validation),
@@ -58,15 +61,19 @@ function renderPage (res: Response, validation: ValidationErrors, witnessNames: 
 function addMoreWitnessPostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      if (!shouldValidateWhenSaveForLater(req.body, 'witnessName')) {
+      if (!shouldValidateWhenSaveForLater(req.body, ['witnessName', 'witnessFamilyName'])) {
         return getConditionalRedirectUrl(req, res, paths.submitHearingRequirements.taskList + '?saved');
       }
-      let witnessNames: string [] = req.session.appeal.hearingRequirements.witnessNames || [];
+      let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
       const validation = witnessNameValidation(req.body);
       if (validation) {
         return renderPage(res, validation, witnessNames);
       }
-      witnessNames.push(req.body['witnessName']);
+      const newWitnessName: WitnessName = {
+        witnessGivenNames: req.body['witnessName'],
+        witnessFamilyName: req.body['witnessFamilyName']
+      };
+      witnessNames.push(newWitnessName);
       req.session.appeal.hearingRequirements.witnessNames = witnessNames;
       return res.redirect(paths.submitHearingRequirements.hearingWitnessNames);
     } catch (e) {
@@ -78,9 +85,9 @@ function addMoreWitnessPostAction() {
 function removeWitnessPostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let witnessNames: string [] = req.session.appeal.hearingRequirements.witnessNames || [];
+      let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
       const nameToRemove: string = req.query.name as string;
-      req.session.appeal.hearingRequirements.witnessNames = witnessNames.filter(name => name !== nameToRemove);
+      req.session.appeal.hearingRequirements.witnessNames = witnessNames.filter(name => formatWitnessName(name) !== nameToRemove);
       return res.redirect(paths.submitHearingRequirements.hearingWitnessNames);
     } catch (e) {
       next(e);
@@ -88,15 +95,16 @@ function removeWitnessPostAction() {
   };
 }
 
-function buildWitnessNamesList(witnessNames: string[]): SummaryList[] {
+function buildWitnessNamesList(witnessNames: WitnessName[]): SummaryList[] {
   const witnessNamesSummaryLists: SummaryList[] = [];
   const witnessNamesRows: SummaryRow[] = [];
-  witnessNames.forEach((name: string) => {
+  witnessNames.forEach(name => {
+    const nameFormated = formatWitnessName(name);
     witnessNamesRows.push(
         addSummaryRow(
-            name,
+            nameFormated,
             [],
-            `${paths.submitHearingRequirements.hearingWitnessNamesRemove}?name=${encodeURIComponent(name)}`,
+            `${paths.submitHearingRequirements.hearingWitnessNamesRemove}?name=${encodeURIComponent(nameFormated)}`,
             null,
             'Remove'
         )

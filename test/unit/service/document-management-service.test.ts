@@ -54,9 +54,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 
-      expect(dmStub).to.have.been.called;
       expect(cdamStub).to.not.have.been.called;
-
+      expect(dmStub).to.have.been.called;
     });
 
     it('should call CDAM when feature flag is on', async () => {
@@ -83,9 +82,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'file.id');
 
-      expect(dmStub).to.have.been.called;
       expect(cdamStub).to.not.have.been.called;
-
+      expect(dmStub).to.have.been.called;
     });
 
     it('should call CDAM when feature flag is on', async () => {
@@ -112,9 +110,8 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'file.location');
 
-      expect(dmStub).to.have.been.called;
       expect(cdamStub).to.not.have.been.called;
-
+      expect(dmStub).to.have.been.called;
     });
 
     it('should call CDAM when feature flag is on', async () => {

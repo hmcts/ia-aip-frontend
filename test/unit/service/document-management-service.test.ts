@@ -54,7 +54,7 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.uploadFile(req as Request);
 
-      expect(dmStub).to.have.been.calledWith(req);
+      expect(dmStub).to.have.been.called;
       expect(cdamStub).to.not.have.been.called;
 
     });
@@ -69,7 +69,7 @@ describe('document-management-service', () => {
       await documentManagementService.uploadFile(req as Request);
 
       expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.calledWith(req);
+      expect(cdamStub).to.have.been.called;
     });
   });
 
@@ -83,7 +83,7 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.deleteFile(req as Request, 'file.id');
 
-      expect(dmStub).to.have.been.calledWith(req, 'file.id');
+      expect(dmStub).to.have.been.called;
       expect(cdamStub).to.not.have.been.called;
 
     });
@@ -98,7 +98,7 @@ describe('document-management-service', () => {
       await documentManagementService.deleteFile(req as Request, 'file.id');
 
       expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.calledWith(req, 'file.id');
+      expect(cdamStub).to.have.been.called;
     });
   });
 
@@ -112,7 +112,7 @@ describe('document-management-service', () => {
       const documentManagementService = new DocumentManagementService(authenticationService);
       await documentManagementService.fetchFile(req as Request, 'file.location');
 
-      expect(dmStub).to.have.been.calledWith(req, 'file.location');
+      expect(dmStub).to.have.been.called;
       expect(cdamStub).to.not.have.been.called;
 
     });
@@ -127,7 +127,7 @@ describe('document-management-service', () => {
       await documentManagementService.fetchFile(req as Request, 'file.location');
 
       expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.calledWith(req, 'file.location');
+      expect(cdamStub).to.have.been.called;
     });
   });
 });

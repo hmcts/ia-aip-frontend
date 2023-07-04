@@ -6,6 +6,8 @@ import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils
 import { AuthenticationService } from './authentication-service';
 import { CdamDocumentManagementService } from './cdam-document-management-service';
 import { DmDocumentManagementService } from './dm-document-management-service';
+import LaunchDarklyService from './launchDarkly-service';
+import { FEATURE_FLAGS } from '../data/constants';
 
 class DocumentManagementService {
   private dmDocumentManagementService: DmDocumentManagementService;
@@ -16,6 +18,10 @@ class DocumentManagementService {
     this.cdamDocumentManagementService = new CdamDocumentManagementService(authenticationService);
   }
 
+  async useCDAM() {
+      return await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false);
+  }
+
   /**
    * Entry point to upload endpoint used to upload files to the document management service,
    * this endpoint takes one file at a time.
@@ -24,7 +30,11 @@ class DocumentManagementService {
    * @property {string} req.idam.userDetails.uid - the user id
    */
   async uploadFile(req: Request): Promise<DocumentUploadResponse> {
-    return this.dmDocumentManagementService.uploadFile(req);
+    if (this.useCDAM()) {
+      return this.cdamDocumentManagementService.uploadFile(req);
+    } else {
+      return this.dmDocumentManagementService.uploadFile(req);
+    }
   }
 
   /**
@@ -34,7 +44,11 @@ class DocumentManagementService {
    * @param fileLocation - the target file url to be deleted
    */
   async deleteFile(req: Request, fileId: string): Promise<DocumentUploadResponse> {
-    return this.dmDocumentManagementService.deleteFile(req, fileId);
+    if (this.useCDAM()) {
+      return this.cdamDocumentManagementService.deleteFile(req, fileId);
+    } else {
+      return this.dmDocumentManagementService.deleteFile(req, fileId);
+    }
   }
 
   /**
@@ -44,11 +58,15 @@ class DocumentManagementService {
    * @param fileLocation - the target file url to be fetched
    */
   async fetchFile(req: Request, fileLocation: string) {
-    return this.dmDocumentManagementService.fetchFile(req, fileLocation);
+    if (this.useCDAM()) {
+      return this.cdamDocumentManagementService.fetchFile(req, fileLocation);
+    } else {
+      return this.dmDocumentManagementService.fetchFile(req, fileLocation);
+    }
   }
 
   public removeFromDocumentMapper(fileId: string, documentMap: DocumentMap[]): DocumentMap[] {
-    return this.dmDocumentManagementService.removeFromDocumentMapper(fileId, documentMap);
+    return documentMap.filter(document => document.id !== fileId);
   }
 
   /**
@@ -57,7 +75,13 @@ class DocumentManagementService {
    * @param documentMap the document map array.
    */
   public addToDocumentMapper(documentUrl: string, documentMap: DocumentMap[]) {
-    return this.dmDocumentManagementService.addToDocumentMapper(documentUrl, documentMap);
+    const documentId: string = uuid();
+    documentMap.push({
+      id: documentId,
+      url: documentUrl
+    });
+
+    return documentId;
   }
 
 }

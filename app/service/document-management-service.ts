@@ -30,7 +30,7 @@ class DocumentManagementService {
    * @property {string} req.idam.userDetails.uid - the user id
    */
   async uploadFile(req: Request): Promise<DocumentUploadResponse> {
-    if (this.useCDAM(req)) {
+    if (await this.useCDAM(req)) {
       return this.cdamDocumentManagementService.uploadFile(req);
     } else {
       return this.dmDocumentManagementService.uploadFile(req);
@@ -44,7 +44,7 @@ class DocumentManagementService {
    * @param fileLocation - the target file url to be deleted
    */
   async deleteFile(req: Request, fileId: string): Promise<DocumentUploadResponse> {
-    if (this.useCDAM(req)) {
+    if (await this.useCDAM(req)) {
       return this.cdamDocumentManagementService.deleteFile(req, fileId);
     } else {
       return this.dmDocumentManagementService.deleteFile(req, fileId);
@@ -58,7 +58,7 @@ class DocumentManagementService {
    * @param fileLocation - the target file url to be fetched
    */
   async fetchFile(req: Request, fileLocation: string) {
-    if (this.useCDAM(req)) {
+    if (await this.useCDAM(req)) {
       return this.cdamDocumentManagementService.fetchFile(req, fileLocation);
     } else {
       return this.dmDocumentManagementService.fetchFile(req, fileLocation);

@@ -3,6 +3,7 @@ import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
 import {
   asBooleanValue,
+  documentIdToDocStoreUrl,
   formatTextForCYA,
   getApplicationType,
   getFtpaApplicantType,
@@ -273,6 +274,16 @@ describe('utils', () => {
       req.session.appeal.appealStatus = 'ftpaSubmitted';
       expect(getFtpaApplicantType(req.session.appeal)).to.eq(undefined);
     });
+
+    it('documentIdToDocStoreUrl should retrieve the doc store url using key', () => {
+      const documentMap: DocumentMap[] = [
+        { id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/' }
+      ];
+      const result = documentIdToDocStoreUrl('00000000-0000-0000-0000-000000000000', documentMap);
+      expect(result).to.be.a('string');
+      expect(result).to.be.eq('http://someDocumentUrl/');
+    });
+
   });
 
 });

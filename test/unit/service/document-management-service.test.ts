@@ -5,8 +5,8 @@ import { AuthenticationService } from '../../../app/service/authentication-servi
 import { CdamDocumentManagementService } from '../../../app/service/cdam-document-management-service';
 import { DmDocumentManagementService } from '../../../app/service/dm-document-management-service';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import IdamService from '../../../app/service/idam-service';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';

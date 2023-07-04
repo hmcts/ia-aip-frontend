@@ -45,19 +45,6 @@ describe('document-management-service', () => {
   });
 
   describe('DocumentManagementService uploadFile feature flag', () => {
-    it('should call DM when feature flag is off', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
-
-      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const dmStub = sandbox.stub(DmDocumentManagementService.prototype, 'uploadFile' as any);
-      const cdamStub = sandbox.stub(CdamDocumentManagementService.prototype, 'uploadFile' as any);
-      const documentManagementService = new DocumentManagementService(authenticationService);
-      await documentManagementService.uploadFile(req as Request);
-
-      expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.called;
-    });
-
     it('should call CDAM when feature flag is on', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(true);
 
@@ -69,23 +56,23 @@ describe('document-management-service', () => {
 
       expect(dmStub).to.not.have.been.called;
       expect(cdamStub).to.have.been.called;
+    });
+
+    it('should call DM when feature flag is off', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
+
+      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+      const dmStub = sandbox.stub(DmDocumentManagementService.prototype, 'uploadFile' as any);
+      const cdamStub = sandbox.stub(CdamDocumentManagementService.prototype, 'uploadFile' as any);
+      const documentManagementService = new DocumentManagementService(authenticationService);
+      await documentManagementService.uploadFile(req as Request);
+
+      expect(cdamStub).to.not.have.been.called;
+      expect(dmStub).to.have.been.called;
     });
   });
 
   describe('DocumentManagementService deleteFile feature flag', () => {
-    it('should call DM when feature flag is off', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
-
-      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const dmStub = sandbox.stub(DmDocumentManagementService.prototype, 'deleteFile' as any);
-      const cdamStub = sandbox.stub(CdamDocumentManagementService.prototype, 'deleteFile' as any);
-      const documentManagementService = new DocumentManagementService(authenticationService);
-      await documentManagementService.deleteFile(req as Request, 'file.id');
-
-      expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.called;
-    });
-
     it('should call CDAM when feature flag is on', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(true);
 
@@ -97,23 +84,23 @@ describe('document-management-service', () => {
 
       expect(dmStub).to.not.have.been.called;
       expect(cdamStub).to.have.been.called;
+    });
+
+    it('should call DM when feature flag is off', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
+
+      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+      const dmStub = sandbox.stub(DmDocumentManagementService.prototype, 'deleteFile' as any);
+      const cdamStub = sandbox.stub(CdamDocumentManagementService.prototype, 'deleteFile' as any);
+      const documentManagementService = new DocumentManagementService(authenticationService);
+      await documentManagementService.deleteFile(req as Request, 'file.id');
+
+      expect(cdamStub).to.not.have.been.called;
+      expect(dmStub).to.have.been.called;
     });
   });
 
   describe('DocumentManagementService fetchFile feature flag', () => {
-    it('should call DM when feature flag is off', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
-
-      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-      const dmStub = sandbox.stub(DmDocumentManagementService.prototype, 'fetchFile' as any);
-      const cdamStub = sandbox.stub(CdamDocumentManagementService.prototype, 'fetchFile' as any);
-      const documentManagementService = new DocumentManagementService(authenticationService);
-      await documentManagementService.fetchFile(req as Request, 'file.location');
-
-      expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.called;
-    });
-
     it('should call CDAM when feature flag is on', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(true);
 
@@ -125,6 +112,19 @@ describe('document-management-service', () => {
 
       expect(dmStub).to.not.have.been.called;
       expect(cdamStub).to.have.been.called;
+    });
+
+    it('should call DM when feature flag is off', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
+
+      const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
+      const dmStub = sandbox.stub(DmDocumentManagementService.prototype, 'fetchFile' as any);
+      const cdamStub = sandbox.stub(CdamDocumentManagementService.prototype, 'fetchFile' as any);
+      const documentManagementService = new DocumentManagementService(authenticationService);
+      await documentManagementService.fetchFile(req as Request, 'file.location');
+
+      expect(cdamStub).to.not.have.been.called;
+      expect(dmStub).to.have.been.called;
     });
   });
 });

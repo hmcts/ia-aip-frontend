@@ -55,7 +55,7 @@ describe('document-management-service', () => {
       await documentManagementService.uploadFile(req as Request);
 
       expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.called;
+      expect(cdamStub).to.have.been.calledWith(req);
     });
 
     it('should call DM when feature flag is off', async () => {
@@ -68,7 +68,7 @@ describe('document-management-service', () => {
       await documentManagementService.uploadFile(req as Request);
 
       expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.called;
+      expect(dmStub).to.have.been.calledWith(req);
     });
   });
 
@@ -83,7 +83,7 @@ describe('document-management-service', () => {
       await documentManagementService.deleteFile(req as Request, 'file.id');
 
       expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.called;
+      expect(cdamStub).to.have.been.calledWith(req, 'file.id');
     });
 
     it('should call DM when feature flag is off', async () => {
@@ -96,7 +96,7 @@ describe('document-management-service', () => {
       await documentManagementService.deleteFile(req as Request, 'file.id');
 
       expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.called;
+      expect(dmStub).to.have.been.calledWith(req, 'file.id');
     });
   });
 
@@ -111,7 +111,7 @@ describe('document-management-service', () => {
       await documentManagementService.fetchFile(req as Request, 'file.location');
 
       expect(dmStub).to.not.have.been.called;
-      expect(cdamStub).to.have.been.called;
+      expect(cdamStub).to.have.been.calledWith(req, 'file.location');
     });
 
     it('should call DM when feature flag is off', async () => {
@@ -124,7 +124,7 @@ describe('document-management-service', () => {
       await documentManagementService.fetchFile(req as Request, 'file.location');
 
       expect(cdamStub).to.not.have.been.called;
-      expect(dmStub).to.have.been.called;
+      expect(dmStub).to.have.been.calledWith(req, 'file.location');
     });
   });
 });

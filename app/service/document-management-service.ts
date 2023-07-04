@@ -2,12 +2,12 @@ import config from 'config';
 import { Request } from 'express';
 import rp from 'request-promise';
 import { v4 as uuid } from 'uuid';
+import { FEATURE_FLAGS } from '../data/constants';
 import { documentIdToDocStoreUrl, fileNameFormatter, toHtmlLink } from '../utils/utils';
 import { AuthenticationService } from './authentication-service';
 import { CdamDocumentManagementService } from './cdam-document-management-service';
 import { DmDocumentManagementService } from './dm-document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
-import { FEATURE_FLAGS } from '../data/constants';
 
 class DocumentManagementService {
   private dmDocumentManagementService: DmDocumentManagementService;
@@ -18,8 +18,8 @@ class DocumentManagementService {
     this.cdamDocumentManagementService = new CdamDocumentManagementService(authenticationService);
   }
 
-  async useCDAM() {
-      return await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false);
+  async useCDAM(req: Request) {
+    return LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false);
   }
 
   /**
@@ -30,7 +30,7 @@ class DocumentManagementService {
    * @property {string} req.idam.userDetails.uid - the user id
    */
   async uploadFile(req: Request): Promise<DocumentUploadResponse> {
-    if (this.useCDAM()) {
+    if (this.useCDAM(req)) {
       return this.cdamDocumentManagementService.uploadFile(req);
     } else {
       return this.dmDocumentManagementService.uploadFile(req);
@@ -44,7 +44,7 @@ class DocumentManagementService {
    * @param fileLocation - the target file url to be deleted
    */
   async deleteFile(req: Request, fileId: string): Promise<DocumentUploadResponse> {
-    if (this.useCDAM()) {
+    if (this.useCDAM(req)) {
       return this.cdamDocumentManagementService.deleteFile(req, fileId);
     } else {
       return this.dmDocumentManagementService.deleteFile(req, fileId);
@@ -58,7 +58,7 @@ class DocumentManagementService {
    * @param fileLocation - the target file url to be fetched
    */
   async fetchFile(req: Request, fileLocation: string) {
-    if (this.useCDAM()) {
+    if (this.useCDAM(req)) {
       return this.cdamDocumentManagementService.fetchFile(req, fileLocation);
     } else {
       return this.dmDocumentManagementService.fetchFile(req, fileLocation);

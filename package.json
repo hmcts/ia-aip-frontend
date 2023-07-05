@@ -65,7 +65,7 @@
     "http-status-codes": "^1.4.0",
     "i18n": "^0.13.2",
     "joi": "^17.4.0",
-    "jsdom": "^16.2.2",
+    "jsdom": "^22.1.0",
     "jsdom-global": "^3.0.2",
     "launchdarkly-node-server-sdk": "^6.4.0",
     "lodash": "^4.17.21",
@@ -180,7 +180,8 @@
     "nunjucks": "^3.2.4",
     "yaml": "^2.2.2",
     "json-schema": "^0.4.0",
-    "typed-rest-client": "^1.8.0"
+    "typed-rest-client": "^1.8.0",
+    "semver": "^7.5.2"
   },
   "packageManager": "yarn@3.5.1"
 }

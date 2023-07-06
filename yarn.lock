@@ -2304,7 +2304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^1.4.4":
+"@types/multer@npm:1.4.7":
   version: 1.4.7
   resolution: "@types/multer@npm:1.4.7"
   dependencies:
@@ -3940,13 +3940,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"busboy@npm:^0.2.11":
-  version: 0.2.14
-  resolution: "busboy@npm:0.2.14"
+"busboy@npm:^1.0.0":
+  version: 1.6.0
+  resolution: "busboy@npm:1.6.0"
   dependencies:
-    dicer: 0.2.5
-    readable-stream: 1.1.x
-  checksum: 9df9fca6d96dab9edd03f568bde31f215794e6fabd73c75d2b39a4be2e8b73a45121d987dea5db881f3fb499737c261b372106fe72d08b8db92afaed8d751165
+    streamsearch: ^1.1.0
+  checksum: 32801e2c0164e12106bf236291a00795c3c4e4b709ae02132883fe8478ba2ae23743b11c5735a0aae8afe65ac4b6ca4568b91f0d9fed1fdbc32ede824a73746e
   languageName: node
   linkType: hard
 
@@ -5938,16 +5937,6 @@ __metadata:
   dependencies:
     semver: ^5.3.0
   checksum: 1a2d42f3e36abb870ad1b06c8563c314d48cf4ee3be14eedf07fcad119dd5d4caaafb3bcc7c970f04dbe8a54b52c271bcf8b6b9ea9ea9142bc262a1b9be3ec96
-  languageName: node
-  linkType: hard
-
-"dicer@npm:0.2.5":
-  version: 0.2.5
-  resolution: "dicer@npm:0.2.5"
-  dependencies:
-    readable-stream: 1.1.x
-    streamsearch: 0.1.2
-  checksum: a6f0ce9ac5099c7ffeaec7398d711eea1dd803eb99036d0f05342e9ed46a4235a5ed0ea01ad5d6c785fdb0aae6d61d2722e6e64f9fabdfe39885f7f52eb635ee
   languageName: node
   linkType: hard
 
@@ -8235,7 +8224,7 @@ __metadata:
     "@types/joi": ^14.3.3
     "@types/lodash": ^4.14.157
     "@types/mocha": ^7.0.2
-    "@types/multer": ^1.4.4
+    "@types/multer": 1.4.7
     "@types/node": ^13.9.0
     "@types/nunjucks": ^3.1.2
     "@types/puppeteer": ^5.4.4
@@ -8282,7 +8271,7 @@ __metadata:
     mocha-multi: ^1.1.7
     mochawesome: ^7.1.3
     moment: ^2.29.4
-    multer: ^1.4.4
+    multer: 1.4.5-lts.1
     multiparty: ^4.2.2
     nl2br: ^0.0.3
     nodemon: ^2.0.7
@@ -10703,19 +10692,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:^1.4.4":
-  version: 1.4.4
-  resolution: "multer@npm:1.4.4"
+"multer@npm:1.4.5-lts.1":
+  version: 1.4.5-lts.1
+  resolution: "multer@npm:1.4.5-lts.1"
   dependencies:
     append-field: ^1.0.0
-    busboy: ^0.2.11
+    busboy: ^1.0.0
     concat-stream: ^1.5.2
     mkdirp: ^0.5.4
     object-assign: ^4.1.1
-    on-finished: ^2.3.0
     type-is: ^1.6.4
     xtend: ^4.0.0
-  checksum: b5550d250aeee9c4d630eaecd133af0899239f6b10cec4b448ddd0a808025b383520b8227198a8612f60c2cd2094bcb60de93d973084f889d4e40efe6dbd641e
+  checksum: d6dfa78a6ec592b74890412f8962da8a87a3dcfe20f612e039b735b8e0faa72c735516c447f7de694ee0d981eb0a1b892fb9e2402a0348dc6091d18c38d89ecc
   languageName: node
   linkType: hard
 
@@ -12769,18 +12757,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:1.1.x":
-  version: 1.1.14
-  resolution: "readable-stream@npm:1.1.14"
-  dependencies:
-    core-util-is: ~1.0.0
-    inherits: ~2.0.1
-    isarray: 0.0.1
-    string_decoder: ~0.10.x
-  checksum: 17dfeae3e909945a4a1abc5613ea92d03269ef54c49288599507fc98ff4615988a1c39a999dcf9aacba70233d9b7040bc11a5f2bfc947e262dedcc0a8b32b5a0
-  languageName: node
-  linkType: hard
-
 "readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.0":
   version: 3.6.0
   resolution: "readable-stream@npm:3.6.0"
@@ -14234,10 +14210,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"streamsearch@npm:0.1.2":
-  version: 0.1.2
-  resolution: "streamsearch@npm:0.1.2"
-  checksum: d2db57cbfbf7947ab9c75a7b4c80a8ef8d24850cf0a1a24258bb6956c97317ce1eab7dbcbf9c5aba3e6198611af1053b02411057bbedb99bf9c64b8275248997
+"streamsearch@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "streamsearch@npm:1.1.0"
+  checksum: 1cce16cea8405d7a233d32ca5e00a00169cc0e19fbc02aa839959985f267335d435c07f96e5e0edd0eadc6d39c98d5435fb5bbbdefc62c41834eadc5622ad942
   languageName: node
   linkType: hard
 
@@ -14337,13 +14313,6 @@ __metadata:
   dependencies:
     safe-buffer: ~5.2.0
   checksum: 8417646695a66e73aefc4420eb3b84cc9ffd89572861fe004e6aeb13c7bc00e2f616247505d2dbbef24247c372f70268f594af7126f43548565c68c117bdeb56
-  languageName: node
-  linkType: hard
-
-"string_decoder@npm:~0.10.x":
-  version: 0.10.31
-  resolution: "string_decoder@npm:0.10.31"
-  checksum: fe00f8e303647e5db919948ccb5ce0da7dea209ab54702894dd0c664edd98e5d4df4b80d6fabf7b9e92b237359d21136c95bf068b2f7760b772ca974ba970202
   languageName: node
   linkType: hard
 

@@ -2304,7 +2304,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^1.4.7":
+"@types/multer@npm:^1.4.4":
   version: 1.4.7
   resolution: "@types/multer@npm:1.4.7"
   dependencies:
@@ -8204,7 +8204,7 @@ __metadata:
     "@types/joi": ^14.3.3
     "@types/lodash": ^4.14.157
     "@types/mocha": ^7.0.2
-    "@types/multer": ^1.4.7
+    "@types/multer": ^1.4.4
     "@types/node": ^13.9.0
     "@types/nunjucks": ^3.1.2
     "@types/puppeteer": ^5.4.4

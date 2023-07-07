@@ -3,6 +3,9 @@
   "description": "Immigration & Asylum appeal frontend",
   "version": "0.0.1",
   "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0 <17.0.0"
+  },
   "scripts": {
     "start": "cross-env NODE_PATH=. node build/main.js",
     "build": "webpack --config webpack/webpack.prod.js",

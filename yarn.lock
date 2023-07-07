@@ -1979,15 +1979,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stryker-mutator/api@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@stryker-mutator/api@npm:7.1.0"
+"@stryker-mutator/api@npm:^4.0.0":
+  version: 4.6.0
+  resolution: "@stryker-mutator/api@npm:4.6.0"
   dependencies:
-    mutation-testing-metrics: 2.0.1
-    mutation-testing-report-schema: 2.0.1
-    tslib: ~2.5.0
-    typed-inject: ~4.0.0
-  checksum: 7328601365c3d9c9e19a04cc39f23d571fe33911feb6daee173f004ea33bcf38f05096b0debdee70492b2761b388ba4d4a9eafc6f6e5a90a3a8e8ddc48fdff40
+    mutation-testing-report-schema: ~1.5.2
+    surrial: ~2.0.2
+    tslib: ~2.2.0
+  checksum: 1e72c12d87fb257907a73f7900a305e4489edd414c8c45b1465bee326b105a49c6686cc2cef15e96b4f01876e64afdd807be92a8dcc243483f360b8a393f9354
   languageName: node
   linkType: hard
 
@@ -2291,10 +2290,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.1":
-  version: 10.0.1
-  resolution: "@types/mocha@npm:10.0.1"
-  checksum: 224ea9fce7b1734ccdb9aa99a622d902a538ce1847bca7fd22c5fb38adcf3ed536f50f48f587085db988a4bb3c2eb68f4b98e1cd6a38bc5547bd3bbbedc54495
+"@types/mocha@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "@types/mocha@npm:7.0.2"
+  checksum: 9be72c563976a809caa3594e3ee1fd71748887aaf105b4cfa99c69e882659d3ddbb331d4c1e3b3af9a67c78f3b7b4ab30fe1baa13cb50561dcc386512a75142a
   languageName: node
   linkType: hard
 
@@ -8113,11 +8112,11 @@ __metadata:
     "@hmcts/os-places-client": ^1.1.2
     "@hmcts/properties-volume": ^0.0.13
     "@istanbuljs/nyc-config-typescript": ^1.0.1
-    "@stryker-mutator/api": ^7.1.0
-    "@stryker-mutator/core": ^7.1.0
+    "@stryker-mutator/api": ^4.0.0
+    "@stryker-mutator/core": ^4.0.0
     "@stryker-mutator/html-reporter": ^3.1.0
-    "@stryker-mutator/karma-runner": ^7.1.0
-    "@stryker-mutator/mocha-runner": ^7.1.0
+    "@stryker-mutator/karma-runner": ^4.0.0
+    "@stryker-mutator/mocha-runner": ^4.0.0
     "@stryker-mutator/typescript": ^4.0.0
     "@types/chai": ^4.2.3
     "@types/config": ^0.0.39
@@ -8127,7 +8126,7 @@ __metadata:
     "@types/express-session": ^1.17.0
     "@types/joi": ^14.3.3
     "@types/lodash": ^4.14.157
-    "@types/mocha": ^10.0.1
+    "@types/mocha": ^7.0.2
     "@types/multer": 1.4.7
     "@types/node": ^13.9.0
     "@types/nunjucks": ^3.1.2
@@ -8171,7 +8170,7 @@ __metadata:
     lodash: ^4.17.21
     memory-cache: ^0.2.0
     mini-css-extract-plugin: ^0.12.0
-    mocha: ^10.2.0
+    mocha: ^7.2.0
     mocha-multi: ^1.1.7
     mochawesome: ^7.1.3
     moment: ^2.29.4
@@ -10626,15 +10625,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mutation-testing-metrics@npm:2.0.1":
-  version: 2.0.1
-  resolution: "mutation-testing-metrics@npm:2.0.1"
-  dependencies:
-    mutation-testing-report-schema: 2.0.1
-  checksum: 57feb4d38b7511d78d9ff1afce14e9aeaab55b22712c05b972aba3d5b80f487c6e24cc06a89d53a482d9638e85714ed5593ba228255f80f876c4f61af0b8d384
-  languageName: node
-  linkType: hard
-
 "mutation-testing-report-schema@npm:1.7.14":
   version: 1.7.14
   resolution: "mutation-testing-report-schema@npm:1.7.14"
@@ -10642,10 +10632,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mutation-testing-report-schema@npm:2.0.1":
-  version: 2.0.1
-  resolution: "mutation-testing-report-schema@npm:2.0.1"
-  checksum: 957e293fdf581ce8a388f3a8a2d3107ca864f4d385e6b20898ea6b3ada40b2ce98ca4e6893c4bb551d3f4b544a6dbf7d6000e2d1f10c9cff8fa7b2c4640fe506
+"mutation-testing-report-schema@npm:~1.5.2":
+  version: 1.5.2
+  resolution: "mutation-testing-report-schema@npm:1.5.2"
+  checksum: add92ad6c4731b137d10e46ae9a54e293dc53277686bb87cce3411a0be4193ac01b2d1b7238c7a45454602f9b79f792b8fac9927778934a86a1e51a68bc941f3
   languageName: node
   linkType: hard
 
@@ -14367,6 +14357,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"surrial@npm:~2.0.2":
+  version: 2.0.2
+  resolution: "surrial@npm:2.0.2"
+  checksum: 1a4202214e3cd9a7cae44278c0ab1fc35203b2d55f5157396114901aeed7dc54de01ae833d92ac1953d714f3b36261ba9569dafa4ae2aa2045e4dbcbdccd7573
+  languageName: node
+  linkType: hard
+
 "svgo@npm:^1.0.0":
   version: 1.3.2
   resolution: "svgo@npm:1.3.2"
@@ -14835,6 +14832,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "tslib@npm:2.2.0"
+  checksum: a48c9639f7496fa701ea8ffe0561070fcb44c104a59632f7f845c0af00825c99b6373575ec59b2b5cdbfd7505875086dbe5dc83312304d8979f22ce571218ca3
+  languageName: node
+  linkType: hard
+
 "tslint-config-standard@npm:^9.0.0":
   version: 9.0.0
   resolution: "tslint-config-standard@npm:9.0.0"
@@ -15016,13 +15020,6 @@ __metadata:
   version: 3.0.1
   resolution: "typed-inject@npm:3.0.1"
   checksum: a400797a42951bc46a38873e9be40fe90fdba6ae3362e2d4da4972c4ec48e962ff167bc5f090ca42dc20bb3f6063cd07a80426df520c64dc9e94d1e89ff4779e
-  languageName: node
-  linkType: hard
-
-"typed-inject@npm:~4.0.0":
-  version: 4.0.0
-  resolution: "typed-inject@npm:4.0.0"
-  checksum: 2181b4f50e77dfa42752a645057c85a2e20eaaad639e3ea059fde9596baf8bbc51bb6c2913b040b9103752480045eff1e7f09b10b6dc187b6525b5acccac4971
   languageName: node
   linkType: hard
 

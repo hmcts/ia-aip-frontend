@@ -389,8 +389,11 @@ export default class UpdateAppealService {
       hearingRequirements.witnessesOutsideUK = yesNoToBool(caseData.isEvidenceFromOutsideUkInCountry);
     }
     if (caseData.witnessDetails && caseData.witnessDetails.length) {
-      hearingRequirements.witnessNames = caseData.witnessDetails.map((witnessDetail) => {
-        return witnessDetail.value.witnessName;
+      hearingRequirements.witnessNames = caseData.witnessDetails.map(detail => {
+        return {
+          witnessGivenNames: detail.value.witnessName,
+          witnessFamilyName: detail.value.witnessFamilyName
+        };
       });
     }
 
@@ -858,10 +861,11 @@ export default class UpdateAppealService {
       }
 
       if (_.has(appeal.hearingRequirements, 'witnessNames')) {
-        caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(witnessName => {
+        caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(name => {
           return {
             value: {
-              witnessName: witnessName
+              witnessName: name.witnessGivenNames,
+              witnessFamilyName: name.witnessFamilyName
             } as WitnessDetails
           } as Collection<WitnessDetails>;
         });

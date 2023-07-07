@@ -356,7 +356,7 @@ interface HearingRequirements {
   witnessesOnHearing?: boolean;
   isAppellantAttendingTheHearing?: boolean;
   isAppellantGivingOralEvidence?: boolean;
-  witnessNames?: string[];
+  witnessNames?: WitnessName[];
   witnessesOutsideUK?: boolean;
   isInterpreterServicesNeeded?: boolean;
   interpreterLanguages?: InterpreterLanguage[];
@@ -414,7 +414,7 @@ interface Direction {
   explanation: string;
   uniqueId: string;
   clarifyingQuestions?: ClarifyingQuestion;
-  directionType?:  string;
+  directionType?: string;
 }
 
 interface ClarifyingQuestion<T> {
@@ -438,4 +438,9 @@ type Middleware = (req: Express.Request, res: Express.Response, next: any) => vo
 
 interface ApplicationStatus {
   [key: string]: Task;
+}
+
+interface WitnessName {
+  witnessGivenNames?: string;
+  witnessFamilyName?: string;
 }

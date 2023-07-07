@@ -204,6 +204,7 @@ interface Nationality {
 
 interface WitnessDetails {
   witnessName?: string;
+  witnessFamilyName?: string;
 }
 
 interface InterpreterLanguage {

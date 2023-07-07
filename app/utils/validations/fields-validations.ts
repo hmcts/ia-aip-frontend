@@ -196,16 +196,17 @@ function sponsorNamesValidation(obj: object) {
 
 function witnessNameValidation(obj: object) {
   const schema = Joi.object({
-    witnessName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessName })
+    witnessName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessName }),
+    witnessFamilyName: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.witnessFamilyName })
   }).unknown();
   return validate(obj, schema);
 }
 
-function witnessNamesValidation(obj: object) {
+function witnessesValidation(obj: object) {
   const schema = Joi.object({
-    witnessName: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.witnessName })
+    witnesses: Joi.array().min(1).messages({ 'array.min': i18n.validationErrors.witnesses })
   }).unknown();
-  return validate({ witnessName: obj }, schema);
+  return validate({ witnesses: obj }, schema);
 }
 
 function interpreterLanguagesValidation(obj: object) {
@@ -548,7 +549,7 @@ export {
   dateOfBirthValidation,
   dropdownValidation,
   appellantNamesValidation,
-  witnessNamesValidation,
+  witnessesValidation,
   witnessNameValidation,
   postcodeValidation,
   nationalityValidation,

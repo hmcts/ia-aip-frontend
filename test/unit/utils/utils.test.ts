@@ -4,6 +4,7 @@ import Logger from '../../../app/utils/logger';
 import {
   asBooleanValue,
   formatTextForCYA,
+  formatWitnessName,
   getApplicationType,
   getFtpaApplicantType,
   hasPendingTimeExtension,
@@ -272,6 +273,28 @@ describe('utils', () => {
     it('getFtpaApplicantType should return undefined in ftpa submitted state', () => {
       req.session.appeal.appealStatus = 'ftpaSubmitted';
       expect(getFtpaApplicantType(req.session.appeal)).to.eq(undefined);
+    });
+  });
+
+  describe('formatWitnessName', () => {
+
+    it('should correctly format when family name is given', async () => {
+      const witnessName: WitnessName = {
+        'witnessGivenNames': 'GivenName1 GivenName2',
+        'witnessFamilyName': 'FamilyName'
+      };
+      const witnessNameFormatted: String = formatWitnessName(witnessName);
+      const expected = 'GivenName1 GivenName2 FamilyName';
+      expect(witnessNameFormatted).to.equals(expected);
+    });
+
+    it('should correctly format when family name is not given', async () => {
+      const witnessName: WitnessName = {
+        'witnessGivenNames': 'GivenName1 GivenName2'
+      };
+      const witnessNameFormatted: String = formatWitnessName(witnessName);
+      const expected = 'GivenName1 GivenName2';
+      expect(witnessNameFormatted).to.equals(expected);
     });
   });
 

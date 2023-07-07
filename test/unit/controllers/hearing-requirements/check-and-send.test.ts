@@ -39,7 +39,16 @@ describe('Hearing Requirements Check and Send controller', () => {
     },
     'witnessesOnHearing': true,
     'witnessesOutsideUK': true,
-    'witnessNames': ['sabah u din irfan', 'John Smith'],
+    'witnessNames': [
+      {
+        'witnessGivenNames': 'sabah u din',
+        'witnessFamilyName': 'irfan'
+      },
+      {
+        'witnessGivenNames': 'John',
+        'witnessFamilyName': 'Smith'
+      }
+    ],
     'isHearingLoopNeeded': true,
     'isHearingRoomNeeded': true,
     'isInterpreterServicesNeeded': true,

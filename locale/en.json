@@ -3043,7 +3043,8 @@
         "hearingWitnessNames": {
           "pageTitle": "Add witnesses names",
           "title": "Add witnesses names",
-          "text": "Witnesses name",
+          "givenNames": "Witness given names",
+          "familyName": "Witness family name",
           "cya": "Witnesses names"
         },
         "witnessOutsideUk": {
@@ -3551,7 +3552,9 @@
     },
     "givenNames": "Enter your given name or names",
     "familyName": "Enter your family name or names",
-    "witnessName": "Enter a witness name",
+    "witnesses": "Enter a witness name",
+    "witnessName": "Enter witness given names",
+    "witnessFamilyName": "Enter witness family name",
     "dateOfBirth": {
       "missing": "Your date of birth must include a day, month and year",
       "incorrectFormat": "Enter the date in the correct format",

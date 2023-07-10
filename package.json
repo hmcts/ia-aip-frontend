@@ -54,7 +54,7 @@
     "cross-env": "^7.0.3",
     "csurf": "^1.11.0",
     "dompurify": "^2.2.9",
-    "dyson": "^3.0.4",
+    "dyson": "4.1.0",
     "expect-ct": "^0.3.0",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
@@ -181,7 +181,8 @@
     "yaml": "^2.2.2",
     "json-schema": "^0.4.0",
     "typed-rest-client": "^1.8.0",
-    "semver": "^7.5.2"
+    "semver": "^7.5.2",
+    "tough-cookie": "4.1.3"
   },
   "packageManager": "yarn@3.5.1"
 }

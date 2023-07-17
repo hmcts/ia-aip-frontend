@@ -16,7 +16,7 @@ function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
   try {
     let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
     const summaryList = buildWitnessNamesList(witnessNames);
-    const isShowingAddButton = checkWitnessLength(witnessNames)
+    const isShowingAddButton = checkWitnessLength(witnessNames);
 
     return res.render('hearing-requirements/hearing-witness-names.njk', {
       previousPage,

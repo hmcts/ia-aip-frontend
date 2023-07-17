@@ -16,10 +16,12 @@ function getWitnessNamesPage(req: Request, res: Response, next: NextFunction) {
   try {
     let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
     const summaryList = buildWitnessNamesList(witnessNames);
+    const isShowingAddButton = checkWitnessLength(witnessNames)
 
     return res.render('hearing-requirements/hearing-witness-names.njk', {
       previousPage,
       summaryList,
+      isShowingAddButton,
       witnessAction: paths.submitHearingRequirements.hearingWitnessNames
     });
   } catch (e) {
@@ -54,6 +56,7 @@ function renderPage (res: Response, validation: ValidationErrors, witnessNames: 
     errorList: Object.values(validation),
     previousPage: previousPage,
     summaryList: buildWitnessNamesList(witnessNames),
+    isShowingAddButton: checkWitnessLength(witnessNames),
     witnessAction: paths.submitHearingRequirements.hearingWitnessNames
   });
 }
@@ -115,6 +118,10 @@ function buildWitnessNamesList(witnessNames: WitnessName[]): SummaryList[] {
     title: 'Added witnesses'
   });
   return witnessNamesSummaryLists;
+}
+
+function checkWitnessLength(witnessNames: WitnessName[]): boolean {
+  return (witnessNames && witnessNames.length < 10);
 }
 
 function setupWitnessNamesController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {

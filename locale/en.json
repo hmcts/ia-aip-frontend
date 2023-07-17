@@ -3043,6 +3043,7 @@
         "hearingWitnessNames": {
           "pageTitle": "Add witnesses names",
           "title": "Add witnesses names",
+          "textWith10Witnesses": "You can add up to 10 witnesses.",
           "givenNames": "Witness given names",
           "familyName": "Witness family name",
           "cya": "Witnesses names"

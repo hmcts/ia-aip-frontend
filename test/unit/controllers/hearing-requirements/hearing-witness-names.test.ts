@@ -75,11 +75,38 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       const expectedArgs = {
         previousPage: previousPage,
         witnessAction: '/hearing-witness-names',
-        summaryList: summaryList
+        summaryList: summaryList,
+        isShowingAddButton: true
       };
 
       getWitnessNamesPage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
+    });
+
+    it('should not show the add button if the witnesses size is equal to 10', async () => {
+
+      let witnessNames: WitnessName[] = [];
+      let summaryList: SummaryList[] = [{
+        title: 'Added witnesses',
+        summaryRows: null
+      }];
+      summaryList[0].summaryRows = [];
+      for (let i: number = 0; i < 10; i++) {
+        witnessNames.push({ 'witnessGivenNames': 'GivenName' + i + ' GivenName' + i, 'witnessFamilyName': 'FamilyName' });
+        summaryList[0].summaryRows.push({ key: { text: 'GivenName' + i + ' GivenName' + i + ' FamilyName' }, value: { html: '' }, actions: { items: [{ href: '/hearing-witness-names/remove?name=GivenName' + i + '%20GivenName' + i + '%20FamilyName', text: 'Remove' }] } });
+      }
+
+      req.session.appeal.hearingRequirements.witnessNames = witnessNames;
+
+      const expectedArgs = {
+        previousPage: previousPage,
+        witnessAction: '/hearing-witness-names',
+        summaryList: summaryList,
+        isShowingAddButton: false
+      };
+      getWitnessNamesPage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
+
     });
 
     it('should catch error and call next with error', () => {
@@ -108,7 +135,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         errorList: Object.values(expectedError),
         previousPage: previousPage,
         witnessAction: '/hearing-witness-names',
-        summaryList: [ { summaryRows: [], title: 'Added witnesses' } ]
+        summaryList: [ { summaryRows: [], title: 'Added witnesses' } ],
+        isShowingAddButton: true
       };
       expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
 
@@ -153,7 +181,8 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
         errorList: Object.values(expectedError),
         previousPage: previousPage,
         witnessAction: '/hearing-witness-names',
-        summaryList: [ { summaryRows: [], title: 'Added witnesses' } ]
+        summaryList: [ { summaryRows: [], title: 'Added witnesses' } ],
+        isShowingAddButton: true
       };
       expect(res.render).to.have.been.calledWith('hearing-requirements/hearing-witness-names.njk', expectedArgs);
 

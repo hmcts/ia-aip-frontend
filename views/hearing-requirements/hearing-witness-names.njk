@@ -20,37 +20,41 @@
             }
         }) %}
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-            {{ govukInput({
-                label: {
-                    text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.givenNames
-                },
-                classes: "govuk-input--width-20",
-                id: "witnessName",
-                name: "witnessName",
-                errorMessage: {
-                    text: error["witnessName"].text
-                } if error["witnessName"]
-            }) }}
-            {{ govukInput({
-                label: {
-                    text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.familyName
-                },
-                classes: "govuk-input--width-20",
-                id: "witnessFamilyName",
-                name: "witnessFamilyName",
-                errorMessage: {
-                    text: error["witnessFamilyName"].text
-                } if error["witnessFamilyName"]
-            }) }}
+            <p class="govuk-!-font-size-24">{{ i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.textWith10Witnesses }}</p>
 
-            {{ govukButton({
-                text: i18n.common.buttons.addAnotherWitness,
-                name: 'addAnotherWitness',
-                classes: "govuk-button--secondary",
-                attributes: {
-                    formaction: witnessAction + '/add'
-                }
-            }) }}
+            {% if isShowingAddButton %}
+                {{ govukInput({
+                    label: {
+                        text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.givenNames
+                    },
+                    classes: "govuk-input--width-20",
+                    id: "witnessName",
+                    name: "witnessName",
+                    errorMessage: {
+                        text: error["witnessName"].text
+                    } if error["witnessName"]
+                }) }}
+                {{ govukInput({
+                    label: {
+                        text: i18n.pages.hearingRequirements.witnessesSection.hearingWitnessNames.familyName
+                    },
+                    classes: "govuk-input--width-20",
+                    id: "witnessFamilyName",
+                    name: "witnessFamilyName",
+                    errorMessage: {
+                        text: error["witnessFamilyName"].text
+                    } if error["witnessFamilyName"]
+                }) }}
+            
+                {{ govukButton({
+                    text: i18n.common.buttons.addAnotherWitness,
+                    name: 'addAnotherWitness',
+                    classes: "govuk-button--secondary",
+                    attributes: {
+                        formaction: witnessAction + '/add'
+                    }
+                }) }}
+            {% endif %}
 
             {% if summaryList[0].summaryRows|length %}
                 <h2>{{ summaryList[0].title }}</h2>

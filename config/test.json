@@ -14,5 +14,8 @@
   },
   "iaPayments": {
     "apiUrl": "http://iaPaymentsTestUrl"
+  },
+  "refData": {
+    "apiUrl": "http://refDataTestUrl"
   }
 }

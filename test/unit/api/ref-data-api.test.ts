@@ -4,7 +4,6 @@ import { expect, sinon } from '../../utils/testUtils';
 
 describe('ref-data-api', () => {
   let rpGetStub: sinon.SinonStub;
-  let rpPostStub: sinon.SinonStub;
   let sandbox: sinon.SinonSandbox;
   const headers = {
     userToken: 'aUserToken',
@@ -14,7 +13,6 @@ describe('ref-data-api', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     rpGetStub = sandbox.stub(rp, 'get').resolves({});
-    rpPostStub = sandbox.stub(rp, 'post');
   });
 
   afterEach(() => {
@@ -24,7 +22,7 @@ describe('ref-data-api', () => {
   it('should call common ref data LoV endpoint', async () => {
     await refDataApi.commonRefDataLov(headers, 'InterpreterLanguage');
 
-    expect(rpPostStub).to.have.been.called;
+    expect(rpGetStub).to.have.been.called;
   });
 
 });

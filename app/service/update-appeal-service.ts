@@ -409,6 +409,18 @@ export default class UpdateAppealService {
       hearingRequirements.isInterpreterServicesNeeded = yesNoToBool(caseData.isInterpreterServicesNeeded);
     }
 
+    if (caseData.appellantInterpreterLanguageCategory) {
+      hearingRequirements.appellantInterpreterLanguageCategory = caseData.appellantInterpreterLanguageCategory;
+    }
+
+    if (caseData.appellantInterpreterSpokenLanguage) {
+      hearingRequirements.appellantInterpreterSpokenLanguage = caseData.appellantInterpreterSpokenLanguage;
+    }
+
+    if (caseData.appellantInterpreterSignLanguage) {
+      hearingRequirements.appellantInterpreterSignLanguage = caseData.appellantInterpreterSignLanguage;
+    }
+
     if (caseData.interpreterLanguage) {
       hearingRequirements.interpreterLanguages = caseData.interpreterLanguage.map(additionalLanguage => {
         return {
@@ -873,6 +885,18 @@ export default class UpdateAppealService {
 
       if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
         caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);
+
+      if (_.has(appeal.hearingRequirements, 'appellantInterpreterLanguageCategory')) {
+        caseData.appellantInterpreterLanguageCategory = appeal.hearingRequirements.appellantInterpreterLanguageCategory;
+      }
+      
+      if (_.has(appeal.hearingRequirements, 'appellantInterpreterSpokenLanguage')) {
+        caseData.appellantInterpreterSpokenLanguage = appeal.hearingRequirements.appellantInterpreterSpokenLanguage;
+      }
+
+      if (_.has(appeal.hearingRequirements, 'appellantInterpreterSignLanguage')) {
+        caseData.appellantInterpreterSignLanguage = appeal.hearingRequirements.appellantInterpreterSignLanguage;
+      }
 
         if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {
           caseData.interpreterLanguage = appeal.hearingRequirements.interpreterLanguages.map(interpreterLanguage => {

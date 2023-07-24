@@ -216,6 +216,31 @@ function interpreterLanguagesValidation(obj: object) {
   return validate({ language: obj }, schema);
 }
 
+function interpreterTypesSelectionValidation(obj: object) {
+  const schema = Joi.object({
+    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterType.selectOneOption })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function interpreterLanguageSelectionValidation(obj: object) {
+  const schema = Joi.object({
+    languageRefData: Joi.string().empty(''),
+    languageManualEntry: Joi.string().empty(''),
+    'languageManualEntryDescription': Joi.alternatives().conditional(
+      'languageManualEntry', {
+      is: 'Yes',
+      then: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.enterLanguageManually }),
+      otherwise: Joi.any()
+    })
+  }).xor('languageRefData', 'languageManualEntry').messages({
+    'object.missing': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.selectLanguage,
+    'object.xor': i18n.validationErrors.hearingRequirements.interpreterLanguageSelection.selectOneOptionOnly
+  })
+    .unknown();
+  return validate(obj, schema);
+}
+
 function contactDetailsValidation(obj: object) {
   const schema = Joi.object({
     selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.contactDetails.selectOneOption }),
@@ -568,6 +593,8 @@ export {
   isDateInRange,
   decisionTypeValidation,
   interpreterLanguagesValidation,
+  interpreterTypesSelectionValidation,
+  interpreterLanguageSelectionValidation,
   hasSponsorValidation,
   sponsorNamesValidation,
   sponsorAddressValidation,

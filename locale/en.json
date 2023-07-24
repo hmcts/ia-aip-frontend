@@ -3066,10 +3066,40 @@
           "title": "Access needs",
           "text": "If you or anyone coming with you needs an interpreter, step-free access or a hearing loop, they will be provided at the hearing."
         },
+        "communicationAndAccessSupportPage": {
+          "pageTitle": "Communication and access support",
+          "title": "Communication and access support",
+          "text": "<p>Use this form if you or anyone with you needs to request:</p><p><ul><li>an interpreter for translating spoken language</li><li>an interpreter for sign language</li><li>step-free access</li><li>a hearing loop</li></ul></p><p>You can request more than one for you or any witnesses.</p><p>They will be provided at the hearing.</p>"
+        },
         "needInterpreterPage": {
-          "pageTitle": "Will you or any witnesses need an interpreter at the hearing?",
-          "title": "Will you or any witnesses need an interpreter at the hearing?",
-          "text": "We will provide an interpreter if you or any witnesses need one."
+          "pageTitle": "Will you need an interpreter at the hearing?",
+          "title": "Will you need an interpreter at the hearing?",
+          "text": "We will provide an interpreter for you. You cannot bring your own."
+        },
+        "interpreterTypePage": {
+          "pageTitle": "What kind of interpreter do you need to request?",
+          "title": "What kind of interpreter do you need to request?",
+          "hint": "Select all that apply",
+          "spokenLanguageOption": "I need a spoken language interpreter",
+          "spokenLanguageOptionHint": "For example, an interpreter for Urdu",
+          "signLanguageOption": "I need a sign language interpreter",
+          "signLanguageOptionHint": "For example, British Sign Language (BSL)"
+        },
+        "interpreterSpokenLanguageSelection": {
+          "pageTitle": "Tell us about your language requirements",
+          "title": "Tell us about your language requirements",
+          "text": "We will provide an interpreter for you to understand spoken communication.",
+          "dropdownListText": "Select language",
+          "checkBoxText": "Enter the language manually",
+          "languageManuallyText": "Enter the details of the language you need to request"
+        },
+        "interpreterSignLanguageSelection": {
+          "pageTitle": "Tell us about your sign language requirements",
+          "title": "Tell us about your sign language requirements",
+          "text": "We will provide a sign language interpreter for you to understand spoken communication.",
+          "dropdownListText": "Select sign language",
+          "checkBoxText": "Enter the language manually",
+          "languageManuallyText": "Enter the details of the language you need to request"
         },
         "additionalLanguagePage": {
           "pageTitle": "Add language details",
@@ -3669,6 +3699,14 @@
       "witnessesSection": {
         "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing",
         "witnessesOutsideUKRequired": "Select Yes if you or any witnesses will take part in the hearing from outside the UK"
+      },
+      "interpreterType": {
+        "selectOneOption": "You must select at least one kind of interpreter"
+      },
+      "interpreterLanguageSelection": {
+        "selectLanguage": "Please select the language you need to request",
+        "enterLanguageManually": "Please enter the detail of the language you need to request",
+        "selectOneOptionOnly": "Please select one type of language"
       },
       "accessNeeds": {
         "selectInterpreter": "Select yes if you or any witnesses will need an interpreter at the hearing",

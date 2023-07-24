@@ -11,12 +11,31 @@ import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
   interpreterLanguagesValidation,
+  interpreterTypesSelectionValidation,
+  interpreterLanguageSelectionValidation,
   selectedRequiredValidation,
   selectedRequiredValidationDialect
 } from '../../utils/validations/fields-validations';
 import { postHearingRequirementsYesNoHandler } from './common';
 
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+const spokenLanguageInterpreterString = 'spokenLanguageInterpreter';
+const signLanguageInterpreterString = 'signLanguageInterpreter';
+const fakeInterpreterSpokenLanguageDynamicList: DynamicList = {
+  value: null,
+  list_items: [{label:'Turkish', code:'tur'},
+    {label:'Japanese', code:'jpn'},
+    {label:'Italian', code:'ita'},
+  ]
+};
+const fakeInterpreterSignLanguageDynamicList: DynamicList = {
+  value: null,
+  list_items: [{label:'American Sign Language (ASL)', code:'ase'},
+    {label:'British Sign Language (BSL)', code:'bfi'},
+    {label:'International Sign (IS)', code:'ils'},
+  ]
+};
+
 function getOptions(selectionPresent, answer) {
 
   if (selectionPresent == null) {
@@ -33,9 +52,13 @@ function getOptions(selectionPresent, answer) {
 }
 
 function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
+  const { hearingRequirements } = req.session.appeal;
+  const witnessesOnHearing = hearingRequirements && hearingRequirements.witnessesOnHearing || false;
   try {
     return res.render('hearing-requirements/access-needs.njk', {
-      previousPage: previousPage
+      previousPage: previousPage,
+      //To-do: the link should be updated to new screen (Ticket 7506) when the condition is true 
+      link: witnessesOnHearing ? paths.submitHearingRequirements.taskList : paths.submitHearingRequirements.hearingInterpreter
     });
   } catch (error) {
     next(error);
@@ -87,7 +110,8 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
           ...appealUpdated
         };
         if (answer) {
-          return res.redirect(paths.submitHearingRequirements.hearingLanguageDetails);
+          // return res.redirect(paths.submitHearingRequirements.hearingLanguageDetails);
+          return res.redirect(paths.submitHearingRequirements.hearingInterpreterTypes);
         } else {
           return res.redirect(paths.submitHearingRequirements.hearingStepFreeAccess);
         }
@@ -98,6 +122,337 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
       next(error);
     }
   };
+}
+
+function getInterpreterTypePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { hearingRequirements } = req.session.appeal;
+    console.log("###### getInterpreterTypePage hearingRequirements", hearingRequirements);
+    const appellantInterpreterLanguageCategory = hearingRequirements && hearingRequirements.appellantInterpreterLanguageCategory || null;
+
+    return res.render('hearing-requirements/interpreter-types.njk', {
+      previousPage: previousPage,
+      appellantInterpreterSpokenLanguage: appellantInterpreterLanguageCategory ? appellantInterpreterLanguageCategory.includes(spokenLanguageInterpreterString) : false,
+      appellantInterpreterSignLanguage: appellantInterpreterLanguageCategory ? appellantInterpreterLanguageCategory.includes(signLanguageInterpreterString) : false
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      if (!req.body.selections) {
+        req.body.selections = '';
+      }
+
+      const validation = interpreterTypesSelectionValidation(req.body);
+      if (validation) {
+        return res.render('hearing-requirements/interpreter-types.njk', {
+          previousPage: previousPage,
+          errorList: Object.values(validation)
+        });
+      }
+
+      let appellantInterpreterLanguageCategory = [];
+      if (req.body.selections.includes(spokenLanguageInterpreterString)) {
+        appellantInterpreterLanguageCategory.push(spokenLanguageInterpreterString);
+      }
+      if (req.body.selections.includes(signLanguageInterpreterString)) {
+        appellantInterpreterLanguageCategory.push(signLanguageInterpreterString);
+      }
+
+      let appeal: Appeal = {
+        ...req.session.appeal,
+        hearingRequirements: {
+          ...req.session.appeal.hearingRequirements,
+          appellantInterpreterLanguageCategory
+        }
+      };
+
+      //clear the saved CCD data
+      if (req.body.selections.includes(spokenLanguageInterpreterString) && !req.body.selections.includes(signLanguageInterpreterString)) {
+        appeal = {
+          ...req.session.appeal,
+          hearingRequirements: {
+            ...req.session.appeal.hearingRequirements,
+            appellantInterpreterLanguageCategory,
+            appellantInterpreterSignLanguage: {}
+          }
+        };
+      } else if (req.body.selections.includes(signLanguageInterpreterString) && !req.body.selections.includes(spokenLanguageInterpreterString)) {
+        appeal = {
+          ...req.session.appeal,
+          hearingRequirements: {
+            ...req.session.appeal.hearingRequirements,
+            appellantInterpreterLanguageCategory,
+            appellantInterpreterSpokenLanguage: {}
+          }
+        };
+      }
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      if (appellantInterpreterLanguageCategory.includes(spokenLanguageInterpreterString)) {
+        return res.redirect(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection);
+      } else {
+        return res.redirect(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
+      }
+
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+function getInterpreterSpokenLanguagePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return getPrepareInterpreterLanguageType(
+      req,
+      res,
+      'appellantInterpreterSpokenLanguage',
+      fakeInterpreterSpokenLanguageDynamicList, //need to retrieve from common reference data;
+      paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.pageTitle,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.text,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.dropdownListText,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.checkBoxText,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.languageManuallyText
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'languageRefData', 'languageManualEntry', 'languageManualEntryDescription')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      if (!req.body.languageManualEntry) {
+        req.body.languageManualEntry = '';
+      }
+
+      if (!req.body.languageManualEntryDescription) {
+        req.body.languageManualEntryDescription = '';
+      }
+
+      if (!req.body.languageRefData) {
+        req.body.languageRefData = '';
+      }
+
+      const validation = interpreterLanguageSelectionValidation(req.body);
+      if (validation) {
+        return res.render('hearing-requirements/interpreter-language-selection.njk', {
+          previousPage: previousPage,
+          formAction: paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection,
+          pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.pageTitle,
+          pageText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.text,
+          dropdownListText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.dropdownListText,
+          checkBoxText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.checkBoxText,
+          languageManuallyText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.languageManuallyText,
+          items: showSelectedLanguage(req.body.languageRefData, convertDynamicListToSelectItemList(fakeInterpreterSpokenLanguageDynamicList)), //need to retrieve from common reference data,
+          languageManualEntry: req.body.languageManualEntry.includes('Yes'),
+          languageManualEntryDescription: req.body.languageManualEntryDescription,
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      let appellantInterpreterSpokenLanguage = preparePostInterpreterLanguageSubmissionObj(req, fakeInterpreterSpokenLanguageDynamicList);
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        hearingRequirements: {
+          ...req.session.appeal.hearingRequirements,
+          appellantInterpreterSpokenLanguage
+        }
+      };
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      console.log("###### appealUpdated.hearingRequirements:", appealUpdated.hearingRequirements);
+      console.log("###### after req.session.appeal.hearingRequirements:", req.session.appeal.hearingRequirements);
+
+      if (req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory && req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory.includes(signLanguageInterpreterString)) {
+        return res.redirect(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
+      } else {
+        return res.redirect(paths.submitHearingRequirements.hearingStepFreeAccess);
+      }
+
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+function preparePostInterpreterLanguageSubmissionObj(req: Request, languageList: DynamicList): InterpreterLanguageRefData {
+  let appellantInterpreterLanguage: InterpreterLanguageRefData = {};
+  if (req.body.languageRefData) {
+    appellantInterpreterLanguage.languageRefData = { ...languageList };
+    for (let languageObj of appellantInterpreterLanguage.languageRefData.list_items) {
+      if (req.body.languageRefData === languageObj.code) {
+        appellantInterpreterLanguage.languageRefData.value = languageObj;
+      }
+    }
+  } else if (req.body.languageManualEntry && req.body.languageManualEntry.includes('Yes')) {
+    appellantInterpreterLanguage.languageManualEntry = ['Yes'];
+    appellantInterpreterLanguage.languageManualEntryDescription = req.body.languageManualEntryDescription;
+  }
+  return appellantInterpreterLanguage;
+}
+
+function getInterpreterSignLanguagePage(req: Request, res: Response, next: NextFunction) {
+  try {
+    return getPrepareInterpreterLanguageType(
+      req,
+      res,
+      'appellantInterpreterSignLanguage',
+      fakeInterpreterSignLanguageDynamicList, //need to retrieve from common reference data;
+      paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.pageTitle,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.text,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.dropdownListText,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.checkBoxText,
+      i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.languageManuallyText
+    );
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'languageRefData', 'languageManualEntry', 'languageManualEntryDescription')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      if (!req.body.languageManualEntry) {
+        req.body.languageManualEntry = '';
+      }
+
+      if (!req.body.languageManualEntryDescription) {
+        req.body.languageManualEntryDescription = '';
+      }
+
+      if (!req.body.languageRefData) {
+        req.body.languageRefData = '';
+      }
+
+      const validation = interpreterLanguageSelectionValidation(req.body);
+      if (validation) {
+        return res.render('hearing-requirements/interpreter-language-selection.njk', {
+          previousPage: previousPage,
+          formAction: paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection,
+          pageTitle: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.pageTitle,
+          pageText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.text,
+          dropdownListText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.dropdownListText,
+          checkBoxText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.checkBoxText,
+          languageManuallyText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.languageManuallyText,
+          items: showSelectedLanguage(req.body.languageRefData, convertDynamicListToSelectItemList(fakeInterpreterSignLanguageDynamicList)), //need to retrieve from common reference data,
+          languageManualEntry: req.body.languageManualEntry.includes('Yes'),
+          languageManualEntryDescription: req.body.languageManualEntryDescription,
+          errors: validation,
+          errorList: Object.values(validation)
+        });
+      }
+
+      let appellantInterpreterSignLanguage = preparePostInterpreterLanguageSubmissionObj(req, fakeInterpreterSignLanguageDynamicList)
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        hearingRequirements: {
+          ...req.session.appeal.hearingRequirements,
+          appellantInterpreterSignLanguage: appellantInterpreterSignLanguage
+        }
+      };
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      console.log("###### appealUpdated.hearingRequirements:", appealUpdated.hearingRequirements);
+      console.log("###### after req.session.appeal.hearingRequirements:", req.session.appeal.hearingRequirements);
+
+
+      return res.redirect(paths.submitHearingRequirements.hearingStepFreeAccess);
+
+
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+function getPrepareInterpreterLanguageType(req: Request, res: Response, languageType: string, languageList: DynamicList,
+  formAction, formPageTitle, formPageText, formDropdownListText, formCheckBoxText, formLanguageManuallyText) {
+  const { hearingRequirements } = req.session.appeal;
+  const appellantInterpreterLanguage = hearingRequirements && hearingRequirements[languageType] || null;
+
+  let selectItemLanguageList = convertDynamicListToSelectItemList(languageList)
+  let languageManualEntry: boolean;
+  let languageManualEntryDescription: string = '';
+  if (appellantInterpreterLanguage) {
+    if (appellantInterpreterLanguage.languageRefData) {
+      selectItemLanguageList = convertDynamicListToSelectItemList(appellantInterpreterLanguage.languageRefData);
+    } else if (appellantInterpreterLanguage.languageManualEntry) {
+      languageManualEntry = appellantInterpreterLanguage.languageManualEntry.includes('Yes')
+      languageManualEntryDescription = appellantInterpreterLanguage.languageManualEntryDescription
+    }
+  }
+
+  return res.render('hearing-requirements/interpreter-language-selection.njk', {
+    previousPage: previousPage,
+    formAction: formAction,
+    pageTitle: formPageTitle,
+    pageText: formPageText,
+    dropdownListText: formDropdownListText,
+    checkBoxText: formCheckBoxText,
+    languageManuallyText: formLanguageManuallyText,
+    languageManualEntry: languageManualEntry,
+    languageManualEntryDescription: languageManualEntryDescription,
+    items: selectItemLanguageList
+  });
+}
+
+function showSelectedLanguage(selectedlanguageCode: Object, languageList) {
+  let resultList = languageList;
+  if (selectedlanguageCode && languageList) {
+    resultList = languageList.map((language) => {
+      let selected = selectedlanguageCode === language.value;
+      return {
+        text: language.text,
+        value: language.value,
+        selected: selected
+      };
+    });
+  }
+  return resultList;
+}
+
+function convertDynamicListToSelectItemList(obj: DynamicList) {
+  let selectItemList = [];
+  if (obj && obj.list_items) {
+    selectItemList.push({ 'text': 'Select language', value: '' });
+    obj.list_items.map((language) => {
+      selectItemList.push({ text: language.label, value: language.code, selected: (obj.value && obj.value.code === language.code) });
+    });
+
+  }
+  return selectItemList;
 }
 
 function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) {
@@ -334,6 +689,14 @@ function setupHearingAccessNeedsController(middleware: Middleware[], updateAppea
   router.get(paths.submitHearingRequirements.accessNeeds, middleware, getAccessNeeds);
   router.get(paths.submitHearingRequirements.hearingInterpreter, middleware, getNeedInterpreterPage);
   router.post(paths.submitHearingRequirements.hearingInterpreter, middleware, postNeedInterpreterPage(updateAppealService));
+  
+  router.get(paths.submitHearingRequirements.hearingInterpreterTypes, middleware, getInterpreterTypePage);
+  router.post(paths.submitHearingRequirements.hearingInterpreterTypes, middleware, postInterpreterTypePage(updateAppealService));
+  router.get(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection, middleware, getInterpreterSpokenLanguagePage);
+  router.post(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection, middleware, postInterpreterSpokenLanguagePage(updateAppealService));
+  router.get(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection, middleware, getInterpreterSignLanguagePage);
+  router.post(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection, middleware, postInterpreterSignLanguagePage(updateAppealService));
+
   router.get(paths.submitHearingRequirements.hearingLanguageDetails, middleware, getAdditionalLanguage);
   router.post(paths.submitHearingRequirements.hearingLanguageDetails, middleware, postAdditionalLanguage(updateAppealService));
   router.post(paths.submitHearingRequirements.hearingLanguageDetailsAdd, middleware, addMoreLanguagePostAction());
@@ -351,6 +714,7 @@ export {
   getAccessNeeds,
   getNeedInterpreterPage,
   postNeedInterpreterPage,
+  getInterpreterTypePage,
   getAdditionalLanguage,
   postAdditionalLanguage,
   addMoreLanguagePostAction,

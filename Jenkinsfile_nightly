@@ -61,6 +61,8 @@ withNightlyPipeline(type, product, component) {
     env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
     env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
+    env.PAYMENTS_API_URL = 'http://payment-api-aat.service.core-compute-aat.internal'
+    env.REF_DATA_API_URL = 'http://rd-commondata-api-aat.service.core-compute-aat.internal'
     env.S2S_MICROSERVICE_NAME = 'iac'
 
     enableCrossBrowserTest()

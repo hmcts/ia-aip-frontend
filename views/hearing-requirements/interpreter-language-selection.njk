@@ -1,0 +1,105 @@
+{% set pageTitleName = pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+
+    {# {% if errors['languageRefData'] == 0 %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: [{
+                href: "#languageRefData"
+            }]
+        }) }}
+    {% endif %}#}
+
+    {% call govukFieldset({
+        legend: {
+            text: pageTitle ,
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+        }
+    })
+    %}
+    {% set textHtml %}
+        {{ govukInput({
+            id: "languageManualEntryDescription",
+            name: "languageManualEntryDescription",
+            value: languageManualEntryDescription,
+            classes: "govuk-input--width-30",
+            label: {
+                text: languageManuallyText
+            },
+            errorMessage: {
+                text: errors['languageManualEntryDescription'].text
+            }if errors['languageManualEntryDescription']
+        }) }}
+   {% endset %}
+
+    <p><div>{{ pageText }}</div></p>
+
+   {# <form action="{{ paths.submitHearingRequirements.hearingLanguageDetails }}?_csrf={{ csrfToken }}" method="post"> #}
+
+   {# <form method="post" action="{{ formAction }}" type="submit"> #}
+
+    <form action="{{ formAction }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+            {{ govukSelect({
+                idPrefix: "languageRefData",
+                name: "languageRefData",
+                value: languageRefData,
+                classes: "govuk-!-width-two-thirds",
+                label: {
+                    text: dropdownListText
+                },
+                items: items
+            }) }}
+            <p>Or</p>
+            {{ govukCheckboxes({
+                idPrefix: "languageManualEntry",
+                name: "languageManualEntry",
+                items: [
+                    {
+                        value: "Yes",
+                        text: checkBoxText,
+                        conditional: {
+                            html: textHtml
+                        },
+                        checked: languageManualEntry
+                    }
+                ]
+            }) }}
+
+        <div class="save-buttons__container">
+            {{ govukButton({
+                name: button1.name if button1.name else 'saveAndContinue',
+                text: button1.text if button1.text else i18n.common.buttons.saveAndContinue,
+                classes: "govuk-!-margin-right-1",
+                attributes: {
+                    formaction: formAction
+                }
+            }) }}
+
+            {{ govukButton({
+                text: button2.text if button2.text else i18n.common.buttons.saveForLater,
+                name: button2.name if button2.name else "saveForLater",
+                href: saveForLaterCTA,
+                value: "saveForLater",
+                classes: "govuk-button--secondary"
+            }) }}
+        </div>
+    </form>
+    {% endcall %}
+    {{ contactUs() }}
+{% endblock %}

@@ -107,5 +107,8 @@
     "path": "/service-endpoint",
     "returnUrl": "PCQ_RETURN_URL",
     "tokenKey": "PCQ_TOKEN_KEY"
+  },
+  "refData": {
+    "apiUrl": "REF_DATA_API_URL"
   }
 }

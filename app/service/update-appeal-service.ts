@@ -886,17 +886,17 @@ export default class UpdateAppealService {
       if (_.has(appeal.hearingRequirements, 'isInterpreterServicesNeeded')) {
         caseData.isInterpreterServicesNeeded = boolToYesNo(appeal.hearingRequirements.isInterpreterServicesNeeded);
 
-      if (_.has(appeal.hearingRequirements, 'appellantInterpreterLanguageCategory')) {
-        caseData.appellantInterpreterLanguageCategory = appeal.hearingRequirements.appellantInterpreterLanguageCategory;
-      }
-      
-      if (_.has(appeal.hearingRequirements, 'appellantInterpreterSpokenLanguage')) {
-        caseData.appellantInterpreterSpokenLanguage = appeal.hearingRequirements.appellantInterpreterSpokenLanguage;
-      }
+        if (_.has(appeal.hearingRequirements, 'appellantInterpreterLanguageCategory')) {
+          caseData.appellantInterpreterLanguageCategory = appeal.hearingRequirements.appellantInterpreterLanguageCategory;
+        }
 
-      if (_.has(appeal.hearingRequirements, 'appellantInterpreterSignLanguage')) {
-        caseData.appellantInterpreterSignLanguage = appeal.hearingRequirements.appellantInterpreterSignLanguage;
-      }
+        if (_.has(appeal.hearingRequirements, 'appellantInterpreterSpokenLanguage')) {
+          caseData.appellantInterpreterSpokenLanguage = appeal.hearingRequirements.appellantInterpreterSpokenLanguage;
+        }
+
+        if (_.has(appeal.hearingRequirements, 'appellantInterpreterSignLanguage')) {
+          caseData.appellantInterpreterSignLanguage = appeal.hearingRequirements.appellantInterpreterSignLanguage;
+        }
 
         if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {
           caseData.interpreterLanguage = appeal.hearingRequirements.interpreterLanguages.map(interpreterLanguage => {

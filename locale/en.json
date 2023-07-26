@@ -3706,7 +3706,7 @@
       "interpreterLanguageSelection": {
         "selectLanguage": "Please select the language you need to request",
         "enterLanguageManually": "Please enter the detail of the language you need to request",
-        "selectOneOptionOnly": "Please select one type of language"
+        "selectOneOptionOnly": "Fill in only one field"
       },
       "accessNeeds": {
         "selectInterpreter": "Select yes if you or any witnesses will need an interpreter at the hearing",

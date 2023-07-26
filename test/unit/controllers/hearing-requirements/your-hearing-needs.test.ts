@@ -52,16 +52,6 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
     'isHearingLoopNeeded': true,
     'isHearingRoomNeeded': true,
     'isInterpreterServicesNeeded': true,
-    'interpreterLanguages': [{
-      'language': 'Afar',
-      'languageDialect': 'fasdfas'
-    }, {
-      'language': 'Aragonese',
-      'languageDialect': '2nd'
-    }, {
-      'language': 'Bashkir',
-      'languageDialect': '3rd'
-    }],
     'otherNeeds': {
       'multimediaEvidence': true,
       'bringOwnMultimediaEquipment': true,
@@ -232,49 +222,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
           'title': '2. Access needs',
           'summaryLists': [{
             'title': 'Interpreter',
-            'summaryRows': [{
-              'key': {
-                'text': 'Question'
-              },
-              'value': {
-                'html': 'Will you or any witnesses need an interpreter at the hearing?'
-              }
-            }, {
-              'key': {
-                'text': 'Answer'
-              },
-              'value': {
-                'html': 'Yes'
-              }
-            }, {
-              'key': {
-                'text': 'Question'
-              },
-              'value': {
-                'html': 'Add language details'
-              }
-            }, {
-              'key': {
-                'text': 'Add language details'
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Afar</pre><br><b>Dialect</b><br><pre>fasdfas</pre>'
-              }
-            }, {
-              'key': {
-                'text': null
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Aragonese</pre><br><b>Dialect</b><br><pre>2nd</pre>'
-              }
-            }, {
-              'key': {
-                'text': null
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Bashkir</pre><br><b>Dialect</b><br><pre>3rd</pre>'
-              }
-            }]
+            'summaryRows': []
           }, {
             'title': 'Step-free access',
             'summaryRows': [{
@@ -654,49 +602,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
           'title': '2. Access needs',
           'summaryLists': [{
             'title': 'Interpreter',
-            'summaryRows': [{
-              'key': {
-                'text': 'Question'
-              },
-              'value': {
-                'html': 'Will you or any witnesses need an interpreter at the hearing?'
-              }
-            }, {
-              'key': {
-                'text': 'Answer'
-              },
-              'value': {
-                'html': 'Yes'
-              }
-            }, {
-              'key': {
-                'text': 'Question'
-              },
-              'value': {
-                'html': 'Add language details'
-              }
-            }, {
-              'key': {
-                'text': 'Add language details'
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Afar</pre><br><b>Dialect</b><br><pre>fasdfas</pre>'
-              }
-            }, {
-              'key': {
-                'text': null
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Aragonese</pre><br><b>Dialect</b><br><pre>2nd</pre>'
-              }
-            }, {
-              'key': {
-                'text': null
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Bashkir</pre><br><b>Dialect</b><br><pre>3rd</pre>'
-              }
-            }]
+            'summaryRows': []
           }, {
             'title': 'Step-free access',
             'summaryRows': [{
@@ -1044,49 +950,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
           'title': '2. Access needs',
           'summaryLists': [{
             'title': 'Interpreter',
-            'summaryRows': [{
-              'key': {
-                'text': 'Question'
-              },
-              'value': {
-                'html': 'Will you or any witnesses need an interpreter at the hearing?'
-              }
-            }, {
-              'key': {
-                'text': 'Answer'
-              },
-              'value': {
-                'html': 'Yes'
-              }
-            }, {
-              'key': {
-                'text': 'Question'
-              },
-              'value': {
-                'html': 'Add language details'
-              }
-            }, {
-              'key': {
-                'text': 'Add language details'
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Afar</pre><br><b>Dialect</b><br><pre>fasdfas</pre>'
-              }
-            }, {
-              'key': {
-                'text': null
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Aragonese</pre><br><b>Dialect</b><br><pre>2nd</pre>'
-              }
-            }, {
-              'key': {
-                'text': null
-              },
-              'value': {
-                'html': '<b>Language</b><br><pre>Bashkir</pre><br><b>Dialect</b><br><pre>3rd</pre>'
-              }
-            }]
+            'summaryRows': []
           }, {
             'title': 'Step-free access',
             'summaryRows': [{

@@ -89,10 +89,23 @@ describe('Hearing requirements access needs controller', () => {
   });
 
   describe('getAccessNeeds', () => {
-    it('getAccessNeeds should access-needs.njk', () => {
+    it('getAccessNeeds should access-needs.njk when there is no witnesses on hearing', () => {
+      req.session.appeal.hearingRequirements.witnessesOnHearing = false;
+
       getAccessNeeds(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/access-needs.njk', {
-        previousPage: previousPage
+        previousPage: previousPage,
+        link: paths.submitHearingRequirements.hearingInterpreter
+      });
+    });
+
+    it('getAccessNeeds should access-needs.njk when there is witnesses on hearing', () => {
+      req.session.appeal.hearingRequirements.witnessesOnHearing = true;
+
+      getAccessNeeds(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/access-needs.njk', {
+        previousPage: previousPage,
+        link: paths.submitHearingRequirements.taskList
       });
     });
   });
@@ -104,7 +117,7 @@ describe('Hearing requirements access needs controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter',
-        pageTitle: 'Will you or any witnesses need an interpreter at the hearing?',
+        pageTitle: 'Will you need an interpreter at the hearing?',
         saveAndContinue: true,
         question: {
           options: [{ checked: false, text: 'Yes', value: 'yes' }, {
@@ -112,8 +125,8 @@ describe('Hearing requirements access needs controller', () => {
             text: 'No',
             value: 'no'
           }],
-          title: 'Will you or any witnesses need an interpreter at the hearing?',
-          hint: 'We will provide an interpreter if you or any witnesses need one.',
+          title: 'Will you need an interpreter at the hearing?',
+          hint: 'We will provide an interpreter for you. You cannot bring your own.',
           name: 'answer'
         }
       });
@@ -128,11 +141,11 @@ describe('Hearing requirements access needs controller', () => {
         error: { 'answer': { key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' } },
         previousPage: previousPage,
         formAction: '/hearing-interpreter',
-        pageTitle: 'Will you or any witnesses need an interpreter at the hearing?',
+        pageTitle: 'Will you need an interpreter at the hearing?',
         question: {
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
-          title: 'Will you or any witnesses need an interpreter at the hearing?',
-          hint: 'We will provide an interpreter if you or any witnesses need one.',
+          title: 'Will you need an interpreter at the hearing?',
+          hint: 'We will provide an interpreter for you. You cannot bring your own.',
           name: 'answer'
         },
         saveAndContinue: true

@@ -164,35 +164,39 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
         )
       );
 
-      interpreterRows.push(
-        getSummaryRow(visibleChangeLink,
-          i18n.common.cya.questionRowTitle,
-          [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.title]
-        )
-      );
+      if (hearingRequirements.appellantInterpreterSpokenLanguage && hearingRequirements.appellantInterpreterLanguageCategory.includes('spokenLanguageInterpreter')) {
+        interpreterRows.push(
+          getSummaryRow(visibleChangeLink,
+            i18n.common.cya.questionRowTitle,
+            [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.title]
+          )
+        );
 
-      interpreterRows.push(
-        getSummaryRow(visibleChangeLink,
-          i18n.common.cya.answerRowTitle,
-          [getInterpreterLanguageAnswer(hearingRequirements.appellantInterpreterSpokenLanguage)],
-          paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection
-        )
-      );
+        interpreterRows.push(
+          getSummaryRow(visibleChangeLink,
+            i18n.common.cya.answerRowTitle,
+            [getInterpreterLanguageAnswer(hearingRequirements.appellantInterpreterSpokenLanguage)],
+            paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection
+          )
+        );
+      }
 
-      interpreterRows.push(
-        getSummaryRow(visibleChangeLink,
-          i18n.common.cya.questionRowTitle,
-          [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.title]
-        )
-      );
+      if (hearingRequirements.appellantInterpreterSignLanguage && hearingRequirements.appellantInterpreterLanguageCategory.includes('signLanguageInterpreter')) {
+        interpreterRows.push(
+          getSummaryRow(visibleChangeLink,
+            i18n.common.cya.questionRowTitle,
+            [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.title]
+          )
+        );
 
-      interpreterRows.push(
-        getSummaryRow(visibleChangeLink,
-          i18n.common.cya.answerRowTitle,
-          [getInterpreterLanguageAnswer(hearingRequirements.appellantInterpreterSignLanguage)],
-          paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection
-        )
-      );
+        interpreterRows.push(
+          getSummaryRow(visibleChangeLink,
+            i18n.common.cya.answerRowTitle,
+            [getInterpreterLanguageAnswer(hearingRequirements.appellantInterpreterSignLanguage)],
+            paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection
+          )
+        );
+      }
 
       // interpreterRows.push(
       //   getSummaryRow(visibleChangeLink,

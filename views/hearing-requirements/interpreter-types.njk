@@ -12,16 +12,6 @@
     }) }}
   {% endif %}
 
-  {# {% if errors['selections'] == 0 %}
-    {{ govukErrorSummary({
-      titleText: i18n.validationErrors.errorSummary,
-      errorList: [{
-        text: i18n.validationErrors.atLeastOneOption,
-        href: "#interpreterType"
-      }]
-    }) }}
-  {% endif %} #}
-
   <form action="{{ paths.submitHearingRequirements.hearingInterpreterTypes }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     {{ govukCheckboxes({

@@ -15,15 +15,6 @@
         }) }}
     {% endif %}
 
-    {# {% if errors['languageRefData'] == 0 %}
-        {{ govukErrorSummary({
-            titleText: i18n.validationErrors.errorSummary,
-            errorList: [{
-                href: "#languageRefData"
-            }]
-        }) }}
-    {% endif %}#}
-
     {% call govukFieldset({
         legend: {
             text: pageTitle ,
@@ -48,10 +39,6 @@
    {% endset %}
 
     <p><div>{{ pageText }}</div></p>
-
-   {# <form action="{{ paths.submitHearingRequirements.hearingLanguageDetails }}?_csrf={{ csrfToken }}" method="post"> #}
-
-   {# <form method="post" action="{{ formAction }}" type="submit"> #}
 
     <form action="{{ formAction }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">

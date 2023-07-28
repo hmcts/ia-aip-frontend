@@ -216,6 +216,13 @@ function interpreterLanguagesValidation(obj: object) {
   return validate({ language: obj }, schema);
 }
 
+function interpreterSupportSelectionValidation(obj: object) {
+  const schema = Joi.object({
+    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterSuuport.selectOneOption })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function interpreterTypesSelectionValidation(obj: object) {
   const schema = Joi.object({
     selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterType.selectOneOption })
@@ -593,6 +600,7 @@ export {
   isDateInRange,
   decisionTypeValidation,
   interpreterLanguagesValidation,
+  interpreterSupportSelectionValidation,
   interpreterTypesSelectionValidation,
   interpreterLanguageSelectionValidation,
   hasSponsorValidation,

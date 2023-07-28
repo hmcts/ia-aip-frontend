@@ -59,7 +59,7 @@
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "google-libphonenumber": "^3.2.21",
-    "govuk-frontend": "^3.10.2",
+    "govuk-frontend": "^4.7.0",
     "graceful-fs": "^4.2.6",
     "helmet": "^3.23.3",
     "http-status-codes": "^1.4.0",

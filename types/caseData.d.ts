@@ -70,6 +70,7 @@ interface CaseData {
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
   clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
   isInterpreterServicesNeeded?: string;
+  isAnyWitnessInterpreterRequired?: string;
   appellantInterpreterLanguageCategory?: string[];
   appellantInterpreterSpokenLanguage?: InterpreterLanguageRefData;
   appellantInterpreterSignLanguage?: InterpreterLanguageRefData;

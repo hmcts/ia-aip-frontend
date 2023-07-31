@@ -13,7 +13,6 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import {
   interpreterLanguageSelectionValidation,
   interpreterLanguagesValidation,
-  interpreterSupportSelectionValidation,
   interpreterTypesSelectionValidation,
   selectedRequiredValidation,
   selectedRequiredValidationDialect
@@ -47,84 +46,12 @@ function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
   try {
     return res.render('hearing-requirements/access-needs.njk', {
       previousPage: previousPage,
-      link: witnessesOnHearing ? paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses : paths.submitHearingRequirements.hearingInterpreter
+      // To-do: the link should be updated to new screen (Ticket 7506) when the condition is true
+      link: witnessesOnHearing ? paths.submitHearingRequirements.taskList : paths.submitHearingRequirements.hearingInterpreter
     });
   } catch (error) {
     next(error);
   }
-}
-
-function getInterpreterSupportAppellantWitnesses(req: Request, res: Response, next: NextFunction) {
-  try {
-    const { hearingRequirements } = req.session.appeal;
-    const isInterpreterServicesNeeded = hearingRequirements && hearingRequirements.isInterpreterServicesNeeded || false;
-    const isAnyWitnessInterpreterRequired = hearingRequirements && hearingRequirements.isAnyWitnessInterpreterRequired || false;
-    let noInterpreterRequired: boolean = false;
-
-    if (hearingRequirements && hearingRequirements.isInterpreterServicesNeeded !== undefined && hearingRequirements.isAnyWitnessInterpreterRequired !== undefined) {
-      noInterpreterRequired = (!hearingRequirements.isInterpreterServicesNeeded && !hearingRequirements.isAnyWitnessInterpreterRequired);
-    }
-
-    return res.render('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
-      previousPage: previousPage,
-      isInterpreterServicesNeeded: isInterpreterServicesNeeded,
-      isAnyWitnessInterpreterRequired: isAnyWitnessInterpreterRequired,
-      noInterpreterRequired: noInterpreterRequired
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
-function postInterpreterSupportAppellantWitnesses(updateAppealService: UpdateAppealService) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
-      if (!req.body.selections) {
-        req.body.selections = '';
-      }
-
-      const validation = interpreterSupportSelectionValidation(req.body);
-      if (validation) {
-        return res.render('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
-          previousPage: previousPage,
-          errorList: Object.values(validation)
-        });
-      }
-
-      if (req.body.selections) {
-        if (req.body.selections.includes('noInterpreterRequired')) {
-          req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = !req.body.selections.includes('noInterpreterRequired');
-          req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = !req.body.selections.includes('noInterpreterRequired');
-        } else {
-          req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = req.body.selections.includes('isInterpreterServicesNeeded');
-          req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = req.body.selections.includes('isAnyWitnessInterpreterRequired');
-        }
-      }
-
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
-
-      if (req.session.appeal.hearingRequirements) {
-        if (req.session.appeal.hearingRequirements.isInterpreterServicesNeeded && req.session.appeal.hearingRequirements.isInterpreterServicesNeeded === true) {
-          return res.redirect(paths.submitHearingRequirements.hearingInterpreterTypes);
-        } else if (req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired && req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired === true) {
-          // To-do: the link need be updated to new screen (Ticket 7508) when the condition is true
-          return res.redirect(paths.submitHearingRequirements.taskList);
-        } else {
-          return res.redirect(paths.submitHearingRequirements.hearingStepFreeAccess);
-        }
-      }
-
-    } catch (error) {
-      next(error);
-    }
-  };
 }
 
 function getNeedInterpreterPage(req: Request, res: Response, next: NextFunction) {
@@ -166,11 +93,6 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
 
       const onSuccess = async (answer: boolean) => {
         req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = answer;
-        if (!answer) {
-          req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = null;
-          req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = null;
-          req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = null;
-        }
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
           ...req.session.appeal,
@@ -238,13 +160,6 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
           appellantInterpreterLanguageCategory
         }
       };
-
-      // clear the saved CCD data
-      if (req.body.selections.includes(spokenLanguageInterpreterString) && !req.body.selections.includes(signLanguageInterpreterString)) {
-        appeal.hearingRequirements.appellantInterpreterSignLanguage = null;
-      } else if (req.body.selections.includes(signLanguageInterpreterString) && !req.body.selections.includes(spokenLanguageInterpreterString)) {
-        appeal.hearingRequirements.appellantInterpreterSpokenLanguage = null;
-      }
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
@@ -751,8 +666,6 @@ function postHearingLoopPage(updateAppealService: UpdateAppealService) {
 function setupHearingAccessNeedsController(middleware: Middleware[], updateAppealService: UpdateAppealService, refDataService: RefDataService): Router {
   const router = Router();
   router.get(paths.submitHearingRequirements.accessNeeds, middleware, getAccessNeeds);
-  router.get(paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses, middleware, getInterpreterSupportAppellantWitnesses);
-  router.post(paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses, middleware, postInterpreterSupportAppellantWitnesses(updateAppealService));
   router.get(paths.submitHearingRequirements.hearingInterpreter, middleware, getNeedInterpreterPage);
   router.post(paths.submitHearingRequirements.hearingInterpreter, middleware, postNeedInterpreterPage(updateAppealService));
   router.get(paths.submitHearingRequirements.hearingInterpreterTypes, middleware, getInterpreterTypePage);
@@ -776,8 +689,6 @@ function setupHearingAccessNeedsController(middleware: Middleware[], updateAppea
 export {
   setupHearingAccessNeedsController,
   getAccessNeeds,
-  getInterpreterSupportAppellantWitnesses,
-  postInterpreterSupportAppellantWitnesses,
   getNeedInterpreterPage,
   postNeedInterpreterPage,
   getInterpreterTypePage,

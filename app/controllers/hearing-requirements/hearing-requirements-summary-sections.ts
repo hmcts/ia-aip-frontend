@@ -220,6 +220,34 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
       //   ));
       // });
     }
+  } else if (hearingRequirements.witnessesOnHearing) {
+    interpreterRows.push(
+      addSummaryRow(
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.title]
+      )
+    );
+
+    let hearingInterpreterSupportAppellantWitnesses = '';
+
+    if (hearingRequirements.isInterpreterServicesNeeded) {
+      hearingInterpreterSupportAppellantWitnesses += i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.interpreterSupportAppellant;
+      hearingInterpreterSupportAppellantWitnesses += (hearingRequirements.isAnyWitnessInterpreterRequired) ? Delimiter.BREAK_LINE : '';
+    }
+
+    if (hearingRequirements.isAnyWitnessInterpreterRequired) {
+      hearingInterpreterSupportAppellantWitnesses += i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.interpreterSupportWitnesses;
+    }
+
+    if (!hearingRequirements.isInterpreterServicesNeeded && !hearingRequirements.isAnyWitnessInterpreterRequired) {
+      hearingInterpreterSupportAppellantWitnesses += i18n.pages.hearingRequirements.accessNeedsSection.interpreterSupportAppellantWitnesess.noSupportNeeded;
+    }
+
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+        [hearingInterpreterSupportAppellantWitnesses],
+        paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses)
+    );
   }
 
   accessNeedsSummaryLists.push({

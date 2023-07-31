@@ -52,6 +52,7 @@ describe('Hearing Requirements Check and Send controller', () => {
     'isHearingLoopNeeded': true,
     'isHearingRoomNeeded': true,
     'isInterpreterServicesNeeded': true,
+    'isAnyWitnessInterpreterRequired': true,
     'otherNeeds': {
       'multimediaEvidence': true,
       'bringOwnMultimediaEquipment': true,
@@ -213,7 +214,27 @@ describe('Hearing Requirements Check and Send controller', () => {
           'title': '2. Access needs',
           'summaryLists': [{
             'title': 'Interpreter',
-            'summaryRows': []
+            'summaryRows': [{
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Who are you requesting support for?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Interpreter support for me personally<br>Interpreter support for one or more witnesses'
+              },
+              'actions': {
+                'items': [{
+                  'href': '/hearing-interpreter-support-appellant-Witnesses',
+                  'text': 'Change'
+                }]
+              }
+            }]
           }, {
             'title': 'Step-free access',
             'summaryRows': [{

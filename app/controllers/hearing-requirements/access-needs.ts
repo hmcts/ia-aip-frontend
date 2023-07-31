@@ -93,11 +93,7 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
 
       const onSuccess = async (answer: boolean) => {
         req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = answer;
-        if (!answer) {
-          req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = null;
-          req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = null;
-          req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = null;
-        }
+        clearUnnecessaryInterpreterCachedData(req.session.appeal.hearingRequirements);
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
         req.session.appeal = {
           ...req.session.appeal,
@@ -166,12 +162,7 @@ function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
         }
       };
 
-      // clear the saved CCD data
-      if (req.body.selections.includes(spokenLanguageInterpreterString) && !req.body.selections.includes(signLanguageInterpreterString)) {
-        appeal.hearingRequirements.appellantInterpreterSignLanguage = null;
-      } else if (req.body.selections.includes(signLanguageInterpreterString) && !req.body.selections.includes(spokenLanguageInterpreterString)) {
-        appeal.hearingRequirements.appellantInterpreterSpokenLanguage = null;
-      }
+      clearUnnecessaryInterpreterCachedData(appeal.hearingRequirements);
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
@@ -444,6 +435,23 @@ function convertCommonRefDataToValueList(commonRefData: any): DynamicList {
       });
   }
   return { value: null, list_items: vauleList };
+}
+
+function clearUnnecessaryInterpreterCachedData(hearingRequirements: HearingRequirements) {
+  if (hearingRequirements) {
+    if (hearingRequirements.isInterpreterServicesNeeded !== undefined && !hearingRequirements.isInterpreterServicesNeeded) {
+      hearingRequirements.appellantInterpreterLanguageCategory = null;
+      hearingRequirements.appellantInterpreterSpokenLanguage = null;
+      hearingRequirements.appellantInterpreterSignLanguage = null;
+    } else if (hearingRequirements.appellantInterpreterLanguageCategory !== undefined) {
+      if (!hearingRequirements.appellantInterpreterLanguageCategory.includes(signLanguageInterpreterString)) {
+        hearingRequirements.appellantInterpreterSignLanguage = null;
+      }
+      if (!hearingRequirements.appellantInterpreterLanguageCategory.includes(spokenLanguageInterpreterString)) {
+        hearingRequirements.appellantInterpreterSpokenLanguage = null;
+      }
+    }
+  }
 }
 
 function getAdditionalLanguage(req: Request, res: Response, next: NextFunction) {

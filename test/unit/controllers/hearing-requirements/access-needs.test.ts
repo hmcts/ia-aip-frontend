@@ -6,6 +6,7 @@ import {
   getHearingLoopPage,
   getInterpreterSignLanguagePage,
   getInterpreterSpokenLanguagePage,
+  getInterpreterSupportAppellantWitnesses,
   getInterpreterTypePage,
   getNeedInterpreterPage,
   getStepFreeAccessPage,
@@ -13,6 +14,7 @@ import {
   postHearingLoopPage,
   postInterpreterSignLanguagePage,
   postInterpreterSpokenLanguagePage,
+  postInterpreterSupportAppellantWitnesses,
   postInterpreterTypePage,
   postNeedInterpreterPage,
   postStepFreeAccessPage, removeLanguagePostAction,
@@ -118,7 +120,64 @@ describe('Hearing requirements access needs controller', () => {
       getAccessNeeds(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/access-needs.njk', {
         previousPage: previousPage,
-        link: paths.submitHearingRequirements.taskList
+        link: paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses
+      });
+    });
+  });
+
+  describe('InterpreterSupportAppellantWitnesses', () => {
+    it('getInterpreterSupportAppellantWitnesses should render getInterpreterSupportAppellantWitnesses', () => {
+      req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = undefined;
+      req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = undefined;
+
+      getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+        previousPage: previousPage,
+        isInterpreterServicesNeeded: false,
+        isAnyWitnessInterpreterRequired: false,
+        noInterpreterRequired: false
+      });
+    });
+
+    it('getInterpreterSupportAppellantWitnesses should render the page when load user answer with interpreter support', () => {
+      req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = true;
+      req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = true;
+
+      getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+        previousPage: previousPage,
+        isInterpreterServicesNeeded: true,
+        isAnyWitnessInterpreterRequired: true,
+        noInterpreterRequired: false
+      });
+    });
+
+    it('getInterpreterSupportAppellantWitnesses should render the page when load user answer with no interpreter support', () => {
+      req.session.appeal.hearingRequirements.isInterpreterServicesNeeded = false;
+      req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = false;
+
+      getInterpreterSupportAppellantWitnesses(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+        previousPage: previousPage,
+        isInterpreterServicesNeeded: false,
+        isAnyWitnessInterpreterRequired: false,
+        noInterpreterRequired: true
+      });
+    });
+
+    it('postInterpreterSupportAppellantWitnesses should show validation error if no option is selected', async () => {
+      req.body.selections = '';
+
+      await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-support-appellant-witnesses.njk', {
+        previousPage: previousPage,
+        errorList: [
+          {
+            key: 'selections',
+            text: 'You must select at least one option',
+            href: '#selections'
+          }
+        ]
       });
     });
   });

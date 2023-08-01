@@ -421,6 +421,10 @@ export default class UpdateAppealService {
       hearingRequirements.appellantInterpreterSignLanguage = caseData.appellantInterpreterSignLanguage;
     }
 
+    if (caseData.isAnyWitnessInterpreterRequired) {
+      hearingRequirements.isAnyWitnessInterpreterRequired = yesNoToBool(caseData.isAnyWitnessInterpreterRequired);
+    }
+
     if (caseData.interpreterLanguage) {
       hearingRequirements.interpreterLanguages = caseData.interpreterLanguage.map(additionalLanguage => {
         return {
@@ -763,7 +767,7 @@ export default class UpdateAppealService {
         }
 
         if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
-          if (_.has(accessNeeds, 'interpreterLanguage')) {
+          if (_.has(accessNeeds, 'interpreterLanguage') && (_.has(accessNeeds.interpreterLanguage, 'language') || _.has(accessNeeds.interpreterLanguage, 'languageDialect'))) {
             caseData.interpreterLanguage = [{
               value: {
                 language: accessNeeds.interpreterLanguage.language,
@@ -908,6 +912,10 @@ export default class UpdateAppealService {
             } as Collection<AdditionalLanguage>;
           });
         }
+      }
+
+      if (_.has(appeal.hearingRequirements, 'isAnyWitnessInterpreterRequired')) {
+        caseData.isAnyWitnessInterpreterRequired = boolToYesNo(appeal.hearingRequirements.isAnyWitnessInterpreterRequired);
       }
 
       caseData.isHearingRoomNeeded = null;

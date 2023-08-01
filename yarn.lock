@@ -7853,10 +7853,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-frontend@npm:^3.10.2":
-  version: 3.11.0
-  resolution: "govuk-frontend@npm:3.11.0"
-  checksum: 74f6c6c25abb339922e69e9d168a847d58fe2e483f726984eaa6c27a0f78a627cf3b3c0252e201d47555b2fd042094c94d98bd9ce1f0c4977ecb103d0d16f7e5
+"govuk-frontend@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "govuk-frontend@npm:4.7.0"
+  checksum: 0e246dd2c724e51fd14dd40fc31c66627df7d07ebe89e1a19b1e7da7e7a5eb86bc6560229e18a13e40651e6c953a67422d54e77e240d82efff7b2cbefaa8b88d
   languageName: node
   linkType: hard
 
@@ -8448,7 +8448,7 @@ __metadata:
     express: ^4.17.1
     express-session: ^1.16.2
     google-libphonenumber: ^3.2.21
-    govuk-frontend: ^3.10.2
+    govuk-frontend: ^4.7.0
     graceful-fs: ^4.2.6
     helmet: ^3.23.3
     http-status-codes: ^1.4.0

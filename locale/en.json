@@ -3071,6 +3071,15 @@
           "title": "Communication and access support",
           "text": "<p>Use this form if you or anyone with you needs to request:</p><p><ul><li>an interpreter for translating spoken language</li><li>an interpreter for sign language</li><li>step-free access</li><li>a hearing loop</li></ul></p><p>You can request more than one for you or any witnesses.</p><p>They will be provided at the hearing.</p>"
         },
+        "interpreterSupportAppellantWitnesess": {
+          "pageTitle": "Who are you requesting support for?",
+          "title": "Who are you requesting support for?",
+          "text": "If you request an interpreter, they will be provided by the court. You cannot bring your own.<br/>You will be able to request step-free access or hearing loop later.",
+          "hint": "Select all that apply",
+          "interpreterSupportAppellant": "Interpreter support for me personally",
+          "interpreterSupportWitnesses": "Interpreter support for one or more witnesses",
+          "noSupportNeeded": "I do not need to request any interpreter support at this time"
+        },
         "needInterpreterPage": {
           "pageTitle": "Will you need an interpreter at the hearing?",
           "title": "Will you need an interpreter at the hearing?",
@@ -3699,6 +3708,9 @@
       "witnessesSection": {
         "witnessesOnHearingRequired": "Select yes if any witnesses will be coming to the hearing",
         "witnessesOutsideUKRequired": "Select Yes if you or any witnesses will take part in the hearing from outside the UK"
+      },
+      "interpreterSuuport": {
+        "selectOneOption": "You must select at least one option"
       },
       "interpreterType": {
         "selectOneOption": "You must select at least one kind of interpreter"

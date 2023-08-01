@@ -52,6 +52,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
     'isHearingLoopNeeded': true,
     'isHearingRoomNeeded': true,
     'isInterpreterServicesNeeded': true,
+    'isAnyWitnessInterpreterRequired': true,
     'otherNeeds': {
       'multimediaEvidence': true,
       'bringOwnMultimediaEquipment': true,
@@ -222,7 +223,21 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
           'title': '2. Access needs',
           'summaryLists': [{
             'title': 'Interpreter',
-            'summaryRows': []
+            'summaryRows': [{
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Who are you requesting support for?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Interpreter support for me personally<br>Interpreter support for one or more witnesses'
+              }
+            }]
           }, {
             'title': 'Step-free access',
             'summaryRows': [{
@@ -602,7 +617,21 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
           'title': '2. Access needs',
           'summaryLists': [{
             'title': 'Interpreter',
-            'summaryRows': []
+            'summaryRows': [{
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Who are you requesting support for?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Interpreter support for me personally<br>Interpreter support for one or more witnesses'
+              }
+            }]
           }, {
             'title': 'Step-free access',
             'summaryRows': [{
@@ -950,7 +979,21 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
           'title': '2. Access needs',
           'summaryLists': [{
             'title': 'Interpreter',
-            'summaryRows': []
+            'summaryRows': [{
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Who are you requesting support for?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Interpreter support for me personally<br>Interpreter support for one or more witnesses'
+              }
+            }]
           }, {
             'title': 'Step-free access',
             'summaryRows': [{

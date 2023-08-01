@@ -78,6 +78,7 @@ const paths = {
     hearingWitnessNamesRemove: '/hearing-witness-names/remove',
     witnessOutsideUK: '/hearing-outside-uk',
     hearingInterpreter: '/hearing-interpreter',
+    hearingInterpreterSupportAppellantWitnesses: '/hearing-interpreter-support-appellant-Witnesses',
     hearingInterpreterTypes: '/hearing-interpreter-types',
     hearingInterpreterSpokenLanguageSelection: '/hearing-interpreter-spoken-language-selection',
     hearingInterpreterSignLanguageSelection: '/hearing-interpreter-sign-language-selection',

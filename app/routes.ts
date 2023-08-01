@@ -109,6 +109,7 @@ import { DocumentManagementService } from './service/document-management-service
 import IdamService from './service/idam-service';
 import PaymentService from './service/payments-service';
 import PcqService from './service/pcq-service';
+import RefDataService from './service/ref-data-service';
 import S2SService from './service/s2s-service';
 import { SystemAuthenticationService } from './service/system-authentication-service';
 import UpdateAppealService from './service/update-appeal-service';
@@ -119,6 +120,7 @@ const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
+const refDataService: RefDataService = new RefDataService(authenticationService);
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
 const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
@@ -189,7 +191,7 @@ const cmaRequirementsConfirmationController = setupCmaRequirementsConfirmationPa
 const provideMoreEvidence = setupProvideMoreEvidenceController(middleware, updateAppealService, documentManagementService);
 const submitHearingRequirementsTaskListController = setupSubmitHearingRequirementsTaskListController([hearingRequirementsMiddleware]);
 const submitHearingRequirementsFeatureToggleController = setupHearingRequirementsFeatureToggleController([hearingRequirementsMiddleware]);
-const submitHearingRequirementsAccessNeedsController = setupHearingAccessNeedsController([hearingRequirementsMiddleware], updateAppealService);
+const submitHearingRequirementsAccessNeedsController = setupHearingAccessNeedsController([hearingRequirementsMiddleware], updateAppealService, refDataService);
 const witnessesOnHearingQuestionController = setupWitnessesOnHearingQuestionController(middleware, updateAppealService);
 const witnessesOutsideUkQuestionController = setupWitnessesOutsideUkQuestionController(middleware, updateAppealService);
 const witnessNamesController = setupWitnessNamesController(middleware, updateAppealService);

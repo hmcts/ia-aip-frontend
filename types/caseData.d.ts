@@ -70,6 +70,9 @@ interface CaseData {
   submitTimeExtensionEvidence?: TimeExtensionEvidenceCollection[];
   clarifyingQuestionsAnswers: ClarifyingQuestion<Collection<SupportingDocument>>[];
   isInterpreterServicesNeeded?: string;
+  appellantInterpreterLanguageCategory?: string[];
+  appellantInterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  appellantInterpreterSignLanguage?: InterpreterLanguageRefData;
   interpreterLanguage?: Collection<AdditionalLanguage>[];
   isHearingRoomNeeded?: string;
   isHearingLoopNeeded?: string;
@@ -293,4 +296,20 @@ interface Subscription {
   email: string;
   wantsSms: 'Yes' | 'No';
   mobileNumber: string;
+}
+
+interface InterpreterLanguageRefData {
+  languageRefData?: DynamicList;
+  languageManualEntry?: string[];
+  languageManualEntryDescription?: string;
+}
+
+interface DynamicList {
+  value?: Value;
+  list_items?: Value[];
+}
+
+interface Value {
+  code?: string;
+  label?: string;
 }

@@ -4,17 +4,23 @@ import {
   getAccessNeeds,
   getAdditionalLanguage,
   getHearingLoopPage,
+  getInterpreterSignLanguagePage,
+  getInterpreterSpokenLanguagePage,
+  getInterpreterTypePage,
   getNeedInterpreterPage,
   getStepFreeAccessPage,
   postAdditionalLanguage,
   postHearingLoopPage,
+  postInterpreterSignLanguagePage,
+  postInterpreterSpokenLanguagePage,
+  postInterpreterTypePage,
   postNeedInterpreterPage,
   postStepFreeAccessPage, removeLanguagePostAction,
   setupHearingAccessNeedsController
 } from '../../../../app/controllers/hearing-requirements/access-needs';
-
 import { isoLanguages } from '../../../../app/data/isoLanguages';
 import { paths } from '../../../../app/paths';
+import RefDataService from '../../../../app/service/ref-data-service';
 import UpdateAppealService from '../../../../app/service/update-appeal-service';
 import Logger from '../../../../app/utils/logger';
 import { expect, sinon } from '../../../utils/testUtils';
@@ -23,6 +29,7 @@ const express = require('express');
 
 describe('Hearing requirements access needs controller', () => {
   let sandbox: sinon.SinonSandbox;
+  let refDataServiceObj: Partial<RefDataService>;
   let req: Partial<Request>;
   let res: Partial<Response>;
   let updateAppealService: Partial<UpdateAppealService>;
@@ -73,14 +80,20 @@ describe('Hearing requirements access needs controller', () => {
       const routerPostStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware: Middleware[] = [];
 
-      setupHearingAccessNeedsController(middleware, updateAppealService as UpdateAppealService);
+      setupHearingAccessNeedsController(middleware, updateAppealService as UpdateAppealService, refDataServiceObj as RefDataService);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.accessNeeds);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreter);
+      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterTypes);
+      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection);
+      expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetails);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetailsRemove);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
       expect(routerGetStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLoop);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreter);
+      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterTypes);
+      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection);
+      expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetails);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingLanguageDetailsAdd);
       expect(routerPostStub).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
@@ -89,10 +102,23 @@ describe('Hearing requirements access needs controller', () => {
   });
 
   describe('getAccessNeeds', () => {
-    it('getAccessNeeds should access-needs.njk', () => {
+    it('getAccessNeeds should access-needs.njk when there is no witnesses on hearing', () => {
+      req.session.appeal.hearingRequirements.witnessesOnHearing = false;
+
       getAccessNeeds(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/access-needs.njk', {
-        previousPage: previousPage
+        previousPage: previousPage,
+        link: paths.submitHearingRequirements.hearingInterpreter
+      });
+    });
+
+    it('getAccessNeeds should access-needs.njk when there is witnesses on hearing', () => {
+      req.session.appeal.hearingRequirements.witnessesOnHearing = true;
+
+      getAccessNeeds(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/access-needs.njk', {
+        previousPage: previousPage,
+        link: paths.submitHearingRequirements.taskList
       });
     });
   });
@@ -104,7 +130,7 @@ describe('Hearing requirements access needs controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('templates/radio-question-page.njk', {
         previousPage: previousPage,
         formAction: '/hearing-interpreter',
-        pageTitle: 'Will you or any witnesses need an interpreter at the hearing?',
+        pageTitle: 'Will you need an interpreter at the hearing?',
         saveAndContinue: true,
         question: {
           options: [{ checked: false, text: 'Yes', value: 'yes' }, {
@@ -112,8 +138,8 @@ describe('Hearing requirements access needs controller', () => {
             text: 'No',
             value: 'no'
           }],
-          title: 'Will you or any witnesses need an interpreter at the hearing?',
-          hint: 'We will provide an interpreter if you or any witnesses need one.',
+          title: 'Will you need an interpreter at the hearing?',
+          hint: 'We will provide an interpreter for you. You cannot bring your own.',
           name: 'answer'
         }
       });
@@ -128,11 +154,11 @@ describe('Hearing requirements access needs controller', () => {
         error: { 'answer': { key: 'answer', text: '"answer" is not allowed to be empty', href: '#answer' } },
         previousPage: previousPage,
         formAction: '/hearing-interpreter',
-        pageTitle: 'Will you or any witnesses need an interpreter at the hearing?',
+        pageTitle: 'Will you need an interpreter at the hearing?',
         question: {
           options: [{ text: 'Yes', value: 'yes' }, { text: 'No', value: 'no' }],
-          title: 'Will you or any witnesses need an interpreter at the hearing?',
-          hint: 'We will provide an interpreter if you or any witnesses need one.',
+          title: 'Will you need an interpreter at the hearing?',
+          hint: 'We will provide an interpreter for you. You cannot bring your own.',
           name: 'answer'
         },
         saveAndContinue: true
@@ -146,6 +172,192 @@ describe('Hearing requirements access needs controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.common.overview + '?saved');
     });
 
+  });
+
+  describe('HearingInterpreterTypePage', () => {
+    it('getInterpreterTypePage should render getInterpreterTypePage', () => {
+      getInterpreterTypePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        appellantInterpreterSpokenLanguage: false,
+        appellantInterpreterSignLanguage: false
+      });
+    });
+
+    it('getInterpreterTypePage should render getInterpreterTypePage if user selected spoken and sign language', () => {
+      req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      getInterpreterTypePage(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        appellantInterpreterSpokenLanguage: true,
+        appellantInterpreterSignLanguage: true
+      });
+    });
+
+    it('postInterpreterTypePage should show validation error if no option is selected for interpreter language', async () => {
+      req.body.selections = '';
+      await postInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
+        previousPage: previousPage,
+        errorList: Object.values([{ key: 'selections', text: 'You must select at least one kind of interpreter', href: '#selections' }])
+      });
+    });
+  });
+
+  describe('InterpreterSpokenLanguagePage', () => {
+    it('getInterpreterSpokenLanguagePage should render getInterpreterSpokenLanguagePage', async () => {
+
+      let refDataServiceForSpokenLanguage = {
+        getCommonRefData: sandbox.stub().withArgs(req as Request, 'InterpreterLanguage').returns(JSON.stringify({
+          'list_of_values': [
+            {
+              'category_key': 'InterpreterLanguage',
+              'key': 'hun',
+              'value_en': 'Hungarian',
+              'value_cy': '',
+              'hint_text_en': '',
+              'hint_text_cy': '',
+              'lov_order': null,
+              'parent_category': '',
+              'parent_key': '',
+              'active_flag': 'Y',
+              'child_nodes': null
+            }
+          ]
+        }))
+      } as Partial<RefDataService>;
+
+      await getInterpreterSpokenLanguagePage(refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-spoken-language-selection',
+        pageTitle: 'Tell us about your language requirements',
+        pageText: 'We will provide an interpreter for you to understand spoken communication.',
+        dropdownListText: 'Select language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'Hungarian', value: 'hun', selected: null }
+        ]
+      });
+    });
+
+    it('postInterpreterSpokenLanguagePage should show validation error if no option is selected', async () => {
+
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-spoken-language-selection',
+        pageTitle: 'Tell us about your language requirements',
+        pageText: 'We will provide an interpreter for you to understand spoken communication.',
+        dropdownListText: 'Select language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'Hungarian', value: 'hun', selected: null }
+        ],
+        errors: {
+          'languageRefData-languageManualEntry': {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        },
+        errorList: [
+          {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        ]
+      });
+    });
+  });
+
+  describe('InterpreterSignLanguagePage', () => {
+    it('getInterpreterSignLanguagePage should render getInterpreterSignLanguagePage', async () => {
+
+      let refDataServiceForSignLanguage = {
+        getCommonRefData: sandbox.stub().withArgs(req as Request, 'SignLanguage').returns(JSON.stringify({
+          'list_of_values': [
+            {
+              'category_key': 'SignLanguage',
+              'key': 'bfi',
+              'value_en': 'British Sign Language (BSL)',
+              'value_cy': 'Iaith Arwyddion Prydain (BSL)',
+              'hint_text_en': '',
+              'hint_text_cy': '',
+              'lov_order': null,
+              'parent_category': '',
+              'parent_key': '',
+              'active_flag': 'Y',
+              'child_nodes': null
+            }
+          ]
+        }))
+      } as Partial<RefDataService>;
+
+      await getInterpreterSignLanguagePage(refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-sign-language-selection',
+        pageTitle: 'Tell us about your sign language requirements',
+        pageText: 'We will provide a sign language interpreter for you to understand spoken communication.',
+        dropdownListText: 'Select sign language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'British Sign Language (BSL)', value: 'bfi', selected: null }
+        ]
+      });
+    });
+
+    it('postInterpreterSignLanguagePage should show validation error if no option is selected', async () => {
+
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
+        previousPage: previousPage,
+        formAction: '/hearing-interpreter-sign-language-selection',
+        pageTitle: 'Tell us about your sign language requirements',
+        pageText: 'We will provide a sign language interpreter for you to understand spoken communication.',
+        dropdownListText: 'Select sign language',
+        checkBoxText: 'Enter the language manually',
+        languageManuallyText: 'Enter the details of the language you need to request',
+        languageManualEntry: false,
+        languageManualEntryDescription: '',
+        items: [
+          { text: 'Select language', value: '' },
+          { text: 'British Sign Language (BSL)', value: 'bfi', selected: null }
+        ],
+        errors: {
+          'languageRefData-languageManualEntry': {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        },
+        errorList: [
+          {
+            key: 'languageRefData-languageManualEntry',
+            text: 'Please select the language you need to request',
+            href: '#languageRefData'
+          }
+        ]
+      });
+    });
   });
 
   describe('AdditionalLanguage', () => {

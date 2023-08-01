@@ -1,0 +1,55 @@
+{% set pageTitleName = i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form action="{{ paths.submitHearingRequirements.hearingInterpreterTypes }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukCheckboxes({
+        idPrefix: "interpreterType",
+        name: "selections",
+        fieldset: {
+            legend: {
+            text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.title,
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+            }
+        },
+        hint: {
+            text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.hint
+        },
+        items: [
+            {
+                value: "spokenLanguageInterpreter",
+                text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.spokenLanguageOption,
+                hint: {
+                    text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.spokenLanguageOptionHint
+                },
+                checked: true if appellantInterpreterSpokenLanguage
+            },
+            {
+                value: "signLanguageInterpreter",
+                text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.signLanguageOption,
+                hint: {
+                    text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.signLanguageOptionHint
+                },
+                checked: true if appellantInterpreterSignLanguage
+            }
+        ]
+    }) }}
+
+    {{ saveButtons() }}
+  </form>
+
+    {{ contactUs() }}
+
+{% endblock %}

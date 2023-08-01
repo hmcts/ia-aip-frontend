@@ -359,7 +359,9 @@ interface HearingRequirements {
   witnessNames?: WitnessName[];
   witnessesOutsideUK?: boolean;
   isInterpreterServicesNeeded?: boolean;
-  interpreterLanguages?: InterpreterLanguage[];
+  appellantInterpreterLanguageCategory?: string[];
+  appellantInterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  appellantInterpreterSignLanguage?: InterpreterLanguageRefData;
   isHearingRoomNeeded?: boolean;
   isHearingLoopNeeded?: boolean;
   otherNeeds?: HearingOtherNeeds;

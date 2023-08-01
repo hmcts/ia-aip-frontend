@@ -767,7 +767,7 @@ export default class UpdateAppealService {
         }
 
         if (_.get(accessNeeds, 'isInterpreterServicesNeeded')) {
-          if (_.has(accessNeeds, 'interpreterLanguage')) {
+          if (_.has(accessNeeds, 'interpreterLanguage') && (_.has(accessNeeds.interpreterLanguage, 'language') || _.has(accessNeeds.interpreterLanguage, 'languageDialect'))) {
             caseData.interpreterLanguage = [{
               value: {
                 language: accessNeeds.interpreterLanguage.language,

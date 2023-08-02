@@ -67,5 +67,9 @@
     }) }}
   {% endif %}
   {{ contactUs() }}
+  <h2 class="govuk-heading-m">{{ i18n.pages.successPage.feedback.heading }}</h2>
+  <p>{{ i18n.pages.successPage.feedback.contentText | eval | safe }}
+    {{ i18n.pages.successPage.feedback.contentLink | eval | safe }}.
+  </p>
 {% endblock %}
 

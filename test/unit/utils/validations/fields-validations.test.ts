@@ -14,6 +14,7 @@ import {
   selectedRequiredValidation, selectedRequiredValidationDialect,
   statementOfTruthValidation,
   textAreaValidation,
+  witenessesInterpreterNeedsValidation,
   yesOrNoRequiredValidation
 } from '../../../../app/utils/validations/fields-validations';
 import i18n from '../../../../locale/en.json';
@@ -614,6 +615,24 @@ describe('fields-validations', () => {
         selections: {
           key: 'selections',
           text: 'You must select at least one option',
+          href: '#selections'
+        }
+      });
+    });
+  });
+
+  describe('witenessesInterpreterNeedsValidation', () => {
+    it('should validate witness selection', () => {
+      const validationResult = witenessesInterpreterNeedsValidation({ selections: 'witness 1' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validate when selection is blank', () => {
+      const validationResult = witenessesInterpreterNeedsValidation({ selections: '' });
+      expect(validationResult).to.deep.equal({
+        selections: {
+          key: 'selections',
+          text: 'You must select at least one witness',
           href: '#selections'
         }
       });

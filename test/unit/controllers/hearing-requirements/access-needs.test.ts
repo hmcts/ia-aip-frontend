@@ -10,6 +10,7 @@ import {
   getInterpreterTypePage,
   getNeedInterpreterPage,
   getStepFreeAccessPage,
+  getWitnessesInterpreterNeeds,
   postAdditionalLanguage,
   postHearingLoopPage,
   postInterpreterSignLanguagePage,
@@ -17,7 +18,9 @@ import {
   postInterpreterSupportAppellantWitnesses,
   postInterpreterTypePage,
   postNeedInterpreterPage,
-  postStepFreeAccessPage, removeLanguagePostAction,
+  postStepFreeAccessPage,
+  postWitnessesInterpreterNeeds,
+  removeLanguagePostAction,
   setupHearingAccessNeedsController
 } from '../../../../app/controllers/hearing-requirements/access-needs';
 import { isoLanguages } from '../../../../app/data/isoLanguages';
@@ -175,6 +178,54 @@ describe('Hearing requirements access needs controller', () => {
           {
             key: 'selections',
             text: 'You must select at least one option',
+            href: '#selections'
+          }
+        ]
+      });
+    });
+  });
+
+  describe('WitnessesInterpreterNeeds', () => {
+    it('getWitnessesInterpreterNeeds should render getWitnessesInterpreterNeeds', () => {
+      req.session.appeal.hearingRequirements.witnessNames = [{ witnessGivenNames: 'witness', witnessFamilyName: '1' }];
+
+      getWitnessesInterpreterNeeds(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+        previousPage: previousPage,
+        witnessesNameList: [{ value: 0, text: 'witness 1', checked: false }]
+      });
+    });
+
+    it('getWitnessesInterpreterNeeds should render the page when load appellant selected witnesses', () => {
+      req.session.appeal.hearingRequirements.witnessNames = [
+        { witnessGivenNames: 'witness', witnessFamilyName: '1' },
+        { witnessGivenNames: 'witness', witnessFamilyName: '2' }
+      ];
+      req.session.appeal.hearingRequirements.witnessListElement1 = { value: [{ code: 'witness 1', label: 'witness 1' }], list_items: [{ code: 'witness 1', label: 'witness 1' }] };
+      req.session.appeal.hearingRequirements.witnessListElement2 = { value: [], list_items: [{ code: 'witness 2', label: 'witness 2' }] };
+
+      getWitnessesInterpreterNeeds(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+        previousPage: previousPage,
+        witnessesNameList: [
+          { value: 0, text: 'witness 1', checked: true },
+          { value: 1, text: 'witness 2', checked: false }
+        ]
+      });
+    });
+
+    it('postWitnessesInterpreterNeeds should show validation error if no witness is selected', async () => {
+      req.session.appeal.hearingRequirements.witnessNames = [{ witnessGivenNames: 'witness', witnessFamilyName: '1' }];
+      req.body.selections = '';
+
+      await postWitnessesInterpreterNeeds(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/witnesses-interpreter-needs.njk', {
+        previousPage: previousPage,
+        witnessesNameList: [{ value: 0, text: 'witness 1', checked: false }],
+        errorList: [
+          {
+            key: 'selections',
+            text: 'You must select at least one witness',
             href: '#selections'
           }
         ]

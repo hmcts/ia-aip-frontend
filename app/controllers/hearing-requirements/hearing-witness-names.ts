@@ -38,6 +38,12 @@ function postWitnessNamesPage(updateAppealService: UpdateAppealService) {
         return renderPage(res, validation, witnessNames);
       }
 
+      // clear data of witnessListElement
+      for (let index = 0; index < 10; index++) {
+        let witnessListElementString = 'witnessListElement' + (index + 1);
+        req.session.appeal.hearingRequirements[witnessListElementString] = null;
+      }
+
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,

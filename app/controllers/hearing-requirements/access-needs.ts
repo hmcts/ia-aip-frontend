@@ -16,7 +16,8 @@ import {
   interpreterSupportSelectionValidation,
   interpreterTypesSelectionValidation,
   selectedRequiredValidation,
-  selectedRequiredValidationDialect
+  selectedRequiredValidationDialect,
+  witenessesInterpreterNeedsValidation
 } from '../../utils/validations/fields-validations';
 import { postHearingRequirementsYesNoHandler } from './common';
 
@@ -52,6 +53,103 @@ function getAccessNeeds(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     next(error);
   }
+}
+
+function getWitnessesInterpreterNeeds(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { hearingRequirements } = req.session.appeal;
+    const witnessNames = hearingRequirements && hearingRequirements.witnessNames || [];
+    console.log("###### witnessNames", witnessNames);
+    console.log("###### hearingRequirements", hearingRequirements);
+
+    return res.render('hearing-requirements/witnesses-interpreter-needs.njk', {
+      previousPage: previousPage,
+      witnessesNameList: convertWitnessListToCheckboxItem(witnessNames, hearingRequirements)
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function convertWitnessListToCheckboxItem(witnessNames: WitnessName[], hearingRequirements?: HearingRequirements): [{ value: any, text: any, checked?: boolean }] {
+  let checkboxList = null;
+  if (witnessNames && witnessNames.length > 0) {
+    checkboxList = [];
+    witnessNames.map((witness, index) => {
+      let witnessListElementString = 'witnessListElement' + (index + 1);
+      let witnessName = (witness.witnessGivenNames && witness.witnessFamilyName) ? witness.witnessGivenNames + ' ' + witness.witnessFamilyName : witness.witnessGivenNames;
+      let checked: boolean = (hearingRequirements[witnessListElementString] && hearingRequirements[witnessListElementString].value && hearingRequirements[witnessListElementString].value.length > 0) ? true : false;
+
+      checkboxList.push({ value: index, text: witnessName, checked: checked })
+    });
+  }
+  return checkboxList;
+}
+
+function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!shouldValidateWhenSaveForLater(req.body, 'selections')) {
+        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
+      }
+      if (!req.body.selections) {
+        req.body.selections = '';
+      }
+      console.log("###### req.body.selections:", req.body.selections);
+
+      const validation = witenessesInterpreterNeedsValidation(req.body);
+      if (validation) {
+        return res.render('hearing-requirements/witnesses-interpreter-needs.njk', {
+          previousPage: previousPage,
+          witnessesNameList: convertWitnessListToCheckboxItem(req.session.appeal.hearingRequirements.witnessNames, req.session.appeal.hearingRequirements),
+          errorList: Object.values(validation)
+        });
+      }
+
+      const witnessNames = req.session.appeal.hearingRequirements && req.session.appeal.hearingRequirements.witnessNames || [];
+      let selectedWitnessesList = req.body.selections.split(',');
+      console.log("###### selectedWitnessesList:", selectedWitnessesList);
+      witnessNames.forEach((witness, index) => {
+        let witnessName = (witness.witnessGivenNames && witness.witnessFamilyName) ? witness.witnessGivenNames + ' ' + witness.witnessFamilyName : witness.witnessGivenNames;
+        let witnessListElementString = 'witnessListElement' + (index + 1);
+        let value: Value[] = [];
+        let valueObj: Value = { code: witnessName, label: witnessName };
+
+        for (let selectedWitnessIndex of selectedWitnessesList) {
+          if (index === parseInt(selectedWitnessIndex, 10)) {
+            value.push(valueObj);
+            break;
+          }
+        }
+
+        req.session.appeal.hearingRequirements[witnessListElementString] = { value: value, list_items: [valueObj] };
+        console.log("###### req.session.appeal.hearingRequirements[witnessListElementString]:", req.session.appeal.hearingRequirements[witnessListElementString]);
+      });
+
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+
+      console.log("###### appealUpdated.hearingRequirements:", appealUpdated);
+
+      return res.redirect(paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + selectedWitnessesList);
+      // loopWitnessessInterpreterSpokenSignLanguage(res, selectedWitnessesList);
+
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+function loopWitnessessInterpreterSpokenSignLanguage(res: Response, selectedWitnesses: string[]) {
+  if (selectedWitnesses && selectedWitnesses.length > 0) {
+    for (let selectedWitness of selectedWitnesses) {
+      res.redirect(paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + selectedWitnesses);
+    }
+  }
+
 }
 
 function getInterpreterSupportAppellantWitnesses(req: Request, res: Response, next: NextFunction) {
@@ -115,8 +213,7 @@ function postInterpreterSupportAppellantWitnesses(updateAppealService: UpdateApp
         if (req.session.appeal.hearingRequirements.isInterpreterServicesNeeded && req.session.appeal.hearingRequirements.isInterpreterServicesNeeded === true) {
           return res.redirect(paths.submitHearingRequirements.hearingInterpreterTypes);
         } else if (req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired && req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired === true) {
-          // To-do: the link need be updated to new screen (Ticket 7508) when the condition is true
-          return res.redirect(paths.submitHearingRequirements.taskList);
+          return res.redirect(paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds);
         } else {
           return res.redirect(paths.submitHearingRequirements.hearingStepFreeAccess);
         }
@@ -189,6 +286,8 @@ function postNeedInterpreterPage(updateAppealService: UpdateAppealService) {
 
 function getInterpreterTypePage(req: Request, res: Response, next: NextFunction) {
   try {
+    console.log("###### req.query.selectedWitnesses:",req.query.selectedWitnesses);
+
     const { hearingRequirements } = req.session.appeal;
     const appellantInterpreterLanguageCategory = hearingRequirements && hearingRequirements.appellantInterpreterLanguageCategory || null;
 
@@ -331,6 +430,8 @@ function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealServ
 
       if (req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory && req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory.includes(signLanguageInterpreterString)) {
         return res.redirect(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
+      } else if (req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired && req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired === true) {
+        return res.redirect(paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds);
       } else {
         return res.redirect(paths.submitHearingRequirements.hearingStepFreeAccess);
       }
@@ -414,7 +515,11 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
         ...appealUpdated
       };
 
-      return res.redirect(paths.submitHearingRequirements.hearingStepFreeAccess);
+      if (appealUpdated.hearingRequirements.isAnyWitnessInterpreterRequired && appealUpdated.hearingRequirements.isAnyWitnessInterpreterRequired === true) {
+        return res.redirect(paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds);
+      } else {
+        return res.redirect(paths.submitHearingRequirements.hearingStepFreeAccess);
+      }
 
     } catch (error) {
       next(error);
@@ -770,6 +875,8 @@ function setupHearingAccessNeedsController(middleware: Middleware[], updateAppea
   router.post(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection, middleware, postInterpreterSpokenLanguagePage(updateAppealService));
   router.get(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection, middleware, getInterpreterSignLanguagePage(refDataService));
   router.post(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection, middleware, postInterpreterSignLanguagePage(updateAppealService));
+  router.get(paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds, middleware, getWitnessesInterpreterNeeds);
+  router.post(paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds, middleware, postWitnessesInterpreterNeeds(updateAppealService));
   router.get(paths.submitHearingRequirements.hearingLanguageDetails, middleware, getAdditionalLanguage);
   router.post(paths.submitHearingRequirements.hearingLanguageDetails, middleware, postAdditionalLanguage(updateAppealService));
   router.post(paths.submitHearingRequirements.hearingLanguageDetailsAdd, middleware, addMoreLanguagePostAction());
@@ -795,6 +902,8 @@ export {
   postInterpreterSpokenLanguagePage,
   getInterpreterSignLanguagePage,
   postInterpreterSignLanguagePage,
+  getWitnessesInterpreterNeeds,
+  postWitnessesInterpreterNeeds,
   getAdditionalLanguage,
   postAdditionalLanguage,
   addMoreLanguagePostAction,

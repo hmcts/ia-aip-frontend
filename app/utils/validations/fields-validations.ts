@@ -223,6 +223,13 @@ function interpreterSupportSelectionValidation(obj: object) {
   return validate(obj, schema);
 }
 
+function witenessesInterpreterNeedsValidation(obj: object) {
+  const schema = Joi.object({
+    selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.witnessesInterpreterNeeds.selectOneOption })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 function interpreterTypesSelectionValidation(obj: object) {
   const schema = Joi.object({
     selections: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.hearingRequirements.interpreterType.selectOneOption })
@@ -601,6 +608,7 @@ export {
   decisionTypeValidation,
   interpreterLanguagesValidation,
   interpreterSupportSelectionValidation,
+  witenessesInterpreterNeedsValidation,
   interpreterTypesSelectionValidation,
   interpreterLanguageSelectionValidation,
   hasSponsorValidation,

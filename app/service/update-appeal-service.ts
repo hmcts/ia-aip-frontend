@@ -425,6 +425,13 @@ export default class UpdateAppealService {
       hearingRequirements.isAnyWitnessInterpreterRequired = yesNoToBool(caseData.isAnyWitnessInterpreterRequired);
     }
 
+    for (let index = 0; index < 10; index++) {
+      let witnessListElementString = 'witnessListElement' + (index + 1);
+      if (caseData[witnessListElementString]) {
+        hearingRequirements[witnessListElementString] = caseData[witnessListElementString];
+      }
+    }
+
     if (caseData.interpreterLanguage) {
       hearingRequirements.interpreterLanguages = caseData.interpreterLanguage.map(additionalLanguage => {
         return {
@@ -900,6 +907,13 @@ export default class UpdateAppealService {
 
         if (_.has(appeal.hearingRequirements, 'appellantInterpreterSignLanguage')) {
           caseData.appellantInterpreterSignLanguage = appeal.hearingRequirements.appellantInterpreterSignLanguage;
+        }
+
+        for (let index = 0; index < 10; index++) {
+          let witnessListElementString = 'witnessListElement' + (index + 1);
+          if (_.has(appeal.hearingRequirements, witnessListElementString)) {
+            caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];
+          }
         }
 
         if (_.has(appeal.hearingRequirements, 'interpreterLanguages')) {

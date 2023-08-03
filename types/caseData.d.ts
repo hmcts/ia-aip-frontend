@@ -137,6 +137,26 @@ interface CaseData {
   isWitnessesAttending?: 'Yes' | 'No';
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
   witnessDetails?: Collection<WitnessDetails>[];
+  witnessListElement1?: DynamicMultiSelectList;
+  witnessListElement2?: DynamicMultiSelectList;
+  witnessListElement3?: DynamicMultiSelectList;
+  witnessListElement4?: DynamicMultiSelectList;
+  witnessListElement5?: DynamicMultiSelectList;
+  witnessListElement6?: DynamicMultiSelectList;
+  witnessListElement7?: DynamicMultiSelectList;
+  witnessListElement8?: DynamicMultiSelectList;
+  witnessListElement9?: DynamicMultiSelectList;
+  witnessListElement10?: DynamicMultiSelectList;
+  witness1InterpreterLanguageCategory?: string[];
+  witness2InterpreterLanguageCategory?: string[];
+  witness3InterpreterLanguageCategory?: string[];
+  witness4InterpreterLanguageCategory?: string[];
+  witness5InterpreterLanguageCategory?: string[];
+  witness6InterpreterLanguageCategory?: string[];
+  witness7InterpreterLanguageCategory?: string[];
+  witness8InterpreterLanguageCategory?: string[];
+  witness9InterpreterLanguageCategory?: string[];
+  witness10InterpreterLanguageCategory?: string[];
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
   appealOutOfCountry?: string;
@@ -209,6 +229,11 @@ interface Nationality {
 interface WitnessDetails {
   witnessName?: string;
   witnessFamilyName?: string;
+}
+
+interface DynamicMultiSelectList {
+  value?: Value[];
+  list_items?: Vlaue[];
 }
 
 interface InterpreterLanguage {

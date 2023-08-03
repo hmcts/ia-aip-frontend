@@ -3088,6 +3088,7 @@
         "interpreterTypePage": {
           "pageTitle": "What kind of interpreter do you need to request?",
           "title": "What kind of interpreter do you need to request?",
+          "witnessTitle": "What kind of interpreter will {witnessName} need?",
           "hint": "Select all that apply",
           "spokenLanguageOption": "I need a spoken language interpreter",
           "spokenLanguageOptionHint": "For example, an interpreter for Urdu",
@@ -3109,6 +3110,11 @@
           "dropdownListText": "Select sign language",
           "checkBoxText": "Enter the language manually",
           "languageManuallyText": "Enter the details of the language you need to request"
+        },
+        "witnesessInterpreterNeeds": {
+          "pageTitle": "Select which witnesses need an interpreter",
+          "title": "Select which witnesses need an interpreter",
+          "hint": "Select all that apply"
         },
         "additionalLanguagePage": {
           "pageTitle": "Add language details",
@@ -3711,6 +3717,9 @@
       },
       "interpreterSuuport": {
         "selectOneOption": "You must select at least one option"
+      },
+      "witnessesInterpreterNeeds": {
+        "selectOneOption": "You must select at least one witness"
       },
       "interpreterType": {
         "selectOneOption": "You must select at least one kind of interpreter"

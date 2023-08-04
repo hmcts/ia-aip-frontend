@@ -31,7 +31,13 @@
       {% set errorMessage =  error.date.text if error.date else errorMessage %}
 
       {{ govukDateInput({
-        fieldset: {},
+        fieldset: {
+          legend: {
+            text: i18n.pages.oocProtectionDepartureDate.dateLegend,
+            isPageHeading: false,
+            classes: "sr-only"
+          }
+        },
         hint: {
           text: i18n.pages.oocProtectionDepartureDate.dateHint
         },

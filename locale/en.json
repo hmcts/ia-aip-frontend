@@ -3098,6 +3098,7 @@
         "interpreterSpokenLanguageSelection": {
           "pageTitle": "Tell us about your language requirements",
           "title": "Tell us about your language requirements",
+          "witnessTitle": "Which spoken language interpreter does {witnessName} need?",
           "text": "We will provide an interpreter for you to understand spoken communication.",
           "dropdownListText": "Select language",
           "checkBoxText": "Enter the language manually",
@@ -3106,6 +3107,7 @@
         "interpreterSignLanguageSelection": {
           "pageTitle": "Tell us about your sign language requirements",
           "title": "Tell us about your sign language requirements",
+          "witnessTitle": "Which sign language interpreter does {witnessName} need?",
           "text": "We will provide a sign language interpreter for you to understand spoken communication.",
           "dropdownListText": "Select sign language",
           "checkBoxText": "Enter the language manually",

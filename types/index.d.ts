@@ -377,6 +377,26 @@ interface HearingRequirements {
   witness8InterpreterLanguageCategory?: string[];
   witness9InterpreterLanguageCategory?: string[];
   witness10InterpreterLanguageCategory?: string[];
+  witness1InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness2InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness3InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness4InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness5InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness6InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness7InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness8InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness9InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness10InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness1InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness2InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness3InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness4InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness5InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness6InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness7InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness8InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness9InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness10InterpreterSignLanguage?: InterpreterLanguageRefData;
   witnessesOutsideUK?: boolean;
   isInterpreterServicesNeeded?: boolean;
   isAnyWitnessInterpreterRequired?: boolean;
@@ -466,4 +486,16 @@ interface ApplicationStatus {
 interface WitnessName {
   witnessGivenNames?: string;
   witnessFamilyName?: string;
+}
+
+interface WitnessComponent {
+  witnessFullName?:string;
+  witnessListElementFieldString?: string;
+  witnessListElement?: DynamicMultiSelectList;
+  witnessInterpreterLanguageCategoryFieldString?: string;
+  witnessInterpreterLanguageCategory?: string[];
+  witnessInterpreterSpokenLanguageFieldString? : string;
+  witnessInterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witnessInterpreterSignLanguageFieldString?: string;
+  witnessInterpreterSignLanguage?: InterpreterLanguageRefData;
 }

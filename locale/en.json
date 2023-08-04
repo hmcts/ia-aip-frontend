@@ -11,7 +11,7 @@
       "This is a new service – your ",
       " will help us to improve it. (opens in a new window)"
     ],
-    "feedbackSurveyLik": {
+    "feedbackSurveyLink": {
       "href": "https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum/",
       "text": "feedback"
     }
@@ -1053,7 +1053,7 @@
             "title": "Helpful Information",
             "titleFtpaEnabled": "Appeal Information",
             "text": "If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
-            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
+            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\" target=\"_blank\">How to appeal to the Upper Tribunal (opens in a new window)</a>",
             "urlFtpaEnabled": "<a href=\"{{ paths.ftpa.ftpaApplication }}\">Apply for permission to appeal to the Upper Tribunal</a>"
           },
           "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",

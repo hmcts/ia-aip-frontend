@@ -1059,7 +1059,7 @@ describe('application-state-utils', () => {
       'feedbackTitle': '<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>',
       'info': {
         'title': 'Helpful Information',
-        'url': '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>'
+        'url': '<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\" target=\"_blank\">How to appeal to the Upper Tribunal (opens in a new window)</a>'
       }
     };
 

@@ -127,25 +127,6 @@ function postWitnessesInterpreterNeeds(updateAppealService: UpdateAppealService)
   };
 }
 
-function convertWitnessListToCheckboxItem(witnessNames: WitnessName[], hearingRequirements?: HearingRequirements): [{ value: any, text: any, checked?: boolean }] {
-  let checkboxList = null;
-  if (witnessNames && witnessNames.length > 0) {
-    checkboxList = [];
-    witnessNames.map((witness, index) => {
-      let witnessListElementString = 'witnessListElement' + (index + 1);
-      let witnessName = (witness.witnessGivenNames && witness.witnessFamilyName) ? witness.witnessGivenNames + ' ' + witness.witnessFamilyName : witness.witnessGivenNames;
-      let checked: boolean = (hearingRequirements &&
-        hearingRequirements[witnessListElementString] &&
-        hearingRequirements[witnessListElementString].value &&
-        hearingRequirements[witnessListElementString].value.length > 0)
-        ? true : false;
-
-      checkboxList.push({ value: index, text: witnessName, checked: checked });
-    });
-  }
-  return checkboxList;
-}
-
 function getInterpreterSupportAppellantWitnesses(req: Request, res: Response, next: NextFunction) {
   try {
     const { hearingRequirements } = req.session.appeal;
@@ -323,38 +304,6 @@ function getInterpreterTypePage(req: Request, res: Response, next: NextFunction)
   } catch (error) {
     next(error);
   }
-}
-
-function getWitnessComponent(appeal: Appeal, selectedWitnesses: string): WitnessComponent {
-  let WitnessComponent: WitnessComponent = null;
-
-  let { hearingRequirements } = appeal;
-  if (hearingRequirements && selectedWitnesses) {
-    let witnessListElementString = 'witnessListElement' + (parseInt(selectedWitnesses, 10) + 1);
-    let witnessListElement: DynamicMultiSelectList = hearingRequirements && hearingRequirements[witnessListElementString] || null;
-
-    let witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(selectedWitnesses, 10) + 1) + 'InterpreterLanguageCategory';
-    let witnessInterpreterLanguageCategory = hearingRequirements && hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
-
-    let witnessInterpreterSpokenLanguageString = 'witness' + (parseInt(selectedWitnesses, 10) + 1) + 'InterpreterSpokenLanguage';
-    let witnessInterpreterSpokenLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
-
-    let witnessInterpreterSignLanguageString = 'witness' + (parseInt(selectedWitnesses, 10) + 1) + 'InterpreterSignLanguage';
-    let witnessInterpreterSignLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSignLanguageString] || null;
-
-    WitnessComponent = {
-      witnessFullName: witnessListElement.list_items[0].label,
-      witnessListElementFieldString: witnessListElementString,
-      witnessListElement: witnessListElement,
-      witnessInterpreterLanguageCategoryFieldString: witnessInterpreterLanguageCategoryString,
-      witnessInterpreterLanguageCategory: witnessInterpreterLanguageCategory,
-      witnessInterpreterSpokenLanguageFieldString: witnessInterpreterSpokenLanguageString,
-      witnessInterpreterSpokenLanguage: witnessInterpreterSpokenLanguage,
-      witnessInterpreterSignLanguageFieldString: witnessInterpreterSignLanguageString,
-      witnessInterpreterSignLanguage: witnessInterpreterSignLanguage
-    };
-  }
-  return WitnessComponent;
 }
 
 function postInterpreterTypePage(updateAppealService: UpdateAppealService) {
@@ -738,6 +687,57 @@ function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealServic
       next(error);
     }
   };
+}
+
+function convertWitnessListToCheckboxItem(witnessNames: WitnessName[], hearingRequirements?: HearingRequirements): [{ value: any, text: any, checked?: boolean }] {
+  let checkboxList = null;
+  if (witnessNames && witnessNames.length > 0) {
+    checkboxList = [];
+    witnessNames.map((witness, index) => {
+      let witnessListElementString = 'witnessListElement' + (index + 1);
+      let witnessName = (witness.witnessGivenNames && witness.witnessFamilyName) ? witness.witnessGivenNames + ' ' + witness.witnessFamilyName : witness.witnessGivenNames;
+      let checked: boolean = (hearingRequirements &&
+        hearingRequirements[witnessListElementString] &&
+        hearingRequirements[witnessListElementString].value &&
+        hearingRequirements[witnessListElementString].value.length > 0)
+        ? true : false;
+
+      checkboxList.push({ value: index, text: witnessName, checked: checked });
+    });
+  }
+  return checkboxList;
+}
+
+function getWitnessComponent(appeal: Appeal, selectedWitnesses: string): WitnessComponent {
+  let WitnessComponent: WitnessComponent = null;
+
+  let { hearingRequirements } = appeal;
+  if (hearingRequirements && selectedWitnesses) {
+    let witnessListElementString = 'witnessListElement' + (parseInt(selectedWitnesses, 10) + 1);
+    let witnessListElement: DynamicMultiSelectList = hearingRequirements && hearingRequirements[witnessListElementString] || null;
+
+    let witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(selectedWitnesses, 10) + 1) + 'InterpreterLanguageCategory';
+    let witnessInterpreterLanguageCategory = hearingRequirements && hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
+
+    let witnessInterpreterSpokenLanguageString = 'witness' + (parseInt(selectedWitnesses, 10) + 1) + 'InterpreterSpokenLanguage';
+    let witnessInterpreterSpokenLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
+
+    let witnessInterpreterSignLanguageString = 'witness' + (parseInt(selectedWitnesses, 10) + 1) + 'InterpreterSignLanguage';
+    let witnessInterpreterSignLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSignLanguageString] || null;
+
+    WitnessComponent = {
+      witnessFullName: witnessListElement.list_items[0].label,
+      witnessListElementFieldString: witnessListElementString,
+      witnessListElement: witnessListElement,
+      witnessInterpreterLanguageCategoryFieldString: witnessInterpreterLanguageCategoryString,
+      witnessInterpreterLanguageCategory: witnessInterpreterLanguageCategory,
+      witnessInterpreterSpokenLanguageFieldString: witnessInterpreterSpokenLanguageString,
+      witnessInterpreterSpokenLanguage: witnessInterpreterSpokenLanguage,
+      witnessInterpreterSignLanguageFieldString: witnessInterpreterSignLanguageString,
+      witnessInterpreterSignLanguage: witnessInterpreterSignLanguage
+    };
+  }
+  return WitnessComponent;
 }
 
 function getPrepareInterpreterLanguageType(req: Request, res: Response, languageTypeFieldString: string, languageList: DynamicList,

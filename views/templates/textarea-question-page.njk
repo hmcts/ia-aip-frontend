@@ -24,8 +24,9 @@
         name: question.name,
         id: question.name,
         label: {
-          text: question.description
-        } if (question.description),
+          text: question.description ? question.description : question.title
+        }
+        classes: question.description ? "" : "sr-only"
         hint: {
           text: question.hint
         } if (question.hint),

@@ -6,26 +6,26 @@
 
 {% block content %}
 
-    {% if errorList %}
-        {{ govukErrorSummary({
+  {% if errorList %}
+    {{ govukErrorSummary({
             titleText: i18n.validationErrors.errorSummary,
             errorList: errorList
         }) }}
-    {% endif %}
+  {% endif %}
 
   <form action="{{ paths.appealStarted.sponsorAuthorisation }}" method="post">
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        <input type="hidden" name="questionId" value="{{ questionId }}">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <input type="hidden" name="questionId" value="{{ questionId }}">
 
+    <fieldset class="govuk-fieldset">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+        <h1 class="govuk-fieldset__heading">{{ question }}</h1>
+        {% if description %}
+          <div id="answer-hint" class="govuk-hint">{{ description }}</div>
+        {% endif %}
+      </legend>
 
-<legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-    <h1 class="govuk-fieldset__heading">{{ question }}</h1>
-     {% if description %}
-        <div id="answer-hint" class="govuk-hint">{{ description }}</div>
-    {% endif %}
-</legend>
-
-        {{ govukRadios({
+      {{ govukRadios({
             classes: "govuk-radios--inline",
             name: "answer",
 
@@ -46,20 +46,20 @@
             } if errors['answer']
         }) }}
 
+      {% if modal %}
+        <div class="overview-banner govuk-!-margin-top-0">
+          {{ modal | safe  }}
+        </div>
+      {% endif %}
 
-    {% if modal %}
-    <div class="overview-banner govuk-!-margin-top-0">
-        {{ modal | safe  }}
-    </div>
-    {% endif %}
-
-        <div class="save-buttons__container">
-            {{ govukButton({
+      <div class="save-buttons__container">
+        {{ govukButton({
                 name: 'continue',
                 text: i18n.common.buttons.continue
             }) }}
-        </div>
-    </form>
+      </div>
+    </fieldset>
+  </form>
 
-    {{ contactUs() }}
+  {{ contactUs() }}
 {% endblock %}

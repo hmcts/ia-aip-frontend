@@ -2,7 +2,7 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { formatDate } from '../../utils/date-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
-import { boolToYesNo, formatWitnessName } from '../../utils/utils';
+import { boolToYesNo, formatWitnessName, getWitnessComponent } from '../../utils/utils';
 
 const editParameter: string = '?edit';
 
@@ -143,61 +143,8 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
 
     if (hearingRequirements.isInterpreterServicesNeeded) {
 
-      interpreterRows.push(
-        getSummaryRow(visibleChangeLink,
-          i18n.common.cya.questionRowTitle,
-          [i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.title]
-        )
-      );
-
-      let appellantInterpreterLanguageCategory: string = '';
-      let appellantInterpreterLanguageCategoryList = hearingRequirements.appellantInterpreterLanguageCategory || [];
-      if (appellantInterpreterLanguageCategoryList.length > 0) {
-        appellantInterpreterLanguageCategory += appellantInterpreterLanguageCategoryList.includes('spokenLanguageInterpreter') ? 'Spoken language interpreter' : '';
-        appellantInterpreterLanguageCategory += (appellantInterpreterLanguageCategoryList.length === 2) ? Delimiter.BREAK_LINE : '';
-        appellantInterpreterLanguageCategory += appellantInterpreterLanguageCategoryList.includes('signLanguageInterpreter') ? 'Sign language interpreter' : '';
-      }
-      interpreterRows.push(
-        getSummaryRow(visibleChangeLink,
-          i18n.common.cya.answerRowTitle,
-          [appellantInterpreterLanguageCategory],
-          paths.submitHearingRequirements.hearingInterpreterTypes
-        )
-      );
-
-      if (hearingRequirements.appellantInterpreterSpokenLanguage && appellantInterpreterLanguageCategoryList.includes('spokenLanguageInterpreter')) {
-        interpreterRows.push(
-          getSummaryRow(visibleChangeLink,
-            i18n.common.cya.questionRowTitle,
-            [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.title]
-          )
-        );
-
-        interpreterRows.push(
-          getSummaryRow(visibleChangeLink,
-            i18n.common.cya.answerRowTitle,
-            [getInterpreterLanguageAnswer(hearingRequirements.appellantInterpreterSpokenLanguage)],
-            paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection
-          )
-        );
-      }
-
-      if (hearingRequirements.appellantInterpreterSignLanguage && appellantInterpreterLanguageCategoryList.includes('signLanguageInterpreter')) {
-        interpreterRows.push(
-          getSummaryRow(visibleChangeLink,
-            i18n.common.cya.questionRowTitle,
-            [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.title]
-          )
-        );
-
-        interpreterRows.push(
-          getSummaryRow(visibleChangeLink,
-            i18n.common.cya.answerRowTitle,
-            [getInterpreterLanguageAnswer(hearingRequirements.appellantInterpreterSignLanguage)],
-            paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection
-          )
-        );
-      }
+      buildAppellantInterpretersummaryList(interpreterRows, visibleChangeLink, hearingRequirements);
+      
     }
   } else if (hearingRequirements.witnessesOnHearing) {
     interpreterRows.push(
@@ -227,6 +174,40 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
         [hearingInterpreterSupportAppellantWitnesses],
         paths.submitHearingRequirements.hearingInterpreterSupportAppellantWitnesses)
     );
+
+    if (hearingRequirements.isInterpreterServicesNeeded) {
+      buildAppellantInterpretersummaryList(interpreterRows, visibleChangeLink, hearingRequirements);
+    }
+
+    if (hearingRequirements.isAnyWitnessInterpreterRequired) {
+      interpreterRows.push(
+        getSummaryRow(visibleChangeLink,
+          i18n.common.cya.questionRowTitle,
+          [i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.title],
+          paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
+        )
+      );
+
+      let needInterpreterWitnessnesSummaryString = '';
+      let needInterpreterWitnessnesComponent: WitnessComponent[] = [];
+      for (let index = 0; index < 10; index++) {
+        let witnessListElement: DynamicMultiSelectList = hearingRequirements['witnessListElement' + (index + 1)];
+
+        if (witnessListElement && witnessListElement.value && witnessListElement.value.length > 0) {
+          needInterpreterWitnessnesSummaryString += (witnessListElement.value[0].label + Delimiter.BREAK_LINE);
+          needInterpreterWitnessnesComponent.push(getWitnessComponent(hearingRequirements, index.toString()));
+        }
+      }
+
+      interpreterRows.push(
+        getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+          [needInterpreterWitnessnesSummaryString])
+      );
+
+      needInterpreterWitnessnesComponent.forEach((witnessComponent) => {
+        buildWitnessesInterpretersummaryList(interpreterRows, visibleChangeLink, hearingRequirements, witnessComponent);
+      });
+    }
   }
 
   accessNeedsSummaryLists.push({
@@ -629,4 +610,127 @@ function getInterpreterLanguageAnswer(language: InterpreterLanguageRefData): str
     }
   }
   return result;
+}
+
+function buildAppellantInterpretersummaryList(interpreterRows: SummaryRow[], visibleChangeLink: boolean, hearingRequirements: HearingRequirements) {
+  interpreterRows.push(
+    getSummaryRow(visibleChangeLink,
+      i18n.common.cya.questionRowTitle,
+      [i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.title]
+    )
+  );
+
+  let appellantInterpreterLanguageCategory: string = '';
+  let appellantInterpreterLanguageCategoryList = hearingRequirements.appellantInterpreterLanguageCategory || [];
+  if (appellantInterpreterLanguageCategoryList && appellantInterpreterLanguageCategoryList.length > 0) {
+    appellantInterpreterLanguageCategory += appellantInterpreterLanguageCategoryList.includes('spokenLanguageInterpreter') ? 'Spoken language interpreter' : '';
+    appellantInterpreterLanguageCategory += (appellantInterpreterLanguageCategoryList.length === 2) ? Delimiter.BREAK_LINE : '';
+    appellantInterpreterLanguageCategory += appellantInterpreterLanguageCategoryList.includes('signLanguageInterpreter') ? 'Sign language interpreter' : '';
+  }
+  interpreterRows.push(
+    getSummaryRow(visibleChangeLink,
+      i18n.common.cya.answerRowTitle,
+      [appellantInterpreterLanguageCategory],
+      paths.submitHearingRequirements.hearingInterpreterTypes
+    )
+  );
+
+  if (hearingRequirements.appellantInterpreterSpokenLanguage
+    && appellantInterpreterLanguageCategoryList
+    && appellantInterpreterLanguageCategoryList.includes('spokenLanguageInterpreter')) {
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.title]
+      )
+    );
+
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.answerRowTitle,
+        [getInterpreterLanguageAnswer(hearingRequirements.appellantInterpreterSpokenLanguage)],
+        paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection
+      )
+    );
+  }
+
+  if (hearingRequirements.appellantInterpreterSignLanguage
+    && appellantInterpreterLanguageCategoryList
+    && appellantInterpreterLanguageCategoryList.includes('signLanguageInterpreter')) {
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.title]
+      )
+    );
+
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.answerRowTitle,
+        [getInterpreterLanguageAnswer(hearingRequirements.appellantInterpreterSignLanguage)],
+        paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection
+      )
+    );
+  }
+}
+
+function buildWitnessesInterpretersummaryList(interpreterRows: SummaryRow[], visibleChangeLink: boolean, hearingRequirements: HearingRequirements, witnessComponent: WitnessComponent) {
+  interpreterRows.push(
+    addSummaryRow(
+      i18n.common.cya.questionRowTitle,
+      [i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.witnessTitle.replace('{witnessName}', witnessComponent.witnessFullName)]
+    )
+  );
+
+  let witnessInterpreterLanguageCategory: string = '';
+  if (witnessComponent.witnessInterpreterLanguageCategory && witnessComponent.witnessInterpreterLanguageCategory.length > 0) {
+    witnessInterpreterLanguageCategory += witnessComponent.witnessInterpreterLanguageCategory.includes('spokenLanguageInterpreter') ? 'Spoken language interpreter' : '';
+    witnessInterpreterLanguageCategory += (witnessComponent.witnessInterpreterLanguageCategory.length === 2) ? Delimiter.BREAK_LINE : '';
+    witnessInterpreterLanguageCategory += witnessComponent.witnessInterpreterLanguageCategory.includes('signLanguageInterpreter') ? 'Sign language interpreter' : '';
+  }
+  interpreterRows.push(
+    getSummaryRow(visibleChangeLink,
+      i18n.common.cya.answerRowTitle,
+      [witnessInterpreterLanguageCategory],
+      paths.submitHearingRequirements.hearingInterpreterTypes + '?selectedWitnesses=' + witnessComponent.witnessNumnber
+    )
+  );
+
+  if (hearingRequirements[witnessComponent.witnessInterpreterSpokenLanguageFieldString]
+    && witnessComponent.witnessInterpreterLanguageCategory
+    && witnessComponent.witnessInterpreterLanguageCategory.includes('spokenLanguageInterpreter')) {
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.witnessTitle.replace('{witnessName}', witnessComponent.witnessFullName)]
+      )
+    );
+
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.answerRowTitle,
+        [getInterpreterLanguageAnswer(witnessComponent.witnessInterpreterSpokenLanguage)],
+        paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection + '?selectedWitnesses=' + witnessComponent.witnessNumnber
+      )
+    );
+  }
+
+  if (hearingRequirements[witnessComponent.witnessInterpreterSignLanguageFieldString]
+    && witnessComponent.witnessInterpreterLanguageCategory
+    && witnessComponent.witnessInterpreterLanguageCategory.includes('signLanguageInterpreter')) {
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.questionRowTitle,
+        [i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.witnessTitle.replace('{witnessName}', witnessComponent.witnessFullName)]
+      )
+    );
+
+    interpreterRows.push(
+      getSummaryRow(visibleChangeLink,
+        i18n.common.cya.answerRowTitle,
+        [getInterpreterLanguageAnswer(witnessComponent.witnessInterpreterSignLanguage)],
+        paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection + '?selectedWitnesses=' + witnessComponent.witnessNumnber
+      )
+    );
+  }
 }

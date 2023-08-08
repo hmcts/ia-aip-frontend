@@ -5,7 +5,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { formatWitnessName } from '../../utils/utils';
+import { clearWitnessCachedData, formatWitnessName } from '../../utils/utils';
 import {
   witnessesValidation,
   witnessNameValidation
@@ -38,11 +38,7 @@ function postWitnessNamesPage(updateAppealService: UpdateAppealService) {
         return renderPage(res, validation, witnessNames);
       }
 
-      // clear data of witnessListElement
-      for (let index = 0; index < 10; index++) {
-        let witnessListElementString = 'witnessListElement' + (index + 1);
-        req.session.appeal.hearingRequirements[witnessListElementString] = null;
-      }
+      clearWitnessCachedData(req.session.appeal.hearingRequirements);
 
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {

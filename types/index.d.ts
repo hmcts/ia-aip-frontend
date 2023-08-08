@@ -498,4 +498,5 @@ interface WitnessComponent {
   witnessInterpreterSpokenLanguage?: InterpreterLanguageRefData;
   witnessInterpreterSignLanguageFieldString?: string;
   witnessInterpreterSignLanguage?: InterpreterLanguageRefData;
+  witnessNumnber?: string;
 }

@@ -154,7 +154,7 @@ export function getWitnessComponent(hearingRequirements: HearingRequirements, wi
     let witnessInterpreterSignLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSignLanguageString] || null;
 
     WitnessComponent = {
-      witnessFullName: witnessListElement.list_items[0].label,
+      witnessFullName: (witnessListElement && witnessListElement.list_items && witnessListElement.list_items.length > 0) ? witnessListElement.list_items[0].label : '',
       witnessListElementFieldString: witnessListElementString,
       witnessListElement: witnessListElement,
       witnessInterpreterLanguageCategoryFieldString: witnessInterpreterLanguageCategoryString,
@@ -176,8 +176,15 @@ export function clearWitnessCachedData(hearingRequirements: HearingRequirements)
     let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
     let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
 
+    let witnessListElementObj: DynamicMultiSelectList = hearingRequirements[witnessListElementFieldString];
+
     if (hearingRequirements.isAnyWitnessInterpreterRequired !== undefined && !hearingRequirements.isAnyWitnessInterpreterRequired) {
       hearingRequirements[witnessListElementFieldString] = null;
+      hearingRequirements[witnessInterpreterLanguageCategoryFieldString] = null;
+      hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
+      hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
+
+    } else if (witnessListElementObj && witnessListElementObj.value && witnessListElementObj.value.length === 0) {
       hearingRequirements[witnessInterpreterLanguageCategoryFieldString] = null;
       hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
       hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
@@ -189,6 +196,7 @@ export function clearWitnessCachedData(hearingRequirements: HearingRequirements)
       if (!hearingRequirements[witnessInterpreterLanguageCategoryFieldString].includes('signLanguageInterpreter')) {
         hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
       }
+
     }
   }
 }

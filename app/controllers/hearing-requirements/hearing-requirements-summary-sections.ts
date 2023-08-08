@@ -144,7 +144,7 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
     if (hearingRequirements.isInterpreterServicesNeeded) {
 
       buildAppellantInterpretersummaryList(interpreterRows, visibleChangeLink, hearingRequirements);
-      
+
     }
   } else if (hearingRequirements.witnessesOnHearing) {
     interpreterRows.push(
@@ -180,13 +180,6 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
     }
 
     if (hearingRequirements.isAnyWitnessInterpreterRequired) {
-      interpreterRows.push(
-        getSummaryRow(visibleChangeLink,
-          i18n.common.cya.questionRowTitle,
-          [i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.title],
-          paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
-        )
-      );
 
       let needInterpreterWitnessnesSummaryString = '';
       let needInterpreterWitnessnesComponent: WitnessComponent[] = [];
@@ -199,10 +192,20 @@ function buildAccessNeedsSummaryList(hearingRequirements: HearingRequirements, v
         }
       }
 
-      interpreterRows.push(
-        getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
-          [needInterpreterWitnessnesSummaryString])
-      );
+      if (hearingRequirements.witnessNames && hearingRequirements.witnessNames.length >= 2) {
+        interpreterRows.push(
+          getSummaryRow(visibleChangeLink,
+            i18n.common.cya.questionRowTitle,
+            [i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.title],
+            paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds
+          )
+        );
+
+        interpreterRows.push(
+          getSummaryRow(visibleChangeLink, i18n.common.cya.answerRowTitle,
+            [needInterpreterWitnessnesSummaryString])
+        );
+      }
 
       needInterpreterWitnessnesComponent.forEach((witnessComponent) => {
         buildWitnessesInterpretersummaryList(interpreterRows, visibleChangeLink, hearingRequirements, witnessComponent);

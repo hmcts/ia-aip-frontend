@@ -253,7 +253,7 @@ interface WitnessDetails {
 
 interface DynamicMultiSelectList {
   value?: Value[];
-  list_items?: Vlaue[];
+  list_items?: Value[];
 }
 
 interface InterpreterLanguage {

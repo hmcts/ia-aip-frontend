@@ -614,7 +614,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
       req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
 
-      req.session.appeal.hearingRequirements.witnessListElement2 = { "value": [{ "code": "John Smith", "label": "John Smith" }], "list_items": [{ "code": "John Smith", "label": "John Smith" }] };
+      req.session.appeal.hearingRequirements.witnessListElement2 = { 'value': [{ 'code': 'John Smith', 'label': 'John Smith' }], 'list_items': [{ 'code': 'John Smith', 'label': 'John Smith' }] };
       req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
@@ -1114,7 +1114,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
       req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
 
-      req.session.appeal.hearingRequirements.witnessListElement2 = { "value": [{ "code": "John Smith", "label": "John Smith" }], "list_items": [{ "code": "John Smith", "label": "John Smith" }] };
+      req.session.appeal.hearingRequirements.witnessListElement2 = { 'value': [{ 'code': 'John Smith', 'label': 'John Smith' }], 'list_items': [{ 'code': 'John Smith', 'label': 'John Smith' }] };
       req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
@@ -1583,7 +1583,7 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
       req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
       req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
 
-      req.session.appeal.hearingRequirements.witnessListElement2 = { "value": [{ "code": "John Smith", "label": "John Smith" }], "list_items": [{ "code": "John Smith", "label": "John Smith" }] };
+      req.session.appeal.hearingRequirements.witnessListElement2 = { 'value': [{ 'code': 'John Smith', 'label': 'John Smith' }], 'list_items': [{ 'code': 'John Smith', 'label': 'John Smith' }] };
       req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
       req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };

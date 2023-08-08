@@ -342,7 +342,7 @@ describe('Hearing requirements access needs controller', () => {
 
     it('getInterpreterTypePage should render getInterpreterTypePage for witness', () => {
       req.query = { selectedWitnesses: '0' };
-      req.session.appeal.hearingRequirements.witnessListElement1 = { "value": [{ "code": "Witness 1", "label": "Witness 1" } ], "list_items": [{ "code": "Witness 1", "label": "Witness 1" } ] };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       getInterpreterTypePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
         previousPage: previousPage,
@@ -370,7 +370,7 @@ describe('Hearing requirements access needs controller', () => {
 
     it('getInterpreterTypePage should render getInterpreterTypePage if appellant selected personal spoken and sign language for witness', () => {
       req.query = { selectedWitnesses: '0' };
-      req.session.appeal.hearingRequirements.witnessListElement1 = { "value": [{ "code": "Witness 1", "label": "Witness 1" } ], "list_items": [{ "code": "Witness 1", "label": "Witness 1" } ] };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
       getInterpreterTypePage(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
@@ -397,7 +397,7 @@ describe('Hearing requirements access needs controller', () => {
 
     it('postInterpreterTypePage should show validation error if appellant did not select interpreter language for witness', async () => {
       req.body.selectedWitnessesList = '0';
-      req.session.appeal.hearingRequirements.witnessListElement1 = { "value": [{ "code": "Witness 1", "label": "Witness 1" } ], "list_items": [{ "code": "Witness 1", "label": "Witness 1" } ] };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       req.body.selections = '';
       await postInterpreterTypePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-types.njk', {
@@ -437,7 +437,7 @@ describe('Hearing requirements access needs controller', () => {
     it('getInterpreterSpokenLanguagePage should render getInterpreterSpokenLanguagePage for witness', async () => {
 
       req.query = { selectedWitnesses: '0' };
-      req.session.appeal.hearingRequirements.witnessListElement1 = { "value": [{ "code": "Witness 1", "label": "Witness 1" } ], "list_items": [{ "code": "Witness 1", "label": "Witness 1" } ] };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       await getInterpreterSpokenLanguagePage(refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
@@ -497,7 +497,7 @@ describe('Hearing requirements access needs controller', () => {
     it('postInterpreterSpokenLanguagePage should show validation error if appellant did not select spokenn language for witness', async () => {
 
       req.body.selectedWitnessesList = '0';
-      req.session.appeal.hearingRequirements.witnessListElement1 = { "value": [{ "code": "Witness 1", "label": "Witness 1" } ], "list_items": [{ "code": "Witness 1", "label": "Witness 1" } ] };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
@@ -560,7 +560,7 @@ describe('Hearing requirements access needs controller', () => {
     it('getInterpreterSignLanguagePage should render getInterpreterSignLanguagePage for witness', async () => {
 
       req.query = { selectedWitnesses: '0' };
-      req.session.appeal.hearingRequirements.witnessListElement1 = { "value": [{ "code": "Witness 1", "label": "Witness 1" } ], "list_items": [{ "code": "Witness 1", "label": "Witness 1" } ] };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       await getInterpreterSignLanguagePage(refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
@@ -620,7 +620,7 @@ describe('Hearing requirements access needs controller', () => {
     it('postInterpreterSignLanguagePage should show validation error if appellant did not select sign language for witness', async () => {
 
       req.body.selectedWitnessesList = '0';
-      req.session.appeal.hearingRequirements.witnessListElement1 = { "value": [{ "code": "Witness 1", "label": "Witness 1" } ], "list_items": [{ "code": "Witness 1", "label": "Witness 1" } ] };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
       await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {

@@ -5,7 +5,7 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { clearWitnessCachedData, formatWitnessName } from '../../utils/utils';
+import { clearWitnessCachedData, formatWitnessName, getWitnessComponent } from '../../utils/utils';
 import {
   witnessesValidation,
   witnessNameValidation
@@ -90,9 +90,39 @@ function addMoreWitnessPostAction() {
 function removeWitnessPostAction() {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      let witnessNames: WitnessName [] = req.session.appeal.hearingRequirements.witnessNames || [];
+      let witnessNames: WitnessName[] = req.session.appeal.hearingRequirements.witnessNames || [];
       const nameToRemove: string = req.query.name as string;
+
       req.session.appeal.hearingRequirements.witnessNames = witnessNames.filter(name => formatWitnessName(name) !== nameToRemove);
+
+      // clear cached witness data
+      for (let index = 0; index < 10; index++) {
+        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, index.toString());
+        if (witnessComponent && witnessComponent.witnessFullName && witnessComponent.witnessFullName === nameToRemove) {
+          req.session.appeal.hearingRequirements[witnessComponent.witnessListElementFieldString] = null;
+          req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterLanguageCategoryFieldString] = null;
+          req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSpokenLanguageFieldString] = null;
+          req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSignLanguageFieldString] = null;
+        }
+
+        req.session.appeal.hearingRequirements.witnessNames.map((witnessObj, i) => {
+          let hearingRequirements = req.session.appeal.hearingRequirements;
+          if (witnessComponent && witnessComponent.witnessFullName && witnessComponent.witnessFullName === formatWitnessName(witnessObj)) {
+
+            hearingRequirements[('witnessListElement' + (i + 1))] = witnessComponent.witnessListElement;
+            hearingRequirements[('witness' + (i + 1) + 'InterpreterLanguageCategory')] = witnessComponent.witnessInterpreterLanguageCategory;
+            hearingRequirements[('witness' + (i + 1) + 'InterpreterSpokenLanguage')] = witnessComponent.witnessInterpreterSpokenLanguage;
+            hearingRequirements[('witness' + (i + 1) + 'InterpreterSignLanguage')] = witnessComponent.witnessInterpreterSignLanguage;
+
+            if (index !== i) {
+              req.session.appeal.hearingRequirements[witnessComponent.witnessListElementFieldString] = null;
+              req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterLanguageCategoryFieldString] = null;
+              req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSpokenLanguageFieldString] = null;
+              req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSignLanguageFieldString] = null;
+            }
+          }
+        });
+      }
       return res.redirect(paths.submitHearingRequirements.hearingWitnessNames);
     } catch (e) {
       next(e);

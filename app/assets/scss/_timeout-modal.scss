@@ -30,3 +30,17 @@
 .modal-overlay:not([aria-hidden="true"]) {
 	display: block;
 }
+
+@media only screen and (max-width: 525px) {
+  #timeout-modal {
+    width: 90%;
+    font-size: small;
+
+    #dialog-title {
+      font-size: small;
+    }
+    #extend-session {
+      font-size: small;
+    }
+  }
+}

@@ -22,8 +22,11 @@
       {
         value: item.value,
         html: item.title,
-        checked: item.checked,
-        hint: { html: examples }
+        checked: item.checked
+      }), options) %}
+    {% set options = (options.push(
+      {
+        divider: examples
       }), options) %}
   {% endfor %}
   {{ paymentsFlag | dump }}

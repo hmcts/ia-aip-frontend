@@ -426,6 +426,14 @@ export default class UpdateAppealService {
     }
 
     for (let index = 0; index < 10; index++) {
+      let witnessString = 'witness' + (index + 1);
+      let witnessObj = caseData[witnessString] as WitnessDetails;
+      if (witnessObj) {
+        hearingRequirements[witnessString] = { witnessName: witnessObj.witnessName, witnessFamilyName: witnessObj.witnessFamilyName };
+      } else {
+        hearingRequirements[witnessString] = null;
+      }
+
       let witnessListElementString = 'witnessListElement' + (index + 1);
       if (caseData[witnessListElementString]) {
         hearingRequirements[witnessListElementString] = caseData[witnessListElementString];
@@ -940,6 +948,17 @@ export default class UpdateAppealService {
         caseData.isAnyWitnessInterpreterRequired = boolToYesNo(appeal.hearingRequirements.isAnyWitnessInterpreterRequired);
 
         for (let index = 0; index < 10; index++) {
+
+          if (_.has(appeal.hearingRequirements, 'witnessNames')) {
+            let witnessString = 'witness' + (index + 1);
+            let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
+            if (witnessObj) {
+              caseData[witnessString] = { witnessName: witnessObj.witnessGivenNames, witnessFamilyName: witnessObj.witnessFamilyName };
+            } else {
+              caseData[witnessString] = null;
+            }
+          }
+
           let witnessListElementString = 'witnessListElement' + (index + 1);
           if (_.has(appeal.hearingRequirements, witnessListElementString)) {
             caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];

@@ -137,6 +137,16 @@ interface CaseData {
   isWitnessesAttending?: 'Yes' | 'No';
   isEvidenceFromOutsideUkInCountry?: 'Yes' | 'No';
   witnessDetails?: Collection<WitnessDetails>[];
+  witness1?: WitnessDetails;
+  witness2?: WitnessDetails;
+  witness3?: WitnessDetails;
+  witness4?: WitnessDetails;
+  witness5?: WitnessDetails;
+  witness6?: WitnessDetails;
+  witness7?: WitnessDetails;
+  witness8?: WitnessDetails;
+  witness9?: WitnessDetails;
+  witness10?: WitnessDetails;
   witnessListElement1?: DynamicMultiSelectList;
   witnessListElement2?: DynamicMultiSelectList;
   witnessListElement3?: DynamicMultiSelectList;

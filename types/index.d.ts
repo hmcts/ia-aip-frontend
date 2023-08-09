@@ -500,6 +500,8 @@ interface WitnessName {
 
 interface WitnessComponent {
   witnessFullName?:string;
+  witnessFieldString?: string;
+  witness: WitnessDetails;
   witnessListElementFieldString?: string;
   witnessListElement?: DynamicMultiSelectList;
   witnessInterpreterLanguageCategoryFieldString?: string;

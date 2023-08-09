@@ -430,8 +430,6 @@ export default class UpdateAppealService {
       let witnessObj = caseData[witnessString] as WitnessDetails;
       if (witnessObj) {
         hearingRequirements[witnessString] = { witnessName: witnessObj.witnessName, witnessFamilyName: witnessObj.witnessFamilyName };
-      } else {
-        hearingRequirements[witnessString] = null;
       }
 
       let witnessListElementString = 'witnessListElement' + (index + 1);

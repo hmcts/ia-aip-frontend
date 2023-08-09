@@ -141,6 +141,9 @@ export function getWitnessComponent(hearingRequirements: HearingRequirements, wi
   let WitnessComponent: WitnessComponent = null;
 
   if (hearingRequirements && witnessIndex) {
+    let witnessString = 'witness' + (parseInt(witnessIndex, 10) + 1);
+    let witness: WitnessDetails = hearingRequirements && hearingRequirements[witnessString] || null;
+
     let witnessListElementString = 'witnessListElement' + (parseInt(witnessIndex, 10) + 1);
     let witnessListElement: DynamicMultiSelectList = hearingRequirements && hearingRequirements[witnessListElementString] || null;
 
@@ -155,6 +158,8 @@ export function getWitnessComponent(hearingRequirements: HearingRequirements, wi
 
     WitnessComponent = {
       witnessFullName: (witnessListElement && witnessListElement.list_items && witnessListElement.list_items.length > 0) ? witnessListElement.list_items[0].label : '',
+      witnessFieldString: witnessString,
+      witness: witness,
       witnessListElementFieldString: witnessListElementString,
       witnessListElement: witnessListElement,
       witnessInterpreterLanguageCategoryFieldString: witnessInterpreterLanguageCategoryString,

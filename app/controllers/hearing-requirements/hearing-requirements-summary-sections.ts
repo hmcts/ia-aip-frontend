@@ -625,11 +625,8 @@ function buildAppellantInterpretersummaryList(interpreterRows: SummaryRow[], vis
 
   let appellantInterpreterLanguageCategory: string = '';
   let appellantInterpreterLanguageCategoryList = hearingRequirements.appellantInterpreterLanguageCategory || [];
-  if (appellantInterpreterLanguageCategoryList && appellantInterpreterLanguageCategoryList.length > 0) {
-    appellantInterpreterLanguageCategory += appellantInterpreterLanguageCategoryList.includes('spokenLanguageInterpreter') ? 'Spoken language interpreter' : '';
-    appellantInterpreterLanguageCategory += (appellantInterpreterLanguageCategoryList.length === 2) ? Delimiter.BREAK_LINE : '';
-    appellantInterpreterLanguageCategory += appellantInterpreterLanguageCategoryList.includes('signLanguageInterpreter') ? 'Sign language interpreter' : '';
-  }
+  appellantInterpreterLanguageCategory = buildLanguageCategorySummaryString(appellantInterpreterLanguageCategoryList);
+
   interpreterRows.push(
     getSummaryRow(visibleChangeLink,
       i18n.common.cya.answerRowTitle,
@@ -686,11 +683,8 @@ function buildWitnessesInterpretersummaryList(interpreterRows: SummaryRow[], vis
   );
 
   let witnessInterpreterLanguageCategory: string = '';
-  if (witnessComponent.witnessInterpreterLanguageCategory && witnessComponent.witnessInterpreterLanguageCategory.length > 0) {
-    witnessInterpreterLanguageCategory += witnessComponent.witnessInterpreterLanguageCategory.includes('spokenLanguageInterpreter') ? 'Spoken language interpreter' : '';
-    witnessInterpreterLanguageCategory += (witnessComponent.witnessInterpreterLanguageCategory.length === 2) ? Delimiter.BREAK_LINE : '';
-    witnessInterpreterLanguageCategory += witnessComponent.witnessInterpreterLanguageCategory.includes('signLanguageInterpreter') ? 'Sign language interpreter' : '';
-  }
+  witnessInterpreterLanguageCategory = buildLanguageCategorySummaryString(witnessComponent.witnessInterpreterLanguageCategory);
+
   interpreterRows.push(
     getSummaryRow(visibleChangeLink,
       i18n.common.cya.answerRowTitle,
@@ -736,4 +730,14 @@ function buildWitnessesInterpretersummaryList(interpreterRows: SummaryRow[], vis
       )
     );
   }
+}
+
+function buildLanguageCategorySummaryString(interpreterLanguageCategoryList: string[]): string {
+  let interpreterLanguageCategory = '';
+  if (interpreterLanguageCategoryList && interpreterLanguageCategoryList.length > 0) {
+    interpreterLanguageCategory += interpreterLanguageCategoryList.includes('spokenLanguageInterpreter') ? 'Spoken language interpreter' : '';
+    interpreterLanguageCategory += (interpreterLanguageCategoryList.length === 2) ? Delimiter.BREAK_LINE : '';
+    interpreterLanguageCategory += interpreterLanguageCategoryList.includes('signLanguageInterpreter') ? 'Sign language interpreter' : '';
+  }
+  return interpreterLanguageCategory;
 }

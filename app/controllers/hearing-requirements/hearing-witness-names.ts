@@ -95,6 +95,19 @@ function removeWitnessPostAction() {
 
       req.session.appeal.hearingRequirements.witnessNames = witnessNames.filter(name => formatWitnessName(name) !== nameToRemove);
 
+      // remove the witness data
+      for (let index = 0; index < 10; index++) {
+        let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, index.toString());
+
+        if (witnessComponent && witnessComponent.witnessFullName && witnessComponent.witnessFullName === nameToRemove) {
+          req.session.appeal.hearingRequirements[witnessComponent.witnessFieldString] = null;
+          req.session.appeal.hearingRequirements[witnessComponent.witnessListElementFieldString] = null;
+          req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterLanguageCategoryFieldString] = null;
+          req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSpokenLanguageFieldString] = null;
+          req.session.appeal.hearingRequirements[witnessComponent.witnessInterpreterSignLanguageFieldString] = null;
+        }
+      }
+
       // relocate the witness data because of index change
       for (let index = 0; index < 10; index++) {
         let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, index.toString());

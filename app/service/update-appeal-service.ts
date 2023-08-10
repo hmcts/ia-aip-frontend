@@ -425,6 +425,34 @@ export default class UpdateAppealService {
       hearingRequirements.isAnyWitnessInterpreterRequired = yesNoToBool(caseData.isAnyWitnessInterpreterRequired);
     }
 
+    for (let index = 0; index < 10; index++) {
+      let witnessString = 'witness' + (index + 1);
+      let witnessObj = caseData[witnessString] as WitnessDetails;
+      if (witnessObj) {
+        hearingRequirements[witnessString] = { witnessName: witnessObj.witnessName, witnessFamilyName: witnessObj.witnessFamilyName };
+      }
+
+      let witnessListElementString = 'witnessListElement' + (index + 1);
+      if (caseData[witnessListElementString]) {
+        hearingRequirements[witnessListElementString] = caseData[witnessListElementString];
+      }
+
+      let witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+      if (caseData[witnessInterpreterLanguageCategoryString]) {
+        hearingRequirements[witnessInterpreterLanguageCategoryString] = caseData[witnessInterpreterLanguageCategoryString];
+      }
+
+      let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+      if (caseData[witnessInterpreterSpokenLanguageFieldString]) {
+        hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = caseData[witnessInterpreterSpokenLanguageFieldString];
+      }
+
+      let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+      if (caseData[witnessInterpreterSignLanguageFieldString]) {
+        hearingRequirements[witnessInterpreterSignLanguageFieldString] = caseData[witnessInterpreterSignLanguageFieldString];
+      }
+    }
+
     if (caseData.interpreterLanguage) {
       hearingRequirements.interpreterLanguages = caseData.interpreterLanguage.map(additionalLanguage => {
         return {
@@ -916,6 +944,39 @@ export default class UpdateAppealService {
 
       if (_.has(appeal.hearingRequirements, 'isAnyWitnessInterpreterRequired')) {
         caseData.isAnyWitnessInterpreterRequired = boolToYesNo(appeal.hearingRequirements.isAnyWitnessInterpreterRequired);
+
+        for (let index = 0; index < 10; index++) {
+
+          if (_.has(appeal.hearingRequirements, 'witnessNames')) {
+            let witnessString = 'witness' + (index + 1);
+            let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
+            if (witnessObj) {
+              caseData[witnessString] = { witnessName: witnessObj.witnessGivenNames, witnessFamilyName: witnessObj.witnessFamilyName };
+            } else {
+              caseData[witnessString] = null;
+            }
+          }
+
+          let witnessListElementString = 'witnessListElement' + (index + 1);
+          if (_.has(appeal.hearingRequirements, witnessListElementString)) {
+            caseData[witnessListElementString] = appeal.hearingRequirements[witnessListElementString];
+          }
+
+          let witnessInterpreterLanguageCategoryString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
+          if (_.has(appeal.hearingRequirements, witnessInterpreterLanguageCategoryString)) {
+            caseData[witnessInterpreterLanguageCategoryString] = appeal.hearingRequirements[witnessInterpreterLanguageCategoryString];
+          }
+
+          let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
+          if (_.has(appeal.hearingRequirements, witnessInterpreterSpokenLanguageFieldString)) {
+            caseData[witnessInterpreterSpokenLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSpokenLanguageFieldString];
+          }
+
+          let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
+          if (_.has(appeal.hearingRequirements, witnessInterpreterSignLanguageFieldString)) {
+            caseData[witnessInterpreterSignLanguageFieldString] = appeal.hearingRequirements[witnessInterpreterSignLanguageFieldString];
+          }
+        }
       }
 
       caseData.isHearingRoomNeeded = null;

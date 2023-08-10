@@ -42,6 +42,7 @@
 
     <form action="{{ formAction }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <input type="hidden" name="selectedWitnessesList" value="{{ selectedWitnessesList }}">
             {{ govukSelect({
                 idPrefix: "languageRefData",
                 name: "languageRefData",

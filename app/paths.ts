@@ -82,6 +82,7 @@ const paths = {
     hearingInterpreterTypes: '/hearing-interpreter-types',
     hearingInterpreterSpokenLanguageSelection: '/hearing-interpreter-spoken-language-selection',
     hearingInterpreterSignLanguageSelection: '/hearing-interpreter-sign-language-selection',
+    hearingWitnessesInterpreterNeeds: '/hearing-witnesses-interpreter-needs',
     hearingLanguageDetails: '/hearing-language-details',
     hearingLanguageDetailsAdd: '/hearing-language-details/add',
     hearingLanguageDetailsRemove: '/hearing-language-details/remove',

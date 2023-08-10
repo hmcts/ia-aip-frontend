@@ -237,6 +237,104 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               'value': {
                 'html': 'Interpreter support for me personally<br>Interpreter support for one or more witnesses'
               }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'What kind of interpreter do you need to request?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Spoken language interpreter<br>Sign language interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Tell us about your language requirements'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Maghreb'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Tell us about your sign language requirements'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'input sign language manually'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Select which witnesses need an interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'John Smith<br>'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'What kind of interpreter will John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Spoken language interpreter<br>Sign language interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which spoken language interpreter does John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Japanese'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which sign language interpreter does John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'John Smith input sign language manually'
+              }
             }]
           }, {
             'title': 'Step-free access',
@@ -512,6 +610,14 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
         }]
       };
 
+      req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
+      req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+
+      req.session.appeal.hearingRequirements.witnessListElement2 = { 'value': [{ 'code': 'John Smith', 'label': 'John Smith' }], 'list_items': [{ 'code': 'John Smith', 'label': 'John Smith' }] };
+      req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
+      req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
@@ -631,6 +737,104 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               'value': {
                 'html': 'Interpreter support for me personally<br>Interpreter support for one or more witnesses'
               }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'What kind of interpreter do you need to request?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Spoken language interpreter<br>Sign language interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Tell us about your language requirements'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Maghreb'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Tell us about your sign language requirements'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'input sign language manually'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Select which witnesses need an interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'John Smith<br>'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'What kind of interpreter will John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Spoken language interpreter<br>Sign language interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which spoken language interpreter does John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Japanese'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which sign language interpreter does John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'John Smith input sign language manually'
+              }
             }]
           }, {
             'title': 'Step-free access',
@@ -906,6 +1110,15 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
         }]
       };
 
+      req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
+      req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+
+      req.session.appeal.hearingRequirements.witnessListElement2 = { 'value': [{ 'code': 'John Smith', 'label': 'John Smith' }], 'list_items': [{ 'code': 'John Smith', 'label': 'John Smith' }] };
+      req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
+      req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
+      getYourHearingNeedsPage(req as Request, res as Response, next);
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);
@@ -993,6 +1206,104 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
               'value': {
                 'html': 'Interpreter support for me personally<br>Interpreter support for one or more witnesses'
               }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'What kind of interpreter do you need to request?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Spoken language interpreter<br>Sign language interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Tell us about your language requirements'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Maghreb'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Tell us about your sign language requirements'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'input sign language manually'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Select which witnesses need an interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'John Smith<br>'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'What kind of interpreter will John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Spoken language interpreter<br>Sign language interpreter'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which spoken language interpreter does John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'Japanese'
+              }
+            }, {
+              'key': {
+                'text': 'Question'
+              },
+              'value': {
+                'html': 'Which sign language interpreter does John Smith need?'
+              }
+            }, {
+              'key': {
+                'text': 'Answer'
+              },
+              'value': {
+                'html': 'John Smith input sign language manually'
+              }
             }]
           }, {
             'title': 'Step-free access',
@@ -1268,6 +1579,14 @@ describe('Hearing RequirementsYour Hearing Needs controller', () => {
         }]
       };
 
+      req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
+      req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+
+      req.session.appeal.hearingRequirements.witnessListElement2 = { 'value': [{ 'code': 'John Smith', 'label': 'John Smith' }], 'list_items': [{ 'code': 'John Smith', 'label': 'John Smith' }] };
+      req.session.appeal.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      req.session.appeal.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Japanese', code: 'jpn' } } };
+      req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'John Smith input sign language manually' };
       getYourHearingNeedsPage(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('templates/check-and-send.njk', expectedArgs);

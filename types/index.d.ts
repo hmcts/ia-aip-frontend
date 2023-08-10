@@ -357,6 +357,56 @@ interface HearingRequirements {
   isAppellantAttendingTheHearing?: boolean;
   isAppellantGivingOralEvidence?: boolean;
   witnessNames?: WitnessName[];
+  witness1?: WitnessDetails;
+  witness2?: WitnessDetails;
+  witness3?: WitnessDetails;
+  witness4?: WitnessDetails;
+  witness5?: WitnessDetails;
+  witness6?: WitnessDetails;
+  witness7?: WitnessDetails;
+  witness8?: WitnessDetails;
+  witness9?: WitnessDetails;
+  witness10?: WitnessDetails;
+  witnessListElement1?: DynamicMultiSelectList;
+  witnessListElement2?: DynamicMultiSelectList;
+  witnessListElement3?: DynamicMultiSelectList;
+  witnessListElement4?: DynamicMultiSelectList;
+  witnessListElement5?: DynamicMultiSelectList;
+  witnessListElement6?: DynamicMultiSelectList;
+  witnessListElement7?: DynamicMultiSelectList;
+  witnessListElement8?: DynamicMultiSelectList;
+  witnessListElement9?: DynamicMultiSelectList;
+  witnessListElement10?: DynamicMultiSelectList;
+  witness1InterpreterLanguageCategory?: string[];
+  witness2InterpreterLanguageCategory?: string[];
+  witness3InterpreterLanguageCategory?: string[];
+  witness4InterpreterLanguageCategory?: string[];
+  witness5InterpreterLanguageCategory?: string[];
+  witness6InterpreterLanguageCategory?: string[];
+  witness7InterpreterLanguageCategory?: string[];
+  witness8InterpreterLanguageCategory?: string[];
+  witness9InterpreterLanguageCategory?: string[];
+  witness10InterpreterLanguageCategory?: string[];
+  witness1InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness2InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness3InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness4InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness5InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness6InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness7InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness8InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness9InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness10InterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witness1InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness2InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness3InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness4InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness5InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness6InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness7InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness8InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness9InterpreterSignLanguage?: InterpreterLanguageRefData;
+  witness10InterpreterSignLanguage?: InterpreterLanguageRefData;
   witnessesOutsideUK?: boolean;
   isInterpreterServicesNeeded?: boolean;
   isAnyWitnessInterpreterRequired?: boolean;
@@ -446,4 +496,19 @@ interface ApplicationStatus {
 interface WitnessName {
   witnessGivenNames?: string;
   witnessFamilyName?: string;
+}
+
+interface WitnessComponent {
+  witnessFullName?:string;
+  witnessFieldString?: string;
+  witness: WitnessDetails;
+  witnessListElementFieldString?: string;
+  witnessListElement?: DynamicMultiSelectList;
+  witnessInterpreterLanguageCategoryFieldString?: string;
+  witnessInterpreterLanguageCategory?: string[];
+  witnessInterpreterSpokenLanguageFieldString? : string;
+  witnessInterpreterSpokenLanguage?: InterpreterLanguageRefData;
+  witnessInterpreterSignLanguageFieldString?: string;
+  witnessInterpreterSignLanguage?: InterpreterLanguageRefData;
+  witnessNumnber?: string;
 }

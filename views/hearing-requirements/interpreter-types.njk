@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.pageTitle | eval %}
+{% set pageTitleName = pageQuestion | eval %}
 {% extends "layout.njk" %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
@@ -14,18 +14,19 @@
 
   <form action="{{ paths.submitHearingRequirements.hearingInterpreterTypes }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <input type="hidden" name="selectedWitnessesList" value="{{ selectedWitnessesList }}">
     {{ govukCheckboxes({
         idPrefix: "interpreterType",
         name: "selections",
         fieldset: {
             legend: {
-            text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.title,
+            text: pageQuestion,
             isPageHeading: true,
             classes: "govuk-fieldset__legend--xl"
             }
         },
         hint: {
-            text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.hint
+            text: checkboxHintText
         },
         items: [
             {
@@ -34,7 +35,7 @@
                 hint: {
                     text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.spokenLanguageOptionHint
                 },
-                checked: true if appellantInterpreterSpokenLanguage
+                checked: true if interpreterSpokenLanguage
             },
             {
                 value: "signLanguageInterpreter",
@@ -42,7 +43,7 @@
                 hint: {
                     text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.signLanguageOptionHint
                 },
-                checked: true if appellantInterpreterSignLanguage
+                checked: true if interpreterSignLanguage
             }
         ]
     }) }}

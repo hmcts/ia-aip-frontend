@@ -623,9 +623,8 @@ function buildAppellantInterpretersummaryList(interpreterRows: SummaryRow[], vis
     )
   );
 
-  let appellantInterpreterLanguageCategory: string = '';
   let appellantInterpreterLanguageCategoryList = hearingRequirements.appellantInterpreterLanguageCategory || [];
-  appellantInterpreterLanguageCategory = buildLanguageCategorySummaryString(appellantInterpreterLanguageCategoryList);
+  let appellantInterpreterLanguageCategory = buildLanguageCategorySummaryString(appellantInterpreterLanguageCategoryList);
 
   interpreterRows.push(
     getSummaryRow(visibleChangeLink,
@@ -682,8 +681,7 @@ function buildWitnessesInterpretersummaryList(interpreterRows: SummaryRow[], vis
     )
   );
 
-  let witnessInterpreterLanguageCategory: string = '';
-  witnessInterpreterLanguageCategory = buildLanguageCategorySummaryString(witnessComponent.witnessInterpreterLanguageCategory);
+  let witnessInterpreterLanguageCategory = buildLanguageCategorySummaryString(witnessComponent.witnessInterpreterLanguageCategory);
 
   interpreterRows.push(
     getSummaryRow(visibleChangeLink,

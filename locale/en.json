@@ -418,9 +418,9 @@
         }
       },
       "feedback": {
-        "heading": "Help us improve this service",
-        "contentText": "This is a new service. Help us improve it for others by ",
-        "contentLink": "<a href=\"https://www.smartsurvey.co.uk/s/SurveyExit/?service=iac/\" target=\"_blank\">giving your feedback (opens in a new tab)</a>"
+        "heading": "We'd like to hear your thoughts",
+        "contentText": "Complete this short, 5-minute survey to help improve our services for you and others.",
+        "contentLink": "<a href=\"https://www.smartsurvey.co.uk/s/SurveyExit/?service=iac/\" target=\"_blank\">Please leave your feedback here</a>"
       }
     },
     "confirmationPaidLater": {

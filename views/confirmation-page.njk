@@ -67,11 +67,13 @@
     }) }}
   {% endif %}
   {{ contactUs() }}
-  <div class="feedback-box govuk-!-margin-top-0">
-    <h2 class="govuk-heading-m">{{ i18n.pages.successPage.feedback.heading }}</h2>
-    <p>{{ i18n.pages.successPage.feedback.contentText | eval | safe }}
-      {{ i18n.pages.successPage.feedback.contentLink | eval | safe }}.
-    </p>
-  </div>
+  {% if not paPayNow or not eaHuEu %}
+    <div class="feedback-box govuk-!-margin-top-0">
+      <h2 class="govuk-heading-m">{{ i18n.pages.successPage.feedback.heading }}</h2>
+      <p>{{ i18n.pages.successPage.feedback.contentText | eval | safe }}</p>
+      <br>
+      <p>{{ i18n.pages.successPage.feedback.contentLink | eval | safe }}</p>
+    </div>
+  {% endif %}
 {% endblock %}
 

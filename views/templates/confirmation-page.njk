@@ -43,4 +43,12 @@
     href: paths.common.overview
   }) }}
   {{ contactUs() }}
+  {% if not isPaPayLater %}
+    <div class="feedback-box govuk-!-margin-top-0">
+      <h2 class="govuk-heading-m">{{ i18n.pages.successPage.feedback.heading }}</h2>
+      <p>{{ i18n.pages.successPage.feedback.contentText | eval | safe }}</p>
+      <br>
+      <p>{{ i18n.pages.successPage.feedback.contentLink | eval | safe }}</p>
+    </div>
+  {% endif %}
 {% endblock %}

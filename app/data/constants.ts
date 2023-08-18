@@ -8,7 +8,8 @@ export const FEATURE_FLAGS = {
   OUT_OF_COUNTRY: 'aip-ooc-feature',
   UPLOAD_ADDENDUM_EVIDENCE: 'aip-upload-addendum-evidence-feature',
   MAKE_APPLICATION: 'aip-make-application-feature',
-  FTPA: 'aip-ftpa-feature'
+  FTPA: 'aip-ftpa-feature',
+  USE_CCD_DOCUMENT_AM: 'use-ccd-document-am'
 };
 
 export const APPLICANT_TYPE = {

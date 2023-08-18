@@ -20,7 +20,10 @@
   "documentManagement": {
     "apiUrl": "http://dm-store:4506"
   },
-    "features": {
+  "cdamDocumentManagement": {
+    "apiUrl": "http://localhost:4455"
+  },
+  "features": {
     "askForMoreTime": true,
     "timelineEnabled": true
   },

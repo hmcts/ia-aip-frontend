@@ -65,9 +65,14 @@ withNightlyPipeline(type, product, component) {
     env.S2S_MICROSERVICE_NAME = 'iac'
 
     enableCrossBrowserTest()
+    enableFortifyScan()
     enableSecurityScan()
     enableMutationTest()
     enableFullFunctionalTest(120)
+
+    after('fortify-scan') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    }
 
     afterAlways('crossBrowserTest') {
         yarnBuilder.yarn('test:a11y')

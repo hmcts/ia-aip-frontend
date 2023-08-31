@@ -181,7 +181,8 @@
     "nunjucks": "^3.2.4",
     "yaml": "^2.2.2",
     "json-schema": "^0.4.0",
-    "typed-rest-client": "^1.8.0"
+    "typed-rest-client": "^1.8.0",
+    "word-wrap": "^1.2.4"
   },
   "packageManager": "yarn@3.5.1"
 }

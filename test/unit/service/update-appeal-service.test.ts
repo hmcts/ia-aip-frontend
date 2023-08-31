@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { Events } from '../../../app/data/events';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
+import { DocumentManagementService } from '../../../app/service/document-management-service';
 import IdamService from '../../../app/service/idam-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
@@ -15,9 +16,10 @@ describe('update-appeal-service', () => {
   let ccdService: Partial<CcdService>;
   let idamService: Partial<IdamService>;
   let s2sService: Partial<S2SService>;
-  let authenticationService: Partial<AuthenticationService>;
+  let authenticationService: AuthenticationService;
   let updateAppealService: UpdateAppealService;
   let expectedCaseData: Partial<CaseData>;
+  let documentManagementService: DocumentManagementService;
 
   const userId = 'userId';
   const userToken = 'userToken';
@@ -37,7 +39,9 @@ describe('update-appeal-service', () => {
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
 
-    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService as AuthenticationService);
+    documentManagementService = new DocumentManagementService(authenticationService);
+
+    updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);
     req = {
       idam: {
         userDetails: {
@@ -1197,7 +1201,8 @@ describe('update-appeal-service', () => {
       s2sService2 = {
         getServiceToken: sandbox.stub().resolves(serviceToken)
       };
-      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService as AuthenticationService);
+      documentManagementService = new DocumentManagementService(authenticationService);
+      updateAppealServiceBis = new UpdateAppealService(ccdService2 as CcdService, authenticationService, null, documentManagementService);
       expectedCaseData = {
         journeyType: 'aip',
         appellantInUk: 'undefined',

@@ -5,11 +5,11 @@ import moment from 'moment';
 import i18n from '../../../locale/en.json';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
-import { documentIdToDocStoreUrl, DocumentManagementService } from '../../service/document-management-service';
+import { DocumentManagementService } from '../../service/document-management-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { addDaysToDate } from '../../utils/date-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { asBooleanValue, hasPendingTimeExtension } from '../../utils/utils';
+import { asBooleanValue, documentIdToDocStoreUrl, hasPendingTimeExtension } from '../../utils/utils';
 import {
   createStructuredError,
   reasonForAppealDecisionValidation,

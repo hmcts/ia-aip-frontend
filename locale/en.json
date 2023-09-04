@@ -335,6 +335,7 @@
       "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
       "dateTitle": "Enter the date the letter was sent",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when your decision letter from the Home Office was sent",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted",
       "sections": [
         {
@@ -350,7 +351,8 @@
     "homeOfficeLetterReceived": {
       "title": "What date did you receive your decision letter from the Home Office?",
       "dateTitle": "Enter the date",
-      "dateHint": "For example, 31 3 2019"
+      "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when your decision letter from the Home Office was received"
     },
     "homeOfficeLetterUpload": {
       "title": "Upload your Home Office decision letter",
@@ -3474,12 +3476,14 @@
       "title": "What date did you leave the UK after your application to stay in the country was refused?",
       "dateTitle": "Enter the date",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when you left the UK after your application to stay in the country was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     },
     "oocProtectionDepartureDate": {
       "title": "What date did you leave the UK after your Protection claim was refused?",
       "dateTitle": "Enter the date",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when you left the UK after your Protection claim was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     }
   },

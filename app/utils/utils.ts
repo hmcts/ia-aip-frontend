@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import moment from 'moment';
 import nl2br from 'nl2br';
+import * as path from 'path';
 import { applicationTypes } from '../data/application-types';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
 import { States } from '../data/states';
@@ -131,77 +132,33 @@ export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
 }
 
-export function formatWitnessName(witnessName: WitnessName) {
-  const givenNames = witnessName.witnessGivenNames;
-  const familyName = witnessName.witnessFamilyName;
-  return familyName ? givenNames + ' ' + familyName : givenNames;
+/**
+ * Takes in a fileName and converts it to the correct display format
+ * @param fileName the file name e.g Some_file.pdf
+ * @return the formatted name as a string e.g Some_File(PDF)
+ */
+export function fileNameFormatter(fileName: string): string {
+  const extension = path.extname(fileName);
+  const baseName = path.basename(fileName, extension);
+  const extName = extension.split('.').join('').toUpperCase();
+  return `${baseName}(${extName})`;
 }
 
-export function getWitnessComponent(hearingRequirements: HearingRequirements, witnessIndex: string): WitnessComponent {
-  let WitnessComponent: WitnessComponent = null;
-
-  if (hearingRequirements && witnessIndex) {
-    let witnessString = 'witness' + (parseInt(witnessIndex, 10) + 1);
-    let witness: WitnessDetails = hearingRequirements && hearingRequirements[witnessString] || null;
-
-    let witnessListElementString = 'witnessListElement' + (parseInt(witnessIndex, 10) + 1);
-    let witnessListElement: DynamicMultiSelectList = hearingRequirements && hearingRequirements[witnessListElementString] || null;
-
-    let witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterLanguageCategory';
-    let witnessInterpreterLanguageCategory = hearingRequirements && hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
-
-    let witnessInterpreterSpokenLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSpokenLanguage';
-    let witnessInterpreterSpokenLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
-
-    let witnessInterpreterSignLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSignLanguage';
-    let witnessInterpreterSignLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSignLanguageString] || null;
-
-    WitnessComponent = {
-      witnessFullName: (witnessListElement && witnessListElement.list_items && witnessListElement.list_items.length > 0) ? witnessListElement.list_items[0].label : '',
-      witnessFieldString: witnessString,
-      witness: witness,
-      witnessListElementFieldString: witnessListElementString,
-      witnessListElement: witnessListElement,
-      witnessInterpreterLanguageCategoryFieldString: witnessInterpreterLanguageCategoryString,
-      witnessInterpreterLanguageCategory: witnessInterpreterLanguageCategory,
-      witnessInterpreterSpokenLanguageFieldString: witnessInterpreterSpokenLanguageString,
-      witnessInterpreterSpokenLanguage: witnessInterpreterSpokenLanguage,
-      witnessInterpreterSignLanguageFieldString: witnessInterpreterSignLanguageString,
-      witnessInterpreterSignLanguage: witnessInterpreterSignLanguage,
-      witnessNumnber: witnessIndex
-    };
-  }
-  return WitnessComponent;
+/**
+ * Given a file Id, name and base url converts it to a html link.
+ * returns a html link using target _blank and noopener noreferrer
+ */
+export function toHtmlLink(fileId: string, name: string, hrefBase: string): string {
+  const formattedFileName = fileNameFormatter(name);
+  return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${hrefBase}/${fileId}'>${formattedFileName}</a>`;
 }
 
-export function clearWitnessCachedData(hearingRequirements: HearingRequirements) {
-  for (let index = 0; index < 10; index++) {
-    let witnessListElementFieldString = 'witnessListElement' + (index + 1);
-    let witnessInterpreterLanguageCategoryFieldString = 'witness' + (index + 1) + 'InterpreterLanguageCategory';
-    let witnessInterpreterSpokenLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSpokenLanguage';
-    let witnessInterpreterSignLanguageFieldString = 'witness' + (index + 1) + 'InterpreterSignLanguage';
-
-    let witnessListElementObj: DynamicMultiSelectList = hearingRequirements[witnessListElementFieldString];
-
-    if (hearingRequirements.isAnyWitnessInterpreterRequired !== undefined && !hearingRequirements.isAnyWitnessInterpreterRequired) {
-      hearingRequirements[witnessListElementFieldString] = null;
-      hearingRequirements[witnessInterpreterLanguageCategoryFieldString] = null;
-      hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
-      hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
-
-    } else if (witnessListElementObj && witnessListElementObj.value && witnessListElementObj.value.length === 0) {
-      hearingRequirements[witnessInterpreterLanguageCategoryFieldString] = null;
-      hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
-      hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
-
-    } else if (hearingRequirements[witnessInterpreterLanguageCategoryFieldString] && hearingRequirements[witnessInterpreterLanguageCategoryFieldString] !== undefined) {
-      if (!hearingRequirements[witnessInterpreterLanguageCategoryFieldString].includes('spokenLanguageInterpreter')) {
-        hearingRequirements[witnessInterpreterSpokenLanguageFieldString] = null;
-      }
-      if (!hearingRequirements[witnessInterpreterLanguageCategoryFieldString].includes('signLanguageInterpreter')) {
-        hearingRequirements[witnessInterpreterSignLanguageFieldString] = null;
-      }
-
-    }
-  }
+/**
+ * Attempts to find the document store url if found on the documentMap returns the document store file location as a URL
+ * @param id the fileId used as a lookup key
+ * @param documentMap the document map array.
+ */
+export function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
+  const target: DocumentMap = documentMap.find(e => e.id === id);
+  return target ? target.url : null;
 }

@@ -6,6 +6,7 @@ import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils
 import { addSummaryRow } from '../../utils/summary-list';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { clearWitnessCachedData, formatWitnessName, getWitnessComponent } from '../../utils/utils';
+import { v4 as uuid } from 'uuid';
 import {
   witnessesValidation,
   witnessNameValidation
@@ -75,6 +76,7 @@ function addMoreWitnessPostAction() {
         return renderPage(res, validation, witnessNames);
       }
       const newWitnessName: WitnessName = {
+        witnessPartyId: uuid(),
         witnessGivenNames: req.body['witnessName'],
         witnessFamilyName: req.body['witnessFamilyName']
       };

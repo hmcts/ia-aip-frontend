@@ -391,6 +391,7 @@ export default class UpdateAppealService {
     if (caseData.witnessDetails && caseData.witnessDetails.length) {
       hearingRequirements.witnessNames = caseData.witnessDetails.map(detail => {
         return {
+          witnessPartyId: detail.value.witnessPartyId,
           witnessGivenNames: detail.value.witnessName,
           witnessFamilyName: detail.value.witnessFamilyName
         };
@@ -429,7 +430,11 @@ export default class UpdateAppealService {
       let witnessString = 'witness' + (index + 1);
       let witnessObj = caseData[witnessString] as WitnessDetails;
       if (witnessObj) {
-        hearingRequirements[witnessString] = { witnessName: witnessObj.witnessName, witnessFamilyName: witnessObj.witnessFamilyName };
+        hearingRequirements[witnessString] = { 
+          witnessPartyId: witnessObj.witnessPartyId,
+          witnessName: witnessObj.witnessName, 
+          witnessFamilyName: witnessObj.witnessFamilyName 
+        };
       }
 
       let witnessListElementString = 'witnessListElement' + (index + 1);
@@ -908,6 +913,7 @@ export default class UpdateAppealService {
         caseData.witnessDetails = appeal.hearingRequirements.witnessNames.map(name => {
           return {
             value: {
+              witnessPartyId: name.witnessPartyId,
               witnessName: name.witnessGivenNames,
               witnessFamilyName: name.witnessFamilyName
             } as WitnessDetails
@@ -951,7 +957,11 @@ export default class UpdateAppealService {
             let witnessString = 'witness' + (index + 1);
             let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
             if (witnessObj) {
-              caseData[witnessString] = { witnessName: witnessObj.witnessGivenNames, witnessFamilyName: witnessObj.witnessFamilyName };
+              caseData[witnessString] = { 
+                witnessPartyId: witnessObj.witnessPartyId, 
+                witnessName: witnessObj.witnessGivenNames, 
+                witnessFamilyName: witnessObj.witnessFamilyName 
+              };
             } else {
               caseData[witnessString] = null;
             }

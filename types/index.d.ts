@@ -494,6 +494,7 @@ interface ApplicationStatus {
 }
 
 interface WitnessName {
+  witnessPartyId?: string;
   witnessGivenNames?: string;
   witnessFamilyName?: string;
 }

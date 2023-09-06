@@ -6,6 +6,8 @@ properties(
 
 @Library("Infrastructure@ia-node-18-exclusion")
 
+import uk.gov.hmcts.contino.GithubAPI
+
 def product = "ia"
 def component = "aip-frontend"
 

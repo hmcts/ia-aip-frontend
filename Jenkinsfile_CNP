@@ -45,6 +45,11 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+def checkForEnableHelmLabel(branch_name) {
+  return new GithubAPI(this).getLabelsbyPattern(branch_name, "enableHelm").contains("enableHelm")
+}
+
+
 withPipeline("nodejs", product, component) {
 
   afterAlways('checkout') { sh 'yarn cache clean' }
@@ -58,6 +63,13 @@ withPipeline("nodejs", product, component) {
   env.S2S_MICROSERVICE_NAME = 'iac'
   env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
   env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
+
+  onPR {
+    env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    if (!checkForEnableHelmLabel(env.BRANCH_NAME)) {
+      enableCleanupOfHelmReleaseOnSuccess();
+    }
+  }
 
   before("functionalTest") {
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'

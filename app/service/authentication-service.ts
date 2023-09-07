@@ -25,6 +25,8 @@ class AuthenticationService {
   async getSecurityHeaders(req: Request): Promise<SecurityHeaders> {
     const userToken = this.idamService.getUserToken(req);
     const serviceToken = await this.s2sService.getServiceToken();
+    console.log("######req appeal",req.session.appeal);
+    // console.log("######req hearingRequirements",req.session.appeal.hearingRequirements);
     return { userToken, serviceToken };
   }
 }

@@ -23,6 +23,8 @@ function getTaskList(req: Request, res: Response, next: NextFunction) {
     const status: ApplicationStatus = submitHearingRequirementsStatus(req.session.appeal);
     const statusOverview = getSubmitHearingRequirementsStatus(status);
 
+    console.log("###### getTaskList req hearingRequirements", req.session.appeal.hearingRequirements);
+
     return res.render('hearing-requirements/task-list.njk', {
       previousPage: paths.common.overview,
       data: statusOverview

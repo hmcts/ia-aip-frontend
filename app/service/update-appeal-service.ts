@@ -430,10 +430,10 @@ export default class UpdateAppealService {
       let witnessString = 'witness' + (index + 1);
       let witnessObj = caseData[witnessString] as WitnessDetails;
       if (witnessObj) {
-        hearingRequirements[witnessString] = { 
+        hearingRequirements[witnessString] = {
           witnessPartyId: witnessObj.witnessPartyId,
-          witnessName: witnessObj.witnessName, 
-          witnessFamilyName: witnessObj.witnessFamilyName 
+          witnessName: witnessObj.witnessName,
+          witnessFamilyName: witnessObj.witnessFamilyName
         };
       }
 
@@ -957,10 +957,10 @@ export default class UpdateAppealService {
             let witnessString = 'witness' + (index + 1);
             let witnessObj: WitnessName = appeal.hearingRequirements.witnessNames[index];
             if (witnessObj) {
-              caseData[witnessString] = { 
-                witnessPartyId: witnessObj.witnessPartyId, 
-                witnessName: witnessObj.witnessGivenNames, 
-                witnessFamilyName: witnessObj.witnessFamilyName 
+              caseData[witnessString] = {
+                witnessPartyId: witnessObj.witnessPartyId,
+                witnessName: witnessObj.witnessGivenNames,
+                witnessFamilyName: witnessObj.witnessFamilyName
               };
             } else {
               caseData[witnessString] = null;

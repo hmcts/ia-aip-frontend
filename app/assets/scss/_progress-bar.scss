@@ -53,7 +53,7 @@
         display: block;
         content: '';
         box-sizing: border-box;
-        border: solid .1875rem $govuk-border-colour;
+        border: solid .1875rem $govuk-secondary-text-colour;
         height: 2rem;
         position: absolute;
         left: 1.1875rem;
@@ -80,7 +80,7 @@
   &__ring {
     box-sizing: border-box;
     border-radius: 50%;
-    border: .25rem solid $govuk-border-colour;
+    border: .25rem solid $govuk-secondary-text-colour;
     width: 2.75rem;
     height: 2.75rem;
   }

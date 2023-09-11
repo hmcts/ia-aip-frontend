@@ -4,10 +4,10 @@ import moment from 'moment';
 import i18n from '../../locale/en.json';
 import { FEATURE_FLAGS } from '../data/constants';
 import { formatDate } from '../utils/date-utils';
-import { boolToYesNo, toIsoDate, yesNoToBool } from '../utils/utils';
+import { boolToYesNo, documentIdToDocStoreUrl, toIsoDate, yesNoToBool } from '../utils/utils';
 import { AuthenticationService, SecurityHeaders } from './authentication-service';
 import { CcdService } from './ccd-service';
-import { addToDocumentMapper, documentIdToDocStoreUrl } from './document-management-service';
+import { DocumentManagementService } from './document-management-service';
 import LaunchDarklyService from './launchDarkly-service';
 import S2SService from './s2s-service';
 
@@ -29,11 +29,13 @@ export default class UpdateAppealService {
   private readonly _ccdService: CcdService;
   private readonly _authenticationService: AuthenticationService;
   private readonly _s2sService: S2SService;
+  private readonly _documentManagementService: DocumentManagementService;
 
-  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null) {
+  constructor(ccdService: CcdService, authenticationService: AuthenticationService, s2sService: S2SService = null, documentManagementService: DocumentManagementService) {
     this._ccdService = ccdService;
     this._authenticationService = authenticationService;
     this._s2sService = s2sService;
+    this._documentManagementService = documentManagementService;
   }
 
   getCcdService(): CcdService {
@@ -184,7 +186,7 @@ export default class UpdateAppealService {
       }
       if (caseData.applicationOutOfTimeDocument && caseData.applicationOutOfTimeDocument.document_filename) {
 
-        const documentMapperId: string = addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, documentMap);
+        const documentMapperId: string = this._documentManagementService.addToDocumentMapper(caseData.applicationOutOfTimeDocument.document_url, documentMap);
         outOfTimeAppeal = {
           ...outOfTimeAppeal,
           evidence: {
@@ -198,7 +200,7 @@ export default class UpdateAppealService {
     if (caseData.reasonsForAppealDocuments) {
       reasonsForAppealDocumentUploads = [];
       caseData.reasonsForAppealDocuments.forEach(document => {
-        const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
+        const documentMapperId: string = this._documentManagementService.addToDocumentMapper(document.value.document.document_url, documentMap);
 
         reasonsForAppealDocumentUploads.push(
           {
@@ -1132,7 +1134,7 @@ export default class UpdateAppealService {
 
   mapCaseDataDocumentsToAppealEvidences = (documents: Collection<DocumentWithMetaData>[], documentMap: DocumentMap[]): Evidence[] => {
     return documents.map(document => {
-      const documentMapperId: string = addToDocumentMapper(document.value.document.document_url, documentMap);
+      const documentMapperId: string = this._documentManagementService.addToDocumentMapper(document.value.document.document_url, documentMap);
       return {
         id: document.id,
         fileId: documentMapperId,
@@ -1194,7 +1196,7 @@ export default class UpdateAppealService {
   }
 
   private mapSupportingDocumentToEvidence(evidence: Collection<SupportingDocument>, documentMap: DocumentMap[]) {
-    const documentMapperId: string = addToDocumentMapper(evidence.value.document_url, documentMap);
+    const documentMapperId: string = this._documentManagementService.addToDocumentMapper(evidence.value.document_url, documentMap);
     return {
       fileId: documentMapperId,
       name: evidence.value.document_filename
@@ -1227,7 +1229,7 @@ export default class UpdateAppealService {
 
   private mapDocsWithMetadataToEvidenceArray = (docs: Collection<DocumentWithMetaData>[], documentMap: DocumentMap[]): Evidence[] => {
     const evidences = docs.map((doc: Collection<DocumentWithMetaData>): Evidence => {
-      const fileId = addToDocumentMapper(doc.value.document.document_url, documentMap);
+      const fileId = this._documentManagementService.addToDocumentMapper(doc.value.document.document_url, documentMap);
       return {
         fileId,
         name: doc.value.document.document_filename,
@@ -1243,7 +1245,7 @@ export default class UpdateAppealService {
 
   private mapAdditionalEvidenceToDocumentWithDescriptionArray = (docs: AdditionalEvidence[], documentMap: DocumentMap[]): Evidence[] => {
     const evidences = docs.map((doc: AdditionalEvidence): Evidence => {
-      const fileId = addToDocumentMapper(doc.value.document.document_url, documentMap);
+      const fileId = this._documentManagementService.addToDocumentMapper(doc.value.document.document_url, documentMap);
       return {
         fileId,
         name: doc.value.document.document_filename,

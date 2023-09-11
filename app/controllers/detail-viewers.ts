@@ -5,12 +5,7 @@ import i18n from '../../locale/en.json';
 import { APPLICANT_TYPE, FEATURE_FLAGS, FTPA_DECISION_OUTCOME_TYPE } from '../data/constants';
 import { countryList } from '../data/country-list';
 import { paths } from '../paths';
-import {
-  documentIdToDocStoreUrl,
-  DocumentManagementService,
-  fileNameFormatter,
-  toHtmlLink
-} from '../service/document-management-service';
+import { DocumentManagementService } from '../service/document-management-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
@@ -18,9 +13,13 @@ import { getFee } from '../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
+  documentIdToDocStoreUrl,
+  fileNameFormatter,
   formatTextForCYA,
   getApplicant,
-  getApplicationType, getFtpaApplicantType,
+  getApplicationType,
+  getFtpaApplicantType,
+  toHtmlLink,
   toIsoDate
 } from '../utils/utils';
 

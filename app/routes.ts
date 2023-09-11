@@ -122,7 +122,6 @@ const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
 
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 const refDataService: RefDataService = new RefDataService(authenticationService);
 
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);

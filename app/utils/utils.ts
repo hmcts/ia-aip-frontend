@@ -205,7 +205,7 @@ export function clearWitnessCachedData(hearingRequirements: HearingRequirements)
 
     }
   }
-
+}
 /**
  * Takes in a fileName and converts it to the correct display format
  * @param fileName the file name e.g Some_file.pdf

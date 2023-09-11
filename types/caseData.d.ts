@@ -257,6 +257,7 @@ interface Nationality {
 }
 
 interface WitnessDetails {
+  witnessPartyId?: string;
   witnessName?: string;
   witnessFamilyName?: string;
 }

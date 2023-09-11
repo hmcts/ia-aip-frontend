@@ -35,6 +35,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
           hearingRequirements: {
             witnessNames: [
               {
+                'witnessPartyId': '1',
                 'witnessGivenNames': 'GivenName1 GivenName2',
                 'witnessFamilyName': 'FamilyName'
               }
@@ -193,6 +194,7 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       req.body['witnessFamilyName'] = 'Family name';
       await addMoreWitnessPostAction()(req as Request, res as Response, next);
       const witnessName: WitnessName = {
+        'witnessPartyId': req.session.appeal.hearingRequirements.witnessNames[1].witnessPartyId,
         'witnessGivenNames': 'My witness name',
         'witnessFamilyName': 'Family name'
       };

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import { v4 as uuid } from 'uuid';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import UpdateAppealService from '../../service/update-appeal-service';
@@ -75,6 +76,7 @@ function addMoreWitnessPostAction() {
         return renderPage(res, validation, witnessNames);
       }
       const newWitnessName: WitnessName = {
+        witnessPartyId: uuid(),
         witnessGivenNames: req.body['witnessName'],
         witnessFamilyName: req.body['witnessFamilyName']
       };

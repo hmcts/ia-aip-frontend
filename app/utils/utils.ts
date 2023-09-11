@@ -206,33 +206,34 @@ export function clearWitnessCachedData(hearingRequirements: HearingRequirements)
     }
   }
 
-/**
- * Takes in a fileName and converts it to the correct display format
- * @param fileName the file name e.g Some_file.pdf
- * @return the formatted name as a string e.g Some_File(PDF)
- */
-export function fileNameFormatter(fileName: string): string {
-  const extension = path.extname(fileName);
-  const baseName = path.basename(fileName, extension);
-  const extName = extension.split('.').join('').toUpperCase();
-  return `${baseName}(${extName})`;
-}
+  /**
+   * Takes in a fileName and converts it to the correct display format
+   * @param fileName the file name e.g Some_file.pdf
+   * @return the formatted name as a string e.g Some_File(PDF)
+   */
+  export function fileNameFormatter(fileName: string): string {
+    const extension = path.extname(fileName);
+    const baseName = path.basename(fileName, extension);
+    const extName = extension.split('.').join('').toUpperCase();
+    return `${baseName}(${extName})`;
+  }
 
-/**
- * Given a file Id, name and base url converts it to a html link.
- * returns a html link using target _blank and noopener noreferrer
- */
-export function toHtmlLink(fileId: string, name: string, hrefBase: string): string {
-  const formattedFileName = fileNameFormatter(name);
-  return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${hrefBase}/${fileId}'>${formattedFileName}</a>`;
-}
+  /**
+   * Given a file Id, name and base url converts it to a html link.
+   * returns a html link using target _blank and noopener noreferrer
+   */
+  export function toHtmlLink(fileId: string, name: string, hrefBase: string): string {
+    const formattedFileName = fileNameFormatter(name);
+    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${hrefBase}/${fileId}'>${formattedFileName}</a>`;
+  }
 
-/**
- * Attempts to find the document store url if found on the documentMap returns the document store file location as a URL
- * @param id the fileId used as a lookup key
- * @param documentMap the document map array.
- */
-export function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
-  const target: DocumentMap = documentMap.find(e => e.id === id);
-  return target ? target.url : null;
+  /**
+   * Attempts to find the document store url if found on the documentMap returns the document store file location as a URL
+   * @param id the fileId used as a lookup key
+   * @param documentMap the document map array.
+   */
+  export function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
+    const target: DocumentMap = documentMap.find(e => e.id === id);
+    return target ? target.url : null;
+  }
 }

@@ -241,7 +241,7 @@ describe('Hearing requirements access needs controller', () => {
       expect(req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired).to.have.eq(true);
     });
 
-    it('postInterpreterSupportAppellantWitnesses should set appeallant and witness flag to false if no interpreter service is selected ', async () => {
+    it('postInterpreterSupportAppellantWitnesses should set appeallant and witness flag to false if no interpreter service is selected', async () => {
       req.body.selections = 'noInterpreterRequired';
 
       await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
@@ -265,6 +265,16 @@ describe('Hearing requirements access needs controller', () => {
       await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(req.session.appeal.hearingRequirements.isInterpreterServicesNeeded).to.have.eq(false);
       expect(req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired).to.have.eq(true);
+    });
+
+    it('postInterpreterSupportAppellantWitnesses should clear all cached old witness interpreter information', async () => {
+      req.body.selections = 'noInterpreterRequired';
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'list_items': [{ 'label': 'witness 1' } ] };
+      req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+
+      await postInterpreterSupportAppellantWitnesses(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      expect(req.session.appeal.hearingRequirements.witnessListElement1).to.be.null;
+      expect(req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory).to.be.null;
     });
   });
 

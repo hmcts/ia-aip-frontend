@@ -143,19 +143,19 @@ export function getWitnessComponent(hearingRequirements: HearingRequirements, wi
 
   if (hearingRequirements && witnessIndex) {
     let witnessString = 'witness' + (parseInt(witnessIndex, 10) + 1);
-    let witness: WitnessDetails = hearingRequirements && hearingRequirements[witnessString] || null;
+    let witness: WitnessDetails = hearingRequirements[witnessString] || null;
 
     let witnessListElementString = 'witnessListElement' + (parseInt(witnessIndex, 10) + 1);
-    let witnessListElement: DynamicMultiSelectList = hearingRequirements && hearingRequirements[witnessListElementString] || null;
+    let witnessListElement: DynamicMultiSelectList = hearingRequirements[witnessListElementString] || null;
 
     let witnessInterpreterLanguageCategoryString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterLanguageCategory';
-    let witnessInterpreterLanguageCategory = hearingRequirements && hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
+    let witnessInterpreterLanguageCategory = hearingRequirements[witnessInterpreterLanguageCategoryString] || null;
 
     let witnessInterpreterSpokenLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSpokenLanguage';
-    let witnessInterpreterSpokenLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
+    let witnessInterpreterSpokenLanguage = hearingRequirements[witnessInterpreterSpokenLanguageString] || null;
 
     let witnessInterpreterSignLanguageString = 'witness' + (parseInt(witnessIndex, 10) + 1) + 'InterpreterSignLanguage';
-    let witnessInterpreterSignLanguage = hearingRequirements && hearingRequirements[witnessInterpreterSignLanguageString] || null;
+    let witnessInterpreterSignLanguage = hearingRequirements[witnessInterpreterSignLanguageString] || null;
 
     WitnessComponent = {
       witnessFullName: (witnessListElement && witnessListElement.list_items && witnessListElement.list_items.length > 0) ? witnessListElement.list_items[0].label : '',

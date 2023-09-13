@@ -709,6 +709,8 @@ describe('update-appeal-service', () => {
             appellantPhoneNumber: '07123456789',
             appellantInUk: 'undefined',
             gwfReferenceNumber: null,
+            isHearingLoopNeeded: null,
+            isHearingRoomNeeded: null,
             journeyType: 'aip',
             subscriptions: [
               {
@@ -735,6 +737,8 @@ describe('update-appeal-service', () => {
             journeyType: 'aip',
             appellantInUk: 'undefined',
             gwfReferenceNumber: null,
+            isHearingLoopNeeded: null,
+            isHearingRoomNeeded: null,
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -762,6 +766,8 @@ describe('update-appeal-service', () => {
             appellantInUk: 'undefined',
             appellantPhoneNumber: '07123456789',
             gwfReferenceNumber: null,
+            isHearingLoopNeeded: null,
+            isHearingRoomNeeded: null,
             subscriptions: [
               {
                 value: {
@@ -823,6 +829,8 @@ describe('update-appeal-service', () => {
           'journeyType': 'aip',
           'appellantInUk': 'undefined',
           'gwfReferenceNumber': null,
+          'isHearingLoopNeeded': null,
+          'isHearingRoomNeeded': null,
           'reviewTimeExtensionRequired': 'Yes',
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
@@ -853,6 +861,8 @@ describe('update-appeal-service', () => {
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
+        'isHearingLoopNeeded': null,
+        'isHearingRoomNeeded': null,
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -882,6 +892,8 @@ describe('update-appeal-service', () => {
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
+        'isHearingLoopNeeded': null,
+        'isHearingRoomNeeded': null,
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',

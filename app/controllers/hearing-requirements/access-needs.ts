@@ -692,9 +692,8 @@ function convertWitnessListToCheckboxItem(witnessNames: WitnessName[], hearingRe
   let checkboxList = null;
   if (witnessNames && witnessNames.length > 0) {
     checkboxList = [];
-    witnessNames.map((witness, index) => {
+    witnessNames.forEach((witness, index) => {
       let witnessListElementString = 'witnessListElement' + (index + 1);
-      // let witnessName = (witness.witnessGivenNames && witness.witnessFamilyName) ? witness.witnessGivenNames + ' ' + witness.witnessFamilyName : witness.witnessGivenNames;
       let witnessName = formatWitnessName(witness);
       let checked: boolean = (hearingRequirements &&
         hearingRequirements[witnessListElementString] &&
@@ -777,7 +776,7 @@ function convertDynamicListToSelectItemList(obj: DynamicList) {
   let selectItemList = [];
   if (obj && obj.list_items) {
     selectItemList.push({ 'text': 'Select language', value: '' });
-    obj.list_items.map((language) => {
+    obj.list_items.forEach((language) => {
       selectItemList.push({ text: language.label, value: language.code, selected: (obj.value && obj.value.code === language.code) });
     });
 

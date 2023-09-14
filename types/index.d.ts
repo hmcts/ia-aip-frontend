@@ -513,3 +513,19 @@ interface WitnessComponent {
   witnessInterpreterSignLanguage?: InterpreterLanguageRefData;
   witnessNumnber?: string;
 }
+
+interface SpokenSignLanguageConfig {
+  pageTitle?: AppellantWitnessConfigValue;
+  pageText?: AppellantWitnessConfigValue;
+  interpreterSpokenSignLanguageFieldString?: AppellantWitnessConfigValue;
+  commonRefDataSource?: string;
+  formAction?: string;
+  dropdownListText?: string;
+  checkBoxText?: string;
+  languageManuallyText?: string;
+}
+
+interface AppellantWitnessConfigValue {
+  witnessValue?: string;
+  appellantValue: string;
+}

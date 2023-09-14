@@ -520,6 +520,8 @@ describe('update-appeal-service', () => {
 
   describe('convert to ccd case', () => {
     let emptyApplication;
+    let witness1: WitnessName;
+    let witness2: WitnessName;
     beforeEach(() => {
       emptyApplication = {
         application: {
@@ -561,8 +563,12 @@ describe('update-appeal-service', () => {
         } as Partial<AppealApplication>,
         askForMoreTime: {
           reason: null
-        }
+        },
+        hearingRequirements: {} as Partial<HearingRequirements>
       } as Partial<Appeal>;
+
+      witness1 = { witnessPartyId: '1', witnessGivenNames: 'witness', witnessFamilyName: '1' };
+      witness2 = { witnessPartyId: '2', witnessGivenNames: 'witness', witnessFamilyName: '2' };
     });
 
     it('converts empty application', () => {
@@ -703,6 +709,8 @@ describe('update-appeal-service', () => {
             appellantPhoneNumber: '07123456789',
             appellantInUk: 'undefined',
             gwfReferenceNumber: null,
+            isHearingLoopNeeded: null,
+            isHearingRoomNeeded: null,
             journeyType: 'aip',
             subscriptions: [
               {
@@ -729,6 +737,8 @@ describe('update-appeal-service', () => {
             journeyType: 'aip',
             appellantInUk: 'undefined',
             gwfReferenceNumber: null,
+            isHearingLoopNeeded: null,
+            isHearingRoomNeeded: null,
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -756,6 +766,8 @@ describe('update-appeal-service', () => {
             appellantInUk: 'undefined',
             appellantPhoneNumber: '07123456789',
             gwfReferenceNumber: null,
+            isHearingLoopNeeded: null,
+            isHearingRoomNeeded: null,
             subscriptions: [
               {
                 value: {
@@ -817,6 +829,8 @@ describe('update-appeal-service', () => {
           'journeyType': 'aip',
           'appellantInUk': 'undefined',
           'gwfReferenceNumber': null,
+          'isHearingLoopNeeded': null,
+          'isHearingRoomNeeded': null,
           'reviewTimeExtensionRequired': 'Yes',
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
@@ -847,6 +861,8 @@ describe('update-appeal-service', () => {
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
+        'isHearingLoopNeeded': null,
+        'isHearingRoomNeeded': null,
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -876,6 +892,8 @@ describe('update-appeal-service', () => {
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
+        'isHearingLoopNeeded': null,
+        'isHearingRoomNeeded': null,
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',
@@ -892,6 +910,51 @@ describe('update-appeal-service', () => {
           }
         ]
       });
+    });
+
+    it('convert the witnessNames to witnessDetails', () => {
+
+      emptyApplication.hearingRequirements.witnessNames = [witness1, witness2];
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData.witnessDetails).to.be.length(emptyApplication.hearingRequirements.witnessNames.length);
+    });
+
+    it('convert the appellant interpreter information', () => {
+
+      emptyApplication.hearingRequirements.isInterpreterServicesNeeded = true;
+      emptyApplication.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      emptyApplication.hearingRequirements.appellantInterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
+      emptyApplication.hearingRequirements.appellantInterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData.isInterpreterServicesNeeded).to.be.equals('Yes');
+      expect(caseData.appellantInterpreterLanguageCategory).to.deep.eq(emptyApplication.hearingRequirements.appellantInterpreterLanguageCategory);
+      expect(caseData.appellantInterpreterSpokenLanguage).to.deep.eq(emptyApplication.hearingRequirements.appellantInterpreterSpokenLanguage);
+      expect(caseData.appellantInterpreterSignLanguage).to.deep.eq(emptyApplication.hearingRequirements.appellantInterpreterSignLanguage);
+    });
+
+    it('convert the witness interpreter information', () => {
+
+      emptyApplication.hearingRequirements.isInterpreterServicesNeeded = true;
+      emptyApplication.hearingRequirements.isAnyWitnessInterpreterRequired = true;
+      emptyApplication.hearingRequirements.witnessNames = [witness1, witness2];
+      emptyApplication.hearingRequirements.witnessListElement2 = {
+        'value': [{ 'code': 'witness 2', 'label': 'witness 2' }],
+        'list_items': [{ 'code': 'witness 2', 'label': 'witness 2' }]
+      };
+      emptyApplication.hearingRequirements.witness2InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
+      emptyApplication.hearingRequirements.witness2InterpreterSpokenLanguage = { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } };
+      emptyApplication.hearingRequirements.witness2InterpreterSignLanguage = { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' };
+      const caseData = updateAppealService.convertToCcdCaseData(emptyApplication);
+
+      expect(caseData.isInterpreterServicesNeeded).to.be.equals('Yes');
+      expect(caseData.isAnyWitnessInterpreterRequired).to.be.equals('Yes');
+      expect(caseData.witness1.witnessPartyId).to.deep.eq(emptyApplication.hearingRequirements.witnessNames[0].witnessPartyId);
+      expect(caseData.witness2.witnessPartyId).to.deep.eq(emptyApplication.hearingRequirements.witnessNames[1].witnessPartyId);
+      expect(caseData.witnessListElement2).to.deep.eq(emptyApplication.hearingRequirements.witnessListElement2);
+      expect(caseData.witness2InterpreterSpokenLanguage).to.deep.eq(emptyApplication.hearingRequirements.witness2InterpreterSpokenLanguage);
+      expect(caseData.witness2InterpreterSignLanguage).to.deep.eq(emptyApplication.hearingRequirements.witness2InterpreterSignLanguage);
     });
   });
 
@@ -1065,6 +1128,68 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.hearingRequirements.otherNeeds.multimediaEvidence).eq(true);
         expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipment).to.be.eq(true);
         expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).is.undefined;
+      });
+    });
+
+    describe('map appellant or witness details from caseData for interpreter information', () => {
+      let witness1: WitnessDetails = { witnessPartyId: '1', witnessName: 'witness', witnessFamilyName: '1' };
+      let witness2: WitnessDetails = { witnessPartyId: '2', witnessName: 'witness', witnessFamilyName: '2' };
+
+      function getMappedAppeal(caseData: Partial<CaseData>): any {
+        const appeal: Partial<CcdCaseDetails> = {
+          case_data: caseData as CaseData
+        };
+        return updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+      }
+
+      it('map the witnessDetails to witnessNames', () => {
+
+        const caseData: Partial<CaseData> = {
+          witnessDetails: [
+            { id: '1', value: witness1 },
+            { id: '2', value: witness2 }
+          ]
+        };
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.hearingRequirements.witnessNames).to.be.length(caseData.witnessDetails.length);
+      });
+
+      it('map the appellant interpreter information', () => {
+
+        const caseData: Partial<CaseData> = {
+          appellantInterpreterLanguageCategory: ['spokenLanguageInterpreter', 'signLanguageInterpreter'],
+          appellantInterpreterSpokenLanguage: { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } },
+          appellantInterpreterSignLanguage: { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' }
+        };
+
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.hearingRequirements.appellantInterpreterLanguageCategory).to.deep.eq(caseData.appellantInterpreterLanguageCategory);
+        expect(mappedAppeal.hearingRequirements.appellantInterpreterSpokenLanguage).to.deep.eq(caseData.appellantInterpreterSpokenLanguage);
+        expect(mappedAppeal.hearingRequirements.appellantInterpreterSignLanguage).to.deep.eq(caseData.appellantInterpreterSignLanguage);
+      });
+
+      it('map the witness interpreter information', () => {
+
+        const caseData: Partial<CaseData> = {
+          isAnyWitnessInterpreterRequired: 'Yes',
+          witness1: witness1,
+          witness2: witness2,
+          witnessListElement2: { 'value': [{ 'code': 'witness 2', 'label': 'witness 2' }], 'list_items': [{ 'code': 'witness 2', 'label': 'witness 2' }] },
+          witness2InterpreterLanguageCategory: ['spokenLanguageInterpreter', 'signLanguageInterpreter'],
+          witness2InterpreterSpokenLanguage: { languageRefData: { value: { label: 'Maghreb', code: 'ara-mag' } } },
+          witness2InterpreterSignLanguage: { languageManualEntry: ['Yes'], languageManualEntryDescription: 'input sign language manually' }
+        };
+
+        const mappedAppeal = getMappedAppeal(caseData);
+
+        expect(mappedAppeal.hearingRequirements.isAnyWitnessInterpreterRequired).to.have.eq(true);
+        expect(mappedAppeal.hearingRequirements.witness1).to.deep.eq(caseData.witness1);
+        expect(mappedAppeal.hearingRequirements.witness2).to.deep.eq(caseData.witness2);
+        expect(mappedAppeal.hearingRequirements.witnessListElement2).to.deep.eq(caseData.witnessListElement2);
+        expect(mappedAppeal.hearingRequirements.witness2InterpreterSpokenLanguage).to.deep.eq(caseData.witness2InterpreterSpokenLanguage);
+        expect(mappedAppeal.hearingRequirements.witness2InterpreterSignLanguage).to.deep.eq(caseData.witness2InterpreterSignLanguage);
       });
     });
   });

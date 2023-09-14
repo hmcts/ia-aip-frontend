@@ -225,6 +225,30 @@ describe('Hearing Requirements - Witness Section: Witness names controller', () 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
     });
 
+    it('should clear cached old witness information and relocate their index', async () => {
+      const witnessNamesList: WitnessName[] = [
+        {
+          'witnessGivenNames': 'witness',
+          'witnessFamilyName': 'chan'
+        },
+        {
+          'witnessGivenNames': 'witness',
+          'witnessFamilyName': 'pang'
+        }
+      ];
+      const formattedWitnessChanName = 'witness chan';
+      const formattedWitnessPangName = 'witness pang';
+      req.query = { name : formattedWitnessChanName };
+      req.session.appeal.hearingRequirements.witnessListElement1 = { 'list_items': [{ 'label': formattedWitnessChanName } ] };
+      req.session.appeal.hearingRequirements.witnessListElement2 = { 'list_items': [{ 'label': formattedWitnessPangName } ] };
+      req.session.appeal.hearingRequirements.witnessNames = witnessNamesList;
+      await removeWitnessPostAction()(req as Request, res as Response, next);
+
+      expect(req.session.appeal.hearingRequirements.witnessNames).to.not.deep.include(witnessNamesList[0]);
+      expect(req.session.appeal.hearingRequirements.witnessListElement1.list_items[0].label).to.be.equal(formattedWitnessPangName);
+      expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingWitnessNames);
+    });
+
     it('should catch error and call next with error', async () => {
       req.session.appeal.hearingRequirements.witnessNames = [];
       const error = new Error('an error');

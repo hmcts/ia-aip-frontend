@@ -114,7 +114,7 @@ function removeWitnessPostAction() {
       for (let index = 0; index < 10; index++) {
         let witnessComponent = getWitnessComponent(req.session.appeal.hearingRequirements, index.toString());
 
-        req.session.appeal.hearingRequirements.witnessNames.map((witnessObj, i) => {
+        req.session.appeal.hearingRequirements.witnessNames.forEach((witnessObj, i) => {
           let hearingRequirements = req.session.appeal.hearingRequirements;
           if (witnessComponent && witnessComponent.witnessFullName && witnessComponent.witnessFullName === formatWitnessName(witnessObj)) {
 

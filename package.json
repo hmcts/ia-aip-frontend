@@ -34,7 +34,8 @@
     "codecept:e2e-local": "IDAM_API_URL=http://localhost:5000 codeceptjs run -c codecept.e2e.js --verbose --debug",
     "setupUser": "cross-env NODE_ENV=e2e-local codeceptjs run -c codecept.setup.js --verbose --debug | grep ia_citizen",
     "test:mutation": "echo 'not implemented'",
-    "test:mutation-local": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js"
+    "test:mutation-local": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js",
+    "fortifyScan": "./test/java/gradlew -p test/java fortifyScan"
   },
   "husky": {
     "hooks": {
@@ -180,7 +181,8 @@
     "nunjucks": "^3.2.4",
     "yaml": "^2.2.2",
     "json-schema": "^0.4.0",
-    "typed-rest-client": "^1.8.0"
+    "typed-rest-client": "^1.8.0",
+    "word-wrap": "^1.2.4"
   },
   "packageManager": "yarn@3.5.1"
 }

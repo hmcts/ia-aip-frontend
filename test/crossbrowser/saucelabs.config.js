@@ -8,7 +8,7 @@ const TEST_URL = config.get('testUrl');
 /**
  * Retrieves supported browser capabilities and configuration defined in crossbrowser/browsers.js
  * @param browserGroup the browser group e.g 'chrome' as defined in browsers.js
- * @return a list of browser configurations to be run.
+ * @return a list of browser configurations to be run..
  */
 const getBrowserConfig = browserGroup => {
   const browserConfig = [];

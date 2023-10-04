@@ -228,10 +228,10 @@ describe('Type of appeal Controller', () => {
 
     it('should catch exception and call next with the error', function () {
       req.session.eligibility = {};
-      const error = new TypeError('Cannot read property \'id\' of undefined');
+      const error = new TypeError('Cannot read properties of undefined (reading \'id\')');
 
       const expectedErr = sinon.match.instanceOf(TypeError)
-        .and(sinon.match.has('message', 'Cannot read property \'id\' of undefined'));
+        .and(sinon.match.has('message', 'Cannot read properties of undefined (reading \'id\')'));
       getEligible(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });
@@ -258,10 +258,10 @@ describe('Type of appeal Controller', () => {
     });
 
     it('should catch exception and call next with the error', async function () {
-      const error = new TypeError('Cannot read property \'id\' of undefined');
+      const error = new TypeError('Cannot read properties of undefined (reading \'id\')');
 
       const expectedErr = sinon.match.instanceOf(TypeError)
-        .and(sinon.match.has('message', 'Cannot read property \'id\' of undefined'));
+        .and(sinon.match.has('message', 'Cannot read properties of undefined (reading \'id\')'));
       await getIneligible(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });

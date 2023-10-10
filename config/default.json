@@ -133,5 +133,8 @@
   "customerServices": {
     "telephone": "IA_CUSTOMER_SERVICES_TELEPHONE",
     "email": "IA_CUSTOMER_SERVICES_EMAIL"
+  },
+  "refData": {
+    "apiUrl": "REF_DATA_API_URL"
   }
 }

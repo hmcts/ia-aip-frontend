@@ -31,6 +31,10 @@ module "redis-cache" {
   business_area = "cft" # cft or sds
   public_network_access_enabled = false
   common_tags = var.common_tags
+  sku_name                      = var.sku_name
+family                        = var.family
+capacity                      = var.capacity
+
 }
 
 resource "azurerm_key_vault_secret" "redis_access_key" {

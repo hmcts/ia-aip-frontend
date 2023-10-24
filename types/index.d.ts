@@ -518,7 +518,7 @@ interface SpokenSignLanguageConfig {
   pageTitle?: AppellantWitnessConfigValue;
   pageText?: AppellantWitnessConfigValue;
   interpreterSpokenSignLanguageFieldString?: AppellantWitnessConfigValue;
-  commonRefDataSource?: string;
+  commonRefDataType?: string;
   formAction?: string;
   dropdownListText?: string;
   checkBoxText?: string;

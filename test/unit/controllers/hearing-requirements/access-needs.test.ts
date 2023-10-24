@@ -535,7 +535,7 @@ describe('Hearing requirements access needs controller', () => {
 
     it('postInterpreterSpokenLanguagePage should show validation error if appellant did not select spokenn language', async () => {
 
-      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
@@ -573,7 +573,7 @@ describe('Hearing requirements access needs controller', () => {
 
       req.body.selectedWitnessesList = '0';
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
-      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
@@ -613,7 +613,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.languageManualEntry = 'Yes';
       req.body.languageManualEntryDescription = 'spoken language for witness 1';
       req.session.appeal.hearingRequirements.witness1InterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.hearingRequirements.witness1InterpreterSpokenLanguage).to.deep.eq(
         {
@@ -630,7 +630,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.selectedWitnessesList = '1';
       req.body.languageManualEntry = 'Yes';
       req.body.languageManualEntryDescription = 'spoken language for witness 2';
-      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
 
@@ -641,7 +641,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.languageManualEntry = 'Yes';
       req.body.languageManualEntryDescription = 'spoken language for appellant';
       req.session.appeal.hearingRequirements.appellantInterpreterLanguageCategory = ['spokenLanguageInterpreter', 'signLanguageInterpreter'];
-      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection);
 
@@ -653,7 +653,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.languageManualEntryDescription = 'appellant spoken language';
       req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = true;
       req.session.appeal.hearingRequirements.witnessNames = [witness1];
-      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSpokenLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSpokenLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.hearingRequirements.appellantInterpreterSpokenLanguage).to.deep.eq(
         {
@@ -716,7 +716,7 @@ describe('Hearing requirements access needs controller', () => {
 
     it('postInterpreterSignLanguagePage should show validation error if appellant did not sign spokenn language', async () => {
 
-      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
@@ -754,7 +754,7 @@ describe('Hearing requirements access needs controller', () => {
 
       req.body.selectedWitnessesList = '0';
       req.session.appeal.hearingRequirements.witnessListElement1 = { 'value': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ], 'list_items': [{ 'code': 'Witness 1', 'label': 'Witness 1' } ] };
-      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledOnce.calledWith('hearing-requirements/interpreter-language-selection.njk', {
         previousPage: previousPage,
@@ -793,7 +793,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.selectedWitnessesList = '1,2';
       req.body.languageManualEntry = 'Yes';
       req.body.languageManualEntryDescription = 'sign language for witness 2';
-      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.hearingRequirements.witness2InterpreterSignLanguage).to.deep.eq(
         {
@@ -810,7 +810,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.selectedWitnessesList = '2';
       req.body.languageManualEntry = 'Yes';
       req.body.languageManualEntryDescription = 'sign language for witness 2';
-      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
 
@@ -820,7 +820,7 @@ describe('Hearing requirements access needs controller', () => {
 
       req.body.languageManualEntry = 'Yes';
       req.body.languageManualEntryDescription = 'sign language for appellant';
-      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(res.redirect).to.have.been.calledWith(paths.submitHearingRequirements.hearingStepFreeAccess);
 
@@ -832,7 +832,7 @@ describe('Hearing requirements access needs controller', () => {
       req.body.languageManualEntryDescription = 'appellant sign language';
       req.session.appeal.hearingRequirements.isAnyWitnessInterpreterRequired = true;
       req.session.appeal.hearingRequirements.witnessNames = [witness1];
-      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+      await postInterpreterSignLanguagePage(updateAppealService as UpdateAppealService, refDataServiceForSignLanguage as RefDataService)(req as Request, res as Response, next);
 
       expect(req.session.appeal.hearingRequirements.appellantInterpreterSignLanguage).to.deep.eq(
         {

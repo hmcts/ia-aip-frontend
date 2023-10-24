@@ -25,7 +25,8 @@ import { postHearingRequirementsYesNoHandler } from './common';
 const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 const spokenLanguageInterpreterString = 'spokenLanguageInterpreter';
 const signLanguageInterpreterString = 'signLanguageInterpreter';
-let interpreterSpokenSignLanguageDynamicList: DynamicList;
+const commonRefDataSpokenLanguageDataType = 'InterpreterLanguage';
+const commonRefDataSignLanguageDataType = 'SignLanguage';
 
 function getOptions(selectionPresent, answer) {
 
@@ -417,7 +418,7 @@ function handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj: RefDataSe
         interpreterSpokenSignLanguageFieldString = spokenSignLanguageConfig.interpreterSpokenSignLanguageFieldString.appellantValue;
       }
 
-      interpreterSpokenSignLanguageDynamicList = convertCommonRefDataToValueList(await refDataServiceObj.getCommonRefData(req, spokenSignLanguageConfig.commonRefDataSource));
+      const interpreterSpokenSignLanguageDynamicList = await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, spokenSignLanguageConfig.commonRefDataType);
       return getPrepareInterpreterLanguageType(
         req,
         res,
@@ -451,7 +452,7 @@ function getInterpreterSpokenLanguagePage(refDataServiceObj: RefDataService) {
       witnessValue: 'witnessInterpreterSpokenLanguageFieldString',
       appellantValue: 'appellantInterpreterSpokenLanguage'
     },
-    commonRefDataSource: 'InterpreterLanguage',
+    commonRefDataType: commonRefDataSpokenLanguageDataType,
     formAction: paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection,
     dropdownListText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.dropdownListText,
     checkBoxText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSpokenLanguageSelection.checkBoxText,
@@ -462,12 +463,13 @@ function getInterpreterSpokenLanguagePage(refDataServiceObj: RefDataService) {
   return handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj, spokenLanguageConfig);
 }
 
-function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealService) {
+function postInterpreterSpokenLanguagePage(updateAppealService: UpdateAppealService, refDataServiceObj: RefDataService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       let selectedWitnessesList: string[] = null;
       let pageTitle = '';
       let pageText = '';
+      const interpreterSpokenSignLanguageDynamicList = await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSpokenLanguageDataType);
 
       if (!shouldValidateWhenSaveForLater(req.body, 'languageRefData', 'languageManualEntry', 'languageManualEntryDescription')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -571,7 +573,7 @@ function getInterpreterSignLanguagePage(refDataServiceObj: RefDataService) {
       witnessValue: 'witnessInterpreterSignLanguageFieldString',
       appellantValue: 'appellantInterpreterSignLanguage'
     },
-    commonRefDataSource: 'SignLanguage',
+    commonRefDataType: commonRefDataSignLanguageDataType,
     formAction: paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection,
     dropdownListText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.dropdownListText,
     checkBoxText: i18n.pages.hearingRequirements.accessNeedsSection.interpreterSignLanguageSelection.checkBoxText,
@@ -582,12 +584,13 @@ function getInterpreterSignLanguagePage(refDataServiceObj: RefDataService) {
   return handleGetInterpreterSpokenSignLanguagePage(refDataServiceObj, signLanguageConfig);
 }
 
-function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealService) {
+function postInterpreterSignLanguagePage(updateAppealService: UpdateAppealService, refDataServiceObj: RefDataService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       let selectedWitnessesList: string[] = null;
       let pageTitle = '';
       let pageText = '';
+      const interpreterSpokenSignLanguageDynamicList = await retrieveInterpreterDynamicListByDataType(refDataServiceObj, req, commonRefDataSignLanguageDataType);
 
       if (!shouldValidateWhenSaveForLater(req.body, 'languageRefData', 'languageManualEntry', 'languageManualEntryDescription')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
@@ -1054,9 +1057,9 @@ function setupHearingAccessNeedsController(middleware: Middleware[], updateAppea
   router.get(paths.submitHearingRequirements.hearingInterpreterTypes, middleware, getInterpreterTypePage);
   router.post(paths.submitHearingRequirements.hearingInterpreterTypes, middleware, postInterpreterTypePage(updateAppealService));
   router.get(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection, middleware, getInterpreterSpokenLanguagePage(refDataService));
-  router.post(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection, middleware, postInterpreterSpokenLanguagePage(updateAppealService));
+  router.post(paths.submitHearingRequirements.hearingInterpreterSpokenLanguageSelection, middleware, postInterpreterSpokenLanguagePage(updateAppealService, refDataService));
   router.get(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection, middleware, getInterpreterSignLanguagePage(refDataService));
-  router.post(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection, middleware, postInterpreterSignLanguagePage(updateAppealService));
+  router.post(paths.submitHearingRequirements.hearingInterpreterSignLanguageSelection, middleware, postInterpreterSignLanguagePage(updateAppealService, refDataService));
   router.get(paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds, middleware, getWitnessesInterpreterNeeds);
   router.post(paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds, middleware, postWitnessesInterpreterNeeds(updateAppealService));
   router.get(paths.submitHearingRequirements.hearingLanguageDetails, middleware, getAdditionalLanguage);
@@ -1069,6 +1072,11 @@ function setupHearingAccessNeedsController(middleware: Middleware[], updateAppea
   router.post(paths.submitHearingRequirements.hearingLoop, middleware, postHearingLoopPage(updateAppealService));
 
   return router;
+}
+
+async function retrieveInterpreterDynamicListByDataType(refDataServiceObj: RefDataService, req: Request, dataType: String): Promise<DynamicList> {
+  const data = await refDataServiceObj.getCommonRefData(req, dataType);
+  return convertCommonRefDataToValueList(data);
 }
 
 export {

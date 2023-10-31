@@ -29,6 +29,13 @@ function postCheckAndSendPage(updateAppealService: UpdateAppealService) {
         await updateAppealService.submitEvent(Events.EDIT_AIP_HEARING_REQUIREMENTS, req);
         return handleHearingRequirementsSaveForLater(req,res);
       }
+
+      // fields which are only necessary for screen logic
+      for (let i = 0; i < 10; i++) {
+        let witnessListElementString = 'witnessListElement' + (i + 1);
+        delete req.session.appeal[witnessListElementString];
+      }
+
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.SUBMIT_AIP_HEARING_REQUIREMENTS, req.session.appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
         ...req.session.appeal,

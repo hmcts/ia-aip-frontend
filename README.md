@@ -127,6 +127,7 @@ The pipeline build has the following steps
 ```
 git config --local core.hooksPath .git-config/hooks
 ```
+
 Once the above is done, you will be required to follow specific conventions for your commit messages and branch names.
 
 If you violate a convention, the git error message will report clearly the convention you should follow and provide

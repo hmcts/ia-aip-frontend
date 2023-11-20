@@ -2,9 +2,9 @@ nodejs:
   image: "https://hmctspublic.azurecr.io/ia/aip-frontend:latest"
   ingressHost: "ia-aip-frontend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal" # override in public facing environments
   applicationPort: 3000
-  memoryRequests: 256Mi
+  memoryRequests: 512Mi
   cpuRequests: 0.2
-  memoryLimits: 512Mi
+  memoryLimits: 1Gi
   cpuLimits: 1
   environment:
     HTTP_PROTOCOL: http

@@ -418,6 +418,11 @@
           "whatHappensNextContent2": "Your appeal will not progress until you have paid",
           "whatHappensNextContent3": "The Tribunal may end the appeal if you do not pay"
         }
+      },
+      "feedback": {
+        "heading": "We'd like to hear your thoughts",
+        "contentText": "Complete this short, 5-minute survey to help improve our services for you and others.",
+        "contentLink": "<a href=\"https://www.smartsurvey.co.uk/s/SurveyExit/?service=iac/\" target=\"_blank\">Please leave your feedback here</a>"
       }
     },
     "confirmationPaidLater": {

@@ -47,8 +47,6 @@ interface DoThisNextSection {
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   decision?: string;
-  feedbackTitle?: string;
-  feedbackDescription?: string;
 }
 
 /**
@@ -494,9 +492,7 @@ async function getAppealApplicationNextStep(req: Request) {
       doThisNextSection = {
         descriptionParagraphs: [
           i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
-          i18n.pages.overviewPage.doThisNext.ended.ctaReview,
-          i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackTitle,
-          i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackDescription
+          i18n.pages.overviewPage.doThisNext.ended.ctaReview
         ],
         cta: {
           url: null,
@@ -552,9 +548,7 @@ async function getAppealApplicationNextStep(req: Request) {
       } else {
         decidedDescriptionParagraphs = [
           i18n.pages.overviewPage.doThisNext.decided.decision,
-          i18n.pages.overviewPage.doThisNext.decided.description,
-          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackTitle,
-          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackDescription
+          i18n.pages.overviewPage.doThisNext.decided.description
         ];
 
         decidedInfo = {
@@ -568,8 +562,6 @@ async function getAppealApplicationNextStep(req: Request) {
         descriptionParagraphs: decidedDescriptionParagraphs,
         info: decidedInfo,
         cta: {},
-        feedbackTitle: i18n.pages.overviewPage.doThisNext.decided.feedbackTitle,
-        feedbackDescription: i18n.pages.overviewPage.doThisNext.decided.feedbackDescription,
         allowedAskForMoreTime: false
       };
       break;

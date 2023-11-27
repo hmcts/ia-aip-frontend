@@ -96,6 +96,9 @@
           {% endif %}
           {% if applicationNextStep.info %}
             <p><span class='govuk-!-font-weight-bold'>{{ applicationNextStep.info.title }}</span></p>
+            {% if applicationNextStep.info.text and ftpaFeatureEnabled %}
+              <p>{{ applicationNextStep.info.text | eval | safe }}</p>
+            {% endif %}
             <p>{{ applicationNextStep.info.url | eval | safe }}</p>
           {% endif %}
         </div>
@@ -107,6 +110,11 @@
             <div class="side-menu__section">
                 <h2 class="govuk-heading-s">{{ i18n.pages.overviewPage.changingRepresentation }}</h2>
                 <p><a class='govuk-link' href='{{ paths.common.changeRepresentation }}'>{{ i18n.pages.overviewPage.noLongerRepresentingMyself }}</a></p>
+            </div>
+          {% endif %}
+          {% if showFtpaApplicationLink %}
+            <div class="side-menu__section">
+              <p><a class='govuk-link' href='{{ paths.ftpa.ftpaApplication }}'>{{ i18n.pages.overviewPage.applyForFtpa }}</a></p>
             </div>
           {% endif %}
           {% if showPayLaterLink or provideMoreEvidenceSection or showAppealRequests %}

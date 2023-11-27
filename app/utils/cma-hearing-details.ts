@@ -72,6 +72,7 @@ function getHearingCentreEmail(req: Request): string {
     case 'hattonCross':
       return config.get('hearingCentres.hattonCrossEmail');
     case 'glasgow':
+    case 'glasgowTribunalsCentre':
       return config.get('hearingCentres.glasgowEmail');
     default:
       return '';

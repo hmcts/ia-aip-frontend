@@ -61,6 +61,9 @@
   "documentManagement": {
     "apiUrl": "DOC_MANAGEMENT_URL"
   },
+  "cdamDocumentManagement": {
+    "apiUrl": "CASE_DOCUMENT_AM_URL"
+  },
   "addressLookup": {
     "token": "ADDRESS_LOOKUP_TOKEN",
     "url": "https://api.os.uk"

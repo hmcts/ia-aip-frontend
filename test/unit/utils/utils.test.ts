@@ -1,7 +1,57 @@
-import { asBooleanValue, formatTextForCYA, getApplicationType, hasPendingTimeExtension, nowAppealDate, toIsoDate } from '../../../app/utils/utils';
-import { expect } from '../../utils/testUtils';
+import { Request } from 'express';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import Logger from '../../../app/utils/logger';
+import {
+  asBooleanValue,
+  documentIdToDocStoreUrl,
+  formatTextForCYA,
+  getApplicationType,
+  getFtpaApplicantType,
+  hasPendingTimeExtension,
+  nowAppealDate,
+  toIsoDate
+} from '../../../app/utils/utils';
+import { expect, sinon } from '../../utils/testUtils';
 
 describe('utils', () => {
+
+  let sandbox: sinon.SinonSandbox;
+  let req: Partial<Request>;
+  const logger: Logger = new Logger();
+
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    req = {
+      body: {},
+      cookies: {},
+      session: {
+        appeal: {
+          application: {},
+          caseBuilding: {},
+          reasonsForAppeal: {}
+        }
+      },
+      idam: {
+        userDetails: {
+          forename: 'forename',
+          surname: 'surname',
+          uid: 'appellant'
+        }
+      },
+      app: {
+        locals: {
+          logger
+        }
+      } as any
+    } as unknown as Partial<Request>;
+
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+    LaunchDarklyService.close();
+  });
+
   describe('asBooleanValue', () => {
     it('should be true', () => {
       expect(asBooleanValue(1)).to.be.eq(true);
@@ -172,6 +222,68 @@ describe('utils', () => {
     it('Invalid type', () => {
       expect(getApplicationType('INVALID')).to.be.eq(undefined);
     });
+  });
+
+  describe('getFtpaApplicantType', () => {
+    it('getFtpaApplicantType should return appellant in ftpa decided state', () => {
+      req.session.appeal.ftpaApplicantType = 'appellant';
+      req.session.appeal.appealStatus = 'ftpaDecided';
+      expect(getFtpaApplicantType(req.session.appeal)).to.eq('appellant');
+    });
+
+    it('getFtpaApplicantType should return respondent in ftpa decided state', () => {
+      req.session.appeal.ftpaApplicantType = 'respondent';
+      req.session.appeal.appealStatus = 'ftpaDecided';
+      expect(getFtpaApplicantType(req.session.appeal)).to.eq('respondent');
+    });
+
+    it('getFtpaApplicantType should return appellant in ftpa submitted state', () => {
+      req.session.appeal.ftpaRespondentApplicationDate = '2022-01-01';
+      req.session.appeal.ftpaAppellantApplicationDate = '2022-01-02';
+      req.session.appeal.appealStatus = 'ftpaSubmitted';
+      expect(getFtpaApplicantType(req.session.appeal)).to.eq('appellant');
+    });
+
+    it('getFtpaApplicantType should return respondent in ftpa submitted state', () => {
+      req.session.appeal.ftpaRespondentApplicationDate = '2022-01-02';
+      req.session.appeal.ftpaAppellantApplicationDate = '2022-01-01';
+      req.session.appeal.appealStatus = 'ftpaSubmitted';
+      expect(getFtpaApplicantType(req.session.appeal)).to.eq('respondent');
+    });
+
+    it('getFtpaApplicantType should return appellant in ftpa submitted state', () => {
+      req.session.appeal.ftpaRespondentApplicationDate = '2022-01-01';
+      req.session.appeal.ftpaAppellantApplicationDate = '2022-01-01';
+      req.session.appeal.appealStatus = 'ftpaSubmitted';
+      expect(getFtpaApplicantType(req.session.appeal)).to.eq('appellant');
+    });
+
+    it('getFtpaApplicantType should return appellant in ftpa submitted state', () => {
+      req.session.appeal.ftpaAppellantApplicationDate = '2022-01-02';
+      req.session.appeal.appealStatus = 'ftpaSubmitted';
+      expect(getFtpaApplicantType(req.session.appeal)).to.eq('appellant');
+    });
+
+    it('getFtpaApplicantType should return respondent in ftpa submitted state', () => {
+      req.session.appeal.ftpaRespondentApplicationDate = '2022-01-02';
+      req.session.appeal.appealStatus = 'ftpaSubmitted';
+      expect(getFtpaApplicantType(req.session.appeal)).to.eq('respondent');
+    });
+
+    it('getFtpaApplicantType should return undefined in ftpa submitted state', () => {
+      req.session.appeal.appealStatus = 'ftpaSubmitted';
+      expect(getFtpaApplicantType(req.session.appeal)).to.eq(undefined);
+    });
+
+    it('documentIdToDocStoreUrl should retrieve the doc store url using key', () => {
+      const documentMap: DocumentMap[] = [
+        { id: '00000000-0000-0000-0000-000000000000', url: 'http://someDocumentUrl/' }
+      ];
+      const result = documentIdToDocStoreUrl('00000000-0000-0000-0000-000000000000', documentMap);
+      expect(result).to.be.a('string');
+      expect(result).to.be.eq('http://someDocumentUrl/');
+    });
+
   });
 
 });

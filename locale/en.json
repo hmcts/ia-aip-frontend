@@ -335,6 +335,7 @@
       "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
       "dateTitle": "Enter the date the letter was sent",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when your decision letter from the Home Office was sent",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted",
       "sections": [
         {
@@ -350,7 +351,8 @@
     "homeOfficeLetterReceived": {
       "title": "What date did you receive your decision letter from the Home Office?",
       "dateTitle": "Enter the date",
-      "dateHint": "For example, 31 3 2019"
+      "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when your decision letter from the Home Office was received"
     },
     "homeOfficeLetterUpload": {
       "title": "Upload your Home Office decision letter",
@@ -416,6 +418,11 @@
           "whatHappensNextContent2": "Your appeal will not progress until you have paid",
           "whatHappensNextContent3": "The Tribunal may end the appeal if you do not pay"
         }
+      },
+      "feedback": {
+        "heading": "We'd like to hear your thoughts",
+        "contentText": "Complete this short, 5-minute survey to help improve our services for you and others.",
+        "contentLink": "<a href=\"https://www.smartsurvey.co.uk/s/SurveyExit/?service=iac/\" target=\"_blank\">Please leave your feedback here</a>"
       }
     },
     "confirmationPaidLater": {
@@ -714,6 +721,57 @@
         ]
       }
     },
+    "ftpaApplication": {
+      "ftpaOutOfTimeReason": {
+        "title": "Your application is late",
+        "content": "<p>The deadline to apply for permission to appeal to the Upper Tribunal was {{ ftpaDeadline }}.</p><p>You may still be able to apply. You need to tell us the reasons why your application is late. You can provide supporting evidence on the next page, if you have it.</p>",
+        "hint": "Why is your application late?"
+      },
+      "ftpaReason": {
+        "title": "Why do you think the Tribunal's decision is wrong?",
+        "content": "Tell us what you think the Tribunal got wrong when deciding your appeal and explain why you think it is wrong. You can provide supporting evidence for your answer on the next page, if you have it.",
+        "hint": "Explain why you think the Tribunal's decision is wrong."
+      },
+      "ftpaEvidenceQuestion": {
+        "title": "Do you want to provide supporting evidence?",
+        "options": {
+          "yes": {
+            "text": "Yes",
+            "value": "Yes"
+          },
+          "no": {
+            "text": "No",
+            "value": "No"
+          }
+        }
+      },
+      "ftpaDocumentUpload": {
+        "ftpaEvidence": {
+          "title": "Provide supporting evidence",
+          "adviceHeader": "Advice on providing supporting evidence",
+          "advice": [
+            "It will be helpful to <a href='/supporting-evidence'>read our information about supporting evidence</a>",
+            "You can upload evidence to support your appeal such as letters, photos and documents. If you are taking a picture of a letter, place it on a flat surface and take the picture from above",
+            "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
+          ]
+        },
+        "fileUpload": "<span class='govuk-!-font-weight-bold'>Upload a file</span>"
+      },
+      "checkYourAnswers": {
+        "title": "Check your answer",
+        "ftpaReason": "Why do you think the Tribunal's decision is wrong?",
+        "ftpaEvidence": "Supporting evidence",
+        "ftpaOutOfTimeExplanation": "Reason application is late",
+        "ftpaOutOfTimeEvidence": "Supporting evidence for late application"
+      },
+      "ftpaConfirmation": {
+        "title": "Your application for permission to appeal to the Upper Tribunal has been sent",
+        "whatNextListItems": [
+          "A judge will look at your application and decide what will happen next",
+          "The Tribunal will contact you when the judge has made a decision"
+        ]
+      }
+    },
     "reasonsForAppealUpload": {
       "title": "Provide supporting evidence",
       "titleNew": "Supporting evidence",
@@ -758,6 +816,7 @@
       "savedAndAskedForMoreTime": "You have saved your answers and asked for more time",
       "weAimTo": "We aim to get back to you within 5 days.",
       "changingRepresentation": "Changing Representation",
+      "applyForFtpa": "Apply for permission to appeal to the Upper Tribunal",
       "noLongerRepresentingMyself": "I am no longer representing myself",
       "iWantTo": "I want to...",
       "withdrawAppeal": "Withdraw my appeal",
@@ -931,9 +990,14 @@
           "dueDate": "ended  should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that.",
           "ctaTitle": "Your appeal has now ended",
           "ctaInstruction": "Review your <a href=\"{{ paths.common.noticeEndedAppealViewer }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.",
-          "ctaReview": "If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review the decision</a>.",
-          "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
-          "ctaFeedbackDescription": "<a href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
+          "ctaReview": "If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review the decision</a>."
+        },
+        "decidedWithoutHearing": {
+          "description": [
+            "You chose to have your appeal to be decided without a hearing.",
+            "A judge will decide your appeal based on the information and evidence provided by you and the Home Office.",
+            "The Tribunal will contact you when a decision has been made."
+          ]
         },
         "cmaListed": {
           "description": "The Tribunal has set a date for your case management appointment. Here are the details:",
@@ -989,12 +1053,82 @@
         "decided": {
           "decision": "A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>",
           "description": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>",
+          "descriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
           "info": {
             "title": "Helpful Information",
-            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>"
+            "titleFtpaEnabled": "Appeal Information",
+            "text": "If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
+            "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
+            "urlFtpaEnabled": "<a href=\"{{ paths.ftpa.ftpaApplication }}\">Apply for permission to appeal to the Upper Tribunal</a>"
+          }
+        },
+        "ftpaSubmitted":{
+          "description": {
+            "appellant": [
+              "A judge will decide your application for permission to appeal to the Upper Tribunal.",
+              "The Tribunal will contact you when the judge has made a decision."
+            ],
+            "respondent": [
+              "The Home Office has applied for permission to appeal to the Upper Tribunal. The Tribunal will contact you when the judge has decided the application."
+            ]
+          }
+        },
+        "ftpaDecided": {
+          "respondent": {
+            "granted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been granted.",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+            ],
+            "partiallyGranted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been partially granted.",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you to tell you what will happen next."
+            ],
+            "notAdmitted": [
+              "The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.",
+              "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ],
+            "refused": [
+              "The HOme Office application for permission to appeal to the Upper Tribunal has been refused.",
+              "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ]
           },
-          "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
-          "ctaFeedbackDescription": "<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
+          "appellant": {
+            "granted": [
+              "A judge has <b> granted </b> your application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next."
+            ],
+            "partiallyGranted": [
+              "A judge has <b> partially granted </b> your application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "The Upper Tribunal will decide if the Tribunal's decision was wrong. The Upper Tribunal will contact you soon to tell you what will happen next.",
+              "If you think your application should have been fully granted, you can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply</a>",
+              "You must send your application by {{ applicationNextStep.ftpaDeadline }}"
+            ],
+            "notAdmitted": [
+              "A judge has <b> not admitted </b> your application for permission to appeal to the Upper Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
+              "You must send your application by {{ applicationNextStep.ftpaDeadline }}"
+            ],
+            "refused": [
+              "A judge has <b> refused </b> your application for permission to appeal to the Upper Tribunal.<br>",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
+              "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
+              "You must send your application by {{ applicationNextStep.ftpaDeadline }}"
+            ]
+          }
         }
       },
       "timeline": {
@@ -1189,25 +1323,50 @@
           ]
         },
         "makeAnApplication": {
-          "text": "You sent the Tribunal a request.",
-          "links": [
-            {
-              "title": "What you sent",
-              "text": "Your request",
-              "href": "{{ paths.common.makeAnApplicationViewer }}"
-            }
-          ]
+          "Appellant": {
+            "text": "You sent the Tribunal a request.",
+            "links": [
+              {
+                "title": "What you sent",
+                "text": "Your request",
+                "href": "{{ paths.common.makeAnApplicationViewer }}"
+              }
+            ]
+          },
+          "Respondent": {
+            "text": "The Home Office sent the Tribunal a request.",
+            "links": [
+              {
+                "title": "What the Home Office sent",
+                "text": "The Home Office request",
+                "href": "{{ paths.common.makeAnApplicationViewer }}"
+              }
+            ]
+          }
         },
         "decideAnApplication": {
-          "Granted": "Your request was granted.",
-          "Refused": "Your request was refused.",
-          "links": [
-            {
-              "title": "What the Tribunal said",
-              "text": "Reason for decision",
-              "href": "{{ paths.common.makeAnApplicationViewer }}"
-            }
-          ]
+          "Appellant": {
+            "Granted": "Your request was granted.",
+            "Refused": "Your request was refused.",
+            "links": [
+              {
+                "title": "What the Tribunal said",
+                "text": "Reason for decision",
+                "href": "{{ paths.common.makeAnApplicationViewer }}"
+              }
+            ]
+          },
+          "Respondent": {
+            "Granted": "The Home Office request was granted.",
+            "Refused": "The Home Office request was refused.",
+            "links": [
+              {
+                "title": "What the Tribunal said",
+                "text": "Reason for decision",
+                "href": "{{ paths.common.makeAnApplicationViewer }}"
+              }
+            ]
+          }
         },
         "submitTimeExtension": {
           "text": "You asked for more time.",
@@ -1317,6 +1476,64 @@
               "href": "{{ paths.common.decisionAndReasonsViewer }}"
             }
           ]
+        },
+        "applyForFTPAAppellant": {
+          "text": "You applied for permission to appeal to the Upper Tribunal.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your application",
+              "href": "{{ paths.common.ftpaAppellantApplicationViewer }}"
+            }
+          ]
+        },
+        "applyForFTPARespondent": {
+          "text": "The Home Office applied for permission to appeal to the Upper Tribunal.",
+          "links": []
+        },
+        "decideFtpa": {
+          "respondent": {
+            "text": "The Home Office application for permission to appeal to the Upper Tribunal was decided.",
+            "links": [
+              {
+                "title": "What the Tribunal said",
+                "text": "Reason for the decision",
+                "href": "{{ paths.common.ftpaDecisionViewer }}"
+              }
+            ]
+          },
+          "appellant": {
+            "text": "Your application for permission to appeal to the Upper Tribunal was decided.",
+            "links": [
+              {
+                "title": "What the Tribunal said",
+                "text": "Reason for the decision",
+                "href": "{{ paths.common.ftpaDecisionViewer }}"
+              }
+            ]
+          }
+        },
+        "sendDirection": {
+          "respondent": {
+            "text": "The Tribunal asked the Home Office to do something",
+            "links": [
+              {
+                "title": "What the Tribunal sent",
+                "text": "Find out what the Home Office must do",
+                "href": "{{ paths.common.directionHistoryViewer }}"
+              }
+            ]
+          },
+          "appellant": {
+            "text": "The Tribunal asked you to do something",
+            "links": [
+              {
+                "title": "What the Tribunal sent",
+                "text": "Find out what you need to do",
+                "href": "{{ paths.common.directionHistoryViewer }}"
+              }
+            ]
+          }
         }
       }
     },
@@ -1348,66 +1565,183 @@
         "documentDescriptionLabel": "Document description"
       },
       "makeAnApplication": {
-        "title": "Your request",
-        "requestTypes": {
-          "askForMoreTime": "I want more time",
-          "askHearingSooner": "Ask for the hearing to be sooner",
-          "askChangeDate": "Ask for the hearing to be later",
-          "askChangeLocation": "Ask to change the location of the hearing",
-          "askJudgeReview": "Ask for a judge to review a decision",
-          "askLinkUnlink": "Ask to link or unlink this appeal",
-          "askReinstate": "Ask to reinstate the appeal",
-          "askWithdraw": "Ask to withdraw the appeal",
-          "askUpdateDetails": "Ask to change some of your details",
-          "askUpdateHearingRequirements": "Ask for something at the hearing",
-          "askSomethingElse": "Ask for something else"
+        "appellant": {
+          "title": "Your request",
+          "requestTypes": {
+            "askForMoreTime": "I want more time",
+            "askHearingSooner": "Ask for the hearing to be sooner",
+            "askChangeDate": "Ask for the hearing to be later",
+            "askChangeLocation": "Ask to change the location of the hearing",
+            "askJudgeReview": "Ask for a judge to review a decision",
+            "askLinkUnlink": "Ask to link or unlink this appeal",
+            "askReinstate": "Ask to reinstate the appeal",
+            "askWithdraw": "Ask to withdraw the appeal",
+            "askUpdateDetails": "Ask to change some of your details",
+            "askUpdateHearingRequirements": "Ask for something at the hearing",
+            "askSomethingElse": "Ask for something else"
+          },
+          "whatNext": {
+            "title": "What happens next",
+            "default": {
+              "granted": "The Tribunal will contact you when it makes the changes requested.",
+              "refused": "Your appeal will continue. If a Tribunal Caseworker made this decision you can <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for the judge to review</a> it within 14 days of the date of the decision."
+            },
+            "askForMoreTime": {
+              "granted": "A Tribunal Caseworker will give you more time to complete your next task. You will get a notification with the new date soon."
+            },
+            "askJudgeReview": {
+              "refused": "Your appeal will continue.",
+              "granted": "The decision on your request will be overturned. The Tribunal will contact you if there is something you need to do next."
+            },
+            "askLinkUnlink": {
+              "granted": "This appeal will be linked or unlinked. The Tribunal will contact you when this happens."
+            },
+            "askReinstate": {
+              "refused": "If a Tribunal Caseworker made this decision you can <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review</a> it within 14 days of the date of the decision.",
+              "granted": "This appeal will be reinstated and will continue from the point where it was ended. The Tribunal will contact you when this happens."
+            },
+            "askWithdraw": {
+              "granted": "The Tribunal will end the appeal. The Tribunal will contact you when this happens."
+            },
+            "askUpdateDetails": {},
+            "askSomethingElse": {},
+            "askChangeHearing": {
+              "granted": "The details of your hearing will be updated. The Tribunal will contact you when this happens."
+            }
+          },
+          "request": {
+            "whatYouAskedFor": "What you asked for",
+            "reason": "Why you need it",
+            "date": "Date requested",
+            "evidence": "Supporting evidence"
+          },
+          "response": {
+            "title": "Decision details",
+            "decision": "What the Tribunal decided",
+            "reason": "Reason for the decision",
+            "date": "Date of the decision",
+            "maker": "Who made the decision",
+            "Refused": "Your request was refused",
+            "Granted": "Your request has been granted"
+          },
+          "question": "How much time do you need and why do you need it?",
+          "supportingEvidence": "Supporting evidence"
         },
-        "whatNext": {
-          "title": "What happens next",
-          "default": {
-            "granted": "The Tribunal will contact you when it makes the changes requested.",
-            "refused": "Your appeal will continue. If a Tribunal Caseworker made this decision you can <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for the judge to review</a> it within 14 days of the date of the decision."
+        "respondent": {
+          "request": {
+            "title": "The Home Office request",
+            "description": "These are the details of the Home Office request. When the Tribunal has decided the request, you will be able to see the decision details on this page.",
+            "whatNext": {
+              "title": "What happens next",
+              "Withdraw": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to withdraw, you do not need to do anything.",
+                "If you do not want the Home Office to withdraw, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Adjourn": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to change the hearing date, you do not need to do anything.",
+                "If you do not want the Home Office to change the hearing date, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Expedite": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to have the hearing sooner, you do not need to do anything.",
+                "If you do not want the Home Office to have the hearing sooner, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Judge's review of application decision": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to ask a judge to review a decision, you do not need to do anything.",
+                "If you do not want the Home Office to ask a judge to review a decision, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Link/unlink appeals": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to link or unlink the appeal, you do not need to do anything.",
+                "If you do not want the Home Office to link or unlink the appeal, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Reinstate an ended appeal": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to reinstate the appeal, you do not need to do anything.",
+                "If you do not want the Home Office to reinstate the appeal, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Time extension": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to ask for more time, you do not need to do anything.",
+                "If you do not want the Home Office to ask for more time, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Transfer": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to move the hearing to a different location, you do not need to do anything.",
+                "If you do not want the Home Office to move the hearing to a different location, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Update appeal details": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to change some of the appeal details, you do not need to do anything.",
+                "If you do not want the Home Office to change some of the appeal details, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Update hearing requirements": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to change some of the hearing requirements, you do not need to do anything.",
+                "If you do not want the Home Office to change some of the hearing requirements, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ],
+              "Other": [
+                "The Tribunal will decide to grant or refuse this request 14 days after the date of the request.",
+                "If you are happy for the Home Office to change something about the appeal, you do not need to do anything.",
+                "If you do not want the Home Office to change something about the appeal, you must contact <a href=\"mailto:{{ hearingCentreEmail }}\">{{ hearingCentreEmail }}</a> within 14 days of the days of the request."
+              ]
+            },
+            "types": {
+              "Withdraw": "Withdraw from the appeal",
+              "Adjourn": "Change the hearing date",
+              "Expedite": "Have the hearing sooner",
+              "Judge's review of application decision": "Ask a judge to review a decision",
+              "Link/unlink appeals": "Link or unlink the appeal",
+              "Reinstate an ended appeal": "Reinstate the appeal",
+              "Time extension": "Ask for more time",
+              "Transfer": "Move the hearing to a different location",
+              "Update appeal details": "Change some of the appeal details",
+              "Update hearing requirements": "Change some of the hearing requirements",
+              "Other": "Change something about the appeal"
+            },
+            "type": "Type of request",
+            "reason": "Reason for the request",
+            "date": "Date of request",
+            "evidence": "Supporting evidence"
           },
-          "askForMoreTime": {
-            "granted": "A Tribunal Caseworker will give you more time to complete your next task. You will get a notification with the new date soon."
-          },
-          "askJudgeReview": {
-            "refused": "Your appeal will continue.",
-            "granted": "The decision on your request will be overturned. The Tribunal will contact you if there is something you need to do next."
-          },
-          "askLinkUnlink": {
-            "granted": "This appeal will be linked or unlinked. The Tribunal will contact you when this happens."
-          },
-          "askReinstate": {
-            "refused": "If a Tribunal Caseworker made this decision you can <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review</a> it within 14 days of the date of the decision.",
-            "granted": "This appeal will be reinstated and will continue from the point where it was ended. The Tribunal will contact you when this happens."
-          },
-          "askWithdraw": {
-            "granted": "The Tribunal will end the appeal. The Tribunal will contact you when this happens."
-          },
-          "askUpdateDetails": {},
-          "askSomethingElse": {},
-          "askChangeHearing": {
-            "granted": "The details of you hearing will be updated. The Tribunal will contact you when this happens."
+          "response": {
+            "title": "Decision details",
+            "description": "The Tribunal has decided the Home Office request. Here are the details of the decision.",
+            "decision": "What the Tribunal decided",
+            "reason": "Reason for the decision",
+            "date": "Date of the decision",
+            "maker": "Who made the decision",
+            "whatNext": {
+              "default": {
+                "granted": "You will be notified when the Tribunal makes the changes the Home Office asked for.",
+                "refused": "The appeal will continue without any changes."
+              },
+              "askForMoreTime": {
+                "granted": "The Tribunal will give the Home Office more time to complete its next task. You will get a notification with the new date soon."
+              },
+              "askJudgeReview": {
+                "granted": "The decision on the Home Office’s original request will be overturned. You will be notified if there is something you need to do next."
+              },
+              "askLinkUnlink": {
+                "granted": "This appeal will be linked to or unlinked from the appeal in the Home Office request. You will be notified when this happens."
+              },
+              "askReinstate": {
+                "granted": "This appeal will be reinstated and will continue from the point where it was ended. You will be notified when this happens."
+              },
+              "askWithdraw": {
+                "granted": "The Tribunal will end the appeal. You will be notified when this happens."
+              },
+              "askUpdateDetails": {},
+              "askSomethingElse": {},
+              "askChangeHearing": {
+                "granted": "The details of the hearing will be updated and you will be sent a new Notice of Hearing with the agreed changes."
+              }
+            }
           }
-        },
-        "request": {
-          "whatYouAskedFor": "What you asked for",
-          "reason": "Why you need it",
-          "date": "Date requested",
-          "evidence": "Supporting evidence"
-        },
-        "response": {
-          "title": "Decision details",
-          "decision": "What the Tribunal decided",
-          "reason": "Reason for the decision",
-          "date": "Date of the decision",
-          "maker": "Who made the decision",
-          "Refused": "Your request was refused",
-          "Granted": "Your request has been granted"
-        },
-        "question": "How much time to you need and why do you need it?",
-        "supportingEvidence": "Supporting evidence"
+        }
       },
       "timeExtensionReview": {
         "title": "Reason for decision",
@@ -1487,6 +1821,42 @@
       "decisionsAndReasons": {
         "title": "Decision and Reasons",
         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
+      },
+      "ftpaApplication": {
+        "title": {
+          "appellant": "Your Application",
+          "respondent": "Application details"
+        },
+        "grounds": "Why do you think the Tribunal's decision is wrong?",
+        "groundsDocument": "Reasons for the application",
+        "outOfTimeReason": "Reason application is late",
+        "evidence": "Supporting evidence",
+        "outOfTimeEvidence": "Supporting evidence for late application",
+        "date": "Date application sent"
+      },
+      "ftpaDecision": {
+        "title": "Decision details",
+        "decision": "What the Tribunal decided",
+        "decisionDocument": "Decision and reasons document",
+        "date": "Date of decision",
+        "decisionOutcomeType": {
+          "granted": "Granted",
+          "partiallyGranted": "Partially granted",
+          "notAdmitted": "Not admitted",
+          "refused": "Refused"
+        }
+      },
+      "directionHistory": {
+        "title": "What the Tribunal has asked",
+        "dateSent": "Date message sent",
+        "appellant": {
+          "explanation": "What you need to do",
+          "dateDue": "Date it needs to be done by"
+        },
+        "respondent": {
+          "explanation": "What the Home Office must do",
+          "dateDue": "Date it must be done by"
+        }
       }
     },
     "guidancePages": {
@@ -3111,12 +3481,14 @@
       "title": "What date did you leave the UK after your application to stay in the country was refused?",
       "dateTitle": "Enter the date",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when you left the UK after your application to stay in the country was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     },
     "oocProtectionDepartureDate": {
       "title": "What date did you leave the UK after your Protection claim was refused?",
       "dateTitle": "Enter the date",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when you left the UK after your Protection claim was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     }
   },
@@ -3346,6 +3718,11 @@
       "askJudgeReview": "Enter which decision you want a judge to review and why",
       "askReinstate": "Enter why you want the appeal to be reinstated",
       "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
+    },
+    "ftpaApplication": {
+      "ftpaReason": "Enter the reasons you think the Tribunal's decision is wrong?",
+      "ftpaEvidenceQuestion": "Select Yes if you want to provide supporting evidence",
+      "ftpaOutOfTimeReason": "Enter the reason the application is late"
     }
   },
   "components": {

@@ -55,6 +55,7 @@ import { setupEligibilityController } from './controllers/eligibility';
 import { setupNotFoundController } from './controllers/file-not-found';
 import { setupFooterController } from './controllers/footer';
 import { setupForbiddenController } from './controllers/forbidden';
+import { setupFtpaApplicationController } from './controllers/ftpa/ftpa-application';
 import { setupGuidancePagesController } from './controllers/guidance-page';
 import { setupHealthController } from './controllers/health';
 import { setupHearingAccessNeedsController } from './controllers/hearing-requirements/access-needs';
@@ -104,6 +105,8 @@ import { logSession } from './middleware/session-middleware';
 import { AuthenticationService } from './service/authentication-service';
 import { CcdService } from './service/ccd-service';
 import CcdSystemService from './service/ccd-system-service';
+import { CdamDocumentManagementService } from './service/cdam-document-management-service';
+import { DmDocumentManagementService } from './service/dm-document-management-service';
 import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import PaymentService from './service/payments-service';
@@ -117,8 +120,8 @@ const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
 
 const authenticationService: AuthenticationService = new AuthenticationService(new IdamService(), S2SService.getInstance());
-const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance());
 const documentManagementService: DocumentManagementService = new DocumentManagementService(authenticationService);
+const updateAppealService: UpdateAppealService = new UpdateAppealService(new CcdService(), authenticationService, S2SService.getInstance(), documentManagementService);
 const paymentService: PaymentService = new PaymentService(authenticationService, updateAppealService);
 const osPlacesClient: OSPlacesClient = new OSPlacesClient(config.get('addressLookup.token'), requestPromise, config.get('addressLookup.url'));
 const pcqService: PcqService = new PcqService();
@@ -220,6 +223,7 @@ const hearingRequirementConfirmationController = setupHearingRequirementsConfirm
 const outOfCountryController = setupOutOfCountryController(middleware, updateAppealService);
 const makeApplicationControllers = setupMakeApplicationControllers(middleware, updateAppealService, documentManagementService);
 const changeRepresentationControllers = setupChangeRepresentationControllers(middleware);
+const ftpaApplicationControlers = setupFtpaApplicationController(middleware, updateAppealService, documentManagementService);
 
 const hearingBundleFeatureToggleController = setupHearingBundleFeatureToggleController(middleware);
 const outOfCountryFeatureToggleController = setupOutOfCountryFeatureToggleController(middleware);
@@ -332,6 +336,7 @@ router.use(provideMoreEvidence);
 router.use(outOfCountryController);
 router.use(makeApplicationControllers);
 router.use(changeRepresentationControllers);
+router.use(ftpaApplicationControlers);
 
 router.use(hearingBundleFeatureToggleController);
 router.use(outOfCountryFeatureToggleController);

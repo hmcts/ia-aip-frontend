@@ -1,7 +1,12 @@
-import _ from 'lodash';
+import { Request } from 'express';
+import moment from 'moment';
 import nl2br from 'nl2br';
+import * as path from 'path';
 import { applicationTypes } from '../data/application-types';
+import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
+import { States } from '../data/states';
 import { paths } from '../paths';
+import LaunchDarklyService from '../service/launchDarkly-service';
 
 /**
  * Translate primitive values to Boolean value
@@ -63,9 +68,15 @@ export function yesNoToBool(answer: string): boolean {
 }
 
 export function getAppellantApplications(applications: Collection<Application<Evidence>>[]): any[] {
-  return applications ? applications.filter(application =>
-    application.value.applicant === 'Appellant' ||
-    application.value.applicant === 'Legal representative') : [];
+  return (applications || []).filter(app => getApplicant(app.value) === 'Appellant');
+}
+
+export function getRespondentApplication(applications: Collection<Application<Evidence>>[]): any[] {
+  return (applications || []).filter(app => getApplicant(app.value) === 'Respondent');
+}
+
+export function getApplicant(application: Application<Evidence>) {
+  return ['Appellant', 'Legal representative'].includes(application.applicant) ? 'Appellant' : application.applicant;
 }
 
 export function getApplicationType(type: string): any {
@@ -78,10 +89,76 @@ export function getApplicationType(type: string): any {
   return applicationType;
 }
 
+export function getFtpaApplicantType(appeal: Appeal) {
+  if (appeal.appealStatus === States.FTPA_DECIDED.id) {
+    return appeal.ftpaApplicantType;
+  }
+  const ftpaRespondentApplicationDate = appeal.ftpaRespondentApplicationDate;
+  const ftpaAppellantApplicationDate = appeal.ftpaAppellantApplicationDate;
+  let applicantType;
+
+  if (ftpaRespondentApplicationDate && ftpaAppellantApplicationDate) {
+    applicantType = (moment(ftpaAppellantApplicationDate).isAfter(ftpaRespondentApplicationDate)
+        || moment(ftpaAppellantApplicationDate).isSame(ftpaRespondentApplicationDate))
+        ? APPLICANT_TYPE.APPELLANT
+        : APPLICANT_TYPE.RESPONDENT;
+  } else if (ftpaRespondentApplicationDate) {
+    applicantType = APPLICANT_TYPE.RESPONDENT;
+  } else if (ftpaAppellantApplicationDate) {
+    applicantType = APPLICANT_TYPE.APPELLANT;
+  }
+  return applicantType;
+}
+
 export function formatCaseId(caseId: any) {
   let caseStr = new String(caseId);
   if (caseStr.length === 16) {
     caseStr = caseStr.substring(0,4) + '-' + caseStr.substring(4,8) + '-' + caseStr.substring(8,12) + '-' + caseStr.substring(12,16);
   }
   return caseStr.toString();
+}
+
+export async function isFtpaFeatureEnabled(req: Request) {
+  const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
+  const isFtpaFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.FTPA, defaultFlag);
+  return isFtpaFeatureEnabled;
+}
+
+export function isNonStandardDirectionEnabled(req: Request) {
+  return req.session.appeal.nonStandardDirectionEnabled;
+}
+
+export function isReadonlyApplicationEnabled(req: Request) {
+  return req.session.appeal.readonlyApplicationEnabled;
+}
+
+/**
+ * Takes in a fileName and converts it to the correct display format
+ * @param fileName the file name e.g Some_file.pdf
+ * @return the formatted name as a string e.g Some_File(PDF)
+ */
+export function fileNameFormatter(fileName: string): string {
+  const extension = path.extname(fileName);
+  const baseName = path.basename(fileName, extension);
+  const extName = extension.split('.').join('').toUpperCase();
+  return `${baseName}(${extName})`;
+}
+
+/**
+ * Given a file Id, name and base url converts it to a html link.
+ * returns a html link using target _blank and noopener noreferrer
+ */
+export function toHtmlLink(fileId: string, name: string, hrefBase: string): string {
+  const formattedFileName = fileNameFormatter(name);
+  return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${hrefBase}/${fileId}'>${formattedFileName}</a>`;
+}
+
+/**
+ * Attempts to find the document store url if found on the documentMap returns the document store file location as a URL
+ * @param id the fileId used as a lookup key
+ * @param documentMap the document map array.
+ */
+export function documentIdToDocStoreUrl(id: string, documentMap: DocumentMap[]): string {
+  const target: DocumentMap = documentMap.find(e => e.id === id);
+  return target ? target.url : null;
 }

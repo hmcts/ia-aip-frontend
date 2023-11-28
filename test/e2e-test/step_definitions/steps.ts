@@ -47,7 +47,7 @@ const { aipToLegalRepNoC } = require('../pages/aip-to-legal-rep-noc/aip-to-legal
 const { legalRepCreateCase } = require('../pages/legal-rep-create-case/legal-rep-create-case');
 const { applyForFTPAAppellant } = require('../pages/ftpa/apply-for-ftpa');
 
-const { I, retries } = inject();
+const { I } = inject();
 
 Before((test) => {
   test.retries(5);

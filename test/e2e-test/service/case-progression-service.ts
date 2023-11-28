@@ -477,7 +477,7 @@ module.exports = {
       await I.checkOption('#isDecisionAllowed-allowed');
       await I.click('Continue');
       await I.waitForText('Upload your decision and reasons', 30);
-      await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
+      await I.attachFile("input[type='file']", `/test/files/valid-pdf-file.pdf`);
       await I.wait(5);
       await I.checkOption('#isDocumentSignedToday_values-isDocumentSignedToday');
       await I.checkOption('#isFeeConsistentWithDecision_values-isFeeConsistentWithDecision');

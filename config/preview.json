@@ -4,9 +4,18 @@
     "useRedis": false
   },
   "evidenceUpload": {
-    "maxFileSizeInMb": 10
+    "maxFileSizeInMb": 0.001
   },
   "features": {
     "timelineEnabled": true
+  },
+  "cdamDocumentManagement": {
+    "apiUrl": "CASE_DOCUMENT_AM_URL"
+  },
+  "payments": {
+    "apiUrl": "http://testUrl"
+  },
+  "iaPayments": {
+    "apiUrl": "http://iaPaymentsTestUrl"
   }
 }

@@ -69,6 +69,10 @@ const PATHS = {
 
 module.exports = {
   common(I) {
+    Before((test) => {
+      test.retries(5);
+    });
+
     Given('I have an ended appeal', async () => {
       await setupCase(mockData.endedAppeal);
     });

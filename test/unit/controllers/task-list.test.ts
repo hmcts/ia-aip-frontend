@@ -92,6 +92,7 @@ describe('Task List Controller', () => {
   });
 
   it('getTaskList should render task-list.njk with status data payments flag OFF', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'online-card-payments-feature', false).resolves(false);
     const mockData = [
       {
         'sectionId': 'yourDetails',

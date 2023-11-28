@@ -133,5 +133,8 @@
   "customerServices": {
     "telephone": "IA_CUSTOMER_SERVICES_TELEPHONE",
     "email": "IA_CUSTOMER_SERVICES_EMAIL"
+  },
+  "govNotify": {
+    "accessKey": "GOV_NOTIFY_KEY"
   }
 }

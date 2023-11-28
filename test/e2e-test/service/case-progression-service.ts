@@ -231,33 +231,25 @@ module.exports = {
       await updateAppeal(Events.SEND_DIRECTION_WITH_QUESTIONS, userId, caseDetails[0], securityHeaders);
     });
 
-    Then(/^I grab the Appeal Reference$/, async () => {
+    When(/^I grab the Appeal Reference$/, async () => {
       await I.click('See your appeal progress');
       await I.waitForText('Appeal reference', 30);
-      let source = await I.grabSource();
-      let startIndex = await source.indexOf('Appeal reference: ');
-      let endIndex = startIndex + 40;
-      appealReference = await source.slice(startIndex, endIndex).split('<')[0].split('Appeal reference: ')[1];
+      await I.click('I am no longer representing myself');
+      await I.waitForText('Online case reference number:', 30);
+      let ref = await I.grabTextFrom('//li');
+      appealReference = ref.split('Online case reference number: ')[1];
+      caseUrl = exUiUrl + 'cases/case-details/' + appealReference.split('-').join('');
     });
 
-    Then(/^I sign in as a Case Officer and Request Home Office data$/, async () => {
+    When(/^I sign in as a Case Officer and Request Home Office data$/, async () => {
       await I.amOnPage(exUiUrl);
       await I.waitForText('Sign in or create an account', 30);
       await I.fillField('#username', caseOfficerUserName);
       await I.fillField('#password', caseOfficerPassword);
       await I.click('Sign in');
       await I.waitForText('Case list', 30);
-      await I.amOnPage(exUiUrl + 'cases');
-      await I.waitForText('Reset', 30);
-      await I.click('Reset');
-      await I.waitForText('Your cases', 30);
-      await I.waitForElement('#appealReferenceNumber', 30);
-      await I.fillField('#appealReferenceNumber', appealReference);
-      await I.click('Apply');
-      await I.waitForText('Random User', 30);
-      await I.click(locate('tbody').find('span').withText(appealReference));
+      await I.amOnPage(caseUrl);
       await I.waitForText('Do this next', 30);
-      caseUrl = await I.grabCurrentUrl();
       await I.selectOption('#next-step', 'Request Home Office data');
       await I.click('Go');
       await I.waitForText('Match appellant details', 30);
@@ -270,7 +262,7 @@ module.exports = {
       await I.see('Do this next');
     });
 
-    Then(/^I Request respondent evidence$/, async () => {
+    When(/^I Request respondent evidence$/, async () => {
       await I.selectOption('#next-step', 'Request respondent evidence');
       await I.click('Go');
       await I.waitForText('You are directing the Home Office to supply their documents and evidence.', 30);
@@ -283,7 +275,7 @@ module.exports = {
       await I.see('What happens next');
     });
 
-    Then(/^I Request the reasons for appeal$/, async () => {
+    When(/^I Request the reasons for appeal$/, async () => {
       await I.selectOption('#next-step', 'AiP - Request Appeal Reasons');
       await I.click('Go');
       await I.waitForText('Explain the direction you are issuing', 30);
@@ -296,7 +288,7 @@ module.exports = {
       await I.see('Do this next');
     });
 
-    Then(/^I sign in as a Case Officer and Ask Clarifying Questions$/, async () => {
+    When(/^I sign in as a Case Officer and Ask Clarifying Questions$/, async () => {
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'AiP - Ask clarifying questions');
@@ -313,7 +305,7 @@ module.exports = {
       await I.see('Do this next');
     });
 
-    Then(/^I sign in as a Case Officer and Request respondent review$/, async () => {
+    When(/^I sign in as a Case Officer and Request respondent review$/, async () => {
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'Request respondent review');
@@ -328,7 +320,7 @@ module.exports = {
       await I.see('Do this next');
     });
 
-    Then(/^I Force the case to submit hearing requirements$/, async () => {
+    When(/^I Force the case to submit hearing requirements$/, async () => {
       await I.selectOption('#next-step', 'Force case - hearing reqs');
       await I.click('Go');
       await I.waitForText('Reasons to force the case progression', 30);
@@ -343,7 +335,7 @@ module.exports = {
       await I.see('What happens next');
     });
 
-    Then(/^I sign in as a Case Officer and Review and record the hearing requirements$/, async () => {
+    When(/^I sign in as a Case Officer and Review and record the hearing requirements$/, async () => {
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'Hearing requirements');
@@ -372,7 +364,7 @@ module.exports = {
       await I.see('What happens next');
     });
 
-    Then(/^I sign in as an Admin Officer and List the case$/, async () => {
+    When(/^I sign in as an Admin Officer and List the case$/, async () => {
       await I.click('Sign out');
       await I.fillField('#username', adminOfficerUserName);
       await I.fillField('#password', adminOfficerPassword);
@@ -396,7 +388,7 @@ module.exports = {
       await I.see('What happens next');
     });
 
-    Then(/^I sign in as a Case Officer and Create the case summary$/, async () => {
+    When(/^I sign in as a Case Officer and Create the case summary$/, async () => {
       await I.click('Sign out');
       await I.fillField('#username', caseOfficerUserName);
       await I.fillField('#password', caseOfficerPassword);
@@ -419,7 +411,7 @@ module.exports = {
       await I.see('Do this next');
     });
 
-    Then(/^I Generate the hearing bundle$/, async () => {
+    When(/^I Generate the hearing bundle$/, async () => {
       await I.selectOption('#next-step', 'Generate hearing bundle');
       await I.click('Go');
       await I.waitInUrl('/trigger/generateHearingBundle/submit', 30);
@@ -433,7 +425,7 @@ module.exports = {
       await I.waitForText('Do this next', 30);
     });
 
-    Then(/^I Start decision and reasons$/, async () => {
+    When(/^I Start decision and reasons$/, async () => {
       await I.selectOption('#next-step', 'Start decision and reasons');
       await I.click('Go');
       await I.waitForText('Write a brief introduction to the case', 30);
@@ -454,7 +446,7 @@ module.exports = {
       await I.see('What happens next');
     });
 
-    Then(/^I sign in as a Judge and Prepare Decision and Reasons$/, async () => {
+    When(/^I sign in as a Judge and Prepare Decision and Reasons$/, async () => {
       await I.click('Sign out');
       await I.fillField('#username', judgeUserName);
       await I.fillField('#password', judgePassword);
@@ -477,7 +469,7 @@ module.exports = {
       await I.see('Do this next');
     });
 
-    Then(/^I Complete the Decision and Reasons$/, async () => {
+    When(/^I Complete the Decision and Reasons$/, async () => {
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'Complete decision and reasons');
       await I.click('Go');
@@ -496,6 +488,75 @@ module.exports = {
       await I.click('Close and Return to case details');
       await I.waitForText('No further action required.', 30);
       await I.see('No further action required.');
+    });
+
+    When(/^I sign in as a Case Officer and End the appeal$/, async () => {
+      await I.amOnPage(exUiUrl);
+      await I.waitForText('Sign in or create an account', 30);
+      await I.fillField('#username', caseOfficerUserName);
+      await I.fillField('#password', caseOfficerPassword);
+      await I.click('Sign in');
+      await I.waitForText('Case list', 30);
+      await I.amOnPage(caseUrl);
+      await I.waitForText('Do this next', 30);
+      await I.selectOption('#next-step', 'End the appeal');
+      await I.click('Go');
+      await I.waitForText('This appeal has ended. Record the outcome and reasons below.', 30);
+      await I.click('#endAppealOutcome-Withdrawn');
+      await I.fillField('#endAppealOutcomeReason', 'a reason for outcome');
+      await I.click('Continue');
+      await I.waitForText('Record who approved this outcome.', 30);
+      await I.click('#endAppealApproverType-Judge');
+      await I.fillField('#endAppealApproverName', 'Judgy Judge');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('End appeal');
+      await I.waitForText('You have ended the appeal', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('What happens next', 30);
+      await I.see('What happens next');
+    });
+
+    When(/^I Force the case to case under review$/, async () => {
+      await I.selectOption('#next-step', 'Force case - case under review');
+      await I.click('Go');
+      await I.waitForText('Reasons to force the case progression', 30);
+      await I.click('Continue');
+      await I.fillField('#reasonToForceCaseToCaseUnderReview', 'this is a reason to force case to case under review');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Submit');
+      await I.waitForText('You have forced the case progression to case under review', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('Do this next', 30);
+      await I.see('Do this next');
+    });
+
+    When(/^I Request respondent review$/, async () => {
+      await I.selectOption('#next-step', 'Request respondent review');
+      await I.click('Go');
+      await I.waitForText('You are directing the respondent to review and respond to the appeal skeleton argument.', 30);
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Send direction');
+      await I.waitForText('You have sent a direction', 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('Do this next', 30);
+      await I.see('Do this next');
+    });
+
+    When(/^I List without requirements$/, async () => {
+      await I.selectOption('#next-step', 'List without requirements');
+      await I.click('Go');
+      await I.waitForText('Length', 30);
+      await I.selectOption('#listCaseHearingLength', '1 hour');
+      await I.click('Continue');
+      await I.waitForText('Check your answers', 30);
+      await I.click('Submit');
+      await I.waitForText("You've recorded the agreed hearing adjustments", 30);
+      await I.click('Close and Return to case details');
+      await I.waitForText('What happens next', 30);
+      await I.see('What happens next');
     });
   }
 };

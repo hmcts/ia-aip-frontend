@@ -3,7 +3,7 @@ Feature: CMA Access needs
   As a citizen
   I want to be able to fill in access needs
 
-  Scenario: Entering my access needs
+  Scenario: Entering my access needs 1
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     Given I am on the access needs page
     Then I click continue
@@ -19,7 +19,7 @@ Feature: CMA Access needs
     Then I should see the "Tell us your appointment needs - Appeal an immigration or asylum decision - HMCTS" eligibility page
 
 
-  Scenario: Entering my access needs
+  Scenario: Entering my access needs 2
     Given I have logged in as an appellant in state "awaitingCmaRequirements"
     Given I am on the access needs page
     Then I click continue

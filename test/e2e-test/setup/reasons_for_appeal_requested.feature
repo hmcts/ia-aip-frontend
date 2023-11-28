@@ -3,7 +3,7 @@ Feature: Business rules
   As a person
   I want be able to sign in
 
-  Scenario: Complete appeal application
+  Scenario: Reasons for appeal requested
     Given I am on home page
     When I click start now
   # TODO: Remove "Are you currently living in the United Kingdom" step when "Feature flag for Out of Country feature" flag is switched on

@@ -54,8 +54,8 @@ Scenario: Complete NoC Happy path AiP to LR
    And I click "Save and continue" button
    Then I should be taken to the pcq-questions page
    When I click "I don't want to answer these questions" button
-   Given I am on home page
-   When I click Sign in to continue with your appeal after answering PCQ questions
+   And I wait for 5 seconds
+   And I go to appeal overview page
    Then I should see the appeal overview page
    When I click continue
    Then I should be taken to the task-list page

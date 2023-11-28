@@ -44,6 +44,7 @@ const { makeAppealApplication } = require('../pages/make-application/make-appeal
 const { changeRepresentation } = require('../pages/change-representation/change-representation');
 const { startRepresentingYourself } = require('../pages/start-representing-yourself/start-representing-yourself');
 const { aipToLegalRepNoC } = require('../pages/aip-to-legal-rep-noc/aip-to-legal-rep-noc');
+const { legalRepCreateCase } = require('../pages/legal-rep-create-case/legal-rep-create-case');
 const { applyForFTPAAppellant } = require('../pages/ftpa/apply-for-ftpa');
 
 const { I } = inject();
@@ -96,4 +97,5 @@ makeAppealApplication(I);
 changeRepresentation(I);
 startRepresentingYourself(I);
 aipToLegalRepNoC(I);
+legalRepCreateCase(I);
 applyForFTPAAppellant(I);

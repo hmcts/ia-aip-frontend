@@ -7,7 +7,7 @@ properties([
         projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend/'
     ],
     pipelineTriggers([
-    cron('H 7 * * 1-5')
+    cron('H 14 * * 2-5')
     ])
 ])
 
@@ -39,7 +39,8 @@ def secrets = [
         secret('pcq-token-key', 'PCQ_TOKEN_KEY'),
         secret('system-username', 'IA_SYSTEM_USERNAME'),
         secret('system-password', 'IA_SYSTEM_PASSWORD'),
-        secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL')
+        secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL'),
+        secret('ia-gov-notify-key', 'GOV_NOTIFY_KEY')
     ]
 ]
 
@@ -54,7 +55,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
-    enableSlackNotifications(channel)
 
     loadVaultSecrets(secrets)
 
@@ -63,19 +63,35 @@ withNightlyPipeline(type, product, component) {
     env.CCD_API_URL = 'http://ccd-data-store-api-aat.service.core-compute-aat.internal'
     env.IDAM_API_URL = 'https://idam-api.aat.platform.hmcts.net'
     env.S2S_MICROSERVICE_NAME = 'iac'
+    env.TEST_E2E_FAIL_FAST = 'false'
 
     enableCrossBrowserTest()
-    enableFortifyScan()
+//    TODO re add in fortify once issues have been resolved
+//    disabled until fortify accounts are allocated
+//    enableFortifyScan()
     enableSecurityScan()
-    enableMutationTest()
-    enableFullFunctionalTest(120)
+//    mutation tests not yet implemented
+//    enableMutationTest()
+    enableFullFunctionalTest(180)
 
     after('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
-    afterAlways('crossBrowserTest') {
+    afterSuccess('crossBrowserTest') {
         yarnBuilder.yarn('test:a11y')
+    }
+
+    afterAlways('crossBrowserTest') {
+        publishHTML([
+                reportName           : 'IA AIP Frontend Cross Browser Tests',
+                reportDir            : "functional-output/crossbrowser/reports/",
+                reportFiles          : "${dir('functional-output/crossbrowser/reports') { findFiles(glob: '**/records.html').join(',') ?: 'Not found' }}",
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true
+        ])
+
     }
 
     afterAlways('mutationTest') {

@@ -1,1 +1,12 @@
-{}
+{
+  "testUrl": "TEST_URL",
+  "session": {
+    "useRedis": false
+  },
+  "evidenceUpload": {
+    "maxFileSizeInMb": 10
+  },
+  "features": {
+    "timelineEnabled": true
+  }
+}

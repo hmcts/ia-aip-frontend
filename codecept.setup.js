@@ -29,9 +29,6 @@ exports.config = {
       deleteSuccessful: false
     }
   },
-  include: {
-    I: './test/e2e-test/step_definitions/custom_steps.ts'
-  },
   require: ['ts-node/register/transpile-only']
 
 };

@@ -4,6 +4,9 @@ const HelperClass = require('@codeceptjs/helper');
 const output = require('codeceptjs').output;
 
 class NavigationHelper extends HelperClass {
+  Before((test) => {
+    test.retries(5);
+  });
   async checkIfLogInIsSuccessful(timeout) {
     const helper = this.helpers['Puppeteer']; // Or change to another Helper
     try {

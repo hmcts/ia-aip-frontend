@@ -8,6 +8,12 @@ properties([
     ],
     pipelineTriggers([
     cron('H 14 * * 2-5')
+    ]),
+    parameters([
+        string(name: 'sleepTimer', defaultValue: "0", description: 'Wait x seconds until the pipeline is run'),
+        booleanParam(name: 'skipCrossBrowserTests', defaultValue: false, description: 'Tick the checkbox for skip'),
+        booleanParam(name: 'skipSecurityScanTests', defaultValue: false, description: 'Tick the checkbox for skip'),
+        booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox for skip')
     ])
 ])
 
@@ -55,7 +61,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withNightlyPipeline(type, product, component) {
-
+    script {
+        sleep(params.sleepTimer)
+    }
     loadVaultSecrets(secrets)
 
     env.TEST_URL = 'https://immigration-appeal.aat.platform.hmcts.net'
@@ -65,14 +73,20 @@ withNightlyPipeline(type, product, component) {
     env.S2S_MICROSERVICE_NAME = 'iac'
     env.TEST_E2E_FAIL_FAST = 'false'
 
-    enableCrossBrowserTest()
+    if (!params.skipCrossBrowserTests) {
+        enableCrossBrowserTest()
+    }
+    if (!params.skipSecurityScan) {
+        enableSecurityScan()
+    }
+    if (!params.skipFullFunctionalTest) {
+        enableFullFunctionalTest(180)
+    }
 //    TODO re add in fortify once issues have been resolved
 //    disabled until fortify accounts are allocated
 //    enableFortifyScan()
-    enableSecurityScan()
 //    mutation tests not yet implemented
 //    enableMutationTest()
-    enableFullFunctionalTest(180)
 
     after('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'

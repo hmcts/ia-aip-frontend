@@ -79,7 +79,7 @@ withNightlyPipeline(type, product, component) {
     if (!params.skipSecurityScan) {
         enableSecurityScan()
     }
-    if (!params.skipFullFunctionalTest) {
+    if (!params.skipFullFunctionalTests) {
         enableFullFunctionalTest(180)
     }
 //    TODO re add in fortify once issues have been resolved

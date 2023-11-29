@@ -159,5 +159,10 @@
   "10112_Session Management Response Identified_https://immigration-appeal.aat.platform.hmcts.net/ruxitagentjs_ICA27NQVfhqrux_10277231024135831.js_GET":"ignore",
   "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net/eligibility_GET": "ignore",
   "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net_GET": "ignore",
-  "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore"
+  "40025_Proxy Disclosure_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore",
+  "40024_SQL Injection - SQLite_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore",
+  "40019_SQL Injection - MySQL_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore",
+  "40018_SQL Injection_https://immigration-appeal.aat.platform.hmcts.net/eligibility_POST": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/cookie-policy_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_https://immigration-appeal.aat.platform.hmcts.net/sitemap.xml_GET": "ignore"
 }

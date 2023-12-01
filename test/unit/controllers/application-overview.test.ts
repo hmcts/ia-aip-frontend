@@ -11,10 +11,12 @@ import {
   showFtpaApplicationLink,
   showHearingRequestSection
 } from '../../../app/controllers/application-overview';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { States } from '../../../app/data/states';
 import { paths } from '../../../app/paths';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { expect, sinon } from '../../utils/testUtils';
@@ -34,14 +36,14 @@ describe('Confirmation Page Controller', () => {
 
   const logger: Logger = new Logger();
   const expectedNextStep = {
-    cta: { url: '/about-appeal' },
-    deadline: null,
     descriptionParagraphs: [
       'You need to answer a few questions about yourself and your appeal to get started.',
       'You will need to have your Home Office decision letter with you to answer some questions.'
     ],
     info: null,
-    allowedAskForMoreTime: false
+    cta: { url: '/about-appeal' },
+    allowedAskForMoreTime: false,
+    deadline: null
   };
 
   const expectedHistory = {
@@ -121,6 +123,10 @@ describe('Confirmation Page Controller', () => {
       redirect: sinon.spy()
     } as Partial<Response>;
 
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, FEATURE_FLAGS.MAKE_APPLICATION, false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(true);
+
     next = sandbox.stub() as NextFunction;
   });
 
@@ -150,25 +156,25 @@ describe('Confirmation Page Controller', () => {
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedStages = [{
-      active: true,
+      title: 'Your appeal<br/> details',
       ariaLabel: 'Your appeal details stage',
-      completed: false,
-      title: 'Your appeal<br/> details'
+      active: true,
+      completed: false
     }, {
-      active: false,
+      title: 'Your appeal<br/> argument',
       ariaLabel: 'Your appeal argument stage',
-      completed: false,
-      title: 'Your appeal<br/> argument'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
       ariaLabel: 'Your hearing details stage',
-      completed: false,
-      title: 'Your hearing<br/> details'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
       ariaLabel: 'Your appeal decision stage',
-      completed: false,
-      title: 'Your appeal<br/> decision'
+      active: false,
+      completed: false
     }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
@@ -184,10 +190,10 @@ describe('Confirmation Page Controller', () => {
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
-      showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
       showPayLaterLink: false,
-      ftpaFeatureEnabled: false,
+      ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false
@@ -209,25 +215,25 @@ describe('Confirmation Page Controller', () => {
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedStages = [{
-      active: true,
+      title: 'Your appeal<br/> details',
       ariaLabel: 'Your appeal details stage',
-      completed: false,
-      title: 'Your appeal<br/> details'
+      active: true,
+      completed: false
     }, {
-      active: false,
+      title: 'Your appeal<br/> argument',
       ariaLabel: 'Your appeal argument stage',
-      completed: false,
-      title: 'Your appeal<br/> argument'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
       ariaLabel: 'Your hearing details stage',
-      completed: false,
-      title: 'Your hearing<br/> details'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
       ariaLabel: 'Your appeal decision stage',
-      completed: false,
-      title: 'Your appeal<br/> decision'
+      active: false,
+      completed: false
     }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
@@ -243,10 +249,10 @@ describe('Confirmation Page Controller', () => {
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
-      showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
       showPayLaterLink: false,
-      ftpaFeatureEnabled: false,
+      ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false
@@ -269,25 +275,25 @@ describe('Confirmation Page Controller', () => {
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedStages = [{
-      active: true,
+      title: 'Your appeal<br/> details',
       ariaLabel: 'Your appeal details stage',
-      completed: false,
-      title: 'Your appeal<br/> details'
+      active: true,
+      completed: false
     }, {
-      active: false,
+      title: 'Your appeal<br/> argument',
       ariaLabel: 'Your appeal argument stage',
-      completed: false,
-      title: 'Your appeal<br/> argument'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
       ariaLabel: 'Your hearing details stage',
-      completed: false,
-      title: 'Your hearing<br/> details'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
       ariaLabel: 'Your appeal decision stage',
-      completed: false,
-      title: 'Your appeal<br/> decision'
+      active: false,
+      completed: false
     }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
@@ -303,10 +309,10 @@ describe('Confirmation Page Controller', () => {
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
-      showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
       showPayLaterLink: false,
-      ftpaFeatureEnabled: false,
+      ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false
@@ -330,36 +336,36 @@ describe('Confirmation Page Controller', () => {
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedNextStep = {
-      allowedAskForMoreTime: false,
-      cta: { url: '/about-appeal' },
-      deadline: null,
       descriptionParagraphs: [
         'You need to finish telling us about your appeal.',
         'You will need to have your Home Office decision letter with you to answer some questions.'
       ],
-      info: null
+      info: null,
+      cta: { url: '/about-appeal' },
+      allowedAskForMoreTime: false,
+      deadline: null
     };
 
     const expectedStages = [{
-      active: true,
+      title: 'Your appeal<br/> details',
       ariaLabel: 'Your appeal details stage',
-      completed: false,
-      title: 'Your appeal<br/> details'
+      active: true,
+      completed: false
     }, {
-      active: false,
+      title: 'Your appeal<br/> argument',
       ariaLabel: 'Your appeal argument stage',
-      completed: false,
-      title: 'Your appeal<br/> argument'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
       ariaLabel: 'Your hearing details stage',
-      completed: false,
-      title: 'Your hearing<br/> details'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
       ariaLabel: 'Your appeal decision stage',
-      completed: false,
-      title: 'Your appeal<br/> decision'
+      active: false,
+      completed: false
     }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
@@ -375,10 +381,10 @@ describe('Confirmation Page Controller', () => {
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
-      showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
       showPayLaterLink: false,
-      ftpaFeatureEnabled: false,
+      ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false
@@ -404,36 +410,36 @@ describe('Confirmation Page Controller', () => {
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
     const expectedNextStep = {
-      allowedAskForMoreTime: false,
-      cta: { url: '/about-appeal' },
-      deadline: null,
       descriptionParagraphs: [
         'You need to finish telling us about your appeal.',
         'You will need to have your Home Office decision letter with you to answer some questions.'
       ],
-      info: null
+      info: null,
+      cta: { url: '/about-appeal' },
+      allowedAskForMoreTime: false,
+      deadline: null
     };
 
     const expectedStages = [{
-      active: true,
+      title: 'Your appeal<br/> details',
       ariaLabel: 'Your appeal details stage',
-      completed: false,
-      title: 'Your appeal<br/> details'
+      active: true,
+      completed: false
     }, {
-      active: false,
+      title: 'Your appeal<br/> argument',
       ariaLabel: 'Your appeal argument stage',
-      completed: false,
-      title: 'Your appeal<br/> argument'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
       ariaLabel: 'Your hearing details stage',
-      completed: false,
-      title: 'Your hearing<br/> details'
-    }, {
       active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
       ariaLabel: 'Your appeal decision stage',
-      completed: false,
-      title: 'Your appeal<br/> decision'
+      active: false,
+      completed: false
     }];
 
     expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
@@ -449,10 +455,10 @@ describe('Confirmation Page Controller', () => {
       saveAndAskForMoreTime: false,
       provideMoreEvidenceSection: false,
       showAppealRequests: false,
-      showHearingRequests: false,
       showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
       showPayLaterLink: false,
-      ftpaFeatureEnabled: false,
+      ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false

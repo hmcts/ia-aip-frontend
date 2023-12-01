@@ -1,10 +1,7 @@
-#@crossbrowser
-Feature: Business rules
-In order to achieve my goals
-As a person
-I want be able to sign in and submit an appeal
+@nightly-test
+Feature: Start to decided
 
-Scenario: Complete appeal application
+Scenario: Create appeal and force case through to decided
   Given I am on home page
   When I click Sign in to continue with your appeal
   Then I should see the sign in page
@@ -60,7 +57,7 @@ Scenario: Complete appeal application
   And I wait for 5 seconds
   And I go to appeal overview page
   Then I should see the appeal overview page
-  And I click continue
+  When I click continue
   Then I should be taken to the task-list page
   When I click on the check and send your appeal link
   Then I should be taken to the check-and-send page
@@ -73,3 +70,30 @@ Scenario: Complete appeal application
   Then I am on the appeal details sent with payment page
   And I see "Your appeal details have been sent" in title
   And I see the respond by date is 5 days in the future
+
+  # Case Progression
+  When I grab the Appeal Reference
+  And I sign in as a Case Officer and Request Home Office data
+  And I Request respondent evidence
+  And I Request the reasons for appeal
+  And I Force the case to case under review
+  And I Request respondent review
+  And I Force the case to submit hearing requirements
+  And I List without requirements
+  And I sign in as an Admin Officer and List the case
+  And I sign in as a Case Officer and Create the case summary
+  And I Generate the hearing bundle
+  And I Start decision and reasons
+  And I sign in as a Judge and Prepare Decision and Reasons
+  And I Complete the Decision and Reasons
+
+#   # Appellant
+  Given I am on home page
+  And I sign out
+  When I click Sign in to continue with your appeal
+  Then I should see the sign in page
+  And I sign in as the appellant
+  When I visit the overview page
+  Then I see "A judge has allowed your appeal." description in overview banner
+  And I click "Read the Decision and Reasons document" link
+  Then I see "Decision and Reasons" in title

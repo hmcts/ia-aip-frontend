@@ -1,10 +1,12 @@
 
 import { Request } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { AuthenticationService } from '../../../app/service/authentication-service';
 import { CcdService } from '../../../app/service/ccd-service';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
 import IdamService from '../../../app/service/idam-service';
+import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import S2SService from '../../../app/service/s2s-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import { expect, sinon, validateUuid } from '../../utils/testUtils';
@@ -38,7 +40,16 @@ describe('update-appeal-service', () => {
 
     sandbox.stub(idamService, 'getUserToken').returns(userToken);
     sandbox.stub(s2sService, 'getServiceToken').resolves(serviceToken);
-
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.PCQ, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.HEARING_REQUIREMENTS, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.HEARING_BUNDLE, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.OUT_OF_COUNTRY, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.MAKE_APPLICATION, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(false)
+      .withArgs(req as Request, FEATURE_FLAGS.USE_CCD_DOCUMENT_AM, false).resolves(false);
     documentManagementService = new DocumentManagementService(authenticationService);
 
     updateAppealService = new UpdateAppealService(ccdService as CcdService, authenticationService, null, documentManagementService);

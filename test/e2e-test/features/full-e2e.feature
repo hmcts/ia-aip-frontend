@@ -1,4 +1,3 @@
-@nightly-test
 Feature: Business rules
 In order to achieve my goals
 As a person
@@ -57,8 +56,8 @@ Scenario: Complete appeal application
   And I click "Save and continue" button
   Then I should be taken to the pcq-questions page
   When I click "I don't want to answer these questions" button
-  Given I am on home page
-  When I click Sign in to continue with your appeal after answering PCQ questions
+  And I wait for 5 seconds
+  And I go to appeal overview page
   Then I should see the appeal overview page
   When I click continue
   Then I should be taken to the task-list page
@@ -66,16 +65,19 @@ Scenario: Complete appeal application
   Then I should be taken to the check-and-send page
   When I check the statement of truth
   And I submit appeal for a decision with hearing paid appeal
-
-  Then I am on the appeal details sent page
+  Then I am on the appeal details submitted page
+  When I click "Pay for this appeal" button
+  Then I am on the make payment page
+  When I make a successful payment
+  Then I am on the appeal details sent with payment page
   And I see "Your appeal details have been sent" in title
   And I see the respond by date is 5 days in the future
 
   # Case Progression
-  And I grab the Appeal Reference
-  Then I sign in as a Case Officer and Request Home Office data
-  Then I Request respondent evidence
-  Then I Request the reasons for appeal
+  When I grab the Appeal Reference
+  And I sign in as a Case Officer and Request Home Office data
+  And I Request respondent evidence
+  And I Request the reasons for appeal
 
 #   # Appellant
   Given I am on home page
@@ -111,7 +113,7 @@ Scenario: Complete appeal application
   And I see the respond by date is 2 weeks in the future
 
 ##   # Case Progression
-  Then I sign in as a Case Officer and Ask Clarifying Questions
+  When I sign in as a Case Officer and Ask Clarifying Questions
 
 #   # Appellant
   Given I am on home page
@@ -150,8 +152,8 @@ Scenario: Complete appeal application
   And I see "You have told us why you think the Home Office decision is wrong." description in overview banner
 
   ##   # Case Progression
-  Then I sign in as a Case Officer and Request respondent review
-  Then I Force the case to submit hearing requirements
+  When I sign in as a Case Officer and Request respondent review
+  And I Force the case to submit hearing requirements
 
 #   # Appellant
   Given I am on home page
@@ -236,7 +238,7 @@ Scenario: Complete appeal application
   And I see "A Tribunal Caseworker is looking at your answers and will contact you with the details of your hearing and to tell you what to do next." description in overview banner
 
   ##   # Case Progression
-  Then I sign in as a Case Officer and Review and record the hearing requirements
+  When I sign in as a Case Officer and Review and record the hearing requirements
   And I sign in as an Admin Officer and List the case
   And I sign in as a Case Officer and Create the case summary
   And I Generate the hearing bundle

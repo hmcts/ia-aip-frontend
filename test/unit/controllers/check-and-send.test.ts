@@ -52,12 +52,14 @@ describe('createSummaryRowsFrom', () => {
   });
 
   it('should create rows', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     const rows: any[] = await createSummaryRowsFrom(req as Request);
 
     expect(rows).to.be.deep.equal(getMockedSummaryRows());
   });
 
   it('should create rows when appeal is late', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     req.session.appeal.application.isAppealLate = true;
     req.session.appeal.application.lateAppeal = {
       reason: 'The reason why I am late'
@@ -71,6 +73,7 @@ describe('createSummaryRowsFrom', () => {
   });
 
   it('should create rows when appeal is late with evidence', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
     req.session.appeal.application.isAppealLate = true;
     req.session.appeal.application.lateAppeal = {
       reason: 'The reason why I am late',
@@ -197,6 +200,7 @@ describe('Check and Send Controller', () => {
   describe('getCheckAndSend', () => {
 
     it('should render check-and-send-page.njk and Payments flag is OFF', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       req.session.appeal = createDummyAppealApplication();
       req.session.appeal.paAppealTypeAipPaymentOption = 'payNow';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
@@ -270,6 +274,7 @@ describe('Check and Send Controller', () => {
 
   describe('postCheckAndSend', () => {
     it('should fail validation when statement of truth not checked', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       req.session.appeal = createDummyAppealApplication();
       req.body = { 'button': 'save-and-continue', 'data': [] };
 

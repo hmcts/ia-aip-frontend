@@ -110,5 +110,8 @@
     "path": "/service-endpoint",
     "returnUrl": "PCQ_RETURN_URL",
     "tokenKey": "PCQ_TOKEN_KEY"
+  },
+  "govNotify": {
+    "accessKey": "GOV_NOTIFY_KEY"
   }
 }

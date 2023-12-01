@@ -335,7 +335,7 @@ declare namespace CodeceptJS {
     debugSection(section: string, msg: string): void;
     say: () => any;
     retryStep(opts: string): void;
-
+    retries(times: number): void;
   }
 
 }

@@ -6,9 +6,6 @@
   "labels": [
     "dependencies"
   ],
-  "schedule": [
-    "3am"
-  ],
   "helmv3": {
     "bumpVersion": "patch"
   },
@@ -36,5 +33,8 @@
       "automerge": true
     }
   ],
-  "prConcurrentLimit": 3
+  "timezone": "Europe/London",
+  "schedule": [
+    "before 3am every weekday",
+    ]
 }

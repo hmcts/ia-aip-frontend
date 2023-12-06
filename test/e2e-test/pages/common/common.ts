@@ -458,5 +458,9 @@ module.exports = {
     Then(/^I see "([^"]*)" in summary list$/, async (title: string) => {
       await I.see(title, '.govuk-summary-list');
     });
+
+    When(/^I wait for ([^"]*) seconds$/, async (waitTime: string) => {
+      await I.wait(waitTime);
+    });
   }
 };

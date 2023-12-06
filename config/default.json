@@ -136,5 +136,8 @@
   },
   "refData": {
     "apiUrl": "REF_DATA_API_URL"
+  },
+  "govNotify": {
+    "accessKey": "GOV_NOTIFY_KEY"
   }
 }

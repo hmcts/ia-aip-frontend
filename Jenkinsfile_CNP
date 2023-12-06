@@ -30,7 +30,8 @@ def secrets = [
         secret('pcq-token-key', 'PCQ_TOKEN_KEY'),
         secret('system-username', 'IA_SYSTEM_USERNAME'),
         secret('system-password', 'IA_SYSTEM_PASSWORD'),
-        secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL')
+        secret('case-documents-api-url', 'CASE_DOCUMENT_AM_URL'),
+        secret('ia-gov-notify-key', 'GOV_NOTIFY_KEY')
     ]
 ]
 

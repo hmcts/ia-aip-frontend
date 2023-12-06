@@ -175,7 +175,7 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
         evidences.push({
           fileId: evidenceStored.fileId,
           name: evidenceStored.name,
-          dateUploaded: moment().format('YYYY-MM-DDZ'),
+          dateUploaded: moment().format('YYYY-MM-DD'),
           description: 'Appeal Reasons supporting evidence'
         });
         req.session.appeal.reasonsForAppeal.evidences = [ ...evidences ];

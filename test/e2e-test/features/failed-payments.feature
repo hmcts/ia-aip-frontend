@@ -1,6 +1,6 @@
 @nightly-test
 Feature: Failed payments
-  Background:
+  Scenario: Card type not accepted, Card declined, Card expired, Invalid CVC code, General error
     Given I am on home page
     When I click Sign in to continue with your appeal
     Then I should see the sign in page
@@ -53,36 +53,41 @@ Feature: Failed payments
     And I click "Save and continue" button
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
-    Given I am on home page
-    When I click Sign in to continue with your appeal after answering PCQ questions
+    And I wait for 5 seconds
+    And I go to appeal overview page
     Then I should see the appeal overview page
     And I click continue
     Then I should be taken to the task-list page
     When I click on the check and send your appeal link
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-
-  @nightly-test
-  Scenario: Card type not accepted
+    And I submit appeal for a decision with hearing paid appeal
+    Then I am on the appeal details submitted page
+    When I click "Pay for this appeal" button
+    Then I am on the make payment page
     And I submit a failed payment appeal with Card type not accepted
     Then I see a This card type is not accepted error message
 
-  @nightly-test
-  Scenario: Card declined
-    And I submit a failed payment appeal with Card declined
+    When I submit a failed payment appeal with Card declined
     Then I see the Your payment has been declined error page
 
-  @nightly-test
-  Scenario: Card expired
+    When I click continue
+    Then I should see the appeal overview page
+    When I click "Pay for this appeal" link
+    Then I am on the make payment page
     And I submit a failed payment appeal with Card expired
     Then I see the Your payment has been declined error page
 
-  @nightly-test
-  Scenario: Invalid CVC code
+    When I click continue
+    Then I should see the appeal overview page
+    When I click "Pay for this appeal" link
+    Then I am on the make payment page
     And I submit a failed payment appeal with Invalid CVC code
     Then I see the Your payment has been declined error page
 
-  @nightly-test
-  Scenario: General error
+    When I click continue
+    Then I should see the appeal overview page
+    When I click "Pay for this appeal" link
+    Then I am on the make payment page
     And I submit a failed payment appeal with General error
     Then I see the We’re experiencing technical problems error page

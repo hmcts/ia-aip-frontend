@@ -297,6 +297,7 @@ const paths = {
     judgesReview: '/ask-judge-review',
     other: '/ask-something-else',
     reinstate: '/ask-reinstate',
+    changeHearingType: '/ask-change-hearing-type',
     supportingEvidenceExpedite: '/supporting-evidence-hearing-sooner',
     supportingEvidenceAdjourn: '/supporting-evidence-hearing-later',
     supportingEvidenceTransfer: '/supporting-evidence-change-location',
@@ -307,6 +308,7 @@ const paths = {
     supportingEvidenceLinkOrUnlink: '/supporting-evidence-link-unlink',
     supportingEvidenceJudgesReview: '/supporting-evidence-judge-review',
     supportingEvidenceReinstate: '/supporting-evidence-reinstate',
+    supportingEvidenceChangeHearingType: '/supporting-evidence-change-hearing-type',
     provideSupportingEvidenceExpedite: '/provide-supporting-evidence-hearing-sooner',
     provideSupportingEvidenceAdjourn: '/provide-supporting-evidence-hearing-later',
     provideSupportingEvidenceTransfer: '/provide-supporting-evidence-change-location',
@@ -319,6 +321,7 @@ const paths = {
     provideSupportingEvidenceReinstate: '/provide-supporting-evidence-reinstate',
     provideSupportingEvidenceUploadFile: '/provide-supporting-evidence/upload/file',
     provideSupportingEvidenceDeleteFile: '/provide-supporting-evidence/delete/file',
+    provideSupportingEvidenceChangeHearingType: '/provide-supporting-evidence-change-hearing-type',
     checkAnswerExpedite: '/check-answer-hearing-sooner',
     checkAnswerAdjourn: '/check-answer-hearing-later',
     checkAnswerTransfer: '/check-answer-change-location',
@@ -329,6 +332,7 @@ const paths = {
     checkAnswerLinkOrUnlink: '/check-answer-link-unlink',
     checkAnswerJudgesReview: '/check-answer-judge-review',
     checkAnswerReinstate: '/check-answer-reinstate',
+    checkAnswerChangeHearingType: '/check-answer-change-hearing-type',
     requestSent: '/request-sent',
     yourRequest: '/your-request'
   }

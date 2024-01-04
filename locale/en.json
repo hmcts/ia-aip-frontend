@@ -683,6 +683,13 @@
         "ableToAddEvidenceTitle": "Supporting evidence for why you want the appeal to be reinstated",
         "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
       },
+      "askChangeHearingType": {
+        "title": "Ask to change hearing type",
+        "description": "<p>Explain why you want to change the hearing type and the type of hearing that you would like to change to.</p>",
+        "hint": "",
+        "ableToAddEvidenceTitle": "Supporting evidence for why you want to change hearing type",
+        "ableToAddEvidenceAdvice": "You will be able to add supporting evidence for your answer on the next page if you want to"
+      },
       "provideSupportingEvidenceYesOrNo": {
         "title": "Do you want to provide supporting evidence for this request?",
         "options": {
@@ -826,7 +833,8 @@
         "askToLinkOrUnlink": "Ask to link or unlink with another appeal",
         "askJudgeToReview": "Ask for a judge to review a decision by a Tribunal Caseworker",
         "askForSomethingElse": "Ask for something else",
-        "askReinstateAppeal": "Ask to reinstate the appeal"
+        "askReinstateAppeal": "Ask to reinstate the appeal",
+        "askToChangeHearingType": "Ask to change hearing type"
       },
       "hearingRequests": {
         "sectionHeading": "Hearing requests",
@@ -1578,7 +1586,8 @@
             "askWithdraw": "Ask to withdraw the appeal",
             "askUpdateDetails": "Ask to change some of your details",
             "askUpdateHearingRequirements": "Ask for something at the hearing",
-            "askSomethingElse": "Ask for something else"
+            "askSomethingElse": "Ask for something else",
+            "askChangeHearingType": "Ask to change hearing type"
           },
           "whatNext": {
             "title": "What happens next",
@@ -3782,7 +3791,8 @@
       "askLinkUnlink": "Enter which appeal, or appeals, you want to link to or unlink from and why",
       "askJudgeReview": "Enter which decision you want a judge to review and why",
       "askReinstate": "Enter why you want the appeal to be reinstated",
-      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence"
+      "supportingEvidenceRequired": "Select Yes if you want to provide supporting evidence",
+      "askChangeHearingType": "Enter why you want to change the hearing type and the type of hearing that you would like to change to"
     },
     "ftpaApplication": {
       "ftpaReason": "Enter the reasons you think the Tribunal's decision is wrong?",

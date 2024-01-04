@@ -43,6 +43,10 @@ const applicationTypes = {
     code: 'askUpdateHearingRequirements',
     type: 'Update hearing requirements'
   },
+  changeHearingType: {
+    code: 'askChangeHearingType',
+    type: 'Change hearing type'
+  },
   other: {
     code: 'askSomethingElse',
     type: 'Other'

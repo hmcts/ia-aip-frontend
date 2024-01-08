@@ -121,6 +121,16 @@ describe('Hearing application controllers setup', () => {
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceReinstate);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceReinstate);
       expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerReinstate);
+
+      /* Change Hearing Type */
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.changeHearingType);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceChangeHearingType);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceChangeHearingType);
+      expect(routerGetStub).to.have.been.calledWith(paths.makeApplication.checkAnswerChangeHearingType);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.changeHearingType);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.provideSupportingEvidenceChangeHearingType);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.supportingEvidenceChangeHearingType);
+      expect(routerPostStub).to.have.been.calledWith(paths.makeApplication.checkAnswerChangeHearingType);
     });
   });
 });

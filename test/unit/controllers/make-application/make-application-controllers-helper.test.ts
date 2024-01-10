@@ -590,6 +590,7 @@ describe('Make application controllers helper', () => {
           label: 'Expedite'
         }
       };
+      req.session.appeal.makeAnApplicationProvideEvidence = "yes";
 
       const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 
@@ -612,10 +613,33 @@ describe('Make application controllers helper', () => {
           label: 'Expedite'
         }
       };
+      req.session.appeal.makeAnApplicationProvideEvidence = "yes";
 
       const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 
       expect(result[0].summaryRows).to.be.lengthOf(3);
+    });
+
+    it('should not return supporting evidence if user have changed to select No in Provide Evidence page', () => {
+      const mockEvidenceDocuments: Evidence[] = [
+        {
+          fileId: 'aFileId',
+          name: 'fileName'
+        }
+      ];
+      req.session.appeal.makeAnApplicationDetails = 'makeAnApplicationDetails';
+      req.session.appeal.makeAnApplicationEvidence = mockEvidenceDocuments;
+      req.session.appeal.makeAnApplicationTypes = {
+        value: {
+          code: 'expedite',
+          label: 'Expedite'
+        }
+      };
+      req.session.appeal.makeAnApplicationProvideEvidence = "no";
+
+      const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
+
+      expect(result[0].summaryRows).to.be.lengthOf(2);
     });
   });
 

@@ -93,7 +93,7 @@ withNightlyPipeline(type, product, component) {
 //    enableMutationTest()
 
     before('fortify-scan') {
-        sh "chmod +x gradlew"
+        sh "chmod +x ./test/java/gradlew"
     }
 
     afterAlways('fortify-scan') {

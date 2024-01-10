@@ -1726,7 +1726,7 @@
             "reason": "Reason for the decision",
             "date": "Date of the decision",
             "maker": "Who made the decision",
-             "whatNext": {
+            "whatNext": {
               "default": {
                 "granted": "You will be notified when the Tribunal makes the changes the Home Office asked for.",
                 "refused": "The appeal will continue without any changes."

@@ -590,7 +590,7 @@ describe('Make application controllers helper', () => {
           label: 'Expedite'
         }
       };
-      req.session.appeal.makeAnApplicationProvideEvidence = "yes";
+      req.session.appeal.makeAnApplicationProvideEvidence = 'yes';
 
       const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 
@@ -613,7 +613,7 @@ describe('Make application controllers helper', () => {
           label: 'Expedite'
         }
       };
-      req.session.appeal.makeAnApplicationProvideEvidence = "yes";
+      req.session.appeal.makeAnApplicationProvideEvidence = 'yes';
 
       const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 
@@ -635,7 +635,7 @@ describe('Make application controllers helper', () => {
           label: 'Expedite'
         }
       };
-      req.session.appeal.makeAnApplicationProvideEvidence = "no";
+      req.session.appeal.makeAnApplicationProvideEvidence = 'no';
 
       const result = makeApplicationControllersHelper.buildSupportingEvidenceDocumentsSummaryList(req as Request, 'provide-supporting-evidence-hearing-sooner', 'ask-hearing-sooner');
 

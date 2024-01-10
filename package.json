@@ -14,6 +14,7 @@
     "mock-dm-store": "dyson test/mock/document-management-store/services/ 20003",
     "mock-s2s": "dyson test/mock/s2s/services/ 20004",
     "lint": "tslint --project .",
+    "fortifyScan": "./test/java/gradlew -p test/java fortifyScan",
     "test": "yarn test:unit && yarn codecept:functional",
     "test:accessibility": "rm -rf functional-output/accessibility && IDAM_WEB_URL=http://localhost:20001 IDAM_API_URL=http://localhost:20001 CCD_API_URL=http://localhost:20000 NODE_PATH=. TS_NODE_PROJECT=tsconfig.json NODE_ENV=development USE_REDIS=false mocha test/accessibility/*.ts --exit",
     "test:unit": "rm -rf test/coverage && cross-env NODE_ENV=test DEFAULT_LAUNCH_DARKLY_FLAG=false nyc mocha --recursive \"test/unit/**/*.test.ts\" --recursive \"app/**/*.test.ts\" --recursive \"client/**/*.test.ts\"",

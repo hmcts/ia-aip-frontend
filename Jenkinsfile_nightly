@@ -11,6 +11,7 @@ properties([
     ]),
     parameters([
         string(name: 'sleepTimer', defaultValue: "0", description: 'Wait x seconds until the pipeline is run'),
+        booleanParam(name: 'skipFortifyScan', defaultValue: false, description: 'Tick the checkbox for skip'),
         booleanParam(name: 'skipCrossBrowserTests', defaultValue: false, description: 'Tick the checkbox for skip'),
         booleanParam(name: 'skipSecurityScan', defaultValue: false, description: 'Tick the checkbox for skip'),
         booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox for skip'),
@@ -74,6 +75,9 @@ withNightlyPipeline(type, product, component) {
     env.S2S_MICROSERVICE_NAME = 'iac'
     env.TEST_E2E_FAIL_FAST = 'false'
 
+    if (!params.skipFortifyScan) {
+        enableFortifyScan()
+    }
     if (!params.skipCrossBrowserTests) {
         enableCrossBrowserTest()
     }
@@ -85,11 +89,18 @@ withNightlyPipeline(type, product, component) {
     }
 //    TODO re add in fortify once issues have been resolved
 //    disabled until fortify accounts are allocated
-//    enableFortifyScan()
 //    mutation tests not yet implemented
 //    enableMutationTest()
 
-    after('fortify-scan') {
+    afterAlways('fortify-scan') {
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "Fortify Scan",
+                reportFiles          : "FortifyScanReport.html",
+                reportName           : "Fortify Scan Report"
+        ]
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 

@@ -92,6 +92,10 @@ withNightlyPipeline(type, product, component) {
 //    mutation tests not yet implemented
 //    enableMutationTest()
 
+    before('fortify-scan') {
+        sh "chmod +x gradlew"
+    }
+
     afterAlways('fortify-scan') {
         publishHTML target: [
                 allowMissing         : true,

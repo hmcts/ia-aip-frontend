@@ -24,7 +24,7 @@
     "sonar-scan": "sonar-scanner",
     "test:smoke": "yarn codecept:e2e --grep @smoke",
     "test:smoke-local": "yarn codecept:e2e-local -g @smoke",
-    "test:nightly": "yarn codecept:e2e -g @nightly-test --reporter mocha-multi",
+    "test:nightly": "yarn codecept:e2e -g @basic-test --reporter mocha-multi",
     "test:fullfunctional": "yarn test:nightly",
     "test:functional": "yarn test:e2e",
     "test:e2e": "yarn codecept:e2e -g @e2e",

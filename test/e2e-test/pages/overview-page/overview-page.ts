@@ -1,5 +1,6 @@
 import { paths } from '../../../../app/paths';
 import i18n from '../../../../locale/en.json';
+import { checkAccessibility } from '../helper-functions';
 
 const config = require('config');
 
@@ -12,6 +13,7 @@ module.exports = {
     });
 
     Then(/^I should see the appeal overview page$/, async () => {
+      await checkAccessibility();
       await I.waitInUrl(paths.common.overview,10);
       await I.seeInCurrentUrl(paths.common.overview);
     });

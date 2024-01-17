@@ -87,8 +87,7 @@ withNightlyPipeline(type, product, component) {
     if (!params.skipFullFunctionalTests) {
         enableFullFunctionalTest(180)
     }
-//    TODO re add in fortify once issues have been resolved
-//    disabled until fortify accounts are allocated
+
 //    mutation tests not yet implemented
 //    enableMutationTest()
 
@@ -117,8 +116,7 @@ withNightlyPipeline(type, product, component) {
                 alwaysLinkToLastBuild: true,
                 keepAll              : true
         ])
-        yarnBuilder.yarn('test:a11y')
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
+//        yarnBuilder.yarn('test:a11y')
     }
 
     afterAlways('mutationTest') {
@@ -141,5 +139,6 @@ withNightlyPipeline(type, product, component) {
                 reportFiles          : 'report.html',
                 reportName           : 'AIP Frontend Functional Test'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
     }
 }

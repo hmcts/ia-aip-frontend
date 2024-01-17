@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { createUser } from '../service/idam-service';
-import { browser } from './common/common.ts';
+import { browser } from '../../utils/common.ts';
 const html = require('pa11y-reporter-html');
 const { I } = inject();
 const pa11y = require('pa11y');
@@ -36,6 +36,7 @@ function enterRefNumber(refNumber) {
 
 async function checkAccessibility() {
 // tslint:disable:no-console
+  console.log(browser);
   const path = 'functional-output/accessibility';
   const url = await I.grabCurrentUrl();
   try {

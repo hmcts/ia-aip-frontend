@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -12,6 +13,7 @@ module.exports = {
     Then(/^I should be taken to the out of country address page$/, async () => {
       await I.waitInUrl(paths.appealStarted.oocAddress,10);
       await I.seeInCurrentUrl(paths.appealStarted.oocAddress);
+      await checkAccessibility();
     });
 
     When(/^I enter an out of country address of "([^"]*)"$/, async (oocAddress) => {

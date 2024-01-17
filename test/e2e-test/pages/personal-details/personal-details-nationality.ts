@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -12,6 +13,7 @@ module.exports = {
     Then(/^I should be taken to nationality page$/, async () => {
       await I.waitInUrl(paths.appealStarted.nationality,10);
       await I.seeInCurrentUrl(paths.appealStarted.nationality);
+      await checkAccessibility();
     });
 
     When(/^I pick "([^"]*)" from the Nationalities drop down and click continue$/, async (nation) => {

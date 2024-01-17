@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -11,6 +12,7 @@ module.exports = {
 
     Then(/^I should be taken to the confirm address page$/, async () => {
       I.seeInCurrentUrl(paths.appealStarted.enterAddress);
+      await checkAccessibility();
     });
 
     When(/^I enter building and street "([^"]*)", Town or city "([^"]*)", Postcode "([^"]*)"$/, async (building, town, postcode) => {

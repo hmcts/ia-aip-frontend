@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -12,6 +13,7 @@ module.exports = {
     Given('I should be taken to the decision type page', async () => {
       await I.waitInUrl(paths.appealStarted.decisionType,30);
       await I.seeInCurrentUrl(paths.appealStarted.decisionType);
+      await checkAccessibility();
     });
 
     When(/^I click on the decision-type link$/, async () => {
@@ -32,6 +34,7 @@ module.exports = {
     });
     Then('I should see the the decision type page', async () => {
       I.seeInCurrentUrl(paths.appealStarted.decisionType);
+      await checkAccessibility();
     });
 
     Given('I am on the appeal payment page', async () => {
@@ -52,6 +55,7 @@ module.exports = {
     });
     Then('I should see the appeal payment page', async () => {
       I.seeInCurrentUrl(paths.appealStarted.payNow);
+      await checkAccessibility();
     });
 
     When(/^I select a decision (with|without) a hearing for a (non PA|PA pay now|PA pay later) appeal$/, async (hearingChoice, paChoice) => {

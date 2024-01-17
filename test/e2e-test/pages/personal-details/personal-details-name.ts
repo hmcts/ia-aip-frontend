@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 const { fillInDate } = require('../helper-functions');
 const cache = require('memory-cache');
@@ -14,6 +15,7 @@ module.exports = {
     Then(/^I should be taken to the enter your name page$/, async () => {
       await I.waitInUrl(paths.appealStarted.name,10);
       await I.seeInCurrentUrl(paths.appealStarted.name);
+      await checkAccessibility();
     });
 
     When(/^Enter "([^"]*)" "([^"]*)" as my Given and Family Name and click Save and continue$/, async (givenName, familyName) => {

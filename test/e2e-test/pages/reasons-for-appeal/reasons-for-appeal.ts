@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+import { checkAccessibility } from '../helper-functions';
 
 const config = require('config');
 const testUrl = config.get('testUrl');
@@ -38,6 +39,7 @@ module.exports = {
     Then(/^I should be taken to the appellant timeline$/, async () => {
       await I.waitInUrl('appellant-timeline',10);
       await I.seeInCurrentUrl('appellant-timeline');
+      await checkAccessibility();
     });
   }
 };

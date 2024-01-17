@@ -17,7 +17,7 @@ Scenario: Create appeal and force case through to decided
   Then I should be taken to the appeal page
   When I select appeal type Protection
   And I click "Save and continue" button
-  Then I should see the task-list page
+  Then I expect to be redirect back to the task-list
   When I click on Home office details
   Then I should be taken to the home office ref number page
   Then I enter a home office reference "1212-0099-0062-8083"
@@ -42,12 +42,12 @@ Scenario: Create appeal and force case through to decided
   When I choose the first address from the dropdown list and click continue
   Then I should be taken to the confirm address page
   And I click "Save and continue" button
-  Then I should be taken to the task-list page
+  Then I expect to be redirect back to the task-list
   Given I click the contact details link
   Then I should be taken to the contact-details page
   And I enter text message number "07899999999"
   Then I click "Save and continue" button
-  Then I should be taken to the task-list page
+  Then I expect to be redirect back to the task-list
   When I click on the decision-type link
   Then I should be taken to the decision type page
   When I select a decision with a hearing for a PA pay now appeal
@@ -58,7 +58,7 @@ Scenario: Create appeal and force case through to decided
   And I go to appeal overview page
   Then I should see the appeal overview page
   When I click continue
-  Then I should be taken to the task-list page
+  Then I expect to be redirect back to the task-list
   When I click on the check and send your appeal link
   Then I should be taken to the check-and-send page
   When I check the statement of truth

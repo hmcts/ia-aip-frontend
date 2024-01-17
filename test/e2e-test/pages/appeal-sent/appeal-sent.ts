@@ -1,22 +1,26 @@
 import moment from 'moment';
 import { paths } from '../../../../app/paths';
 import { dayMonthYearFormat } from '../../../../app/utils/date-utils';
+import { checkAccessibility } from '../helper-functions';
 
 module.exports = {
   appealSent(I) {
     Then('I am on the appeal details sent page', async () => {
       await I.waitInUrl(paths.appealSubmitted.confirmation, 15);
       I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
+      await checkAccessibility();
     });
 
     Then('I am on the appeal details submitted page', async () => {
       await I.waitInUrl(paths.pendingPayment.confirmation, 15);
       await I.seeInCurrentUrl(paths.pendingPayment.confirmation);
       await I.see('You still have to Pay for your appeal.');
+      await checkAccessibility();
     });
 
     Then('I am on the make payment page', async () => {
       await I.waitForText('Enter card details', 20);
+      await checkAccessibility();
     });
 
     When('I make a successful payment', async () => {
@@ -43,6 +47,7 @@ module.exports = {
       I.see('A Tribunal Caseworker will ask the Home Office to send any documents it has about your case to the Tribunal');
       I.see('A Tribunal Caseworker will check the Home Office documents and then contact you to tell you what to do next');
       I.seeInSource(moment().add(5,'days').format(dayMonthYearFormat));
+      await checkAccessibility();
     });
 
     Then('I see the respond by date is 4 weeks in the future', async () => {

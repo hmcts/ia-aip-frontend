@@ -13,9 +13,9 @@ module.exports = {
     });
 
     Then(/^I should see the appeal overview page$/, async () => {
-      await checkAccessibility();
       await I.waitInUrl(paths.common.overview,10);
       await I.seeInCurrentUrl(paths.common.overview);
+      await checkAccessibility();
     });
 
     When(/^I should see the 'do this next section' for 'New - Appeal started'$/, () => {

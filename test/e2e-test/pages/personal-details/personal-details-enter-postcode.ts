@@ -1,4 +1,5 @@
 import { paths } from '../../../../app/paths';
+import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -11,6 +12,7 @@ module.exports = {
 
     Then(/^I should be taken to the enter your postcode page$/, async () => {
       I.seeInCurrentUrl(paths.appealStarted.enterPostcode);
+      await checkAccessibility();
     });
 
     When(/^I type "([^"]*)" as my postcode and click Find address$/, async (postcode) => {

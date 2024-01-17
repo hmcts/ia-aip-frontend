@@ -1,5 +1,5 @@
 import { paths } from '../../../app/paths';
-import { checkAccessibility } from '../helper-functions';
+import { checkAccessibility } from './helper-functions';
 
 const textToId = {
   'Your personal details': '#personalDetailsLink',

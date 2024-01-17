@@ -52,10 +52,13 @@ async function checkAccessibility() {
       hideElements: '#cookie-banner, .govuk-phase-banner__content__tag',
       standard: 'WCAG2AAA'
     };
+    const results = await Promise.all([
+      pa11y(url, options)
+    ]);
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path);
     }
-    pa11y(url, options).then(async results => {
+    results.map(async result => {
       const htmlResults = await html.results(result);
       const fileName = result.pageUrl.split('/').pop();
       fs.writeFileSync(`${path}/${fileName}.html`, htmlResults);

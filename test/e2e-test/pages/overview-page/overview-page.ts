@@ -10,6 +10,7 @@ module.exports = {
   overviewPage(I) {
     When(/^I visit the overview page$/, async () => {
       await I.amOnPage(testUrl + paths.common.overview);
+      await checkAccessibility();
     });
 
     Then(/^I should see the appeal overview page$/, async () => {

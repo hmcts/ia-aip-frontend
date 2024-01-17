@@ -109,7 +109,6 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('crossBrowserTest') {
-        yarnBuilder.yarn('test:a11y')
         publishHTML([
                 reportName           : 'IA AIP Frontend Cross Browser Tests',
                 reportDir            : "functional-output/crossbrowser/reports/",
@@ -118,7 +117,8 @@ withNightlyPipeline(type, product, component) {
                 alwaysLinkToLastBuild: true,
                 keepAll              : true
         ])
-
+        yarnBuilder.yarn('test:a11y')
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
     }
 
     afterAlways('mutationTest') {

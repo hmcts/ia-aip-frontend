@@ -35,7 +35,7 @@ function enterRefNumber(refNumber) {
 async function checkAccessibility() {
 // tslint:disable:no-console
   const path = 'functional-output/accessibility';
-  const url = await I.getPageUrl();
+  const url = await I.grabCurrentUrl();
   try {
     const options = {
       log: {

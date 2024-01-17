@@ -33,6 +33,7 @@ function enterRefNumber(refNumber) {
 }
 
 async function checkAccessibility() {
+// tslint:disable:no-console
   const path = 'functional-output/accessibility';
   const url = await I.getPageUrl();
   try {
@@ -45,7 +46,7 @@ async function checkAccessibility() {
       standard: 'WCAG2AAA'
     };
     const results = await Promise.all([
-      pa11y(url, options),
+      pa11y(url, options)
     ]);
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path);

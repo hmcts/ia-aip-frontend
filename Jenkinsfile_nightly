@@ -60,7 +60,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
    envVariable: envVar
   ]
 }
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
 def urlExclusions = params.ZAP_URL_EXCLUSIONS
 withNightlyPipeline(type, product, component) {
     script {
@@ -116,7 +116,6 @@ withNightlyPipeline(type, product, component) {
                 alwaysLinkToLastBuild: true,
                 keepAll              : true
         ])
-//        yarnBuilder.yarn('test:a11y')
     }
 
     afterAlways('mutationTest') {

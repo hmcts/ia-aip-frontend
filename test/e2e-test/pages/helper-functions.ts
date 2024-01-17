@@ -1,6 +1,8 @@
 import { createUser } from '../service/idam-service';
+import * as fs from 'fs';
 const pa11y = require('pa11y');
 const html = require('pa11y-reporter-html');
+import { browser } from './common/common.ts';
 const { I } = inject();
 let currentUserDetails;
 
@@ -43,6 +45,7 @@ async function checkAccessibility() {
         error: console.error,
         info: console.log
       },
+      browser,
       standard: 'WCAG2AAA'
     };
     const results = await Promise.all([

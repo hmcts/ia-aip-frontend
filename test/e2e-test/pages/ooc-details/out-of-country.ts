@@ -1,6 +1,5 @@
 import { paths } from '../../../../app/paths';
-import { fillInDate } from '../helper-functions';
-import { checkAccessibility } from '../helper-functions';
+import { checkAccessibility, fillInDate } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');

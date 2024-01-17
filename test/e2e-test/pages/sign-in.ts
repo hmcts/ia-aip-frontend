@@ -58,8 +58,8 @@ module.exports = {
     });
 
     Given('I log in as an appellant ready to submit appeal', async () => {
-      await I.fillField('#username', "userReadyToSubmitAppeal@mailnesia.com");
-      await I.fillField('#password', "APassword123");
+      await I.fillField('#username', 'userReadyToSubmitAppeal@mailnesia.com');
+      await I.fillField('#password', 'APassword123');
       await I.click('Sign in');
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);

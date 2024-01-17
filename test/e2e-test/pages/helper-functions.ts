@@ -56,9 +56,9 @@ async function checkAccessibility() {
       fs.mkdirSync(path);
     }
     pa11y(url, options).then(async results => {
-       const htmlResults = await html.results(result);
-       const fileName = result.pageUrl.split('/').pop();
-       fs.writeFileSync(`${path}/${fileName}.html`, htmlResults);
+      const htmlResults = await html.results(result);
+      const fileName = result.pageUrl.split('/').pop();
+      fs.writeFileSync(`${path}/${fileName}.html`, htmlResults);
     });
   } catch (error) {
     console.log(error);

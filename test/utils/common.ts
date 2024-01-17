@@ -83,4 +83,4 @@ export async function startAppServer(): Promise<{ browser: Browser; page: Page }
   return { page, browser };
 }
 
-export {browser}
+export { browser };

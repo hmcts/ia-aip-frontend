@@ -45,7 +45,7 @@ async function checkAccessibility() {
         error: console.error,
         info: console.log
       },
-      browser,
+      browser: browser,
       standard: 'WCAG2AAA'
     };
     const results = await Promise.all([

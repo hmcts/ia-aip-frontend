@@ -4,7 +4,7 @@ import rp from 'request-promise';
 import { paths } from '../../../../app/paths';
 const mockData = require('../../../mock/ccd/mock-case-data');
 
-const { fillInDate } = require('../helper-functions');
+const { checkAccessibility, fillInDate } = require('../helper-functions');
 
 const testUrl = require('config').get('testUrl');
 
@@ -461,6 +461,10 @@ module.exports = {
 
     When(/^I wait for ([^"]*) seconds$/, async (waitTime: string) => {
       await I.wait(waitTime);
+    });
+
+    Then('I create a accessibility report for the current page', async () => {
+      await checkAccessibility();
     });
   }
 };

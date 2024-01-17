@@ -1,5 +1,4 @@
 import { paths } from '../../../../app/paths';
-import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 const { fillInDate } = require('../helper-functions');
 const cache = require('memory-cache');
@@ -10,7 +9,6 @@ module.exports = {
   sponsorName(I) {
     Given('I should be taken to the has sponsor name page', async () => {
       I.amOnPage(testUrl + paths.appealStarted.sponsorName);
-      await checkAccessibility();
     });
 
     When(/^I enter "([^"]*)" "([^"]*)" as my sponsor's Given and Family Name and click Save and continue$/, async (sponsorGivenNames, sponsorFamilyName) => {

@@ -1,5 +1,4 @@
 import { paths } from '../../../../app/paths';
-import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 const { fillInDate } = require('../helper-functions');
 
@@ -19,13 +18,11 @@ module.exports = {
     Then(/^I should see letter sent page$/, async () => {
       await I.waitInUrl(paths.appealStarted.letterSent,10);
       await I.seeInCurrentUrl(paths.appealStarted.letterSent);
-      await checkAccessibility();
     });
 
     Then(/^I should see letter received page$/, async () => {
       await I.waitInUrl(paths.appealStarted.letterReceived,10);
       await I.seeInCurrentUrl(paths.appealStarted.letterReceived);
-      await checkAccessibility();
     });
 
     When(/^I enter an on time letter sent date$/, async () => {

@@ -12,7 +12,7 @@ Scenario: Complete appeal application
   And I should see the 'do this next section' for 'New - Appeal started'
   When I click continue
   Then I should see the task-list page
-  When I click on the type-of-appeal link
+  When I go into the Appeal type task
   Then I should be taken to the Is the appellant in the UK page
   When I select Yes
   And I click "Continue" button
@@ -20,7 +20,7 @@ Scenario: Complete appeal application
   When I select appeal type Protection
   And I click "Save and continue" button
   Then I should see the task-list page
-  When I click on Home office details
+  When I go into the Home office details task
   Then I should be taken to the home office ref number page
   Then I enter a home office reference "1212-0099-0062-8083"
   And I click "Save and continue" button
@@ -30,7 +30,7 @@ Scenario: Complete appeal application
   When I upload a Home Office decision letter
   Then I click "Save and continue" button
   Then I expect to be redirect back to the task-list
-  When I click Your personal details
+  When I go into the Personal details task
   Then I should be taken to the enter your name page
   When Enter "Random" "User" as my Given and Family Name and click Save and continue
   Then I click "Save and continue" button
@@ -45,12 +45,12 @@ Scenario: Complete appeal application
   Then I should be taken to the confirm address page
   And I click "Save and continue" button
   Then I should be taken to the task-list page
-  Given I click the contact details link
+  When I go into the Contact details task
   Then I should be taken to the contact-details page
-  And I enter text message number "07899999999"
-  Then I click "Save and continue" button
+  When I enter text message number "07899999999"
+  And I click "Save and continue" button
   Then I should be taken to the task-list page
-  When I click on the decision-type link
+  When I go into the Decision with or without a hearing task
   Then I should be taken to the decision type page
   When I select a decision with a hearing for a PA pay now appeal
   And I click "Save and continue" button

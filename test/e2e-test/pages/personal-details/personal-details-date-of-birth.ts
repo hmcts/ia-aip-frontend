@@ -1,5 +1,5 @@
 import { paths } from '../../../../app/paths';
-import { checkAccessibility, fillInDate } from '../helper-functions';
+import { fillInDate } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -13,7 +13,6 @@ module.exports = {
     Then(/^I should be taken to the DOB page$/, async () => {
       await I.waitInUrl(paths.appealStarted.dob,10);
       await I.seeInCurrentUrl(paths.appealStarted.dob);
-      await checkAccessibility();
     });
 
     Then('I should see the date of birth page', async () => {

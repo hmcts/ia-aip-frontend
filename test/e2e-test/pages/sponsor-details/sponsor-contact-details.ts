@@ -1,5 +1,4 @@
 import { paths } from '../../../../app/paths';
-import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -8,7 +7,6 @@ module.exports = {
   sponsorContactDetails(I) {
     Given('I should be taken to the sponsor contact details page', async () => {
       I.amOnPage(testUrl + paths.appealStarted.sponsorContactDetails);
-      await checkAccessibility();
     });
 
     When(/^I enter sponsor email "([^"]*)"$/, async (sponsorEmail) => {

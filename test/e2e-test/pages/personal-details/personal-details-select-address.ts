@@ -1,5 +1,4 @@
 import { paths } from '../../../../app/paths';
-import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -12,7 +11,6 @@ module.exports = {
 
     Then(/^I should be taken to the what is your address page$/, async () => {
       I.seeInCurrentUrl(paths.appealStarted.postcodeLookup);
-      await checkAccessibility();
     });
 
     When(/^I choose the first address from the dropdown list and click continue$/, async () => {

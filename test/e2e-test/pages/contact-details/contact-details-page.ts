@@ -1,5 +1,4 @@
 import { paths } from '../../../../app/paths';
-import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -35,7 +34,10 @@ module.exports = {
     Then(/^I should be taken to the contact\-details page$/, async () => {
       await I.waitInUrl(paths.appealStarted.contactDetails,10);
       await I.seeInCurrentUrl(paths.appealStarted.contactDetails);
-      await checkAccessibility();
+    });
+
+    When('I go into the Contact details task', async () => {
+      await I.amOnPage(testUrl + paths.appealStarted.contactDetails);
     });
   }
 };

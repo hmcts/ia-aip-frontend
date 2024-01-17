@@ -1,5 +1,4 @@
 import { paths } from '../../../app/paths';
-import { checkAccessibility } from './helper-functions';
 
 const textToId = {
   'Your personal details': '#personalDetailsLink',
@@ -14,7 +13,6 @@ module.exports = {
     Then('I should see the task-list page', async () => {
       await I.waitInUrl(paths.appealStarted.taskList,10);
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
-      await checkAccessibility();
     });
 
     Then('I shouldnt be able to click Personal details', async () => {

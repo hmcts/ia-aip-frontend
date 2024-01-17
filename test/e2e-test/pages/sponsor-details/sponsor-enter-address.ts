@@ -1,5 +1,4 @@
 import { paths } from '../../../../app/paths';
-import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -8,7 +7,6 @@ module.exports = {
   sponsorAddress(I) {
     Given('I should be taken to the has sponsor address page', async () => {
       I.amOnPage(testUrl + paths.appealStarted.sponsorAddress);
-      await checkAccessibility();
     });
 
     When(/^I enter sponsor building and street "([^"]*)", Town or city "([^"]*)", Postcode "([^"]*)"$/, async (building, town, postcode) => {

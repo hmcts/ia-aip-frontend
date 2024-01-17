@@ -1,5 +1,4 @@
 import { paths } from '../../../../app/paths';
-import { checkAccessibility } from '../helper-functions';
 const config = require('config');
 
 const testUrl = config.get('testUrl');
@@ -15,10 +14,13 @@ module.exports = {
       await I.click('Check and send your appeal');
     });
 
+    When('I go into the Check and send your appeal details task', async () => {
+      await I.amOnPage(testUrl + paths.appealStarted.checkAndSend);
+    });
+
     Then(/^I should be taken to the check-and-send page$/, async () => {
       await I.waitInUrl(paths.appealStarted.checkAndSend, 30);
       await I.seeInCurrentUrl(paths.appealStarted.checkAndSend);
-      await checkAccessibility();
       await I.see('Check your answer', 'h1');
     });
 

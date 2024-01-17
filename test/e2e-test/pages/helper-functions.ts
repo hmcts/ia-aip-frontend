@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import { createUser } from '../service/idam-service';
 import { browser } from '../../utils/common.ts';
+import { createUser } from '../service/idam-service';
 const html = require('pa11y-reporter-html');
 const { I } = inject();
 const pa11y = require('pa11y');

@@ -1,9 +1,9 @@
-import { createUser } from '../service/idam-service';
 import * as fs from 'fs';
-const pa11y = require('pa11y');
-const html = require('pa11y-reporter-html');
 import { browser } from './common/common.ts';
+import { createUser } from '../service/idam-service';
+const html = require('pa11y-reporter-html');
 const { I } = inject();
+const pa11y = require('pa11y');
 let currentUserDetails;
 
 async function signInHelper() {

@@ -1,7 +1,7 @@
 import * as fs from 'fs';
-import { browser } from '../../utils/common.ts';
 import { createUser } from '../service/idam-service';
 const html = require('pa11y-reporter-html');
+const container = require('codeceptjs').container;
 const { I } = inject();
 const pa11y = require('pa11y');
 let currentUserDetails;
@@ -36,7 +36,6 @@ function enterRefNumber(refNumber) {
 
 async function checkAccessibility() {
 // tslint:disable:no-console
-  console.log(browser);
   const path = 'functional-output/accessibility';
   const url = await I.grabCurrentUrl();
   try {
@@ -46,7 +45,9 @@ async function checkAccessibility() {
         error: console.error,
         info: console.log
       },
-      browser: browser,
+      ignoreUrl: true,
+      browser: container.helpers('Puppeteer').browser,
+      page: container.helpers('Puppeteer').page,
       standard: 'WCAG2AAA'
     };
     const results = await Promise.all([

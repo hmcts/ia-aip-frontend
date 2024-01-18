@@ -14,9 +14,9 @@ Feature: Make an application
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
-    When I select appeal type Protection
+    When I select appeal type Deprivation of Citizenship
     And I click "Save and continue" button
-    Then I should see the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Home office details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
@@ -41,32 +41,28 @@ Feature: Make an application
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Contact details task
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
-    When I select a decision with a hearing for a PA pay now appeal
+    When I select a decision with a hearing for a non PA appeal
     And I click "Save and continue" button
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
     And I go to appeal overview page
     Then I should see the appeal overview page
-    And I click continue
-    Then I should be taken to the task-list page
+    When I click continue
+    Then I expect to be redirect back to the task-list
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details submitted page
-    When I click "Pay for this appeal" button
-    Then I am on the make payment page
-    When I make a successful payment
-    Then I am on the appeal details sent with payment page
+    And I submit appeal for a decision with hearing non paid appeal
+    Then I am on the appeal details sent page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -101,9 +97,9 @@ Feature: Make an application
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
-    When I select appeal type Protection
+    When I select appeal type Deprivation of Citizenship
     And I click "Save and continue" button
-    Then I should see the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Home office details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
@@ -128,32 +124,28 @@ Feature: Make an application
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Contact details task
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
-    When I select a decision with a hearing for a PA pay now appeal
+    When I select a decision with a hearing for a non PA appeal
     And I click "Save and continue" button
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
     And I go to appeal overview page
     Then I should see the appeal overview page
-    And I click continue
-    Then I should be taken to the task-list page
+    When I click continue
+    Then I expect to be redirect back to the task-list
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details submitted page
-    When I click "Pay for this appeal" button
-    Then I am on the make payment page
-    When I make a successful payment
-    Then I am on the appeal details sent with payment page
+    And I submit appeal for a decision with hearing non paid appeal
+    Then I am on the appeal details sent page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -188,9 +180,9 @@ Feature: Make an application
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
-    When I select appeal type Protection
+    When I select appeal type Deprivation of Citizenship
     And I click "Save and continue" button
-    Then I should see the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Home office details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
@@ -215,32 +207,28 @@ Feature: Make an application
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Contact details task
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
-    When I select a decision with a hearing for a PA pay now appeal
+    When I select a decision with a hearing for a non PA appeal
     And I click "Save and continue" button
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
     And I go to appeal overview page
     Then I should see the appeal overview page
-    And I click continue
-    Then I should be taken to the task-list page
+    When I click continue
+    Then I expect to be redirect back to the task-list
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details submitted page
-    When I click "Pay for this appeal" button
-    Then I am on the make payment page
-    When I make a successful payment
-    Then I am on the appeal details sent with payment page
+    And I submit appeal for a decision with hearing non paid appeal
+    Then I am on the appeal details sent page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -275,9 +263,9 @@ Feature: Make an application
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
-    When I select appeal type Protection
+    When I select appeal type Deprivation of Citizenship
     And I click "Save and continue" button
-    Then I should see the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Home office details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
@@ -302,32 +290,28 @@ Feature: Make an application
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Contact details task
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
-    When I select a decision with a hearing for a PA pay now appeal
+    When I select a decision with a hearing for a non PA appeal
     And I click "Save and continue" button
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
     And I go to appeal overview page
     Then I should see the appeal overview page
-    And I click continue
-    Then I should be taken to the task-list page
+    When I click continue
+    Then I expect to be redirect back to the task-list
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details submitted page
-    When I click "Pay for this appeal" button
-    Then I am on the make payment page
-    When I make a successful payment
-    Then I am on the appeal details sent with payment page
+    And I submit appeal for a decision with hearing non paid appeal
+    Then I am on the appeal details sent page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page
@@ -362,9 +346,9 @@ Feature: Make an application
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
-    When I select appeal type Protection
+    When I select appeal type Deprivation of Citizenship
     And I click "Save and continue" button
-    Then I should see the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Home office details task
     Then I should be taken to the home office ref number page
     Then I enter a home office reference "1212-0099-0062-8083"
@@ -389,32 +373,28 @@ Feature: Make an application
     When I choose the first address from the dropdown list and click continue
     Then I should be taken to the confirm address page
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Contact details task
     Then I should be taken to the contact-details page
     When I enter text message number "07899999999"
     And I click "Save and continue" button
-    Then I should be taken to the task-list page
+    Then I expect to be redirect back to the task-list
     When I go into the Decision with or without a hearing task
     Then I should be taken to the decision type page
-    When I select a decision with a hearing for a PA pay now appeal
+    When I select a decision with a hearing for a non PA appeal
     And I click "Save and continue" button
     Then I should be taken to the pcq-questions page
     When I click "I don't want to answer these questions" button
     And I wait for 5 seconds
     And I go to appeal overview page
     Then I should see the appeal overview page
-    And I click continue
-    Then I should be taken to the task-list page
+    When I click continue
+    Then I expect to be redirect back to the task-list
     When I go into the Check and send your appeal details task
     Then I should be taken to the check-and-send page
     When I check the statement of truth
-    And I submit appeal for a decision with hearing paid appeal
-    Then I am on the appeal details submitted page
-    When I click "Pay for this appeal" button
-    Then I am on the make payment page
-    When I make a successful payment
-    Then I am on the appeal details sent with payment page
+    And I submit appeal for a decision with hearing non paid appeal
+    Then I am on the appeal details sent page
     And I see "Your appeal details have been sent" in title
     And I click on the See your appeal progress link
     Then I should see the appeal overview page

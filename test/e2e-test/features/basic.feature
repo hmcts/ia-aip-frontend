@@ -1,4 +1,4 @@
-@crossbrowser
+#@crossbrowser
 Feature: Basic Appeal Submissions
 
   Scenario: Complete PA Pay Now appeal

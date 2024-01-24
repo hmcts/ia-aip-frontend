@@ -618,6 +618,27 @@ function getHearingNoticeViewer(req: Request, res: Response, next: NextFunction)
   }
 }
 
+function getHearingAdjournmentNoticeViewer(req: Request, res: Response, next: NextFunction) {
+  try {
+    let previousPage: string = paths.common.overview;
+    const hearingAdjournmentNoticeDocuments = req.session.appeal.hearingDocuments.filter(doc => doc.tag === 'noticeOfAdjournedHearing');
+    const data = [];
+    hearingAdjournmentNoticeDocuments.forEach(document => {
+      const fileNameFormatted = fileNameFormatter(document.name);
+      data.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(document.dateUploaded).format(dayMonthYearFormat)]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${document.fileId}'>${fileNameFormatted}</a>`]));
+    });
+
+    return res.render('templates/details-viewer.njk', {
+      title: i18n.pages.detailViewers.hearingAdjournmentNotice.title,
+      data,
+      previousPage
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 function getDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
@@ -941,6 +962,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.homeOfficeWithdrawLetter, getHomeOfficeWithdrawLetter);
   router.get(paths.common.homeOfficeResponse, getHomeOfficeResponse);
   router.get(paths.common.hearingNoticeViewer, getHearingNoticeViewer);
+  router.get(paths.common.hearingAdjournmentNoticeViewer, getHearingAdjournmentNoticeViewer);
   router.get(paths.common.hearingBundleViewer, getHearingBundle);
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
   router.get(paths.common.lrReasonsForAppealViewer, getLrReasonsForAppealViewer);
@@ -967,6 +989,7 @@ export {
   getOutOfTimeDecisionViewer,
   getHomeOfficeResponse,
   getHearingNoticeViewer,
+  getHearingAdjournmentNoticeViewer,
   getHearingBundle,
   getDecisionAndReasonsViewer,
   getLrReasonsForAppealViewer,

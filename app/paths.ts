@@ -224,6 +224,7 @@ const paths = {
     homeOfficeWithdrawLetter: '/home-office-withdrawal-letter',
     homeOfficeResponse: '/home-office-response',
     hearingNoticeViewer: '/hearing-notice',
+    hearingAdjournmentNoticeViewer: '/hearing-adjournment-notice',
     hearingBundleViewer: '/hearing-bundle',
     decisionAndReasonsViewer: '/decision-reasons',
     ftpaAppellantApplicationViewer: '/ftpa-appellant-application',

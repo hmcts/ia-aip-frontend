@@ -1470,7 +1470,7 @@ describe('Detail viewer Controller', () => {
   describe('should render notice of adjourned hearing', () => {
     const document = {
       fileId: 'a3d396eb-277d-4b66-81c8-627f57212ec8',
-      name: 'PA 50002 2021-perez-hearing-adjourned-notice.PDF',
+      name: 'PA 50002 2021-perez-notice-of-adjourned-hearing.PDF',
       id: '1',
       tag: 'noticeOfAdjournedHearing',
       dateUploaded: '2021-06-01'
@@ -1484,7 +1484,7 @@ describe('Detail viewer Controller', () => {
         },
         {
           key: { text: i18n.pages.detailViewers.common.document },
-          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-perez-hearing-notice(PDF)</a>` }
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/${document.fileId}'>PA 50002 2021-notice-of-adjourned-hearing(PDF)</a>` }
         }];
 
       getHearingAdjournmentNoticeViewer(req as Request, res as Response, next);

@@ -1474,6 +1474,16 @@
             }
           ]
         },
+        "recordAdjournmentDetails": {
+          "text": "Your hearing was adjourned.",
+          "links": [
+            {
+              "title": "Useful documents",
+              "text": "Notice of Adjourned Hearing",
+              "href": "{{ paths.common.hearingAdjournmentNoticeViewer }}"
+            }
+          ]
+        },
         "sendDecisionAndReasons": {
           "text": "The Decision and Reasons documents is ready to view.",
           "textForEditListCase": "The Decision and Reasons documents is ready to view.",
@@ -1824,6 +1834,9 @@
       },
       "hearingNotice": {
         "title": "Notice of Hearing"
+      },
+      "hearingAdjournmentNotice": {
+        "title": "Notice of Adjourned Hearing"
       },
       "hearingBundle": {
         "title": "Hearing Bundle",

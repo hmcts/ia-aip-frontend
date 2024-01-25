@@ -245,7 +245,10 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   ];
 
   if (hearingBundleFeatureEnabled) {
-    appealHearingRequirementsSectionEvents.push(Events.LIST_CASE.id);
+    appealHearingRequirementsSectionEvents.push(
+      Events.LIST_CASE.id,
+      Events.RECORD_ADJOURNMENT_DETAILS.id
+    );
   }
 
   if (uploadAddendumEvidenceFeatureEnabled) {

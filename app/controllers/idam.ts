@@ -32,8 +32,8 @@ function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
 }
 
 async function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {
-  idamConfig.redirectUri = await getIdamRedirectUrl(req);
-  idamConfig.idamLoginUrl = await getIdamLoginUrl(req);
+  idamConfig.redirectUri = getIdamRedirectUrl(req);
+  idamConfig.idamLoginUrl = getIdamLoginUrl(req);
   await idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
 }
 

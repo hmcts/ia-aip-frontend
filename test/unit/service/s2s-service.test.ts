@@ -81,9 +81,7 @@ describe('s2s-service', () => {
       return true;
     });
 
-    const buildStub = sandbox.stub(s2s, 'buildRequest').callsFake(() => {
-      return requestStub;
-    });
+    const buildStub = sandbox.stub(s2s, 'buildRequest').resolves(requestStub);
 
     const result = await s2s.getServiceToken();
     expect(jwtStub).has.been.calledOnce;

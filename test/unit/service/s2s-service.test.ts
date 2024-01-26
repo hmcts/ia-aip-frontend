@@ -53,10 +53,8 @@ describe('s2s-service', () => {
     const jwtStub = sandbox.stub(jwtUtils, 'isJWTExpired').callsFake(() => {
       return true;
     });
-    const promise = sinon.promise(() => {
-      return requestStub;
-    });
-    const buildStub = sandbox.stub(s2s, 'buildRequest').callsFake(promise);
+
+    const buildStub = sandbox.stub(s2s, 'buildRequest').resolves(requestStub);
 
     const result = await s2s.getServiceToken();
     expect(jwtStub).has.been.calledOnce;

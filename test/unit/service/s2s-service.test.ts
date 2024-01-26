@@ -46,16 +46,17 @@ describe('s2s-service', () => {
         oneTimePassword: '12345'
       }
     };
+
     const stubResponse = { status: 200, statusText: 'OK', data:  'theNewToken' };
     const restCall = sandbox.stub(axios, 'post').withArgs(requestStub.uri, requestStub.body).returns(Promise.resolve(stubResponse));
 
     const jwtStub = sandbox.stub(jwtUtils, 'isJWTExpired').callsFake(() => {
       return true;
     });
-
-    const buildStub = sandbox.stub(s2s, 'buildRequest').callsFake(() => {
+    const promise = sinon.promise(() => {
       return requestStub;
     });
+    const buildStub = sandbox.stub(s2s, 'buildRequest').callsFake(promise);
 
     const result = await s2s.getServiceToken();
     expect(jwtStub).has.been.calledOnce;

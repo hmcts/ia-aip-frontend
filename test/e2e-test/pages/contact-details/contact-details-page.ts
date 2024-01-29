@@ -35,5 +35,9 @@ module.exports = {
       await I.waitInUrl(paths.appealStarted.contactDetails,10);
       await I.seeInCurrentUrl(paths.appealStarted.contactDetails);
     });
+
+    When('I go into the Contact details task', async () => {
+      await I.amOnPage(testUrl + paths.appealStarted.contactDetails);
+    });
   }
 };

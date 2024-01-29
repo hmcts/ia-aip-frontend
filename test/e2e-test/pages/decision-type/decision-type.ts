@@ -14,6 +14,10 @@ module.exports = {
       await I.seeInCurrentUrl(paths.appealStarted.decisionType);
     });
 
+    When('I go into the Decision with or without a hearing task', async () => {
+      await I.amOnPage(testUrl + paths.appealStarted.decisionType);
+    });
+
     When(/^I click on the decision-type link$/, async () => {
       await I.click('#typeOfDecisionLink');
     });

@@ -67,7 +67,7 @@ If the username is not recognised then no-cases@example.com behaviour will be us
 
 ### Using the application
 
-To understand if the application is working, you can call it's health endpoint:
+To understand if the application is working, you can call its health endpoint:
 
 ```
 curl https://localhost:3000/health

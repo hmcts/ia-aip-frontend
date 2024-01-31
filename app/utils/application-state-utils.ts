@@ -550,9 +550,24 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'decided':
-      doThisNextSection = {
-        decision: req.session.appeal.isDecisionAllowed,
-        descriptionParagraphs: [
+
+      let decidedDescriptionParagraphs;
+      let decidedInfo;
+
+      if (ftpaEnabled) {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.descriptionFtpaEnabled
+        ];
+
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.info.titleFtpaEnabled,
+          text: i18n.pages.overviewPage.doThisNext.decided.info.text,
+          url: i18n.pages.overviewPage.doThisNext.decided.info.urlFtpaEnabled
+        };
+
+      } else {
+        decidedDescriptionParagraphs = [
           i18n.pages.overviewPage.doThisNext.decided.decision,
           i18n.pages.overviewPage.doThisNext.decided.description
         ];

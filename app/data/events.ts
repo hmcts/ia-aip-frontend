@@ -201,6 +201,11 @@ export const Events = {
     summary: 'Leadership Judge FTPA decision',
     description: 'Leadership Judge FTPA decision'
   },
+  DECISION_WITHOUT_HEARING: {
+    id: 'decisionWithoutHearing',
+    summary: 'Decision without a hearing',
+    description: 'Decision without a hearing'
+  },
   MARK_AS_READY_FOR_UT_TRANSFER: {
     id: 'markAsReadyForUtTransfer',
     summary: 'Transfer appeal to Upper Tribunal',

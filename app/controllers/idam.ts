@@ -31,10 +31,10 @@ function getRedirectUrl(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {
+async function authenticateMiddleware(req: Request, res: Response, next: NextFunction) {
   idamConfig.redirectUri = getIdamRedirectUrl(req);
   idamConfig.idamLoginUrl = getIdamLoginUrl(req);
-  idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
+  await idamExpressMiddleware.authenticate(idamConfig)(req, res, next);
 }
 
 function setupIdamController(): Router {

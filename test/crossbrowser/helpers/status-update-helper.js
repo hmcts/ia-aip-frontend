@@ -19,9 +19,9 @@ module.exports = function () {
    * Updates the saucelabs test result to 'passed'
    */
   event.dispatcher.on(event.test.passed, () => {
-    const webDriverIOHelper = container.helpers('WebDriverIO');
-    const sessionId = webDriverIOHelper.browser.requestHandler.sessionID;
-    const config = webDriverIOHelper.config;
+    const webDriverHelper = container.helpers('WebDriver');
+    const sessionId = webDriverHelper.browser.requestHandler.sessionID;
+    const config = webDriverHelper.config;
     exec(updateResult('true', sessionId, config));
   });
 
@@ -30,9 +30,9 @@ module.exports = function () {
    * Updates the saucelabs test result to 'failed'
    */
   event.dispatcher.on(event.test.failed, () => {
-    const webDriverIOHelper = container.helpers('WebDriverIO');
-    const sessionId = webDriverIOHelper.browser.requestHandler.sessionID;
-    const config = webDriverIOHelper.config;
+    const webDriverHelper = container.helpers('WebDriver');
+    const sessionId = webDriverHelper.browser.requestHandler.sessionID;
+    const config = webDriverHelper.config;
     exec(updateResult('false', sessionId, config));
   });
 };

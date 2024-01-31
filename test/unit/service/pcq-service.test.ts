@@ -81,6 +81,7 @@ describe('PCQ service', () => {
   describe('CheckPcqHealth', () => {
     it('should return false when an exception is thrown', async () => {
       const error = new Error('an error');
+      sandbox.stub(rp, 'get').resolves(error);
       const pcqService = new PcqService();
       const healthCheck = await pcqService.checkPcqHealth();
       expect(healthCheck).to.be.equal(false);

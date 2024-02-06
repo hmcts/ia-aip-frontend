@@ -7,6 +7,11 @@ class FailedTest extends Helper {
   _failed() {
     global.testFailed = true;
   }
+
+  _passed() {
+    global.testsPassed += 1;
+  }
+
 //  async _afterStep(step) {
 //    const helper = this.helpers['Puppeteer'];
 //    const unwantedStrings = ['idam', 'start-appeal', 'eligibility'];

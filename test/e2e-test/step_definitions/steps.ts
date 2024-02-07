@@ -51,9 +51,6 @@ const { I } = inject();
 
 Before((test) => {
   test.retries(5);
-  if (!global.testsTitles.includes(test.title)) {
-    global.testsTitles.push(test.title);
-  }
 });
 
 common(I);

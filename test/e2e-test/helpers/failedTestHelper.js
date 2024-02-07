@@ -4,12 +4,18 @@ const process = require('process');
 const assert = require('assert');
 
 class FailedTest extends Helper {
-  _failed() {
+  _failed(test) {
     global.testFailed = true;
+    if (!global.testsTitles.includes(test.title)) {
+      global.testsTitles.push(test.title);
+    }
   }
 
-  _passed() {
+  _passed(test) {
     global.testsPassed += 1;
+    if (!global.testsTitles.includes(test.title)) {
+      global.testsTitles.push(test.title);
+    }
   }
 
 //  async _afterStep(step) {

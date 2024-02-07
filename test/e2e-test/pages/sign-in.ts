@@ -43,7 +43,7 @@ module.exports = {
       I.amOnPage(testUrl + paths.common.login);
       await signInHelper();
       for (let i = 0; i < 10; i++) {
-        let success = await I.checkIfLogInIsSuccessful(10);
+        let success = await NavigationHelper.checkIfLogInIsSuccessful(10);
         if (success === true) {
           break;
         } else {

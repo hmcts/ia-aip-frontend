@@ -1,10 +1,10 @@
-import * as process from 'process';
-import Logger, { getLogLabel } from '../../app/utils/logger';
 import express from 'express';
 import fs from 'graceful-fs';
 import http from 'http';
 import https from 'https';
+import * as process from 'process';
 import { createApp } from '../../app/app';
+import Logger, { getLogLabel } from '../../app/utils/logger';
 
 const dyson = require('dyson');
 const path = require('path');

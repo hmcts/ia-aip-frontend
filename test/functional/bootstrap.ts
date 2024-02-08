@@ -4,7 +4,7 @@ import http from 'http';
 import https from 'https';
 import { createApp } from '../../app/app';
 import Logger, { getLogLabel } from '../../app/utils/logger';
-import * as process from "process";
+import * as process from 'process';
 
 const dyson = require('dyson');
 const path = require('path');
@@ -68,6 +68,7 @@ export async function bootstrap() {
   const documentManagementStoreConfigs = dyson.getConfigurations(documentManagementStoreOptions);
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
+  // @ts-ignore
   global.testFailed = false;
 }
 function closeServerWithPromise(server) {
@@ -100,6 +101,7 @@ export async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
+    // @ts-ignore
     if (global.testFailed) {
       process.exit(1);
     } else {

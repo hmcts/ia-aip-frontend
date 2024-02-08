@@ -3,6 +3,7 @@ import { currentUserDetails } from './helper-functions';
 const { signInHelper, signInForUser } = require('./helper-functions');
 const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
+const navigationHelper = require('../helpers/navigationHelper')
 
 module.exports = {
   signIn(I) {
@@ -43,7 +44,7 @@ module.exports = {
       I.amOnPage(testUrl + paths.common.login);
       await signInHelper();
       for (let i = 0; i < 10; i++) {
-        let success = await NavigationHelper.checkIfLogInIsSuccessful(10);
+        let success = await navigationHelper.checkIfLogInIsSuccessful(10);
         if (success === true) {
           break;
         } else {

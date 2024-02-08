@@ -26,6 +26,10 @@
         label: {
           text: question.description
         } if (question.description),
+        label: {
+          text: question.title,
+          classes: "sr-only"
+        } if not (question.description),
         hint: {
           text: question.hint
         } if (question.hint),

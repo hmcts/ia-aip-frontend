@@ -58,6 +58,9 @@
   "documentManagement": {
     "apiUrl": "DOC_MANAGEMENT_URL"
   },
+  "cdamDocumentManagement": {
+    "apiUrl": "CASE_DOCUMENT_AM_URL"
+  },
   "addressLookup": {
     "token": "ADDRESS_LOOKUP_TOKEN",
     "url": "ADDRESS_LOOKUP_URL"
@@ -107,5 +110,8 @@
     "path": "/service-endpoint",
     "returnUrl": "PCQ_RETURN_URL",
     "tokenKey": "PCQ_TOKEN_KEY"
+  },
+  "govNotify": {
+    "accessKey": "GOV_NOTIFY_KEY"
   }
 }

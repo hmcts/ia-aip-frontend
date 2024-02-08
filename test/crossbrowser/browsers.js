@@ -17,13 +17,13 @@ const browsers = {
   ],
   chrome: [
     {
-      browserName: 'chrome',
+      browserName: 'chromeWin',
       name: 'WIN_CHROME_LATEST',
       platform: 'Windows 10',
       version: 'latest'
     },
     {
-      browserName: 'chrome',
+      browserName: 'chromeMac',
       name: 'MAC_CHROME_LATEST',
       platform: 'macOS 10.13',
       version: 'latest'
@@ -32,13 +32,13 @@ const browsers = {
   ,
   firefox: [
     {
-      browserName: 'firefox',
+      browserName: 'firefoxWin',
       name: 'WIN_FIREFOX_LATEST',
       platform: 'Windows 10',
       version: 'latest'
     },
     {
-      browserName: 'firefox',
+      browserName: 'firefoxMac',
       name: 'MAC_FIREFOX_LATEST',
       platform: 'macOS 10.13',
       version: 'latest'
@@ -46,14 +46,14 @@ const browsers = {
   ],
   safari: [
     {
-      browserName: 'safari',
+      browserName: 'safariLatest',
       name: 'SAFARI_LATEST',
       platform: 'macOS 10.13',
       version: 'latest',
       avoidProxy: true
     },
     {
-      browserName: 'safari',
+      browserName: 'safari11',
       name: 'SAFARI_11',
       platform: 'macOS 10.13',
       version: '11.1',

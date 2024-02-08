@@ -18,7 +18,7 @@ let idamServer: http.Server;
 let postcodeLookupServer: http.Server;
 let documentManagementStoreServer: http.Server;
 
-function bootstrap() {
+export async function bootstrap() {
   server = https.createServer({
     key: fs.readFileSync('keys/server.key'),
     cert: fs.readFileSync('keys/server.cert')
@@ -68,7 +68,6 @@ function bootstrap() {
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
 }
-
 function closeServerWithPromise(server) {
   return new Promise(function (resolve, reject) {
     server.close((err, result) => {
@@ -78,8 +77,7 @@ function closeServerWithPromise(server) {
     });
   });
 }
-
-async function teardown(done) {
+export async function teardown() {
   try {
     if (server && server.close) {
       await closeServerWithPromise(server);
@@ -100,17 +98,6 @@ async function teardown(done) {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    done();
     process.exit();
   }
 }
-
-module.exports = {
-  bootstrap: function (done) {
-    bootstrap();
-    done();
-  },
-  teardown: async function (done) {
-    await teardown(done);
-  }
-};

@@ -335,6 +335,7 @@
       "description": "You can usually find this stamped on the envelope of the decision letter. If you don't have the envelope, you can enter the date on the first page of the decision letter.",
       "dateTitle": "Enter the date the letter was sent",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when your decision letter from the Home Office was sent",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted",
       "sections": [
         {
@@ -350,7 +351,8 @@
     "homeOfficeLetterReceived": {
       "title": "What date did you receive your decision letter from the Home Office?",
       "dateTitle": "Enter the date",
-      "dateHint": "For example, 31 3 2019"
+      "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when your decision letter from the Home Office was received"
     },
     "homeOfficeLetterUpload": {
       "title": "Upload your Home Office decision letter",
@@ -416,6 +418,11 @@
           "whatHappensNextContent2": "Your appeal will not progress until you have paid",
           "whatHappensNextContent3": "The Tribunal may end the appeal if you do not pay"
         }
+      },
+      "feedback": {
+        "heading": "We'd like to hear your thoughts",
+        "contentText": "Complete this short, 5-minute survey to help improve our services for you and others.",
+        "contentLink": "<a href=\"https://www.smartsurvey.co.uk/s/SurveyExit/?service=iac/\" target=\"_blank\">Please leave your feedback here</a>"
       }
     },
     "confirmationPaidLater": {
@@ -984,9 +991,14 @@
           "dueDate": "ended  should be by <b>{{ applicationNextStep.deadline }}</b> but it might take longer than that.",
           "ctaTitle": "Your appeal has now ended",
           "ctaInstruction": "Review your <a href=\"{{ paths.common.noticeEndedAppealViewer }}\">Notice of Ended Appeal</a>. This includes details of who ended the appeal and why.",
-          "ctaReview": "If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review the decision</a>.",
-          "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
-          "ctaFeedbackDescription": "<a href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
+          "ctaReview": "If a Tribunal Caseworker ended the appeal and you disagree with this decision, you have 14 days to <a href=\"{{ paths.makeApplication.judgesReview }}\">ask for a judge to review the decision</a>."
+        },
+        "decidedWithoutHearing": {
+          "description": [
+            "You chose to have your appeal to be decided without a hearing.",
+            "A judge will decide your appeal based on the information and evidence provided by you and the Home Office.",
+            "The Tribunal will contact you when a decision has been made."
+          ]
         },
         "cmaListed": {
           "description": "The Tribunal has set a date for your case management appointment. Here are the details:",
@@ -1049,13 +1061,9 @@
             "text": "If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
             "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
             "urlFtpaEnabled": "<a href=\"{{ paths.ftpa.ftpaApplication }}\">Apply for permission to appeal to the Upper Tribunal</a>"
-          },
-          "ctaFeedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
-          "ctaFeedbackDescription": "<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>.",
-          "feedbackTitle": "<h3 class=\"govuk-heading-s govuk-!-margin-bottom-0\">Tell us what you think</h3>",
-          "feedbackDescription": "<a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/AiPImmigrationAsylum_Exit/\" target=\"_blank\">Take a short survey about this service (opens in a new window)</a>."
+          }
         },
-        "ftpaSubmitted": {
+        "ftpaSubmitted":{
           "description": {
             "appellant": [
               "A judge will decide your application for permission to appeal to the Upper Tribunal.",
@@ -3491,12 +3499,14 @@
       "title": "What date did you leave the UK after your application to stay in the country was refused?",
       "dateTitle": "Enter the date",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when you left the UK after your application to stay in the country was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     },
     "oocProtectionDepartureDate": {
       "title": "What date did you leave the UK after your Protection claim was refused?",
       "dateTitle": "Enter the date",
       "dateHint": "For example, 31 3 2019",
+      "dateLegend": "The field to enter the date when you left the UK after your Protection claim was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
     }
   },

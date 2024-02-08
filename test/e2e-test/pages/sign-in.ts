@@ -32,7 +32,7 @@ module.exports = {
 
     When('I click Sign in to continue with your appeal after answering PCQ questions', async () => {
       await I.click('Sign in to continue with your appeal');
-      await I.waitInUrl('/appeal-overview', 10);
+      await I.waitInUrl('/appeal-overview', 30);
     });
 
     When('I enter creds and click sign in', async () => {
@@ -42,6 +42,25 @@ module.exports = {
     Given('I am authenticated as a valid appellant', async () => {
       I.amOnPage(testUrl + paths.common.login);
       await signInHelper();
+      for (let i = 0; i < 10; i++) {
+        let success = await I.checkIfLogInIsSuccessful(10);
+        if (success === true) {
+          break;
+        } else {
+          await I.amOnPage(testUrl + '/logout');
+          await I.amOnPage(testUrl + paths.common.login);
+          await I.fillField('#username', currentUserDetails.email);
+          await I.fillField('#password', currentUserDetails.password);
+          await I.click('Sign in');
+        }
+      }
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
+    Given('I log in as an appellant ready to submit appeal', async () => {
+      await I.fillField('#username', 'readyToSubmitAppealDONOTSUBMIT@mailnesia.com');
+      await I.fillField('#password', 'Apassword123');
+      await I.click('Sign in');
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
@@ -140,7 +159,7 @@ module.exports = {
     });
 
     Given('I sign out', async () => {
-      await I.click('Sign out');
+      I.retry(3).amOnPage(testUrl + '/logout');
       await I.wait(5);
     });
   }

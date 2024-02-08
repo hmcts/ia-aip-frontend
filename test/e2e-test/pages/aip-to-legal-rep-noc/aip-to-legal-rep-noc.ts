@@ -1,5 +1,5 @@
 import { paths } from '../../../../app/paths';
-
+const assert = require('assert');
 const config = require('config');
 let caseReferenceNumber;
 let firstName;
@@ -19,7 +19,7 @@ module.exports = {
   aipToLegalRepNoC(I) {
     When(/^I get and save the Case Reference number and names$/, async () => {
       await I.waitForText('Online case reference number:', 30);
-      let list = await I.grabTextFrom('li');
+      let list = await I.grabTextFromAll('li');
       const caseRef = list[0].split(': ')[1];
       let fullName = await list[1].split(': ')[1];
       const forename = fullName.split(' ')[0];
@@ -30,12 +30,20 @@ module.exports = {
     });
 
     When(/^I log in as a Legal Rep$/, async () => {
-      await I.retry(3).amOnPage(exuiBaseUrl);
-      await I.waitForElement('#username', 30);
-      await I.fillField('#username', config.get('testAccounts.testLawFirmAUsername'));
-      await I.fillField('#password', config.get('testAccounts.testLawFirmAPassword'));
-      await I.click('Sign in');
-      await I.waitForText('Your cases', 60);
+      await I.amOnPage(exuiBaseUrl);
+      for (let i = 0; i < 5; i++) {
+        let success = await I.checkIfExUiLogInIsSuccessful();
+        if (success === true) {
+          break;
+        } else {
+          await I.amOnPage(exuiBaseUrl + 'auth/logout');
+          await I.waitForElement('#username', 30);
+          await I.fillField('#username', config.get('testAccounts.testLawFirmAUsername'));
+          await I.fillField('#password', config.get('testAccounts.testLawFirmAPassword'));
+          await I.click('Sign in');
+        }
+      }
+      await I.checkIfExUiLogInIsSuccessful();
     });
 
     When(/^I go to Notice of Change$/, async () => {

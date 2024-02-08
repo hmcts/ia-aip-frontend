@@ -575,6 +575,7 @@ describe('Detail viewer Controller', () => {
     });
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
@@ -639,6 +640,7 @@ describe('Detail viewer Controller', () => {
     // });
 
     it('should catch exception and call next with the error', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       await getAppealDetailsViewer(req as Request, res as Response, next);
@@ -795,6 +797,7 @@ describe('Detail viewer Controller', () => {
     });
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
@@ -858,6 +861,7 @@ describe('Detail viewer Controller', () => {
     // });
 
     it('should catch exception and call next with the error', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       await getAppealDetailsViewer(req as Request, res as Response, next);
@@ -992,6 +996,7 @@ describe('Detail viewer Controller', () => {
     });
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
@@ -1055,6 +1060,7 @@ describe('Detail viewer Controller', () => {
     // });
 
     it('should catch exception and call next with the error', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       await getAppealDetailsViewer(req as Request, res as Response, next);

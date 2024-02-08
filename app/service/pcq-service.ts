@@ -22,7 +22,7 @@ interface PcqParams {
 export default class PcqService {
 
   getPcqId() {
-    return uuid.v4();
+    return uuid();
   }
 
   async checkPcqHealth(): Promise<boolean> {

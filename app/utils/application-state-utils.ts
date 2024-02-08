@@ -47,8 +47,6 @@ interface DoThisNextSection {
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   decision?: string;
-  feedbackTitle?: string;
-  feedbackDescription?: string;
   utAppealReferenceNumber?: string;
 }
 
@@ -57,7 +55,10 @@ interface DoThisNextSection {
  * @param req the request containing the session and appeal status
  */
 function getAppealStatus(req: Request) {
-  if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== States.ENDED.id) {
+  if (req.session.appeal.appealStatus === States.FINAL_BUNDLING.id
+    && req.session.appeal.history.find(event => event.id === Events.DECISION_WITHOUT_HEARING.id)) {
+    return 'decidedWithoutHearing';
+  } else if (req.session.appeal.application.isAppealLate && req.session.appeal.appealStatus !== States.ENDED.id) {
     if (req.session.appeal.outOfTimeDecisionType === 'rejected') {
       return 'lateAppealRejected';
     }
@@ -483,6 +484,11 @@ async function getAppealApplicationNextStep(req: Request) {
         hearingCentre: getHearingCentre(req)
       };
       break;
+    case 'decidedWithoutHearing':
+      doThisNextSection = {
+        descriptionParagraphs: i18n.pages.overviewPage.doThisNext.decidedWithoutHearing.description
+      };
+      break;
     case 'ended':
       if (transferredToUpperTribunal(req)) {
         doThisNextSection = {
@@ -506,9 +512,7 @@ async function getAppealApplicationNextStep(req: Request) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
-            i18n.pages.overviewPage.doThisNext.ended.ctaReview,
-            i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackTitle,
-            i18n.pages.overviewPage.doThisNext.ended.ctaFeedbackDescription
+            i18n.pages.overviewPage.doThisNext.ended.ctaReview
           ],
           cta: {
             url: null,
@@ -565,9 +569,7 @@ async function getAppealApplicationNextStep(req: Request) {
       } else {
         decidedDescriptionParagraphs = [
           i18n.pages.overviewPage.doThisNext.decided.decision,
-          i18n.pages.overviewPage.doThisNext.decided.description,
-          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackTitle,
-          i18n.pages.overviewPage.doThisNext.decided.ctaFeedbackDescription
+          i18n.pages.overviewPage.doThisNext.decided.description
         ];
 
         decidedInfo = {
@@ -581,8 +583,6 @@ async function getAppealApplicationNextStep(req: Request) {
         descriptionParagraphs: decidedDescriptionParagraphs,
         info: decidedInfo,
         cta: {},
-        feedbackTitle: i18n.pages.overviewPage.doThisNext.decided.feedbackTitle,
-        feedbackDescription: i18n.pages.overviewPage.doThisNext.decided.feedbackDescription,
         allowedAskForMoreTime: false
       };
       break;

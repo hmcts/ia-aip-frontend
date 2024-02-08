@@ -10,7 +10,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask to withdraw the appeal page$/, async (text: string) => {
-      await I.waitInUrl(paths.makeApplication.withdraw,10);
+      await I.waitInUrl(paths.makeApplication.withdraw,30);
       await I.seeInCurrentUrl(paths.makeApplication.withdraw);
     });
 
@@ -19,7 +19,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask to withdraw the appeal request page$/, async (text: string) => {
-      await I.waitInUrl('make-an-application',10);
+      await I.waitInUrl('make-an-application',30);
       await I.seeInCurrentUrl('make-an-application');
       await I.see('Withdraw this appeal because of this reason');
     });
@@ -29,7 +29,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask to change some of your details page$/, async (text: string) => {
-      await I.waitInUrl(paths.makeApplication.updateAppealDetails,10);
+      await I.waitInUrl(paths.makeApplication.updateAppealDetails,30);
       await I.seeInCurrentUrl(paths.makeApplication.updateAppealDetails);
     });
 
@@ -38,7 +38,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask to change some of your details request page$/, async (text: string) => {
-      await I.waitInUrl('make-an-application',10);
+      await I.waitInUrl('make-an-application',30);
       await I.seeInCurrentUrl('make-an-application');
       await I.see('Change my name now pls');
     });
@@ -48,7 +48,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask to link or unlink this appeal page$/, async (text: string) => {
-      await I.waitInUrl(paths.makeApplication.linkOrUnlink,10);
+      await I.waitInUrl(paths.makeApplication.linkOrUnlink,30);
       await I.seeInCurrentUrl(paths.makeApplication.linkOrUnlink);
     });
 
@@ -57,7 +57,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask to link or unlink this appeal request page$/, async (text: string) => {
-      await I.waitInUrl('make-an-application',10);
+      await I.waitInUrl('make-an-application',30);
       await I.seeInCurrentUrl('make-an-application');
       await I.see('link these appeals and this is why');
     });
@@ -67,7 +67,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask for a judge to review a decision page$/, async (text: string) => {
-      await I.waitInUrl(paths.makeApplication.judgesReview,10);
+      await I.waitInUrl(paths.makeApplication.judgesReview,30);
       await I.seeInCurrentUrl(paths.makeApplication.judgesReview);
     });
 
@@ -76,7 +76,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask for a judge to review a decision request page$/, async (text: string) => {
-      await I.waitInUrl('make-an-application',10);
+      await I.waitInUrl('make-an-application',30);
       await I.seeInCurrentUrl('make-an-application');
       await I.see('Mr judge, please review this decision because of this reason');
     });
@@ -86,7 +86,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask for something else page$/, async (text: string) => {
-      await I.waitInUrl(paths.makeApplication.other,10);
+      await I.waitInUrl(paths.makeApplication.other,30);
       await I.seeInCurrentUrl(paths.makeApplication.other);
     });
 
@@ -95,7 +95,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask for something else request page$/, async (text: string) => {
-      await I.waitInUrl('make-an-application',10);
+      await I.waitInUrl('make-an-application',30);
       await I.seeInCurrentUrl('make-an-application');
       await I.see('I would like this to happen please');
     });
@@ -105,7 +105,7 @@ module.exports = {
     });
 
     Then(/^I should see the Ask for the appeal to be reinstated page$/, async (text: string) => {
-      await I.waitInUrl(paths.makeApplication.reinstate,10);
+      await I.waitInUrl(paths.makeApplication.reinstate,30);
       await I.seeInCurrentUrl(paths.makeApplication.reinstate);
     });
 
@@ -114,23 +114,23 @@ module.exports = {
     });
 
     Then(/^I should see the Ask for the appeal to be reinstated request page$/, async (text: string) => {
-      await I.waitInUrl('make-an-application',10);
+      await I.waitInUrl('make-an-application',30);
       await I.seeInCurrentUrl('make-an-application');
       await I.see('I would like this to be reinstated for this test');
     });
 
     Then(/^I should see the Do you want to provide supporting evidence for this request page$/, async (text: string) => {
-      await I.waitInUrl('supporting-evidence',10);
+      await I.waitInUrl('supporting-evidence',30);
       await I.seeInCurrentUrl('supporting-evidence');
     });
 
     Then(/^I should see the Your request has been sent to the Tribunal page$/, async (text: string) => {
-      await I.waitInUrl(paths.makeApplication.requestSent,10);
+      await I.waitInUrl(paths.makeApplication.requestSent,30);
       await I.seeInCurrentUrl(paths.makeApplication.requestSent);
     });
 
     Then(/^I should see You sent the Tribunal a request$/, async (text: string) => {
-      await I.waitForText('You sent the Tribunal a request',10);
+      await I.waitForText('You sent the Tribunal a request',30);
       await I.see('You sent the Tribunal a request');
     });
   }

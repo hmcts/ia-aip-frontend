@@ -327,6 +327,7 @@ describe('timeline-utils', () => {
           }
         }
       ];
+
       const applicationEvents = getApplicationEvents(req as Request);
 
       expect(applicationEvents).to.deep.eq(

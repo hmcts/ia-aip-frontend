@@ -14,8 +14,6 @@ _output
 stryker.log
 .vscode/
 ia-aip-frontend.iml
-
-# Yarn 3 files
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -23,4 +21,6 @@ ia-aip-frontend.iml
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-
+/test/java/.gradle/
+/test/java/lib/
+/test/java/Fortify Scan/

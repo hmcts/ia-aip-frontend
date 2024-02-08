@@ -1,9 +1,9 @@
-import { paths } from '../../../app/paths';
-import { currentUserDetails } from './helper-functions';
-const { signInHelper, signInForUser } = require('./helper-functions');
-const testUrl = require('config').get('testUrl');
 const i18n = require('../../../locale/en.json');
-const navigationHelper = require('../helpers/navigationHelper')
+const navigationHelper = require('../helpers/navigationHelper');
+const testUrl = require('config').get('testUrl');
+const { signInHelper, signInForUser } = require('./helper-functions');
+import { currentUserDetails } from './helper-functions';
+import { paths } from '../../../app/paths';
 
 module.exports = {
   signIn(I) {

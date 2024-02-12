@@ -9,7 +9,8 @@ export const FEATURE_FLAGS = {
   UPLOAD_ADDENDUM_EVIDENCE: 'aip-upload-addendum-evidence-feature',
   MAKE_APPLICATION: 'aip-make-application-feature',
   FTPA: 'aip-ftpa-feature',
-  USE_CCD_DOCUMENT_AM: 'use-ccd-document-am'
+  USE_CCD_DOCUMENT_AM: 'use-ccd-document-am',
+  DLRM_SETASIDE_AIP_FEATURE_FLAG: 'dlrm-setaside-aip-feature-flag'
 };
 
 export const APPLICANT_TYPE = {

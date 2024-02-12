@@ -12,16 +12,18 @@ import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { decisionTypeValidation } from '../../utils/validations/fields-validations';
 
-function getDecisionTypeQuestion(appeal: Appeal) {
+function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = false) {
   let hint: string;
   let decision: string;
+
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
-    hint = i18n.pages.decisionTypePage.hint.withoutFee;
+    hint = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withoutFee : i18n.pages.decisionTypePage.hint.withoutFee;
     decision = appeal.application.rpDcAppealHearingOption || null;
   } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appeal.application.appealType)) {
-    hint = i18n.pages.decisionTypePage.hint.withFee;
+    hint = dlrmSetAsideFlag ? i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withFee : i18n.pages.decisionTypePage.hint.withFee;
     decision = appeal.application.decisionHearingFeeOption || null;
   }
+
   const question = {
     title: i18n.pages.decisionTypePage.title,
     hint,
@@ -45,14 +47,14 @@ function getDecisionTypeQuestion(appeal: Appeal) {
 async function getDecisionType(req: Request, res: Response, next: NextFunction) {
   try {
     const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+    const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_AIP_FEATURE_FLAG, false);
     if (!paymentsFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
-
     return res.render('templates/radio-question-page.njk', {
       previousPage: paths.appealStarted.taskList,
       pageTitle: i18n.pages.decisionTypePage.title,
       formAction: paths.appealStarted.decisionType,
-      question: getDecisionTypeQuestion(req.session.appeal),
+      question: getDecisionTypeQuestion(req.session.appeal, drlmSetAsideFlag),
       saveAndContinue: true
     });
   } catch (error) {

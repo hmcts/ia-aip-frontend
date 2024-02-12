@@ -148,7 +148,7 @@ export function postSupportingEvidence(updateAppealService: UpdateAppealService,
         const validation = [ {
           href: 'uploadFile',
           text: i18n.validationErrors.fileUpload.noFileSelected,
-          value: '#uploadFile'
+          value: '#file-upload'
         } ];
 
         return res.render('upload-evidence/evidence-upload-page.njk', {

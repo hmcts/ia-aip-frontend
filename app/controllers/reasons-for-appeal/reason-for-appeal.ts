@@ -144,7 +144,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
           const validation = [ {
             href: 'uploadFile',
             text: i18n.validationErrors.fileUpload.noFileSelected,
-            value: '#uploadFile'
+            value: '#file-upload'
           } ];
           return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
             errorList: Object.values(validation),

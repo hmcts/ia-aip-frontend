@@ -142,7 +142,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
       } else {
         if (req.session.appeal.reasonsForAppeal.evidences === undefined) {
           const validation = [ {
-            href: 'uploadFile',
+            href: 'file-upload',
             text: i18n.validationErrors.fileUpload.noFileSelected,
             value: '#file-upload'
           } ];
@@ -183,8 +183,8 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
       } else {
         let validationError;
         validationError = res.locals.multerError
-          ? { uploadFile: createStructuredError('uploadFile', res.locals.multerError) }
-          : { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload.noFileSelected) };
+          ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
+          : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = req.session.appeal.reasonsForAppeal.evidences || {};
 
         return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {

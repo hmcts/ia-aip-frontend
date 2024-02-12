@@ -106,8 +106,8 @@ export function postUploadFile(documentManagementService: DocumentManagementServ
       } else {
         let validationError;
         validationError = res.locals.multerError
-          ? { uploadFile: createStructuredError('uploadFile', res.locals.multerError) }
-          : { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload.noFileSelected) };
+          ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
+          : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = evidenceUploadConfig.getEvidenceFromSessionFunction(req) || {};
 
         return res.render('upload-evidence/evidence-upload-page.njk', {
@@ -146,7 +146,7 @@ export function postSupportingEvidence(updateAppealService: UpdateAppealService,
 
       if (evidences === undefined || !evidences.length) {
         const validation = [ {
-          href: 'uploadFile',
+          href: 'file-upload',
           text: i18n.validationErrors.fileUpload.noFileSelected,
           value: '#file-upload'
         } ];

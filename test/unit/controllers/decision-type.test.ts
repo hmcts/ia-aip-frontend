@@ -78,6 +78,7 @@ describe('Type of appeal Controller', () => {
   });
 
   describe('getDecisionTypeQuestion', () => {
+
     it('should return the question', () => {
       const expectedQuestion = {
         title: i18n.pages.decisionTypePage.title,
@@ -97,7 +98,7 @@ describe('Type of appeal Controller', () => {
         inline: false
       };
       req.session.appeal.application.appealType = 'protection';
-      const question = getDecisionTypeQuestion(req.session.appeal);
+      const question = getDecisionTypeQuestion(req.session.appeal, false);
 
       expect(question).to.be.eql(expectedQuestion);
     });
@@ -122,9 +123,33 @@ describe('Type of appeal Controller', () => {
       };
       req.session.appeal.application.appealType = 'deprivation';
       req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
-      const question = getDecisionTypeQuestion(req.session.appeal);
+      const question = getDecisionTypeQuestion(req.session.appeal, false);
 
       expect(question).to.be.eql(expectedQuestion);
+    });
+
+    it('should return the question hint text with fee when drlm flag is turned on', () => {
+      const expectedQuestion = {
+        title: i18n.pages.decisionTypePage.title,
+        hint: i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withFee,
+        inline: false
+      };
+      req.session.appeal.application.appealType = 'protection';
+      const question = getDecisionTypeQuestion(req.session.appeal, true);
+
+      expect(question.hint).to.be.eq(expectedQuestion.hint);
+    });
+
+    it('should return the question hint text without fee when drlm flag is turned on', () => {
+      const expectedQuestion = {
+        title: i18n.pages.decisionTypePage.title,
+        hint: i18n.pages.decisionTypePage.hintWithDrlmSetAsideFlag.withoutFee,
+        inline: false
+      };
+      req.session.appeal.application.appealType = 'deprivation';
+      const question = getDecisionTypeQuestion(req.session.appeal, true);
+
+      expect(question.hint).to.be.eq(expectedQuestion.hint);
     });
   });
 

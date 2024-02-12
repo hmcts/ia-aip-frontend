@@ -197,7 +197,11 @@
     },
     "decisionTypePage": {
       "title": "How do you want your appeal to be decided?",
-      "hint": {
+      "hint" : {
+        "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
+        "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
+      },
+      "hintWithDrlmSetAsideFlag": {
         "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>",
         "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.</p><p>Select an option</p>"
       },

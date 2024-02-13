@@ -144,14 +144,14 @@ describe('getStatus', () => {
   };
 
   it('should update status in session', () => {
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+    expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 
   it('should update status homeOfficeDetails as completed and mark active next task', () => {
     appeal.application.isAppealLate = false;
     status.homeOfficeDetails.completed = true;
     status.personalDetails.active = true;
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+    expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 
   it('should update status personalDetails as completed and mark active next task', () => {
@@ -170,7 +170,7 @@ describe('getStatus', () => {
     } as any;
     status.personalDetails.completed = true;
     status.contactDetails.active = true;
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+    expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 
   it('should update status contactDetails as completed and mark active next task', () => {
@@ -186,7 +186,7 @@ describe('getStatus', () => {
       saved: true
     };
     status.decisionType.active = true;
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+    expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 
   it('should update status contactDetails as completed', () => {
@@ -204,7 +204,7 @@ describe('getStatus', () => {
       saved: true
     };
     status.decisionType.active = true;
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+    expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 
   it('should update status typeOfAppeal as completed', () => {
@@ -216,6 +216,6 @@ describe('getStatus', () => {
     };
     status.homeOfficeDetails.active = true;
     status.homeOfficeDetailsOOC.active = true;
-    expect(appealApplicationStatus(appeal)).to.deep.eq(status);
+    expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 });

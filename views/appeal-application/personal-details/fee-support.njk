@@ -1,0 +1,26 @@
+{% set pageTitleName = i18n.pages.name.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form method="post" action="{{ paths.appealStarted.name }}" type="submit">
+    {% call govukFieldset({
+      legend: {
+        text: i18n.pages.name.title,
+        classes: "govuk-fieldset__legend--xl",
+        isPageHeading: true
+      }
+    }) %}
+
+      {{ saveButtons() }}
+    {% endcall %}
+  </form>
+  {{ contactUs() }}
+{% endblock %}

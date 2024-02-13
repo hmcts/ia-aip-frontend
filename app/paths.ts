@@ -19,6 +19,7 @@ const paths = {
     typeOfAppeal: '/appeal-type',
     payNow: '/pay-now',
     decisionType: '/decision-type',
+    feeSupport: '/fee-support',
     contactDetails: '/contact-preferences',
     hasSponsor: '/has-sponsor',
     sponsorName: '/sponsor-name',

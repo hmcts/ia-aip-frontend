@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
+function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): ApplicationStatus {
   const appealOutOfCountry: boolean = !!_.get(appeal.application, 'appealOutOfCountry');
   const appealType: boolean = !!_.get(appeal.application, 'appealType');
   const typeOfAppeal: Task = {
@@ -75,10 +75,22 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: contactDetails.completed
   };
 
+  const feeSupport: Task = {
+    saved: false,
+    completed: false,
+    active: decisionType.completed
+  };
+
   const checkAndSend: Task = {
     saved: false,
     completed: false,
     active: decisionType.completed
+  };
+
+  const checkAndSendDlrmSetAsideFlag: Task = {
+    saved: false,
+    completed: false,
+    active: feeSupport.completed
   };
 
   const checkAndSendWithPayments: Task = {
@@ -87,7 +99,23 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: decisionType.completed
   };
 
-  return {
+  const checkAndSendWithPaymentsDlrmSetAsideFlag: Task = {
+    saved: false,
+    completed: false,
+    active: feeSupport.completed
+  };
+
+  return drlmSetAsideFlag ? {
+    homeOfficeDetails,
+    homeOfficeDetailsOOC,
+    personalDetails,
+    contactDetails,
+    typeOfAppeal,
+    decisionType,
+    feeSupport,
+    checkAndSendDlrmSetAsideFlag,
+    checkAndSendWithPaymentsDlrmSetAsideFlag
+  } : {
     homeOfficeDetails,
     homeOfficeDetailsOOC,
     personalDetails,
@@ -97,6 +125,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     checkAndSend,
     checkAndSendWithPayments
   };
+
 }
 
 function submitHearingRequirementsStatus(appeal: Appeal) {
@@ -204,7 +233,6 @@ function cmaRequirementsStatus(appeal: Appeal) {
  * @param req the request Object containing the session
  */
 function buildSectionObject(sectionId: string, taskIds: string[], status: ApplicationStatus): Section {
-
   function isSaved(taskId: string) {
     return status[taskId].saved;
   }

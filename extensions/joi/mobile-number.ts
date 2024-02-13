@@ -64,16 +64,15 @@ module.exports = joi => {
         }
 
         const mobilePhoneNumber = phoneUtil.parse(value, defaultCountry);
-        if (!formatRegex.test(mobilePhoneNumber)) {
-          throw new Error('The phone number must start with a "+" or a digit');
-        }
-
         if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
           throw new Error('The string supplied did not seem to be a phone number');
         }
 
         if (phoneUtil.getNumberType(mobilePhoneNumber) !== phoneNumberType.MOBILE) {
           throw new Error('The phone supplied did not seem to be a valid mobile phone number');
+        }
+        if (!formatRegex.test(mobilePhoneNumber)) {
+          throw new Error('The phone number must start with a "+" or a digit');
         }
 
         return { value: phoneUtil.format(mobilePhoneNumber, format) };

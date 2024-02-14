@@ -105,7 +105,6 @@ withNightlyPipeline(type, product, component) {
                 reportFiles          : 'dependency-check-report.html',
                 reportName           : 'Dependency Check Report'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output'
         if (!params.skipSmokeTest) {
             stage('Smoke Test') {
                 builder.yarn('test:smoke')
@@ -132,6 +131,7 @@ withNightlyPipeline(type, product, component) {
                 ]
             }
         }
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: ''
     }
 
     before('fortify-scan') {

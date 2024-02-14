@@ -105,6 +105,9 @@ withNightlyPipeline(type, product, component) {
                 reportFiles          : 'dependency-check-report.html',
                 reportName           : 'Dependency Check Report'
         ])
+    }
+
+    afterSuccess('DependencyCheckNightly') {
         if (!params.skipSmokeTest) {
             stage('Smoke Test') {
                 builder.yarn('test:smoke')
@@ -131,7 +134,37 @@ withNightlyPipeline(type, product, component) {
                 ]
             }
         }
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/**'
+    }
+
+    afterFailure('DependencyCheckNightly') {
+        if (!params.skipSmokeTest) {
+            stage('Smoke Test') {
+                builder.yarn('test:smoke')
+                publishHTML target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : "build/reports/tests/smoke",
+                        reportFiles          : "index.html",
+                        reportName           : "Smoke Test Report"
+                ]
+            }
+        }
+        if (!params.skipUnitTests) {
+            stage('Unit Tests') {
+                builder.yarn('test:unit')
+                publishHTML target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : "build/reports/tests/test",
+                        reportFiles          : "index.html",
+                        reportName           : "Unit Test Report"
+                ]
+            }
+        }
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/**'
     }
 
     before('fortify-scan') {

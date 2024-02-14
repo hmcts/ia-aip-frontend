@@ -5,7 +5,7 @@ import Logger from '../../../app/utils/logger';
 import { appealApplicationStatus } from '../../../app/utils/tasks-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
-describe.only('getStatus', () => {
+describe('getStatus', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

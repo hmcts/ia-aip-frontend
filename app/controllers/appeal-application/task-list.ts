@@ -15,7 +15,7 @@ async function getAppealStageStatus(req: Request) {
   const homeOfficeDetails: string = (outsideUkWhenApplicationMade && humanRightsOrEEA) ? 'homeOfficeDetailsOOC' : 'homeOfficeDetails';
   const yourDetails = buildSectionObject('yourDetails', ['typeOfAppeal', homeOfficeDetails, 'personalDetails', 'contactDetails'], status);
   const decisionType = buildSectionObject('decisionType', ['decisionType'], status);
-  const feeSupport = buildSectionObject('feeSupport', ['feeSupport'], status);
+  const feeSupport = drlmSetAsideFlag ? buildSectionObject('feeSupport', ['feeSupport'], status) : null;
   const checkAndSend = buildSectionObject('checkAndSend', [checkAndSendTaskDlrmSetAsideFlag], status);
   return drlmSetAsideFlag ? [
     yourDetails,

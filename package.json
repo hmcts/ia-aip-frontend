@@ -22,7 +22,7 @@
     "test:coverage": "nyc report",
     "test:a11y": "yarn test:accessibility",
     "sonar-scan": "sonar-scanner",
-    "test:smoke": "yarn codecept:e2e --grep @smoke --reporter mochawesome",
+    "test:smoke": "yarn codecept:e2e --grep @smoke --reporter mocha-multi",
     "test:smoke-local": "yarn codecept:e2e-local -g @smoke",
     "test:nightly": "yarn codecept:e2e -g @nightly-test --reporter mocha-multi",
     "test:fullfunctional": "yarn test:nightly",

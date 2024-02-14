@@ -101,15 +101,6 @@ withNightlyPipeline(type, product, component) {
         if (!params.skipSmokeTest) {
             stage('Smoke Test') {
                 builder.yarn('test:smoke')
-                publishHTML target: [
-                        allowMissing         : true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll              : true,
-                        reportDir            : "build/reports/tests/smoke",
-                        reportFiles          : "index.html",
-                        reportName           : "Smoke Test Report"
-                ]
-//                steps.archiveArtifacts allowEmptyArchive: true, artifacts: ''
             }
         }
         
@@ -122,7 +113,7 @@ withNightlyPipeline(type, product, component) {
                         keepAll              : true,
                         reportDir            : "mochawesome-report",
                         reportFiles          : "mochawesome.html",
-                        reportName           : "Unit Test Report"
+                        reportName           : "Unit & Smoke Test Report"
                 ]
                 publishHTML target: [
                         allowMissing         : true,
@@ -135,20 +126,6 @@ withNightlyPipeline(type, product, component) {
                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
             }
         }
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/**'
-    }
-
-    afterAlways('DependencyCheckNightly') {
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**'
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/**'
-        publishHTML([
-                allowMissing         : true,
-                alwaysLinkToLastBuild: true,
-                keepAll              : true,
-                reportDir            : "build/reports",
-                reportFiles          : 'dependency-check-report.html',
-                reportName           : 'Dependency Check Report'
-        ])
     }
 
     before('fortify-scan') {

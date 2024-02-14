@@ -143,7 +143,7 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
         const evidences: Evidence[] = [ ...(req.session.appeal.reasonsForAppeal.evidences || []) ];
         if (evidences === undefined || !evidences.length) {
           const validation = [ {
-            href: 'file-upload',
+            href: '#file-upload',
             text: i18n.validationErrors.fileUpload.noFileSelected,
             value: '#file-upload'
           } ];

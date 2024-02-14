@@ -11,15 +11,18 @@ properties([
     ]),
     parameters([
         string(name: 'sleepTimer', defaultValue: "0", description: 'Wait x seconds until the pipeline is run'),
-        booleanParam(name: 'skipFortifyScan', defaultValue: false, description: 'Tick the checkbox for skip'),
-        booleanParam(name: 'skipCrossBrowserTests', defaultValue: false, description: 'Tick the checkbox for skip'),
-        booleanParam(name: 'skipSecurityScan', defaultValue: false, description: 'Tick the checkbox for skip'),
-        booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox for skip'),
+        booleanParam(name: 'skipSmokeTest', defaultValue: false, description: 'Tick the checkbox to skip Smoke Test stage'),
+        booleanParam(name: 'skipUnitTests', defaultValue: false, description: 'Tick the checkbox to skip Unit Tests stage'),
+        booleanParam(name: 'skipFortifyScan', defaultValue: false, description: 'Tick the checkbox to skip Fortify Scan stage'),
+        booleanParam(name: 'skipCrossBrowserTests', defaultValue: false, description: 'Tick the checkbox to skip Cross Browser Tests stage'),
+        booleanParam(name: 'skipSecurityScan', defaultValue: false, description: 'Tick the checkbox to skip Security Scan stage'),
+        booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox to skip Full Functional Tests stage'),
         string(name: 'ZAP_URL_EXCLUSIONS', defaultValue: "-config globalexcludeurl.url_list.url\\(1\\).regex=\\'.*/assets/images.*\\' -config globalexcludeurl.url_list.url\\(2\\).regex=\\'.*/assets/stylesheets.*\\' -config globalexcludeurl.url_list.url\\(3\\).regex=\\'.*/assets/javascripts.*\\' -config globalexcludeurl.url_list.url\\(4\\).regex='^https?:\\/\\/.*\\/(?:.*ruxitagentjs.*)+\$' -config globalexcludeurl.url_list.url\\(5\\).regex=\\'.*/terms-and-conditions.*\\' -config globalexcludeurl.url_list.url\\(6\\).regex=\\'.*/privacy-policy.*\\' -config globalexcludeurl.url_list.url\\(7\\).regex=\\'.*/contact-us.*\\' -config globalexcludeurl.url_list.url\\(8\\).regex=\\'.*/login.*\\' -config globalexcludeurl.url_list.url\\(9\\).regex=\\'.*/cookies.*\\' -config globalexcludeurl.url_list.url\\(10\\).regex=\\'.*/cookie-preferences.*\\' -config globalexcludeurl.url_list.url\\(11\\).regex=\\'.*/robots.txt\\' -config globalexcludeurl.url_list.url\\(12\\).regex=\\'.*/sitemap.*\\' -config globalexcludeurl.url_list.url\\(13\\).regex=\\'.*jquery-3.4.1.min.js\\'")
     ])
 ])
 
 @Library("Infrastructure")
+import uk.gov.hmcts.contino.YarnBuilder
 
 def type      = "nodejs"
 def product   = "ia"
@@ -61,6 +64,8 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
+YarnBuilder builder = new YarnBuilder(this)
+
 def urlExclusions = params.ZAP_URL_EXCLUSIONS
 withNightlyPipeline(type, product, component) {
     script {
@@ -91,6 +96,44 @@ withNightlyPipeline(type, product, component) {
 //    mutation tests not yet implemented
 //    enableMutationTest()
 
+    afterAlways('DependencyCheckNightly') {
+        publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "build/reports",
+                reportFiles          : 'dependency-check-report.html',
+                reportName           : 'Dependency Check Report'
+        ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output'
+        if (!params.skipSmokeTest) {
+            stage('Smoke Test') {
+                builder.yarn('test:smoke')
+                publishHTML target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : "build/reports/tests/smoke",
+                        reportFiles          : "index.html",
+                        reportName           : "Smoke Test Report"
+                ]
+            }
+        }
+        if (!params.skipUnitTests) {
+            stage('Unit Tests') {
+                builder.yarn('test:unit')
+                publishHTML target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : "build/reports/tests/test",
+                        reportFiles          : "index.html",
+                        reportName           : "Unit Test Report"
+                ]
+            }
+        }
+    }
+
     before('fortify-scan') {
         sh "chmod +x ./test/java/gradlew"
     }
@@ -107,9 +150,20 @@ withNightlyPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
+    afterAlways('securityScan') {
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "functional-output",
+                reportFiles          : "activescan.html",
+                reportName           : "Security Scan Report"
+        ]
+    }
+
     afterAlways('crossBrowserTest') {
         publishHTML([
-                reportName           : 'IA AIP Frontend Cross Browser Tests',
+                reportName           : 'Cross Browser Tests',
                 reportDir            : "functional-output/crossbrowser/reports/",
                 reportFiles          : "${dir('functional-output/crossbrowser/reports') { findFiles(glob: '**/records.html').join(',') ?: 'Not found' }}",
                 allowMissing         : true,
@@ -125,7 +179,7 @@ withNightlyPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "reports/tests/mutation/node/",
             reportFiles          : 'index.html',
-            reportName           : 'AIP Frontend Mutation tests'
+            reportName           : 'Mutation tests'
         ])
     }
 
@@ -136,7 +190,7 @@ withNightlyPipeline(type, product, component) {
                 keepAll              : true,
                 reportDir            : "functional-output/e2e/reports/",
                 reportFiles          : 'report.html',
-                reportName           : 'AIP Frontend Functional Test'
+                reportName           : 'Functional E2E Tests'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
     }

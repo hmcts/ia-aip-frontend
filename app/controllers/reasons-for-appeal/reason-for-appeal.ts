@@ -140,7 +140,8 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
         }
         return res.redirect(paths.common.overview + '?saved');
       } else {
-        if (req.session.appeal.reasonsForAppeal.evidences === undefined) {
+        const evidences: Evidence[] = [ ...(req.session.appeal.reasonsForAppeal.evidences || []) ];
+        if (evidences === undefined || !evidences.length) {
           const validation = [ {
             href: 'file-upload',
             text: i18n.validationErrors.fileUpload.noFileSelected,

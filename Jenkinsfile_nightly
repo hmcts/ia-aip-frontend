@@ -131,7 +131,7 @@ withNightlyPipeline(type, product, component) {
                 ]
             }
         }
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: ''
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '*'
     }
 
     before('fortify-scan') {

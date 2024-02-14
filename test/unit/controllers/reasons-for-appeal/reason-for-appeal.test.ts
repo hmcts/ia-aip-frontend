@@ -164,8 +164,8 @@ describe('Reasons for Appeal Controller', function () {
       expect(res.render).to.have.been.calledWith(
         'reasons-for-appeal/supporting-evidence-upload-page.njk',
         {
-          error: [ { href: 'file-upload', text: 'Select a file', value: '#file-upload' } ],
-          errorList: [ { 'href': 'file-upload', 'text': 'Select a file', 'value': '#file-upload' } ],
+          error: [ { href: '#file-upload', text: 'Select a file', value: '#file-upload' } ],
+          errorList: [ { 'href': '#file-upload', 'text': 'Select a file', 'value': '#file-upload' } ],
           askForMoreTimeFeatureEnabled: asBooleanValue(config.get('features.askForMoreTime'))
         }
       );

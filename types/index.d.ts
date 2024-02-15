@@ -293,6 +293,7 @@ interface AppealApplication {
   saveAndAskForTime?: boolean;
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
+  feeSupportPersisted?: boolean;
 }
 
 interface CmaRequirements {

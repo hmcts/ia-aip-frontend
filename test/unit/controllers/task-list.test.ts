@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { getTaskList, setupTaskListController } from '../../../app/controllers/appeal-application/task-list';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
@@ -133,6 +134,34 @@ describe('Task List Controller', () => {
       {
         'sectionId': 'checkAndSend',
         'tasks': [ { 'id': 'checkAndSendWithPayments', 'saved': false, 'completed': false, 'active': false } ]
+      } ];
+
+    await getTaskList(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/task-list.njk', { data: mockData });
+  });
+
+  it('getTaskList should render task-list.njk with DLRM flag ON', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+    const mockData = [
+      {
+        'sectionId': 'yourDetails',
+        'tasks': [
+          { 'id': 'typeOfAppeal', 'saved': false, 'completed': false, 'active': true },
+          { 'id': 'homeOfficeDetails', 'saved': false, 'completed': false, 'active': false },
+          { 'id': 'personalDetails', 'saved': false, 'completed': false, 'active': false },
+          { 'id': 'contactDetails', 'saved': false, 'completed': false, 'active': false } ]
+      },
+      {
+        'sectionId': 'decisionType',
+        'tasks': [ { 'id': 'decisionType', 'saved': false, 'completed': false, 'active': false } ]
+      },
+      {
+        'sectionId': 'feeSupport',
+        'tasks': [ { 'id': 'feeSupport', 'saved': false, 'completed': false, 'active': false } ]
+      },
+      {
+        'sectionId': 'checkAndSend',
+        'tasks': [ { 'id': 'checkAndSendDlrmSetAsideFlag', 'saved': false, 'completed': false, 'active': false } ]
       } ];
 
     await getTaskList(req as Request, res as Response, next);

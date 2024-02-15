@@ -80,6 +80,7 @@
       "sections": {
         "yourDetails": "Your details",
         "decisionType": "Decision type",
+        "feeSupport": "Fee support",
         "checkAndSend": "Check and send"
       },
       "homeOfficeDetails": {
@@ -117,6 +118,11 @@
         "title": "Decision with or without a hearing",
         "path": "appealStarted.decisionType"
       },
+      "feeSupport": {
+        "id": "feeSupportLink",
+        "title": "Support to pay the fee",
+        "path": "appealStarted.feeSupport"
+      },
       "typeOfAppealAndDecision": {
         "id": "typeOfAppealLink",
         "title": "Appeal and decision type",
@@ -127,7 +133,17 @@
         "title": "Check and send your appeal details",
         "path": "appealStarted.checkAndSend"
       },
+      "checkAndSendDlrmSetAsideFlag": {
+        "id": "checkAndSendLink",
+        "title": "Check and send your appeal details",
+        "path": "appealStarted.checkAndSend"
+      },
       "checkAndSendWithPayments": {
+        "id": "checkAndSendLink",
+        "title": "Check and send your appeal details",
+        "path": "appealStarted.checkAndSend"
+      },
+      "checkAndSendWithPaymentsDlrmSetAsideFlag": {
         "id": "checkAndSendLink",
         "title": "Check and send your appeal details",
         "path": "appealStarted.checkAndSend"

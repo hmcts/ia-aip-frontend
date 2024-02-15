@@ -85,6 +85,10 @@ module.exports = joi => {
           {
             error: 'string.mobilePhoneNumber.invalid.mobile',
             errorMessages: [ 'The phone supplied did not seem to be a valid mobile phone number' ]
+          },
+          {
+            error: 'string.mobilePhoneNumber.invalid.startingCharacter',
+            errorMessages: [ 'The phone number must start with a "+" or a digit' ]
           }
         ];
 

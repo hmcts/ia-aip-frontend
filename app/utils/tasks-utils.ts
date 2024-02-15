@@ -77,7 +77,7 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
 
   const feeSupport: Task = {
     saved: false,
-    completed:  appeal.application.feeSupportPersisted,
+    completed: appeal.application.feeSupportPersisted ? true : false,
     active: decisionType.completed
   };
 

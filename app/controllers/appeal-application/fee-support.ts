@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import _ from 'lodash';
+import i18n from '../../../locale/en.json';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { paths } from '../../paths';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { getFee } from '../../utils/payments-utils';
+import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
+import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
-import LaunchDarklyService from "../../service/launchDarkly-service";
-import {FEATURE_FLAGS} from "../../data/constants";
-import _ from "lodash";
-import i18n from "../../../locale/en.json";
-import {getFee} from "../../utils/payments-utils";
-import {shouldValidateWhenSaveForLater} from "../../utils/save-for-later-utils";
-import {getConditionalRedirectUrl} from "../../utils/url-utils";
-import {remissionOptionsValidation} from "../../utils/validations/fields-validations";
+import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 
 function getRemissionOptionsQuestion(appeal: Appeal) {
   const fee = getFee(appeal).calculated_amount;
@@ -42,7 +42,7 @@ function getRemissionOptionsQuestion(appeal: Appeal) {
         checked: remissionOption === i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value
       },
       {
-        divider: "or"
+        divider: 'or'
       },
       {
         value: i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value,
@@ -51,7 +51,7 @@ function getRemissionOptionsQuestion(appeal: Appeal) {
           text: selectionHint
         },
         checked: remissionOption === i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value
-      },
+      }
     ],
     inline: false
   };
@@ -144,8 +144,7 @@ function retrieveRedirectPage(remissionOption: string): string {
     case 'noneOfTheseStatements':
       break;
     default:
-      console.error("The selected remission option is not valid. Please check the value.");
-      break;
+      throw new Error('The selected remission option is not valid. Please check the value.');
   }
 }
 

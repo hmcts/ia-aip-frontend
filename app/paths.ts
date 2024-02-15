@@ -33,7 +33,7 @@ const paths = {
     gwfReference: '/gwf-reference',
     oocHrInside: '/ooc-hr-inside',
     oocHrEea: '/ooc-hr-eea',
-    oocProtectionDepartureDate: '/ooc-protection-departure-date',
+    oocProtectionDepartureDate: '/ooc-protection-departure-date'
   },
   appealSubmitted: {
     confirmation: '/appeals-details-sent'

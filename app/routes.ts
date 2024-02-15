@@ -1,45 +1,47 @@
-import {OSPlacesClient} from '@hmcts/os-places-client';
+import { OSPlacesClient } from '@hmcts/os-places-client';
 import * as express from 'express';
 import requestPromise from 'request-promise-native';
-import {setupIndexController} from './controllers';
-import {setupCheckAndSendController} from './controllers/appeal-application/check-and-send';
-import {setConfirmationController} from './controllers/appeal-application/confirmation-page';
-import {setupContactDetailsController} from './controllers/appeal-application/contact-details';
-import {setupDecisionTypeController} from './controllers/appeal-application/decision-type';
-import {setupHomeOfficeDetailsController} from './controllers/appeal-application/home-office-details';
+import { setupIndexController } from './controllers';
+import { setupAsylumSupportController } from './controllers/appeal-application/asylum-support';
+import { setupCheckAndSendController } from './controllers/appeal-application/check-and-send';
+import { setConfirmationController } from './controllers/appeal-application/confirmation-page';
+import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
+import { setupDecisionTypeController } from './controllers/appeal-application/decision-type';
+import { setupFeeSupportController } from './controllers/appeal-application/fee-support';
+import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
-import {setupOutOfCountryController} from './controllers/appeal-application/out-of-country';
-import {setupOutOfTimeController} from './controllers/appeal-application/out-of-time';
+import { setupOutOfCountryController } from './controllers/appeal-application/out-of-country';
+import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
 import './controllers/appeal-application/pay-now';
-import {setupPersonalDetailsController} from './controllers/appeal-application/personal-details';
-import {setupTaskListController} from './controllers/appeal-application/task-list';
-import {setupTypeOfAppealController} from './controllers/appeal-application/type-of-appeal';
-import {setupApplicationOverviewController} from './controllers/application-overview';
-import {setupAskForMoreTimeController} from './controllers/ask-for-more-time/ask-for-more-time';
-import {setupChangeRepresentationControllers} from './controllers/changing-representation';
-import {setupCQAnythingElseAnswerController} from './controllers/clarifying-questions/anything-else-answer';
-import {setupCQAnythingElseQuestionController} from './controllers/clarifying-questions/anything-else-question';
-import {setupClarifyingQuestionsCheckSendController} from './controllers/clarifying-questions/check-and-send';
-import {setupClarifyingQuestionsConfirmationPage} from './controllers/clarifying-questions/confirmation-page';
-import {setupClarifyingQuestionPageController} from './controllers/clarifying-questions/question-page';
-import {setupClarifyingQuestionsListController} from './controllers/clarifying-questions/questions-list';
+import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
+import { setupTaskListController } from './controllers/appeal-application/task-list';
+import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
+import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
+import { setupChangeRepresentationControllers } from './controllers/changing-representation';
+import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
+import { setupCQAnythingElseQuestionController } from './controllers/clarifying-questions/anything-else-question';
+import { setupClarifyingQuestionsCheckSendController } from './controllers/clarifying-questions/check-and-send';
+import { setupClarifyingQuestionsConfirmationPage } from './controllers/clarifying-questions/confirmation-page';
+import { setupClarifyingQuestionPageController } from './controllers/clarifying-questions/question-page';
+import { setupClarifyingQuestionsListController } from './controllers/clarifying-questions/questions-list';
 import {
   setupClarifyingQuestionsSupportingEvidenceUploadController
 } from './controllers/clarifying-questions/supporting-evidence';
 import {
   setupSupportingEvidenceQuestionController
 } from './controllers/clarifying-questions/supporting-evidence-question-page';
-import {setupAccessNeedsController} from './controllers/cma-requirements/access-needs/access-needs';
-import {setupCmaRequirementsCYAController} from './controllers/cma-requirements/check-and-send/check-and-send';
-import {setupCmaRequirementsConfirmationPage} from './controllers/cma-requirements/confirmation-page';
+import { setupAccessNeedsController } from './controllers/cma-requirements/access-needs/access-needs';
+import { setupCmaRequirementsCYAController } from './controllers/cma-requirements/check-and-send/check-and-send';
+import { setupCmaRequirementsConfirmationPage } from './controllers/cma-requirements/confirmation-page';
 import {
   setupDatesToAvoidAddAnotherDateController
 } from './controllers/cma-requirements/dates-to-avoid/add-another-date';
-import {setupDatesToAvoidEnterADateController} from './controllers/cma-requirements/dates-to-avoid/enter-a-date';
-import {setupDatesToAvoidQuestionController} from './controllers/cma-requirements/dates-to-avoid/question';
-import {setupDatesToAvoidReasonController} from './controllers/cma-requirements/dates-to-avoid/reason';
-import {setupAnythingElseQuestionController} from './controllers/cma-requirements/other-needs/anything-else-question';
-import {setupAnythingElseReasonController} from './controllers/cma-requirements/other-needs/anything-else-reason';
+import { setupDatesToAvoidEnterADateController } from './controllers/cma-requirements/dates-to-avoid/enter-a-date';
+import { setupDatesToAvoidQuestionController } from './controllers/cma-requirements/dates-to-avoid/question';
+import { setupDatesToAvoidReasonController } from './controllers/cma-requirements/dates-to-avoid/reason';
+import { setupAnythingElseQuestionController } from './controllers/cma-requirements/other-needs/anything-else-question';
+import { setupAnythingElseReasonController } from './controllers/cma-requirements/other-needs/anything-else-reason';
 import {
   setupBringMultimediaEquipmentQuestionController
 } from './controllers/cma-requirements/other-needs/bring-equipment-question';
@@ -58,7 +60,9 @@ import {
 import {
   setupPastExperiencesQuestionController
 } from './controllers/cma-requirements/other-needs/past-experiences-question';
-import {setupPastExperiencesReasonController} from './controllers/cma-requirements/other-needs/past-experiences-reason';
+import {
+  setupPastExperiencesReasonController
+} from './controllers/cma-requirements/other-needs/past-experiences-reason';
 import {
   setupPrivateAppointmentQuestionController
 } from './controllers/cma-requirements/other-needs/private-appointment-question';
@@ -77,31 +81,31 @@ import {
 import {
   setupSingleSexTypeAppointmentQuestionController
 } from './controllers/cma-requirements/other-needs/single-sex-type-appointment-question';
-import {setupCMARequirementsStartPageController} from './controllers/cma-requirements/other-needs/start-page';
-import {setupCmaRequirementsTaskListController} from './controllers/cma-requirements/task-list';
-import {setupcmaGuidancePageController} from './controllers/cma-requirements/what-to-expect';
-import {setupDetailViewersController} from './controllers/detail-viewers';
-import {setupEligibilityController} from './controllers/eligibility';
-import {setupNotFoundController} from './controllers/file-not-found';
-import {setupFooterController} from './controllers/footer';
-import {setupForbiddenController} from './controllers/forbidden';
-import {setupFtpaApplicationController} from './controllers/ftpa/ftpa-application';
-import {setupGuidancePagesController} from './controllers/guidance-page';
-import {setupHealthController} from './controllers/health';
-import {setupHearingAccessNeedsController} from './controllers/hearing-requirements/access-needs';
-import {setupHearingRequirementsCYAController} from './controllers/hearing-requirements/check-and-send';
-import {setupHearingRequirementsConfirmationPage} from './controllers/hearing-requirements/confirmation-page';
+import { setupCMARequirementsStartPageController } from './controllers/cma-requirements/other-needs/start-page';
+import { setupCmaRequirementsTaskListController } from './controllers/cma-requirements/task-list';
+import { setupcmaGuidancePageController } from './controllers/cma-requirements/what-to-expect';
+import { setupDetailViewersController } from './controllers/detail-viewers';
+import { setupEligibilityController } from './controllers/eligibility';
+import { setupNotFoundController } from './controllers/file-not-found';
+import { setupFooterController } from './controllers/footer';
+import { setupForbiddenController } from './controllers/forbidden';
+import { setupFtpaApplicationController } from './controllers/ftpa/ftpa-application';
+import { setupGuidancePagesController } from './controllers/guidance-page';
+import { setupHealthController } from './controllers/health';
+import { setupHearingAccessNeedsController } from './controllers/hearing-requirements/access-needs';
+import { setupHearingRequirementsCYAController } from './controllers/hearing-requirements/check-and-send';
+import { setupHearingRequirementsConfirmationPage } from './controllers/hearing-requirements/confirmation-page';
 import {
   setupHearingDatesToAvoidAddAnotherDateController
 } from './controllers/hearing-requirements/dates-to-avoid/add-another-date';
 import {
   setupHearingDatesToAvoidEnterADateController
 } from './controllers/hearing-requirements/dates-to-avoid/enter-a-date';
-import {setupHearingDatesToAvoidQuestionController} from './controllers/hearing-requirements/dates-to-avoid/question';
-import {setupHearingDatesToAvoidReasonController} from './controllers/hearing-requirements/dates-to-avoid/reason';
-import {setupWitnessesOutsideUkQuestionController} from './controllers/hearing-requirements/hearing-outside-uk';
-import {setupWitnessNamesController} from './controllers/hearing-requirements/hearing-witness-names';
-import {setupWitnessesOnHearingQuestionController} from './controllers/hearing-requirements/hearing-witnesses';
+import { setupHearingDatesToAvoidQuestionController } from './controllers/hearing-requirements/dates-to-avoid/question';
+import { setupHearingDatesToAvoidReasonController } from './controllers/hearing-requirements/dates-to-avoid/reason';
+import { setupWitnessesOutsideUkQuestionController } from './controllers/hearing-requirements/hearing-outside-uk';
+import { setupWitnessNamesController } from './controllers/hearing-requirements/hearing-witness-names';
+import { setupWitnessesOnHearingQuestionController } from './controllers/hearing-requirements/hearing-witnesses';
 import {
   setupHearingBundleFeatureToggleController,
   setupHearingRequirementsFeatureToggleController
@@ -157,37 +161,35 @@ import {
 import {
   setupSingleSexTypeHearingQuestionController
 } from './controllers/hearing-requirements/other-needs/single-sex-type-hearing-question';
-import {setupHearingRequirementsStartPageController} from './controllers/hearing-requirements/other-needs/start-page';
-import {setupSubmitHearingRequirementsTaskListController} from './controllers/hearing-requirements/task-list';
-import {setupYourHearingNeedsController} from './controllers/hearing-requirements/your-hearing-needs';
-import {setupIdamController} from './controllers/idam';
-import {setupMakeApplicationControllers} from './controllers/make-application/setup-application-controllers';
-import {setupOutOfCountryFeatureToggleController} from './controllers/out-of-country/ooc-feature-toggle';
+import { setupHearingRequirementsStartPageController } from './controllers/hearing-requirements/other-needs/start-page';
+import { setupSubmitHearingRequirementsTaskListController } from './controllers/hearing-requirements/task-list';
+import { setupYourHearingNeedsController } from './controllers/hearing-requirements/your-hearing-needs';
+import { setupIdamController } from './controllers/idam';
+import { setupMakeApplicationControllers } from './controllers/make-application/setup-application-controllers';
+import { setupOutOfCountryFeatureToggleController } from './controllers/out-of-country/ooc-feature-toggle';
 import {
   setupCheckAndSendController as setupReasonsForAppealCheckAndSendController
 } from './controllers/reasons-for-appeal/check-and-send';
-import {setupReasonsForAppealController} from './controllers/reasons-for-appeal/reason-for-appeal';
-import {setupSessionController} from './controllers/session';
-import {setupStartRepresentingMyselfControllers} from './controllers/start-represent-yourself';
-import {setupStartController} from './controllers/startController';
-import {setupProvideMoreEvidenceController} from './controllers/upload-evidence/provide-more-evidence-controller';
-import {PageSetup} from './interfaces/PageSetup';
-import {hearingRequirementsMiddleware} from './middleware/hearing-requirements-middleware';
-import {isJourneyAllowedMiddleware, isTimeExtensionsInProgress} from './middleware/journeyAllowed-middleware';
-import {logSession} from './middleware/session-middleware';
-import {AuthenticationService} from './service/authentication-service';
-import {CcdService} from './service/ccd-service';
+import { setupReasonsForAppealController } from './controllers/reasons-for-appeal/reason-for-appeal';
+import { setupSessionController } from './controllers/session';
+import { setupStartRepresentingMyselfControllers } from './controllers/start-represent-yourself';
+import { setupStartController } from './controllers/startController';
+import { setupProvideMoreEvidenceController } from './controllers/upload-evidence/provide-more-evidence-controller';
+import { PageSetup } from './interfaces/PageSetup';
+import { hearingRequirementsMiddleware } from './middleware/hearing-requirements-middleware';
+import { isJourneyAllowedMiddleware, isTimeExtensionsInProgress } from './middleware/journeyAllowed-middleware';
+import { logSession } from './middleware/session-middleware';
+import { AuthenticationService } from './service/authentication-service';
+import { CcdService } from './service/ccd-service';
 import CcdSystemService from './service/ccd-system-service';
-import {DocumentManagementService} from './service/document-management-service';
+import { DocumentManagementService } from './service/document-management-service';
 import IdamService from './service/idam-service';
 import PaymentService from './service/payments-service';
 import PcqService from './service/pcq-service';
 import S2SService from './service/s2s-service';
-import {SystemAuthenticationService} from './service/system-authentication-service';
+import { SystemAuthenticationService } from './service/system-authentication-service';
 import UpdateAppealService from './service/update-appeal-service';
-import {setupSecrets} from './setupSecrets';
-import {setupFeeSupportController} from "./controllers/appeal-application/fee-support";
-import {setupAsylumSupportController} from "./controllers/appeal-application/asylum-support";
+import { setupSecrets } from './setupSecrets';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
@@ -222,7 +224,10 @@ const contactDetailsController = setupContactDetailsController(middleware, updat
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
 const confirmationController = setConfirmationController(middleware);
 const outOfTimeController = setupOutOfTimeController(middleware, { updateAppealService, documentManagementService });
-const reasonsForAppealController = setupReasonsForAppealController(middleware, { updateAppealService, documentManagementService });
+const reasonsForAppealController = setupReasonsForAppealController(middleware, {
+  updateAppealService,
+  documentManagementService
+});
 const reasonsForAppealCYAController = setupReasonsForAppealCheckAndSendController(middleware, updateAppealService);
 const detailViewersController = setupDetailViewersController(documentManagementService);
 const eligibilityController = setupEligibilityController();
@@ -230,11 +235,20 @@ const GuidancePages = setupGuidancePagesController();
 const footerController = setupFooterController();
 const sessionController = setupSessionController();
 const forbiddenController = setupForbiddenController();
-const askForMoreTime = setupAskForMoreTimeController([isTimeExtensionsInProgress], { updateAppealService, documentManagementService });
+const askForMoreTime = setupAskForMoreTimeController([isTimeExtensionsInProgress], {
+  updateAppealService,
+  documentManagementService
+});
 const clarifyingQuestionsListController = setupClarifyingQuestionsListController(middleware);
 const clarifyingQuestionPageController = setupClarifyingQuestionPageController(middleware, updateAppealService);
-const clarifyingQuestionsSupportingEvidenceController = setupSupportingEvidenceQuestionController(middleware, { updateAppealService, documentManagementService });
-const clarifyingQuestionsSupportingEvidenceUploadController = setupClarifyingQuestionsSupportingEvidenceUploadController(middleware, { updateAppealService, documentManagementService });
+const clarifyingQuestionsSupportingEvidenceController = setupSupportingEvidenceQuestionController(middleware, {
+  updateAppealService,
+  documentManagementService
+});
+const clarifyingQuestionsSupportingEvidenceUploadController = setupClarifyingQuestionsSupportingEvidenceUploadController(middleware, {
+  updateAppealService,
+  documentManagementService
+});
 const clarifyingQuestionsAnythingElseQuestionController = setupCQAnythingElseQuestionController(middleware, updateAppealService, documentManagementService);
 const clarifyingQuestionsAnythingElseAnswerController = setupCQAnythingElseAnswerController(middleware, updateAppealService);
 const clarifyingQuestionsCYAController = setupClarifyingQuestionsCheckSendController(middleware, updateAppealService);

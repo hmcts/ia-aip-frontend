@@ -128,7 +128,6 @@ interface Appeal {
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
-  hearingDocuments?: Evidence[];
   finalDecisionAndReasonsDocuments?: Evidence[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
@@ -294,6 +293,7 @@ interface AppealApplication {
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
   feeSupportPersisted?: boolean;
+  remissionOption?: string;
 }
 
 interface CmaRequirements {

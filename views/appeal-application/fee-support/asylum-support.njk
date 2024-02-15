@@ -1,0 +1,52 @@
+{% set pageTitleName = i18n.pages.homeOfficePage.title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+    <form action="{{ paths.appealStarted.asylumSupport }}" method="post">
+        {% call govukFieldset({
+            legend: {
+                text: i18n.pages.asylumSupportPage.title,
+                classes: "govuk-fieldset__legend--xl",
+                isPageHeading: true
+            }
+        }) %}
+            <h2>{{ i18n.pages.homeOfficePage.label }}</h2>
+            <p>{{ i18n.pages.homeOfficePage.description }}</p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                {% for hint in i18n.pages.homeOfficePage.hints %}
+                    <li>{{ hint | safe }}</li>
+                {% endfor %}
+            </ul>
+
+            <p>{{ i18n.pages.homeOfficePage.footNote | safe  }}</p>
+
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+            {{ govukInput({
+                label: {
+                    text: i18n.pages.homeOfficePage.homeOfficeReferenceNumberLabel
+                },
+                classes: "govuk-input--width-20",
+                id: "homeOfficeRefNumber",
+                name: "homeOfficeRefNumber",
+                value: homeOfficeRefNumber,
+                errorMessage: {
+                    text:  errors['homeOfficeRefNumber'].text
+                } if errors['homeOfficeRefNumber']
+            }) }}
+
+            {{ saveButtons() }}
+        {% endcall %}
+    </form>
+    {{ contactUs() }}
+{% endblock %}

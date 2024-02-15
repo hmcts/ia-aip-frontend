@@ -20,6 +20,7 @@ const paths = {
     payNow: '/pay-now',
     decisionType: '/decision-type',
     feeSupport: '/fee-support',
+    asylumSupport: '/asylum-support',
     contactDetails: '/contact-preferences',
     hasSponsor: '/has-sponsor',
     sponsorName: '/sponsor-name',
@@ -32,7 +33,7 @@ const paths = {
     gwfReference: '/gwf-reference',
     oocHrInside: '/ooc-hr-inside',
     oocHrEea: '/ooc-hr-eea',
-    oocProtectionDepartureDate: '/ooc-protection-departure-date'
+    oocProtectionDepartureDate: '/ooc-protection-departure-date',
   },
   appealSubmitted: {
     confirmation: '/appeals-details-sent'

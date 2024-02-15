@@ -1,26 +1,38 @@
-{% set pageTitleName = i18n.pages.name.title %}
+{% set pageTitleName = pageTitle %}
+{% from "components/radio-button-question.njk" import radioButtonQuestion %}
+
 {% extends "layout.njk" %}
-{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% block content %}
   {% if errorList %}
     {{ govukErrorSummary({
       titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
       errorList: errorList
     }) }}
   {% endif %}
-
-  <form method="post" action="{{ paths.appealStarted.feeSupport }}" type="submit">
-    {% call govukFieldset({
-      legend: {
-        text: i18n.pages.feeSupport.title,
-        classes: "govuk-fieldset__legend--xl",
-        isPageHeading: true
-      }
-    }) %}
+  <form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-      {{ saveButtons() }}
-    {% endcall %}
+    {{ radioButtonQuestion(
+      question.name or 'answer',
+      question.options,
+      question.title | eval,
+      question.titleIsheading or true,
+      question.hint | eval | safe if question.hint,
+      error[question.name].text,
+      question.inline
+    ) }}
+
+    {% if saveAndContinueOnly %}
+      {{ saveAndContinueButton() }}
+    {% else %}
+      {% if saveAndContinue %}
+        {{ saveButtons() }}
+      {% else %}
+        {{ continueButton() }}
+      {% endif %}
+    {% endif %}
+
   </form>
   {{ contactUs() }}
 {% endblock %}

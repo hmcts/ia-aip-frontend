@@ -3510,6 +3510,41 @@
       "dateHint": "For example, 31 3 2019",
       "dateLegend": "The field to enter the date when you left the UK after your Protection claim was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
+    },
+    "remissionOptionPage": {
+      "title": "Do you have to pay the fee?",
+      "hint" : "<p>The fee for this appeal is £{{ fee }}. You do not have to pay the fee if one of the following statements applies to you.</p><p>Select one</p>",
+      "options": {
+        "asylumSupportFromHo": {
+          "value": "asylumSupportFromHo",
+          "text": "I get asylum support from the Home Office"
+        },
+        "feeWaiverFromHo": {
+          "value": "feeWaiverFromHo",
+          "text": "I got a fee waiver from the Home Office for my application to stay in the UK"
+        },
+        "under18GetSupportFromLocalAuthority": {
+          "value": "under18GetSupportFromLocalAuthority",
+          "text": "I am under 18 and get housing or other support from the local authority"
+        },
+        "parentGetSupportFromLocalAuthority": {
+          "value": "parentGetSupportFromLocalAuthority",
+          "text": "I am the parent, guardian or sponsor of someone under 18 who gets housing or other support from the local authority"
+        },
+        "noneOfTheseStatements": {
+          "value": "noneOfTheseStatements",
+          "text": "None of these statements apply to me",
+          "hint":  "You may still be able to get help to pay the fee"
+        }
+      }
+    },
+    "asylumSupportPage": {
+      "title": "What is your asylum support reference number?",
+      "legend1": "The Tribunal will check your reference number is valid after your submit your appeal.",
+      "legend2": "If you do not know your reference number, contact <a href=\"https://www.migranthelpuk.org/\" target=\"_blank\">Migrant Help(opens in a new tab)</a> on 0808 8010 503 or <a href='mailto:proofofsupport@migranthelpuk.org' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>proofofsupport@migranthelpuk.org</a>.",
+      "attentionNotice": "Your asylum support reference number is not your Home Office reference number",
+      "homeOfficeReferenceNumberLabel": "Enter your Home Office reference number",
+      "hint": "For example, 23/02/12345"
     }
   },
   "error": {
@@ -3551,6 +3586,7 @@
     "oocHrEea": "Select yes if you are were living outside the United Kingdom when you made your application",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
+    "remissionOptions": "Select the statement that applies to you",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",

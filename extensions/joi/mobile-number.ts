@@ -19,6 +19,7 @@ module.exports = joi => {
     messages: {
       'string.mobilePhoneNumber.invalid.string': '"{{#label}}" did not seem to be a valid phone number',
       'string.mobilePhoneNumber.invalid.mobile': '"{{#label}}" did not seem to be a valid mobile phone number'
+      'string.mobilePhoneNumber.invalid.startingCharacter': 'The phone number must start with a "+" or a digit'
     },
     rules: {
       defaultCountry: {

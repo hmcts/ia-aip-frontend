@@ -5,7 +5,7 @@ import LaunchDarklyService from '../../service/launchDarkly-service';
 import { appealApplicationStatus, buildSectionObject } from '../../utils/tasks-utils';
 
 async function getAppealStageStatus(req: Request) {
-  let drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_AIP_FEATURE_FLAG, false);
+  let drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const status = appealApplicationStatus(req.session.appeal, drlmSetAsideFlag);
   const paymentsFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
   const checkAndSendTask = paymentsFlag ? 'checkAndSendWithPayments' : 'checkAndSend';

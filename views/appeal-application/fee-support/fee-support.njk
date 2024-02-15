@@ -10,15 +10,15 @@
     }) }}
   {% endif %}
 
-  <form method="post" action="{{ paths.appealStarted.name }}" type="submit">
+  <form method="post" action="{{ paths.appealStarted.feeSupport }}" type="submit">
     {% call govukFieldset({
       legend: {
-        text: i18n.pages.name.title,
+        text: i18n.pages.feeSupport.title,
         classes: "govuk-fieldset__legend--xl",
         isPageHeading: true
       }
     }) %}
-
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
       {{ saveButtons() }}
     {% endcall %}
   </form>

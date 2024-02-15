@@ -203,7 +203,7 @@ describe('getStatus', () => {
   });
 
   it('should update status in session with DLRM flag ON', () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_AIP_FEATURE_FLAG, false).resolves(true);
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
     expect(appealApplicationStatus(appeal, true)).to.deep.eq(statusWithDlrm);
   });
 
@@ -280,7 +280,7 @@ describe('getStatus', () => {
   });
 
   it('should update status typeOfAppeal as completed with DLRM flag ON', () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_AIP_FEATURE_FLAG, false).resolves(true);
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
     appeal.application.appealType = 'protection';
     statusWithDlrm.typeOfAppeal = {
@@ -294,7 +294,7 @@ describe('getStatus', () => {
   });
 
   it('should update status feeSupport as active with DLRM flag ON', () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_AIP_FEATURE_FLAG, false).resolves(true);
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';

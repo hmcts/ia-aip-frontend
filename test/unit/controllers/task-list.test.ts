@@ -141,7 +141,7 @@ describe('Task List Controller', () => {
   });
 
   it('getTaskList should render task-list.njk with DLRM flag ON', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_AIP_FEATURE_FLAG, false).resolves(true);
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
     const mockData = [
       {
         'sectionId': 'yourDetails',

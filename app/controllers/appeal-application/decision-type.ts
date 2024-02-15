@@ -47,7 +47,7 @@ function getDecisionTypeQuestion(appeal: Appeal, dlrmSetAsideFlag: boolean = fal
 async function getDecisionType(req: Request, res: Response, next: NextFunction) {
   try {
     const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
-    const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_AIP_FEATURE_FLAG, false);
+    const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!paymentsFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     return res.render('templates/radio-question-page.njk', {

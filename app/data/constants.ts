@@ -10,7 +10,7 @@ export const FEATURE_FLAGS = {
   MAKE_APPLICATION: 'aip-make-application-feature',
   FTPA: 'aip-ftpa-feature',
   USE_CCD_DOCUMENT_AM: 'use-ccd-document-am',
-  DLRM_SETASIDE_AIP_FEATURE_FLAG: 'dlrm-setaside-aip-feature-flag'
+  DLRM_FEE_REMISSION_FEATURE_FLAG: 'dlrm-fee-remission-feature-flag'
 };
 
 export const APPLICANT_TYPE = {

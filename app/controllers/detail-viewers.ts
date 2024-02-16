@@ -767,11 +767,15 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
 }
 
 async function getFtpaDecisionDetails(req: Request, res: Response, next: NextFunction) {
-  const applicantType = getFtpaApplicantType(req.session.appeal);
-  if (APPLICANT_TYPE.APPELLANT === applicantType) {
-    return getFtpaAppellantDecisionDetails(req, res, next);
-  } else if (APPLICANT_TYPE.RESPONDENT === applicantType) {
-    return getFtpaRespondentDecisionDetails(req, res, next);
+  try {
+    const applicantType = getFtpaApplicantType(req.session.appeal);
+    if (APPLICANT_TYPE.APPELLANT === applicantType) {
+      return getFtpaAppellantDecisionDetails(req, res, next);
+    } else if (APPLICANT_TYPE.RESPONDENT === applicantType) {
+      return getFtpaRespondentDecisionDetails(req, res, next);
+    }
+  } catch (error) {
+    next(error);
   }
 }
 

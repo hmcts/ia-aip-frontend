@@ -2458,7 +2458,7 @@ describe('Detail viewer Controller', () => {
       name: 'FTPA_Respondent_Doc.PDF'
     };
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when granted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when granted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2511,7 +2511,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2521,7 +2521,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when partially granted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when partially granted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2574,7 +2574,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2584,7 +2584,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when not admitted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when not admitted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2621,7 +2621,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2631,7 +2631,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2664,7 +2664,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2674,7 +2674,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused by resident judge', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused by resident judge', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2707,7 +2707,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2916,7 +2916,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should catch error and call next with it', () => {
+    it('should catch error and call next with it', async () => {
       const error = new Error('an error');
       req.session.appeal = {
         ...req.session.appeal,
@@ -2932,7 +2932,7 @@ describe('Detail viewer Controller', () => {
       };
       res.render = sandbox.stub().throws(error);
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
       expect(next).to.have.been.calledWith(error);
     });
   });

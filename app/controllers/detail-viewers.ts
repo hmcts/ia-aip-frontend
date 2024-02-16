@@ -769,6 +769,7 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
 async function getFtpaDecisionDetails(req: Request, res: Response, next: NextFunction) {
   try {
     const applicantType = getFtpaApplicantType(req.session.appeal);
+
     if (APPLICANT_TYPE.APPELLANT === applicantType) {
       return getFtpaAppellantDecisionDetails(req, res, next);
     } else if (APPLICANT_TYPE.RESPONDENT === applicantType) {

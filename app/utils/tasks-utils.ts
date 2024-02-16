@@ -63,10 +63,12 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   };
 
   let decisionTypePage: boolean;
+  let appealTypeHasFee: boolean = false;
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
     decisionTypePage = !!_.get(appeal.application, 'rpDcAppealHearingOption');
   } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appeal.application.appealType)) {
     decisionTypePage = !!_.get(appeal.application, 'decisionHearingFeeOption');
+    appealTypeHasFee = true;
   }
   const payNow = _.get(appeal.application, 'appealType') === 'protection' && !!_.get(appeal, 'paAppealTypeAipPaymentOption');
   const decisionType: Task = {
@@ -105,7 +107,7 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
     active: feeSupport.completed
   };
 
-  return drlmSetAsideFlag ? {
+  return drlmSetAsideFlag && appealTypeHasFee ? {
     homeOfficeDetails,
     homeOfficeDetailsOOC,
     personalDetails,

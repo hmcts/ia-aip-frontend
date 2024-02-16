@@ -1147,6 +1147,13 @@
               "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
               "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
               "You must send your application by {{ applicationNextStep.ftpaDeadline }}"
+            ],
+            "reheardRule35": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided that your appeal should be heard again by the First-tier Tribunal.<br>",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
             ]
           }
         }
@@ -1863,7 +1870,8 @@
           "granted": "Granted",
           "partiallyGranted": "Partially granted",
           "notAdmitted": "Not admitted",
-          "refused": "Refused"
+          "refused": "Refused",
+          "reheardRule35": "Appeal to be heard again"
         }
       },
       "directionHistory": {

@@ -766,7 +766,7 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
   }
 }
 
-function getFtpaDecisionDetails(req: Request, res: Response, next: NextFunction) {
+async function getFtpaDecisionDetails(req: Request, res: Response, next: NextFunction) {
   const applicantType = getFtpaApplicantType(req.session.appeal);
   if (APPLICANT_TYPE.APPELLANT === applicantType) {
     return getFtpaAppellantDecisionDetails(req, res, next);
@@ -825,7 +825,7 @@ function getFtpaRespondentDecisionDetails(req: Request, res: Response, next: Nex
   }
 }
 
-function getFtpaAppellantDecisionDetails(req: Request, res: Response, next: NextFunction) {
+async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
     const ftpaGrounds = req.session.appeal.ftpaAppellantGrounds;
@@ -835,7 +835,9 @@ function getFtpaAppellantDecisionDetails(req: Request, res: Response, next: Next
     const ftpaApplicationDate = req.session.appeal.ftpaAppellantApplicationDate;
     const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType || req.session.appeal.ftpaAppellantRjDecisionOutcomeType;
     const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaAppellantDecisionDocument;
+    const ftpaR35AppellantDocument = [req.session.appeal.ftpaR35AppellantDocument];
     const ftpaDecisionDate = req.session.appeal.ftpaAppellantDecisionDate;
+    const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
 
     const data = {
       application: [],
@@ -855,6 +857,9 @@ function getFtpaAppellantDecisionDetails(req: Request, res: Response, next: Next
     attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
     if (ftpaDecision && ftpaDecision.length) {
       data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [ formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision]) ]));
+      if (ftpaSetAsideFeatureEnabled && ftpaDecision === 'reheardRule35') {
+        attachFtpaDocuments(ftpaR35AppellantDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+      }
     }
     attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
     if (ftpaDecisionDate) {

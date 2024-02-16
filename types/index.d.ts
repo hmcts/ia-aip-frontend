@@ -186,6 +186,7 @@ interface Appeal {
   ftpaAppellantDecisionDate?: string;
   nonStandardDirectionEnabled?: boolean;
   readonlyApplicationEnabled?: boolean;
+  ftpaR35AppellantDocument?: Evidence;
 }
 
 interface Hearing {
@@ -387,7 +388,8 @@ interface AppealType {
 }
 
 interface IdamDetails {
-  uid: string;
+  uid?: string;
+  id?: string;
   name: string;
   given_name: string;
   family_name: string;

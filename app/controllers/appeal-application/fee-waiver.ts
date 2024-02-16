@@ -20,7 +20,6 @@ async function getFeeWaiver(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-
 function setupFeeWaiverController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.appealStarted.feeWaiver, middleware, getFeeWaiver);

@@ -10,11 +10,8 @@ import { setupDecisionTypeController } from './controllers/appeal-application/de
 import { setupFeeSupportController } from './controllers/appeal-application/fee-support';
 import { setupFeeWaiverController } from './controllers/appeal-application/fee-waiver';
 import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
-import './controllers/appeal-application/home-office-details-upload-decision-letter';
-import './controllers/appeal-application/upload-local-authority-letter';
 import { setupOutOfCountryController } from './controllers/appeal-application/out-of-country';
 import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
-import './controllers/appeal-application/pay-now';
 import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
@@ -192,6 +189,10 @@ import S2SService from './service/s2s-service';
 import { SystemAuthenticationService } from './service/system-authentication-service';
 import UpdateAppealService from './service/update-appeal-service';
 import { setupSecrets } from './setupSecrets';
+
+import './controllers/appeal-application/home-office-details-upload-decision-letter';
+import './controllers/appeal-application/pay-now';
+import './controllers/appeal-application/upload-local-authority-letter';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');

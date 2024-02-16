@@ -73,7 +73,6 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
   };
 }
 
-
 function setupAsylumSupportController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.appealStarted.asylumSupport, middleware, getAsylumSupport);

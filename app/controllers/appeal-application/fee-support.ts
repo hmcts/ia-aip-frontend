@@ -98,7 +98,7 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
           errors: validation,
           errorList: Object.values(validation),
           previousPage: paths.appealStarted.feeSupport,
-          pageTitle: i18n.pages.decisionTypePage.title,
+          pageTitle: i18n.pages.remissionOptionPage.title,
           formAction: paths.appealStarted.feeSupport,
           question: getRemissionOptionsQuestion(req.session.appeal),
           saveAndContinue: true
@@ -134,13 +134,11 @@ function retrieveRedirectPage(remissionOption: string): string {
   switch (remissionOption) {
     case 'asylumSupportFromHo':
       return paths.appealStarted.asylumSupport;
-      break;
     case 'feeWaiverFromHo':
-      break;
+      return paths.appealStarted.feeWaiver;
     case 'under18GetSupportFromLocalAuthority':
-      break;
     case 'parentGetSupportFromLocalAuthority':
-      break;
+      return paths.appealStarted.uploadLocalAuthorityLetter;
     case 'noneOfTheseStatements':
       break;
     default:

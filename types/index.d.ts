@@ -240,6 +240,7 @@ interface AppealApplication {
   dateLetterSent: AppealDate;
   decisionLetterReceivedDate: AppealDate;
   homeOfficeLetter?: Evidence[];
+  localAuthorityLetter?: Evidence[];
   appealType: string;
   isAppealLate: boolean;
   lateAppeal?: LateAppeal;
@@ -294,6 +295,7 @@ interface AppealApplication {
   decisionHearingFeeOption?: string;
   feeSupportPersisted?: boolean;
   remissionOption?: string;
+  asylumSupportRefNumber?: string;
 }
 
 interface CmaRequirements {

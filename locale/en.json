@@ -3545,6 +3545,23 @@
       "attentionNotice": "Your asylum support reference number is not your Home Office reference number",
       "homeOfficeReferenceNumberLabel": "Enter your Home Office reference number",
       "hint": "For example, 23/02/12345"
+    },
+    "feeWaiverPage": {
+      "title": "Home Office fee waiver",
+      "legend1": "You do not have to pay the fee for this appeal if you got a fee waiver for the application to the Home Office that you are now appealing.",
+      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal."
+    },
+    "uploadLocalAuthorityLetter": {
+      "title": "Upload local authority letter",
+      "legend1": "You should have a letter from the local authority that says it will provide housing or support for someone under 18.",
+      "legend2": "If you do not have this letter, you should ask social services for a new letter that shows you receive support.",
+      "panelTitle": "The way the support is described in the letter will depend on where you live.",
+      "panelBullet1": "If you are in <strong>England</strong>, the letter should say the support will be provided under <strong>section 17 or 20</strong> of the Children Act 1989",
+      "panelBullet2": "If you are in <strong>Scotland</strong>, the letter should say the support will be provided under <strong>section 22 or 25</strong> of the Children(Scotland) Act 1995",
+      "panelBullet3": "If you are in <strong>Nothern Ireland</strong>, the letter should say the support will be provided under <strong>article 18 or 21</strong> of the Children(Nothern Ireland) Order",
+      "panelBullet4": "If you are in <strong>Wales</strong>, the letter should say the support will be provided under <strong>section 37 or 76</strong> of the Social Services and Well-being(Wales) Act 2014",
+      "fileUploadTitle": "<strong>Upload local authority letter</strong>",
+      "uploadedFileTitle": "Uploaded file"
     }
   },
   "error": {
@@ -3587,6 +3604,7 @@
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
     "remissionOptions": "Select the statement that applies to you",
+    "asylumSupport": "Enter your asylum support reference number",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",

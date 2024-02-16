@@ -546,6 +546,16 @@ function remissionOptionsValidation(obj: object): null | ValidationErrors {
   return validate(obj, schema);
 }
 
+function asylumSupportValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.asylumSupport
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -584,5 +594,6 @@ export {
   sponsorAuthorisationValidation,
   gwfReferenceNumberValidation,
   selectedRequiredValidationDialect,
-  remissionOptionsValidation
+  remissionOptionsValidation,
+  asylumSupportValidation
 };

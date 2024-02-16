@@ -8,8 +8,10 @@ import { setConfirmationController } from './controllers/appeal-application/conf
 import { setupContactDetailsController } from './controllers/appeal-application/contact-details';
 import { setupDecisionTypeController } from './controllers/appeal-application/decision-type';
 import { setupFeeSupportController } from './controllers/appeal-application/fee-support';
+import { setupFeeWaiverController } from './controllers/appeal-application/fee-waiver';
 import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
+import './controllers/appeal-application/upload-local-authority-letter';
 import { setupOutOfCountryController } from './controllers/appeal-application/out-of-country';
 import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
 import './controllers/appeal-application/pay-now';
@@ -219,6 +221,7 @@ const typeOfAppealController = setupTypeOfAppealController(middleware, updateApp
 const decisionTypeController = setupDecisionTypeController(middleware, updateAppealService);
 const feeSupportController = setupFeeSupportController(middleware, updateAppealService);
 const asylumSupportController = setupAsylumSupportController(middleware, updateAppealService);
+const feeWaiverController = setupFeeWaiverController(middleware, updateAppealService);
 const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
 const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
@@ -351,6 +354,7 @@ router.use(typeOfAppealController);
 router.use(decisionTypeController);
 router.use(feeSupportController);
 router.use(asylumSupportController);
+router.use(feeWaiverController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);

@@ -3,6 +3,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+ {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 
 {% block content %}
     {% if errorList %}
@@ -12,6 +13,7 @@
         }) }}
     {% endif %}
     <form action="{{ paths.appealStarted.asylumSupport }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% call govukFieldset({
             legend: {
                 text: i18n.pages.asylumSupportPage.title,
@@ -19,22 +21,22 @@
                 isPageHeading: true
             }
         }) %}
-            <h2>{{ i18n.pages.homeOfficePage.label }}</h2>
-            <p>{{ i18n.pages.homeOfficePage.description }}</p>
+            <p>{{ i18n.pages.asylumSupportPage.legend1 }}</p>
+            <p>{{ i18n.pages.asylumSupportPage.legend2 | safe }}</p>
 
-            <ul class="govuk-list govuk-list--bullet">
-                {% for hint in i18n.pages.homeOfficePage.hints %}
-                    <li>{{ hint | safe }}</li>
-                {% endfor %}
-            </ul>
-
-            <p>{{ i18n.pages.homeOfficePage.footNote | safe  }}</p>
+            {{ govukWarningText({
+                text: i18n.pages.asylumSupportPage.attentionNotice,
+                iconFallbackText: "Warning"
+            }) }}
 
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
             {{ govukInput({
                 label: {
-                    text: i18n.pages.homeOfficePage.homeOfficeReferenceNumberLabel
+                    text: i18n.pages.asylumSupportPage.homeOfficeReferenceNumberLabel
+                },
+                hint: {
+                    text: i18n.pages.asylumSupportPage.hint
                 },
                 classes: "govuk-input--width-20",
                 id: "homeOfficeRefNumber",

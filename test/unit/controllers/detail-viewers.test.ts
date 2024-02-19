@@ -2453,8 +2453,12 @@ describe('Detail viewer Controller', () => {
         tag: 'ftpaRespondent'
       }
     ];
+    const document = {
+      fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+      name: 'FTPA_Respondent_Doc.PDF'
+    };
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when granted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when granted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2507,7 +2511,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2517,7 +2521,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when partially granted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when partially granted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2570,7 +2574,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2580,7 +2584,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when not admitted', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when not admitted', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2617,7 +2621,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2627,7 +2631,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2660,7 +2664,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2670,7 +2674,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused by resident judge', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details when refused by resident judge', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'respondent',
@@ -2703,7 +2707,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
@@ -2713,7 +2717,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'appellant',
@@ -2768,7 +2772,8 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
@@ -2778,7 +2783,7 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision', async () => {
       req.session.appeal = {
         ...req.session.appeal,
         ftpaApplicantType: 'appellant',
@@ -2833,7 +2838,8 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
         title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
@@ -2843,7 +2849,74 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    it('should catch error and call next with it', () => {
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision reheard rule 35', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaAppellantRjDecisionOutcomeType: 'reheardRule35',
+        ftpaR35AppellantDocument: document
+      };
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+      document.name = 'FTPA_Reheard_Rule_35_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;to&nbsp;be&nbsp;heard&nbsp;again' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionDocument },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Reheard_Rule_35_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should catch error and call next with it', async () => {
       const error = new Error('an error');
       req.session.appeal = {
         ...req.session.appeal,
@@ -2859,7 +2932,7 @@ describe('Detail viewer Controller', () => {
       };
       res.render = sandbox.stub().throws(error);
 
-      getFtpaDecisionDetails(req as Request, res as Response, next);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
       expect(next).to.have.been.calledWith(error);
     });
   });

@@ -1078,6 +1078,26 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.hearingRequirements.otherNeeds.bringOwnMultimediaEquipmentReason).is.undefined;
       });
     });
+
+    describe('ftpaR35AppellantDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaR35AppellantDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_R35_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map reheard rule 35 decision document', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaR35AppellantDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
+      });
+    });
   });
 
   describe('submitEvent', () => {

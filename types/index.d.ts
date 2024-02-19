@@ -186,6 +186,7 @@ interface Appeal {
   ftpaAppellantDecisionDate?: string;
   nonStandardDirectionEnabled?: boolean;
   readonlyApplicationEnabled?: boolean;
+  ftpaR35AppellantDocument?: Evidence;
 }
 
 interface Hearing {

@@ -27,7 +27,9 @@ function constructEventObject(event: HistoryEvent, req: Request) {
   let eventContent = i18n.pages.overviewPage.timeline[event.id];
   if (isUploadEvidenceEventByLegalRep(req, event)) {
     eventContent = i18n.pages.overviewPage.timeline[event.id]['providedByLr'];
-  } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id) {
+  } else if (Events.RESIDENT_JUDGE_FTPA_DECISION.id === event.id
+      || Events.LEADERSHIP_JUDGE_FTPA_DECISION.id === event.id
+      || Events.DECIDE_FTPA_APPLICATION.id === event.id) {
     const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
     eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
   }
@@ -151,7 +153,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const uploadAddendumEvidenceFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
   const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
-  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled);
+  const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(
@@ -198,7 +201,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
 function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   hearingBundleFeatureEnabled: boolean,
-  ftpaFeatureEnabled: boolean) {
+  ftpaFeatureEnabled: boolean,
+  ftpaSetAsideFeatureEnabled: boolean) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,
@@ -226,6 +230,12 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
         Events.APPLY_FOR_FTPA_RESPONDENT.id,
         Events.LEADERSHIP_JUDGE_FTPA_DECISION.id,
         Events.RESIDENT_JUDGE_FTPA_DECISION.id
+    );
+  }
+
+  if (ftpaSetAsideFeatureEnabled) {
+    appealDecisionSectionEvents.push(
+        Events.DECIDE_FTPA_APPLICATION.id
     );
   }
 

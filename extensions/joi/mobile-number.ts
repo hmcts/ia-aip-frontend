@@ -18,8 +18,7 @@ module.exports = joi => {
     type: 'mobilePhoneNumber',
     messages: {
       'string.mobilePhoneNumber.invalid.string': '"{{#label}}" did not seem to be a valid phone number',
-      'string.mobilePhoneNumber.invalid.mobile': '"{{#label}}" did not seem to be a valid mobile phone number',
-      'string.mobilePhoneNumber.invalid.startingCharacter': 'The phone number must start with a "+" or a digit'
+      'string.mobilePhoneNumber.invalid.mobile': '"{{#label}}" did not seem to be a valid mobile phone number'
     },
     rules: {
       defaultCountry: {
@@ -72,9 +71,6 @@ module.exports = joi => {
         if (phoneUtil.getNumberType(mobilePhoneNumber) !== phoneNumberType.MOBILE) {
           throw new Error('The phone supplied did not seem to be a valid mobile phone number');
         }
-        if (!formatRegex.test(mobilePhoneNumber)) {
-          throw new Error('The phone number must start with a "+" or a digit');
-        }
         return { value: phoneUtil.format(mobilePhoneNumber, format) };
 
       } catch (err) {
@@ -86,10 +82,6 @@ module.exports = joi => {
           {
             error: 'string.mobilePhoneNumber.invalid.mobile',
             errorMessages: [ 'The phone supplied did not seem to be a valid mobile phone number' ]
-          },
-          {
-            error: 'string.mobilePhoneNumber.invalid.startingCharacter',
-            errorMessages: [ 'The phone number must start with a "+" or a digit' ]
           }
         ];
 

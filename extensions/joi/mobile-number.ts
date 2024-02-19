@@ -55,7 +55,6 @@ module.exports = joi => {
 
       const defaultCountry = schema.$_getFlag('defaultCountry') || defaults.country;
       const formatName = schema.$_getFlag('format') || defaults.format;
-      const formatRegex = /^[+\d]/;
 
       try {
         const format = supportedTypes[formatName];
@@ -71,6 +70,7 @@ module.exports = joi => {
         if (phoneUtil.getNumberType(mobilePhoneNumber) !== phoneNumberType.MOBILE) {
           throw new Error('The phone supplied did not seem to be a valid mobile phone number');
         }
+
         return { value: phoneUtil.format(mobilePhoneNumber, format) };
 
       } catch (err) {

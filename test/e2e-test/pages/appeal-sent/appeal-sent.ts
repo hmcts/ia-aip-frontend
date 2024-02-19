@@ -9,10 +9,16 @@ module.exports = {
       I.seeInCurrentUrl(paths.appealSubmitted.confirmation);
     });
 
-    Then('I am on the appeal details submitted page', async () => {
+    Then('I am on the appeal details PA pay now submitted page', async () => {
       await I.waitInUrl(paths.pendingPayment.confirmation, 15);
       await I.seeInCurrentUrl(paths.pendingPayment.confirmation);
       await I.see('You still have to Pay for your appeal.');
+    });
+
+    Then('I am on the appeal details non PA payment submitted page', async () => {
+      await I.waitInUrl(paths.pendingPayment.confirmation, 15);
+      await I.seeInCurrentUrl(paths.pendingPayment.confirmation);
+      await I.see('You must pay for your appeal by');
     });
 
     Then('I am on the make payment page', async () => {

@@ -40,20 +40,34 @@ module.exports = {
     });
 
     Given('I am authenticated as a valid appellant', async () => {
-      I.amOnPage(testUrl + paths.common.login);
+      await I.amOnPage(testUrl + paths.common.login);
       await signInHelper();
-      for (let i = 0; i < 10; i++) {
-        let success = await I.checkIfLogInIsSuccessful(10);
-        if (success === true) {
-          break;
-        } else {
-          await I.amOnPage(testUrl + '/logout');
-          await I.amOnPage(testUrl + paths.common.login);
-          await I.fillField('#username', currentUserDetails.email);
-          await I.fillField('#password', currentUserDetails.password);
-          await I.click('Sign in');
+      if (!testUrl.includes('localhost')) {
+        for (let i = 0; i < 10; i++) {
+          let success = await I.checkIfLogInIsSuccessful(10);
+          if (success === true) {
+            break;
+          } else {
+            await I.amOnPage(testUrl + '/logout');
+            await I.amOnPage(testUrl + paths.common.login);
+            await I.fillField('#username', currentUserDetails.email);
+            await I.fillField('#password', currentUserDetails.password);
+            await I.click('Sign in');
+          }
         }
+      } else {
+        await I.fillField('#username', currentUserDetails.email);
+        await I.fillField('#password', currentUserDetails.password);
+        await I.click('Sign in');
       }
+      await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
+    });
+
+    Given('I log in as an appellant ready to submit appeal', async () => {
+      await I.fillField('#username', 'readyToSubmitAppealDONOTSUBMIT@mailnesia.com');
+      await I.fillField('#password', 'Apassword123');
+      await I.click('Sign in');
+      await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });
 

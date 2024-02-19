@@ -11,14 +11,18 @@ properties([
     ]),
     parameters([
         string(name: 'sleepTimer', defaultValue: "0", description: 'Wait x seconds until the pipeline is run'),
-        booleanParam(name: 'skipCrossBrowserTests', defaultValue: false, description: 'Tick the checkbox for skip'),
-        booleanParam(name: 'skipSecurityScan', defaultValue: false, description: 'Tick the checkbox for skip'),
-        booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox for skip'),
-        string(name: 'ZAP_URL_EXCLUSIONS', defaultValue: "-config globalexcludeurl.url_list.url\\(1\\).regex=\\'.*jquery-3.5.1.min.js${'$'}\\' -config globalexcludeurl.url_list.url\\(2\\).regex=\\'.*\\/assets\\/images.*\\' -config globalexcludeurl.url_list.url\\(3\\).regex=\\'.*\\/assets\\/stylesheets.*\\' -config globalexcludeurl.url_list.url\\(4\\).regex=\\'.*\\/assets\\/javascripts.*\\' -config globalexcludeurl.url_list.url\\(5\\).regex=\\'.*\\/ruxitagentjs_.*\\' -config globalexcludeurl.url_list.url\\(6\\).regex=\\'.*\\/terms-and-conditions.*\\' -config globalexcludeurl.url_list.url\\(7\\).regex=\\'.*\\/privacy-policy.*\\' -config globalexcludeurl.url_list.url\\(8\\).regex=\\'.*\\/contact-us.*\\' -config globalexcludeurl.url_list.url\\(9\\).regex=\\'.*\\/login.*\\' -config globalexcludeurl.url_list.url\\(10\\).regex=\\'.*\\/cookies.*\\' -config globalexcludeurl.url_list.url\\(11\\).regex=\\'.*\\/cookie-preferences.*\\' -config globalexcludeurl.url_list.url\\(12\\).regex=\\'.*\\/robots.txt\\' -config globalexcludeurl.url_list.url\\(13\\).regex=\\'.*\\/sitemap.*\\' -config globalexcludeurl.url_list.url\\(14\\).regex=\\'.*jquery-3.4.1.min.js${'$'}\\'")
+        booleanParam(name: 'skipSmokeTest', defaultValue: false, description: 'Tick the checkbox to skip Smoke Test stage'),
+        booleanParam(name: 'skipUnitTests', defaultValue: false, description: 'Tick the checkbox to skip Unit Tests stage'),
+        booleanParam(name: 'skipFortifyScan', defaultValue: false, description: 'Tick the checkbox to skip Fortify Scan stage'),
+        booleanParam(name: 'skipCrossBrowserTests', defaultValue: false, description: 'Tick the checkbox to skip Cross Browser Tests stage'),
+        booleanParam(name: 'skipSecurityScan', defaultValue: false, description: 'Tick the checkbox to skip Security Scan stage'),
+        booleanParam(name: 'skipFullFunctionalTests', defaultValue: false, description: 'Tick the checkbox to skip Full Functional Tests stage'),
+        string(name: 'ZAP_URL_EXCLUSIONS', defaultValue: "-config globalexcludeurl.url_list.url\\(1\\).regex=\\'.*/assets/images.*\\' -config globalexcludeurl.url_list.url\\(2\\).regex=\\'.*/assets/stylesheets.*\\' -config globalexcludeurl.url_list.url\\(3\\).regex=\\'.*/assets/javascripts.*\\' -config globalexcludeurl.url_list.url\\(4\\).regex='^https?:\\/\\/.*\\/(?:.*ruxitagentjs.*)+\$' -config globalexcludeurl.url_list.url\\(5\\).regex=\\'.*/terms-and-conditions.*\\' -config globalexcludeurl.url_list.url\\(6\\).regex=\\'.*/privacy-policy.*\\' -config globalexcludeurl.url_list.url\\(7\\).regex=\\'.*/contact-us.*\\' -config globalexcludeurl.url_list.url\\(8\\).regex=\\'.*/login.*\\' -config globalexcludeurl.url_list.url\\(9\\).regex=\\'.*/cookies.*\\' -config globalexcludeurl.url_list.url\\(10\\).regex=\\'.*/cookie-preferences.*\\' -config globalexcludeurl.url_list.url\\(11\\).regex=\\'.*/robots.txt\\' -config globalexcludeurl.url_list.url\\(12\\).regex=\\'.*/sitemap.*\\' -config globalexcludeurl.url_list.url\\(13\\).regex=\\'.*jquery-3.4.1.min.js\\'")
     ])
 ])
 
 @Library("Infrastructure")
+import uk.gov.hmcts.contino.YarnBuilder
 
 def type      = "nodejs"
 def product   = "ia"
@@ -59,7 +63,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
    envVariable: envVar
   ]
 }
-def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+YarnBuilder builder = new YarnBuilder(this)
+
 def urlExclusions = params.ZAP_URL_EXCLUSIONS
 withNightlyPipeline(type, product, component) {
     script {
@@ -76,6 +82,9 @@ withNightlyPipeline(type, product, component) {
     env.S2S_MICROSERVICE_NAME = 'iac'
     env.TEST_E2E_FAIL_FAST = 'false'
 
+    if (!params.skipFortifyScan) {
+        enableFortifyScan()
+    }
     if (!params.skipCrossBrowserTests) {
         enableCrossBrowserTest()
     }
@@ -85,30 +94,78 @@ withNightlyPipeline(type, product, component) {
     if (!params.skipFullFunctionalTests) {
         enableFullFunctionalTest(180)
     }
-//    TODO re add in fortify once issues have been resolved
-//    disabled until fortify accounts are allocated
-//    enableFortifyScan()
+
 //    mutation tests not yet implemented
 //    enableMutationTest()
 
-    after('fortify-scan') {
+
+    afterAlways('build') {
+        if (!params.skipSmokeTest) {
+            stage('Smoke Test') {
+                builder.yarn('test:smoke')
+            }
+        }
+        
+        if (!params.skipUnitTests) {
+            stage('Unit Tests') {
+                builder.yarn('test:unit')
+                publishHTML target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : "mochawesome-report",
+                        reportFiles          : "mochawesome.html",
+                        reportName           : "Unit & Smoke Test Report"
+                ]
+                publishHTML target: [
+                        allowMissing         : true,
+                        alwaysLinkToLastBuild: true,
+                        keepAll              : true,
+                        reportDir            : "test/coverage/html",
+                        reportFiles          : "index.html",
+                        reportName           : "Code Coverage Report"
+                ]
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/coverage/*'
+            }
+        }
+    }
+
+    before('fortify-scan') {
+        sh "chmod +x ./test/java/gradlew"
+    }
+
+    afterAlways('fortify-scan') {
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "Fortify Scan",
+                reportFiles          : "FortifyScanReport.html",
+                reportName           : "Fortify Scan Report"
+        ]
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
-    afterAlways('crossBrowserTest') {
-        yarnBuilder.yarn('test:a11y')
+    afterAlways('securityScan') {
+        publishHTML target: [
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "functional-output",
+                reportFiles          : "activescan.html",
+                reportName           : "Security Scan Report"
+        ]
     }
 
     afterAlways('crossBrowserTest') {
         publishHTML([
-                reportName           : 'IA AIP Frontend Cross Browser Tests',
+                reportName           : 'Cross Browser Tests',
                 reportDir            : "functional-output/crossbrowser/reports/",
                 reportFiles          : "${dir('functional-output/crossbrowser/reports') { findFiles(glob: '**/records.html').join(',') ?: 'Not found' }}",
                 allowMissing         : true,
                 alwaysLinkToLastBuild: true,
                 keepAll              : true
         ])
-
     }
 
     afterAlways('mutationTest') {
@@ -118,7 +175,7 @@ withNightlyPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "reports/tests/mutation/node/",
             reportFiles          : 'index.html',
-            reportName           : 'AIP Frontend Mutation tests'
+            reportName           : 'Mutation tests'
         ])
     }
 
@@ -129,7 +186,8 @@ withNightlyPipeline(type, product, component) {
                 keepAll              : true,
                 reportDir            : "functional-output/e2e/reports/",
                 reportFiles          : 'report.html',
-                reportName           : 'AIP Frontend Functional Test'
+                reportName           : 'Functional E2E Tests'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/accessibility/*'
     }
 }

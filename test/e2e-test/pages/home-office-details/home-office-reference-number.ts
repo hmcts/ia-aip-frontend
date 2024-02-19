@@ -13,6 +13,10 @@ module.exports = {
       I.fillField('#homeOfficeRefNumber', refNumber);
     });
 
+    When(/^I go into the Home office details task$/, async () => {
+      await I.amOnPage(testUrl + paths.appealStarted.details);
+    });
+
     When(/^I click on Home office details$/, async () => {
       await I.click('a[href*="' + paths.appealStarted.details + '"]');
     });

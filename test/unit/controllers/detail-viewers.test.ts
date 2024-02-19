@@ -2932,10 +2932,6 @@ describe('Detail viewer Controller', () => {
       const expectedSummaryRows = {
         application: [
           {
-            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
-            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Respondent_Doc.PDF</a>` }
-          },
-          {
             key: { text: i18n.pages.detailViewers.ftpaApplication.date },
             value: { html: '20&nbsp;March&nbsp;2023' }
           }

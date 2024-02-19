@@ -426,6 +426,10 @@ export default class UpdateAppealService {
       reheardRule35Document = this.mapSupportingDocumentToEvidence(caseData.ftpaR35AppellantDocument, documentMap);
     }
 
+    if (caseData.ftpaR35RespondentDocument && caseData.ftpaR35RespondentDocument.document_filename) {
+      reheardRule35Document = this.mapSupportingDocumentToEvidence(caseData.ftpaR35RespondentDocument, documentMap);
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -438,6 +442,7 @@ export default class UpdateAppealService {
       appealOutOfCountry: caseData.appealOutOfCountry,
       nonStandardDirectionEnabled: true,
       ftpaR35AppellantDocument: reheardRule35Document,
+      ftpaR35RespondentDocument: reheardRule35Document,
       readonlyApplicationEnabled: true,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,

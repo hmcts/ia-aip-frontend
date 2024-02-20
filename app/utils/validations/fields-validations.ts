@@ -235,7 +235,8 @@ function contactDetailsValidation(obj: object) {
         .messages({
           'string.empty': i18n.validationErrors.phoneEmpty,
           'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-          'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+          'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat,
+          'string.mobilePhoneNumber.invalid.startingCharacter': i18n.validationErrors.phoneFormat
         }),
       otherwise: Joi.any()
     })

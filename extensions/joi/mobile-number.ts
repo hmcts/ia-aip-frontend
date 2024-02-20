@@ -56,6 +56,7 @@ module.exports = joi => {
 
       const defaultCountry = schema.$_getFlag('defaultCountry') || defaults.country;
       const formatName = schema.$_getFlag('format') || defaults.format;
+      const formatRegex = /^[+\d]/;
 
       try {
         const format = supportedTypes[formatName];

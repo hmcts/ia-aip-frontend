@@ -9,20 +9,12 @@
             errorList: errorList
         }) }}
     {% endif %}
-    <form action={{ formAction }} method='post'>
+    <form method="post" action={{ paths.awaitingReasonsForAppeal.feeWaiver }}>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-        {% call govukFieldset({
-            legend: {
-                text: i18n.pages.feeWaiverPage.title,
-                classes: "govuk-fieldset__legend--xl",
-                isPageHeading: true
-            }
-        }) %}
-            <p>{{ i18n.pages.feeWaiverPage.legend1 }}</p>
-            <p>{{ i18n.pages.feeWaiverPage.legend2 }}</p>
-
-            {{ continueButton() }}
-        {% endcall %}
+        <h1 class="govuk-heading-xl">{{ i18n.pages.feeWaiverPage.title }}</h1>
+        <p>{{ i18n.pages.feeWaiverPage.legend1 }}</p>
+        <p>{{ i18n.pages.feeWaiverPage.legend2 }}</p>
+        {{ continueButton() }}
     </form>
     {{ contactUs() }}
 {% endblock %}

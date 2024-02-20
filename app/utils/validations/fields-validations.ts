@@ -548,11 +548,25 @@ function remissionOptionsValidation(obj: object): null | ValidationErrors {
 
 function asylumSupportValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
+    asylumSupportRefNumber: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.asylumSupport })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function helpWithFeesValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
     answer: Joi.string().required().messages({
-      'any.required': i18n.validationErrors.asylumSupport
+      'any.required': i18n.validationErrors.helpWithFees
     })
   }).unknown();
 
+  return validate(obj, schema);
+}
+
+function helpWithFeesRefNumberValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    helpWithFeesRefNumber: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.helpWithFeesRefNumber })
+  }).unknown();
   return validate(obj, schema);
 }
 
@@ -595,5 +609,7 @@ export {
   gwfReferenceNumberValidation,
   selectedRequiredValidationDialect,
   remissionOptionsValidation,
-  asylumSupportValidation
+  asylumSupportValidation,
+  helpWithFeesValidation,
+  helpWithFeesRefNumberValidation
 };

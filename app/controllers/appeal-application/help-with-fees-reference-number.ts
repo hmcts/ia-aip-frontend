@@ -9,17 +9,18 @@ import UpdateAppealService from '../../service/update-appeal-service';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
-import { asylumSupportValidation } from '../../utils/validations/fields-validations';
+import { helpWithFeesRefNumberValidation } from '../../utils/validations/fields-validations';
 
-async function getAsylumSupport(req: Request, res: Response, next: NextFunction) {
+async function getHelpWithFeesRefNumber(req: Request, res: Response, next: NextFunction) {
   try {
     const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!drlmSetAsideFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
 
-    return res.render('appeal-application/fee-support/asylum-support.njk', {
-      previousPage: paths.appealStarted.feeSupport,
-      formAction: paths.appealStarted.asylumSupport,
+    return res.render('appeal-application/fee-support/help-with-fees-reference-number.njk', {
+      previousPage: previousPage,
+      formAction: paths.appealStarted.helpWithFeesReferenceNumber,
       saveAndContinue: true
     });
   } catch (error) {
@@ -27,7 +28,7 @@ async function getAsylumSupport(req: Request, res: Response, next: NextFunction)
   }
 }
 
-function postAsylumSupport(updateAppealService: UpdateAppealService) {
+function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
@@ -40,26 +41,27 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
     try {
       const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
-      if (!shouldValidateWhenSaveForLater(req.body, 'asylumSupportRefNumber')) {
+      if (!shouldValidateWhenSaveForLater(req.body, 'helpWithFeesRefNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
-      const validation = asylumSupportValidation(req.body);
+      const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+      const validation = helpWithFeesRefNumberValidation(req.body);
       if (validation) {
-        return res.render('appeal-application/fee-support/asylum-support.njk', {
+        return res.render('appeal-application/fee-support/help-with-fees-reference-number.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealStarted.asylumSupport,
-          pageTitle: i18n.pages.asylumSupportPage.title,
-          formAction: paths.appealStarted.asylumSupport,
+          previousPage: previousPage,
+          pageTitle: i18n.pages.helpWithFeesReference.title,
+          formAction: paths.appealStarted.helpWithFeesReferenceNumber,
           saveAndContinue: true
         });
       }
-      const selectedValue = req.body['asylumSupportRefNumber'];
+      const selectedValue = req.body['helpWithFeesRefNumber'];
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          asylumSupportRefNumber: selectedValue
+          helpWithFeesRefNumber: selectedValue
         }
       };
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
@@ -73,15 +75,15 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupAsylumSupportController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupHelpWithFeesReferenceNumberController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.appealStarted.asylumSupport, middleware, getAsylumSupport);
-  router.post(paths.appealStarted.asylumSupport, middleware, postAsylumSupport(updateAppealService));
+  router.get(paths.appealStarted.helpWithFeesReferenceNumber, middleware, getHelpWithFeesRefNumber);
+  router.post(paths.appealStarted.helpWithFeesReferenceNumber, middleware, postHelpWithFeesRefNumber(updateAppealService));
   return router;
 }
 
 export {
-  getAsylumSupport,
-  postAsylumSupport,
-  setupAsylumSupportController
+  getHelpWithFeesRefNumber,
+  postHelpWithFeesRefNumber,
+  setupHelpWithFeesReferenceNumberController
 };

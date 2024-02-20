@@ -170,6 +170,11 @@ interface CaseData {
   ftpaAppellantDecisionOutcomeType?: string;
   ftpaAppellantDecisionDocument?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantDecisionDate?: string;
+  remissionOption?: string;
+  asylumSupportRefNumber?: string;
+  helpWithFeesOption?: string;
+  helpWithFeesRefNumber?: string;
+  localAuthorityLetters?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
 }
 
 interface Application<T> {

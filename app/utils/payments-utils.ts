@@ -4,6 +4,7 @@ import { States } from '../data/states';
 const EA_HU_EUSS_APPEAL_TYPES = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'];
 
 export function getFee(appeal: Appeal) {
+  //  TODO if selected Deprivation - it could throw an error because feeWithHearing and feeWithoutHearing will be nulls!
   const { decisionHearingFeeOption } = appeal.application;
   const { feeWithHearing = null, feeWithoutHearing = null } = appeal;
   const fee = decisionHearingFeeOption === 'decisionWithHearing' ? feeWithHearing : feeWithoutHearing;

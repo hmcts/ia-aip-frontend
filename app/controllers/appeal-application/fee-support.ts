@@ -104,6 +104,7 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
           saveAndContinue: true
         });
       }
+
       const selectedValue = req.body['answer'];
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -112,9 +113,10 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
           remissionOption: selectedValue
         }
       };
+
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
-      const defaultRedirect = retrieveRedirectPage(selectedValue);
+      const defaultRedirect = getfeeSupportRedirectPage(selectedValue);
       let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
@@ -130,7 +132,7 @@ function setupFeeSupportController(middleware: Middleware[], updateAppealService
   return router;
 }
 
-function retrieveRedirectPage(remissionOption: string): string {
+function getfeeSupportRedirectPage(remissionOption: string): string {
   switch (remissionOption) {
     case 'asylumSupportFromHo':
       return paths.appealStarted.asylumSupport;
@@ -140,7 +142,7 @@ function retrieveRedirectPage(remissionOption: string): string {
     case 'parentGetSupportFromLocalAuthority':
       return paths.appealStarted.uploadLocalAuthorityLetter;
     case 'noneOfTheseStatements':
-      break;
+      return paths.appealStarted.helpWithFees;
     default:
       throw new Error('The selected remission option is not valid. Please check the value.');
   }
@@ -150,5 +152,5 @@ export {
   setupFeeSupportController,
   getFeeSupport,
   postFeeSupport,
-  retrieveRedirectPage
+  getfeeSupportRedirectPage
 };

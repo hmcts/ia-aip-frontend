@@ -12,37 +12,31 @@
             errorList: errorList
         }) }}
     {% endif %}
-    <form action="{{ paths.appealStarted.asylumSupport }}" method="post">
+    <form action="{{ paths.appealStarted.helpWithFeesReferenceNumber }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% call govukFieldset({
             legend: {
-                text: i18n.pages.asylumSupportPage.title,
+                text: i18n.pages.helpWithFeesReference.title,
                 classes: "govuk-fieldset__legend--xl",
                 isPageHeading: true
             }
         }) %}
-            <p>{{ i18n.pages.asylumSupportPage.legend1 }}</p>
-            <p>{{ i18n.pages.asylumSupportPage.legend2 | safe }}</p>
-
-            {{ govukWarningText({
-                text: i18n.pages.asylumSupportPage.attentionNotice,
-                iconFallbackText: "Warning"
-            }) }}
+            <p>{{ i18n.pages.helpWithFeesReference.paragraph }}</p>
 
             {{ govukInput({
                 label: {
-                    text: i18n.pages.asylumSupportPage.homeOfficeReferenceNumberLabel
+                    text: i18n.pages.helpWithFeesReference.helpWithFeesReferenceNumberLabel
                 },
                 hint: {
-                    text: i18n.pages.asylumSupportPage.hint
+                    text: i18n.pages.helpWithFeesReference.hint
                 },
                 classes: "govuk-input--width-20",
-                id: "asylumSupportRefNumber",
-                name: "asylumSupportRefNumber",
-                value: asylumSupportRefNumber,
+                id: "helpWithFeesRefNumber",
+                name: "helpWithFeesRefNumber",
+                value: helpWithFeesRefNumber,
                 errorMessage: {
-                    text:  errors['asylumSupportRefNumber'].text
-                } if errors['asylumSupportRefNumber']
+                    text:  errors['helpWithFeesRefNumber'].text
+                } if errors['helpWithFeesRefNumber']
             }) }}
 
             {{ saveButtons() }}

@@ -18,7 +18,7 @@ function getLocalAuthorityLetter(req: Request, res: Response, next: NextFunction
       };
 
     }
-    const localAuthorityLetterEvidences = req.session.appeal.application.localAuthorityLetter || [];
+    const localAuthorityLetterEvidences = req.session.appeal.application.localAuthorityLetters || [];
     let previousPage = paths.appealStarted.feeSupport;
 
     res.render('appeal-application/fee-support/upload-local-authority-letter.njk', {
@@ -39,7 +39,7 @@ function getLocalAuthorityLetter(req: Request, res: Response, next: NextFunction
 
 function postLocalAuthorityLetter(req: Request, res: Response, next: NextFunction) {
   try {
-    const authLetterUploads = req.session.appeal.application.localAuthorityLetter || [];
+    const authLetterUploads = req.session.appeal.application.localAuthorityLetters || [];
     if (authLetterUploads.length > 0) {
       const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
       return res.redirect(redirectTo);
@@ -70,7 +70,7 @@ function uploadLocalAuthorityLetter(updateAppealService: UpdateAppealService, do
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
-        let localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.localAuthorityLetter || [];
+        let localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.localAuthorityLetters || [];
         const localAuthorityLetter: Evidence = await documentManagementService.uploadFile(req);
         localAuthorityLetterEvidences.push(localAuthorityLetter);
 
@@ -105,7 +105,7 @@ function deleteLocalAuthorityLetter(updateAppealService: UpdateAppealService, do
           ...req.session.appeal,
           application: {
             ...req.session.appeal.application,
-            localAuthorityLetter: req.session.appeal.application.localAuthorityLetter.filter(document => document.fileId !== req.query.id)
+            localAuthorityLetters: req.session.appeal.application.localAuthorityLetters.filter(document => document.fileId !== req.query.id)
           }
         };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);

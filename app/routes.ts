@@ -9,10 +9,15 @@ import { setupContactDetailsController } from './controllers/appeal-application/
 import { setupDecisionTypeController } from './controllers/appeal-application/decision-type';
 import { setupFeeSupportController } from './controllers/appeal-application/fee-support';
 import { setupFeeWaiverController } from './controllers/appeal-application/fee-waiver';
+import { setupHelpWithFeesController } from './controllers/appeal-application/help-with-fees';
+import {
+  setupHelpWithFeesReferenceNumberController
+} from './controllers/appeal-application/help-with-fees-reference-number';
 import { setupHomeOfficeDetailsController } from './controllers/appeal-application/home-office-details';
 import { setupOutOfCountryController } from './controllers/appeal-application/out-of-country';
 import { setupOutOfTimeController } from './controllers/appeal-application/out-of-time';
 import { setupPersonalDetailsController } from './controllers/appeal-application/personal-details';
+import { setupStepToHelpWithFeesController } from './controllers/appeal-application/steps-to-help-with-fees';
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
@@ -223,6 +228,9 @@ const decisionTypeController = setupDecisionTypeController(middleware, updateApp
 const feeSupportController = setupFeeSupportController(middleware, updateAppealService);
 const asylumSupportController = setupAsylumSupportController(middleware, updateAppealService);
 const feeWaiverController = setupFeeWaiverController(middleware, updateAppealService);
+const helpWithFeesController = setupHelpWithFeesController(middleware, updateAppealService);
+const helpWithFeesReferenceNumberController = setupHelpWithFeesReferenceNumberController(middleware, updateAppealService);
+const stepsToHelpWithFeesController = setupStepToHelpWithFeesController(middleware, updateAppealService);
 const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
 const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
@@ -356,6 +364,9 @@ router.use(decisionTypeController);
 router.use(feeSupportController);
 router.use(asylumSupportController);
 router.use(feeWaiverController);
+router.use(helpWithFeesController);
+router.use(helpWithFeesReferenceNumberController);
+router.use(stepsToHelpWithFeesController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);

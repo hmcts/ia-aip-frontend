@@ -111,6 +111,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const isLate = req.session.appeal.application.isAppealLate;
   const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
+  const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
 
   let descriptionParagraphs;
   let respondBy;
@@ -598,9 +599,16 @@ async function getAppealApplicationNextStep(req: Request) {
         };
       } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
         const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
-        doThisNextSection = {
-          descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]
-        };
+        if (ftpaSetAsideFeatureEnabled && ftpaDecision === 'reheardRule35') {
+          doThisNextSection = {
+            cta: {},
+            descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]
+          };
+        } else {
+          doThisNextSection = {
+            descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]
+          };
+        }
       } else {
         doThisNextSection = {
           descriptionParagraphs: [ `Nothing to do next` ]

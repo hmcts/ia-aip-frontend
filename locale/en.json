@@ -1110,6 +1110,13 @@
             "refused": [
               "The HOme Office application for permission to appeal to the Upper Tribunal has been refused.",
               "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ],
+            "reheardRule35": [
+              "A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided that this appeal should be heard again by the First-tier Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the decision and reasons document</a>",
+              "<b>What happens next</b>",
+              "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
             ]
           },
           "appellant": {

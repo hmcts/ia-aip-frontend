@@ -171,6 +171,7 @@ interface CaseData {
   ftpaAppellantDecisionDocument?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantDecisionDate?: string;
   ftpaR35AppellantDocument: SupportingDocument;
+  ftpaR35RespondentDocument: SupportingDocument;
 }
 
 interface Application<T> {

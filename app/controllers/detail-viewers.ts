@@ -780,7 +780,7 @@ async function getFtpaDecisionDetails(req: Request, res: Response, next: NextFun
   }
 }
 
-function getFtpaRespondentDecisionDetails(req: Request, res: Response, next: NextFunction) {
+async function getFtpaRespondentDecisionDetails(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
     const ftpaGroundsDocuments = req.session.appeal.ftpaRespondentGroundsDocuments;
@@ -790,7 +790,9 @@ function getFtpaRespondentDecisionDetails(req: Request, res: Response, next: Nex
     const ftpaApplicationDate = req.session.appeal.ftpaRespondentApplicationDate;
     const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
     const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaRespondentDecisionDocument;
+    const ftpaR35RespondentDocument = [req.session.appeal.ftpaR35RespondentDocument];
     const ftpaDecisionDate = req.session.appeal.ftpaRespondentDecisionDate;
+    const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
 
     const data = {
       application: [],
@@ -813,6 +815,9 @@ function getFtpaRespondentDecisionDetails(req: Request, res: Response, next: Nex
     }
     if (ftpaDecision && ftpaDecision.length) {
       data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [ formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision]) ]));
+      if (ftpaSetAsideFeatureEnabled && ftpaDecision === 'reheardRule35') {
+        attachFtpaDocuments(ftpaR35RespondentDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+      }
     }
     attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
     if (ftpaDecisionDate) {

@@ -599,7 +599,7 @@ async function getAppealApplicationNextStep(req: Request) {
         };
       } else if (ftpaEnabled && APPLICANT_TYPE.RESPONDENT === ftpaApplicantType) {
         const ftpaDecision = req.session.appeal.ftpaRespondentDecisionOutcomeType || req.session.appeal.ftpaRespondentRjDecisionOutcomeType;
-        if (ftpaSetAsideFeatureEnabled) {
+        if (ftpaSetAsideFeatureEnabled && ftpaDecision === 'reheardRule35') {
           doThisNextSection = {
             cta: {},
             descriptionParagraphs: i18n.pages.overviewPage.doThisNext.ftpaDecided.respondent[ftpaDecision]

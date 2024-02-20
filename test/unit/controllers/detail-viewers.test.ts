@@ -2510,7 +2510,7 @@ describe('Detail viewer Controller', () => {
           }
         ]
       };
-
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
@@ -2574,6 +2574,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
@@ -2621,6 +2622,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
@@ -2664,6 +2666,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
@@ -2707,6 +2710,7 @@ describe('Detail viewer Controller', () => {
         ]
       };
 
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(false);
       await getFtpaDecisionDetails(req as Request, res as Response, next);
 
       expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
@@ -2923,8 +2927,8 @@ describe('Detail viewer Controller', () => {
         ftpaRespondentApplicationDate: '2023-03-20',
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [],
-        ftpaAppellantRjDecisionOutcomeType: 'reheardRule35',
-        ftpaR35AppellantDocument: document
+        ftpaRespondentRjDecisionOutcomeType: 'reheardRule35',
+        ftpaR35RespondentDocument: document
       };
       documents[0].name = 'FTPA_Respondent_Doc.PDF';
       document.name = 'FTPA_Reheard_Rule_35_Doc.PDF';

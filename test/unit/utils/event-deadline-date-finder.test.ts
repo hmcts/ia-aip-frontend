@@ -123,6 +123,26 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.equal('13 February 2020');
     });
 
+    it('appealSubmitted with fee and setAside is enabled should return a formatted date with 14 days offset from the' +
+      ' appealSubmission date', () => {
+
+      const currentAppealStatus = 'appealSubmitted';
+      req.session.appeal.application.appealType = 'refusalOfHumanRights';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('22 February 2020');
+    });
+
+    it('lateAppealSubmitted with fee and setAside is enabled should return a formatted date with 14 days offset from the' +
+      ' appealSubmission date', () => {
+
+      const currentAppealStatus = 'lateAppealSubmitted';
+      req.session.appeal.application.appealType = 'euSettlementScheme';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('22 February 2020');
+    });
+
     it('pendingPayment should return a formatted date with 14 days offset from the appealSubmission date', () => {
 
       const currentAppealStatus = 'pendingPayment';

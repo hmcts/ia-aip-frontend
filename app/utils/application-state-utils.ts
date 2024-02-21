@@ -143,18 +143,32 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'appealSubmitted':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.appealSubmitted.dueDate
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
-          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
+      if (ftpaSetAsideFeatureEnabled &&
+        ['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(req.session.appeal.application.appealType)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.tribunalCheck,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.dueDate
+          ],
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.appealSubmitted.detailsSent,
+            i18n.pages.overviewPage.doThisNext.appealSubmitted.dueDate
+          ],
+          info: {
+            title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
+            url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
+          },
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      }
       break;
     case 'listing':
       const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
@@ -178,18 +192,32 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'lateAppealSubmitted':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.detailsSent,
-          i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.dueDate
-        ],
-        info: {
-          title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
-          url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
-        },
-        cta: null,
-        allowedAskForMoreTime: false
-      };
+      if (ftpaSetAsideFeatureEnabled &&
+        ['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(req.session.appeal.application.appealType)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.detailsSent,
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.feeDetails,
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.tribunalCheck,
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.dueDate
+          ],
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.detailsSent,
+            i18n.pages.overviewPage.doThisNext.lateAppealSubmitted.dueDate
+          ],
+          info: {
+            title: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.title,
+            url: i18n.pages.overviewPage.doThisNext.appealSubmitted.info.url
+          },
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      }
       break;
     case 'awaitingRespondentEvidence':
       doThisNextSection = {
@@ -624,7 +652,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
   }
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, req);
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, req, ftpaSetAsideFeatureEnabled);
   return doThisNextSection;
 }
 

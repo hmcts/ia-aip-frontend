@@ -94,8 +94,11 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
       };
 
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
-      await persistAppeal(appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = getHelpWithFeesRedirectPage(selectedValue);
+      if (defaultRedirect === paths.appealStarted.taskList) {
+        req.session.appeal.application.feeSupportPersisted = true;
+      }
+      await persistAppeal(appeal, dlrmFeeRemissionFlag);
       let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {

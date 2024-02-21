@@ -59,7 +59,8 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         application: {
           ...req.session.appeal.application,
-          asylumSupportRefNumber: selectedValue
+          asylumSupportRefNumber: selectedValue,
+          feeSupportPersisted: true
         }
       };
       const isEdit: boolean = req.session.appeal.application.isEdit || false;

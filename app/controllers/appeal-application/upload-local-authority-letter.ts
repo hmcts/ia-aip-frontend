@@ -1,15 +1,19 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
+import { FEATURE_FLAGS } from '../../data/constants';
 import { Events } from '../../data/events';
 import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
+import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
-function getLocalAuthorityLetter(req: Request, res: Response, next: NextFunction) {
+async function getLocalAuthorityLetter(req: Request, res: Response, next: NextFunction) {
   try {
+    const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (!drlmSetAsideFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     let validationErrors: ValidationErrors;
     if (req.query.error) {
@@ -37,7 +41,7 @@ function getLocalAuthorityLetter(req: Request, res: Response, next: NextFunction
   }
 }
 
-function postLocalAuthorityLetter(req: Request, res: Response, next: NextFunction) {
+function postLocalAuthorityLetter1(req: Request, res: Response, next: NextFunction) {
   try {
     const authLetterUploads = req.session.appeal.application.localAuthorityLetters || [];
     if (authLetterUploads.length > 0) {
@@ -49,6 +53,34 @@ function postLocalAuthorityLetter(req: Request, res: Response, next: NextFunctio
   } catch (e) {
     next(e);
   }
+}
+
+function postLocalAuthorityLetter(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+    }
+
+    try {
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+      if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
+      const authLetterUploads = req.session.appeal.application.localAuthorityLetters || [];
+      if (authLetterUploads.length > 0) {
+        req.session.appeal.application.feeSupportPersisted = true;
+        await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);
+        const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
+        return res.redirect(redirectTo);
+      } else {
+        return res.redirect(`${paths.appealStarted.uploadLocalAuthorityLetter}?error=noFileSelected`);
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 function validate(req: Request, res: Response, next: NextFunction) {
@@ -78,7 +110,7 @@ function uploadLocalAuthorityLetter(updateAppealService: UpdateAppealService, do
           ...req.session.appeal,
           application: {
             ...req.session.appeal.application,
-            localAuthorityLetter: localAuthorityLetterEvidences
+            localAuthorityLetters: localAuthorityLetterEvidences
           }
         };
         const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
@@ -126,7 +158,7 @@ class SetupLocalAuthorityLetterController {
   initialise(middleware: any[], updateAppealService, documentManagementService: DocumentManagementService): any {
     const router = Router();
     router.get(paths.appealStarted.uploadLocalAuthorityLetter, middleware, getLocalAuthorityLetter);
-    router.post(paths.appealStarted.uploadLocalAuthorityLetter, middleware, postLocalAuthorityLetter);
+    router.post(paths.appealStarted.uploadLocalAuthorityLetter, middleware, postLocalAuthorityLetter(updateAppealService));
     router.post(paths.appealStarted.uploadLocalAuthorityLetterUpload, middleware, validate, uploadLocalAuthorityLetter(updateAppealService, documentManagementService));
     router.get(paths.appealStarted.uploadLocalAuthorityLetterDelete, middleware, deleteLocalAuthorityLetter(updateAppealService, documentManagementService));
     return router;

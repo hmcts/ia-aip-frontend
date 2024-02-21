@@ -44,13 +44,12 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
       if (!shouldValidateWhenSaveForLater(req.body, 'helpWithFeesRefNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }
-      const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
       const validation = helpWithFeesRefNumberValidation(req.body);
       if (validation) {
         return res.render('appeal-application/fee-support/help-with-fees-reference-number.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: previousPage,
+          previousPage: paths.appealStarted.helpWithFeesReferenceNumber,
           pageTitle: i18n.pages.helpWithFeesReference.title,
           formAction: paths.appealStarted.helpWithFeesReferenceNumber,
           saveAndContinue: true

@@ -39,9 +39,11 @@ function postFeeWaiver(updateAppealService: UpdateAppealService) {
       if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
 
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
+      req.session.appeal.application.feeSupportPersisted = true;
       await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.taskList;
-      return res.redirect(defaultRedirect);
+      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
+      return res.redirect(redirectPage);
     } catch (error) {
       next(error);
     }

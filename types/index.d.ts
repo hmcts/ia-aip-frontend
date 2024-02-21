@@ -295,9 +295,9 @@ interface AppealApplication {
   feeSupportPersisted?: boolean;
   remissionOption?: string;
   asylumSupportRefNumber?: string;
-  localAuthorityLetters?: Evidence[];
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
+  localAuthorityLetters?: Evidence[];
 }
 
 interface CmaRequirements {

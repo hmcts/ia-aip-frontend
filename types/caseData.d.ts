@@ -118,6 +118,7 @@ interface CaseData {
   homeOfficeAppealResponseEvidence?: any;
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
+  feeSupportPersisted?: string;
   paymentReference?: string;
   paymentStatus?: string;
   paymentDate?: string;
@@ -174,7 +175,7 @@ interface CaseData {
   asylumSupportRefNumber?: string;
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
-  localAuthorityLetters?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
+  localAuthorityLetters?: Collection<DocumentWithMetaData>[];
 }
 
 interface Application<T> {

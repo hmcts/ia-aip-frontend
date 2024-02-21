@@ -565,7 +565,10 @@ function helpWithFeesValidation(obj: object): null | ValidationErrors {
 
 function helpWithFeesRefNumberValidation(obj: object): null | ValidationErrors {
   const schema = Joi.object({
-    helpWithFeesRefNumber: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.helpWithFeesRefNumber })
+    helpWithFeesRefNumber: Joi.string().required().regex(/^(HWF|hwf).*$/).messages({
+      'string.empty': i18n.validationErrors.helpWithFeesRefNumber.required,
+      'string.pattern.base': i18n.validationErrors.helpWithFeesRefNumber.invalid
+    })
   }).unknown();
   return validate(obj, schema);
 }

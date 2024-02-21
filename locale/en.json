@@ -3643,7 +3643,10 @@
     "decisionType": "Select how you want the appeal to be decided",
     "remissionOptions": "Select the statement that applies to you",
     "asylumSupport": "Enter your asylum support reference number",
-    "helpWithFeesRefNumber": "Enter your Help with Fees reference number",
+    "helpWithFeesRefNumber": {
+      "required": "Enter your Help with Fees reference number",
+      "invalid": "Your Help with Fees reference number must start with HWF, like HWF-A1B-23C"
+    },
     "helpWithFees": "Select if you want to apply for Help with Fees",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",

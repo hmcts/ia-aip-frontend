@@ -172,6 +172,7 @@ interface CaseData {
   ftpaAppellantDecisionDate?: string;
   ftpaR35AppellantDocument: SupportingDocument;
   ftpaR35RespondentDocument: SupportingDocument;
+  ftpaAppellantDecisionRemadeRule32Text?: string;
 }
 
 interface Application<T> {

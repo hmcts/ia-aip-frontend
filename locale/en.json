@@ -1161,6 +1161,18 @@
               "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
               "<b>What happens next</b>",
               "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
+            ],
+            "remadeRule31": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact you when the review of your appeal decision is complete."
+            ],
+            "remadeRule32": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact you when the review of your appeal decision is complete."
             ]
           }
         }
@@ -1872,13 +1884,16 @@
         "title": "Decision details",
         "decision": "What the Tribunal decided",
         "decisionDocument": "Decision and reasons document",
+        "decisionReasons": "Reasons for the decision",
         "date": "Date of decision",
         "decisionOutcomeType": {
           "granted": "Granted",
           "partiallyGranted": "Partially granted",
           "notAdmitted": "Not admitted",
           "refused": "Refused",
-          "reheardRule35": "Appeal to be heard again"
+          "reheardRule35": "Appeal to be heard again",
+          "remadeRule31": "Appeal decision to be reviewed",
+          "remadeRule32": "Appeal decision to be reviewed"
         }
       },
       "directionHistory": {

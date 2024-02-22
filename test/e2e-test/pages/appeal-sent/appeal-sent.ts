@@ -37,6 +37,7 @@ module.exports = {
       await I.fillField('#address-postcode','BO0 0ND');
       await I.fillField('#email', 'test@mail.com');
       await I.click('Continue');
+      await I.wait(3);
       await I.see('Confirm your payment', 'h1');
       await I.click('Confirm payment');
       await I.waitForText('What happens next', 60);

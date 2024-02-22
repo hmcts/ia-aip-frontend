@@ -20,6 +20,8 @@ let caseUrl;
 
 if (testUrl.includes('localhost')) {
   exUiUrl = 'http://localhost:3002/';
+} else if (testUrl.includes('ia-case-api-pr-1911-aip-frontend')) {
+  exUiUrl = 'https://xui-ia-case-api-pr-1911.preview.platform.hmcts.net/';
 } else if (testUrl.includes('aat') || testUrl.includes('preview')) {
   exUiUrl = 'https://manage-case.aat.platform.hmcts.net/';
 } else if (testUrl.includes('demo')) {
@@ -242,6 +244,7 @@ module.exports = {
     });
 
     When(/^I sign in as a Case Officer and Request Home Office data$/, async () => {
+      console.log(exUiUrl);
       await I.amOnPage(exUiUrl);
       await I.waitForText('Sign in or create an account', 30);
       await I.fillField('#username', caseOfficerUserName);
@@ -366,6 +369,7 @@ module.exports = {
 
     When(/^I sign in as an Admin Officer and List the case$/, async () => {
       await I.click('Sign out');
+      await I.waitForText('Sign in');
       await I.fillField('#username', adminOfficerUserName);
       await I.fillField('#password', adminOfficerPassword);
       await I.click('Sign in');
@@ -390,6 +394,7 @@ module.exports = {
 
     When(/^I sign in as a Case Officer and Create the case summary$/, async () => {
       await I.click('Sign out');
+      await I.waitForText('Sign in');
       await I.fillField('#username', caseOfficerUserName);
       await I.fillField('#password', caseOfficerPassword);
       await I.click('Sign in');
@@ -448,6 +453,7 @@ module.exports = {
 
     When(/^I sign in as a Judge and Prepare Decision and Reasons$/, async () => {
       await I.click('Sign out');
+      await I.waitForText('Sign in');
       await I.fillField('#username', judgeUserName);
       await I.fillField('#password', judgePassword);
       await I.click('Sign in');

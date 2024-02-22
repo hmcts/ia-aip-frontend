@@ -75,6 +75,9 @@ module.exports = {
       await I.fillField('#username', currentUserDetails.email);
       await I.fillField('#password', currentUserDetails.password);
       await I.click('Sign in');
+      await I.wait(5);
+      await I.refreshPage();
+      await I.wait(5);
       await I.waitForText('Do this next', 30);
       await I.seeInTitle(`Your appeal overview - ${i18n.serviceName} - ${i18n.provider}`);
     });

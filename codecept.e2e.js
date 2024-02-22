@@ -28,7 +28,8 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: config.get('testUrl'),
-      show: config.get('showTests'),
+      // show: config.get('showTests'),
+      show: true,
       chrome: {
         ignoreHTTPSErrors: true
       },

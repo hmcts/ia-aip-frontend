@@ -23,7 +23,9 @@ async function createUser() {
   const randomNumber = moment().format().replace(/-/g,'').replace('T','').replace(/:/g,'').split('+')[0];
   aipCurrentUser.email = `ia_citizen${randomNumber}@hmcts.net`;
   aipCurrentUser.password = 'Apassword123';
-  aipCurrentUser.forename = 'ATestForename';
+  console.log(aipCurrentUser.email);
+  console.log(aipCurrentUser.password);
+  aipCurrentUser.forename = `ia_citizen${randomNumber}`;
   aipCurrentUser.surname = 'ATestSurname';
   const options = {
     url: `${idamUrl}/testing-support/accounts`,

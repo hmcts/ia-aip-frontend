@@ -1,4 +1,4 @@
-@e2e-hu
+@e2e-eea
 Feature: Start to FTPA submitted
   Scenario: Create appeal and force case through to decided
     Given I am on home page
@@ -14,7 +14,7 @@ Feature: Start to FTPA submitted
     When I select Yes
     And I click "Continue" button
     Then I should be taken to the appeal page
-    When I select appeal type Human Rights
+    When I select appeal type European Economic Area
     And I click "Save and continue" button
     Then I expect to be redirect back to the task-list
     When I go into the Home office details task

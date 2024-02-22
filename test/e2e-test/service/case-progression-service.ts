@@ -242,7 +242,17 @@ module.exports = {
       appealReference = ref.split('Online case reference number: ')[1];
       caseUrl = exUiUrl + 'cases/case-details/' + appealReference.split('-').join('');
     });
-
+    When(/^I sign in as a Case Officer$/, async () => {
+      console.log(exUiUrl);
+      await I.amOnPage(exUiUrl);
+      await I.waitForText('Sign in or create an account', 30);
+      await I.fillField('#username', caseOfficerUserName);
+      await I.fillField('#password', caseOfficerPassword);
+      await I.click('Sign in');
+      await I.waitForText('Case list', 30);
+      await I.amOnPage(caseUrl);
+      await I.waitForText('Do this next', 30);
+    });
     When(/^I sign in as a Case Officer and Request Home Office data$/, async () => {
       console.log(exUiUrl);
       await I.amOnPage(exUiUrl);
@@ -369,7 +379,7 @@ module.exports = {
 
     When(/^I sign in as an Admin Officer and List the case$/, async () => {
       await I.click('Sign out');
-      await I.waitForText('Sign in');
+      await I.waitForText('Sign in', 20);
       await I.fillField('#username', adminOfficerUserName);
       await I.fillField('#password', adminOfficerPassword);
       await I.click('Sign in');
@@ -394,7 +404,7 @@ module.exports = {
 
     When(/^I sign in as a Case Officer and Create the case summary$/, async () => {
       await I.click('Sign out');
-      await I.waitForText('Sign in');
+      await I.waitForText('Sign in', 20);
       await I.fillField('#username', caseOfficerUserName);
       await I.fillField('#password', caseOfficerPassword);
       await I.click('Sign in');
@@ -453,7 +463,7 @@ module.exports = {
 
     When(/^I sign in as a Judge and Prepare Decision and Reasons$/, async () => {
       await I.click('Sign out');
-      await I.waitForText('Sign in');
+      await I.waitForText('Sign in', 20);
       await I.fillField('#username', judgeUserName);
       await I.fillField('#password', judgePassword);
       await I.click('Sign in');

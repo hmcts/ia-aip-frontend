@@ -332,7 +332,7 @@ module.exports = {
     });
 
     Then(/^I expect to be redirect back to the task\-list$/, async () => {
-      await I.waitInUrl(paths.appealStarted.taskList,10);
+      await I.waitInUrl(paths.appealStarted.taskList,20);
       await I.seeInCurrentUrl(paths.appealStarted.taskList);
     });
 

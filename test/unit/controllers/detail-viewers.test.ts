@@ -2967,6 +2967,138 @@ describe('Detail viewer Controller', () => {
       });
     });
 
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision remade rule 31', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaAppellantRjDecisionOutcomeType: 'remadeRule31',
+        ftpaAppellantDecisionRemadeRule32Text: 'Rule 31 reasons for the decision'
+      };
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;decision&nbsp;to&nbsp;be&nbsp;reviewed' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionReasons },
+            value: { html: 'Rule&nbsp;31&nbsp;reasons&nbsp;for&nbsp;the&nbsp;decision' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision remade rule 32', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'appellant',
+        ftpaAppellantGrounds: 'ftpaAppellantGrounds',
+        ftpaAppellantApplicationDate: '2023-03-20',
+        ftpaAppellantEvidenceDocuments: [ ...documents ],
+        ftpaAppellantOutOfTimeExplanation: 'ftpaAppellantOutOfTimeExplanation',
+        ftpaAppellantOutOfTimeDocuments: [ ...documents ],
+        ftpaAppellantDecisionDate: '2023-03-20',
+        ftpaAppellantDecisionDocument: [],
+        ftpaAppellantRjDecisionOutcomeType: 'remadeRule32',
+        ftpaAppellantDecisionRemadeRule32Text: 'Rule 32 reasons for the decision'
+      };
+      documents[0].name = 'FTPA_Appellant_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.grounds },
+            value: { html: 'ftpaAppellantGrounds' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.evidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeReason },
+            value: { html: 'ftpaAppellantOutOfTimeExplanation' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>FTPA_Appellant_Doc.PDF</a>` }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;decision&nbsp;to&nbsp;be&nbsp;reviewed' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionReasons },
+            value: { html: 'Rule&nbsp;32&nbsp;reasons&nbsp;for&nbsp;the&nbsp;decision' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.appellant,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
     it('should catch error and call next with it', async () => {
       const error = new Error('an error');
       req.session.appeal = {

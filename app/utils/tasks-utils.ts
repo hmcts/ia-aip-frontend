@@ -75,9 +75,13 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
     active: contactDetails.completed
   };
 
+  if (!homeOfficeDetails.completed && !homeOfficeDetailsOOC.completed) {
+    resetFeeSupportSectionStatusAndValues(appeal.application);
+  }
+
   const feeSupport: Task = {
     saved: false,
-    completed: appeal.application.feeSupportPersisted ? true : false,
+    completed: (appeal.application.feeSupportPersisted ? true : false) && decisionType.completed,
     active: decisionType.completed
   };
 
@@ -102,7 +106,14 @@ function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): Ap
   const checkAndSendWithPaymentsDlrmSetAsideFlag: Task = {
     saved: false,
     completed: false,
-    active: feeSupport.completed
+    active:
+      homeOfficeDetails.completed
+      && homeOfficeDetailsOOC.completed
+      && personalDetails.completed
+      && contactDetails.completed
+      && typeOfAppeal.completed
+      && decisionType.completed
+      && feeSupport.completed
   };
 
   return drlmSetAsideFlag ? {
@@ -254,9 +265,22 @@ function buildSectionObject(sectionId: string, taskIds: string[], status: Applic
   return { sectionId, tasks };
 }
 
+/**
+ * Resets FeeSupport section status and values. When the user changes the appeal type or appeal out of country
+ */
+function resetFeeSupportSectionStatusAndValues(application: AppealApplication) {
+  application.remissionOption = null;
+  application.asylumSupportRefNumber = null;
+  application.helpWithFeesOption = null;
+  application.helpWithFeesRefNumber = null;
+  application.localAuthorityLetters = null;
+  application.feeSupportPersisted = false;
+}
+
 export {
   appealApplicationStatus,
   buildSectionObject,
   cmaRequirementsStatus,
-  submitHearingRequirementsStatus
+  submitHearingRequirementsStatus,
+  resetFeeSupportSectionStatusAndValues
 };

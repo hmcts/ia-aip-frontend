@@ -42,9 +42,6 @@ function getRemissionOptionsQuestion(appeal: Appeal) {
         checked: remissionOption === i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value
       },
       {
-        divider: 'or'
-      },
-      {
         value: i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value,
         text: i18n.pages.remissionOptionPage.options.noneOfTheseStatements.text,
         hint: {
@@ -113,11 +110,10 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
           remissionOption: selectedValue
         }
       };
-
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
-      const defaultRedirect = getfeeSupportRedirectPage(selectedValue);
-      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
+      const defaultRedirect = getFeeSupportRedirectPage(selectedValue);
+      let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);
@@ -132,16 +128,16 @@ function setupFeeSupportController(middleware: Middleware[], updateAppealService
   return router;
 }
 
-function getfeeSupportRedirectPage(remissionOption: string): string {
+function getFeeSupportRedirectPage(remissionOption: string): string {
   switch (remissionOption) {
-    case 'asylumSupportFromHo':
+    case i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value:
       return paths.appealStarted.asylumSupport;
-    case 'feeWaiverFromHo':
+    case i18n.pages.remissionOptionPage.options.feeWaiverFromHo.value:
       return paths.appealStarted.feeWaiver;
-    case 'under18GetSupportFromLocalAuthority':
-    case 'parentGetSupportFromLocalAuthority':
+    case i18n.pages.remissionOptionPage.options.under18GetSupportFromLocalAuthority.value:
+    case i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value:
       return paths.appealStarted.uploadLocalAuthorityLetter;
-    case 'noneOfTheseStatements':
+    case i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value:
       return paths.appealStarted.helpWithFees;
     default:
       throw new Error('The selected remission option is not valid. Please check the value.');
@@ -152,5 +148,5 @@ export {
   setupFeeSupportController,
   getFeeSupport,
   postFeeSupport,
-  getfeeSupportRedirectPage
+  getFeeSupportRedirectPage
 };

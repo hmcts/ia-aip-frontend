@@ -645,18 +645,22 @@ export default class UpdateAppealService {
         caseData.remissionOption = appeal.application.remissionOption;
       }
 
+      caseData.asylumSupportRefNumber = null;
       if (appeal.application.asylumSupportRefNumber) {
         caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
       }
 
+      caseData.helpWithFeesOption = null;
       if (appeal.application.helpWithFeesOption) {
         caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
       }
 
+      caseData.helpWithFeesRefNumber = null;
       if (appeal.application.helpWithFeesRefNumber) {
         caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
       }
 
+      caseData.localAuthorityLetters = null;
       if (appeal.application.localAuthorityLetters) {
         const evidences: Evidence[] = appeal.application.localAuthorityLetters;
 

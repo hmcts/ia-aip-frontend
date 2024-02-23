@@ -1,6 +1,5 @@
 {% set pageTitleName = pageTitle %}
-{% from "components/radio-button-question.njk" import radioButtonQuestion %}
-
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% extends "layout.njk" %}
 
 {% block content %}
@@ -11,28 +10,62 @@
       errorList: errorList
     }) }}
   {% endif %}
-  <form action="{{ formAction }}" method="post">
+
+<form action="{{ formAction }}" method="post">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    {{ radioButtonQuestion(
-      question.name or 'answer',
-      question.options,
-      question.title | eval,
-      question.titleIsheading or true,
-      question.hint | eval | safe if question.hint,
-      error[question.name].text,
-      question.inline
-    ) }}
+
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+            <h1 class="govuk-fieldset__heading">
+                {{ question.title | eval }}
+            </h1>
+        </legend>
+        <p>{{ question.hint | eval | safe if question.hint }}</p>
+        <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[0].value }}" name="answer" type="radio" value="{{ question.options[0].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[0].value }}">
+                    {{ question.options[0].text | eval }}
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[1].value }}" name="answer" type="radio" value="{{ question.options[1].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[1].value }}">
+                    {{ question.options[1].text | eval }}
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[2].value }}" name="answer" type="radio" value="{{ question.options[2].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[2].value }}">
+                    {{ question.options[2].text | eval }}
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[3].value }}" name="answer" type="radio" value="{{ question.options[3].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[3].value }}">
+                    {{ question.options[3].text | eval }}
+                </label>
+            </div>
+            <div class="govuk-radios__fees">or</div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ question.options[4].value }}" name="answer" type="radio" value="{{ question.options[4].value }}">
+                <label class="govuk-label govuk-radios__label" for="{{ question.options[4].value }}">
+                    {{ question.options[4].text | eval }}
+                </label>
+            </div>
+        </div>
+    </fieldset>
 
     {% if saveAndContinueOnly %}
-      {{ saveAndContinueButton() }}
+        {{ saveAndContinueButton() }}
     {% else %}
-      {% if saveAndContinue %}
-        {{ saveButtons() }}
-      {% else %}
-        {{ continueButton() }}
-      {% endif %}
+        {% if saveAndContinue %}
+            {{ saveButtons() }}
+        {% else %}
+            {{ continueButton() }}
+        {% endif %}
     {% endif %}
 
-  </form>
-  {{ contactUs() }}
+</form>
+{{ contactUs() }}
 {% endblock %}

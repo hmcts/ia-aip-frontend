@@ -71,6 +71,7 @@ function postLocalAuthorityLetter(updateAppealService: UpdateAppealService) {
       const authLetterUploads = req.session.appeal.application.localAuthorityLetters || [];
       if (authLetterUploads.length > 0) {
         req.session.appeal.application.feeSupportPersisted = true;
+        resetJourneyValues(req.session.appeal.application);
         await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);
         const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
         return res.redirect(redirectTo);
@@ -153,6 +154,13 @@ function deleteLocalAuthorityLetter(updateAppealService: UpdateAppealService, do
   };
 }
 
+// Function used in CYA page edit mode, when the start page option is changed other values should be reset and the journey should start from the new selected option
+function resetJourneyValues(application: AppealApplication) {
+  application.asylumSupportRefNumber = null;
+  application.helpWithFeesOption = null;
+  application.helpWithFeesRefNumber = null;
+}
+
 @PageSetup.register
 class SetupLocalAuthorityLetterController {
   initialise(middleware: any[], updateAppealService, documentManagementService: DocumentManagementService): any {
@@ -171,5 +179,6 @@ export {
   uploadLocalAuthorityLetter,
   deleteLocalAuthorityLetter,
   SetupLocalAuthorityLetterController,
-  validate
+  validate,
+  resetJourneyValues
 };

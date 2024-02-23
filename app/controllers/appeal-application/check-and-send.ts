@@ -17,6 +17,7 @@ import { statementOfTruthValidation } from '../../utils/validations/fields-valid
 
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+  const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const { application } = req.session.appeal;
   const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
     return i18n.appealTypes[appealTypeInstance].name;
@@ -215,6 +216,56 @@ async function createSummaryRowsFrom(req: Request) {
           paths.appealStarted.payNow + editParameter
       );
       rows.push(payNowRow);
+    }
+  }
+
+  if (drlmSetAsideFlag) {
+    const application = req.session.appeal.application;
+    const remissionOption = application.remissionOption;
+    const asylumSupportRefNumber = application.asylumSupportRefNumber;
+    const helpWithFeesOption = application.helpWithFeesOption;
+    const helpWithFeesRefNumber = application.helpWithFeesRefNumber;
+    const localAuthorityLetter = application.localAuthorityLetters;
+    if (remissionOption) {
+      const feeStatementRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.feeStatement,
+        [i18n.pages.remissionOptionPage.options[remissionOption].text],
+          paths.appealStarted.feeSupport + editParameter
+      );
+      rows.push(feeStatementRow);
+    }
+    if (asylumSupportRefNumber) {
+      const asylumSupportRefNumberRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.asylumSupportRefNumber,
+        [asylumSupportRefNumber],
+        paths.appealStarted.asylumSupport + editParameter
+      );
+      rows.push(asylumSupportRefNumberRow);
+    }
+    if (helpWithFeesOption) {
+      const helpWithFeesRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.helpWithFees,
+        [i18n.pages.helpWithFees.options[helpWithFeesOption].text],
+        paths.appealStarted.helpWithFees + editParameter
+      );
+      rows.push(helpWithFeesRow);
+    }
+    if (helpWithFeesRefNumber) {
+      const helpWithFeeRefNumberRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.helpWithFeesRefNumber,
+        [helpWithFeesRefNumber],
+        paths.appealStarted.helpWithFeesReferenceNumber + editParameter
+      );
+      rows.push(helpWithFeeRefNumberRow);
+    }
+    if (localAuthorityLetter && localAuthorityLetter.length > 0) {
+      const localAuthorityLetterRow = addSummaryRow(
+        i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter,
+        application.localAuthorityLetters.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
+        paths.appealStarted.uploadLocalAuthorityLetter + editParameter,
+        Delimiter.BREAK_LINE
+      );
+      rows.push(localAuthorityLetterRow);
     }
   }
   return rows;

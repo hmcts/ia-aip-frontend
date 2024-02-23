@@ -64,6 +64,7 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
         }
       };
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
+      resetJourneyValues(appeal.application);
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.taskList;
       let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
@@ -81,8 +82,16 @@ function setupAsylumSupportController(middleware: Middleware[], updateAppealServ
   return router;
 }
 
+// Function used in CYA page edit mode, when the start page option is changed other values should be reset and the journey should start from the new selected option
+function resetJourneyValues(application: AppealApplication) {
+  application.helpWithFeesOption = null;
+  application.helpWithFeesRefNumber = null;
+  application.localAuthorityLetters = null;
+}
+
 export {
   getAsylumSupport,
   postAsylumSupport,
-  setupAsylumSupportController
+  setupAsylumSupportController,
+  resetJourneyValues
 };

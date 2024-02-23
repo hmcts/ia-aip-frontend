@@ -64,6 +64,8 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
         }
       };
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
+      req.session.appeal.application.feeSupportPersisted = true;
+      resetJourneyValues(appeal.application);
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.taskList;
       let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
@@ -72,6 +74,14 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
       next(error);
     }
   };
+}
+
+// Function used in CYA page edit mode, when the start page option is changed other values should be reset and the journey should start from the new selected option
+function resetJourneyValues(application: AppealApplication) {
+  if (application.helpWithFeesOption === i18n.pages.helpWithFees.options.willPayForAppeal.value) {
+    application.asylumSupportRefNumber = null;
+    application.localAuthorityLetters = null;
+  }
 }
 
 function setupHelpWithFeesReferenceNumberController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
@@ -84,5 +94,6 @@ function setupHelpWithFeesReferenceNumberController(middleware: Middleware[], up
 export {
   getHelpWithFeesRefNumber,
   postHelpWithFeesRefNumber,
-  setupHelpWithFeesReferenceNumberController
+  setupHelpWithFeesReferenceNumberController,
+  resetJourneyValues
 };

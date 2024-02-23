@@ -15,7 +15,7 @@ function getApplyOption(appeal: Appeal) {
 
   let selectedOption = '';
   return {
-    title: i18n.pages.helpWithFees.title,
+    hint: i18n.pages.helpWithFees.radioButtonsTitle,
     options: [
       {
         value: i18n.pages.helpWithFees.options.wantToApply.value,
@@ -83,6 +83,7 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
           saveAndContinue: true
         });
       }
+      const previousValue = req.session.appeal.application.helpWithFeesOption;
 
       const selectedValue = req.body['answer'];
       const appeal: Appeal = {
@@ -92,14 +93,14 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
           helpWithFeesOption: selectedValue
         }
       };
-
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
+      resetJourneyValues(appeal.application);
       const defaultRedirect = getHelpWithFeesRedirectPage(selectedValue);
       if (defaultRedirect === paths.appealStarted.taskList) {
         req.session.appeal.application.feeSupportPersisted = true;
       }
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
-      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
+      let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {
       next(error);
@@ -109,14 +110,23 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
 
 function getHelpWithFeesRedirectPage(remissionOption: string): string {
   switch (remissionOption) {
-    case 'wantToApply':
+    case i18n.pages.helpWithFees.options.wantToApply.value:
       return paths.appealStarted.stepsToApplyForHelpWithFees;
-    case 'alreadyApplied':
+    case i18n.pages.helpWithFees.options.alreadyApplied.value:
       return paths.appealStarted.helpWithFeesReferenceNumber;
-    case 'willPayForAppeal':
+    case i18n.pages.helpWithFees.options.willPayForAppeal.value:
       return paths.appealStarted.taskList;
     default:
       throw new Error('The selected help with fees page option is not valid. Please check the value.');
+  }
+}
+
+// Function used in CYA page edit mode, when the start page option is changed other values should be reset and the journey should start from the new selected option
+function resetJourneyValues(application: AppealApplication) {
+  if (application.helpWithFeesOption === i18n.pages.helpWithFees.options.willPayForAppeal.value) {
+    application.asylumSupportRefNumber = null;
+    application.helpWithFeesRefNumber = null;
+    application.localAuthorityLetters = null;
   }
 }
 
@@ -131,5 +141,6 @@ export {
   getHelpWithFees,
   postHelpWithFees,
   setupHelpWithFeesController,
-  getHelpWithFeesRedirectPage
+  getHelpWithFeesRedirectPage,
+  resetJourneyValues
 };

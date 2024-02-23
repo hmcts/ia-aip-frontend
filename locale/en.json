@@ -294,7 +294,12 @@
         "sponsorsHasAccessToInformation": "Sponsor has access to information",
         "decisionType": "Decision Type",
         "whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused": "What date did you leave the UK after your Protection claim was refused?",
-        "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?"
+        "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?",
+        "feeStatement": "Fee statement",
+        "asylumSupportRefNumber": "Asylum support reference number",
+        "helpWithFees": "Help with fees",
+        "helpWithFeesRefNumber": "Help with fees reference number",
+        "localAuthorityLetter": "Local authority letter"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -3543,12 +3548,12 @@
       "legend1": "The Tribunal will check your reference number is valid after your submit your appeal.",
       "legend2": "If you do not know your reference number, contact <a href=\"https://www.migranthelpuk.org/\" target=\"_blank\">Migrant Help(opens in a new tab)</a> on 0808 8010 503 or <a href='mailto:proofofsupport@migranthelpuk.org' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>proofofsupport@migranthelpuk.org</a>.",
       "attentionNotice": "Your asylum support reference number is not your Home Office reference number",
-      "homeOfficeReferenceNumberLabel": "Enter your Home Office reference number",
+      "asylumSupportReferenceNumberLabel": "Enter your asylum support reference number",
       "hint": "For example, 23/02/12345"
     },
     "feeWaiverPage": {
       "title": "Home Office fee waiver",
-      "legend1": "You do not have to pay the fee for this appeal if you got a fee waiver for the application to the Home Office that you are now appealing.",
+      "legend1": "You do not have to pay the fee for this appeal if you got a fee waiver for the application to the Home Office that you now appealing.",
       "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal."
     },
     "uploadLocalAuthorityLetter": {
@@ -3588,9 +3593,9 @@
     },
     "stepsToHelpWithFees": {
       "title": "Apply for help with fees",
-      "tips": "Follow these steps to submit a help with fees application along with appeal.",
+      "tips": "Follow these steps to submit a help with fees application along with this appeal.",
       "bullet1": "Go to <a href=\"https://helpwithcourtfees.service.gov.uk/checklist/\" target=\"_blank\">apply for help with fees(opens in a new tab)</a>",
-      "bullet2": "When you are asked to enter a court of tribunal form number, enter IAFT-1",
+      "bullet2": "When you are asked to enter a court or tribunal form number, enter IAFT-1",
       "bullet3": "Make a note of the help with fees reference number you get when you complete your help with fees application",
       "bullet4": "Return to this service and go to the 'Help with paying the fee' page",
       "bullet5": "Select 'I have already applied for help with fees' and enter your help with fees reference number"

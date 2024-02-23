@@ -27,7 +27,7 @@
     {{ radioButtonQuestion(
       question.name or 'answer',
       question.options,
-      question.title | eval,
+      question.title | eval | safe if question.title,
       question.titleIsheading or true,
       question.hint | eval | safe if question.hint,
       error[question.name].text,

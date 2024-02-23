@@ -37,7 +37,7 @@ function postFeeWaiver(updateAppealService: UpdateAppealService) {
     try {
       const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
-
+      resetJourneyValues(req.session.appeal.application);
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       req.session.appeal.application.feeSupportPersisted = true;
       await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);
@@ -57,8 +57,17 @@ function setupFeeWaiverController(middleware: Middleware[], updateAppealService:
   return router;
 }
 
+// Function used in CYA page edit mode, when the start page option is changed other values should be reset and the journey should start from the new selected option
+function resetJourneyValues(application: AppealApplication) {
+  application.asylumSupportRefNumber = null;
+  application.helpWithFeesOption = null;
+  application.helpWithFeesRefNumber = null;
+  application.localAuthorityLetters = null;
+}
+
 export {
   getFeeWaiver,
   postFeeWaiver,
-  setupFeeWaiverController
+  setupFeeWaiverController,
+  resetJourneyValues
 };

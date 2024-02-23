@@ -231,7 +231,9 @@ function contactDetailsValidation(obj: object) {
     'text-message-value': Joi.alternatives().conditional(
       'selections', {
       is: Joi.string().regex(/text-message/),
-      then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').regex(/^(\+|\d)[\d\s]*$/)
+      then: Joi.string()
+      .pattern(/^\+|\d/) // Ensure the first character is '+' or a digit
+      .concat(Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164'))
         .messages({
           'string.empty': i18n.validationErrors.phoneEmpty,
           'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,

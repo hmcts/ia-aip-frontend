@@ -18,6 +18,14 @@ module.exports = {
       await I.amOnPage(testUrl + paths.appealStarted.decisionType);
     });
 
+    Then('I should be able to see the updated content', async () => {
+      await I.see(`You can choose to have a judge decide your appeal with or without a hearing. You may be able to get help to pay the fee.`);
+      await I.see(`If you choose with a hearing`);
+      await I.see(`A judge will decide your appeal at a hearing that you can attend. The hearing is an opportunity to tell a judge why you think the Home Office was wrong to refuse your immigration or asylum claim. If you have to pay, the fee is £140.`);
+      await I.see(`If you choose without a hearing`);
+      await I.see(`A judge will decide your appeal by only looking at the information and evidence you send the Tribunal. If you have to pay, the fee is £80.`);
+    });
+
     When(/^I click on the decision-type link$/, async () => {
       await I.click('#typeOfDecisionLink');
     });

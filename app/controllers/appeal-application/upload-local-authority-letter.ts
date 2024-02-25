@@ -41,20 +41,6 @@ async function getLocalAuthorityLetter(req: Request, res: Response, next: NextFu
   }
 }
 
-function postLocalAuthorityLetter1(req: Request, res: Response, next: NextFunction) {
-  try {
-    const authLetterUploads = req.session.appeal.application.localAuthorityLetters || [];
-    if (authLetterUploads.length > 0) {
-      const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
-      return res.redirect(redirectTo);
-    } else {
-      return res.redirect(`${paths.appealStarted.uploadLocalAuthorityLetter}?error=noFileSelected`);
-    }
-  } catch (e) {
-    next(e);
-  }
-}
-
 function postLocalAuthorityLetter(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {

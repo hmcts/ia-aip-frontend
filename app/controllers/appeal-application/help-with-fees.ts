@@ -83,8 +83,6 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
           saveAndContinue: true
         });
       }
-      const previousValue = req.session.appeal.application.helpWithFeesOption;
-
       const selectedValue = req.body['answer'];
       const appeal: Appeal = {
         ...req.session.appeal,
@@ -108,8 +106,8 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
   };
 }
 
-function getHelpWithFeesRedirectPage(remissionOption: string): string {
-  switch (remissionOption) {
+function getHelpWithFeesRedirectPage(selectedOption: string): string {
+  switch (selectedOption) {
     case i18n.pages.helpWithFees.options.wantToApply.value:
       return paths.appealStarted.stepsToApplyForHelpWithFees;
     case i18n.pages.helpWithFees.options.alreadyApplied.value:

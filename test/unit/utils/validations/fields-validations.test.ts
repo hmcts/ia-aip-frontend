@@ -1,14 +1,19 @@
 import {
   appellantNamesValidation,
   askForMoreTimeValidation,
+  asylumSupportValidation,
   contactDetailsValidation,
   dateValidation,
   DOBValidation,
   emailValidation,
+  helpWithFeesRefNumberValidation,
+  helpWithFeesValidation,
   homeOfficeNumberValidation,
   isDateInRange,
   reasonForAppealDecisionValidation,
-  selectedRequiredValidation, selectedRequiredValidationDialect,
+  remissionOptionsValidation,
+  selectedRequiredValidation,
+  selectedRequiredValidationDialect,
   statementOfTruthValidation,
   textAreaValidation,
   yesOrNoRequiredValidation
@@ -24,6 +29,7 @@ describe('fields-validations', () => {
       text: errorMessage
     };
   }
+
   const dateMissingErrorMsg = i18n.validationErrors.cmaRequirements.datesToAvoid.date.missing;
 
   describe('homeOfficeNumberValidation', () => {
@@ -596,6 +602,121 @@ describe('fields-validations', () => {
 
       expect(validations).to.deep.equal(null);
 
+    });
+  });
+
+  describe('feeSupportValidations', () => {
+    it('should validate if remission option present', () => {
+      const object = { 'answer': 'asylumSupportFromHo' };
+      const validationResult = remissionOptionsValidation(object);
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation and return "string.empty if remission option is not selected" ', () => {
+      const object = { };
+      const validationResult = remissionOptionsValidation(object);
+      const expectedResponse = {
+        answer: {
+          href: '#answer',
+          key: 'answer',
+          text: 'Select the statement that applies to you'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail validation and return "string.empty if asylum support ref number is missing" ', () => {
+      const object = { 'asylumSupportRefNumber': '' };
+      const validationResult = asylumSupportValidation(object);
+      const expectedResponse = {
+        asylumSupportRefNumber: {
+          href: '#asylumSupportRefNumber',
+          key: 'asylumSupportRefNumber',
+          text: 'Enter your asylum support reference number'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should validate if asylum support ref number is present" ', () => {
+      const object = { 'asylumSupportRefNumber': 'test' };
+      const validationResult = asylumSupportValidation(object);
+      const expectedResponse = {
+        asylumSupportRefNumber: {
+          href: '#asylumSupportRefNumber',
+          key: 'asylumSupportRefNumber',
+          text: 'Enter your asylum support reference number'
+        }
+      };
+      expect(validationResult).to.deep.equal(null);
+    });
+
+    it('should fail validation and return "string.empty if fees option is not selected" ', () => {
+      const object = { };
+      const validationResult = helpWithFeesValidation(object);
+      const expectedResponse = {
+        answer: {
+          href: '#answer',
+          key: 'answer',
+          text: 'Select if you want to apply for Help with Fees'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    it('should fail validation and return "string.empty if help with fees ref number is not typed" ', () => {
+      const object = { 'helpWithFeesRefNumber': '' };
+      const validationResult = helpWithFeesRefNumberValidation(object);
+      const expectedResponse = {
+        helpWithFeesRefNumber: {
+          href: '#helpWithFeesRefNumber',
+          key: 'helpWithFeesRefNumber',
+          text: 'Enter your Help with Fees reference number'
+        }
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    });
+
+    const helpWithFeesRefNumberTestData = [
+      {
+        input: { 'helpWithFeesRefNumber': 'HWF123' },
+        expectedResponse: null,
+        description: 'valid input'
+      },
+      {
+        input: { 'helpWithFeesRefNumber': 'hwf123' },
+        expectedResponse: null,
+        description: 'valid input with lowercase'
+      },
+      {
+        input: { 'helpWithFeesRefNumber': '' },
+        expectedResponse: {
+          helpWithFeesRefNumber: {
+            href: '#helpWithFeesRefNumber',
+            key: 'helpWithFeesRefNumber',
+            text: 'Enter your Help with Fees reference number'
+          }
+        },
+        description: 'empty helpWithFeesRefNumber'
+      },
+      {
+        input: { 'helpWithFeesRefNumber': 'abc123' },
+        expectedResponse: {
+          helpWithFeesRefNumber: {
+            href: '#helpWithFeesRefNumber',
+            key: 'helpWithFeesRefNumber',
+            text: 'Your Help with Fees reference number must start with HWF, like HWF-A1B-23C'
+          }
+        },
+        description: 'invalid helpWithFeesRefNumber'
+      }
+    ];
+
+    helpWithFeesRefNumberTestData.forEach(({ input, expectedResponse, description }) => {
+      it(`should be ${description}`, () => {
+        const validationResult = helpWithFeesRefNumberValidation(input);
+        expect(validationResult).to.deep.equal(expectedResponse);
+      });
     });
   });
 });

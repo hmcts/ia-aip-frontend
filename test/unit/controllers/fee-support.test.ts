@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { postAsylumSupport } from '../../../app/controllers/appeal-application/asylum-support';
 import {
   getFeeSupport,
   getFeeSupportRedirectPage,
@@ -8,7 +7,6 @@ import {
   setupFeeSupportController
 } from '../../../app/controllers/appeal-application/fee-support';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
-import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import PcqService from '../../../app/service/pcq-service';
@@ -19,7 +17,7 @@ import { expect, sinon } from '../../utils/testUtils';
 
 const express = require('express');
 
-describe('Type of appeal Controller', () => {
+describe('Fee support Controller', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

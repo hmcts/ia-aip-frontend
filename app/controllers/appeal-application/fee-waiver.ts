@@ -5,8 +5,6 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 
 async function getFeeWaiver(req: Request, res: Response, next: NextFunction) {

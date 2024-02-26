@@ -151,6 +151,8 @@ export default class UpdateAppealService {
     // let respondentDocuments: RespondentDocument[] = null;
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
+    let reheardRule35AppellantDocument: Evidence = null;
+    let reheardRule35RespondentDocument: Evidence = null;
     let requestClarifyingQuestionsDirection: Collection<CcdDirection>;
     let cmaRequirements: CmaRequirements = {};
     let hearingRequirements: HearingRequirements = {};
@@ -420,6 +422,15 @@ export default class UpdateAppealService {
     if (caseData.remoteVideoCall) {
       this.mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements);
     }
+
+    if (caseData.ftpaR35AppellantDocument && caseData.ftpaR35AppellantDocument.document_filename) {
+      reheardRule35AppellantDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaR35AppellantDocument, documentMap);
+    }
+
+    if (caseData.ftpaR35RespondentDocument && caseData.ftpaR35RespondentDocument.document_filename) {
+      reheardRule35RespondentDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaR35RespondentDocument, documentMap);
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -431,6 +442,8 @@ export default class UpdateAppealService {
       isDecisionAllowed: caseData.isDecisionAllowed,
       appealOutOfCountry: caseData.appealOutOfCountry,
       nonStandardDirectionEnabled: true,
+      ftpaR35AppellantDocument: reheardRule35AppellantDocument,
+      ftpaR35RespondentDocument: reheardRule35RespondentDocument,
       readonlyApplicationEnabled: true,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
@@ -544,6 +557,7 @@ export default class UpdateAppealService {
       ...caseData.ftpaAppellantDecisionOutcomeType && { ftpaAppellantDecisionOutcomeType: caseData.ftpaAppellantDecisionOutcomeType },
       ...caseData.ftpaAppellantDecisionDocument && { ftpaAppellantDecisionDocument: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantDecisionDocument, documentMap) },
       ...caseData.ftpaAppellantDecisionDate && { ftpaAppellantDecisionDate: caseData.ftpaAppellantDecisionDate },
+      ...caseData.ftpaAppellantDecisionRemadeRule32Text && { ftpaAppellantDecisionRemadeRule32Text: caseData.ftpaAppellantDecisionRemadeRule32Text },
       hearingCentre: caseData.hearingCentre || null,
       documentMap: documentMap.map(doc => {
         return {
@@ -1091,7 +1105,7 @@ export default class UpdateAppealService {
     return clarifyingQuestions.map(answer => {
       let evidencesList: Evidence[] = [];
       if (answer.value.supportingEvidence) {
-        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e, documentMap));
+        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentsToEvidence(e, documentMap));
       }
       return {
         id: answer.id,
@@ -1137,7 +1151,15 @@ export default class UpdateAppealService {
     }
   }
 
-  private mapSupportingDocumentToEvidence(evidence: Collection<SupportingDocument>, documentMap: DocumentMap[]) {
+  private mapSupportingDocumentToEvidence(evidence: SupportingDocument, documentMap: DocumentMap[]) {
+    const documentMapperId: string = this._documentManagementService.addToDocumentMapper(evidence.document_url, documentMap);
+    return {
+      fileId: documentMapperId,
+      name: evidence.document_filename
+    };
+  }
+
+  private mapSupportingDocumentsToEvidence(evidence: Collection<SupportingDocument>, documentMap: DocumentMap[]) {
     const documentMapperId: string = this._documentManagementService.addToDocumentMapper(evidence.value.document_url, documentMap);
     return {
       fileId: documentMapperId,
@@ -1208,7 +1230,7 @@ export default class UpdateAppealService {
         id: application.id,
         value: {
           ...application.value,
-          ...application.value.evidence && { evidence: application.value.evidence.map(e => this.mapSupportingDocumentToEvidence(e, documentMap)) }
+          ...application.value.evidence && { evidence: application.value.evidence.map(e => this.mapSupportingDocumentsToEvidence(e, documentMap)) }
         }
       };
     });

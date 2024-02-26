@@ -1115,6 +1115,13 @@
             "refused": [
               "The HOme Office application for permission to appeal to the Upper Tribunal has been refused.",
               "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+            ],
+            "reheardRule35": [
+              "A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided that this appeal should be heard again by the First-tier Tribunal.",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the decision and reasons document</a>",
+              "<b>What happens next</b>",
+              "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
             ]
           },
           "appellant": {
@@ -1152,6 +1159,25 @@
               "If you still think the Tribunal's decision was wrong, you can send an application for permission to appeal directly to the Upper Tribunal.",
               "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">Find out how to apply for permission to appeal to the Upper Tribunal</a>",
               "You must send your application by {{ applicationNextStep.ftpaDeadline }}"
+            ],
+            "reheardRule35": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided that your appeal should be heard again by the First-tier Tribunal.<br>",
+              "The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>Read the Decision and Reasons document</a>",
+              "<b>What happens next</b>",
+              "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
+            ],
+            "remadeRule31": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact you when the review of your appeal decision is complete."
+            ],
+            "remadeRule32": [
+              "A judge has reviewed your application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>",
+              "<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>",
+              "<b>What happens next</b>",
+              "The Tribunal will contact you when the review of your appeal decision is complete."
             ]
           }
         }
@@ -1863,12 +1889,16 @@
         "title": "Decision details",
         "decision": "What the Tribunal decided",
         "decisionDocument": "Decision and reasons document",
+        "decisionReasons": "Reasons for the decision",
         "date": "Date of decision",
         "decisionOutcomeType": {
           "granted": "Granted",
           "partiallyGranted": "Partially granted",
           "notAdmitted": "Not admitted",
-          "refused": "Refused"
+          "refused": "Refused",
+          "reheardRule35": "Appeal to be heard again",
+          "remadeRule31": "Appeal decision to be reviewed",
+          "remadeRule32": "Appeal decision to be reviewed"
         }
       },
       "directionHistory": {

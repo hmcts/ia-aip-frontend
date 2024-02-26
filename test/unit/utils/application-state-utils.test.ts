@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { paths } from '../../../app/paths';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import {
@@ -1279,6 +1280,30 @@ describe('application-state-utils', () => {
       'descriptionParagraphs': [
         'The Home Office application for permission to appeal to the Upper Tribunal has been not admitted. This means the Tribunal did not consider the request because it was late or the Home Office did not have the right to appeal.',
         "If the Home Office still think the Tribunal's decision was wrong, they can send an application for permission to appeal directly to the Upper Tribunal. You will be notified if this happens."
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is decided as reheardRule35 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'reheardRule35';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided that this appeal should be heard again by the First-tier Tribunal.',
+        'The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>Read the decision and reasons document</a>',
+        '<b>What happens next</b>',
+        'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
       ]
     };
 

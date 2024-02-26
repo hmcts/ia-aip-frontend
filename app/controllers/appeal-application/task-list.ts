@@ -9,15 +9,15 @@ async function getAppealStageStatus(req: Request) {
   const status = appealApplicationStatus(req.session.appeal, drlmSetAsideFlag);
   const paymentsFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, 'online-card-payments-feature', false);
   const checkAndSendTask = paymentsFlag ? 'checkAndSendWithPayments' : 'checkAndSend';
-  const checkAndSendTaskDlrmSetAsideFlag = drlmSetAsideFlag ? checkAndSendTask + 'DlrmSetAsideFlag' : checkAndSendTask;
+  const checkAndSendTaskDlrmSetAsideFlag = drlmSetAsideFlag && status.feeSupport ? checkAndSendTask + 'DlrmSetAsideFlag' : checkAndSendTask;
   const outsideUkWhenApplicationMade: boolean = (req.session.appeal.application.outsideUkWhenApplicationMade === 'Yes') || false;
   const humanRightsOrEEA: boolean = (req.session.appeal.application.appealType === 'refusalOfEu' || req.session.appeal.application.appealType === 'refusalOfHumanRights');
   const homeOfficeDetails: string = (outsideUkWhenApplicationMade && humanRightsOrEEA) ? 'homeOfficeDetailsOOC' : 'homeOfficeDetails';
   const yourDetails = buildSectionObject('yourDetails', ['typeOfAppeal', homeOfficeDetails, 'personalDetails', 'contactDetails'], status);
   const decisionType = buildSectionObject('decisionType', ['decisionType'], status);
-  const feeSupport = drlmSetAsideFlag ? buildSectionObject('feeSupport', ['feeSupport'], status) : null;
+  const feeSupport = drlmSetAsideFlag && status.feeSupport ? buildSectionObject('feeSupport', ['feeSupport'], status) : null;
   const checkAndSend = buildSectionObject('checkAndSend', [checkAndSendTaskDlrmSetAsideFlag], status);
-  return drlmSetAsideFlag ? [
+  return drlmSetAsideFlag && status.feeSupport ? [
     yourDetails,
     decisionType,
     feeSupport,

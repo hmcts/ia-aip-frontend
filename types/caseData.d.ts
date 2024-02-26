@@ -171,6 +171,9 @@ interface CaseData {
   ftpaAppellantDecisionOutcomeType?: string;
   ftpaAppellantDecisionDocument?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantDecisionDate?: string;
+  ftpaR35AppellantDocument: SupportingDocument;
+  ftpaR35RespondentDocument: SupportingDocument;
+  ftpaAppellantDecisionRemadeRule32Text?: string;
   remissionOption?: string;
   asylumSupportRefNumber?: string;
   helpWithFeesOption?: string;

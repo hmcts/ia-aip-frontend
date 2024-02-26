@@ -202,9 +202,9 @@ describe('getStatus', () => {
     expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
   });
 
-  it('should update status in session with DLRM flag ON', () => {
+  it('should not show  fee support with session with DLRM fee remission flag ON and no fee', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-    expect(appealApplicationStatus(appeal, true)).to.deep.eq(statusWithDlrm);
+    expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 
   it('should update status homeOfficeDetails as completed and mark active next task', () => {
@@ -279,10 +279,10 @@ describe('getStatus', () => {
     expect(appealApplicationStatus(appeal, false)).to.deep.eq(status);
   });
 
-  it('should update status typeOfAppeal as completed with DLRM flag ON', () => {
+  it('should update status typeOfAppeal as completed with DLRM fee remission flag ON and has fee with revocationOfProtection', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
-    appeal.application.appealType = 'protection';
+    appeal.application.appealType = 'refusalOfHumanRights';
     statusWithDlrm.typeOfAppeal = {
       ...status.typeOfAppeal,
       completed: true,
@@ -293,9 +293,8 @@ describe('getStatus', () => {
     expect(appealApplicationStatus(appeal, true)).to.deep.eq(statusWithDlrm);
   });
 
-  it('should update status feeSupport as active with DLRM flag ON', () => {
+  it('should update status feeSupport as active with DLRM fee remission flag ON and has fee with protection', () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';
     appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
@@ -320,6 +319,21 @@ describe('getStatus', () => {
     statusWithDlrm.homeOfficeDetails.active = true;
     statusWithDlrm.homeOfficeDetailsOOC.active = true;
     expect(appealApplicationStatus(appeal, true)).to.deep.eq(statusWithDlrm);
+  });
+
+  it('should update status typeOfAppeal as completed with DLRM fee remission flag ON and has no fee', () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+    appeal.application.appealType = 'revocationOfProtection';
+    status.typeOfAppeal = {
+      ...status.typeOfAppeal,
+      completed: true,
+      saved: true
+    };
+    status.homeOfficeDetails.active = true;
+    status.homeOfficeDetailsOOC.active = true;
+    let cosa = appealApplicationStatus(appeal, true);
+    expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
   });
 
 });

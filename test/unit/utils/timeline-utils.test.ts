@@ -489,40 +489,45 @@ describe('timeline-utils', () => {
 
   describe('getEventsAndStates', () => {
     it('should return relevant events and states when uploadAddendumEvidence feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(true, true, false);
+      const eventsAndStates = getEventsAndStates(true, true, false, false);
       expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(16);
       expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(14);
     });
 
     it('should return relevant events and states when uploadAddendumEvidence feature disabled', () => {
-      const eventsAndStates = getEventsAndStates(false, true, false);
+      const eventsAndStates = getEventsAndStates(false, true, false, false);
       expect(eventsAndStates.appealArgumentSectionEvents.length).to.be.eqls(12);
       expect(eventsAndStates.appealArgumentSectionStates.length).to.be.eqls(11);
     });
 
     it('should return relevant events when hearingBundle feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(false, true, false);
+      const eventsAndStates = getEventsAndStates(false, true, false, false);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
     });
 
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
-      const eventsAndStates = getEventsAndStates(true, true, false);
+      const eventsAndStates = getEventsAndStates(true, true, false, false);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
     });
 
     it('should return relevant events when hearingBundle feature disabled', () => {
-      const eventsAndStates = getEventsAndStates(true, false, false);
+      const eventsAndStates = getEventsAndStates(true, false, false, false);
       expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
     });
 
     it('should return relevant events when ftpa feature disabled', () => {
-      const eventsAndStates = getEventsAndStates(false, false, false);
+      const eventsAndStates = getEventsAndStates(false, false, false, false);
       expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(1);
     });
 
     it('should return relevant events when ftpa feature enabled', () => {
-      const eventsAndStates = getEventsAndStates(false, false, true);
+      const eventsAndStates = getEventsAndStates(false, false, true, false);
       expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(5);
+    });
+
+    it('should return relevant events when ftpa set aside feature enabled', () => {
+      const eventsAndStates = getEventsAndStates(false, false, false, true);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(2);
     });
   });
 });

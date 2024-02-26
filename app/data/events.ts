@@ -205,5 +205,10 @@ export const Events = {
     id: 'decisionWithoutHearing',
     summary: 'Decision without a hearing',
     description: 'Decision without a hearing'
+  },
+  DECIDE_FTPA_APPLICATION: {
+    id: 'decideFtpaApplication',
+    summary: 'Decide FTPA application',
+    description: 'Decide FTPA application'
   }
 };

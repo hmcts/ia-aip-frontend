@@ -27,10 +27,10 @@ async function getLocalAuthorityLetter(req: Request, res: Response, next: NextFu
 
     res.render('appeal-application/fee-support/upload-local-authority-letter.njk', {
       title: i18n.pages.uploadLocalAuthorityLetter.title,
-      formSubmitAction: paths.appealStarted.uploadLocalAuthorityLetter,
-      evidenceUploadAction: paths.appealStarted.uploadLocalAuthorityLetterUpload,
+      formSubmitAction: paths.appealStarted.localAuthorityLetter,
+      evidenceUploadAction: paths.appealStarted.localAuthorityLetterUpload,
       evidences: localAuthorityLetterEvidences,
-      evidenceCTA: paths.appealStarted.uploadLocalAuthorityLetterDelete,
+      evidenceCTA: paths.appealStarted.localAuthorityLetterDelete,
       previousPage: previousPage,
       saveForLaterCTA: paths.common.overview,
       ...validationErrors && { error: validationErrors },
@@ -62,7 +62,7 @@ function postLocalAuthorityLetter(updateAppealService: UpdateAppealService) {
         const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
         return res.redirect(redirectTo);
       } else {
-        return res.redirect(`${paths.appealStarted.uploadLocalAuthorityLetter}?error=noFileSelected`);
+        return res.redirect(`${paths.appealStarted.localAuthorityLetter}?error=noFileSelected`);
       }
     } catch (error) {
       next(error);
@@ -77,7 +77,7 @@ function validate(req: Request, res: Response, next: NextFunction) {
       errorCode = res.locals.errorCode;
     }
     if (errorCode) {
-      return res.redirect(`${paths.appealStarted.uploadLocalAuthorityLetter}?error=${errorCode}`);
+      return res.redirect(`${paths.appealStarted.localAuthorityLetter}?error=${errorCode}`);
     }
     next();
   } catch (e) {
@@ -105,9 +105,9 @@ function uploadLocalAuthorityLetter(updateAppealService: UpdateAppealService, do
           ...req.session.appeal,
           ...appealUpdated
         };
-        return res.redirect(paths.appealStarted.uploadLocalAuthorityLetter);
+        return res.redirect(paths.appealStarted.localAuthorityLetter);
       }
-      return res.redirect(`${paths.appealStarted.uploadLocalAuthorityLetter}?error=noFileSelected`);
+      return res.redirect(`${paths.appealStarted.localAuthorityLetter}?error=noFileSelected`);
     } catch (e) {
       next(e);
     }
@@ -132,7 +132,7 @@ function deleteLocalAuthorityLetter(updateAppealService: UpdateAppealService, do
           ...req.session.appeal,
           ...appealUpdated
         };
-        return res.redirect(paths.appealStarted.uploadLocalAuthorityLetter);
+        return res.redirect(paths.appealStarted.localAuthorityLetter);
       }
     } catch (e) {
       next(e);
@@ -151,10 +151,10 @@ function resetJourneyValues(application: AppealApplication) {
 class SetupLocalAuthorityLetterController {
   initialise(middleware: any[], updateAppealService, documentManagementService: DocumentManagementService): any {
     const router = Router();
-    router.get(paths.appealStarted.uploadLocalAuthorityLetter, middleware, getLocalAuthorityLetter);
-    router.post(paths.appealStarted.uploadLocalAuthorityLetter, middleware, postLocalAuthorityLetter(updateAppealService));
-    router.post(paths.appealStarted.uploadLocalAuthorityLetterUpload, middleware, validate, uploadLocalAuthorityLetter(updateAppealService, documentManagementService));
-    router.get(paths.appealStarted.uploadLocalAuthorityLetterDelete, middleware, deleteLocalAuthorityLetter(updateAppealService, documentManagementService));
+    router.get(paths.appealStarted.localAuthorityLetter, middleware, getLocalAuthorityLetter);
+    router.post(paths.appealStarted.localAuthorityLetter, middleware, postLocalAuthorityLetter(updateAppealService));
+    router.post(paths.appealStarted.localAuthorityLetterUpload, middleware, validate, uploadLocalAuthorityLetter(updateAppealService, documentManagementService));
+    router.get(paths.appealStarted.localAuthorityLetterDelete, middleware, deleteLocalAuthorityLetter(updateAppealService, documentManagementService));
     return router;
   }
 }

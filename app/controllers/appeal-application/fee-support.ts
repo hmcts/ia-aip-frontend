@@ -136,7 +136,7 @@ function getFeeSupportRedirectPage(remissionOption: string): string {
       return paths.appealStarted.feeWaiver;
     case i18n.pages.remissionOptionPage.options.under18GetSupportFromLocalAuthority.value:
     case i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value:
-      return paths.appealStarted.uploadLocalAuthorityLetter;
+      return paths.appealStarted.localAuthorityLetter;
     case i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value:
       return paths.appealStarted.helpWithFees;
     default:

@@ -216,12 +216,12 @@ describe('Fee support Controller', () => {
         },
         {
           input: 'under18GetSupportFromLocalAuthority',
-          expected: paths.appealStarted.uploadLocalAuthorityLetter,
+          expected: paths.appealStarted.localAuthorityLetter,
           description: 'Upload local authority letter page'
         },
         {
           input: 'parentGetSupportFromLocalAuthority',
-          expected: paths.appealStarted.uploadLocalAuthorityLetter,
+          expected: paths.appealStarted.localAuthorityLetter,
           description: 'Upload local authority letter page'
         },
         {

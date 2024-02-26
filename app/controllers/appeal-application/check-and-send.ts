@@ -262,7 +262,7 @@ async function createSummaryRowsFrom(req: Request) {
       const localAuthorityLetterRow = addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter,
         application.localAuthorityLetters.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
-        paths.appealStarted.uploadLocalAuthorityLetter + editParameter,
+        paths.appealStarted.localAuthorityLetter + editParameter,
         Delimiter.BREAK_LINE
       );
       rows.push(localAuthorityLetterRow);

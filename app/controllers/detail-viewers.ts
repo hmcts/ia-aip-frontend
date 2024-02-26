@@ -792,6 +792,7 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
     const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaRespondentDecisionDocument;
     const ftpaR35RespondentDocument = [req.session.appeal.ftpaR35RespondentDocument];
     const ftpaDecisionDate = req.session.appeal.ftpaRespondentDecisionDate;
+    const ftpaApplicationRespondentDocument = [req.session.appeal.ftpaApplicationRespondentDocument];
     const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
     const ftpaRespondentDecisionRemadeRule32Text = req.session.appeal.ftpaRespondentDecisionRemadeRule32Text;
 
@@ -826,7 +827,11 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
         }
       }
     }
-    attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+    if (ftpaSetAsideFeatureEnabled && (ftpaApplicationRespondentDocument.length === 1 && ftpaApplicationRespondentDocument[0] !== null) && ftpaDecision !== 'reheardRule35') {
+      attachFtpaDocuments(ftpaApplicationRespondentDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+    } else {
+      attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+    }
     if (ftpaDecisionDate) {
       data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [ formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat)) ]));
     }
@@ -853,6 +858,7 @@ async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next
     const ftpaDecision = req.session.appeal.ftpaAppellantDecisionOutcomeType || req.session.appeal.ftpaAppellantRjDecisionOutcomeType;
     const ftpaDecisionAndReasonsDocument = req.session.appeal.ftpaAppellantDecisionDocument;
     const ftpaR35AppellantDocument = [req.session.appeal.ftpaR35AppellantDocument];
+    const ftpaApplicationAppellantDocument = [req.session.appeal.ftpaApplicationAppellantDocument];
     const ftpaDecisionDate = req.session.appeal.ftpaAppellantDecisionDate;
     const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
     const ftpaAppellantDecisionRemadeRule32Text = req.session.appeal.ftpaAppellantDecisionRemadeRule32Text;
@@ -885,7 +891,11 @@ async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next
         }
       }
     }
-    attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+    if (ftpaSetAsideFeatureEnabled && (ftpaApplicationAppellantDocument.length === 1 && ftpaApplicationAppellantDocument[0] !== null) && ftpaDecision !== 'reheardRule35') {
+      attachFtpaDocuments(ftpaApplicationAppellantDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+    } else {
+      attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
+    }
     if (ftpaDecisionDate) {
       data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [ formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat)) ]));
     }

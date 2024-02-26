@@ -188,6 +188,8 @@ interface Appeal {
   readonlyApplicationEnabled?: boolean;
   ftpaR35AppellantDocument?: Evidence;
   ftpaR35RespondentDocument?: Evidence;
+  ftpaApplicationRespondentDocument?: Evidence;
+  ftpaApplicationAppellantDocument?: Evidence;
   ftpaAppellantDecisionRemadeRule32Text?: string;
   ftpaRespondentDecisionRemadeRule32Text?: string;
 }

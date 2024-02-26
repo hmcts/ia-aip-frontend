@@ -153,6 +153,8 @@ export default class UpdateAppealService {
     let reasonsForAppealDocumentUploads: Evidence[] = null;
     let reheardRule35AppellantDocument: Evidence = null;
     let reheardRule35RespondentDocument: Evidence = null;
+    let ftpaApplicationRespondentDocument: Evidence = null;
+    let ftpaApplicationAppellantDocument: Evidence = null;
     let requestClarifyingQuestionsDirection: Collection<CcdDirection>;
     let cmaRequirements: CmaRequirements = {};
     let hearingRequirements: HearingRequirements = {};
@@ -431,6 +433,14 @@ export default class UpdateAppealService {
       reheardRule35RespondentDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaR35RespondentDocument, documentMap);
     }
 
+    if (caseData.ftpaApplicationRespondentDocument && caseData.ftpaApplicationRespondentDocument.document_filename) {
+      ftpaApplicationRespondentDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaApplicationRespondentDocument, documentMap);
+    }
+
+    if (caseData.ftpaApplicationAppellantDocument && caseData.ftpaApplicationAppellantDocument.document_filename) {
+      ftpaApplicationAppellantDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaApplicationAppellantDocument, documentMap);
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -444,6 +454,8 @@ export default class UpdateAppealService {
       nonStandardDirectionEnabled: true,
       ftpaR35AppellantDocument: reheardRule35AppellantDocument,
       ftpaR35RespondentDocument: reheardRule35RespondentDocument,
+      ftpaApplicationRespondentDocument: ftpaApplicationRespondentDocument,
+      ftpaApplicationAppellantDocument: ftpaApplicationAppellantDocument,
       readonlyApplicationEnabled: true,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,

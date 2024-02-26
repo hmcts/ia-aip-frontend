@@ -17,10 +17,12 @@ async function getHelpWithFeesRefNumber(req: Request, res: Response, next: NextF
     if (!drlmSetAsideFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
+    const helpWithFeesReferenceNumber = req.session.appeal.application.helpWithFeesRefNumber || null;
 
     return res.render('appeal-application/fee-support/help-with-fees-reference-number.njk', {
       previousPage: previousPage,
       formAction: paths.appealStarted.helpWithFeesReferenceNumber,
+      helpWithFeesReferenceNumber,
       saveAndContinue: true
     });
   } catch (error) {

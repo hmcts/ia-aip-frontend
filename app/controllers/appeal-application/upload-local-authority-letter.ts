@@ -20,7 +20,6 @@ async function getLocalAuthorityLetter(req: Request, res: Response, next: NextFu
       validationErrors = {
         uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload[`${req.query.error}`])
       };
-
     }
     const localAuthorityLetterEvidences = req.session.appeal.application.localAuthorityLetters || [];
     let previousPage = paths.appealStarted.feeSupport;

@@ -1,5 +1,4 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { getDecisionType, postDecisionType } from '../../../app/controllers/appeal-application/decision-type';
 import {
   getFeeWaiver,
   postFeeWaiver,

@@ -17,9 +17,11 @@ async function getAsylumSupport(req: Request, res: Response, next: NextFunction)
     if (!drlmSetAsideFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
+    const asylumSupportRefNumber = req.session.appeal.application.asylumSupportRefNumber || null;
     return res.render('appeal-application/fee-support/asylum-support.njk', {
       previousPage: paths.appealStarted.feeSupport,
       formAction: paths.appealStarted.asylumSupport,
+      asylumSupportRefNumber,
       saveAndContinue: true
     });
   } catch (error) {
@@ -48,7 +50,7 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/fee-support/asylum-support.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealStarted.asylumSupport,
+          previousPage: paths.appealStarted.feeSupport,
           pageTitle: i18n.pages.asylumSupportPage.title,
           formAction: paths.appealStarted.asylumSupport,
           saveAndContinue: true

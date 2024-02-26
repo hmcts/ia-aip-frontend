@@ -15,7 +15,7 @@ import { remissionOptionsValidation } from '../../utils/validations/fields-valid
 function getRemissionOptionsQuestion(appeal: Appeal) {
   const fee = getFee(appeal).calculated_amount;
 
-  let remissionOption = '';
+  let remissionOption = appeal.application.remissionOption || null;
   const selectionHint = i18n.pages.remissionOptionPage.options.noneOfTheseStatements.hint;
   return {
     title: i18n.pages.remissionOptionPage.title,
@@ -56,9 +56,9 @@ function getRemissionOptionsQuestion(appeal: Appeal) {
 
 async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
   try {
-    const appeal = req.session.appeal;
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
+    const appeal = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
 
     return res.render('appeal-application/fee-support/fee-support.njk', {
@@ -94,7 +94,7 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/fee-support/fee-support.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealStarted.feeSupport,
+          previousPage: paths.appealStarted.taskList,
           pageTitle: i18n.pages.remissionOptionPage.title,
           formAction: paths.appealStarted.feeSupport,
           question: getRemissionOptionsQuestion(req.session.appeal),
@@ -148,5 +148,6 @@ export {
   setupFeeSupportController,
   getFeeSupport,
   postFeeSupport,
-  getFeeSupportRedirectPage
+  getFeeSupportRedirectPage,
+  getRemissionOptionsQuestion
 };

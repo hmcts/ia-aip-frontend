@@ -5,8 +5,6 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 
 async function getStepsToHelpWithFees(req: Request, res: Response, next: NextFunction) {
@@ -37,9 +35,6 @@ function postStepsToHelpWithFees(updateAppealService: UpdateAppealService) {
     try {
       const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
-      if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
 
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);

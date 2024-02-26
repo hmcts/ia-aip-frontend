@@ -13,7 +13,7 @@ import { helpWithFeesValidation } from '../../utils/validations/fields-validatio
 
 function getApplyOption(appeal: Appeal) {
 
-  let selectedOption = '';
+  let selectedOption = appeal.application.helpWithFeesOption || null;
   return {
     hint: i18n.pages.helpWithFees.radioButtonsTitle,
     options: [
@@ -39,9 +39,9 @@ function getApplyOption(appeal: Appeal) {
 
 async function getHelpWithFees(req: Request, res: Response, next: NextFunction) {
   try {
-    const appeal = req.session.appeal;
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
+    const appeal = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
 
     return res.render('appeal-application/fee-support/help-with-fees.njk', {
@@ -76,7 +76,7 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
         return res.render('appeal-application/fee-support/help-with-fees.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealStarted.helpWithFees,
+          previousPage: paths.appealStarted.feeSupport,
           pageTitle: i18n.pages.helpWithFees.title,
           question: getApplyOption(req.session.appeal),
           formAction: paths.appealStarted.helpWithFees,
@@ -140,5 +140,6 @@ export {
   postHelpWithFees,
   setupHelpWithFeesController,
   getHelpWithFeesRedirectPage,
-  resetJourneyValues
+  resetJourneyValues,
+  getApplyOption
 };

@@ -14,7 +14,7 @@ export const idamConfig = {
   idamRegistrationUrl: `${config.get('idam.webUrl')}/users/selfRegister`,
   idamSecret: config.get('idam.secret'),
   idamClientID: config.get('microservice'),
-  openId: false,
+  openId: true,
   logger: null
 };
 

@@ -3,9 +3,6 @@ import { paths } from '../paths';
 import { hasPendingTimeExtension } from '../utils/utils';
 
 const isJourneyAllowedMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  if (req.idam && req.idam.userDetails) {
-    req.idam.userDetails.uid = req.idam.userDetails.id;
-  }
   const currentPath: string = req.path;
   const appealStatusPathsCopy = { ...paths[req.session.appeal.appealStatus] } || {};
   const appealStatusPaths = Object.values(appealStatusPathsCopy).map((path: string) => {

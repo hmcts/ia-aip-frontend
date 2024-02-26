@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { FEATURE_FLAGS } from '../../../app/data/constants';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import Logger from '../../../app/utils/logger';
-import { appealApplicationStatus } from '../../../app/utils/tasks-utils';
+import { appealApplicationStatus, resetFeeSupportSectionStatusAndValues } from '../../../app/utils/tasks-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('getStatus', () => {
@@ -334,6 +334,31 @@ describe('getStatus', () => {
     status.homeOfficeDetailsOOC.active = true;
     let cosa = appealApplicationStatus(appeal, true);
     expect(appealApplicationStatus(appeal, true)).to.deep.eq(status);
+  });
+
+  it('should reset fee support section values if appealType changed and other sections reseted', () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+    appeal.application.appealType = 'revocationOfProtection';
+    appeal.application.remissionOption = 'test remission option';
+    appeal.application.asylumSupportRefNumber = 'test asylum support ref number';
+    appeal.application.helpWithFeesOption = 'test help with fees option';
+    appeal.application.helpWithFeesRefNumber = 'test help with fees ref number';
+    appeal.application.localAuthorityLetters = [];
+    appeal.application.feeSupportPersisted = true;
+
+    appeal.application.homeOfficeLetter = null;
+    appeal.application.homeOfficeRefNumber = null;
+    appeal.application.gwfReferenceNumber = null;
+
+    appealApplicationStatus(appeal, true);
+
+    expect(appeal.application.remissionOption).to.be.null;
+    expect(appeal.application.asylumSupportRefNumber).to.be.null;
+    expect(appeal.application.helpWithFeesOption).to.be.null;
+    expect(appeal.application.helpWithFeesRefNumber).to.be.null;
+    expect(appeal.application.localAuthorityLetters).to.be.null;
+    expect(appeal.application.feeSupportPersisted).to.be.false;
   });
 
 });

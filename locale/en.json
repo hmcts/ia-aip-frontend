@@ -294,7 +294,12 @@
         "sponsorsHasAccessToInformation": "Sponsor has access to information",
         "decisionType": "Decision Type",
         "whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused": "What date did you leave the UK after your Protection claim was refused?",
-        "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?"
+        "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?",
+        "feeStatement": "Fee statement",
+        "asylumSupportRefNumber": "Asylum support reference number",
+        "helpWithFees": "Help with fees",
+        "helpWithFeesRefNumber": "Help with fees reference number",
+        "localAuthorityLetter": "Local authority letter"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -3553,6 +3558,96 @@
       "dateHint": "For example, 31 3 2019",
       "dateLegend": "The field to enter the date when you left the UK after your Protection claim was refused",
       "letterSentImageAltText": "An envelope with the usual position of the date stamp highlighted"
+    },
+    "remissionOptionPage": {
+      "title": "Do you have to pay the fee?",
+      "hint" : "<p>The fee for this appeal is £{{ fee }}. You do not have to pay the fee if one of the following statements applies to you.</p><p>Select one</p>",
+      "options": {
+        "asylumSupportFromHo": {
+          "value": "asylumSupportFromHo",
+          "text": "I get asylum support from the Home Office"
+        },
+        "feeWaiverFromHo": {
+          "value": "feeWaiverFromHo",
+          "text": "I got a fee waiver from the Home Office for my application to stay in the UK"
+        },
+        "under18GetSupportFromLocalAuthority": {
+          "value": "under18GetSupportFromLocalAuthority",
+          "text": "I am under 18 and get housing or other support from the local authority"
+        },
+        "parentGetSupportFromLocalAuthority": {
+          "value": "parentGetSupportFromLocalAuthority",
+          "text": "I am the parent, guardian or sponsor of someone under 18 who gets housing or other support from the local authority"
+        },
+        "noneOfTheseStatements": {
+          "value": "noneOfTheseStatements",
+          "text": "None of these statements apply to me",
+          "hint":  "You may still be able to get help to pay the fee"
+        }
+      }
+    },
+    "asylumSupportPage": {
+      "title": "What is your asylum support reference number?",
+      "legend1": "The Tribunal will check your reference number is valid after your submit your appeal.",
+      "legend2": "If you do not know your reference number, contact <a href=\"https://www.migranthelpuk.org/\" target=\"_blank\">Migrant Help(opens in a new tab)</a> on 0808 8010 503 or <a href='mailto:proofofsupport@migranthelpuk.org' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>proofofsupport@migranthelpuk.org</a>.",
+      "attentionNotice": "Your asylum support reference number is not your Home Office reference number",
+      "asylumSupportReferenceNumberLabel": "Enter your asylum support reference number",
+      "hint": "For example, 23/02/12345"
+    },
+    "feeWaiverPage": {
+      "title": "Home Office fee waiver",
+      "legend1": "You do not have to pay the fee for this appeal if you got a fee waiver for the application to the Home Office that you now appealing.",
+      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal."
+    },
+    "uploadLocalAuthorityLetter": {
+      "title": "Upload local authority letter",
+      "legend1": "You should have a letter from the local authority that says it will provide housing or support for someone under 18.",
+      "legend2": "If you do not have this letter, you should ask social services for a new letter that shows you receive support.",
+      "panelTitle": "The way the support is described in the letter will depend on where you live.",
+      "panelBullet1": "If you are in <strong>England</strong>, the letter should say the support will be provided under <strong>section 17 or 20</strong> of the Children Act 1989",
+      "panelBullet2": "If you are in <strong>Scotland</strong>, the letter should say the support will be provided under <strong>section 22 or 25</strong> of the Children(Scotland) Act 1995",
+      "panelBullet3": "If you are in <strong>Nothern Ireland</strong>, the letter should say the support will be provided under <strong>article 18 or 21</strong> of the Children(Nothern Ireland) Order",
+      "panelBullet4": "If you are in <strong>Wales</strong>, the letter should say the support will be provided under <strong>section 37 or 76</strong> of the Social Services and Well-being(Wales) Act 2014",
+      "fileUploadTitle": "<strong>Upload local authority letter</strong>",
+      "uploadedFileTitle": "Uploaded file"
+    },
+    "helpWithFees": {
+      "title": "Help with paying the fee",
+      "tips": "If none of the statements on the previous page apply to you, you may still be able to apply for help with fees. This is a Tribunal programme that helps people to pay the fee if they:",
+      "tipsBullet1": "receive certain benefits",
+      "tipsBullet2": "have little or no saving",
+      "tipsBullet3": "are on a low income or have no income",
+      "guidanceLink": "<a href=\"https://www.gov.uk/get-help-with-court-fees/\" target=\"_blank\">Visit the help with fees guidance page(opens in a new tab)</a> to find out if you are eligible for support.",
+      "radioButtonsTitle": "<strong>Do you want to apply for help with fees?</strong>",
+      "options": {
+        "wantToApply": {
+          "value": "wantToApply",
+          "text": "Yes, I want to apply for help with fees"
+        },
+        "alreadyApplied": {
+          "value": "alreadyApplied",
+          "text": "I have already applied for help with fees"
+        },
+        "willPayForAppeal": {
+          "value": "willPayForAppeal",
+          "text": "No, I will pay for the appeal now"
+        }
+      }
+    },
+    "stepsToHelpWithFees": {
+      "title": "Apply for help with fees",
+      "tips": "Follow these steps to submit a help with fees application along with this appeal.",
+      "bullet1": "Go to <a href=\"https://helpwithcourtfees.service.gov.uk/checklist/\" target=\"_blank\">apply for help with fees(opens in a new tab)</a>",
+      "bullet2": "When you are asked to enter a court or tribunal form number, enter IAFT-1",
+      "bullet3": "Make a note of the help with fees reference number you get when you complete your help with fees application",
+      "bullet4": "Return to this service and go to the 'Help with paying the fee' page",
+      "bullet5": "Select 'I have already applied for help with fees' and enter your help with fees reference number"
+    },
+    "helpWithFeesReference": {
+      "title": "What is your help with fees reference number?",
+      "paragraph": "You will have received this number when you applied for help with fees. This reference must not have been used for a previous appeal.",
+      "helpWithFeesReferenceNumberLabel": "Enter your help with fees reference number",
+      "hint": "For example, HWF-A1B-23C"
     }
   },
   "error": {
@@ -3594,6 +3689,13 @@
     "oocHrEea": "Select yes if you are were living outside the United Kingdom when you made your application",
     "payNow": "Select yes if you want to pay for the appeal now",
     "decisionType": "Select how you want the appeal to be decided",
+    "remissionOptions": "Select the statement that applies to you",
+    "asylumSupport": "Enter your asylum support reference number",
+    "helpWithFeesRefNumber": {
+      "required": "Enter your Help with Fees reference number",
+      "invalid": "Your Help with Fees reference number must start with HWF, like HWF-A1B-23C"
+    },
+    "helpWithFees": "Select if you want to apply for Help with Fees",
     "emailEmpty": "Enter an email address",
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",

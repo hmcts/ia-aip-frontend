@@ -492,7 +492,13 @@ export default class UpdateAppealService {
         addressLookup: {},
         ...caseData.uploadTheNoticeOfDecisionDocs && { homeOfficeLetter: this.mapCaseDataDocumentsToAppealEvidences(caseData.uploadTheNoticeOfDecisionDocs, documentMap) },
         ...caseData.rpDcAppealHearingOption && { rpDcAppealHearingOption: caseData.rpDcAppealHearingOption },
-        ...caseData.decisionHearingFeeOption && { decisionHearingFeeOption: caseData.decisionHearingFeeOption }
+        ...caseData.decisionHearingFeeOption && { decisionHearingFeeOption: caseData.decisionHearingFeeOption },
+        remissionOption: caseData.remissionOption,
+        asylumSupportRefNumber: caseData.asylumSupportRefNumber,
+        helpWithFeesOption: caseData.helpWithFeesOption,
+        helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
+        ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
+        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -661,6 +667,49 @@ export default class UpdateAppealService {
       if (appeal.application.appealType) {
         caseData.appealType = appeal.application.appealType;
       }
+
+      if (appeal.application.remissionOption) {
+        caseData.remissionOption = appeal.application.remissionOption;
+      }
+
+      caseData.asylumSupportRefNumber = null;
+      if (appeal.application.asylumSupportRefNumber) {
+        caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
+      }
+
+      caseData.helpWithFeesOption = null;
+      if (appeal.application.helpWithFeesOption) {
+        caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
+      }
+
+      caseData.helpWithFeesRefNumber = null;
+      if (appeal.application.helpWithFeesRefNumber) {
+        caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
+      }
+
+      caseData.localAuthorityLetters = null;
+      if (appeal.application.localAuthorityLetters) {
+        const evidences: Evidence[] = appeal.application.localAuthorityLetters;
+
+        caseData.localAuthorityLetters = evidences.map((evidence: Evidence) => {
+          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+          return {
+            ...evidence.fileId && { id: evidence.fileId },
+            value: {
+              dateUploaded: evidence.dateUploaded,
+              description: evidence.description,
+              tag: 'additionalEvidence',
+              document: {
+                document_filename: evidence.name,
+                document_url: documentLocationUrl,
+                document_binary_url: `${documentLocationUrl}/binary`
+              }
+            }
+          } as Collection<DocumentWithMetaData>;
+        });
+      }
+
+      caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
         const subscription: Subscription = {

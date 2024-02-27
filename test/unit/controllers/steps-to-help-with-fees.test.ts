@@ -178,6 +178,7 @@ describe('Steps to help with fees Controller', function () {
     });
 
     it('should catch exception and call next with the error', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       const error = new Error('an error');
       res.redirect = sandbox.stub().throws(error);
       await postStepsToHelpWithFees(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);

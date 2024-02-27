@@ -109,6 +109,7 @@ describe('Local authority letter', function () {
     });
 
     it('should catch error and call next with error', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       const error = new Error('the error');
       res.redirect = sandbox.stub().throws(error);
       req.session.appeal.application.isEdit = true;

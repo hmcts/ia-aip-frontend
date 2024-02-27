@@ -116,7 +116,8 @@ describe('Help with fees reference number Controller', function () {
         application: {
           ...req.session.appeal.application,
           isAppealLate: false,
-          helpWithFeesRefNumber: 'HWF12345'
+          helpWithFeesRefNumber: 'HWF12345',
+          feeSupportPersisted: true
         }
       };
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
@@ -140,7 +141,8 @@ describe('Help with fees reference number Controller', function () {
         application: {
           ...req.session.appeal.application,
           isAppealLate: false,
-          helpWithFeesRefNumber: 'HWF12345'
+          helpWithFeesRefNumber: 'HWF12345',
+          feeSupportPersisted: true
         }
       };
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
@@ -165,7 +167,8 @@ describe('Help with fees reference number Controller', function () {
         application: {
           ...req.session.appeal.application,
           isEdit: true,
-          helpWithFeesRefNumber: 'HWF12345'
+          helpWithFeesRefNumber: 'HWF12345',
+          feeSupportPersisted: true
         }
       };
       updateAppealService.submitEventRefactored = sandbox.stub().returns({
@@ -277,7 +280,8 @@ describe('Help with fees reference number Controller', function () {
         application: {
           ...req.session.appeal.application,
           isAppealLate: false,
-          helpWithFeesRefNumber: 'HWF12345'
+          helpWithFeesRefNumber: 'HWF12345',
+          feeSupportPersisted: true
         }
       };
       updateAppealService.submitEventRefactored = sandbox.stub().returns({

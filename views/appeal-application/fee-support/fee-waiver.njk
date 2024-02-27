@@ -1,0 +1,20 @@
+{% set pageTitleName = title %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.validationErrors.errorSummary,
+            errorList: errorList
+        }) }}
+    {% endif %}
+    <form method="post" action={{ paths.awaitingReasonsForAppeal.feeWaiver }}>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <h1 class="govuk-heading-xl">{{ i18n.pages.feeWaiverPage.title }}</h1>
+        <p>{{ i18n.pages.feeWaiverPage.legend1 }}</p>
+        <p>{{ i18n.pages.feeWaiverPage.legend2 }}</p>
+        {{ continueButton() }}
+    </form>
+    {{ contactUs() }}
+{% endblock %}

@@ -118,6 +118,7 @@ interface CaseData {
   homeOfficeAppealResponseEvidence?: any;
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
+  feeSupportPersisted?: string;
   paymentReference?: string;
   paymentStatus?: string;
   paymentDate?: string;
@@ -172,7 +173,15 @@ interface CaseData {
   ftpaAppellantDecisionDate?: string;
   ftpaR35AppellantDocument: SupportingDocument;
   ftpaR35RespondentDocument: SupportingDocument;
+  ftpaApplicationAppellantDocument: SupportingDocument;
+  ftpaApplicationRespondentDocument: SupportingDocument;
   ftpaAppellantDecisionRemadeRule32Text?: string;
+  ftpaRespondentDecisionRemadeRule32Text?: string;
+  remissionOption?: string;
+  asylumSupportRefNumber?: string;
+  helpWithFeesOption?: string;
+  helpWithFeesRefNumber?: string;
+  localAuthorityLetters?: Collection<DocumentWithMetaData>[];
 }
 
 interface Application<T> {

@@ -1,6 +1,5 @@
 import config from 'config';
 import { bootstrap as ourBootStrap, teardown as ourTeardown } from './test/functional/bootstrap';
-// const ourBootstrap = {bootstrap} =  require('./test/functional/bootstrap.ts').bootstrap;
 
 exports.config = {
   name: 'codecept',

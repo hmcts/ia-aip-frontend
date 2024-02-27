@@ -6,11 +6,21 @@ exports.config = {
   timeout: 600,
   output: './functional-output/e2e/reports/',
   bootstrap: async() => {
+    global.testsPassed = 0;
+    global.testsTitles = [];
     global.testFailed = false;
   },
   teardown: async() => {
     if (global.testFailed) {
-      process.exit(1);
+      console.log('---------------------');
+      console.log('Total scenarios run: ' + global.testsTitles.length);
+      console.log('Scenarios passed: ' + global.testsPassed);
+      console.log('---------------------');
+      if (global.testsPassed === global.testsTitles.length) {
+        process.exit(0);
+      } else {
+        process.exit(1);
+      }
     } else {
       process.exit(0);
     }

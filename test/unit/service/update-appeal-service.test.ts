@@ -1147,6 +1147,46 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.ftpaR35RespondentDocument.name).eq('FTPA_R35_DOCUMENT.PDF');
       });
     });
+
+    describe('ftpaApplicationAppellantDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaApplicationAppellantDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_APPELLANT_DECISION_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map Decide FTPA decision document (appellant)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaApplicationAppellantDocument.name).eq('FTPA_APPELLANT_DECISION_DOCUMENT.PDF');
+      });
+    });
+
+    describe('ftpaApplicationRespondentDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'ftpaApplicationRespondentDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb',
+          'document_filename': 'FTPA_RESPONDENT_DECISION_DOCUMENT.PDF',
+          'document_binary_url': 'http://dm-store:8080/documents/d8b3ef28-f67f-4859-86e2-1d34dde208bb/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map Decide FTPA decision document (respondent)', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.ftpaApplicationRespondentDocument.name).eq('FTPA_RESPONDENT_DECISION_DOCUMENT.PDF');
+      });
+    });
   });
 
   describe('submitEvent', () => {

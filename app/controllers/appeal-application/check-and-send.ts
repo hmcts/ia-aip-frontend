@@ -17,7 +17,7 @@ import { statementOfTruthValidation } from '../../utils/validations/fields-valid
 
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
-  const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+  const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const { application } = req.session.appeal;
   const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
     return i18n.appealTypes[appealTypeInstance].name;
@@ -190,7 +190,7 @@ async function createSummaryRowsFrom(req: Request) {
 
   if (application.isAppealLate) {
     const lateAppealValue = [formatTextForCYA(application.lateAppeal.reason)];
-    if (application.lateAppeal.evidence) {
+    if (application.lateAppeal.evidence && !dlrmFeeRemissionFlag) {
       const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`;
       lateAppealValue.push(urlHtml);
     }
@@ -219,7 +219,7 @@ async function createSummaryRowsFrom(req: Request) {
     }
   }
 
-  if (drlmSetAsideFlag) {
+  if (dlrmFeeRemissionFlag) {
     const application = req.session.appeal.application;
     const remissionOption = application.remissionOption;
     const asylumSupportRefNumber = application.asylumSupportRefNumber;

@@ -403,7 +403,8 @@
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
       "fileUploadTitle": "Upload a file",
-      "uploadedFileTitle": "Uploaded file"
+      "uploadedFileTitle": "Uploaded file",
+      "fileUploadTitleDlrmFeeRemission": "<span class='govuk-body govuk-!-font-weight-bold'> Upload local authority letter</span><br></br>"
     },
     "successPage": {
       "title": "Your appeal details have been sent",

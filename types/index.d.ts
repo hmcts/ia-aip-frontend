@@ -296,6 +296,7 @@ interface AppealApplication {
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
   feeSupportPersisted?: boolean;
+  helpWithFeesOption?: string;
 }
 
 interface CmaRequirements {

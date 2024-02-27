@@ -112,6 +112,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const ftpaEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  const dlrmFeeRemissionFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
 
   let descriptionParagraphs;
   let respondBy;
@@ -143,8 +144,8 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'appealSubmitted':
-      if (ftpaSetAsideFeatureEnabled &&
-        ['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(req.session.appeal.application.appealType)) {
+      if (dlrmFeeRemissionFlag &&
+        ['wantToApply'].includes(req.session.appeal.application.helpWithFeesOption)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
@@ -192,8 +193,8 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'lateAppealSubmitted':
-      if (ftpaSetAsideFeatureEnabled &&
-        ['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(req.session.appeal.application.appealType)) {
+      if (dlrmFeeRemissionFlag &&
+        ['wantToApply'].includes(req.session.appeal.application.helpWithFeesOption)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.detailsSent,
@@ -652,7 +653,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
   }
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, req, ftpaSetAsideFeatureEnabled);
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag);
   return doThisNextSection;
 }
 

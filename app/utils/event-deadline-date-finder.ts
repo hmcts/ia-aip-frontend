@@ -72,9 +72,9 @@ function getDueDateForAppellantToRespondToFtpaDecision(req: Request) {
  * Given the current case status it retrieves deadlines based on the business logic.
  * @param currentAppealStatus the appeal status
  * @param req the request containing  all the directions in session
- * @param ftpaSetAsideFeatureEnabled value of DLRM_SETASIDE_FEATURE_FLAG
+ * @param dlrmFeeRemissionFlag value of DLRM_FEE_REMISSION_FEATURE_FLAG
  */
-function getDeadline(currentAppealStatus: string, req: Request, ftpaSetAsideFeatureEnabled: Boolean = false): string {
+function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemissionFlag: Boolean = false): string {
 
   const history = req.session.appeal.history;
   let formattedDeadline;
@@ -88,8 +88,8 @@ function getDeadline(currentAppealStatus: string, req: Request, ftpaSetAsideFeat
     case 'appealSubmitted':
     case 'lateAppealSubmitted':
     case 'awaitingRespondentEvidence': {
-      if (ftpaSetAsideFeatureEnabled &&
-        ['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(req.session.appeal.application.appealType)) {
+      if (dlrmFeeRemissionFlag &&
+        ['wantToApply'].includes(req.session.appeal.application.helpWithFeesOption)) {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterReasonsForAppeal);
       } else {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);

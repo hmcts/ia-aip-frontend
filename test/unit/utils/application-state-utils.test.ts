@@ -177,10 +177,10 @@ describe('application-state-utils', () => {
     it('when application status is appealSubmitted with fee and setAside is enabled should get correct \'Do This' +
       ' next section\'', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       req.session.appeal.appealStatus = 'appealSubmitted';
-      req.session.appeal.application.appealType = 'protection';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({
@@ -292,11 +292,11 @@ describe('application-state-utils', () => {
     it('when application status is lateAppealSubmitted with fee and setAside is enabled should get correct \'Do This' +
       ' next section\'', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       req.session.appeal.application.isAppealLate = true;
       req.session.appeal.appealStatus = 'lateAppealSubmitted';
-      req.session.appeal.application.appealType = 'protection';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
       const result = await getAppealApplicationNextStep(req as Request);
 
       expect(result).to.eql({

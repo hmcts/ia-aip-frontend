@@ -878,6 +878,12 @@
             "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
         },
+        "appealSubmittedDlrmFeeRemission": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "feeDetails": "There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay fee.",
+          "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
+        },
         "pendingPayment": {
           "payForYourAppeal": "Pay for your appeal",
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
@@ -900,6 +906,12 @@
             "title": "Helpful Information",
             "url": "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
           }
+        },
+        "lateAppealSubmittedDlrmFeeRemission": {
+          "detailsSent": "Your appeal details have been sent to the Tribunal.",
+          "feeDetails": "There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay fee.",
+          "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
         },
         "lateAppealRejected": {
           "description": "Your appeal cannot continue. Read the <a href='{{ paths.common.outOfTimeDecisionViewer }}'>reasons for this decision</a>.",

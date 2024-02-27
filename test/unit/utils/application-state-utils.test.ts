@@ -174,6 +174,28 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('when application status is appealSubmitted with fee and setAside is enabled should get correct \'Do This' +
+      ' next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      req.session.appeal.appealStatus = 'appealSubmitted';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '22 February 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay fee.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        allowedAskForMoreTime: false
+      });
+    });
+
     it('get correct \'Do This next section\' when application status is pendingPayment', async () => {
       req.session.appeal.appealStatus = 'pendingPayment';
       const result = await getAppealApplicationNextStep(req as Request);
@@ -264,6 +286,29 @@ describe('application-state-utils', () => {
           'title': 'Helpful Information',
           'url': "<a class='govuk-link' href='{{ paths.common.tribunalCaseworker }}'>What is a Tribunal Caseworker?</a>"
         }
+      });
+    });
+
+    it('when application status is lateAppealSubmitted with fee and setAside is enabled should get correct \'Do This' +
+      ' next section\'', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      req.session.appeal.application.isAppealLate = true;
+      req.session.appeal.appealStatus = 'lateAppealSubmitted';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '22 February 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay fee.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        allowedAskForMoreTime: false
       });
     });
 

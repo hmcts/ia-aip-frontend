@@ -89,7 +89,7 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
     case 'lateAppealSubmitted':
     case 'awaitingRespondentEvidence': {
       if (dlrmFeeRemissionFlag &&
-        ['wantToApply'].includes(req.session.appeal.application.helpWithFeesOption)) {
+        !['willPayForAppeal'].includes(req.session.appeal.application.helpWithFeesOption)) {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterReasonsForAppeal);
       } else {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);

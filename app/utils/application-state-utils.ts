@@ -145,7 +145,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'appealSubmitted':
       if (dlrmFeeRemissionFlag &&
-        ['wantToApply'].includes(req.session.appeal.application.helpWithFeesOption)) {
+        !['willPayForAppeal'].includes(req.session.appeal.application.helpWithFeesOption)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
@@ -194,7 +194,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'lateAppealSubmitted':
       if (dlrmFeeRemissionFlag &&
-        ['wantToApply'].includes(req.session.appeal.application.helpWithFeesOption)) {
+        !['willPayForAppeal'].includes(req.session.appeal.application.helpWithFeesOption)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.detailsSent,

@@ -192,6 +192,7 @@ function setupOutOfTimeController(middleware: Middleware[], deps?: any): Router 
   const router = Router();
   router.get(paths.appealStarted.appealLate, middleware, getAppealLate);
   router.post(paths.appealStarted.appealLate, middleware, postAppealLate(deps.documentManagementService, deps.updateAppealService));
+  router.post(paths.appealStarted.appealLateUploadEvidence, middleware, postAppealLateUploadFile(deps.documentManagementService, deps.updateAppealService));
   router.post(paths.appealStarted.deleteEvidence, middleware, postAppealLateDeleteFile(deps.documentManagementService, deps.updateAppealService));
   return router;
 }
@@ -200,5 +201,6 @@ export {
   getAppealLate,
   postAppealLate,
   postAppealLateDeleteFile,
+  postAppealLateUploadFile,
   setupOutOfTimeController
 };

@@ -95,7 +95,7 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
       resetJourneyValues(appeal.application);
       const defaultRedirect = getHelpWithFeesRedirectPage(selectedValue);
       if (defaultRedirect === paths.appealStarted.taskList) {
-        req.session.appeal.application.feeSupportPersisted = true;
+        appeal.application.feeSupportPersisted = true;
       }
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
       let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);

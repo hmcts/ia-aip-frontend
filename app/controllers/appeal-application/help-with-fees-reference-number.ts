@@ -66,7 +66,7 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
         }
       };
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
-      req.session.appeal.application.feeSupportPersisted = true;
+      appeal.application.feeSupportPersisted = true;
       resetJourneyValues(appeal.application);
       await persistAppeal(appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.taskList;

@@ -827,7 +827,8 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
         }
       }
     }
-    if (ftpaSetAsideFeatureEnabled && (ftpaApplicationRespondentDocument.length === 1 && ftpaApplicationRespondentDocument[0] !== null) && ftpaDecision !== 'reheardRule35') {
+    const decisionTypes = ['reheardRule35', 'remadeRule31', 'remadeRule32'];
+    if (ftpaSetAsideFeatureEnabled && (ftpaApplicationRespondentDocument.length === 1 && ftpaApplicationRespondentDocument[0] !== null) && !decisionTypes.includes(ftpaDecision)) {
       attachFtpaDocuments(ftpaApplicationRespondentDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
     } else {
       attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);

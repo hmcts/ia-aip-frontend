@@ -552,6 +552,7 @@ export default class UpdateAppealService {
       ...caseData.ftpaAppellantDecisionDocument && { ftpaAppellantDecisionDocument: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantDecisionDocument, documentMap) },
       ...caseData.ftpaAppellantDecisionDate && { ftpaAppellantDecisionDate: caseData.ftpaAppellantDecisionDate },
       ...caseData.ftpaAppellantDecisionRemadeRule32Text && { ftpaAppellantDecisionRemadeRule32Text: caseData.ftpaAppellantDecisionRemadeRule32Text },
+      ...caseData.ftpaRespondentDecisionRemadeRule32Text && { ftpaRespondentDecisionRemadeRule32Text: caseData.ftpaRespondentDecisionRemadeRule32Text },
       hearingCentre: caseData.hearingCentre || null,
       documentMap: documentMap.map(doc => {
         return {

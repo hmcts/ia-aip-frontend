@@ -1,0 +1,49 @@
+{% set pageTitleName = pageTitle %}
+{% from "components/radio-button-question.njk" import radioButtonQuestion %}
+
+{% extends "layout.njk" %}
+
+{% block content %}
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.error.summary.title,
+      descriptionText: i18n.error.summary.descriptionText,
+      errorList: errorList
+    }) }}
+  {% endif %}
+  <form action="{{ formAction }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <h1 class="govuk-heading-xl">{{ i18n.pages.helpWithFees.title }}</h1>
+    <p>{{ i18n.pages.helpWithFees.tips }}</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>{{ i18n.pages.helpWithFees.tipsBullet1 }}</li>
+      <li>{{ i18n.pages.helpWithFees.tipsBullet2 }}</li>
+      <li>{{ i18n.pages.helpWithFees.tipsBullet3 }}</li>
+     </ul>
+
+    <p>{{ i18n.pages.helpWithFees.guidanceLink | safe }}</p>
+
+    {{ radioButtonQuestion(
+      question.name or 'answer',
+      question.options,
+      question.title | eval | safe if question.title,
+      question.titleIsheading or true,
+      question.hint | eval | safe if question.hint,
+      error[question.name].text,
+      question.inline
+    ) }}
+
+    {% if saveAndContinueOnly %}
+      {{ saveAndContinueButton() }}
+    {% else %}
+      {% if saveAndContinue %}
+        {{ saveButtons() }}
+      {% else %}
+        {{ continueButton() }}
+      {% endif %}
+    {% endif %}
+
+  </form>
+  {{ contactUs() }}
+{% endblock %}

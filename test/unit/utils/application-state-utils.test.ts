@@ -1355,6 +1355,52 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
+  it('when application is decided as remadeRule31 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule31';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>',
+        '<b>What happens next</b>',
+        'The Tribunal will contact you when the review of your appeal decision is complete.'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
+  it('when application is decided as remadeRule32 for respondent ftpa application should get correct Do this next section.', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.appealStatus = 'ftpaDecided';
+    req.session.appeal.ftpaApplicantType = 'respondent';
+    req.session.appeal.ftpaRespondentDecisionOutcomeType = 'remadeRule32';
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'deadline': 'TBC',
+      'cta': {},
+      'descriptionParagraphs': [
+        'A judge has reviewed the Home Office application for permission to appeal to the Upper Tribunal and decided to review your appeal decision.<br>',
+        '<a href={{ paths.common.ftpaDecisionViewer }}>See the reasons for this decision</a>',
+        '<b>What happens next</b>',
+        'The Tribunal will contact you when the review of your appeal decision is complete.'
+      ]
+    };
+
+    expect(result).to.eql(expected);
+  });
+
   it('when application is granted for appellant ftpa application should get correct Do this next section.', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);

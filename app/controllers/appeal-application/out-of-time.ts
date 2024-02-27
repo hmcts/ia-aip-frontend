@@ -129,7 +129,8 @@ function postAppealLateUploadFile(documentManagementService: DocumentManagementS
         application: {
           ...req.session.appeal.application,
           lateAppeal: {
-            ...lateAppeal
+            ...lateAppeal,
+            reason: req.body['appeal-late']
           }
         }
       };

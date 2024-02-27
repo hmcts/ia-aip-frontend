@@ -335,6 +335,7 @@ describe('Out of time controller', () => {
       req.session.appeal.application.lateAppeal.reason = 'someReason';
       const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
       req.session.appeal.documentMap = [ documentMap ];
+      req.body['appeal-late'] = 'someReason';
       const documentUploadResponse: DocumentUploadResponse = {
         fileId: 'someUUID',
         name: 'file.png'

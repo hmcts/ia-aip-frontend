@@ -2967,6 +2967,98 @@ describe('Detail viewer Controller', () => {
       });
     });
 
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details for resident judge decision remade rule 31', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaRespondentRjDecisionOutcomeType: 'remadeRule31',
+        ftpaRespondentDecisionRemadeRule32Text: 'Rule 31 reasons for the decision'
+      };
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;decision&nbsp;to&nbsp;be&nbsp;reviewed' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionReasons },
+            value: { html: 'Rule&nbsp;31&nbsp;reasons&nbsp;for&nbsp;the&nbsp;decision' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
+    it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa respondent application/decision details for resident judge decision remade rule 32', async () => {
+      req.session.appeal = {
+        ...req.session.appeal,
+        ftpaApplicantType: 'respondent',
+        ftpaRespondentApplicationDate: '2023-03-20',
+        ftpaRespondentDecisionDate: '2023-03-20',
+        ftpaRespondentDecisionDocument: [],
+        ftpaRespondentRjDecisionOutcomeType: 'remadeRule32',
+        ftpaRespondentDecisionRemadeRule32Text: 'Rule 32 reasons for the decision'
+      };
+      documents[0].name = 'FTPA_Respondent_Doc.PDF';
+
+      const expectedSummaryRows = {
+        application: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaApplication.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ],
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decision },
+            value: { html: 'Appeal&nbsp;decision&nbsp;to&nbsp;be&nbsp;reviewed' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.decisionReasons },
+            value: { html: 'Rule&nbsp;32&nbsp;reasons&nbsp;for&nbsp;the&nbsp;decision' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.ftpaDecision.date },
+            value: { html: '20&nbsp;March&nbsp;2023' }
+          }
+        ]
+      };
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getFtpaDecisionDetails(req as Request, res as Response, next);
+
+      expect(res.render).to.have.been.calledWith('ftpa-application/ftpa-decision-details-viewer.njk', {
+        title: i18n.pages.detailViewers.ftpaApplication.title.respondent,
+        subTitle: i18n.pages.detailViewers.ftpaDecision.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+    });
+
     it('should render ftpa-application/ftpa-decision-details-viewer.nj with ftpa appellant application/decision details for resident judge decision remade rule 31', async () => {
       req.session.appeal = {
         ...req.session.appeal,

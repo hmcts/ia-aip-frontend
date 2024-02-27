@@ -174,6 +174,7 @@ interface CaseData {
   ftpaR35AppellantDocument: SupportingDocument;
   ftpaR35RespondentDocument: SupportingDocument;
   ftpaAppellantDecisionRemadeRule32Text?: string;
+  ftpaRespondentDecisionRemadeRule32Text?: string;
   remissionOption?: string;
   asylumSupportRefNumber?: string;
   helpWithFeesOption?: string;

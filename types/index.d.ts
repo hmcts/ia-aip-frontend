@@ -188,6 +188,7 @@ interface Appeal {
   ftpaR35AppellantDocument?: Evidence;
   ftpaR35RespondentDocument?: Evidence;
   ftpaAppellantDecisionRemadeRule32Text?: string;
+  ftpaRespondentDecisionRemadeRule32Text?: string;
 }
 
 interface Hearing {

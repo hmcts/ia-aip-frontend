@@ -16,7 +16,7 @@ async function getAppealLate(req: Request, res: Response, next: NextFunction) {
     const { application } = req.session.appeal;
     const appealLateReason: string = application.lateAppeal && application.lateAppeal.reason || null;
     const evidence: Evidence = application.lateAppeal && application.lateAppeal.evidence || null;
-    const dlrmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
     res.render('appeal-application/home-office/appeal-late.njk', {
       appealLateReason,
@@ -25,7 +25,7 @@ async function getAppealLate(req: Request, res: Response, next: NextFunction) {
       evidenceUploadAction: paths.appealStarted.appealLateUploadEvidence,
       previousPage: paths.appealStarted.taskList,
       appealOutOfCountry: appealOutOfCountry,
-      dlrmSetAsideFlag: dlrmSetAsideFlag
+      dlrmFeeRemissionFlag: dlrmFeeRemissionFlag
     });
   } catch (e) {
     next(e);
@@ -40,7 +40,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       }
 
       const { application } = req.session.appeal;
-      const dlrmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
       let validationError = textAreaValidation(req.body['appeal-late'], 'appeal-late');
       let appealOutOfCountry = (req.session.appeal.appealOutOfCountry === 'Yes');
 
@@ -67,7 +67,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
         });
       }
       let lateAppeal: LateAppeal = req.session.appeal.application.lateAppeal;
-      if (!dlrmSetAsideFlag) {
+      if (!dlrmFeeRemissionFlag) {
         if (req.file) {
           if (_.has(application.lateAppeal, 'evidence.fileId')) {
             await documentManagementService.deleteFile(req, application.lateAppeal.evidence.fileId);

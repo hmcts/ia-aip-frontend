@@ -9,8 +9,8 @@ import { getRedirectPage } from '../../utils/utils';
 
 async function getStepsToHelpWithFees(req: Request, res: Response, next: NextFunction) {
   try {
-    const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-    if (!drlmSetAsideFlag) return res.redirect(paths.common.overview);
+    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     return res.render('appeal-application/fee-support/steps-to-help-with-fees.njk', {
@@ -24,6 +24,8 @@ async function getStepsToHelpWithFees(req: Request, res: Response, next: NextFun
 
 function postStepsToHelpWithFees(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
       req.session.appeal = {
@@ -33,9 +35,6 @@ function postStepsToHelpWithFees(updateAppealService: UpdateAppealService) {
     }
 
     try {
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-      if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
-
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(req.session.appeal, dlrmFeeRemissionFlag);
       const defaultRedirect = paths.appealStarted.helpWithFeesReferenceNumber;

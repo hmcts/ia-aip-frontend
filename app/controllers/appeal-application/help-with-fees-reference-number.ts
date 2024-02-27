@@ -13,8 +13,8 @@ import { helpWithFeesRefNumberValidation } from '../../utils/validations/fields-
 
 async function getHelpWithFeesRefNumber(req: Request, res: Response, next: NextFunction) {
   try {
-    const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-    if (!drlmSetAsideFlag) return res.redirect(paths.common.overview);
+    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
     const helpWithFeesReferenceNumber = req.session.appeal.application.helpWithFeesRefNumber || null;
@@ -32,6 +32,8 @@ async function getHelpWithFeesRefNumber(req: Request, res: Response, next: NextF
 
 function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
       req.session.appeal = {
@@ -41,8 +43,6 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
     }
 
     try {
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-      if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
       if (!shouldValidateWhenSaveForLater(req.body, 'helpWithFeesRefNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }

@@ -75,6 +75,8 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
 
 function postFeeSupport(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
       req.session.appeal = {
@@ -84,8 +86,6 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
     }
 
     try {
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-      if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
       if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }

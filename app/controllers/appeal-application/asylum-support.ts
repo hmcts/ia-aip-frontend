@@ -13,8 +13,8 @@ import { asylumSupportValidation } from '../../utils/validations/fields-validati
 
 async function getAsylumSupport(req: Request, res: Response, next: NextFunction) {
   try {
-    const drlmSetAsideFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-    if (!drlmSetAsideFlag) return res.redirect(paths.common.overview);
+    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const asylumSupportRefNumber = req.session.appeal.application.asylumSupportRefNumber || null;
@@ -31,6 +31,8 @@ async function getAsylumSupport(req: Request, res: Response, next: NextFunction)
 
 function postAsylumSupport(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
       req.session.appeal = {
@@ -40,8 +42,6 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
     }
 
     try {
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-      if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
       if (!shouldValidateWhenSaveForLater(req.body, 'asylumSupportRefNumber')) {
         return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
       }

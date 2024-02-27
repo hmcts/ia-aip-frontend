@@ -15,7 +15,7 @@ function getHomeOfficeDecisionLetter(req: Request, res: Response, next: NextFunc
     let validationErrors: ValidationErrors;
     if (req.query.error) {
       validationErrors = {
-        uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload[`${req.query.error}`])
+        uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload[`${req.query.error}`])
       };
 
     }

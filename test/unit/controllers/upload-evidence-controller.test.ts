@@ -152,8 +152,8 @@ describe('upload evidence controller', () => {
   describe('postUploadFile', () => {
     it('Should display validation error when no file has been selected and render upload-evidence/evidence-upload-page.njk', async () => {
       const expectedError: ValidationError = {
-        href: '#uploadFile',
-        key: 'uploadFile',
+        href: '#file-upload',
+        key: 'file-upload',
         text: 'Select a file'
       };
 
@@ -173,8 +173,8 @@ describe('upload evidence controller', () => {
 
     it('Should display validation error LIMIT_FILE_TYPE and render upload-evidence/evidence-upload-page.njk ', async () => {
       const expectedError: ValidationError = {
-        href: '#uploadFile',
-        key: 'uploadFile',
+        href: '#file-upload',
+        key: 'file-upload',
         text: 'The selected file must be a {{ supportedFormats | join(\', \') }}'
       };
 
@@ -198,8 +198,8 @@ describe('upload evidence controller', () => {
       // Because the file size is being overriden on the development config for testing purposes
       // error message will show max file size as {{maxFileSizeInMb}}MB
       const expectedError: ValidationError = {
-        href: '#uploadFile',
-        key: 'uploadFile',
+        href: '#file-upload',
+        key: 'file-upload',
         text: 'The selected file must be smaller than {{maxFileSizeInMb}}MB'
       };
 

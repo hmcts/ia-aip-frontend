@@ -17,6 +17,7 @@ import { statementOfTruthValidation } from '../../utils/validations/fields-valid
 
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+  const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
   const { application } = req.session.appeal;
   const appealTypeNames: string[] = application.appealType.split(',').map(appealTypeInstance => {
     return i18n.appealTypes[appealTypeInstance].name;

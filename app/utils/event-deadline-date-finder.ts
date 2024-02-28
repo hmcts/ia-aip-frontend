@@ -90,7 +90,9 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
     case 'awaitingRespondentEvidence': {
       if (dlrmFeeRemissionFlag &&
         !['willPayForAppeal'].includes(req.session.appeal.application.helpWithFeesOption)) {
-        formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterReasonsForAppeal);
+        let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : daysToWaitAfterReasonsForAppeal;
+        formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);
       } else {
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);
       }

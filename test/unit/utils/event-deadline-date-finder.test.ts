@@ -167,6 +167,24 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.equal('13 February 2020');
     });
 
+    it('awaitingRespondentEvidence should return a formatted date with 14 days offset from the appealSubmission date' +
+      ' when dlrmFeeRemission is enabled', () => {
+
+      const currentAppealStatus = 'awaitingRespondentEvidence';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('22 February 2020');
+    });
+    it('awaitingRespondentEvidence should return a formatted date with 28 days offset from the appealSubmission date' +
+      ' when dlrmFeeRemission is enabled and appeal is out of country', () => {
+      req.session.appeal.appealOutOfCountry = 'Yes';
+      req.session.appeal.application.helpWithFeesOption = 'someFee';
+      const currentAppealStatus = 'awaitingRespondentEvidence';
+      const result = getDeadline(currentAppealStatus, req as Request, true);
+
+      expect(result).to.be.equal('07 March 2020');
+    });
+
     it('awaitingReasonsForAppeal should return a formatted date with the requestReasonForAppeal direction due date', () => {
 
       const currentAppealStatus = 'awaitingReasonsForAppeal';

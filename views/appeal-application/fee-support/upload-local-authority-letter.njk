@@ -2,7 +2,7 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
-{% from "components/evidence-list.njk" import evidenceList with context %}
+{% from "components/evidence-list-with-dynamic-title.njk" import evidenceList with context %}
 
 {% extends "layout.njk" %}
 
@@ -75,7 +75,7 @@
                     }
                 }) }}
             </div>
-            {{ evidenceList(evidences, evidenceCTA) }}
+            {{ evidenceList(evidences, evidenceCTA, evidenceListTitle) }}
             {% if askForMoreTimeFeatureEnabled %}
                 {% include "components/ask-for-more-time-panel.njk" %}
             {% endif %}

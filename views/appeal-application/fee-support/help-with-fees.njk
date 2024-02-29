@@ -1,5 +1,5 @@
 {% set pageTitleName = pageTitle %}
-{% from "components/radio-button-question.njk" import radioButtonQuestion %}
+{% from "components/radio-button-question-custom-legend-class.njk" import radioButtonQuestion %}
 
 {% extends "layout.njk" %}
 
@@ -31,7 +31,8 @@
       question.titleIsheading or true,
       question.hint | eval | safe if question.hint,
       error[question.name].text,
-      question.inline
+      question.inline,
+      "govuk-fieldset__legend--m"
     ) }}
 
     {% if saveAndContinueOnly %}

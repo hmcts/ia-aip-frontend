@@ -15,7 +15,7 @@ function getApplyOption(appeal: Appeal) {
 
   let selectedOption = appeal.application.helpWithFeesOption || null;
   return {
-    hint: i18n.pages.helpWithFees.radioButtonsTitle,
+    title: i18n.pages.helpWithFees.radioButtonsTitle,
     options: [
       {
         value: i18n.pages.helpWithFees.options.wantToApply.value,

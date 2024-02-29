@@ -243,9 +243,13 @@ async function createSummaryRowsFrom(req: Request) {
       rows.push(asylumSupportRefNumberRow);
     }
     if (helpWithFeesOption) {
+      const helpWithFeeIwantToPayNow = helpWithFeesOption === 'willPayForAppeal'
+        ? i18n.pages.helpWithFees.checkAndSendWillPayForAppeal
+        : i18n.pages.helpWithFees.options[helpWithFeesOption].text;
+
       const helpWithFeesRow = addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.helpWithFees,
-        [i18n.pages.helpWithFees.options[helpWithFeesOption].text],
+        [helpWithFeeIwantToPayNow],
         paths.appealStarted.helpWithFees + editParameter
       );
       rows.push(helpWithFeesRow);

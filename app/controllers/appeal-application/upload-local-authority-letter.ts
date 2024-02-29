@@ -15,6 +15,7 @@ async function getLocalAuthorityLetter(req: Request, res: Response, next: NextFu
     const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
     if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
+    const evidenceListTitle = i18n.pages.uploadLocalAuthorityLetter.uploadedFileTitle;
     let validationErrors: ValidationErrors;
     if (req.query.error) {
       validationErrors = {
@@ -26,6 +27,7 @@ async function getLocalAuthorityLetter(req: Request, res: Response, next: NextFu
 
     res.render('appeal-application/fee-support/upload-local-authority-letter.njk', {
       title: i18n.pages.uploadLocalAuthorityLetter.title,
+      evidenceListTitle,
       formSubmitAction: paths.appealStarted.localAuthorityLetter,
       evidenceUploadAction: paths.appealStarted.localAuthorityLetterUpload,
       evidences: localAuthorityLetterEvidences,

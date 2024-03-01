@@ -233,6 +233,7 @@ const paths = {
     ftpaAppellantApplicationViewer: '/ftpa-appellant-application',
     ftpaDecisionViewer: '/ftpa-decision',
     directionHistoryViewer: '/direction-history/:id',
+    updatedDecisionAndReasonsViewer: '/updated-decision-reasons',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

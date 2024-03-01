@@ -988,6 +988,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.ftpaAppellantApplicationViewer, getFtpaAppellantApplication);
   router.get(paths.common.ftpaDecisionViewer, getFtpaDecisionDetails);
   router.get(paths.common.directionHistoryViewer, getDirectionHistory);
+  router.get(paths.common.updatedDecisionAndReasonsViewer, getDecisionAndReasonsViewer);
   return router;
 }
 

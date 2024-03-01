@@ -194,6 +194,7 @@ interface Appeal {
   ftpaApplicationAppellantDocument?: Evidence;
   ftpaAppellantDecisionRemadeRule32Text?: string;
   ftpaRespondentDecisionRemadeRule32Text?: string;
+  decisionAndReasons?: DecisionAndReasons[];
 }
 
 interface Hearing {
@@ -452,4 +453,14 @@ type Middleware = (req: Express.Request, res: Express.Response, next: any) => vo
 
 interface ApplicationStatus {
   [key: string]: Task;
+}
+
+interface DecisionAndReasons {
+  id: string;
+  updatedDecisionDate: string;
+  dateCoverLetterDocumentUploaded: string;
+  coverLetterDocument: Evidence;
+  dateDocumentAndReasonsDocumentUploaded: string;
+  documentAndReasonsDocument: Evidence;
+  summariseChanges: string;
 }

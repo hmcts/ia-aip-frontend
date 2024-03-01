@@ -150,6 +150,7 @@ describe('Confirmation Page Controller', () => {
         sub: 'email@test.com'
       }
     };
+
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.appealReferenceNumber = 'DRAFT';
 

@@ -3650,6 +3650,7 @@
           "text": "No, I will pay for the appeal now"
         }
       },
+      "checkAndSendWantToApply": "I want to apply for help with fees",
       "checkAndSendWillPayForAppeal": "I want to pay for the appeal now"
     },
     "stepsToHelpWithFees": {

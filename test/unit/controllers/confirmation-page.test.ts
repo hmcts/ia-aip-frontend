@@ -74,7 +74,9 @@ describe('Confirmation Page Controller', () => {
       late: false,
       paPayLater: false,
       paPayNow: true,
-      eaHuEu: false
+      eaHuEu: false,
+      appealWithRemissionOption: false,
+      noRemissionOption: false
     });
   });
 
@@ -91,7 +93,9 @@ describe('Confirmation Page Controller', () => {
       late: false,
       paPayLater: true,
       paPayNow: false,
-      eaHuEu: false
+      eaHuEu: false,
+      appealWithRemissionOption: false,
+      noRemissionOption: false
     });
   });
 
@@ -108,7 +112,9 @@ describe('Confirmation Page Controller', () => {
       late: false,
       paPayLater: false,
       paPayNow: false,
-      eaHuEu: false
+      eaHuEu: false,
+      appealWithRemissionOption: false,
+      noRemissionOption: false
     });
   });
 
@@ -124,7 +130,9 @@ describe('Confirmation Page Controller', () => {
       late: false,
       paPayLater: false,
       paPayNow: false,
-      eaHuEu: true
+      eaHuEu: true,
+      appealWithRemissionOption: false,
+      noRemissionOption: false
     });
   });
 
@@ -140,7 +148,9 @@ describe('Confirmation Page Controller', () => {
       late: false,
       paPayLater: false,
       paPayNow: false,
-      eaHuEu: true
+      eaHuEu: true,
+      appealWithRemissionOption: false,
+      noRemissionOption: false
     });
   });
 
@@ -156,7 +166,9 @@ describe('Confirmation Page Controller', () => {
       late: false,
       paPayLater: false,
       paPayNow: false,
-      eaHuEu: true
+      eaHuEu: true,
+      appealWithRemissionOption: false,
+      noRemissionOption: false
     });
   });
 
@@ -173,7 +185,9 @@ describe('Confirmation Page Controller', () => {
       late: true,
       paPayLater: false,
       paPayNow: true,
-      eaHuEu: false
+      eaHuEu: false,
+      appealWithRemissionOption: false,
+      noRemissionOption: false
     });
   });
 
@@ -299,4 +313,40 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
+  it('getConfirmationPage should render confirmation.njk for an appeal with the remission option', () => {
+    const { appeal } = req.session;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+    appeal.application.remissionOption = 'asylumSupportFromHo';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(5),
+      late: undefined,
+      paPayLater: false,
+      paPayNow: true,
+      eaHuEu: false,
+      appealWithRemissionOption: true,
+      noRemissionOption: false
+    });
+  });
+
+  it('getConfirmationPage should render confirmation.njk for an appeal without the remission option', () => {
+    const { appeal } = req.session;
+    appeal.application.appealType = 'protection';
+    appeal.paAppealTypeAipPaymentOption = 'payNow';
+    appeal.application.remissionOption = 'noneOfTheseStatements';
+    appeal.application.helpWithFeesOption = 'willPayForAppeal';
+
+    getConfirmationPage(req as Request, res as Response, next);
+    expect(res.render).to.have.been.calledOnce.calledWith('confirmation-page.njk', {
+      date: addDaysToDate(5),
+      late: undefined,
+      paPayLater: false,
+      paPayNow: true,
+      eaHuEu: false,
+      appealWithRemissionOption: false,
+      noRemissionOption: true
+    });
+  });
 });

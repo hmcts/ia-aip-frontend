@@ -15,13 +15,22 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     const paPayNow = payNowForApplicationNeeded(req) && application.appealType === 'protection';
     const eaHuEu = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType);
     const daysToWait: number = eaHuEu ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
+    const appealWithRemissionOption = [
+      'asylumSupportFromHo',
+      'feeWaiverFromHo',
+      'under18GetSupportFromLocalAuthority',
+      'parentGetSupportFromLocalAuthority'
+    ].includes(application.remissionOption);
+    const noRemissionOption = application?.remissionOption === 'noneOfTheseStatements' && application?.helpWithFeesOption === 'willPayForAppeal';
 
     res.render('confirmation-page.njk', {
       date: addDaysToDate(daysToWait),
       late: isLate(),
       paPayLater,
       paPayNow,
-      eaHuEu
+      eaHuEu,
+      appealWithRemissionOption,
+      noRemissionOption
     });
   } catch (e) {
     next(e);

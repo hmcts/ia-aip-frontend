@@ -21,7 +21,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
       'under18GetSupportFromLocalAuthority',
       'parentGetSupportFromLocalAuthority'
     ].includes(application.remissionOption);
-    const noRemissionOption = application?.remissionOption === 'noneOfTheseStatements' && application?.helpWithFeesOption === 'willPayForAppeal';
+    const noRemissionOption = 'noneOfTheseStatements' === application.remissionOption && 'willPayForAppeal' === application.helpWithFeesOption;
 
     res.render('confirmation-page.njk', {
       date: addDaysToDate(daysToWait),

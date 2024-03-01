@@ -668,6 +668,7 @@ export default class UpdateAppealService {
         caseData.appealType = appeal.application.appealType;
       }
 
+      caseData.remissionOption = null;
       if (appeal.application.remissionOption) {
         caseData.remissionOption = appeal.application.remissionOption;
       }

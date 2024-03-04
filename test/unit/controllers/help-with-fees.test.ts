@@ -82,7 +82,7 @@ describe('Help with fees Controller', () => {
     it('should return the question', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       const expectedQuestion = {
-        hint: i18n.pages.helpWithFees.radioButtonsTitle,
+        title: i18n.pages.helpWithFees.radioButtonsTitle,
         options: [
           {
             value: i18n.pages.helpWithFees.options.wantToApply.value,
@@ -111,7 +111,7 @@ describe('Help with fees Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       const expectedQuestion = {
-        hint: i18n.pages.helpWithFees.radioButtonsTitle,
+        title: i18n.pages.helpWithFees.radioButtonsTitle,
         options: [
           {
             value: i18n.pages.helpWithFees.options.wantToApply.value,

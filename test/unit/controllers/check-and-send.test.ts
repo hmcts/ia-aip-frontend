@@ -15,6 +15,7 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
 import { formatTextForCYA } from '../../../app/utils/utils';
+import { helpWithFeesRefNumberValidation } from '../../../app/utils/validations/fields-validations';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
@@ -142,6 +143,56 @@ describe('createSummaryRowsFrom', () => {
     mockedRows.push(decisionType);
     mockedRows.push(paymentType);
     expect(rows).to.be.deep.equal(mockedRows);
+  });
+
+  it('should create fee rows when fee support values are present and dlrm set aside enabled', async () => {
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+    req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+    req.session.appeal.application.asylumSupportRefNumber = 'refNumber';
+    req.session.appeal.application.helpWithFeesRefNumber = 'HWF12345';
+    req.session.appeal.application.localAuthorityLetters = [{ fileId: 'fileId', name: 'filename' }];
+    const editParameter = '?edit';
+    const fileLine = `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/fileId'>filename</a>`;
+
+    const rows: any[] = await createSummaryRowsFrom(req as Request);
+    const remissionOptionRow = addSummaryRow('Fee statement', ['I get asylum support from the Home Office'], paths.appealStarted.feeSupport + editParameter);
+    const asylumSupportRefNumberRow = addSummaryRow('Asylum support reference number', ['refNumber'], paths.appealStarted.asylumSupport + editParameter);
+    const helpWithFeesRefNumberRow = addSummaryRow('Help with fees reference number', ['HWF12345'], paths.appealStarted.helpWithFeesReferenceNumber + editParameter);
+    const localAuthorityLettersRow = addSummaryRow('Local authority letter', [fileLine], paths.appealStarted.localAuthorityLetter + editParameter);
+    const mockedRows: SummaryRow[] = getMockedSummaryRows();
+
+    mockedRows.push(remissionOptionRow);
+    mockedRows.push(asylumSupportRefNumberRow);
+    mockedRows.push(helpWithFeesRefNumberRow);
+    mockedRows.push(localAuthorityLettersRow);
+
+    const helpWithFeesOptionTestData = [
+      {
+        input: 'wantToApply',
+        expectedResponse: 'I want to apply for help with fees',
+        description: 'wantToApply text'
+      },
+      {
+        input: 'alreadyApplied',
+        expectedResponse: 'I have already applied for help with fees',
+        description: 'alreadyApplied text'
+      },
+      {
+        input: 'willPayForAppeal',
+        expectedResponse: 'I want to pay for the appeal now',
+        description: 'willPayForAppeal text'
+      }
+    ];
+
+    helpWithFeesOptionTestData.forEach(({ input, expectedResponse, description }) => {
+      it(`should be ${description}`, () => {
+        req.session.appeal.application.helpWithFeesOption = input;
+        const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.appealStarted.helpWithFees + editParameter);
+        mockedRows.push(localAuthorityLettersRow);
+        expect(rows).to.be.deep.equal(mockedRows);
+        mockedRows.pop();
+      });
+    });
   });
 });
 

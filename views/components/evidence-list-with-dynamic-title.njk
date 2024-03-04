@@ -1,0 +1,29 @@
+{% macro evidenceList(evidences, cta, title) %}
+  <table class="govuk-table" id="files-uploaded">
+    <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header" colspan="2">
+          {{ title | safe }}
+      </th>
+    </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+    {% for evidence in evidences %}
+      <tr class="govuk-table__row evidence">
+        <td class="govuk-table__cell">
+          <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="{{ paths.common.documentViewer }}/{{ evidence.fileId }}">
+            {{ evidence.name }}
+          </a>
+        </td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link" href="{{ cta }}?id={{ evidence.fileId }}">{{ i18n.components.evidenceList.delete }}</a>
+        </td>
+      </tr>
+    {% else %}
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">{{ i18n.components.evidenceList.emptyList }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endmacro %}

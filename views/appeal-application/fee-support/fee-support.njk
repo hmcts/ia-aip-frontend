@@ -52,6 +52,9 @@
                 <label class="govuk-label govuk-radios__label" for="{{ question.options[4].value }}">
                     {{ question.options[4].text | eval }}
                 </label>
+                <div id="signIn-2-item-hint" class="govuk-hint govuk-radios__hint">
+                    {{ question.options[4].hint.text | eval }}
+                </div>
             </div>
         </div>
     </fieldset>

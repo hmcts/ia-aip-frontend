@@ -718,6 +718,7 @@ describe('update-appeal-service', () => {
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            remissionOption: null,
             journeyType: 'aip',
             subscriptions: [
               {
@@ -749,6 +750,7 @@ describe('update-appeal-service', () => {
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            remissionOption: null,
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -781,6 +783,7 @@ describe('update-appeal-service', () => {
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            remissionOption: null,
             subscriptions: [
               {
                 value: {
@@ -847,6 +850,7 @@ describe('update-appeal-service', () => {
           'helpWithFeesOption': null,
           'helpWithFeesRefNumber': null,
           'localAuthorityLetters': null,
+          'remissionOption': null,
           'reviewTimeExtensionRequired': 'Yes',
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
@@ -882,6 +886,7 @@ describe('update-appeal-service', () => {
         'helpWithFeesOption': null,
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
+        'remissionOption': null,
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -916,6 +921,7 @@ describe('update-appeal-service', () => {
         'helpWithFeesOption': null,
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
+        'remissionOption': null,
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',
@@ -1271,6 +1277,7 @@ describe('update-appeal-service', () => {
                 wantsSms: false
               },
               addressLookup: {},
+              remissionOption: 'test',
               asylumSupportRefNumber: 'test',
               feeSupportPersisted: true,
               helpWithFeesOption: 'test',
@@ -1372,6 +1379,7 @@ describe('update-appeal-service', () => {
         },
         'appellantHasFixedAddress': 'Yes',
         'appealType': 'appealType',
+        'remissionOption': 'test',
         'asylumSupportRefNumber': 'test',
         'helpWithFeesOption': 'test',
         'helpWithFeesRefNumber': 'HWF-123',

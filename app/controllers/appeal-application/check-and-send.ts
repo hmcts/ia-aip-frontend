@@ -243,9 +243,18 @@ async function createSummaryRowsFrom(req: Request) {
       rows.push(asylumSupportRefNumberRow);
     }
     if (helpWithFeesOption) {
+      let helpWithFeeValue = '';
+      if (helpWithFeesOption === 'wantToApply') {
+        helpWithFeeValue = i18n.pages.helpWithFees.checkAndSendWantToApply;
+      } else if (helpWithFeesOption === 'willPayForAppeal') {
+        helpWithFeeValue = i18n.pages.helpWithFees.checkAndSendWillPayForAppeal;
+      } else {
+        helpWithFeeValue = i18n.pages.helpWithFees.options[helpWithFeesOption].text;
+      }
+
       const helpWithFeesRow = addSummaryRow(
         i18n.pages.checkYourAnswers.rowTitles.helpWithFees,
-        [i18n.pages.helpWithFees.options[helpWithFeesOption].text],
+        [helpWithFeeValue],
         paths.appealStarted.helpWithFees + editParameter
       );
       rows.push(helpWithFeesRow);

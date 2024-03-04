@@ -27,8 +27,8 @@
     </ul>
   {% elif noRemissionOption %}
     <ul class="govuk-list govuk-list--bullet">
-      <li>{{ i18n.pages.successPage.askHomeOffice }}</li>
-      <li>{{ i18n.pages.successPage.whatToDoNext }}</li>
+      <li>{{ askHomeOffice | safe }}</li>
+      <li>{{ whatToDoNext | safe }}</li>
       <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
     </ul>
   {% elif eaHuEu %}
@@ -43,14 +43,14 @@
     {{ i18n.pages.successPage.pa.payLater.whatHappensNextContent }}
   {% elif late %}
     <ul class="govuk-list govuk-list--bullet">
-      <li>{{ i18n.pages.successPage.outOfTime.askHomeOffice }}</li>
+      <li>{{ askHomeOfficeOutOfTime | safe }}</li>
       <li>{{ i18n.pages.successPage.outOfTime.whatToDoNext }}</li>
       <li>{{ i18n.pages.successPage.outOfTime.timescale | eval | safe }}</li>
     </ul>
   {% else %}
     <ul class="govuk-list govuk-list--bullet">
-      <li>{{ i18n.pages.successPage.askHomeOffice }}</li>
-      <li>{{ i18n.pages.successPage.whatToDoNext }}</li>
+      <li>{{ askHomeOffice | safe }}</li>
+      <li>{{ whatToDoNext | safe }}</li>
       <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
     </ul>
   {% endif %}
@@ -97,7 +97,7 @@
 
   {{ contactUs() }}
 
-  {% if not paPayNow and not eaHuEu %}
+  {% if not paPayNow and not eaHuEu and not appealWithRemissionOption %}
     <div class="feedback-box govuk-!-margin-top-0">
       <h2 class="govuk-heading-m">{{ i18n.pages.successPage.feedback.heading }}</h2>
       <p>{{ i18n.pages.successPage.feedback.contentText | eval | safe }}</p>

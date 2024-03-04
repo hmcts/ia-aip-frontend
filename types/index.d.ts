@@ -194,7 +194,7 @@ interface Appeal {
   ftpaApplicationAppellantDocument?: Evidence;
   ftpaAppellantDecisionRemadeRule32Text?: string;
   ftpaRespondentDecisionRemadeRule32Text?: string;
-  decisionAndReasons?: DecisionAndReasons[];
+  updatedDecisionAndReasons?: DecisionAndReasons[];
 }
 
 interface Hearing {

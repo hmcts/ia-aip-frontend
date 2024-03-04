@@ -161,7 +161,7 @@ export default class UpdateAppealService {
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasPendingTimeExtension = false;
     let documentMap: DocumentMap[] = [];
-    let decisionAndReasons: DecisionAndReasons[] = null;
+    let updatedDecisionAndReasons: DecisionAndReasons[] = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -230,7 +230,7 @@ export default class UpdateAppealService {
     }
 
     if (caseData.correctedDecisionAndReasons) {
-      decisionAndReasons = caseData.correctedDecisionAndReasons.map((ccdDecisionAndReasons: Collection<CcdDecisionAndReasons>): DecisionAndReasons => {
+      updatedDecisionAndReasons = caseData.correctedDecisionAndReasons.map((ccdDecisionAndReasons: Collection<CcdDecisionAndReasons>): DecisionAndReasons => {
         let coverLetterDocument: Evidence;
         let documentAndReasonsDocument: Evidence;
         if (ccdDecisionAndReasons.value.coverLetterDocument && ccdDecisionAndReasons.value.coverLetterDocument.document_filename) {
@@ -530,7 +530,7 @@ export default class UpdateAppealService {
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
       ...(_.has(caseData, 'directions')) && { directions },
-      ...(_.has(caseData, 'correctedDecisionAndReasons')) && { decisionAndReasons },
+      ...(_.has(caseData, 'correctedDecisionAndReasons')) && { updatedDecisionAndReasons },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers: this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers, documentMap) },
       cmaRequirements,

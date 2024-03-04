@@ -1914,6 +1914,9 @@
       },
       "decisionsAndReasons": {
         "title": "Decision and Reasons",
+        "originalSubTitle": "Original Decision and Reasons",
+        "correctedSubTitle": "Corrected Decision and Reasons ",
+        "summariseChanges": "What has been corrected",
         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
       },
       "ftpaApplication": {

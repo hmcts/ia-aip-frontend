@@ -608,7 +608,7 @@ describe('timeline-utils', () => {
         tag: 'decisionAndReasonsCoverLetter',
         dateUploaded: '2024-02-28'
       }
-    ];;
+    ];
 
     const document = {
       'document_url': 'http://dm-store:8080/documents/db338feb-b9ad-4aa9-8be3-65073338c4d5',

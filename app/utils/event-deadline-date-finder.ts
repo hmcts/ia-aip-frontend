@@ -1,6 +1,7 @@
 import config from 'config';
 import { Request } from 'express';
 import moment from 'moment';
+import { Events } from '../data/events';
 import {
   isUpdateTribunalDecideWithRule31
 } from '../utils/utils';
@@ -54,18 +55,17 @@ function getFormattedEventHistoryDate(history: HistoryEvent[], eventTagToLookFor
  */
 function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsideFeatureEnabled: Boolean = false) {
 
-  let decisionAndReasonsPdfDoc;
-  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled.valueOf()) &&
-    req.session.appeal.decisionAndReasonDocsUpload) {
-    decisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'updatedDecisionAndReasonsCoverLetter');
+  let theDateOfdecisionAndReasons;
+  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled.valueOf())) {
+    theDateOfdecisionAndReasons = req.session.appeal.history.find(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id).createdDate;
   } else {
-    decisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf');
+    theDateOfdecisionAndReasons = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf').dateUploaded;
   }
 
   let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   // if it's out of country appeal it's 28 days otherwise it's 14 days
   let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
-  return moment(decisionAndReasonsPdfDoc.dateUploaded).add(noOfDays, 'days').format(dayMonthYearFormat);
+  return moment(theDateOfdecisionAndReasons).add(noOfDays, 'days').format(dayMonthYearFormat);
 }
 
 /**

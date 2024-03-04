@@ -575,18 +575,40 @@ describe('timeline-utils', () => {
     const history = [
       {
         'id': 'updateTribunalDecision',
-        'createdDate': '2024-03-01T15:36:26.099'
+        'createdDate': '2024-03-04T15:36:26.099'
       }
     ] as HistoryEvent[];
 
     const finalDecisionAndReasonsDocuments = [
       {
-        fileId: 'fileId',
-        name: 'name',
-        dateUploaded: '2024-03-04T15:36:26.099',
-        tag: 'updatedDecisionAndReasonsCoverLetter'
+        fileId: '37143f87-d700-4a15-afbb-1c3a1d8d1dbc',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+        id: '4',
+        tag: 'updatedDecisionAndReasonsCoverLetter',
+        dateUploaded: '2024-03-04'
+      },
+      {
+        fileId: '37143f87-d700-4a15-afbb-1c3a1d8d1dbc',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+        id: '3',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2024-03-01'
+      },
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+        id: '2',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2024-02-28'
+      },
+      {
+        fileId: '42161dde-1b15-4852-93f8-ca6e7a06f685',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter.PDF',
+        id: '1',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2024-02-28'
       }
-    ];
+    ];;
 
     const document = {
       'document_url': 'http://dm-store:8080/documents/db338feb-b9ad-4aa9-8be3-65073338c4d5',
@@ -614,7 +636,7 @@ describe('timeline-utils', () => {
       expect(updatedTribunalDecisionHistory).to.deep.eq(
         [{
           'date': '04 March 2024',
-          'dateObject': new Date('2024-03-04T15:36:26.099'),
+          'dateObject': new Date('2024-03-04T00:00:00.000'),
           'text': 'The Tribunal created a new Decision and Reasons document for your appeal',
           'links': [
             {

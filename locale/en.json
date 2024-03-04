@@ -1610,6 +1610,20 @@
               }
             ]
           }
+        },
+        "updateTribunalDecision": {
+          "fromAllowedToDismissedText": "The Tribunal changed the appeal decision from allowed to dismissed.",
+          "fromDismissedToAllowedText": "The Tribunal changed the appeal decision from dismissed to allowed.",
+          "newDecisionAndReasonsDocument": {
+            "text": "The Tribunal created a new Decision and Reasons document for your appeal",
+            "links": [
+              {
+                "title": "Useful documents",
+                "text": "See the new Decisions and Reasons",
+                "href": ""
+              }
+            ]
+          }
         }
       }
     },

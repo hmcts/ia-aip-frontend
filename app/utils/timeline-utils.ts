@@ -14,7 +14,8 @@ import {
   getFtpaApplicantType,
   isFtpaFeatureEnabled,
   isNonStandardDirectionEnabled,
-  isReadonlyApplicationEnabled
+  isReadonlyApplicationEnabled,
+  isUpdateTribunalDecideWithRule31
 } from './utils';
 
 /**
@@ -144,6 +145,54 @@ function getDirectionHistory(req: Request): any[] {
   }
 }
 
+function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
+  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled)) {
+
+    let originalTribunalDecision = req.session.appeal.isDecisionAllowed && req.session.appeal.isDecisionAllowed.toLowerCase() || null;
+    let updatedAppealDecision = req.session.appeal.updatedAppealDecision && req.session.appeal.updatedAppealDecision.toLowerCase() || null;
+    let timelineText = '';
+
+    if (originalTribunalDecision === 'allowed' && updatedAppealDecision === 'dismissed') {
+      timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.fromAllowedToDismissedText;
+    } else if (originalTribunalDecision === 'dismissed' && updatedAppealDecision === 'allowed') {
+      timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.fromDismissedToAllowedText;
+    } else {
+      return [];
+    }
+
+    let latestUpdateTribunalDecisionHistory = req.session.appeal.history
+      .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
+      .sort((a: any, b: any) => b.dateObject - a.dateObject)[0];
+
+    return [{
+      date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
+      text: timelineText || null
+    }];
+  } else {
+    return [];
+  }
+}
+
+function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
+  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.decisionAndReasonDocsUpload) {
+
+    const coverLetterDocument = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'updatedDecisionAndReasonsCoverLetter');
+
+    return [{
+      date: moment(coverLetterDocument.dateUploaded).format('DD MMMM YYYY'),
+      dateObject: new Date(coverLetterDocument.dateUploaded),
+      text: i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.text || null,
+      links: [{
+        ...i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.links[0],
+        href: ''
+      }]
+    }];
+  } else {
+    return [];
+  }
+}
+
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
@@ -189,9 +238,14 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
+  const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
+  const updatedTribunalDecisionDocumentHistory = getUpdateTribunalDecisionDocumentHistory(req, ftpaSetAsideFeatureEnabled);
+  const combinedAppealDecisionSection = appealDecisionSection.concat(updatedTribunalDecisionHistory, updatedTribunalDecisionDocumentHistory)
+    .sort((a: any, b: any) => b.dateObject - a.dateObject);
+
   return {
-    ...(appealDecisionSection && appealDecisionSection.length > 0) &&
-    { appealDecisionSection: appealDecisionSection },
+    ...(combinedAppealDecisionSection && combinedAppealDecisionSection.length > 0) &&
+    { appealDecisionSection: combinedAppealDecisionSection },
     ...(appealHearingRequirementsSection && appealHearingRequirementsSection.length > 0) &&
     { appealHearingRequirementsSection: appealHearingRequirementsSection },
     appealArgumentSection: argumentSection,
@@ -292,6 +346,8 @@ export {
   getSubmitClarifyingQuestionsEvents,
   getApplicationEvents,
   getDirectionHistory,
+  getUpdateTribunalDecisionHistory,
+  getUpdateTribunalDecisionDocumentHistory,
   constructSection,
   getEventsAndStates
 };

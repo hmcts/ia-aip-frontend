@@ -159,6 +159,10 @@ interface Appeal {
   addendumEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
   isDecisionAllowed?: string;
+  updateTribunalDecisionList?: string;
+  typesOfUpdateTribunalDecision?: DynamicList;
+  updatedAppealDecision?: string;
+  decisionAndReasonDocsUpload?: SupportingDocument;
   appealOutOfCountry?: string;
   ftpaApplicantType?: string;
   ftpaAppellantEvidenceDocuments?: Evidence[];

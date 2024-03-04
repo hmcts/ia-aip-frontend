@@ -1143,6 +1143,60 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
+  it('when application status is decided after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
+    req.session.appeal.appealStatus = 'decided';
+    req.session.appeal.isDecisionAllowed = 'allowed';
+    req.session.appeal.updatedAppealDecision = 'dismissed';
+    req.session.appeal.updateTribunalDecisionList = 'underRule31';
+    req.session.appeal.history = [
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-04T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    req.session.appeal.decisionAndReasonDocsUpload = {
+      'document_url': 'http://dm-store:8080/documents/db338feb-b9ad-4aa9-8be3-65073338c4d5',
+      'document_filename': 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-AMENDED.pdf',
+      'document_binary_url': 'http://dm-store:8080/documents/db338feb-b9ad-4aa9-8be3-65073338c4d5/binary'
+    };
+    req.session.appeal.finalDecisionAndReasonsDocuments = [
+      {
+        fileId: '37143f87-d700-4a15-afbb-1c3a1d8d1dbc',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+        id: '4',
+        tag: 'updatedDecisionAndReasonsCoverLetter',
+        dateUploaded: '2024-03-04'
+      },
+      {
+        fileId: '37143f87-d700-4a15-afbb-1c3a1d8d1dbc',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+        id: '3',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2024-03-01'
+      },
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+        id: '2',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2024-02-28'
+      },
+      {
+        fileId: '42161dde-1b15-4852-93f8-ca6e7a06f685',
+        name: 'DC 50016 2024-test 1650 27022024-Decision-and-reasons-Cover-letter.PDF',
+        id: '1',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2024-02-28'
+      }
+    ];
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, 'dlrm-setaside-feature-flag', false).resolves(true);
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    expect(result.decision).to.eql(req.session.appeal.updatedAppealDecision);
+    expect(result.deadline).to.eql('18 March 2024');
+  });
+
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;

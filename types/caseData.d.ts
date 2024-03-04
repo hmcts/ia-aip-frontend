@@ -136,6 +136,10 @@ interface CaseData {
   witnessDetails?: Collection<WitnessDetails>[];
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
+  updateTribunalDecisionList?: string;
+  typesOfUpdateTribunalDecision?: DynamicList;
+  updatedAppealDecision?: string;
+  decisionAndReasonDocsUpload?: SupportingDocument
   appealOutOfCountry?: string;
   hasSponsor?: string;
   sponsorGivenNames?: string;
@@ -304,4 +308,9 @@ interface Subscription {
   email: string;
   wantsSms: 'Yes' | 'No';
   mobileNumber: string;
+}
+
+interface DynamicList {
+  value?: Value;
+  list_items?: Value[];
 }

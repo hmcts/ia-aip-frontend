@@ -4,6 +4,7 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { addDaysToDate } from '../../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../../utils/payments-utils';
+import { appealHasNoRemissionOption, appealHasRemissionOption } from '../../utils/remission-utils';
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   req.app.locals.logger.trace(`Successful AIP appeal submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
@@ -81,19 +82,6 @@ function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction
   }
 }
 
-function appealHasRemissionOption(application: AppealApplication) {
-  return [
-    'asylumSupportFromHo',
-    'feeWaiverFromHo',
-    'under18GetSupportFromLocalAuthority',
-    'parentGetSupportFromLocalAuthority'
-  ].includes(application.remissionOption);
-}
-
-function appealHasNoRemissionOption(application: AppealApplication) {
-  return 'noneOfTheseStatements' === application.remissionOption && 'willPayForAppeal' === application.helpWithFeesOption;
-}
-
 function setConfirmationController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.appealSubmitted.confirmation, middleware, getConfirmationPage);
@@ -104,7 +92,5 @@ function setConfirmationController(middleware: Middleware[]): Router {
 export {
   setConfirmationController,
   getConfirmationPage,
-  getConfirmationPaidPage,
-  appealHasRemissionOption,
-  appealHasNoRemissionOption
+  getConfirmationPaidPage
 };

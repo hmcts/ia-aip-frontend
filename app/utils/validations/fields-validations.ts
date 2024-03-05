@@ -536,6 +536,43 @@ function isDateInRange(dateFrom: string, dateTo: string, obj,dateMissingErrMsg: 
   return validate(toValidate, schema, true);
 }
 
+function remissionOptionsValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.remissionOptions
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
+function asylumSupportValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    asylumSupportRefNumber: Joi.string().required().messages({ 'string.empty': i18n.validationErrors.asylumSupport })
+  }).unknown();
+  return validate(obj, schema);
+}
+
+function helpWithFeesValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    answer: Joi.string().required().messages({
+      'any.required': i18n.validationErrors.helpWithFees
+    })
+  }).unknown();
+
+  return validate(obj, schema);
+}
+
+function helpWithFeesRefNumberValidation(obj: object): null | ValidationErrors {
+  const schema = Joi.object({
+    helpWithFeesRefNumber: Joi.string().required().regex(/^(HWF|hwf).*$/).messages({
+      'string.empty': i18n.validationErrors.helpWithFeesRefNumber.required,
+      'string.pattern.base': i18n.validationErrors.helpWithFeesRefNumber.invalid
+    })
+  }).unknown();
+  return validate(obj, schema);
+}
+
 export {
   createStructuredError,
   contactDetailsValidation,
@@ -573,5 +610,9 @@ export {
   sponsorContactDetailsValidation,
   sponsorAuthorisationValidation,
   gwfReferenceNumberValidation,
-  selectedRequiredValidationDialect
+  selectedRequiredValidationDialect,
+  remissionOptionsValidation,
+  asylumSupportValidation,
+  helpWithFeesValidation,
+  helpWithFeesRefNumberValidation
 };

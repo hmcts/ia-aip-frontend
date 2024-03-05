@@ -2,6 +2,7 @@ import config from 'config';
 import { Request } from 'express';
 import moment from 'moment';
 import { dayMonthYearFormat } from './date-utils';
+import { appealHasNoRemissionOption } from './remission-utils';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');
@@ -72,8 +73,9 @@ function getDueDateForAppellantToRespondToFtpaDecision(req: Request) {
  * Given the current case status it retrieves deadlines based on the business logic.
  * @param currentAppealStatus the appeal status
  * @param req the request containing  all the directions in session
+ * @param dlrmFeeRemissionFlag value of DLRM_FEE_REMISSION_FEATURE_FLAG
  */
-function getDeadline(currentAppealStatus: string, req: Request): string {
+function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemissionFlag: Boolean = false): string {
 
   const history = req.session.appeal.history;
   let formattedDeadline;
@@ -87,7 +89,14 @@ function getDeadline(currentAppealStatus: string, req: Request): string {
     case 'appealSubmitted':
     case 'lateAppealSubmitted':
     case 'awaitingRespondentEvidence': {
-      formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);
+      if (dlrmFeeRemissionFlag &&
+        !appealHasNoRemissionOption(req.session.appeal.application)) {
+        let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : daysToWaitAfterReasonsForAppeal;
+        formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);
+      } else {
+        formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitAfterSubmission);
+      }
       break;
     }
     case 'pendingPayment': {

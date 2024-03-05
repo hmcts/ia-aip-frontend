@@ -128,7 +128,6 @@ interface Appeal {
   hearing?: Hearing;
   legalRepresentativeDocuments?: Evidence[];
   tribunalDocuments?: Evidence[];
-  hearingDocuments?: Evidence[];
   finalDecisionAndReasonsDocuments?: Evidence[];
   hearingCentre?: string;
   outOfTimeDecisionType?: string;
@@ -186,6 +185,12 @@ interface Appeal {
   ftpaAppellantDecisionDate?: string;
   nonStandardDirectionEnabled?: boolean;
   readonlyApplicationEnabled?: boolean;
+  ftpaR35AppellantDocument?: Evidence;
+  ftpaR35RespondentDocument?: Evidence;
+  ftpaApplicationRespondentDocument?: Evidence;
+  ftpaApplicationAppellantDocument?: Evidence;
+  ftpaAppellantDecisionRemadeRule32Text?: string;
+  ftpaRespondentDecisionRemadeRule32Text?: string;
 }
 
 interface Hearing {
@@ -293,6 +298,12 @@ interface AppealApplication {
   saveAndAskForTime?: boolean;
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
+  feeSupportPersisted?: boolean;
+  remissionOption?: string;
+  asylumSupportRefNumber?: string;
+  helpWithFeesOption?: string;
+  helpWithFeesRefNumber?: string;
+  localAuthorityLetters?: Evidence[];
 }
 
 interface CmaRequirements {

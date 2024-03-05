@@ -1143,6 +1143,25 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
+  it('when application status is decided after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
+    req.session.appeal.appealStatus = 'decided';
+    req.session.appeal.isDecisionAllowed = 'allowed';
+    req.session.appeal.updatedAppealDecision = 'dismissed';
+    req.session.appeal.updateTribunalDecisionList = 'underRule31';
+    req.session.appeal.history = [
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-04T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, 'dlrm-setaside-feature-flag', false).resolves(true);
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    expect(result.decision).to.eql(req.session.appeal.updatedAppealDecision);
+    expect(result.deadline).to.eql('18 March 2024');
+  });
+
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {
     req.session.appeal.appealStatus = 'appealSubmitted';
     req.session.appeal.application.isAppealLate = true;

@@ -8,6 +8,7 @@ import {
   getApplicationType,
   getFtpaApplicantType,
   hasPendingTimeExtension,
+  isUpdateTribunalDecideWithRule31,
   nowAppealDate,
   toIsoDate
 } from '../../../app/utils/utils';
@@ -286,4 +287,27 @@ describe('utils', () => {
 
   });
 
+  describe('isUpdateTribunalDecideWithRule31', () => {
+    const history = [
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-01T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+
+    beforeEach(() => {
+      req.session.appeal.history = history;
+      req.session.appeal.appealStatus = 'decided';
+      req.session.appeal.updateTribunalDecisionList = 'underRule31';
+    });
+
+    it('isUpdateTribunalDecideWithRule31 should return true if match the condition', () => {
+      expect(isUpdateTribunalDecideWithRule31(req as Request, true)).to.eq(true);
+    });
+
+    it('isUpdateTribunalDecideWithRule31 should return false if the rule is not 31', () => {
+      req.session.appeal.updateTribunalDecisionList = 'underRule32';
+      expect(isUpdateTribunalDecideWithRule31(req as Request, true)).to.eq(false);
+    });
+  });
 });

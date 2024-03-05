@@ -6,6 +6,7 @@ import {
   isUpdateTribunalDecideWithRule31
 } from '../utils/utils';
 import { dayMonthYearFormat } from './date-utils';
+import { appealHasNoRemissionOption } from './remission-utils';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');
@@ -100,7 +101,7 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
     case 'lateAppealSubmitted':
     case 'awaitingRespondentEvidence': {
       if (dlrmFeeRemissionFlag &&
-        !['willPayForAppeal'].includes(req.session.appeal.application.helpWithFeesOption)) {
+        !appealHasNoRemissionOption(req.session.appeal.application)) {
         let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
         let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : daysToWaitAfterReasonsForAppeal;
         formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);

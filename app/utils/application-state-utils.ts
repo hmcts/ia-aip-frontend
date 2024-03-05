@@ -15,6 +15,7 @@ import {
 } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
+import { appealHasNoRemissionOption } from './remission-utils';
 
 interface DoThisNextSection {
   descriptionParagraphs: string[];
@@ -146,7 +147,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'appealSubmitted':
       if (dlrmFeeRemissionFlag &&
-        !['willPayForAppeal'].includes(req.session.appeal.application.helpWithFeesOption)) {
+        !appealHasNoRemissionOption(req.session.appeal.application)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
@@ -195,7 +196,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'lateAppealSubmitted':
       if (dlrmFeeRemissionFlag &&
-        !['willPayForAppeal'].includes(req.session.appeal.application.helpWithFeesOption)) {
+        !appealHasNoRemissionOption(req.session.appeal.application)) {
         doThisNextSection = {
           descriptionParagraphs: [
             i18n.pages.overviewPage.doThisNext.lateAppealSubmittedDlrmFeeRemission.detailsSent,

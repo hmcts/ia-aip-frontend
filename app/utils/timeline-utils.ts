@@ -175,13 +175,15 @@ function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabl
 }
 
 function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
-  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.decisionAndReasonDocsUpload) {
+  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updateTribunalDecisionAndReasonsFinalCheck === 'Yes') {
 
-    const coverLetterDocument = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'updatedDecisionAndReasonsCoverLetter');
+    let latestUpdateTribunalDecisionHistory = req.session.appeal.history
+      .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
+      .sort((a: any, b: any) => b.dateObject - a.dateObject)[0];
 
     return [{
-      date: moment(coverLetterDocument.dateUploaded).format('DD MMMM YYYY'),
-      dateObject: new Date(coverLetterDocument.dateUploaded),
+      date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
       text: i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.text || null,
       links: [{
         ...i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.links[0],

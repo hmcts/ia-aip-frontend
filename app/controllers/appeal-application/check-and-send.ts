@@ -188,16 +188,6 @@ async function createSummaryRowsFrom(req: Request) {
 
   rows.push(...rowsCont);
 
-  if (application.isAppealLate) {
-    const lateAppealValue = [formatTextForCYA(application.lateAppeal.reason)];
-    if (application.lateAppeal.evidence) {
-      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`;
-      lateAppealValue.push(urlHtml);
-    }
-    const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);
-    rows.push(lateAppealRow);
-  }
-
   if (paymentsFlag) {
     let decisionType: string;
     if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
@@ -268,6 +258,17 @@ async function createSummaryRowsFrom(req: Request) {
       rows.push(localAuthorityLetterRow);
     }
   }
+
+  if (application.isAppealLate) {
+    const lateAppealValue = [formatTextForCYA(application.lateAppeal.reason)];
+    if (application.lateAppeal.evidence) {
+      const urlHtml = `<p class="govuk-!-font-weight-bold">${i18n.pages.checkYourAnswers.rowTitles.supportingEvidence}</p><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`;
+      lateAppealValue.push(urlHtml);
+    }
+    const lateAppealRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, lateAppealValue, paths.appealStarted.appealLate);
+    rows.push(lateAppealRow);
+  }
+
   return rows;
 }
 

@@ -314,8 +314,8 @@ interface CcdDecisionAndReasons {
   updatedDecisionDate: string;
   dateCoverLetterDocumentUploaded: string;
   coverLetterDocument: SupportingDocument;
-  dateDocumentAndReasonsDocumentUploaded: string;
-  documentAndReasonsDocument: SupportingDocument;
-  summariseChanges: string;
+  dateDocumentAndReasonsDocumentUploaded?: string;
+  documentAndReasonsDocument?: SupportingDocument;
+  summariseChanges?: string;
   [key: string]: any;
 }

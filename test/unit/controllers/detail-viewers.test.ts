@@ -20,6 +20,7 @@ import {
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
   getReasonsForAppealViewer, getRespondentApplicationSummaryRows,
+  getUpdatedDecisionAndReasonsViewer,
   setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
@@ -3766,6 +3767,135 @@ describe('Detail viewer Controller', () => {
       expect(next).to.have.been.calledWith(error);
     });
 
+  });
+
+  describe('should render updated decision and reasons page', () => {
+    const documents = [
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-FINAL.pdf',
+        id: '2',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2022-01-26'
+      },
+      {
+        fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter.PDF',
+        id: '1',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2022-01-26'
+      }
+    ];
+    const updatedDecisionAndReasons: DecisionAndReasons[] = [
+      {
+        id: '2',
+        documentAndReasonsDocument: {
+          fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf'
+        },
+        updatedDecisionDate: '2023-12-15',
+        dateCoverLetterDocumentUploaded: '2023-12-15',
+        dateDocumentAndReasonsDocumentUploaded: '2023-12-15',
+        summariseChanges: 'Summarise explanation',
+        coverLetterDocument: {
+          fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF'
+        }
+      },
+      {
+        id: '1',
+        updatedDecisionDate: '2023-10-15',
+        dateCoverLetterDocumentUploaded: '2023-10-15',
+        coverLetterDocument: {
+          fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF'
+        }
+      }
+    ];
+    it('should render templates/updated-details-viewer.njk with updated decision and reasons collection', () => {
+      req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+      req.session.appeal.updatedDecisionAndReasons = updatedDecisionAndReasons;
+      const expectedSummaryRows = {
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '26 January 2022' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '26 January 2022' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
+          }
+        ]
+      };
+
+      const expectedSummaryList: SummaryList[] = [
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 December 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 December 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.decisionsAndReasons.summariseChanges },
+              value: { html: 'Summarise explanation' }
+            }
+          ],
+          title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '1'
+        },
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 October 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+            }
+          ],
+          title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '2'
+        }
+      ];
+
+      getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/updated-details-viewer.njk', {
+        title: i18n.pages.detailViewers.decisionsAndReasons.title,
+        originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
+        description: i18n.pages.detailViewers.decisionsAndReasons.description,
+        data: expectedSummaryRows,
+        updatedDecisions: expectedSummaryList,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', () => {
+        req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
   });
 
 });

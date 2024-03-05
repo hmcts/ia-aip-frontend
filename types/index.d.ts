@@ -460,7 +460,7 @@ interface DecisionAndReasons {
   updatedDecisionDate: string;
   dateCoverLetterDocumentUploaded: string;
   coverLetterDocument: Evidence;
-  dateDocumentAndReasonsDocumentUploaded: string;
-  documentAndReasonsDocument: Evidence;
-  summariseChanges: string;
+  dateDocumentAndReasonsDocumentUploaded?: string;
+  documentAndReasonsDocument?: Evidence;
+  summariseChanges?: string;
 }

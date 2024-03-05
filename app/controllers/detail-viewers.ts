@@ -1066,5 +1066,6 @@ export {
   getFtpaAppellantApplication,
   getFtpaDecisionDetails,
   getDirectionHistory,
-  getRespondentApplicationSummaryRows
+  getRespondentApplicationSummaryRows,
+  getUpdatedDecisionAndReasonsViewer
 };

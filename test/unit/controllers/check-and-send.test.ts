@@ -169,7 +169,7 @@ describe('createSummaryRowsFrom', () => {
     const helpWithFeesOptionTestData = [
       {
         input: 'wantToApply',
-        expectedResponse: 'Yes, I want to apply for help with fees',
+        expectedResponse: 'I want to apply for help with fees',
         description: 'wantToApply text'
       },
       {

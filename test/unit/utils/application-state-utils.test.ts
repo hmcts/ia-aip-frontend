@@ -188,8 +188,8 @@ describe('application-state-utils', () => {
         deadline: '22 February 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
-          'There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-          'The Tribunal will check the information you sent and let you know if you need to pay fee.',
+          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
           'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
         ],
         allowedAskForMoreTime: false
@@ -304,8 +304,8 @@ describe('application-state-utils', () => {
         deadline: '22 February 2020',
         descriptionParagraphs: [
           'Your appeal details have been sent to the Tribunal.',
-          'There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
-          'The Tribunal will check the information you sent and let you know if you need to pay fee.',
+          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
           'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
         ],
         allowedAskForMoreTime: false

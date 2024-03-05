@@ -61,7 +61,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.confirmation, middleware);
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, protection, paynow appeal', async () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, protection, paynow appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
@@ -80,7 +80,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, protection, payLater appeal', async () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, protection, payLater appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
@@ -99,7 +99,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, payment-free', async () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, payment-free', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
@@ -118,7 +118,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, refusalOfHumanRights appeal', async () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, refusalOfHumanRights appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.PENDING_PAYMENT.id;
@@ -136,7 +136,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, refusalOfEu appeal', async () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, refusalOfEu appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.PENDING_PAYMENT.id;
@@ -154,7 +154,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, euSettlementScheme appeal', async () => {
+  it('getConfirmationPage should render confirmation.njk for an on time, pending payment, euSettlementScheme appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = false;
     appeal.appealStatus = States.PENDING_PAYMENT.id;
@@ -172,7 +172,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for a late appeal', async () => {
+  it('getConfirmationPage should render confirmation.njk for a late appeal', () => {
     const { appeal } = req.session;
     appeal.application.isAppealLate = true;
     appeal.appealStatus = States.APPEAL_SUBMITTED.id;
@@ -191,7 +191,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should catch an exception and call next()', async () => {
+  it('getConfirmationPage should catch an exception and call next()', () => {
     const error = new Error('the error');
     res.render = sandbox.stub().throws(error);
     getConfirmationPage(req as Request, res as Response, next);
@@ -327,7 +327,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an appeal with the remission option', async () => {
+  it('getConfirmationPage should render confirmation.njk for an appeal with the remission option', () => {
     const { appeal } = req.session;
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';
@@ -345,7 +345,7 @@ describe('Confirmation Page Controller', () => {
     });
   });
 
-  it('getConfirmationPage should render confirmation.njk for an appeal without the remission option', async () => {
+  it('getConfirmationPage should render confirmation.njk for an appeal without the remission option', () => {
     const { appeal } = req.session;
     appeal.application.appealType = 'protection';
     appeal.paAppealTypeAipPaymentOption = 'payNow';

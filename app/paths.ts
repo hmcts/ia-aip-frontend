@@ -14,7 +14,6 @@ const paths = {
     homeOfficeDecisionLetterUpload: '/home-office-upload-decision-letter/upload',
     homeOfficeDecisionLetterDelete: '/home-office-upload-decision-letter/delete',
     appealLate: '/late-appeal',
-    appealLateUploadEvidence: '/late-appeal/upload',
     uploadEvidence: '/home-office/upload-evidence',
     deleteEvidence: '/home-office/delete-evidence',
     typeOfAppeal: '/appeal-type',

@@ -1156,9 +1156,16 @@ describe('application-state-utils', () => {
     ] as HistoryEvent[];
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, 'dlrm-setaside-feature-flag', false).resolves(true);
+    const expected = {
+      'descriptionParagraphs': [
+        'A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>',
+        `<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>`
+      ]
+    };
     const result = await getAppealApplicationNextStep(req as Request);
 
     expect(result.decision).to.eql(req.session.appeal.updatedAppealDecision);
+    expect(result.descriptionParagraphs).to.eql(expected.descriptionParagraphs);
     expect(result.deadline).to.eql('18 March 2024');
   });
 

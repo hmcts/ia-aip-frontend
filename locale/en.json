@@ -1096,6 +1096,7 @@
           "decision": "A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>",
           "description": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>",
           "descriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+          "updatedDescriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
           "info": {
             "title": "Helpful Information",
             "titleFtpaEnabled": "Appeal Information",
@@ -1553,9 +1554,11 @@
             {
               "title": "Useful documents",
               "text": "Decision and Reasons",
-              "href": "{{ paths.common.decisionAndReasonsViewer }}"
+              "href": ""
             }
-          ]
+          ],
+          "originalLinks": "{{ paths.common.decisionAndReasonsViewer }}",
+          "updatedLinks": "{{ paths.common.updatedDecisionAndReasonsViewer }}"
         },
         "applyForFTPAAppellant": {
           "text": "You applied for permission to appeal to the Upper Tribunal.",
@@ -1624,7 +1627,7 @@
               {
                 "title": "Useful documents",
                 "text": "See the new Decisions and Reasons",
-                "href": ""
+                "href": "{{ paths.common.updatedDecisionAndReasonsViewer }}"
               }
             ]
           }

@@ -131,7 +131,7 @@ describe('timeline-utils', () => {
       req.session.appeal.timeExtensionEventsMap = [];
       req.session.appeal.updatedAppealDecision = 'Allowed';
       const appealDecisionSection = [Events.SEND_DECISION_AND_REASONS.id];
-      const history = [
+      req.session.appeal.history = [
         {
           'id': 'sendDecisionAndReasons',
           'createdDate': '2020-04-14T14:53:26.099',
@@ -140,26 +140,25 @@ describe('timeline-utils', () => {
           }
         }
       ] as HistoryEvent[];
-      req.session.appeal.history = history;
       const result = constructSection(appealDecisionSection, req.session.appeal.history, null, req as Request);
       expect(result).to.deep.eq(
         [{
-            'date': '14 April 2020',
-            'dateObject': new Date('2020-04-14T14:53:26.099'),
-            'text': 'The Decision and Reasons documents is ready to view.',
-            'links': [{
-              'title': 'Useful documents',
-              'text': 'Decision and Reasons',
-              'href': '{{ paths.common.updatedDecisionAndReasonsViewer }}'
-            }]
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'The Decision and Reasons documents is ready to view.',
+          'links': [{
+            'title': 'Useful documents',
+            'text': 'Decision and Reasons',
+            'href': '{{ paths.common.updatedDecisionAndReasonsViewer }}'
           }]
+        }]
       );
     });
 
     it('Should construct the appeal decision section without updated decision', () => {
       req.session.appeal.timeExtensionEventsMap = [];
       const appealDecisionSection = [Events.SEND_DECISION_AND_REASONS.id];
-      const history = [
+      req.session.appeal.history = [
         {
           'id': 'sendDecisionAndReasons',
           'createdDate': '2020-04-14T14:53:26.099',
@@ -168,19 +167,18 @@ describe('timeline-utils', () => {
           }
         }
       ] as HistoryEvent[];
-      req.session.appeal.history = history;
       const result = constructSection(appealDecisionSection, req.session.appeal.history, null, req as Request);
       expect(result).to.deep.eq(
-          [{
-            'date': '14 April 2020',
-            'dateObject': new Date('2020-04-14T14:53:26.099'),
-            'text': 'The Decision and Reasons documents is ready to view.',
-            'links': [{
-              'title': 'Useful documents',
-              'text': 'Decision and Reasons',
-              'href': '{{ paths.common.decisionAndReasonsViewer }}'
-            }]
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'The Decision and Reasons documents is ready to view.',
+          'links': [{
+            'title': 'Useful documents',
+            'text': 'Decision and Reasons',
+            'href': '{{ paths.common.decisionAndReasonsViewer }}'
           }]
+        }]
       );
     });
   });

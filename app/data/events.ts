@@ -82,6 +82,11 @@ export const Events = {
     summary: 'Direct the appellant to answer clarifying questions',
     description: 'Direct the appellant to answer clarifying questions'
   },
+  UPDATE_TRIBUNAL_DECISION: {
+    id: 'updateTribunalDecision',
+    summary: 'Update Tribunal decision',
+    description: 'Update Tribunal decision'
+  },
   LIST_CMA: {
     id: 'listCma',
     summary: 'Cma has been listed.',

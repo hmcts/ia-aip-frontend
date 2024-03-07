@@ -403,8 +403,7 @@
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
       "fileUploadTitle": "Upload a file",
-      "uploadedFileTitle": "Uploaded file",
-      "fileUploadTitleDlrmFeeRemission": "<span class='govuk-body govuk-!-font-weight-bold'> Upload local authority letter</span><br></br>"
+      "uploadedFileTitle": "Uploaded file"
     },
     "successPage": {
       "title": "Your appeal details have been sent",
@@ -885,8 +884,8 @@
         },
         "appealSubmittedDlrmFeeRemission": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
-          "feeDetails": "There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
-          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay fee.",
+          "feeDetails": "There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay a fee.",
           "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
         },
         "pendingPayment": {
@@ -914,8 +913,8 @@
         },
         "lateAppealSubmittedDlrmFeeRemission": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
-          "feeDetails": "There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
-          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay fee.",
+          "feeDetails": "There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay a fee.",
           "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
         },
         "lateAppealRejected": {
@@ -1612,6 +1611,20 @@
                 "title": "What the Tribunal sent",
                 "text": "Find out what you need to do",
                 "href": "{{ paths.common.directionHistoryViewer }}"
+              }
+            ]
+          }
+        },
+        "updateTribunalDecision": {
+          "fromAllowedToDismissedText": "The Tribunal changed the appeal decision from allowed to dismissed.",
+          "fromDismissedToAllowedText": "The Tribunal changed the appeal decision from dismissed to allowed.",
+          "newDecisionAndReasonsDocument": {
+            "text": "The Tribunal created a new Decision and Reasons document for your appeal",
+            "links": [
+              {
+                "title": "Useful documents",
+                "text": "See the new Decisions and Reasons",
+                "href": ""
               }
             ]
           }

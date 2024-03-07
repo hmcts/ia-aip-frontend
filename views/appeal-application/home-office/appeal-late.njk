@@ -47,42 +47,18 @@
           <li>{{ provideEvidenceDescription | safe }}</li>
         {% endfor %}
       </ul>
-      {% if dlrmFeeRemissionFlag %}
-        <div class="govuk-inset-text">
-            {{ govukFileUpload({
-              id: "file-upload",
-              name: "file-upload",
-              label: {
-                html: i18n.pages.homeOfficeAppealLate.fileUploadTitleDlrmFeeRemission
-              },
-              errorMessage: {
-                text: error["uploadFile"].text
-              } if error["uploadFile"]
-            }) }}
-            {{ govukButton({
-              text: i18n.common.buttons.uploadFile,
-              name: 'uploadFile',
-              classes: "govuk-button--secondary",
-              attributes: {
-                formEnctype: 'multipart/form-data',
-                formaction: evidenceUploadAction + '?_csrf=' + csrfToken
-              }
-            }) }}
-        </div>
-      {% else %}
-         <div class="govuk-inset-text">
-         {{ govukFileUpload({
-           id: "file-upload",
-           name: "file-upload",
-           label: {
-             text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
-           },
-           errorMessage: {
-             text: error["uploadFile"].text
-           } if error["uploadFile"]
-         }) }}
-         </div>
-      {% endif %}
+      <div class="govuk-inset-text">
+        {{ govukFileUpload({
+          id: "file-upload",
+          name: "file-upload",
+          label: {
+            text: i18n.pages.homeOfficeAppealLate.fileUploadTitle
+          },
+          errorMessage: {
+            text: error["uploadFile"].text
+          } if error["uploadFile"]
+        }) }}
+      </div>
 
       {% if evidence %}
         <div class="evidence">

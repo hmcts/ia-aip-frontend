@@ -136,6 +136,9 @@ interface CaseData {
   witnessDetails?: Collection<WitnessDetails>[];
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
+  updateTribunalDecisionList?: string;
+  updatedAppealDecision?: string;
+  updateTribunalDecisionAndReasonsFinalCheck?: string;
   appealOutOfCountry?: string;
   hasSponsor?: string;
   sponsorGivenNames?: string;

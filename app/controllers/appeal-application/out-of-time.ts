@@ -41,7 +41,7 @@ function postAppealLate(documentManagementService: DocumentManagementService, up
       if (res.locals.multerError) {
         validationError = {
           ...validationError,
-          uploadFile: createStructuredError('uploadFile', res.locals.multerError)
+          uploadFile: createStructuredError('file-upload', res.locals.multerError)
         };
       }
 

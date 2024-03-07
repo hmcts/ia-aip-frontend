@@ -558,12 +558,12 @@ describe('Ftpa application controllers setup', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ftpa-feature', false).resolves(true);
 
       req.query.error = 'noFileSelected';
-      const errorList = [{ key: 'uploadFile', text: 'Select a file', href: '#uploadFile' }];
+      const errorList = [{ key: 'file-upload', text: 'Select a file', href: '#file-upload' }];
       const error = {
         uploadFile: {
-          key: 'uploadFile',
+          key: 'file-upload',
           text: 'Select a file',
-          href: '#uploadFile'
+          href: '#file-upload'
         }
       };
 

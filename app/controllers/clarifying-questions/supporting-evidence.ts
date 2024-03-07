@@ -55,7 +55,7 @@ function postSupportingEvidenceUpload(documentManagementService: DocumentManagem
       } else {
         const questionOrder = parseInt(req.params.id, 10) - 1;
         const evidences = req.session.appeal.draftClarifyingQuestionsAnswers[questionOrder].value.supportingEvidence || [];
-        const validationError = { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload.noFileSelected) };
+        const validationError = { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         res.render('upload-evidence/supporting-evidence-upload-page.njk', {
           previousPage: paths.awaitingClarifyingQuestionsAnswers.supportingEvidenceQuestion.replace(new RegExp(':id'), req.params.id),
           evidences,

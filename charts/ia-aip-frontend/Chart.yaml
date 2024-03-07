@@ -5,7 +5,7 @@ version: 0.0.48
 description: IA AIP Frontend
 dependencies:
   - name: nodejs
-    version: 3.0.0
+    version: 3.0.3
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
   - name: redis
     version: 16.11.3

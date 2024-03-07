@@ -3812,7 +3812,7 @@ describe('Detail viewer Controller', () => {
         }
       }
     ];
-    it('should render templates/updated-details-viewer.njk with updated decision and reasons collection', () => {
+    it('should render templates/updated-details-viewer.njk with updated decision and reasons collection', async () => {
       req.session.appeal.finalDecisionAndReasonsDocuments = documents;
       req.session.appeal.updatedDecisionAndReasons = updatedDecisionAndReasons;
       const expectedSummaryRows = {
@@ -3877,7 +3877,8 @@ describe('Detail viewer Controller', () => {
         }
       ];
 
-      getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/updated-details-viewer.njk', {
         title: i18n.pages.detailViewers.decisionsAndReasons.title,
         originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
@@ -3887,12 +3888,12 @@ describe('Detail viewer Controller', () => {
         previousPage: paths.common.overview
       });
 
-      it('should catch error and call next with it', () => {
+      it('should catch error and call next with it', async () => {
         req.session.appeal.finalDecisionAndReasonsDocuments = documents;
         const error = new Error('an error');
         res.render = sandbox.stub().throws(error);
 
-        getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+        await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
     });

@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
+function appealApplicationStatus (appeal: Appeal, drlmSetAsideFlag: Boolean): ApplicationStatus {
   const appealOutOfCountry: boolean = !!_.get(appeal.application, 'appealOutOfCountry');
   const appealType: boolean = !!_.get(appeal.application, 'appealType');
   const typeOfAppeal: Task = {
@@ -55,7 +55,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   const appellantContactDetails: boolean = email && wantsEmail || phone && wantsSms;
   const sponsorContactDetails: boolean = sponsorEmail && sponsorWantsEmail || sponsorPhone && sponsorWantsSms;
   const outUkContactDetailsComplete: boolean = (appellantContactDetails && hasSponsorNo) ||
-      (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
+    (appellantContactDetails && hasSponsorYes && sponsorGivenNames && sponsorFamilyName && sponsorAddress && sponsorContactDetails && sponsorAuthorisation);
   const contactDetails: Task = {
     saved: email && wantsEmail || phone && wantsSms,
     completed: _.get(appeal.application, 'appellantInUk') === 'Yes' ? appellantContactDetails : outUkContactDetailsComplete,
@@ -63,10 +63,12 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
   };
 
   let decisionTypePage: boolean;
+  let appealTypeHasFee: boolean = false;
   if (['revocationOfProtection', 'deprivation'].includes(appeal.application.appealType)) {
     decisionTypePage = !!_.get(appeal.application, 'rpDcAppealHearingOption');
   } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(appeal.application.appealType)) {
     decisionTypePage = !!_.get(appeal.application, 'decisionHearingFeeOption');
+    appealTypeHasFee = true;
   }
   const payNow = _.get(appeal.application, 'appealType') === 'protection' && !!_.get(appeal, 'paAppealTypeAipPaymentOption');
   const decisionType: Task = {
@@ -75,10 +77,26 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: contactDetails.completed
   };
 
+  if (!homeOfficeDetails.completed && !homeOfficeDetailsOOC.completed) {
+    resetFeeSupportSectionStatusAndValues(appeal.application);
+  }
+
+  const feeSupport: Task = {
+    saved: false,
+    completed: (appeal.application.feeSupportPersisted ? true : false) && decisionType.completed,
+    active: decisionType.completed
+  };
+
   const checkAndSend: Task = {
     saved: false,
     completed: false,
     active: decisionType.completed
+  };
+
+  const checkAndSendDlrmSetAsideFlag: Task = {
+    saved: false,
+    completed: false,
+    active: feeSupport.completed
   };
 
   const checkAndSendWithPayments: Task = {
@@ -87,7 +105,30 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     active: decisionType.completed
   };
 
-  return {
+  const checkAndSendWithPaymentsDlrmSetAsideFlag: Task = {
+    saved: false,
+    completed: false,
+    active:
+      homeOfficeDetails.completed
+      && homeOfficeDetailsOOC.completed
+      && personalDetails.completed
+      && contactDetails.completed
+      && typeOfAppeal.completed
+      && decisionType.completed
+      && feeSupport.completed
+  };
+
+  return drlmSetAsideFlag && appealTypeHasFee ? {
+    homeOfficeDetails,
+    homeOfficeDetailsOOC,
+    personalDetails,
+    contactDetails,
+    typeOfAppeal,
+    decisionType,
+    feeSupport,
+    checkAndSendDlrmSetAsideFlag,
+    checkAndSendWithPaymentsDlrmSetAsideFlag
+  } : {
     homeOfficeDetails,
     homeOfficeDetailsOOC,
     personalDetails,
@@ -97,6 +138,7 @@ function appealApplicationStatus(appeal: Appeal): ApplicationStatus {
     checkAndSend,
     checkAndSendWithPayments
   };
+
 }
 
 function submitHearingRequirementsStatus(appeal: Appeal) {
@@ -204,7 +246,6 @@ function cmaRequirementsStatus(appeal: Appeal) {
  * @param req the request Object containing the session
  */
 function buildSectionObject(sectionId: string, taskIds: string[], status: ApplicationStatus): Section {
-
   function isSaved(taskId: string) {
     return status[taskId].saved;
   }
@@ -226,9 +267,22 @@ function buildSectionObject(sectionId: string, taskIds: string[], status: Applic
   return { sectionId, tasks };
 }
 
+/**
+ * Resets FeeSupport section status and values. When the user changes the appeal type or appeal out of country
+ */
+function resetFeeSupportSectionStatusAndValues(application: AppealApplication) {
+  application.remissionOption = null;
+  application.asylumSupportRefNumber = null;
+  application.helpWithFeesOption = null;
+  application.helpWithFeesRefNumber = null;
+  application.localAuthorityLetters = null;
+  application.feeSupportPersisted = false;
+}
+
 export {
   appealApplicationStatus,
   buildSectionObject,
   cmaRequirementsStatus,
-  submitHearingRequirementsStatus
+  submitHearingRequirementsStatus,
+  resetFeeSupportSectionStatusAndValues
 };

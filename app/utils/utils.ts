@@ -4,6 +4,7 @@ import nl2br from 'nl2br';
 import * as path from 'path';
 import { applicationTypes } from '../data/application-types';
 import { APPLICANT_TYPE, FEATURE_FLAGS } from '../data/constants';
+import { Events } from '../data/events';
 import { States } from '../data/states';
 import { paths } from '../paths';
 import LaunchDarklyService from '../service/launchDarkly-service';
@@ -130,6 +131,14 @@ export function isNonStandardDirectionEnabled(req: Request) {
 
 export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
+}
+
+export function isUpdateTribunalDecideWithRule31(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (ftpaSetAsideFeatureEnabled &&
+    req.session.appeal.history &&
+    req.session.appeal.history.find(event => event.id === Events.UPDATE_TRIBUNAL_DECISION.id) &&
+    req.session.appeal.appealStatus === 'decided' &&
+    req.session.appeal.updateTribunalDecisionList === 'underRule31');
 }
 
 /**

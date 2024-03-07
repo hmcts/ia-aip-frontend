@@ -118,6 +118,7 @@ interface CaseData {
   homeOfficeAppealResponseEvidence?: any;
   rpDcAppealHearingOption?: string;
   decisionHearingFeeOption?: string;
+  feeSupportPersisted?: string;
   paymentReference?: string;
   paymentStatus?: string;
   paymentDate?: string;
@@ -135,6 +136,9 @@ interface CaseData {
   witnessDetails?: Collection<WitnessDetails>[];
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
+  updateTribunalDecisionList?: string;
+  updatedAppealDecision?: string;
+  updateTribunalDecisionAndReasonsFinalCheck?: string;
   appealOutOfCountry?: string;
   hasSponsor?: string;
   sponsorGivenNames?: string;
@@ -170,6 +174,17 @@ interface CaseData {
   ftpaAppellantDecisionOutcomeType?: string;
   ftpaAppellantDecisionDocument?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
   ftpaAppellantDecisionDate?: string;
+  ftpaR35AppellantDocument: SupportingDocument;
+  ftpaR35RespondentDocument: SupportingDocument;
+  ftpaApplicationAppellantDocument: SupportingDocument;
+  ftpaApplicationRespondentDocument: SupportingDocument;
+  ftpaAppellantDecisionRemadeRule32Text?: string;
+  ftpaRespondentDecisionRemadeRule32Text?: string;
+  remissionOption?: string;
+  asylumSupportRefNumber?: string;
+  helpWithFeesOption?: string;
+  helpWithFeesRefNumber?: string;
+  localAuthorityLetters?: Collection<DocumentWithMetaData>[];
 }
 
 interface Application<T> {

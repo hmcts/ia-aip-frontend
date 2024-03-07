@@ -2,10 +2,11 @@
 {% set pageTitleName = i18n.pages.successPage.title %}
 {% block content %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
-  {% if paPayNow or eaHuEu %}
+
+  {% if appealWithRemissionOption or paPayLater %}
+    {% set panelTitle = i18n.pages.successPage.withRemissionOption.panel %}
+  {% elif paPayNow or eaHuEu or noRemissionOption %}
     {% set panelTitle = i18n.pages.successPage.payNowTitle %}
-  {% elif paPayLater %}
-    {% set panelTitle = i18n.pages.successPage.pa.payLater.panel %}
   {% elif late %}
     {% set panelTitle = i18n.pages.successPage.outOfTime.panel %}
   {% else %}
@@ -15,15 +16,23 @@
     titleText: panelTitle,
     classes: mainClasses
   }) }}
+
   <h2 class="govuk-heading-m">{{ i18n.pages.successPage.whatHappensNext }}</h2>
-  {% if eaHuEu %}
+  {% if appealWithRemissionOption %}
     <ul class="govuk-list govuk-list--bullet">
-      <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent1 | eval | safe }}</li>
-      <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent2 }}</li>
-      <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent3 }}</li>
+      <li>{{ i18n.pages.successPage.withRemissionOption.textBullet1 }}</li>
+      <li>{{ i18n.pages.successPage.withRemissionOption.textBullet2 | eval | safe }}</li>
     </ul>
-  {% elif paPayNow %}
-    <p class="govuk-body">{{ i18n.pages.successPage.pa.payNow.whatHappensNextContent | eval | safe }}</p>
+  {% elif noRemissionOption %}
+    {% if eaHuEu %}
+      <ul class="govuk-list govuk-list--bullet">
+        <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent1 | eval | safe }}</li>
+        <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent2 }}</li>
+        <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent3 }}</li>
+      </ul>
+    {% elif paPayNow %}
+      <p class="govuk-body">{{ i18n.pages.successPage.pa.payNow.whatHappensNextContent | eval | safe }}</p>
+    {% endif %}
   {% elif paPayLater %}
     {{ i18n.pages.successPage.pa.payLater.whatHappensNextContent }}
   {% elif late %}
@@ -39,7 +48,20 @@
       <li>{{ i18n.pages.successPage.timescale | eval | safe }}</li>
     </ul>
   {% endif %}
-  {% if paPayNow or eaHuEu %}
+
+  {% if appealWithRemissionOption %}
+    <div class="panel-background">
+      <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/immigration-asylum-tribunal"> {{ i18n.pages.successPage.readMore | safe }}</a></li>
+        <li><a class="govuk-link govuk-link--no-visited-state" href="{{ paths.common.moreHelp }}">{{ i18n.pages.successPage.findOutMore | safe }}</a></li>
+      </ul>
+    </div>
+    {{ govukButton({
+      text: i18n.pages.successPage.seeProgress,
+      href: paths.common.overview
+    }) }}
+  {% elif (paPayNow or eaHuEu) and noRemissionOption %}
     {% if paPayNow %}
       <div class="panel-background">
         <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>
@@ -48,7 +70,7 @@
           <li><a class="govuk-link govuk-link--no-visited-state" href="{{ paths.common.moreHelp }}">{{ i18n.pages.successPage.findOutMore | safe }}</a></li>
         </ul>
       </div>
-    {% endif %}  
+    {% endif %}
     {{ govukButton({
       text: i18n.pages.overviewPage.payForAppeal,
       href: paths.common.payImmediately
@@ -66,8 +88,10 @@
       href: paths.common.overview
     }) }}
   {% endif %}
+
   {{ contactUs() }}
-  {% if not paPayNow and not eaHuEu %}
+
+  {% if not paPayNow and not eaHuEu and not appealWithRemissionOption and not noRemissionOption %}
     <div class="feedback-box govuk-!-margin-top-0">
       <h2 class="govuk-heading-m">{{ i18n.pages.successPage.feedback.heading }}</h2>
       <p>{{ i18n.pages.successPage.feedback.contentText | eval | safe }}</p>

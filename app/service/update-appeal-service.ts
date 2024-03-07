@@ -151,6 +151,10 @@ export default class UpdateAppealService {
     // let respondentDocuments: RespondentDocument[] = null;
     let directions: Direction[] = null;
     let reasonsForAppealDocumentUploads: Evidence[] = null;
+    let reheardRule35AppellantDocument: Evidence = null;
+    let reheardRule35RespondentDocument: Evidence = null;
+    let ftpaApplicationRespondentDocument: Evidence = null;
+    let ftpaApplicationAppellantDocument: Evidence = null;
     let requestClarifyingQuestionsDirection: Collection<CcdDirection>;
     let cmaRequirements: CmaRequirements = {};
     let hearingRequirements: HearingRequirements = {};
@@ -420,6 +424,23 @@ export default class UpdateAppealService {
     if (caseData.remoteVideoCall) {
       this.mapHearingOtherNeedsFromCCDCase(caseData, hearingRequirements);
     }
+
+    if (caseData.ftpaR35AppellantDocument && caseData.ftpaR35AppellantDocument.document_filename) {
+      reheardRule35AppellantDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaR35AppellantDocument, documentMap);
+    }
+
+    if (caseData.ftpaR35RespondentDocument && caseData.ftpaR35RespondentDocument.document_filename) {
+      reheardRule35RespondentDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaR35RespondentDocument, documentMap);
+    }
+
+    if (caseData.ftpaApplicationRespondentDocument && caseData.ftpaApplicationRespondentDocument.document_filename) {
+      ftpaApplicationRespondentDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaApplicationRespondentDocument, documentMap);
+    }
+
+    if (caseData.ftpaApplicationAppellantDocument && caseData.ftpaApplicationAppellantDocument.document_filename) {
+      ftpaApplicationAppellantDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaApplicationAppellantDocument, documentMap);
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -429,8 +450,15 @@ export default class UpdateAppealService {
       removeAppealFromOnlineReason: caseData.removeAppealFromOnlineReason,
       removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
       isDecisionAllowed: caseData.isDecisionAllowed,
+      updateTribunalDecisionList: caseData.updateTribunalDecisionList,
+      updatedAppealDecision: caseData.updatedAppealDecision,
+      updateTribunalDecisionAndReasonsFinalCheck: caseData.updateTribunalDecisionAndReasonsFinalCheck,
       appealOutOfCountry: caseData.appealOutOfCountry,
       nonStandardDirectionEnabled: true,
+      ftpaR35AppellantDocument: reheardRule35AppellantDocument,
+      ftpaR35RespondentDocument: reheardRule35RespondentDocument,
+      ftpaApplicationRespondentDocument: ftpaApplicationRespondentDocument,
+      ftpaApplicationAppellantDocument: ftpaApplicationAppellantDocument,
       readonlyApplicationEnabled: true,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
@@ -467,7 +495,13 @@ export default class UpdateAppealService {
         addressLookup: {},
         ...caseData.uploadTheNoticeOfDecisionDocs && { homeOfficeLetter: this.mapCaseDataDocumentsToAppealEvidences(caseData.uploadTheNoticeOfDecisionDocs, documentMap) },
         ...caseData.rpDcAppealHearingOption && { rpDcAppealHearingOption: caseData.rpDcAppealHearingOption },
-        ...caseData.decisionHearingFeeOption && { decisionHearingFeeOption: caseData.decisionHearingFeeOption }
+        ...caseData.decisionHearingFeeOption && { decisionHearingFeeOption: caseData.decisionHearingFeeOption },
+        remissionOption: caseData.remissionOption,
+        asylumSupportRefNumber: caseData.asylumSupportRefNumber,
+        helpWithFeesOption: caseData.helpWithFeesOption,
+        helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
+        ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
+        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -538,6 +572,8 @@ export default class UpdateAppealService {
       ...caseData.ftpaAppellantDecisionOutcomeType && { ftpaAppellantDecisionOutcomeType: caseData.ftpaAppellantDecisionOutcomeType },
       ...caseData.ftpaAppellantDecisionDocument && { ftpaAppellantDecisionDocument: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantDecisionDocument, documentMap) },
       ...caseData.ftpaAppellantDecisionDate && { ftpaAppellantDecisionDate: caseData.ftpaAppellantDecisionDate },
+      ...caseData.ftpaAppellantDecisionRemadeRule32Text && { ftpaAppellantDecisionRemadeRule32Text: caseData.ftpaAppellantDecisionRemadeRule32Text },
+      ...caseData.ftpaRespondentDecisionRemadeRule32Text && { ftpaRespondentDecisionRemadeRule32Text: caseData.ftpaRespondentDecisionRemadeRule32Text },
       hearingCentre: caseData.hearingCentre || null,
       documentMap: documentMap.map(doc => {
         return {
@@ -634,6 +670,50 @@ export default class UpdateAppealService {
       if (appeal.application.appealType) {
         caseData.appealType = appeal.application.appealType;
       }
+
+      caseData.remissionOption = null;
+      if (appeal.application.remissionOption) {
+        caseData.remissionOption = appeal.application.remissionOption;
+      }
+
+      caseData.asylumSupportRefNumber = null;
+      if (appeal.application.asylumSupportRefNumber) {
+        caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
+      }
+
+      caseData.helpWithFeesOption = null;
+      if (appeal.application.helpWithFeesOption) {
+        caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
+      }
+
+      caseData.helpWithFeesRefNumber = null;
+      if (appeal.application.helpWithFeesRefNumber) {
+        caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
+      }
+
+      caseData.localAuthorityLetters = null;
+      if (appeal.application.localAuthorityLetters) {
+        const evidences: Evidence[] = appeal.application.localAuthorityLetters;
+
+        caseData.localAuthorityLetters = evidences.map((evidence: Evidence) => {
+          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+          return {
+            ...evidence.fileId && { id: evidence.fileId },
+            value: {
+              dateUploaded: evidence.dateUploaded,
+              description: evidence.description,
+              tag: 'additionalEvidence',
+              document: {
+                document_filename: evidence.name,
+                document_url: documentLocationUrl,
+                document_binary_url: `${documentLocationUrl}/binary`
+              }
+            }
+          } as Collection<DocumentWithMetaData>;
+        });
+      }
+
+      caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
         const subscription: Subscription = {
@@ -1042,7 +1122,7 @@ export default class UpdateAppealService {
     return clarifyingQuestions.map(answer => {
       let evidencesList: Evidence[] = [];
       if (answer.value.supportingEvidence) {
-        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentToEvidence(e, documentMap));
+        evidencesList = answer.value.supportingEvidence.map(e => this.mapSupportingDocumentsToEvidence(e, documentMap));
       }
       return {
         id: answer.id,
@@ -1088,7 +1168,15 @@ export default class UpdateAppealService {
     }
   }
 
-  private mapSupportingDocumentToEvidence(evidence: Collection<SupportingDocument>, documentMap: DocumentMap[]) {
+  private mapSupportingDocumentToEvidence(evidence: SupportingDocument, documentMap: DocumentMap[]) {
+    const documentMapperId: string = this._documentManagementService.addToDocumentMapper(evidence.document_url, documentMap);
+    return {
+      fileId: documentMapperId,
+      name: evidence.document_filename
+    };
+  }
+
+  private mapSupportingDocumentsToEvidence(evidence: Collection<SupportingDocument>, documentMap: DocumentMap[]) {
     const documentMapperId: string = this._documentManagementService.addToDocumentMapper(evidence.value.document_url, documentMap);
     return {
       fileId: documentMapperId,
@@ -1159,7 +1247,7 @@ export default class UpdateAppealService {
         id: application.id,
         value: {
           ...application.value,
-          ...application.value.evidence && { evidence: application.value.evidence.map(e => this.mapSupportingDocumentToEvidence(e, documentMap)) }
+          ...application.value.evidence && { evidence: application.value.evidence.map(e => this.mapSupportingDocumentsToEvidence(e, documentMap)) }
         }
       };
     });

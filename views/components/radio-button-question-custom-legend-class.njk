@@ -1,0 +1,21 @@
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% macro radioButtonQuestion(name, options, legend, isLegendTitle, hint, errorMessage, inline, legendClasses) %}
+  {{ govukRadios({
+    classes: "" if inline == false else "govuk-radios--inline",
+    name: name,
+    fieldset: {
+      legend: {
+        text: legend,
+        isPageHeading: isLegendTitle,
+        classes: legendClasses | default("govuk-fieldset__legend--xl")
+      }
+    },
+    hint: {
+      text: hint
+    },
+    errorMessage: {
+      text: errorMessage
+    } if (errorMessage),
+    items: options
+  }) }}
+{% endmacro %}

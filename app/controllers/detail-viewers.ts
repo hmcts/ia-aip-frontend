@@ -10,6 +10,7 @@ import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
+import { appealHasRemissionOption } from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
@@ -162,6 +163,110 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     if (fee) rows.push(feeAmountRow);
   }
   return rows;
+}
+async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
+  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
+  const { application } = req.session.appeal;
+  const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
+  const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
+    return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
+  });
+  const appellantInUk = application.appellantInUk && application.appellantInUk === 'Yes';
+  const hasSponsor = application.appellantInUk && application.appellantInUk === 'No' && application.hasSponsor && application.hasSponsor === 'Yes';
+  let aboutAppealRows = [];
+  let personalDetailsRows = [];
+  let feeDetailsRows = [];
+  let rowsCont = [];
+
+  // about appeal section
+  aboutAppealRows.push(
+    application.appellantInUk && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantInUk, [application.appellantInUk], null)
+  );
+
+  if (application.gwfReferenceNumber && application.gwfReferenceNumber !== null) {
+    const gwfReferenceNumberRow = addSummaryRow(
+      i18n.pages.checkYourAnswers.rowTitles.gwfReferenceNumber,
+      [application.gwfReferenceNumber], null);
+    aboutAppealRows.push(gwfReferenceNumberRow);
+  } else {
+    const homeOfficeRefNumberRow = addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeRefNumber, [application.homeOfficeRefNumber], null);
+    aboutAppealRows.push(homeOfficeRefNumberRow);
+  }
+
+  aboutAppealRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null));
+  aboutAppealRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.homeOfficeDecisionLetter, homeOfficeDecisionLetterDocs, null, Delimiter.BREAK_LINE));
+
+  aboutAppealRows.push(application.hasSponsor && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.hasSponsor, [application.hasSponsor], null));
+  if (hasSponsor) {
+    aboutAppealRows.push(application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorNameForDisplay, [application.sponsorNameForDisplay], null));
+    aboutAppealRows.push(application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAddressDetails, [...Object.values(application.sponsorAddress)], null, Delimiter.BREAK_LINE));
+    aboutAppealRows.push(application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorContactDetails, [
+      ...(application.sponsorContactDetails.wantsEmail ? [application.sponsorContactDetails.email] : []),
+      ...(application.sponsorContactDetails.wantsSms ? [application.sponsorContactDetails.phone] : [])
+    ], null, Delimiter.BREAK_LINE));
+    aboutAppealRows.push(application.hasSponsor && application.hasSponsor === 'Yes' && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.sponsorAuthorisation, [application.sponsorAuthorisation], null));
+  }
+
+  aboutAppealRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealType, [i18n.appealTypes[application.appealType].name], null));
+  let decisionType: string;
+  if (['revocationOfProtection', 'deprivation'].includes(application.appealType)) {
+    decisionType = req.session.appeal.application.rpDcAppealHearingOption;
+  } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType)) {
+    decisionType = req.session.appeal.application.decisionHearingFeeOption;
+}
+  const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [i18n.pages.checkYourAnswers[decisionType]]);
+  if (decisionType) aboutAppealRows.push(decisionTypeRow);
+  aboutAppealRows.push(application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [application.lateAppeal.reason], null));
+  aboutAppealRows.push(application.isAppealLate && application.lateAppeal.evidence && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.supportingEvidence, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${application.lateAppeal.evidence.fileId}'>${application.lateAppeal.evidence.name}</a>`]));
+
+  // personal details section
+  personalDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.name, [application.personalDetails.givenNames, application.personalDetails.familyName], null, Delimiter.SPACE));
+  personalDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dob, [formatDate(toIsoDate(application.personalDetails.dob))], null));
+  personalDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.nationality, [nation], null));
+  if (appellantInUk) {
+    const address = application.personalDetails.address
+    && _.isEmpty(application.personalDetails.address)
+      ? null : application.personalDetails.address;
+    personalDetailsRows.push(address && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.addressDetails, [[...Object.values(address)].join(' ')], null, Delimiter.BREAK_LINE));
+  } else {
+    personalDetailsRows.push(application.appellantOutOfCountryAddress && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appellantOutOfCountryAddress, [application.appellantOutOfCountryAddress], null));
+  }
+  personalDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.contactDetails, [
+    ...(application.contactDetails.wantsEmail ? [application.contactDetails.email] : []),
+    ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])
+  ], null, Delimiter.BREAK_LINE));
+
+  // fee section
+  if (appealHasRemissionOption) {
+    const fee = getFee(req.session.appeal);
+
+    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+    if (application.remissionOption === 'noneOfTheseStatements' && application.helpWithFeesOption === 'willPayForAppeal') {
+      const { paAppealTypeAipPaymentOption = null, paymentStatus = null } = req.session.appeal;
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+    } else {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, ['Fee support requested'], null));
+      if (application.remissionOption === 'asylumSupportFromHo') {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
+      } else if (application.remissionOption === 'feeWaiverFromHo') {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
+      } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
+        const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {
+          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
+        });
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
+      } else if (application.remissionOption === 'noneOfTheseStatements') {
+        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
+      }
+
+    }
+  }
+
+  return {
+    aboutAppealRows,
+    personalDetailsRows,
+    feeDetailsRows
+  };
 }
 
 function setupAnswersReasonsForAppeal(req: Request, fromLegalRep: boolean): Array<any> {
@@ -391,12 +496,25 @@ function setupCmaRequirementsViewer(req: Request) {
 
 async function getAppealDetailsViewer(req: Request, res: Response, next: NextFunction) {
   try {
-    const data = await getAppealDetails(req);
-    return res.render('templates/details-viewer.njk', {
-      title: i18n.pages.detailViewers.appealDetails.title,
-      previousPage: paths.common.overview,
-      data: data
-    });
+    let drlmFeeRemissionFeatureFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+    if (drlmFeeRemissionFeatureFlag) {
+      const data = await getAppealDlrmFeeRemissionDetails(req);
+      return res.render('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: data
+      });
+    } else {
+      const data = await getAppealDetails(req);
+      return res.render('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        previousPage: paths.common.overview,
+        data: data
+      });
+    }
   } catch (error) {
     next(error);
   }

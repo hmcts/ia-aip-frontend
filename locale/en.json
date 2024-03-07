@@ -299,7 +299,16 @@
         "asylumSupportRefNumber": "Asylum support reference number",
         "helpWithFees": "Help with fees",
         "helpWithFeesRefNumber": "Help with fees reference number",
-        "localAuthorityLetter": "Local authority letter"
+        "localAuthorityLetter": "Local authority letter",
+        "aboutTheAppeal": "About the appeal",
+        "personalDetails": "Personal details",
+        "feeDetails": "Fee details",
+        "feeSupportStatus": "Fee support status",
+        "asylumSupportReferenceNumber": "Asylum Support reference number",
+        "feeSupportType": "Fee support type",
+        "localAuthorityLetter": "Local Authority letter",
+        "helpWithFeesReferenceNumber": "Help with fees reference number",
+        "paymentStatus": "Payment status"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",

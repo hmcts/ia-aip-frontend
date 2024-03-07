@@ -1193,6 +1193,52 @@ describe('update-appeal-service', () => {
         expect(mappedAppeal.ftpaApplicationRespondentDocument.name).eq('FTPA_RESPONDENT_DECISION_DOCUMENT.PDF');
       });
     });
+
+    describe('correctedDecisionAndReasons', () => {
+      const caseData: Partial<CaseData> = {
+        'correctedDecisionAndReasons': [
+          {
+            'id': '2',
+            'value': {
+              'coverLetterDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateCoverLetterDocumentUploaded': '2022-01-30',
+              'updatedDecisionDate': '2022-01-30'
+            }
+          },
+          {
+            'id': '1',
+            'value': {
+              'coverLetterDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateCoverLetterDocumentUploaded': '2022-01-26',
+              'documentAndReasonsDocument': {
+                'document_filename': 'PA 50012 2022-bond20-Decision-and-reasons-AMENDED.PDF',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000001/binary'
+              },
+              'dateDocumentAndReasonsDocumentUploaded': '2022-01-26',
+              'summariseChanges': 'Document summarised example',
+              'updatedDecisionDate': '2022-01-26'
+            }
+          }
+        ]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map correctedDecisionAndReasons collection', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.updatedDecisionAndReasons).to.be.length(2);
+      });
+    });
   });
 
   describe('submitEvent', () => {

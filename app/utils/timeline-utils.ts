@@ -50,6 +50,13 @@ function constructEventObject(event: HistoryEvent, req: Request) {
     eventObject.links[0].text = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].text;
     eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].status[req.session.appeal.appealReviewOutcome].href;
   }
+  if (event.id === Events.SEND_DECISION_AND_REASONS.id) {
+    if (req.session.appeal.updatedAppealDecision) {
+      eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].updatedLinks;
+    } else {
+      eventObject.links[0].href = i18n.pages.overviewPage.timeline[event.id].originalLinks;
+    }
+  }
   return eventObject;
 }
 
@@ -186,8 +193,7 @@ function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeat
       dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
       text: i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.text || null,
       links: [{
-        ...i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.links[0],
-        href: ''
+        ...i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.links[0]
       }]
     }];
   } else {

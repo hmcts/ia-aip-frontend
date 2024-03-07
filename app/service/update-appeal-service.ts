@@ -161,6 +161,7 @@ export default class UpdateAppealService {
     let draftClarifyingQuestionsAnswers: ClarifyingQuestion<Evidence>[];
     let hasPendingTimeExtension = false;
     let documentMap: DocumentMap[] = [];
+    let updatedDecisionAndReasons: DecisionAndReasons[] = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -226,6 +227,26 @@ export default class UpdateAppealService {
         return direction;
       });
       requestClarifyingQuestionsDirection = caseData.directions.find(direction => direction.value.tag === 'requestClarifyingQuestions');
+    }
+
+    if (caseData.correctedDecisionAndReasons) {
+      updatedDecisionAndReasons = caseData.correctedDecisionAndReasons.map((ccdDecisionAndReasons: Collection<CcdDecisionAndReasons>): DecisionAndReasons => {
+        let coverLetterDocument: Evidence;
+        let documentAndReasonsDocument: Evidence;
+        if (ccdDecisionAndReasons.value.coverLetterDocument && ccdDecisionAndReasons.value.coverLetterDocument.document_filename) {
+          coverLetterDocument = this.mapSupportingDocumentToEvidence(ccdDecisionAndReasons.value.coverLetterDocument, documentMap);
+        }
+        if (ccdDecisionAndReasons.value.documentAndReasonsDocument && ccdDecisionAndReasons.value.documentAndReasonsDocument.document_filename) {
+          documentAndReasonsDocument = this.mapSupportingDocumentToEvidence(ccdDecisionAndReasons.value.documentAndReasonsDocument, documentMap);
+        }
+
+        return {
+          id: ccdDecisionAndReasons.id,
+          ...ccdDecisionAndReasons.value,
+          coverLetterDocument: coverLetterDocument,
+          documentAndReasonsDocument: documentAndReasonsDocument
+        };
+      });
     }
 
     if (caseData.draftClarifyingQuestionsAnswers && caseData.draftClarifyingQuestionsAnswers.length > 0) {
@@ -509,6 +530,7 @@ export default class UpdateAppealService {
         uploadDate: caseData.reasonsForAppealDateUploaded
       },
       ...(_.has(caseData, 'directions')) && { directions },
+      ...(_.has(caseData, 'correctedDecisionAndReasons')) && { updatedDecisionAndReasons },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers: this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers, documentMap) },
       cmaRequirements,

@@ -592,6 +592,10 @@ async function getAppealApplicationNextStep(req: Request) {
 
       if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updatedAppealDecision) {
         decision = req.session.appeal.updatedAppealDecision.toLowerCase();
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.updatedDescriptionFtpaEnabled
+        ];
       } else {
         decision = req.session.appeal.isDecisionAllowed;
       }

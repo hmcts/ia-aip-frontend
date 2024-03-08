@@ -165,7 +165,6 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   return rows;
 }
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
-  const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
   const { application } = req.session.appeal;
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
   const homeOfficeDecisionLetterDocs = req.session.appeal.legalRepresentativeDocuments.filter(doc => doc.tag === 'homeOfficeDecisionLetter').map(doc => {
@@ -176,7 +175,6 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   let aboutAppealRows = [];
   let personalDetailsRows = [];
   let feeDetailsRows = [];
-  let rowsCont = [];
 
   // about appeal section
   aboutAppealRows.push(
@@ -213,7 +211,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     decisionType = req.session.appeal.application.rpDcAppealHearingOption;
   } else if (['protection', 'refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType)) {
     decisionType = req.session.appeal.application.decisionHearingFeeOption;
-}
+  }
   const decisionTypeRow = addSummaryRow(i18n.pages.checkYourAnswers.decisionType, [i18n.pages.checkYourAnswers[decisionType]]);
   if (decisionType) aboutAppealRows.push(decisionTypeRow);
   aboutAppealRows.push(application.isAppealLate && addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.appealLate, [application.lateAppeal.reason], null));
@@ -242,7 +240,7 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
 
     feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
     if (application.remissionOption === 'noneOfTheseStatements' && application.helpWithFeesOption === 'willPayForAppeal') {
-      const { paAppealTypeAipPaymentOption = null, paymentStatus = null } = req.session.appeal;
+      const { paymentStatus = null } = req.session.appeal;
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
     } else {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, ['Fee support requested'], null));

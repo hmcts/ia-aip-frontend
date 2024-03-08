@@ -75,8 +75,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: false,
       paPayNow: true,
       eaHuEu: false,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -94,8 +93,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: true,
       paPayNow: false,
       eaHuEu: false,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -113,8 +111,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: false,
       paPayNow: false,
       eaHuEu: false,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -131,8 +128,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: false,
       paPayNow: false,
       eaHuEu: true,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -149,8 +145,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: false,
       paPayNow: false,
       eaHuEu: true,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -167,8 +162,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: false,
       paPayNow: false,
       eaHuEu: true,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -186,8 +180,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: false,
       paPayNow: true,
       eaHuEu: false,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -210,8 +203,7 @@ describe('Confirmation Page Controller', () => {
       date: addDaysToDate(5),
       title: i18n.pages.confirmationPaid.title,
       whatNextContent: i18n.pages.confirmationPaidLater.content,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -229,8 +221,7 @@ describe('Confirmation Page Controller', () => {
       title: i18n.pages.successPage.inTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.content,
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -248,8 +239,7 @@ describe('Confirmation Page Controller', () => {
       title: i18n.pages.successPage.outOfTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.contentLate,
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -267,8 +257,7 @@ describe('Confirmation Page Controller', () => {
       title: i18n.pages.confirmationPaidLater.title,
       whatNextListItems: i18n.pages.confirmationPaidLater.content,
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -286,8 +275,7 @@ describe('Confirmation Page Controller', () => {
       title: i18n.pages.confirmationPaidLater.title,
       whatNextListItems: i18n.pages.confirmationPaidLater.content,
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -304,8 +292,7 @@ describe('Confirmation Page Controller', () => {
       title: i18n.pages.successPage.inTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.content,
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -322,8 +309,7 @@ describe('Confirmation Page Controller', () => {
       title: i18n.pages.successPage.outOfTime.panel,
       whatNextListItems: i18n.pages.confirmationPaid.contentLate,
       thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
-      appealWithRemissionOption: false,
-      noRemissionOption: false
+      appealWithRemissionOption: false
     });
   });
 
@@ -340,8 +326,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: false,
       paPayNow: true,
       eaHuEu: false,
-      appealWithRemissionOption: true,
-      noRemissionOption: false
+      appealWithRemissionOption: true
     });
   });
 
@@ -359,8 +344,7 @@ describe('Confirmation Page Controller', () => {
       paPayLater: false,
       paPayNow: true,
       eaHuEu: false,
-      appealWithRemissionOption: false,
-      noRemissionOption: true
+      appealWithRemissionOption: false
     });
   });
 

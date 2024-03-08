@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import Logger from '../../../app/utils/logger';
-import { appealHasNoRemissionOption, appealHasRemissionOption } from '../../../app/utils/remission-utils';
+import {
+  addQueryParam,
+  appealHasNoRemissionOption,
+  appealHasRemissionOption, readQueryParam
+} from '../../../app/utils/remission-utils';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Remission fields utils', () => {
@@ -92,6 +96,19 @@ describe('Remission fields utils', () => {
     appeal.application.helpWithFeesOption = 'willPayForAppeal';
 
     expect(appealHasNoRemissionOption(appeal.application)).to.be.deep.equal(true);
+  });
+
+  it('should add query param', () => {
+    const url = 'http://localhost:3000';
+    const queryParam = 'saved';
+    const expectedUrl = 'http://localhost:3000?saved';
+    expect(addQueryParam(url, queryParam)).to.be.deep.equal(expectedUrl);
+  });
+
+  it('should read query param', () => {
+    const url = 'http://localhost:3000?saved';
+    const queryParam = 'saved';
+    expect(readQueryParam(url)).to.be.deep.equal(queryParam);
   });
 
 });

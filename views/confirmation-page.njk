@@ -5,7 +5,7 @@
 
   {% if appealWithRemissionOption or paPayLater %}
     {% set panelTitle = i18n.pages.successPage.withRemissionOption.panel %}
-  {% elif paPayNow or eaHuEu or noRemissionOption %}
+  {% elif paPayNow or eaHuEu %}
     {% set panelTitle = i18n.pages.successPage.payNowTitle %}
   {% elif late %}
     {% set panelTitle = i18n.pages.successPage.outOfTime.panel %}
@@ -23,16 +23,14 @@
       <li>{{ i18n.pages.successPage.withRemissionOption.textBullet1 }}</li>
       <li>{{ i18n.pages.successPage.withRemissionOption.textBullet2 | eval | safe }}</li>
     </ul>
-  {% elif noRemissionOption %}
-    {% if eaHuEu %}
+  {% elif eaHuEu %}
       <ul class="govuk-list govuk-list--bullet">
         <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent1 | eval | safe }}</li>
         <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent2 }}</li>
         <li>{{ i18n.pages.successPage.eaHuEu.payNow.whatHappensNextContent3 }}</li>
       </ul>
-    {% elif paPayNow %}
+  {% elif paPayNow %}
       <p class="govuk-body">{{ i18n.pages.successPage.pa.payNow.whatHappensNextContent | eval | safe }}</p>
-    {% endif %}
   {% elif paPayLater %}
     {{ i18n.pages.successPage.pa.payLater.whatHappensNextContent }}
   {% elif late %}
@@ -61,7 +59,7 @@
       text: i18n.pages.successPage.seeProgress,
       href: paths.common.overview
     }) }}
-  {% elif (paPayNow or eaHuEu) and noRemissionOption %}
+  {% elif paPayNow or eaHuEu %}
     {% if paPayNow %}
       <div class="panel-background">
         <h2 class="govuk-heading-s govuk-!-padding-top-4">{{ i18n.pages.successPage.thingsYouCanDo | safe }}</h2>
@@ -91,7 +89,7 @@
 
   {{ contactUs() }}
 
-  {% if not paPayNow and not eaHuEu and not appealWithRemissionOption and not noRemissionOption %}
+  {% if not paPayNow and not eaHuEu and not appealWithRemissionOption %}
     <div class="feedback-box govuk-!-margin-top-0">
       <h2 class="govuk-heading-m">{{ i18n.pages.successPage.feedback.heading }}</h2>
       <p>{{ i18n.pages.successPage.feedback.contentText | eval | safe }}</p>

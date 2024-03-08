@@ -4,7 +4,7 @@ import i18n from '../../../locale/en.json';
 import { paths } from '../../paths';
 import { addDaysToDate } from '../../utils/date-utils';
 import { payLaterForApplicationNeeded, payNowForApplicationNeeded } from '../../utils/payments-utils';
-import { appealHasNoRemissionOption, appealHasRemissionOption } from '../../utils/remission-utils';
+import { appealHasRemissionOption } from '../../utils/remission-utils';
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   req.app.locals.logger.trace(`Successful AIP appeal submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
@@ -17,7 +17,6 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
     const eaHuEu = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType);
     const daysToWait: number = eaHuEu ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
     const appealWithRemissionOption = appealHasRemissionOption(application);
-    const noRemissionOption = appealHasNoRemissionOption(application);
 
     res.render('confirmation-page.njk', {
       date: addDaysToDate(daysToWait),
@@ -25,8 +24,7 @@ function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
       paPayLater,
       paPayNow,
       eaHuEu,
-      appealWithRemissionOption,
-      noRemissionOption
+      appealWithRemissionOption
     });
   } catch (e) {
     next(e);
@@ -44,15 +42,13 @@ function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction
     const isPaPayLater = application.appealType === 'protection' && paAppealTypeAipPaymentOption === 'payLater';
     const daysToWait: number = config.get('daysToWait.afterSubmission');
     const appealWithRemissionOption = appealHasRemissionOption(application);
-    const noRemissionOption = appealHasNoRemissionOption(application);
 
     if (isPaPayLater) {
       res.render('templates/confirmation-page.njk', {
         date: addDaysToDate(daysToWait),
         title: i18n.pages.confirmationPaid.title,
         whatNextContent: i18n.pages.confirmationPaidLater.content,
-        appealWithRemissionOption,
-        noRemissionOption
+        appealWithRemissionOption
       });
     } else if (isPaPayNow) {
       res.render('templates/confirmation-page.njk', {
@@ -64,8 +60,7 @@ function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction
           : (payingImmediately && !isLate) ? i18n.pages.confirmationPaid.content
             : i18n.pages.confirmationPaidLater.content,
         thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
-        appealWithRemissionOption,
-        noRemissionOption
+        appealWithRemissionOption
       });
     } else {
       res.render('templates/confirmation-page.njk', {
@@ -73,8 +68,7 @@ function getConfirmationPaidPage(req: Request, res: Response, next: NextFunction
         title: isLate ? i18n.pages.successPage.outOfTime.panel : i18n.pages.successPage.inTime.panel,
         whatNextListItems: isLate ? i18n.pages.confirmationPaid.contentLate : i18n.pages.confirmationPaid.content,
         thingsYouCanDoAfterPaying: i18n.pages.confirmationPaid.thingsYouCanDoAfterPaying,
-        appealWithRemissionOption,
-        noRemissionOption
+        appealWithRemissionOption
       });
     }
   } catch (e) {

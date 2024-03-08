@@ -20,6 +20,7 @@ const paths = {
     payNow: '/pay-now',
     decisionType: '/decision-type',
     feeSupport: '/fee-support',
+    feeSupportRefund: '/fee-support-refund',
     asylumSupport: '/asylum-support',
     feeWaiver: '/fee-waiver',
     localAuthorityLetter: '/local-authority-letter',

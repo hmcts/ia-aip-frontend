@@ -6,6 +6,7 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
+import { readQueryParam } from '../../utils/remission-utils';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
@@ -18,11 +19,13 @@ async function getAsylumSupport(req: Request, res: Response, next: NextFunction)
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const asylumSupportRefNumber = req.session.appeal.application.asylumSupportRefNumber || null;
+    const refundJourney = 'refund' === readQueryParam(req.originalUrl);
     return res.render('appeal-application/fee-support/asylum-support.njk', {
       previousPage: paths.appealStarted.feeSupport,
       formAction: paths.appealStarted.asylumSupport,
       asylumSupportRefNumber,
-      saveAndContinue: true
+      saveAndContinue: true,
+      refundJourney
     });
   } catch (error) {
     next(error);

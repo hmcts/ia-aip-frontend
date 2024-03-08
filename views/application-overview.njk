@@ -129,6 +129,9 @@
               {% if showAppealRequests %}
                 <p><a class="govuk-link" href='{{ paths.makeApplication.withdraw }}'>{{ i18n.pages.overviewPage.withdrawAppeal }}</a></p>
               {% endif %}
+              {% if showAskForFeeRemission %}
+                    <p><a class="govuk-link" href='{{ paths.appealStarted.feeSupportRefund }}'>{{ i18n.pages.overviewPage.askForFeeRemission }}</a></p>
+              {% endif %}
             </div>
           {% endif %}
           {% if showAppealRequests or showAppealRequestsInAppealEndedStatus %}

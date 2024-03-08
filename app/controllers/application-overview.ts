@@ -132,6 +132,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
 
       const makeApplicationFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.MAKE_APPLICATION, false);
       const uploadAddendumEvidenceFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.UPLOAD_ADDENDUM_EVIDENCE, false);
+      const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
       const ftpaFeatureEnabled = await isFtpaFeatureEnabled(req);
 
       const isPartiallySaved = _.has(req.query, 'saved');
@@ -155,6 +156,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
+      const showAskForFeeRemission = refundFeatureEnabled && 'Paid' === paymentStatus;
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
@@ -175,7 +177,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         ftpaFeatureEnabled,
         hearingDetails,
         showChangeRepresentation,
-        showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled)
+        showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
+        showAskForFeeRemission
       });
     } catch (e) {
       next(e);

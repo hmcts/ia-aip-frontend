@@ -850,6 +850,7 @@
       "noLongerRepresentingMyself": "I am no longer representing myself",
       "iWantTo": "I want to...",
       "withdrawAppeal": "Withdraw my appeal",
+      "askForFeeRemission": "Ask for a fee remission",
       "appealRequests": {
         "sectionHeading": "Appeal requests",
         "askToChangeDetails": "Ask to change some of your details",
@@ -3619,8 +3620,16 @@
           "value": "noneOfTheseStatements",
           "text": "None of these statements apply to me",
           "hint":  "You may still be able to get help to pay the fee"
+        },
+        "iWantToGetHelpWithFees": {
+          "value": "iWantToGetHelpWithFees",
+          "text": "I want to get help with fees"
         }
-      }
+      },
+      "refundTitle": "Why are you asking for a fee remission?",
+      "refundParagraph1": "You do not have to pay a fee in certain circumstances. For example, if you get asylum support. This is called a fee remission.",
+      "refundParagraph2": "If you believe you did not have to pay the fee for this appeal, you can ask the Tribunal to give your money back.",
+      "refundParagraph3": "Select the reason you believe you did not have to pay the fee."
     },
     "asylumSupportPage": {
       "title": "What is your asylum support reference number?",

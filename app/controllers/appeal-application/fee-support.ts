@@ -7,6 +7,7 @@ import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getFee } from '../../utils/payments-utils';
+import { addQueryParam } from '../../utils/remission-utils';
 import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
 import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
@@ -48,6 +49,42 @@ function getRemissionOptionsQuestion(appeal: Appeal) {
           text: selectionHint
         },
         checked: remissionOption === i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value
+      }
+    ],
+    inline: false
+  };
+}
+
+function getRefundOptionsQuestion(appeal: Appeal) {
+  let remissionOption = appeal.application.remissionOption || null;
+
+  return {
+    title: i18n.pages.remissionOptionPage.refundTitle,
+    options: [
+      {
+        value: i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value,
+        text: i18n.pages.remissionOptionPage.options.asylumSupportFromHo.text,
+        checked: remissionOption === i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value
+      },
+      {
+        value: i18n.pages.remissionOptionPage.options.feeWaiverFromHo.value,
+        text: i18n.pages.remissionOptionPage.options.feeWaiverFromHo.text,
+        checked: remissionOption === i18n.pages.remissionOptionPage.options.feeWaiverFromHo.value
+      },
+      {
+        value: i18n.pages.remissionOptionPage.options.under18GetSupportFromLocalAuthority.value,
+        text: i18n.pages.remissionOptionPage.options.under18GetSupportFromLocalAuthority.text,
+        checked: remissionOption === i18n.pages.remissionOptionPage.options.under18GetSupportFromLocalAuthority.value
+      },
+      {
+        value: i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value,
+        text: i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.text,
+        checked: remissionOption === i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value
+      },
+      {
+        value: i18n.pages.remissionOptionPage.options.iWantToGetHelpWithFees.value,
+        text: i18n.pages.remissionOptionPage.options.iWantToGetHelpWithFees.text,
+        checked: remissionOption === i18n.pages.remissionOptionPage.options.iWantToGetHelpWithFees.value
       }
     ],
     inline: false
@@ -121,10 +158,76 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
   };
 }
 
+async function getRefundFeeSupport(req: Request, res: Response, next: NextFunction) {
+  try {
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
+    const appeal = req.session.appeal;
+    appeal.application.isEdit = _.has(req.query, 'edit');
+
+    return res.render('appeal-application/fee-support/fee-support-refund.njk', {
+      previousPage: paths.common.overview,
+      pageTitle: i18n.pages.remissionOptionPage.refundTitle,
+      formAction: paths.appealStarted.feeSupportRefund,
+      question: getRefundOptionsQuestion(req.session.appeal),
+      saveAndContinue: true
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+function postRefundFeeSupport(updateAppealService: UpdateAppealService) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
+    async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
+      req.session.appeal = {
+        ...req.session.appeal,
+        ...appealUpdated
+      };
+    }
+
+    try {
+      const validation = remissionOptionsValidation(req.body);
+      if (validation) {
+        return res.render('appeal-application/fee-support/fee-support-refund.njk', {
+          errors: validation,
+          errorList: Object.values(validation),
+          previousPage: paths.common.overview,
+          pageTitle: i18n.pages.remissionOptionPage.refundTitle,
+          formAction: paths.appealStarted.feeSupportRefund,
+          question: getRefundOptionsQuestion(req.session.appeal),
+          saveAndContinue: true
+        });
+      }
+
+      const selectedValue = req.body['answer'];
+      const appeal: Appeal = {
+        ...req.session.appeal,
+        application: {
+          ...req.session.appeal.application,
+          remissionOption: selectedValue
+        }
+      };
+      const isEdit: boolean = req.session.appeal.application.isEdit || false;
+      await persistAppeal(appeal, refundFeatureEnabled);
+      const defaultRedirect = addQueryParam(getFeeSupportRedirectPage(selectedValue), 'refund');
+      let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
+      return res.redirect(redirectPage);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
 function setupFeeSupportController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
   router.get(paths.appealStarted.feeSupport, middleware, getFeeSupport);
   router.post(paths.appealStarted.feeSupport, middleware, postFeeSupport(updateAppealService));
+  router.get(paths.appealStarted.feeSupportRefund, middleware, getRefundFeeSupport);
+  router.post(paths.appealStarted.feeSupportRefund, middleware, postRefundFeeSupport(updateAppealService));
   return router;
 }
 
@@ -149,5 +252,8 @@ export {
   getFeeSupport,
   postFeeSupport,
   getFeeSupportRedirectPage,
-  getRemissionOptionsQuestion
+  getRemissionOptionsQuestion,
+  getRefundFeeSupport,
+  postRefundFeeSupport,
+  getRefundOptionsQuestion
 };

@@ -21,7 +21,7 @@ import {
   getOutOfTimeDecisionViewer,
   getReasonsForAppealViewer, getRespondentApplicationSummaryRows,
   getUpdatedDecisionAndReasonsViewer,
-    getUpdatedTribunalDecisionWithRule32Viewer,
+  getUpdatedTribunalDecisionWithRule32Viewer,
   setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';

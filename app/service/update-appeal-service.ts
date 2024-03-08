@@ -162,6 +162,7 @@ export default class UpdateAppealService {
     let hasPendingTimeExtension = false;
     let documentMap: DocumentMap[] = [];
     let updatedDecisionAndReasons: DecisionAndReasons[] = null;
+    let rule32NoticeDocs: Evidence = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -462,6 +463,10 @@ export default class UpdateAppealService {
       ftpaApplicationAppellantDocument = this.mapSupportingDocumentToEvidence(caseData.ftpaApplicationAppellantDocument, documentMap);
     }
 
+    if (caseData.rule32NoticeDocument && caseData.rule32NoticeDocument.document_filename) {
+      rule32NoticeDocs = this.mapSupportingDocumentToEvidence(caseData.rule32NoticeDocument, documentMap);
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -474,6 +479,7 @@ export default class UpdateAppealService {
       updateTribunalDecisionList: caseData.updateTribunalDecisionList,
       updatedAppealDecision: caseData.updatedAppealDecision,
       updateTribunalDecisionAndReasonsFinalCheck: caseData.updateTribunalDecisionAndReasonsFinalCheck,
+      rule32NoticeDocs: rule32NoticeDocs,
       appealOutOfCountry: caseData.appealOutOfCountry,
       nonStandardDirectionEnabled: true,
       ftpaR35AppellantDocument: reheardRule35AppellantDocument,

@@ -21,6 +21,7 @@ import {
   getOutOfTimeDecisionViewer,
   getReasonsForAppealViewer, getRespondentApplicationSummaryRows,
   getUpdatedDecisionAndReasonsViewer,
+    getUpdatedTribunalDecisionWithRule32Viewer,
   setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
@@ -1519,6 +1520,40 @@ describe('Detail viewer Controller', () => {
         res.render = sandbox.stub().throws(error);
 
         getDecisionAndReasonsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render updated decision and reasons page with rule 32', () => {
+    const documents = {
+      fileId: 'f2194fde-001a-4640-8b7e-b90a7189e6ba',
+      name: 'rule32.pdf'
+    };
+
+    it('should render templates/details-viewer.njk with updated decision and reasons page rule 32', async () => {
+      req.session.appeal.rule32NoticeDocs = documents;
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f2194fde-001a-4640-8b7e-b90a7189e6ba'>rule32(PDF)</a>` }
+        }
+      ];
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('getUpdatedTribunalDecisionWithRule32Viewer should catch error and call next with it', async () => {
+        req.session.appeal.rule32NoticeDocs = documents;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
     });

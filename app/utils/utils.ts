@@ -133,12 +133,27 @@ export function isReadonlyApplicationEnabled(req: Request) {
   return req.session.appeal.readonlyApplicationEnabled;
 }
 
-export function isUpdateTribunalDecideWithRule31(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+export function isUpdateTribunalDecide(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
   return (ftpaSetAsideFeatureEnabled &&
     req.session.appeal.history &&
-    req.session.appeal.history.find(event => event.id === Events.UPDATE_TRIBUNAL_DECISION.id) &&
-    req.session.appeal.appealStatus === 'decided' &&
+    req.session.appeal.history.find(event => event.id === Events.UPDATE_TRIBUNAL_DECISION.id) !== undefined &&
+    req.session.appeal.appealStatus === 'decided');
+}
+
+export function isUpdateTribunalDecideWithRule31(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) &&
     req.session.appeal.updateTribunalDecisionList === 'underRule31');
+}
+
+export function isUpdateTribunalDecideWithRule32(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): boolean {
+  return (isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) &&
+    req.session.appeal.updateTribunalDecisionList === 'underRule32');
+}
+
+export function getLatestUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean = false): HistoryEvent {
+  return isUpdateTribunalDecide(req, ftpaSetAsideFeatureEnabled) ? req.session.appeal.history
+    .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
+    .sort((a: any, b: any) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())[0] : null;
 }
 
 /**

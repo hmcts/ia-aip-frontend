@@ -7,8 +7,11 @@ import {
   formatTextForCYA,
   getApplicationType,
   getFtpaApplicantType,
+  getLatestUpdateTribunalDecisionHistory,
   hasPendingTimeExtension,
+  isUpdateTribunalDecide,
   isUpdateTribunalDecideWithRule31,
+  isUpdateTribunalDecideWithRule32,
   nowAppealDate,
   toIsoDate
 } from '../../../app/utils/utils';
@@ -287,10 +290,70 @@ describe('utils', () => {
 
   });
 
-  describe('isUpdateTribunalDecideWithRule31', () => {
+  describe('isUpdateTribunalDecide isUpdateTribunalDecideWithRule31 isUpdateTribunalDecideWithRule32', () => {
     const history = [
       {
         'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-07T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+
+    beforeEach(() => {
+      req.session.appeal.history = history;
+      req.session.appeal.appealStatus = 'decided';
+    });
+
+    it('isUpdateTribunalDecide should return true if match the condition', () => {
+      expect(isUpdateTribunalDecide(req as Request, true)).to.eq(true);
+    });
+
+    it('isUpdateTribunalDecide should return false if no history of updateTribunalDecision', () => {
+      req.session.appeal.history = [
+        {
+          'id': 'sendDecisionAndReasons',
+          'createdDate': '2024-03-07T15:36:26.099'
+        }
+      ] as HistoryEvent[];
+      expect(isUpdateTribunalDecide(req as Request, true)).to.eq(false);
+    });
+
+    it('isUpdateTribunalDecideWithRule31 should return true if match the condition', () => {
+      req.session.appeal.updateTribunalDecisionList = 'underRule31';
+      expect(isUpdateTribunalDecideWithRule31(req as Request, true)).to.eq(true);
+    });
+
+    it('isUpdateTribunalDecideWithRule31 should return false if the rule is not 31', () => {
+      req.session.appeal.updateTribunalDecisionList = 'underRule32';
+      expect(isUpdateTribunalDecideWithRule31(req as Request, true)).to.eq(false);
+    });
+
+    it('isUpdateTribunalDecideWithRule32 should return true if match the condition', () => {
+      req.session.appeal.updateTribunalDecisionList = 'underRule32';
+      expect(isUpdateTribunalDecideWithRule32(req as Request, true)).to.eq(true);
+    });
+
+    it('isUpdateTribunalDecideWithRule32 should return false if the rule is not 32', () => {
+      req.session.appeal.updateTribunalDecisionList = 'underRule31';
+      expect(isUpdateTribunalDecideWithRule32(req as Request, true)).to.eq(false);
+    });
+  });
+
+  describe('getLatestUpdateTribunalDecisionHistory', () => {
+    const history = [
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-07T11:36:26.099'
+      },
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-01T14:36:26.099'
+      },
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-07T16:36:26.099'
+      },
+      {
+        'id': 'sendDecisionAndReasons',
         'createdDate': '2024-03-01T15:36:26.099'
       }
     ] as HistoryEvent[];
@@ -298,16 +361,23 @@ describe('utils', () => {
     beforeEach(() => {
       req.session.appeal.history = history;
       req.session.appeal.appealStatus = 'decided';
-      req.session.appeal.updateTribunalDecisionList = 'underRule31';
     });
 
-    it('isUpdateTribunalDecideWithRule31 should return true if match the condition', () => {
-      expect(isUpdateTribunalDecideWithRule31(req as Request, true)).to.eq(true);
+    it('getLatestUpdateTribunalDecisionHistory should return latest updated tribunal history', () => {
+      expect(getLatestUpdateTribunalDecisionHistory(req as Request, true)).to.deep.equal({
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-07T16:36:26.099'
+      });
     });
 
-    it('isUpdateTribunalDecideWithRule31 should return false if the rule is not 31', () => {
-      req.session.appeal.updateTribunalDecisionList = 'underRule32';
-      expect(isUpdateTribunalDecideWithRule31(req as Request, true)).to.eq(false);
+    it('getLatestUpdateTribunalDecisionHistory should return null if there is no updated tribunal history', () => {
+      req.session.appeal.history = [
+        {
+          'id': 'sendDecisionAndReasons',
+          'createdDate': '2024-03-01T15:36:26.099'
+        }
+      ] as HistoryEvent[];
+      expect(getLatestUpdateTribunalDecisionHistory(req as Request, true)).to.eq(null);
     });
   });
 });

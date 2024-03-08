@@ -12,10 +12,12 @@ import {
   getAppellantApplications,
   getApplicant,
   getFtpaApplicantType,
+  getLatestUpdateTribunalDecisionHistory,
   isFtpaFeatureEnabled,
   isNonStandardDirectionEnabled,
   isReadonlyApplicationEnabled,
-  isUpdateTribunalDecideWithRule31
+  isUpdateTribunalDecideWithRule31,
+  isUpdateTribunalDecideWithRule32
 } from './utils';
 
 /**
@@ -153,6 +155,8 @@ function getDirectionHistory(req: Request): any[] {
 }
 
 function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
+  let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
+
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled)) {
 
     let originalTribunalDecision = req.session.appeal.isDecisionAllowed && req.session.appeal.isDecisionAllowed.toLowerCase() || null;
@@ -160,21 +164,28 @@ function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabl
     let timelineText = '';
 
     if (originalTribunalDecision === 'allowed' && updatedAppealDecision === 'dismissed') {
-      timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.fromAllowedToDismissedText;
+      timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.fromAllowedToDismissedText;
     } else if (originalTribunalDecision === 'dismissed' && updatedAppealDecision === 'allowed') {
-      timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.fromDismissedToAllowedText;
+      timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.fromDismissedToAllowedText;
     } else {
       return [];
     }
-
-    let latestUpdateTribunalDecisionHistory = req.session.appeal.history
-      .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
-      .sort((a: any, b: any) => b.dateObject - a.dateObject)[0];
 
     return [{
       date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
       dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
       text: timelineText || null
+    }];
+  } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled)) {
+
+    return [{
+      date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
+      text: i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule32.documentOfReasonsForTheDecision.text || null,
+      links: [{
+        ...i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule32.documentOfReasonsForTheDecision.links[0],
+        href: i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule32.documentOfReasonsForTheDecision.links[0].href
+      }]
     }];
   } else {
     return [];
@@ -184,16 +195,14 @@ function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabl
 function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeatureEnabled: boolean): any[] {
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updateTribunalDecisionAndReasonsFinalCheck === 'Yes') {
 
-    let latestUpdateTribunalDecisionHistory = req.session.appeal.history
-      .filter(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id)
-      .sort((a: any, b: any) => b.dateObject - a.dateObject)[0];
+    let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
 
     return [{
       date: moment(latestUpdateTribunalDecisionHistory.createdDate).format('DD MMMM YYYY'),
       dateObject: new Date(latestUpdateTribunalDecisionHistory.createdDate),
-      text: i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.text || null,
+      text: i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.newDecisionAndReasonsDocument.text || null,
       links: [{
-        ...i18n.pages.overviewPage.timeline.updateTribunalDecision.newDecisionAndReasonsDocument.links[0]
+        ...i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.newDecisionAndReasonsDocument.links[0]
       }]
     }];
   } else {

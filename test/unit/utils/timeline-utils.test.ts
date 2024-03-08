@@ -610,6 +610,33 @@ describe('timeline-utils', () => {
       expect(updatedTribunalDecisionHistory.length).to.be.eql(0);
     });
 
+    it('should show the updated tribunal decision history with rule 32', () => {
+
+      req.session.appeal.updateTribunalDecisionList = 'underRule32';
+
+      const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
+
+      expect(updatedTribunalDecisionHistory.length).to.be.eql(1);
+      updatedTribunalDecisionHistory.forEach(history => {
+        expect(history).to.contain.keys('date', 'dateObject', 'text', 'links');
+      });
+
+      expect(updatedTribunalDecisionHistory).to.deep.eq(
+        [{
+          'date': '01 March 2024',
+          'dateObject': new Date('2024-03-01T14:53:26.099'),
+          'text': 'The Tribunal decided that your appeal will be heard again.',
+          'links': [
+            {
+              'href': '{{ paths.common.decisionAndReasonsViewerWithRule32 }}',
+              'text': 'Reasons for the decision',
+              'title': 'Useful documents'
+            }
+          ]
+        }]
+      );
+    });
+
     it('no updated tribunal decision history will be shown if history is null', () => {
 
       req.session.appeal.history = null;

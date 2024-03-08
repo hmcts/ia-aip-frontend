@@ -1174,6 +1174,26 @@ describe('update-appeal-service', () => {
       });
     });
 
+    describe('rule32NoticeDocument', () => {
+      const caseData: Partial<CaseData> = {
+        'rule32NoticeDocument':
+        {
+          'document_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d',
+          'document_filename': 'rule32.pdf',
+          'document_binary_url': 'http://dm-store:8080/documents/7bdf4dd6-0796-42d5-8a58-a6ae2e912e5d/binary'
+        }
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it('should map rule 32 notice document', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+        expect(mappedAppeal.rule32NoticeDocs.name).eq('rule32.pdf');
+      });
+    });
+
     describe('ftpaApplicationRespondentDocument', () => {
       const caseData: Partial<CaseData> = {
         'ftpaApplicationRespondentDocument':

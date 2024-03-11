@@ -80,10 +80,8 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
 
 // Function used in CYA page edit mode, when the start page option is changed other values should be reset and the journey should start from the new selected option
 function resetJourneyValues(application: AppealApplication) {
-  if (application.helpWithFeesOption === i18n.pages.helpWithFees.options.willPayForAppeal.value) {
-    application.asylumSupportRefNumber = null;
-    application.localAuthorityLetters = null;
-  }
+  application.asylumSupportRefNumber = null;
+  application.localAuthorityLetters = null;
 }
 
 function setupHelpWithFeesReferenceNumberController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {

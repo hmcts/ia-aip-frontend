@@ -500,6 +500,15 @@ describe('event-deadline-date-finder', () => {
       expect(result).to.be.equal('02 April 2024');
     });
 
+    it('getDueDateForAppellantToRespondToJudgeDecision should return due date when triggered updateTribunalDecision event with rule 32', () => {
+
+      req.session.appeal.appealStatus = 'decided';
+      req.session.appeal.updateTribunalDecisionList = 'underRule32';
+
+      const result = getDueDateForAppellantToRespondToJudgeDecision(req as Request, true);
+      expect(result).to.be.equal(null);
+    });
+
     it('getDueDateForAppellantToRespondToJudgeDecision should return due date from finalDecisionAndReasonsPdf tag when the flag of DLRM set aside is off', () => {
 
       req.session.appeal.finalDecisionAndReasonsDocuments = [

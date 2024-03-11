@@ -162,6 +162,7 @@ interface Appeal {
   updateTribunalDecisionList?: string;
   updatedAppealDecision?: string;
   updateTribunalDecisionAndReasonsFinalCheck?: string;
+  rule32NoticeDocs?: Evidence;
   appealOutOfCountry?: string;
   ftpaApplicantType?: string;
   ftpaAppellantEvidenceDocuments?: Evidence[];

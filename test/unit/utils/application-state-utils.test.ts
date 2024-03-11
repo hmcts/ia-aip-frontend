@@ -1143,7 +1143,7 @@ describe('application-state-utils', () => {
     expect(result).to.eql(expected);
   });
 
-  it('when application status is decided after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
+  it('when application status is decided  with rule 31 after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
     req.session.appeal.appealStatus = 'decided';
     req.session.appeal.isDecisionAllowed = 'allowed';
     req.session.appeal.updatedAppealDecision = 'dismissed';
@@ -1167,6 +1167,38 @@ describe('application-state-utils', () => {
     expect(result.decision).to.eql(req.session.appeal.updatedAppealDecision);
     expect(result.descriptionParagraphs).to.eql(expected.descriptionParagraphs);
     expect(result.deadline).to.eql('18 March 2024');
+  });
+
+  it('when application status is decided with rule 32 after triggering updateTribunalDecision event - DLRM set aside enabled.', async () => {
+    req.session.appeal.appealStatus = 'decided';
+    req.session.appeal.updateTribunalDecisionList = 'underRule32';
+    req.session.appeal.history = [
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-07T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+    sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+      .withArgs(req as Request, 'dlrm-setaside-feature-flag', false).resolves(true);
+    const result = await getAppealApplicationNextStep(req as Request);
+
+    const expected = {
+      'allowedAskForMoreTime': false,
+      'cta': {
+      },
+      'deadline': null,
+      'decision': undefined,
+      'descriptionParagraphs': [
+        'A judge has reviewed your appeal decision and decided that your appeal should be heard again. <br>',
+        '<a href={{ paths.common.decisionAndReasonsViewerWithRule32 }}>Read the reasons for this decision</a> <br>'
+      ],
+      'info': {
+        'title': 'What happens next',
+        'text': 'There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing.'
+      }
+    };
+
+    expect(result).to.eql(expected);
   });
 
   it('when application status is appealSubmitted and appeal is late, status should be lateAppealSubmitted.', () => {

@@ -230,6 +230,7 @@ const paths = {
     hearingNoticeViewer: '/hearing-notice',
     hearingBundleViewer: '/hearing-bundle',
     decisionAndReasonsViewer: '/decision-reasons',
+    decisionAndReasonsViewerWithRule32: '/decision-reasons-with-rule32',
     ftpaAppellantApplicationViewer: '/ftpa-appellant-application',
     ftpaDecisionViewer: '/ftpa-decision',
     directionHistoryViewer: '/direction-history/:id',

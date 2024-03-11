@@ -644,6 +644,29 @@ function getDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunc
   }
 }
 
+async function getUpdatedTribunalDecisionWithRule32Viewer(req: Request, res: Response, next: NextFunction) {
+  const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  if (ftpaSetAsideFeatureEnabled) {
+    try {
+      let previousPage: string = paths.common.overview;
+
+      let rule32Document = req.session.appeal.rule32NoticeDocs;
+      let fileNameFormatted = fileNameFormatter(rule32Document.name);
+
+      const data = [];
+      data.push(addSummaryRow(i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${rule32Document.fileId}'>${fileNameFormatted}</a>`]));
+
+      return res.render('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.title,
+        data,
+        previousPage
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
 function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
@@ -1038,6 +1061,7 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.hearingNoticeViewer, getHearingNoticeViewer);
   router.get(paths.common.hearingBundleViewer, getHearingBundle);
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
+  router.get(paths.common.decisionAndReasonsViewerWithRule32, getUpdatedTribunalDecisionWithRule32Viewer);
   router.get(paths.common.lrReasonsForAppealViewer, getLrReasonsForAppealViewer);
   router.get(paths.common.ftpaAppellantApplicationViewer, getFtpaAppellantApplication);
   router.get(paths.common.ftpaDecisionViewer, getFtpaDecisionDetails);
@@ -1065,6 +1089,7 @@ export {
   getHearingNoticeViewer,
   getHearingBundle,
   getDecisionAndReasonsViewer,
+  getUpdatedTribunalDecisionWithRule32Viewer,
   getLrReasonsForAppealViewer,
   getFtpaAppellantApplication,
   getFtpaDecisionDetails,

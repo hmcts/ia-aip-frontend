@@ -139,6 +139,7 @@ interface CaseData {
   updateTribunalDecisionList?: string;
   updatedAppealDecision?: string;
   updateTribunalDecisionAndReasonsFinalCheck?: string;
+  rule32NoticeDocument?: SupportingDocument;
   appealOutOfCountry?: string;
   hasSponsor?: string;
   sponsorGivenNames?: string;

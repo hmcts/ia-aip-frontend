@@ -478,6 +478,7 @@ export default class UpdateAppealService {
       isDecisionAllowed: caseData.isDecisionAllowed,
       updateTribunalDecisionList: caseData.updateTribunalDecisionList,
       updatedAppealDecision: caseData.updatedAppealDecision,
+      typesOfUpdateTribunalDecision: caseData.typesOfUpdateTribunalDecision,
       updateTribunalDecisionAndReasonsFinalCheck: caseData.updateTribunalDecisionAndReasonsFinalCheck,
       rule32NoticeDocs: rule32NoticeDocs,
       appealOutOfCountry: caseData.appealOutOfCountry,

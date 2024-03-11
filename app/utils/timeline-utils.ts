@@ -158,14 +158,18 @@ function getUpdateTribunalDecisionHistory(req: Request, ftpaSetAsideFeatureEnabl
   let latestUpdateTribunalDecisionHistory = getLatestUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
 
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled)) {
-
-    let originalTribunalDecision = req.session.appeal.isDecisionAllowed && req.session.appeal.isDecisionAllowed.toLowerCase() || null;
-    let updatedAppealDecision = req.session.appeal.updatedAppealDecision && req.session.appeal.updatedAppealDecision.toLowerCase() || null;
     let timelineText = '';
+    let originalTribunalDecision;
+    let newTribunalDecision = req.session.appeal.updatedAppealDecision && req.session.appeal.updatedAppealDecision.toLowerCase() || null;
+    if (req.session.appeal.typesOfUpdateTribunalDecision && req.session.appeal.typesOfUpdateTribunalDecision.value) {
+      if (req.session.appeal.typesOfUpdateTribunalDecision.value.label.includes('Yes')) {
+        originalTribunalDecision = (newTribunalDecision === 'allowed') ? 'dismissed' : 'allowed';
+      }
+    }
 
-    if (originalTribunalDecision === 'allowed' && updatedAppealDecision === 'dismissed') {
+    if (originalTribunalDecision === 'allowed' && newTribunalDecision === 'dismissed') {
       timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.fromAllowedToDismissedText;
-    } else if (originalTribunalDecision === 'dismissed' && updatedAppealDecision === 'allowed') {
+    } else if (originalTribunalDecision === 'dismissed' && newTribunalDecision === 'allowed') {
       timelineText = i18n.pages.overviewPage.timeline.updateTribunalDecision.underRule31.fromDismissedToAllowedText;
     } else {
       return [];

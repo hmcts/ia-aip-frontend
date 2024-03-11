@@ -52,7 +52,7 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
     const appeal = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
 
-    return res.render('submitted-application/fee-support-refund.njk', {
+    return res.render('ask-for-fee-remission/fee-support-refund.njk', {
       previousPage: paths.common.overview,
       pageTitle: i18n.pages.remissionOptionPage.refundTitle,
       formAction: paths.appealSubmitted.feeSupportRefund,
@@ -79,7 +79,7 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
     try {
       const validation = remissionOptionsValidation(req.body);
       if (validation) {
-        return res.render('submitted-application/fee-support-refund.njk', {
+        return res.render('ask-for-fee-remission/fee-support-refund.njk', {
           errors: validation,
           errorList: Object.values(validation),
           previousPage: paths.common.overview,

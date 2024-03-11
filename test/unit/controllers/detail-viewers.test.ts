@@ -420,6 +420,7 @@ describe('Detail viewer Controller', () => {
 
   describe('getAppealDetailsViewer', () => {
     let expectedSummaryRows;
+    let expectedSummaryRowsWithDlrmFeeRemission;
 
     beforeEach(() => {
       req.session.appeal = {
@@ -431,8 +432,10 @@ describe('Detail viewer Controller', () => {
         application: {
           appellantInUk: 'Yes',
           homeOfficeRefNumber: 'A1234567',
+          hasSponsor: 'No',
           outsideUkWhenApplicationMade: 'No',
           gwfReferenceNumber: '',
+          decisionHearingFeeOption: 'decisionWithHearing',
           dateClientLeaveUk: {
             year: '2022',
             month: '2',
@@ -574,6 +577,37 @@ describe('Detail viewer Controller', () => {
           }
         }
       ];
+
+      expectedSummaryRowsWithDlrmFeeRemission = {
+        'aboutAppealRows': [
+          { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+          { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
+          { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
+          { key: { text: 'Home Office decision letter' },
+            value: {
+              html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>"
+            }
+          },
+          { key: { text: 'Sponsor' }, value: { html: 'No' } },
+          { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
+          { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
+          { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
+          { key: { text: 'Supporting evidence' },
+            value: {
+              html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>"
+            }
+          }
+        ],
+        'personalDetailsRows': [
+          { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
+          { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
+          { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+          { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET  LONDON United Kingdom W1W 7RT' } },
+          { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
+        ],
+        'feeDetailsRows': [
+        ]
+      };
     });
 
     it('should render detail-viewers/appeal-details-viewer.njk', async () => {
@@ -624,22 +658,191 @@ describe('Detail viewer Controller', () => {
       });
     });
 
-    // it('should render detail-viewers/appeal-details-viewer.njk deprivation appeal type, payments flag ON @detailsViewer', async () => {
-    //   sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
-    //   expectedSummaryRows[8].value.html = 'Deprivation of Citizenship';
-    //   expectedSummaryRows.push(
-    //     { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } }
-    //   );
-    //   req.session.appeal.application.appealType = 'deprivation';
-    //   req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
-    //
-    //   await getAppealDetailsViewer(req as Request, res as Response, next);
-    //   expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
-    //     title: i18n.pages.detailViewers.appealDetails.title,
-    //     previousPage: paths.common.overview,
-    //     data: expectedSummaryRows
-    //   });
-    // });
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has' +
+      ' sponsor not in Uk', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[0].value.html = 'No'; // appellant in uk
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[4].value.html = 'Yes'; // sponsor
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows.splice(5,0,
+        { key: { text: 'Sponsor\'s name' }, value: { html: 'Sponsor Name' } },
+        { key: { text: 'Sponsor\'s address' }, value: { html: '60 GREAT PORTLAND STREET<br>LONDON<br>United Kingdom<br>W1W 7RT' } },
+        { key: { text: 'Sponsor\'s contact details' }, value: { html: 'test@email.com<br>7759991234' } },
+        { key: { text: 'Sponsor has access to information' }, value: { html: 'Sponsor authorisation' } }
+      );
+
+      expectedSummaryRowsWithDlrmFeeRemission.personalDetailsRows[3].key.text = 'Address'; // out of country address
+      expectedSummaryRowsWithDlrmFeeRemission.personalDetailsRows[3].value.html = 'some appellant out of country address'; // out of country address
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } }
+      );
+
+      req.session.appeal.application.appellantInUk = 'No';
+      req.session.appeal.application.hasSponsor = 'Yes';
+      req.session.appeal.application.sponsorNameForDisplay = 'Sponsor Name';
+      req.session.appeal.application.sponsorAddress = {
+        line1: '60 GREAT PORTLAND STREET',
+        line2: '',
+        city: 'LONDON',
+        county: 'United Kingdom',
+        postcode: 'W1W 7RT'
+      };
+      req.session.appeal.application.sponsorContactDetails = {
+        email: 'test@email.com',
+        wantsEmail: true,
+        phone: '7759991234',
+        wantsSms: true
+      };
+      req.session.appeal.application.appellantOutOfCountryAddress = 'some appellant out of country address';
+      req.session.appeal.application.sponsorAuthorisation = 'Sponsor authorisation';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } }
+      );
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remissionOption is asylumSupportFromHo', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remissionOption is parentGetSupportFromLocalAuthority', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank'" +
+              " rel='noopener noreferrer' href='/view/document/docName1'>document 1</a><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/docName2'>document 2</a>" } }
+      );
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'parentGetSupportFromLocalAuthority';
+      req.session.appeal.application.localAuthorityLetters = [
+        {
+          fileId : 'docName1',
+          name: 'document 1'
+        },
+        {
+          fileId : 'docName2',
+          name: 'document 2'
+        }
+      ];
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remissionOption is noneOfTheseStatements', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Help with fees reference number' }, value: {  html: 'helpWithFeesRefNumberValue' } }
+      );
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesRefNumber = 'helpWithFeesRefNumberValue';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remissionOption is noneOfTheseStatements and helpWithFeesOption is willPayForAppeal', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£20' } },
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
+      );
+      req.session.appeal.feeWithHearing = '20';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
+      req.session.appeal.paymentStatus = 'Paid';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
 
     it('should catch exception and call next with the error', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(false);
@@ -3703,7 +3906,8 @@ describe('Detail viewer Controller', () => {
         ftpaRespondentOutOfTimeDocuments: [ ...documents ],
         ftpaRespondentDecisionDate: '2023-03-20',
         ftpaRespondentDecisionDocument: [ ...documents ],
-        ftpaRespondentDecisionOutcomeType: 'refused'
+        ftpaRespondentDecisionOutcomeType: 'refused',
+        ftpaApplicationRespondentDocument: document
       };
       res.render = sandbox.stub().throws(error);
 

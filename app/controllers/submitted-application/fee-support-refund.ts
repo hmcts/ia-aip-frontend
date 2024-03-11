@@ -6,20 +6,14 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getFee } from '../../utils/payments-utils';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 
-function getRemissionOptionsQuestion(appeal: Appeal) {
-  const fee = getFee(appeal).calculated_amount;
-
+function getOptionsQuestion(appeal: Appeal) {
   let remissionOption = appeal.application.remissionOption || null;
-  const selectionHint = i18n.pages.remissionOptionPage.options.noneOfTheseStatements.hint;
+
   return {
-    title: i18n.pages.remissionOptionPage.title,
-    hint: i18n.pages.remissionOptionPage.hint.replace('{{ fee }}', fee),
+    title: i18n.pages.remissionOptionPage.refundTitle,
     options: [
       {
         value: i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value,
@@ -42,12 +36,9 @@ function getRemissionOptionsQuestion(appeal: Appeal) {
         checked: remissionOption === i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value
       },
       {
-        value: i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value,
-        text: i18n.pages.remissionOptionPage.options.noneOfTheseStatements.text,
-        hint: {
-          text: selectionHint
-        },
-        checked: remissionOption === i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value
+        value: i18n.pages.remissionOptionPage.options.iWantToGetHelpWithFees.value,
+        text: i18n.pages.remissionOptionPage.options.iWantToGetHelpWithFees.text,
+        checked: remissionOption === i18n.pages.remissionOptionPage.options.iWantToGetHelpWithFees.value
       }
     ],
     inline: false
@@ -56,17 +47,16 @@ function getRemissionOptionsQuestion(appeal: Appeal) {
 
 async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
   try {
-    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     const appeal = req.session.appeal;
     appeal.application.isEdit = _.has(req.query, 'edit');
 
-    return res.render('appeal-application/fee-support/fee-support.njk', {
-      previousPage: paths.appealStarted.taskList,
-      pageTitle: i18n.pages.remissionOptionPage.title,
-      formAction: paths.appealStarted.feeSupport,
-      question: getRemissionOptionsQuestion(req.session.appeal),
-      saveAndContinue: true
+    return res.render('submitted-application/fee-support-refund.njk', {
+      previousPage: paths.common.overview,
+      pageTitle: i18n.pages.remissionOptionPage.refundTitle,
+      formAction: paths.appealSubmitted.feeSupportRefund,
+      question: getOptionsQuestion(req.session.appeal)
     });
   } catch (error) {
     next(error);
@@ -75,8 +65,9 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
 
 function postFeeSupport(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
+
     async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
       req.session.appeal = {
@@ -86,19 +77,15 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
     }
 
     try {
-      if (!shouldValidateWhenSaveForLater(req.body, 'answer')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
       const validation = remissionOptionsValidation(req.body);
       if (validation) {
-        return res.render('appeal-application/fee-support/fee-support.njk', {
+        return res.render('submitted-application/fee-support-refund.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealStarted.taskList,
-          pageTitle: i18n.pages.remissionOptionPage.title,
-          formAction: paths.appealStarted.feeSupport,
-          question: getRemissionOptionsQuestion(req.session.appeal),
-          saveAndContinue: true
+          previousPage: paths.common.overview,
+          pageTitle: i18n.pages.remissionOptionPage.refundTitle,
+          formAction: paths.appealSubmitted.feeSupportRefund,
+          question: getOptionsQuestion(req.session.appeal)
         });
       }
 
@@ -111,7 +98,7 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
         }
       };
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
-      await persistAppeal(appeal, dlrmFeeRemissionFlag);
+      await persistAppeal(appeal, refundFeatureEnabled);
       const defaultRedirect = getFeeSupportRedirectPage(selectedValue);
       let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
@@ -121,33 +108,33 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupFeeSupportController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupFeeSupportRefundController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.appealStarted.feeSupport, middleware, getFeeSupport);
-  router.post(paths.appealStarted.feeSupport, middleware, postFeeSupport(updateAppealService));
+  router.get(paths.appealSubmitted.feeSupportRefund, middleware, getFeeSupport);
+  router.post(paths.appealSubmitted.feeSupportRefund, middleware, postFeeSupport(updateAppealService));
   return router;
 }
 
 function getFeeSupportRedirectPage(remissionOption: string): string {
   switch (remissionOption) {
     case i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value:
-      return paths.appealStarted.asylumSupport;
+      return paths.appealSubmitted.asylumSupportRefund;
     case i18n.pages.remissionOptionPage.options.feeWaiverFromHo.value:
-      return paths.appealStarted.feeWaiver;
+      return paths.appealSubmitted.feeWaiverRefund;
     case i18n.pages.remissionOptionPage.options.under18GetSupportFromLocalAuthority.value:
     case i18n.pages.remissionOptionPage.options.parentGetSupportFromLocalAuthority.value:
-      return paths.appealStarted.localAuthorityLetter;
-    case i18n.pages.remissionOptionPage.options.noneOfTheseStatements.value:
-      return paths.appealStarted.helpWithFees;
+      return paths.appealSubmitted.localAuthorityLetterRefund;
+    case i18n.pages.remissionOptionPage.options.iWantToGetHelpWithFees.value:
+      return paths.appealSubmitted.helpWithFeesRefund;
     default:
       throw new Error('The selected remission option is not valid. Please check the value.');
   }
 }
 
 export {
-  setupFeeSupportController,
+  setupFeeSupportRefundController,
+  getFeeSupportRedirectPage,
   getFeeSupport,
   postFeeSupport,
-  getFeeSupportRedirectPage,
-  getRemissionOptionsQuestion
+  getOptionsQuestion
 };

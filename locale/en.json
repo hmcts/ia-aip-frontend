@@ -3642,7 +3642,8 @@
     "feeWaiverPage": {
       "title": "Home Office fee waiver",
       "legend1": "You do not have to pay the fee for this appeal if you got a fee waiver for the application to the Home Office that you are now appealing.",
-      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal."
+      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal.",
+      "legendForRefund": "The Tribunal will check with the Home Office that you had a fee waiver."
     },
     "uploadLocalAuthorityLetter": {
       "title": "Upload local authority letter",
@@ -3679,11 +3680,13 @@
         }
       },
       "checkAndSendWantToApply": "I want to apply for help with fees",
-      "checkAndSendWillPayForAppeal": "I want to pay for the appeal now"
+      "checkAndSendWillPayForAppeal": "I want to pay for the appeal now",
+      "refundsNote": "The fee you paid for this appeal is £{{ fee }}. You may be able to get a full or partial refund if you:"
     },
     "stepsToHelpWithFees": {
       "title": "Apply for help with fees",
       "tips": "Follow these steps to submit a help with fees application along with this appeal.",
+      "tipsRefund": "Follow these steps to submit a help with fees application.",
       "bullet1": "Go to <a href=\"https://helpwithcourtfees.service.gov.uk/checklist/\" target=\"_blank\">apply for help with fees (opens in a new tab)</a>",
       "bullet2": "When you are asked to enter a court or tribunal form number, enter IAFT-1",
       "bullet3": "Make a note of the help with fees reference number you get when you complete your help with fees application",

@@ -6,23 +6,22 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../../utils/url-utils';
 import { getRedirectPage } from '../../utils/utils';
 import { asylumSupportValidation } from '../../utils/validations/fields-validations';
 
 async function getAsylumSupport(req: Request, res: Response, next: NextFunction) {
   try {
-    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
     const asylumSupportRefNumber = req.session.appeal.application.asylumSupportRefNumber || null;
     return res.render('appeal-application/fee-support/asylum-support.njk', {
-      previousPage: paths.appealStarted.feeSupport,
-      formAction: paths.appealStarted.asylumSupport,
+      previousPage: paths.appealSubmitted.feeSupportRefund,
+      formAction: paths.appealSubmitted.asylumSupportRefund,
       asylumSupportRefNumber,
-      saveAndContinue: true
+      saveAndContinue: true,
+      refundJourney: true
     });
   } catch (error) {
     next(error);
@@ -31,10 +30,10 @@ async function getAsylumSupport(req: Request, res: Response, next: NextFunction)
 
 function postAsylumSupport(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-    if (!dlrmFeeRemissionFlag) return res.redirect(paths.common.overview);
-    async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
+    async function persistAppeal(appeal: Appeal, refundFeatureEnabled) {
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], refundFeatureEnabled);
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
@@ -42,18 +41,16 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
     }
 
     try {
-      if (!shouldValidateWhenSaveForLater(req.body, 'asylumSupportRefNumber')) {
-        return getConditionalRedirectUrl(req, res, paths.common.overview + '?saved');
-      }
       const validation = asylumSupportValidation(req.body);
       if (validation) {
         return res.render('appeal-application/fee-support/asylum-support.njk', {
           errors: validation,
           errorList: Object.values(validation),
-          previousPage: paths.appealStarted.feeSupport,
+          previousPage: paths.appealSubmitted.feeSupportRefund,
           pageTitle: i18n.pages.asylumSupportPage.title,
-          formAction: paths.appealStarted.asylumSupport,
-          saveAndContinue: true
+          formAction: paths.appealSubmitted.asylumSupportRefund,
+          saveAndContinue: true,
+          refundJourney: true
         });
       }
       const selectedValue = req.body['asylumSupportRefNumber'];
@@ -67,7 +64,7 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
       };
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
       resetJourneyValues(appeal.application);
-      await persistAppeal(appeal, dlrmFeeRemissionFlag);
+      await persistAppeal(appeal, refundFeatureEnabled);
       const defaultRedirect = paths.appealStarted.taskList;
       let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
@@ -77,10 +74,10 @@ function postAsylumSupport(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupAsylumSupportController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupAsylumSupportRefundController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
   const router = Router();
-  router.get(paths.appealStarted.asylumSupport, middleware, getAsylumSupport);
-  router.post(paths.appealStarted.asylumSupport, middleware, postAsylumSupport(updateAppealService));
+  router.get(paths.appealSubmitted.asylumSupportRefund, middleware, getAsylumSupport);
+  router.post(paths.appealSubmitted.asylumSupportRefund, middleware, postAsylumSupport(updateAppealService));
   return router;
 }
 
@@ -94,6 +91,6 @@ function resetJourneyValues(application: AppealApplication) {
 export {
   getAsylumSupport,
   postAsylumSupport,
-  setupAsylumSupportController,
+  setupAsylumSupportRefundController,
   resetJourneyValues
 };

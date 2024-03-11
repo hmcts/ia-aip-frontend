@@ -161,6 +161,7 @@ interface Appeal {
   isDecisionAllowed?: string;
   updateTribunalDecisionList?: string;
   updatedAppealDecision?: string;
+  typesOfUpdateTribunalDecision?: DynamicList;
   updateTribunalDecisionAndReasonsFinalCheck?: string;
   rule32NoticeDocs?: Evidence;
   appealOutOfCountry?: string;

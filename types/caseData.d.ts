@@ -137,6 +137,7 @@ interface CaseData {
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
   updateTribunalDecisionList?: string;
+  typesOfUpdateTribunalDecision?: DynamicList;
   updatedAppealDecision?: string;
   updateTribunalDecisionAndReasonsFinalCheck?: string;
   rule32NoticeDocument?: SupportingDocument;
@@ -319,4 +320,9 @@ interface CcdDecisionAndReasons {
   documentAndReasonsDocument?: SupportingDocument;
   summariseChanges?: string;
   [key: string]: any;
+}
+
+interface DynamicList {
+  value?: Value;
+  list_items?: Value[];
 }

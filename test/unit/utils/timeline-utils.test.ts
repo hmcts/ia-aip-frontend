@@ -560,7 +560,9 @@ describe('timeline-utils', () => {
 
     it('should show the updated tribunal decision history from the allowed status to dismissed status', () => {
 
-      req.session.appeal.isDecisionAllowed = 'allowed';
+      req.session.appeal.typesOfUpdateTribunalDecision = {
+        value: { code: 'dismissed', label: 'Yes, change decision to Dismissed' }
+      };
       req.session.appeal.updatedAppealDecision = 'dismissed';
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
@@ -581,7 +583,9 @@ describe('timeline-utils', () => {
 
     it('should show the updated tribunal decision history from dismissed status to allowed status', () => {
 
-      req.session.appeal.isDecisionAllowed = 'dismissed';
+      req.session.appeal.typesOfUpdateTribunalDecision = {
+        value: { code: 'allowed', label: 'Yes, change decision to Allowed' }
+      };
       req.session.appeal.updatedAppealDecision = 'allowed';
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);

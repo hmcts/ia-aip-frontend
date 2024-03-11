@@ -411,8 +411,7 @@
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
       "fileUploadTitle": "Upload a file",
-      "uploadedFileTitle": "Uploaded file",
-      "fileUploadTitleDlrmFeeRemission": "<span class='govuk-body govuk-!-font-weight-bold'> Upload local authority letter</span><br></br>"
+      "uploadedFileTitle": "Uploaded file"
     },
     "successPage": {
       "title": "Your appeal details have been sent",
@@ -1105,15 +1104,24 @@
           "decision": "A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>",
           "description": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>",
           "descriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+          "updatedDescriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
           "info": {
             "title": "Helpful Information",
             "titleFtpaEnabled": "Appeal Information",
             "text": "If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
             "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
             "urlFtpaEnabled": "<a href=\"{{ paths.ftpa.ftpaApplication }}\">Apply for permission to appeal to the Upper Tribunal</a>"
+          },
+          "underRule32": {
+            "description": "A judge has reviewed your appeal decision and decided that your appeal should be heard again. <br>",
+            "url": "<a href={{ paths.common.decisionAndReasonsViewerWithRule32 }}>Read the reasons for this decision</a> <br>",
+            "info": {
+              "title": "What happens next",
+              "text": "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
+            }
           }
         },
-        "ftpaSubmitted":{
+        "ftpaSubmitted": {
           "description": {
             "appellant": [
               "A judge will decide your application for permission to appeal to the Upper Tribunal.",
@@ -1562,9 +1570,11 @@
             {
               "title": "Useful documents",
               "text": "Decision and Reasons",
-              "href": "{{ paths.common.decisionAndReasonsViewer }}"
+              "href": ""
             }
-          ]
+          ],
+          "originalLinks": "{{ paths.common.decisionAndReasonsViewer }}",
+          "updatedLinks": "{{ paths.common.updatedDecisionAndReasonsViewer }}"
         },
         "applyForFTPAAppellant": {
           "text": "You applied for permission to appeal to the Upper Tribunal.",
@@ -1625,17 +1635,31 @@
           }
         },
         "updateTribunalDecision": {
-          "fromAllowedToDismissedText": "The Tribunal changed the appeal decision from allowed to dismissed.",
-          "fromDismissedToAllowedText": "The Tribunal changed the appeal decision from dismissed to allowed.",
-          "newDecisionAndReasonsDocument": {
-            "text": "The Tribunal created a new Decision and Reasons document for your appeal",
-            "links": [
-              {
-                "title": "Useful documents",
-                "text": "See the new Decisions and Reasons",
-                "href": ""
-              }
-            ]
+          "underRule31": {
+            "fromAllowedToDismissedText": "The Tribunal changed the appeal decision from allowed to dismissed.",
+            "fromDismissedToAllowedText": "The Tribunal changed the appeal decision from dismissed to allowed.",
+            "newDecisionAndReasonsDocument": {
+              "text": "The Tribunal created a new Decision and Reasons document for your appeal",
+              "links": [
+                {
+                  "title": "Useful documents",
+                  "text": "See the new Decisions and Reasons",
+                  "href": "{{ paths.common.updatedDecisionAndReasonsViewer }}"
+                }
+              ]
+            }
+          },
+          "underRule32": {
+            "documentOfReasonsForTheDecision": {
+              "text": "The Tribunal decided that your appeal will be heard again.",
+              "links": [
+                {
+                  "title": "Useful documents",
+                  "text": "Reasons for the decision",
+                  "href": "{{ paths.common.decisionAndReasonsViewerWithRule32 }}"
+                }
+              ]
+            }
           }
         }
       }
@@ -1923,7 +1947,14 @@
       },
       "decisionsAndReasons": {
         "title": "Decision and Reasons",
+        "originalSubTitle": "Original Decision and Reasons",
+        "correctedSubTitle": "Corrected Decision and Reasons ",
+        "summariseChanges": "What has been corrected",
         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
+      },
+      "updatedTribunalDecisionWithRule32": {
+        "title": "Reasons for decision",
+        "documentText": "Reasons your appeal will be heard again"
       },
       "ftpaApplication": {
         "title": {

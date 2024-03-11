@@ -4,7 +4,10 @@ function appealHasRemissionOption(application: AppealApplication) {
     'feeWaiverFromHo',
     'under18GetSupportFromLocalAuthority',
     'parentGetSupportFromLocalAuthority'
-  ].includes(application.remissionOption);
+  ].includes(application.remissionOption) ||
+    'noneOfTheseStatements' === application.remissionOption &&
+    ('wantToApply' === application.helpWithFeesOption || 'alreadyApplied' === application.helpWithFeesOption)
+    && application.helpWithFeesRefNumber;
 }
 
 function appealHasNoRemissionOption(application: AppealApplication) {

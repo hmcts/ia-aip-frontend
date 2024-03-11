@@ -760,6 +760,29 @@ function getDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunc
   }
 }
 
+async function getUpdatedTribunalDecisionWithRule32Viewer(req: Request, res: Response, next: NextFunction) {
+  const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  if (ftpaSetAsideFeatureEnabled) {
+    try {
+      let previousPage: string = paths.common.overview;
+
+      let rule32Document = req.session.appeal.rule32NoticeDocs;
+      let fileNameFormatted = fileNameFormatter(rule32Document.name);
+
+      const data = [];
+      data.push(addSummaryRow(i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${rule32Document.fileId}'>${fileNameFormatted}</a>`]));
+
+      return res.render('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.title,
+        data,
+        previousPage
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
 function getOutOfTimeDecisionViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
@@ -1085,6 +1108,60 @@ function getRespondentDirectionHistoryDetails(req: Request, res: Response, next:
   }
 }
 
+async function getUpdatedDecisionAndReasonsViewer(req: Request, res: Response, next: NextFunction) {
+  const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  if (ftpaSetAsideFeatureEnabled) {
+    try {
+      let previousPage: string = paths.common.overview;
+      const updatedDecisionAndReasons = req.session.appeal.updatedDecisionAndReasons;
+      const coverLetterDocument = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'decisionAndReasonsCoverLetter');
+      const finalDecisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf');
+      const updatedDecisions: SummaryList[] = [];
+      const data = {
+        decision: []
+      };
+
+      if (updatedDecisionAndReasons && updatedDecisionAndReasons.length) {
+        for (let index = 0; index < updatedDecisionAndReasons.length; index++) {
+          const indexRow: number = index + 1;
+          const dataRows: SummaryRow[] = [];
+          const decision = updatedDecisionAndReasons[index];
+          dataRows.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(decision.dateCoverLetterDocumentUploaded).format(dayMonthYearFormat)]));
+          dataRows.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${decision.coverLetterDocument.fileId}'>${decision.coverLetterDocument.name}</a>`]));
+          if (decision.documentAndReasonsDocument) {
+            dataRows.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(decision.dateDocumentAndReasonsDocumentUploaded).format(dayMonthYearFormat)]));
+            dataRows.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${decision.documentAndReasonsDocument.fileId}'>${decision.documentAndReasonsDocument.name}</a>`]));
+            dataRows.push(addSummaryRow(i18n.pages.detailViewers.decisionsAndReasons.summariseChanges, [decision.summariseChanges]));
+          }
+          updatedDecisions.push({
+            summaryRows: dataRows,
+            title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + indexRow
+          });
+        }
+      }
+
+      let fileNameFormatted = fileNameFormatter(coverLetterDocument.name);
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(coverLetterDocument.dateUploaded).format(dayMonthYearFormat)]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${coverLetterDocument.fileId}'>${fileNameFormatted}</a>`]));
+
+      fileNameFormatted = fileNameFormatter(finalDecisionAndReasonsPdfDoc.name);
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.common.dateUploaded, [moment(finalDecisionAndReasonsPdfDoc.dateUploaded).format(dayMonthYearFormat)]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.common.document, [`<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${finalDecisionAndReasonsPdfDoc.fileId}'>${fileNameFormatted}</a>`]));
+
+      return res.render('templates/updated-details-viewer.njk', {
+        title: i18n.pages.detailViewers.decisionsAndReasons.title,
+        originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
+        description: i18n.pages.detailViewers.decisionsAndReasons.description,
+        data,
+        updatedDecisions,
+        previousPage
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
 function setupDetailViewersController(documentManagementService: DocumentManagementService): Router {
   const router = Router();
   router.get(paths.common.documentViewer + '/:documentId', getDocumentViewer(documentManagementService));
@@ -1100,10 +1177,12 @@ function setupDetailViewersController(documentManagementService: DocumentManagem
   router.get(paths.common.hearingNoticeViewer, getHearingNoticeViewer);
   router.get(paths.common.hearingBundleViewer, getHearingBundle);
   router.get(paths.common.decisionAndReasonsViewer, getDecisionAndReasonsViewer);
+  router.get(paths.common.decisionAndReasonsViewerWithRule32, getUpdatedTribunalDecisionWithRule32Viewer);
   router.get(paths.common.lrReasonsForAppealViewer, getLrReasonsForAppealViewer);
   router.get(paths.common.ftpaAppellantApplicationViewer, getFtpaAppellantApplication);
   router.get(paths.common.ftpaDecisionViewer, getFtpaDecisionDetails);
   router.get(paths.common.directionHistoryViewer, getDirectionHistory);
+  router.get(paths.common.updatedDecisionAndReasonsViewer, getUpdatedDecisionAndReasonsViewer);
   return router;
 }
 
@@ -1126,9 +1205,11 @@ export {
   getHearingNoticeViewer,
   getHearingBundle,
   getDecisionAndReasonsViewer,
+  getUpdatedTribunalDecisionWithRule32Viewer,
   getLrReasonsForAppealViewer,
   getFtpaAppellantApplication,
   getFtpaDecisionDetails,
   getDirectionHistory,
-  getRespondentApplicationSummaryRows
+  getRespondentApplicationSummaryRows,
+  getUpdatedDecisionAndReasonsViewer
 };

@@ -20,6 +20,8 @@ import {
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
   getReasonsForAppealViewer, getRespondentApplicationSummaryRows,
+  getUpdatedDecisionAndReasonsViewer,
+  getUpdatedTribunalDecisionWithRule32Viewer,
   setupCmaRequirementsViewer,
   setupDetailViewersController
 } from '../../../app/controllers/detail-viewers';
@@ -1721,6 +1723,40 @@ describe('Detail viewer Controller', () => {
         res.render = sandbox.stub().throws(error);
 
         getDecisionAndReasonsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render updated decision and reasons page with rule 32', () => {
+    const documents = {
+      fileId: 'f2194fde-001a-4640-8b7e-b90a7189e6ba',
+      name: 'rule32.pdf'
+    };
+
+    it('should render templates/details-viewer.njk with updated decision and reasons page rule 32', async () => {
+      req.session.appeal.rule32NoticeDocs = documents;
+      const expectedSummaryRows = [
+        {
+          key: { text: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.documentText },
+          value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f2194fde-001a-4640-8b7e-b90a7189e6ba'>rule32(PDF)</a>` }
+        }
+      ];
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer.njk', {
+        title: i18n.pages.detailViewers.updatedTribunalDecisionWithRule32.title,
+        data: expectedSummaryRows,
+        previousPage: paths.common.overview
+      });
+
+      it('getUpdatedTribunalDecisionWithRule32Viewer should catch error and call next with it', async () => {
+        req.session.appeal.rule32NoticeDocs = documents;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        await getUpdatedTribunalDecisionWithRule32Viewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
     });
@@ -3970,6 +4006,136 @@ describe('Detail viewer Controller', () => {
       expect(next).to.have.been.calledWith(error);
     });
 
+  });
+
+  describe('should render updated decision and reasons page', () => {
+    const documents = [
+      {
+        fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-FINAL.pdf',
+        id: '2',
+        tag: 'finalDecisionAndReasonsPdf',
+        dateUploaded: '2022-01-26'
+      },
+      {
+        fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+        name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter.PDF',
+        id: '1',
+        tag: 'decisionAndReasonsCoverLetter',
+        dateUploaded: '2022-01-26'
+      }
+    ];
+    const updatedDecisionAndReasons: DecisionAndReasons[] = [
+      {
+        id: '2',
+        documentAndReasonsDocument: {
+          fileId: '976fa409-4aab-40a4-a3f9-0c918f7293c8',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf'
+        },
+        updatedDecisionDate: '2023-12-15',
+        dateCoverLetterDocumentUploaded: '2023-12-15',
+        dateDocumentAndReasonsDocumentUploaded: '2023-12-15',
+        summariseChanges: 'Summarise explanation',
+        coverLetterDocument: {
+          fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF'
+        }
+      },
+      {
+        id: '1',
+        updatedDecisionDate: '2023-10-15',
+        dateCoverLetterDocumentUploaded: '2023-10-15',
+        coverLetterDocument: {
+          fileId: '723e6179-9a9d-47d9-9c76-80ccc23917db',
+          name: 'PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF'
+        }
+      }
+    ];
+    it('should render templates/updated-details-viewer.njk with updated decision and reasons collection', async () => {
+      req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+      req.session.appeal.updatedDecisionAndReasons = updatedDecisionAndReasons;
+      const expectedSummaryRows = {
+        decision: [
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '26 January 2022' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter(PDF)</a>` }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.dateUploaded },
+            value: { html: '26 January 2022' }
+          },
+          {
+            key: { text: i18n.pages.detailViewers.common.document },
+            value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-FINAL(PDF)</a>` }
+          }
+        ]
+      };
+
+      const expectedSummaryList: SummaryList[] = [
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 December 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 December 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/976fa409-4aab-40a4-a3f9-0c918f7293c8'>PA 50012 2022-bond20-Decision-and-reasons-AMENDED.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.decisionsAndReasons.summariseChanges },
+              value: { html: 'Summarise explanation' }
+            }
+          ],
+          title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '1'
+        },
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.common.dateUploaded },
+              value: { html: '15 October 2023' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.common.document },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/723e6179-9a9d-47d9-9c76-80ccc23917db'>PA 50012 2022-bond20-Decision-and-reasons-Cover-letter-AMENDED.PDF</a>` }
+            }
+          ],
+          title: i18n.pages.detailViewers.decisionsAndReasons.correctedSubTitle + '2'
+        }
+      ];
+
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false).resolves(true);
+      await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/updated-details-viewer.njk', {
+        title: i18n.pages.detailViewers.decisionsAndReasons.title,
+        originalSubTitle: i18n.pages.detailViewers.decisionsAndReasons.originalSubTitle,
+        description: i18n.pages.detailViewers.decisionsAndReasons.description,
+        data: expectedSummaryRows,
+        updatedDecisions: expectedSummaryList,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', async () => {
+        req.session.appeal.finalDecisionAndReasonsDocuments = documents;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
   });
 
 });

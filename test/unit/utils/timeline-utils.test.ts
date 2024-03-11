@@ -126,6 +126,61 @@ describe('timeline-utils', () => {
         }]
       );
     });
+
+    it('Should construct the appeal decision section with updated decision', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      req.session.appeal.updatedAppealDecision = 'Allowed';
+      const appealDecisionSection = [Events.SEND_DECISION_AND_REASONS.id];
+      req.session.appeal.history = [
+        {
+          'id': 'sendDecisionAndReasons',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'judge'
+          }
+        }
+      ] as HistoryEvent[];
+      const result = constructSection(appealDecisionSection, req.session.appeal.history, null, req as Request);
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'The Decision and Reasons documents is ready to view.',
+          'links': [{
+            'title': 'Useful documents',
+            'text': 'Decision and Reasons',
+            'href': '{{ paths.common.updatedDecisionAndReasonsViewer }}'
+          }]
+        }]
+      );
+    });
+
+    it('Should construct the appeal decision section without updated decision', () => {
+      req.session.appeal.timeExtensionEventsMap = [];
+      const appealDecisionSection = [Events.SEND_DECISION_AND_REASONS.id];
+      req.session.appeal.history = [
+        {
+          'id': 'sendDecisionAndReasons',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'judge'
+          }
+        }
+      ] as HistoryEvent[];
+      const result = constructSection(appealDecisionSection, req.session.appeal.history, null, req as Request);
+      expect(result).to.deep.eq(
+        [{
+          'date': '14 April 2020',
+          'dateObject': new Date('2020-04-14T14:53:26.099'),
+          'text': 'The Decision and Reasons documents is ready to view.',
+          'links': [{
+            'title': 'Useful documents',
+            'text': 'Decision and Reasons',
+            'href': '{{ paths.common.decisionAndReasonsViewer }}'
+          }]
+        }]
+      );
+    });
   });
 
   describe('getApplicationEvents', () => {
@@ -505,7 +560,9 @@ describe('timeline-utils', () => {
 
     it('should show the updated tribunal decision history from the allowed status to dismissed status', () => {
 
-      req.session.appeal.isDecisionAllowed = 'allowed';
+      req.session.appeal.typesOfUpdateTribunalDecision = {
+        value: { code: 'dismissed', label: 'Yes, change decision to Dismissed' }
+      };
       req.session.appeal.updatedAppealDecision = 'dismissed';
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
@@ -526,7 +583,9 @@ describe('timeline-utils', () => {
 
     it('should show the updated tribunal decision history from dismissed status to allowed status', () => {
 
-      req.session.appeal.isDecisionAllowed = 'dismissed';
+      req.session.appeal.typesOfUpdateTribunalDecision = {
+        value: { code: 'allowed', label: 'Yes, change decision to Allowed' }
+      };
       req.session.appeal.updatedAppealDecision = 'allowed';
 
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
@@ -553,6 +612,33 @@ describe('timeline-utils', () => {
       const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
 
       expect(updatedTribunalDecisionHistory.length).to.be.eql(0);
+    });
+
+    it('should show the updated tribunal decision history with rule 32', () => {
+
+      req.session.appeal.updateTribunalDecisionList = 'underRule32';
+
+      const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req as Request, true);
+
+      expect(updatedTribunalDecisionHistory.length).to.be.eql(1);
+      updatedTribunalDecisionHistory.forEach(history => {
+        expect(history).to.contain.keys('date', 'dateObject', 'text', 'links');
+      });
+
+      expect(updatedTribunalDecisionHistory).to.deep.eq(
+        [{
+          'date': '01 March 2024',
+          'dateObject': new Date('2024-03-01T14:53:26.099'),
+          'text': 'The Tribunal decided that your appeal will be heard again.',
+          'links': [
+            {
+              'href': '{{ paths.common.decisionAndReasonsViewerWithRule32 }}',
+              'text': 'Reasons for the decision',
+              'title': 'Useful documents'
+            }
+          ]
+        }]
+      );
     });
 
     it('no updated tribunal decision history will be shown if history is null', () => {
@@ -602,7 +688,7 @@ describe('timeline-utils', () => {
           'text': 'The Tribunal created a new Decision and Reasons document for your appeal',
           'links': [
             {
-              'href': '',
+              'href': '{{ paths.common.updatedDecisionAndReasonsViewer }}',
               'text': 'See the new Decisions and Reasons',
               'title': 'Useful documents'
             }

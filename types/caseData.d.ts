@@ -137,8 +137,10 @@ interface CaseData {
   interpreterLanguage?: Collection<InterpreterLanguage>[];
   isDecisionAllowed?: string;
   updateTribunalDecisionList?: string;
+  typesOfUpdateTribunalDecision?: DynamicList;
   updatedAppealDecision?: string;
   updateTribunalDecisionAndReasonsFinalCheck?: string;
+  rule32NoticeDocument?: SupportingDocument;
   appealOutOfCountry?: string;
   hasSponsor?: string;
   sponsorGivenNames?: string;
@@ -185,6 +187,7 @@ interface CaseData {
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
+  correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
 }
 
 interface Application<T> {
@@ -307,4 +310,19 @@ interface Subscription {
   email: string;
   wantsSms: 'Yes' | 'No';
   mobileNumber: string;
+}
+
+interface CcdDecisionAndReasons {
+  updatedDecisionDate: string;
+  dateCoverLetterDocumentUploaded: string;
+  coverLetterDocument: SupportingDocument;
+  dateDocumentAndReasonsDocumentUploaded?: string;
+  documentAndReasonsDocument?: SupportingDocument;
+  summariseChanges?: string;
+  [key: string]: any;
+}
+
+interface DynamicList {
+  value?: Value;
+  list_items?: Value[];
 }

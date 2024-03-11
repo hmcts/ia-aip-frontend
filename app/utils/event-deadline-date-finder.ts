@@ -3,7 +3,8 @@ import { Request } from 'express';
 import moment from 'moment';
 import { Events } from '../data/events';
 import {
-  isUpdateTribunalDecideWithRule31
+  isUpdateTribunalDecideWithRule31,
+  isUpdateTribunalDecideWithRule32
 } from '../utils/utils';
 import { dayMonthYearFormat } from './date-utils';
 import { appealHasNoRemissionOption } from './remission-utils';
@@ -59,6 +60,8 @@ function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsi
   let theDateOfdecisionAndReasons;
   if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled.valueOf())) {
     theDateOfdecisionAndReasons = req.session.appeal.history.find(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id).createdDate;
+  } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled.valueOf())) {
+    return null;
   } else {
     theDateOfdecisionAndReasons = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf').dateUploaded;
   }

@@ -210,5 +210,9 @@ export const Events = {
     id: 'decideFtpaApplication',
     summary: 'Decide FTPA application',
     description: 'Decide FTPA application'
+  },
+  REQUEST_FEE_REMISSION: {
+    id: 'requestFeeRemission',
+    description: 'Request fee remission'
   }
 };

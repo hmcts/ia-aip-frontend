@@ -53,7 +53,8 @@ const paths = {
     localAuthorityLetterDeleteRefund: '/local-authority-letter-refund/delete',
     helpWithFeesRefund: '/help-with-fees-refund',
     stepsToApplyForHelpWithFeesRefund: '/steps-to-help-with-fees-refund',
-    helpWithFeesReferenceNumberRefund: '/help-with-fees-ref-number-refund'
+    helpWithFeesReferenceNumberRefund: '/help-with-fees-ref-number-refund',
+    checkYourAnswersRefund: '/check-your-answers-refund'
   },
   pendingPayment: {
     confirmation: '/appeals-details-sent'

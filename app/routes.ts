@@ -21,6 +21,17 @@ import { setupStepToHelpWithFeesController } from './controllers/appeal-applicat
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupAsylumSupportRefundController } from './controllers/ask-for-fee-remission/asylum-support-refund';
+import { setupCheckYourAnswersRefundController } from './controllers/ask-for-fee-remission/check-your-answers-refund';
+import { setupFeeSupportRefundController } from './controllers/ask-for-fee-remission/fee-support-refund';
+import { setupFeeWaiverRefundController } from './controllers/ask-for-fee-remission/fee-waiver-refund';
+import {
+  setupHelpWithFeesReferenceNumberRefundController
+} from './controllers/ask-for-fee-remission/help-with-fees-reference-number-refund';
+import { setupHelpWithFeesRefundController } from './controllers/ask-for-fee-remission/help-with-fees-refund';
+import {
+  setupStepToHelpWithFeesRefundController
+} from './controllers/ask-for-fee-remission/steps-to-help-with-fees-refund';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
 import { setupChangeRepresentationControllers } from './controllers/changing-representation';
 import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
@@ -178,16 +189,6 @@ import { setupReasonsForAppealController } from './controllers/reasons-for-appea
 import { setupSessionController } from './controllers/session';
 import { setupStartRepresentingMyselfControllers } from './controllers/start-represent-yourself';
 import { setupStartController } from './controllers/startController';
-import { setupAsylumSupportRefundController } from './controllers/submitted-application/asylum-support-refund';
-import { setupFeeSupportRefundController } from './controllers/submitted-application/fee-support-refund';
-import { setupFeeWaiverRefundController } from './controllers/submitted-application/fee-waiver-refund';
-import {
-  setupHelpWithFeesReferenceNumberRefundController
-} from './controllers/submitted-application/help-with-fees-reference-number-refund';
-import { setupHelpWithFeesRefundController } from './controllers/submitted-application/help-with-fees-refund';
-import {
-  setupStepToHelpWithFeesRefundController
-} from './controllers/submitted-application/steps-to-help-with-fees-refund';
 import { setupProvideMoreEvidenceController } from './controllers/upload-evidence/provide-more-evidence-controller';
 import { PageSetup } from './interfaces/PageSetup';
 import { hearingRequirementsMiddleware } from './middleware/hearing-requirements-middleware';
@@ -208,7 +209,7 @@ import { setupSecrets } from './setupSecrets';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
 import './controllers/appeal-application/pay-now';
 import './controllers/appeal-application/upload-local-authority-letter';
-import './controllers/submitted-application/upload-local-authority-letter-refund';
+import './controllers/ask-for-fee-remission/upload-local-authority-letter-refund';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
@@ -248,6 +249,7 @@ const helpWithFeesReferenceNumberController = setupHelpWithFeesReferenceNumberCo
 const helpWithFeesReferenceNumberRefundController = setupHelpWithFeesReferenceNumberRefundController(middleware, updateAppealService);
 const stepsToHelpWithFeesController = setupStepToHelpWithFeesController(middleware, updateAppealService);
 const stepsToHelpWithFeesRefundController = setupStepToHelpWithFeesRefundController(middleware, updateAppealService);
+const checkYourAnswersRefundController = setupCheckYourAnswersRefundController(middleware, updateAppealService);
 const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
 const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
@@ -390,6 +392,7 @@ router.use(helpWithFeesReferenceNumberController);
 router.use(helpWithFeesReferenceNumberRefundController);
 router.use(stepsToHelpWithFeesController);
 router.use(stepsToHelpWithFeesRefundController);
+router.use(checkYourAnswersRefundController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);

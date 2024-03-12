@@ -23,10 +23,9 @@ async function getCheckYourAnswersRefund(req: Request, res: Response, next: Next
 
 function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
   return async (req: Request, res: Response, next: NextFunction) => {
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     try {
-      const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-      if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
-
       const { appeal } = req.session;
       const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.REQUEST_FEE_REMISSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
       req.session.appeal = {
@@ -49,14 +48,20 @@ async function createSummaryRowsFrom(req: Request) {
   const helpWithFeesRefNumber = application.helpWithFeesRefNumber;
   const localAuthorityLetter = application.localAuthorityLetters;
   const rows = [];
+
   if (remissionOption) {
+    let rowValue = [i18n.pages.remissionOptionPage.options[remissionOption].text];
+    if (remissionOption === 'iWantToGetHelpWithFees') {
+      rowValue = [i18n.pages.remissionOptionPage.noneOfTheseStatements];
+    }
     const feeStatementRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.feeStatement,
-      [i18n.pages.remissionOptionPage.options[remissionOption].text],
+      rowValue,
       paths.appealSubmitted.feeSupportRefund + editParameter
     );
     rows.push(feeStatementRow);
   }
+
   if (asylumSupportRefNumber) {
     const asylumSupportRefNumberRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.asylumSupportRefNumber,
@@ -65,16 +70,14 @@ async function createSummaryRowsFrom(req: Request) {
     );
     rows.push(asylumSupportRefNumberRow);
   }
-  if (helpWithFeesOption) {
+
+  if (helpWithFeesOption && helpWithFeesOption !== 'willPayForAppeal') {
     let helpWithFeeValue = '';
     if (helpWithFeesOption === 'wantToApply') {
       helpWithFeeValue = i18n.pages.helpWithFees.checkAndSendWantToApply;
-    } else if (helpWithFeesOption === 'willPayForAppeal') {
-      helpWithFeeValue = i18n.pages.helpWithFees.checkAndSendWillPayForAppeal;
     } else {
       helpWithFeeValue = i18n.pages.helpWithFees.options[helpWithFeesOption].text;
     }
-
     const helpWithFeesRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.helpWithFees,
       [helpWithFeeValue],
@@ -82,6 +85,7 @@ async function createSummaryRowsFrom(req: Request) {
     );
     rows.push(helpWithFeesRow);
   }
+
   if (helpWithFeesRefNumber) {
     const helpWithFeeRefNumberRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.helpWithFeesRefNumber,
@@ -90,6 +94,7 @@ async function createSummaryRowsFrom(req: Request) {
     );
     rows.push(helpWithFeeRefNumberRow);
   }
+
   if (localAuthorityLetter && localAuthorityLetter.length > 0) {
     const localAuthorityLetterRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter,
@@ -99,6 +104,7 @@ async function createSummaryRowsFrom(req: Request) {
     );
     rows.push(localAuthorityLetterRow);
   }
+  return rows;
 }
 
 function setupCheckYourAnswersRefundController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {

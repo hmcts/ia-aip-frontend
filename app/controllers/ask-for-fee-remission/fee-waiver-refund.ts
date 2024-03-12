@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import { FEATURE_FLAGS } from '../../data/constants';
-import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
-import UpdateAppealService from '../../service/update-appeal-service';
 
 async function getFeeWaiver(req: Request, res: Response, next: NextFunction) {
   try {
@@ -21,22 +19,14 @@ async function getFeeWaiver(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postFeeWaiver(updateAppealService: UpdateAppealService) {
+function postFeeWaiver() {
   return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
-    async function persistAppeal(appeal: Appeal, refundFeatureEnabled) {
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], refundFeatureEnabled);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
-    }
 
     try {
       resetJourneyValues(req.session.appeal.application);
       req.session.appeal.application.feeSupportPersisted = true;
-      await persistAppeal(req.session.appeal, refundFeatureEnabled);
       return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
     } catch (error) {
       next(error);
@@ -44,10 +34,10 @@ function postFeeWaiver(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupFeeWaiverRefundController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupFeeWaiverRefundController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.appealSubmitted.feeWaiverRefund, middleware, getFeeWaiver);
-  router.post(paths.appealSubmitted.feeWaiverRefund, middleware, postFeeWaiver(updateAppealService));
+  router.post(paths.appealSubmitted.feeWaiverRefund, middleware, postFeeWaiver());
   return router;
 }
 

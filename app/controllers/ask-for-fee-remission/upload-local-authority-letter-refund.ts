@@ -2,12 +2,10 @@ import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
-import { Events } from '../../data/events';
 import { PageSetup } from '../../interfaces/PageSetup';
 import { paths } from '../../paths';
 import { DocumentManagementService } from '../../service/document-management-service';
 import LaunchDarklyService from '../../service/launchDarkly-service';
-import UpdateAppealService from '../../service/update-appeal-service';
 import { createStructuredError } from '../../utils/validations/fields-validations';
 
 async function getLocalAuthorityLetterRefund(req: Request, res: Response, next: NextFunction) {
@@ -43,25 +41,15 @@ async function getLocalAuthorityLetterRefund(req: Request, res: Response, next: 
   }
 }
 
-function postLocalAuthorityLetterRefund(updateAppealService: UpdateAppealService) {
+function postLocalAuthorityLetterRefund() {
   return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
 
-    async function persistAppeal(appeal: Appeal, refundFeatureEnabled) {
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], refundFeatureEnabled);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
-    }
-
     try {
       const authLetterUploads = req.session.appeal.application.localAuthorityLetters || [];
       if (authLetterUploads.length > 0) {
-        req.session.appeal.application.feeSupportPersisted = true;
         resetJourneyValues(req.session.appeal.application);
-        await persistAppeal(req.session.appeal, refundFeatureEnabled);
         return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
       } else {
         return res.redirect(`${paths.appealSubmitted.localAuthorityLetterRefund}?error=noFileSelected`);
@@ -87,26 +75,15 @@ function validate(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function uploadLocalAuthorityLetterRefund(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
+function uploadLocalAuthorityLetterRefund(documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
         let localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.localAuthorityLetters || [];
         const localAuthorityLetter: Evidence = await documentManagementService.uploadFile(req);
         localAuthorityLetterEvidences.push(localAuthorityLetter);
-
-        const appeal = {
-          ...req.session.appeal,
-          application: {
-            ...req.session.appeal.application,
-            localAuthorityLetters: localAuthorityLetterEvidences
-          }
-        };
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-        req.session.appeal = {
-          ...req.session.appeal,
-          ...appealUpdated
-        };
+        const application = req.session.appeal.application;
+        application.localAuthorityLetters = localAuthorityLetterEvidences;
         return res.redirect(paths.appealSubmitted.localAuthorityLetterRefund);
       }
       return res.redirect(`${paths.appealSubmitted.localAuthorityLetterRefund}?error=noFileSelected`);
@@ -116,24 +93,13 @@ function uploadLocalAuthorityLetterRefund(updateAppealService: UpdateAppealServi
   };
 }
 
-function deleteLocalAuthorityLetterRefund(updateAppealService: UpdateAppealService, documentManagementService: DocumentManagementService) {
+function deleteLocalAuthorityLetterRefund(documentManagementService: DocumentManagementService) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.query.id) {
         await documentManagementService.deleteFile(req, req.query.id as string);
-
-        const appeal: Appeal = {
-          ...req.session.appeal,
-          application: {
-            ...req.session.appeal.application,
-            localAuthorityLetters: req.session.appeal.application.localAuthorityLetters.filter(document => document.fileId !== req.query.id)
-          }
-        };
-        const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
-        req.session.appeal = {
-          ...req.session.appeal,
-          ...appealUpdated
-        };
+        const application = req.session.appeal.application;
+        application.localAuthorityLetters = req.session.appeal.application.localAuthorityLetters.filter(document => document.fileId !== req.query.id);
         return res.redirect(paths.appealSubmitted.localAuthorityLetterRefund);
       }
     } catch (e) {
@@ -154,9 +120,9 @@ class SetupLocalAuthorityLetterRefundController {
   initialise(middleware: any[], updateAppealService, documentManagementService: DocumentManagementService): any {
     const router = Router();
     router.get(paths.appealSubmitted.localAuthorityLetterRefund, middleware, getLocalAuthorityLetterRefund);
-    router.post(paths.appealSubmitted.localAuthorityLetterRefund, middleware, postLocalAuthorityLetterRefund(updateAppealService));
-    router.post(paths.appealSubmitted.localAuthorityLetterUploadRefund, middleware, validate, uploadLocalAuthorityLetterRefund(updateAppealService, documentManagementService));
-    router.get(paths.appealSubmitted.localAuthorityLetterDeleteRefund, middleware, deleteLocalAuthorityLetterRefund(updateAppealService, documentManagementService));
+    router.post(paths.appealSubmitted.localAuthorityLetterRefund, middleware, postLocalAuthorityLetterRefund());
+    router.post(paths.appealSubmitted.localAuthorityLetterUploadRefund, middleware, validate, uploadLocalAuthorityLetterRefund(documentManagementService));
+    router.get(paths.appealSubmitted.localAuthorityLetterDeleteRefund, middleware, deleteLocalAuthorityLetterRefund(documentManagementService));
     return router;
   }
 }

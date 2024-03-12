@@ -156,8 +156,7 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
-      // const showAskForFeeRemission = refundFeatureEnabled && 'Paid' === paymentStatus;
-      const showAskForFeeRemission = true;
+      const showAskForFeeRemission = refundFeatureEnabled && 'Paid' === paymentStatus;
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,

@@ -2,10 +2,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
-import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
-import UpdateAppealService from '../../service/update-appeal-service';
 import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 
 function getOptionsQuestion(appeal: Appeal) {
@@ -13,6 +11,7 @@ function getOptionsQuestion(appeal: Appeal) {
 
   return {
     title: i18n.pages.remissionOptionPage.refundTitle,
+    hint: i18n.pages.remissionOptionPage.selectOne,
     options: [
       {
         value: i18n.pages.remissionOptionPage.options.asylumSupportFromHo.value,
@@ -62,18 +61,10 @@ async function getFeeSupport(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-function postFeeSupport(updateAppealService: UpdateAppealService) {
+function postFeeSupport() {
   return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
-
-    async function persistAppeal(appeal: Appeal, drlmSetAsideFlag) {
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], drlmSetAsideFlag);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
-    }
 
     try {
       const validation = remissionOptionsValidation(req.body);
@@ -89,14 +80,8 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
       }
 
       const selectedValue = req.body['answer'];
-      const appeal: Appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          remissionOption: selectedValue
-        }
-      };
-      await persistAppeal(appeal, refundFeatureEnabled);
+      const application = req.session.appeal.application;
+      application.remissionOption = selectedValue;
       return res.redirect(getFeeSupportRedirectPage(selectedValue));
     } catch (error) {
       next(error);
@@ -104,10 +89,10 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
   };
 }
 
-function setupFeeSupportRefundController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupFeeSupportRefundController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.appealSubmitted.feeSupportRefund, middleware, getFeeSupport);
-  router.post(paths.appealSubmitted.feeSupportRefund, middleware, postFeeSupport(updateAppealService));
+  router.post(paths.appealSubmitted.feeSupportRefund, middleware, postFeeSupport());
   return router;
 }
 

@@ -2,18 +2,17 @@ import { NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import i18n from '../../../locale/en.json';
 import { FEATURE_FLAGS } from '../../data/constants';
-import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
-import UpdateAppealService from '../../service/update-appeal-service';
-import { getRedirectPage } from '../../utils/utils';
+import { getFee } from '../../utils/payments-utils';
 import { helpWithFeesValidation } from '../../utils/validations/fields-validations';
 
 function getApplyOption(appeal: Appeal) {
   let selectedOption = appeal.application.helpWithFeesOption || null;
+  const fee = getFee(appeal).calculated_amount;
   return {
     title: i18n.pages.helpWithFees.radioButtonsTitle,
-    helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', appeal.feeAmountGbp),
+    helpWithFeesHint: i18n.pages.helpWithFees.refundsNote.replace('{{ fee }}', fee),
     options: [
       {
         value: i18n.pages.helpWithFees.options.wantToApply.value,
@@ -49,17 +48,10 @@ async function getHelpWithFees(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-function postHelpWithFees(updateAppealService: UpdateAppealService) {
+function postHelpWithFees() {
   return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
-    async function persistAppeal(appeal: Appeal, refundFeatureEnabled) {
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.EDIT_APPEAL, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], refundFeatureEnabled);
-      req.session.appeal = {
-        ...req.session.appeal,
-        ...appealUpdated
-      };
-    }
 
     try {
       const validation = helpWithFeesValidation(req.body);
@@ -76,18 +68,9 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
         });
       }
       const selectedValue = req.body['answer'];
-      const appeal: Appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          helpWithFeesOption: selectedValue
-        }
-      };
-      const isEdit: boolean = req.session.appeal.application.isEdit || false;
-      await persistAppeal(appeal, refundFeatureEnabled);
-      const defaultRedirect = getHelpWithFeesRedirectPage(selectedValue);
-      let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
-      return res.redirect(redirectPage);
+      const application = req.session.appeal.application;
+      application.helpWithFeesOption = selectedValue;
+      return res.redirect(getHelpWithFeesRedirectPage(selectedValue));
     } catch (error) {
       next(error);
     }
@@ -105,10 +88,10 @@ function getHelpWithFeesRedirectPage(selectedOption: string): string {
   }
 }
 
-function setupHelpWithFeesRefundController(middleware: Middleware[], updateAppealService: UpdateAppealService): Router {
+function setupHelpWithFeesRefundController(middleware: Middleware[]): Router {
   const router = Router();
   router.get(paths.appealSubmitted.helpWithFeesRefund, middleware, getHelpWithFees);
-  router.post(paths.appealSubmitted.helpWithFeesRefund, middleware, postHelpWithFees(updateAppealService));
+  router.post(paths.appealSubmitted.helpWithFeesRefund, middleware, postHelpWithFees());
   return router;
 }
 

@@ -10,7 +10,7 @@
             errorList: errorList
         }) }}
     {% endif %}
-    <form method="post" action={{ paths.awaitingReasonsForAppeal.stepsToApplyForHelpWithFees }}>
+    <form method="post" action={{ formAction }}>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <h1 class="govuk-heading-xl">{{ i18n.pages.stepsToHelpWithFees.title }}</h1>
         <div>

@@ -88,7 +88,8 @@
     "afterSubmission": 5,
     "pendingPayment": 14,
     "afterReasonsForAppeal": 14,
-    "afterCQSubmission": 7
+    "afterCQSubmission": 7,
+    "fromRemissionAppliedDate": 14
   },
   "features": {
     "askForMoreTime": false,

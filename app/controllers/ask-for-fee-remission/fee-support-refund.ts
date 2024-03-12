@@ -6,7 +6,6 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getRedirectPage } from '../../utils/utils';
 import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 
 function getOptionsQuestion(appeal: Appeal) {
@@ -97,11 +96,8 @@ function postFeeSupport(updateAppealService: UpdateAppealService) {
           remissionOption: selectedValue
         }
       };
-      const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(appeal, refundFeatureEnabled);
-      const defaultRedirect = getFeeSupportRedirectPage(selectedValue);
-      let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
-      return res.redirect(redirectPage);
+      return res.redirect(getFeeSupportRedirectPage(selectedValue));
     } catch (error) {
       next(error);
     }

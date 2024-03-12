@@ -23,6 +23,7 @@ import { setupTypeOfAppealController } from './controllers/appeal-application/ty
 import { setupApplicationOverviewController } from './controllers/application-overview';
 import { setupAsylumSupportRefundController } from './controllers/ask-for-fee-remission/asylum-support-refund';
 import { setupCheckYourAnswersRefundController } from './controllers/ask-for-fee-remission/check-your-answers-refund';
+import { setConfirmationRefundController } from './controllers/ask-for-fee-remission/confirmation-page';
 import { setupFeeSupportRefundController } from './controllers/ask-for-fee-remission/fee-support-refund';
 import { setupFeeWaiverRefundController } from './controllers/ask-for-fee-remission/fee-waiver-refund';
 import {
@@ -250,6 +251,7 @@ const helpWithFeesReferenceNumberRefundController = setupHelpWithFeesReferenceNu
 const stepsToHelpWithFeesController = setupStepToHelpWithFeesController(middleware, updateAppealService);
 const stepsToHelpWithFeesRefundController = setupStepToHelpWithFeesRefundController(middleware, updateAppealService);
 const checkYourAnswersRefundController = setupCheckYourAnswersRefundController(middleware, updateAppealService);
+const confirmationRefundController = setConfirmationRefundController(middleware);
 const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
 const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
@@ -393,6 +395,7 @@ router.use(helpWithFeesReferenceNumberRefundController);
 router.use(stepsToHelpWithFeesController);
 router.use(stepsToHelpWithFeesRefundController);
 router.use(checkYourAnswersRefundController);
+router.use(confirmationRefundController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);

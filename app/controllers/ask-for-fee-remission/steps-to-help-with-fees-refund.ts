@@ -5,7 +5,6 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getRedirectPage } from '../../utils/utils';
 
 async function getStepsToHelpWithFees(req: Request, res: Response, next: NextFunction) {
   try {
@@ -35,11 +34,8 @@ function postStepsToHelpWithFees(updateAppealService: UpdateAppealService) {
     }
 
     try {
-      const isEdit: boolean = req.session.appeal.application.isEdit || false;
       await persistAppeal(req.session.appeal, refundFeatureEnabled);
-      const defaultRedirect = paths.appealSubmitted.helpWithFeesReferenceNumberRefund;
-      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
-      return res.redirect(redirectPage);
+      return res.redirect(paths.appealSubmitted.helpWithFeesReferenceNumberRefund);
     } catch (error) {
       next(error);
     }

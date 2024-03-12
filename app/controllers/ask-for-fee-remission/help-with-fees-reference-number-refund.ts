@@ -6,9 +6,6 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { shouldValidateWhenSaveForLater } from '../../utils/save-for-later-utils';
-import { getConditionalRedirectUrl } from '../../utils/url-utils';
-import { getRedirectPage } from '../../utils/utils';
 import { helpWithFeesRefNumberValidation } from '../../utils/validations/fields-validations';
 
 async function getHelpWithFeesRefNumber(req: Request, res: Response, next: NextFunction) {
@@ -62,13 +59,10 @@ function postHelpWithFeesRefNumber(updateAppealService: UpdateAppealService) {
           helpWithFeesRefNumber: selectedValue
         }
       };
-      const isEdit: boolean = req.session.appeal.application.isEdit || false;
       appeal.application.feeSupportPersisted = true;
       resetJourneyValues(appeal.application);
       await persistAppeal(appeal, refundFeatureEnabled);
-      const defaultRedirect = paths.appealStarted.taskList;
-      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
-      return res.redirect(redirectPage);
+      return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
     } catch (error) {
       next(error);
     }

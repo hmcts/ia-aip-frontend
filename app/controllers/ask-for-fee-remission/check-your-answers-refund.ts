@@ -33,7 +33,7 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
         ...req.session.appeal,
         ...appealUpdated
       };
-      return res.redirect(paths.appealSubmitted.confirmation);
+      return res.redirect(paths.appealSubmitted.confirmationRefund);
     } catch (error) {
       next(error);
     }

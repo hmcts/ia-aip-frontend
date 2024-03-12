@@ -62,8 +62,7 @@ function postLocalAuthorityLetterRefund(updateAppealService: UpdateAppealService
         req.session.appeal.application.feeSupportPersisted = true;
         resetJourneyValues(req.session.appeal.application);
         await persistAppeal(req.session.appeal, refundFeatureEnabled);
-        const redirectTo = req.session.appeal.application.isEdit ? paths.appealStarted.checkAndSend : paths.appealStarted.taskList;
-        return res.redirect(redirectTo);
+        return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
       } else {
         return res.redirect(`${paths.appealSubmitted.localAuthorityLetterRefund}?error=noFileSelected`);
       }

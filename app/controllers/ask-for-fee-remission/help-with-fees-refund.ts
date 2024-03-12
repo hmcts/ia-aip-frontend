@@ -84,8 +84,8 @@ function postHelpWithFees(updateAppealService: UpdateAppealService) {
         }
       };
       const isEdit: boolean = req.session.appeal.application.isEdit || false;
-      const defaultRedirect = getHelpWithFeesRedirectPage(selectedValue);
       await persistAppeal(appeal, refundFeatureEnabled);
+      const defaultRedirect = getHelpWithFeesRedirectPage(selectedValue);
       let redirectPage = getRedirectPage(isEdit, defaultRedirect, req.body.saveForLater, defaultRedirect);
       return res.redirect(redirectPage);
     } catch (error) {

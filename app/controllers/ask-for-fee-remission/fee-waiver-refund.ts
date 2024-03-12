@@ -5,7 +5,6 @@ import { Events } from '../../data/events';
 import { paths } from '../../paths';
 import LaunchDarklyService from '../../service/launchDarkly-service';
 import UpdateAppealService from '../../service/update-appeal-service';
-import { getRedirectPage } from '../../utils/utils';
 
 async function getFeeWaiver(req: Request, res: Response, next: NextFunction) {
   try {
@@ -36,12 +35,9 @@ function postFeeWaiver(updateAppealService: UpdateAppealService) {
 
     try {
       resetJourneyValues(req.session.appeal.application);
-      const isEdit: boolean = req.session.appeal.application.isEdit || false;
       req.session.appeal.application.feeSupportPersisted = true;
       await persistAppeal(req.session.appeal, refundFeatureEnabled);
-      const defaultRedirect = paths.appealStarted.taskList;
-      let redirectPage = getRedirectPage(isEdit, paths.appealStarted.checkAndSend, req.body.saveForLater, defaultRedirect);
-      return res.redirect(redirectPage);
+      return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
     } catch (error) {
       next(error);
     }

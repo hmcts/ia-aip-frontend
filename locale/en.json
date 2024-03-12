@@ -3679,6 +3679,12 @@
       "paragraph": "You will have received this number when you applied for help with fees. This reference must not have been used for a previous appeal.",
       "helpWithFeesReferenceNumberLabel": "Enter your help with fees reference number",
       "hint": "For example, HWF-A1B-23C"
+    },
+    "feeSupportConfirmationPage": {
+      "title": "You have asked the Tribunal for a fee remission",
+      "whatHappensNext": "What happens next",
+      "bullet1": "A Legal Officer will check the information you sent and let you know if your fee will be refunded",
+      "bullet2": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that"
     }
   },
   "error": {

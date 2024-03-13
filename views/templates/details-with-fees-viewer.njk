@@ -12,9 +12,11 @@
     {{ govukSummaryList({
         rows: data.personalDetailsRows
     }) }}
-    <h2>{{ feeDetailsTitle  }}</h2>
-    {{ govukSummaryList({
-        rows: data.feeDetailsRows
-    }) }}
+    {% if data.feeDetailsRows | length %}
+        <h2>{{ feeDetailsTitle  }}</h2>
+        {{ govukSummaryList({
+            rows: data.feeDetailsRows
+        }) }}
+    {% endif %}
   {{ contactUs() }}
 {% endblock %}

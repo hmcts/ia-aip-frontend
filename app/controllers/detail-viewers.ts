@@ -10,7 +10,7 @@ import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
-import { appealHasRemissionOption } from '../utils/remission-utils';
+import { appealHasNoRemissionOption, appealHasRemissionOption } from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
@@ -235,29 +235,27 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   ], null, Delimiter.BREAK_LINE));
 
   // fee section
-  if (appealHasRemissionOption) {
+  if (appealHasRemissionOption(application)) {
     const fee = getFee(req.session.appeal);
-
     feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-    if (application.remissionOption === 'noneOfTheseStatements' && application.helpWithFeesOption === 'willPayForAppeal') {
-      const { paymentStatus = null } = req.session.appeal;
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
-    } else {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, ['Fee support requested'], null));
-      if (application.remissionOption === 'asylumSupportFromHo') {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
-      } else if (application.remissionOption === 'feeWaiverFromHo') {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
-      } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
-        const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {
-          return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
-        });
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
-      } else if (application.remissionOption === 'noneOfTheseStatements') {
-        feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
-      }
-
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, ['Fee support requested'], null));
+    if (application.remissionOption === 'asylumSupportFromHo') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
+    } else if (application.remissionOption === 'feeWaiverFromHo') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportType, ['Home Office fee waiver'], null));
+    } else if (application.remissionOption === 'under18GetSupportFromLocalAuthority' || application.remissionOption === 'parentGetSupportFromLocalAuthority') {
+      const localAuthorityLetterDocs = application.localAuthorityLetters.map(doc => {
+        return `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${doc.fileId}'>${doc.name}</a>`;
+      });
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter, localAuthorityLetterDocs, null));
+    } else if (application.remissionOption === 'noneOfTheseStatements') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [application.helpWithFeesRefNumber], null));
     }
+  } else if (appealHasNoRemissionOption(application)) {
+    const fee = getFee(req.session.appeal);
+    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+    const { paymentStatus = null } = req.session.appeal;
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
   }
 
   return {

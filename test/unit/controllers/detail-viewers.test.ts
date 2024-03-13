@@ -704,7 +704,6 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
       req.session.appeal.paymentStatus = 'Paid';
 
-
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
         title: i18n.pages.detailViewers.appealDetails.title,
@@ -863,9 +862,8 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.application.remissionOption = undefined;
       req.session.appeal.application.helpWithFeesOption = undefined;
       req.session.appeal.paymentStatus = 'Paid';
-      req.session.appeal.application.appealType = 'revocationOfProtection'
+      req.session.appeal.application.appealType = 'revocationOfProtection';
       req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
-
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {

@@ -8,18 +8,19 @@ import { appealHasRemissionOption } from '../../utils/remission-utils';
 
 function getConfirmationPage(req: Request, res: Response, next: NextFunction) {
   req.app.locals.logger.trace(`Successful AIP appeal submission for ccd id ${JSON.stringify(req.session.appeal.ccdCaseId)}`, 'Confirmation appeal submission');
-
   try {
     const { application } = req.session.appeal;
     const isLate = () => application.isAppealLate;
+    const isOutOfCountry = () => req.session.appeal.appealOutOfCountry === 'Yes';
     const paPayLater = payLaterForApplicationNeeded(req);
     const paPayNow = payNowForApplicationNeeded(req) && application.appealType === 'protection';
     const eaHuEu = ['refusalOfHumanRights', 'refusalOfEu', 'euSettlementScheme'].includes(application.appealType);
     const daysToWait: number = eaHuEu ? config.get('daysToWait.pendingPayment') : config.get('daysToWait.afterSubmission');
+    const daysToWaitOOC: number = isOutOfCountry() ? config.get('daysToWait.outOfCountry') : config.get('daysToWait.afterReasonsForAppeal');
     const appealWithRemissionOption = appealHasRemissionOption(application);
-
     res.render('confirmation-page.njk', {
       date: addDaysToDate(daysToWait),
+      dateOutOfCountryAppeal: addDaysToDate(daysToWaitOOC),
       late: isLate(),
       paPayLater,
       paPayNow,

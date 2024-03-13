@@ -18,7 +18,14 @@
   }) }}
 
   <h2 class="govuk-heading-m">{{ i18n.pages.successPage.whatHappensNext }}</h2>
-  {% if appealWithRemissionOption %}
+  {% if appealWithRemissionOption and late %}
+      <ul class="govuk-list govuk-list--bullet">
+        <li>{{ i18n.pages.successPage.withRemissionOptionAndLate.textBullet1 }}</li>
+        <li>{{ i18n.pages.successPage.withRemissionOptionAndLate.textBullet2 }}</li>
+        <li>{{ i18n.pages.successPage.withRemissionOptionAndLate.textBullet3 | eval | safe }}</li>
+        <li>{{ i18n.pages.successPage.withRemissionOptionAndLate.textBullet4 }}</li>
+      </ul>
+  {% elif appealWithRemissionOption %}
     <ul class="govuk-list govuk-list--bullet">
       <li>{{ i18n.pages.successPage.withRemissionOption.textBullet1 }}</li>
       <li>{{ i18n.pages.successPage.withRemissionOption.textBullet2 | eval | safe }}</li>

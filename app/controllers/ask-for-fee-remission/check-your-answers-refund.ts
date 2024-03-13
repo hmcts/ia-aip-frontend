@@ -27,11 +27,13 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     try {
       const { appeal } = req.session;
-      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.REQUEST_FEE_REMISSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token']);
+      const appealUpdated: Appeal = await updateAppealService.submitEventRefactored(Events.REQUEST_FEE_REMISSION, appeal, req.idam.userDetails.uid, req.cookies['__auth-token'], refundFeatureEnabled);
+
       req.session.appeal = {
         ...req.session.appeal,
         ...appealUpdated
       };
+      req.session.appeal = appeal;
       return res.redirect(paths.appealSubmitted.confirmationRefund);
     } catch (error) {
       next(error);

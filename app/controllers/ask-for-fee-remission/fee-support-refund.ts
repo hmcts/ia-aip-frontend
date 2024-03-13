@@ -7,7 +7,7 @@ import LaunchDarklyService from '../../service/launchDarkly-service';
 import { remissionOptionsValidation } from '../../utils/validations/fields-validations';
 
 function getOptionsQuestion(appeal: Appeal) {
-  let remissionOption = appeal.application.remissionOption || null;
+  let remissionOption = appeal.application.lateRemissionOption || null;
 
   return {
     title: i18n.pages.remissionOptionPage.refundTitle,
@@ -81,7 +81,7 @@ function postFeeSupport() {
 
       const selectedValue = req.body['answer'];
       const application = req.session.appeal.application;
-      application.remissionOption = selectedValue;
+      application.lateRemissionOption = selectedValue;
       return res.redirect(getFeeSupportRedirectPage(selectedValue));
     } catch (error) {
       next(error);

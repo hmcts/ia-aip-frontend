@@ -304,6 +304,13 @@ interface AppealApplication {
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Evidence[];
+
+  //Late remission(refund) values:
+  lateRemissionOption?: string;
+  lateAsylumSupportRefNumber?: string;
+  lateHelpWithFeesOption?: string;
+  lateHelpWithFeesRefNumber?: string;
+  lateLocalAuthorityLetters?: Evidence[];
 }
 
 interface CmaRequirements {

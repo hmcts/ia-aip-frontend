@@ -20,7 +20,7 @@ async function getLocalAuthorityLetterRefund(req: Request, res: Response, next: 
         uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload[`${req.query.error}`])
       };
     }
-    const localAuthorityLetterEvidences = req.session.appeal.application.localAuthorityLetters || [];
+    const localAuthorityLetterEvidences = req.session.appeal.application.lateLocalAuthorityLetters || [];
     let previousPage = paths.appealSubmitted.feeSupportRefund;
 
     res.render('appeal-application/fee-support/upload-local-authority-letter.njk', {
@@ -47,7 +47,7 @@ function postLocalAuthorityLetterRefund() {
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
 
     try {
-      const authLetterUploads = req.session.appeal.application.localAuthorityLetters || [];
+      const authLetterUploads = req.session.appeal.application.lateLocalAuthorityLetters || [];
       if (authLetterUploads.length > 0) {
         resetJourneyValues(req.session.appeal.application);
         return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
@@ -79,11 +79,11 @@ function uploadLocalAuthorityLetterRefund(documentManagementService: DocumentMan
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (req.file) {
-        let localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.localAuthorityLetters || [];
+        let localAuthorityLetterEvidences: Evidence[] = req.session.appeal.application.lateLocalAuthorityLetters || [];
         const localAuthorityLetter: Evidence = await documentManagementService.uploadFile(req);
         localAuthorityLetterEvidences.push(localAuthorityLetter);
         const application = req.session.appeal.application;
-        application.localAuthorityLetters = localAuthorityLetterEvidences;
+        application.lateLocalAuthorityLetters = localAuthorityLetterEvidences;
         return res.redirect(paths.appealSubmitted.localAuthorityLetterRefund);
       }
       return res.redirect(`${paths.appealSubmitted.localAuthorityLetterRefund}?error=noFileSelected`);
@@ -99,7 +99,7 @@ function deleteLocalAuthorityLetterRefund(documentManagementService: DocumentMan
       if (req.query.id) {
         await documentManagementService.deleteFile(req, req.query.id as string);
         const application = req.session.appeal.application;
-        application.localAuthorityLetters = req.session.appeal.application.localAuthorityLetters.filter(document => document.fileId !== req.query.id);
+        application.lateLocalAuthorityLetters = req.session.appeal.application.lateLocalAuthorityLetters.filter(document => document.fileId !== req.query.id);
         return res.redirect(paths.appealSubmitted.localAuthorityLetterRefund);
       }
     } catch (e) {

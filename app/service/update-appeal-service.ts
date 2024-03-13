@@ -498,7 +498,12 @@ export default class UpdateAppealService {
         helpWithFeesOption: caseData.helpWithFeesOption,
         helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
         ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
-        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined
+        feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined,
+        lateRemissionOption: caseData.lateRemissionOption,
+        lateAsylumSupportRefNumber: caseData.lateAsylumSupportRefNumber,
+        lateHelpWithFeesOption: caseData.lateHelpWithFeesOption,
+        lateHelpWithFeesRefNumber: caseData.lateHelpWithFeesRefNumber,
+        ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) }
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -711,6 +716,48 @@ export default class UpdateAppealService {
       }
 
       caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+
+      caseData.lateRemissionOption = null;
+      if (appeal.application.lateRemissionOption) {
+        caseData.lateRemissionOption = appeal.application.lateRemissionOption;
+      }
+
+      caseData.lateAsylumSupportRefNumber = null;
+      if (appeal.application.lateAsylumSupportRefNumber) {
+        caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber;
+      }
+
+      caseData.lateHelpWithFeesOption = null;
+      if (appeal.application.lateHelpWithFeesOption) {
+        caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption;
+      }
+
+      caseData.lateHelpWithFeesRefNumber = null;
+      if (appeal.application.helpWithFeesRefNumber) {
+        caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
+      }
+
+      caseData.lateLocalAuthorityLetters = null;
+      if (appeal.application.lateLocalAuthorityLetters) {
+        const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
+
+        caseData.lateLocalAuthorityLetters = evidences.map((evidence: Evidence) => {
+          const documentLocationUrl: string = documentIdToDocStoreUrl(evidence.fileId, appeal.documentMap);
+          return {
+            ...evidence.fileId && { id: evidence.fileId },
+            value: {
+              dateUploaded: evidence.dateUploaded,
+              description: evidence.description,
+              tag: 'additionalEvidence',
+              document: {
+                document_filename: evidence.name,
+                document_url: documentLocationUrl,
+                document_binary_url: `${documentLocationUrl}/binary`
+              }
+            }
+          } as Collection<DocumentWithMetaData>;
+        });
+      }
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
         const subscription: Subscription = {

@@ -12,7 +12,7 @@ async function getHelpWithFeesRefNumber(req: Request, res: Response, next: NextF
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
     const previousPage = { attributes: { onclick: 'history.go(-1); return false;' } };
-    const helpWithFeesReferenceNumber = req.session.appeal.application.helpWithFeesRefNumber || null;
+    const helpWithFeesReferenceNumber = req.session.appeal.application.lateHelpWithFeesRefNumber || null;
 
     return res.render('appeal-application/fee-support/help-with-fees-reference-number.njk', {
       previousPage: previousPage,
@@ -44,7 +44,7 @@ function postHelpWithFeesRefNumber() {
       }
       const selectedValue = req.body['helpWithFeesRefNumber'];
       const application = req.session.appeal.application;
-      application.helpWithFeesRefNumber = selectedValue;
+      application.lateHelpWithFeesRefNumber = selectedValue;
       resetJourneyValues(application);
       return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
     } catch (error) {

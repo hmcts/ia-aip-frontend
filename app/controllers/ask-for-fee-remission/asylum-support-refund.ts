@@ -12,7 +12,7 @@ async function getAsylumSupport(req: Request, res: Response, next: NextFunction)
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
     req.session.appeal.application.isEdit = _.has(req.query, 'edit');
 
-    const asylumSupportRefNumber = req.session.appeal.application.asylumSupportRefNumber || null;
+    const asylumSupportRefNumber = req.session.appeal.application.lateAsylumSupportRefNumber || null;
     return res.render('appeal-application/fee-support/asylum-support.njk', {
       previousPage: paths.appealSubmitted.feeSupportRefund,
       formAction: paths.appealSubmitted.asylumSupportRefund,
@@ -45,7 +45,7 @@ function postAsylumSupport() {
       }
       const selectedValue = req.body['asylumSupportRefNumber'];
       const application = req.session.appeal.application;
-      application.asylumSupportRefNumber = selectedValue;
+      application.lateAsylumSupportRefNumber = selectedValue;
       resetJourneyValues(application);
       return res.redirect(paths.appealSubmitted.checkYourAnswersRefund);
     } catch (error) {

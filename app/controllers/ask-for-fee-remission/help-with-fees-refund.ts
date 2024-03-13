@@ -8,7 +8,7 @@ import { getFee } from '../../utils/payments-utils';
 import { helpWithFeesValidation } from '../../utils/validations/fields-validations';
 
 function getApplyOption(appeal: Appeal) {
-  let selectedOption = appeal.application.helpWithFeesOption || null;
+  let selectedOption = appeal.application.lateHelpWithFeesOption || null;
   const fee = getFee(appeal).calculated_amount;
   return {
     title: i18n.pages.helpWithFees.radioButtonsTitle,
@@ -69,7 +69,7 @@ function postHelpWithFees() {
       }
       const selectedValue = req.body['answer'];
       const application = req.session.appeal.application;
-      application.helpWithFeesOption = selectedValue;
+      application.lateHelpWithFeesOption = selectedValue;
       return res.redirect(getHelpWithFeesRedirectPage(selectedValue));
     } catch (error) {
       next(error);

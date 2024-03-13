@@ -182,6 +182,13 @@ interface CaseData {
   helpWithFeesOption?: string;
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
+
+  //Late remission(refund) values:
+  lateRemissionOption?: string;
+  lateAsylumSupportRefNumber?: string;
+  lateHelpWithFeesOption?: string;
+  lateHelpWithFeesRefNumber?: string;
+  lateLocalAuthorityLetters?: Collection<DocumentWithMetaData>[];
 }
 
 interface Application<T> {

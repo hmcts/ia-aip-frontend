@@ -676,7 +676,7 @@ describe('Detail viewer Controller', () => {
 
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } }
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
       );
 
       req.session.appeal.application.appellantInUk = 'No';
@@ -700,6 +700,9 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
+      req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
@@ -716,11 +719,14 @@ describe('Detail viewer Controller', () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
         { key: { text: 'Fee amount' }, value: { html: '£140' } },
-        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } }
+        { key: { text: 'Payment status' }, value: {  html: 'Paid' } }
       );
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.decisionHearingFeeOption = 'decisionWithHearing';
       req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
+      req.session.appeal.paymentStatus = 'Paid';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
@@ -806,6 +812,7 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.feeWithHearing = '140';
       req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
       req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
+      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
       req.session.appeal.application.helpWithFeesRefNumber = 'helpWithFeesRefNumberValue';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
@@ -832,6 +839,31 @@ describe('Detail viewer Controller', () => {
       req.session.appeal.application.remissionOption = 'noneOfTheseStatements';
       req.session.appeal.application.helpWithFeesOption = 'willPayForAppeal';
       req.session.appeal.paymentStatus = 'Paid';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
+      ' remission is not applied due to a Revocation of protection journey', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+
+      expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[5].value.html = 'Revocation of Protection Status'; // appeal type
+
+      req.session.appeal.feeWithHearing = '20';
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = undefined;
+      req.session.appeal.application.helpWithFeesOption = undefined;
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.application.appealType = 'revocationOfProtection';
+      req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
 
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {

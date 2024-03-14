@@ -63,9 +63,9 @@ function setupAsylumSupportRefundController(middleware: Middleware[]): Router {
 
 // Function used in CYA page edit mode, when the start page option is changed other values should be reset and the journey should start from the new selected option
 function resetJourneyValues(application: AppealApplication) {
-  application.helpWithFeesOption = null;
-  application.helpWithFeesRefNumber = null;
-  application.localAuthorityLetters = null;
+  application.lateHelpWithFeesOption = null;
+  application.lateHelpWithFeesRefNumber = null;
+  application.lateLocalAuthorityLetters = null;
 }
 
 export {

@@ -1,0 +1,56 @@
+{% set pageTitleName = pageQuestion | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+
+{% block content %}
+
+  {% if errorList %}
+    {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+  {% endif %}
+
+  <form action="{{ paths.submitHearingRequirements.hearingInterpreterTypes }}" method="post">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    <input type="hidden" name="selectedWitnessesList" value="{{ selectedWitnessesList }}">
+    {{ govukCheckboxes({
+        idPrefix: "interpreterType",
+        name: "selections",
+        fieldset: {
+            legend: {
+            text: pageQuestion,
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+            }
+        },
+        hint: {
+            text: checkboxHintText
+        },
+        items: [
+            {
+                value: "spokenLanguageInterpreter",
+                text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.spokenLanguageOption,
+                hint: {
+                    text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.spokenLanguageOptionHint
+                },
+                checked: true if interpreterSpokenLanguage
+            },
+            {
+                value: "signLanguageInterpreter",
+                text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.signLanguageOption,
+                hint: {
+                    text: i18n.pages.hearingRequirements.accessNeedsSection.interpreterTypePage.signLanguageOptionHint
+                },
+                checked: true if interpreterSignLanguage
+            }
+        ]
+    }) }}
+
+    {{ saveButtons() }}
+  </form>
+
+    {{ contactUs() }}
+
+{% endblock %}

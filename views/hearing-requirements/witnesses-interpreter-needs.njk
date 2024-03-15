@@ -1,0 +1,40 @@
+{% set pageTitleName = i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.pageTitle | eval %}
+{% extends "layout.njk" %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+
+{% block content %}
+
+    {% if errorList %}
+        {{ govukErrorSummary({
+      titleText: i18n.validationErrors.errorSummary,
+      errorList: errorList
+    }) }}
+    {% endif %}
+
+    {% call govukFieldset({
+        legend: {
+            text: i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.pageTitle ,
+            classes: "govuk-fieldset__legend--xl",
+            isPageHeading: true
+        }
+     })
+   %}
+
+    <form action="{{ paths.submitHearingRequirements.hearingWitnessesInterpreterNeeds }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {{ govukCheckboxes({
+            idPrefix: "interpreterWitnessesNeeds",
+            name: "selections",
+            hint: {
+                text: i18n.pages.hearingRequirements.accessNeedsSection.witnesessInterpreterNeeds.hint
+            },
+            items: witnessesNameList
+        }) }}
+
+        {{ saveButtons() }}
+    </form>
+
+    {{ contactUs() }}
+    {% endcall %}
+{% endblock %}

@@ -272,6 +272,7 @@ function deleteSupportingEvidence(documentManagementService: DocumentManagementS
 function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvideSupportingEvidenceNoLeadingSlash: string, pathToMakeApplicationDetailsNoLeadingSlash: string): SummaryList[] {
   const summaryLists: SummaryList[] = [];
   const summaryRows: SummaryRow[] = [];
+  const hasProvideEvidence = req.session.appeal.makeAnApplicationProvideEvidence === i18n.pages.makeApplication.provideSupportingEvidenceYesOrNo.options.yes.value;
   const makeAnApplicationDetails = req.session.appeal.makeAnApplicationDetails;
   const makeAnApplicationEvidence = req.session.appeal.makeAnApplicationEvidence;
 
@@ -290,7 +291,7 @@ function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvide
       )
     );
   }
-  if (makeAnApplicationEvidence && makeAnApplicationEvidence.length > 0) {
+  if (hasProvideEvidence && makeAnApplicationEvidence && makeAnApplicationEvidence.length > 0) {
     makeAnApplicationEvidence.forEach((evidence: Evidence) => {
       summaryRows.push(
         addSummaryRow(
@@ -300,6 +301,10 @@ function buildSupportingEvidenceDocumentsSummaryList(req: Request, pathToProvide
         )
       );
     });
+  }
+
+  if (!hasProvideEvidence && makeAnApplicationEvidence && makeAnApplicationEvidence.length > 0) {
+    delete req.session.appeal.makeAnApplicationEvidence;
   }
   summaryLists.push({
     summaryRows

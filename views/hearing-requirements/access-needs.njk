@@ -1,4 +1,4 @@
-{% set pageTitleName = i18n.pages.hearingRequirements.accessNeedsSection.accessNeedsPage.pageTitle | eval %}
+{% set pageTitleName = i18n.pages.hearingRequirements.accessNeedsSection.communicationAndAccessSupportPage.pageTitle | eval %}
 {% extends "layout.njk" %}
 {% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
@@ -6,12 +6,12 @@
 
 
 {% block content %}
-            <h1  class="govuk-heading-xl">{{  i18n.pages.hearingRequirements.accessNeedsSection.accessNeedsPage.title | eval }}</h1>
-            <p class="govuk-body-m">{{ i18n.pages.hearingRequirements.accessNeedsSection.accessNeedsPage.text }}</p>
+            <h1  class="govuk-heading-xl">{{  i18n.pages.hearingRequirements.accessNeedsSection.communicationAndAccessSupportPage.title | eval }}</h1>
+            <p class="govuk-body-m">{{ i18n.pages.hearingRequirements.accessNeedsSection.communicationAndAccessSupportPage.text |safe }}</p>
 
             {{ govukButton({
                 text: i18n.common.buttons.continue,
-                href: paths.submitHearingRequirements.hearingInterpreter
+                href: link
             }) }}
     {{ contactUs() }}
 {% endblock %}

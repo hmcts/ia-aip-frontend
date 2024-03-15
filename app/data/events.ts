@@ -161,6 +161,11 @@ export const Events = {
     summary: 'List Case AIP',
     description: 'List case AIP'
   },
+  RECORD_ADJOURNMENT_DETAILS: {
+    id: 'recordAdjournmentDetails',
+    summary: 'Record adjournment details',
+    description: 'Record adjournment details'
+  },
   STITCHING_BUNDLE_COMPLETE: {
     id: 'asyncStitchingComplete',
     summary: 'Stitching bundle complete',

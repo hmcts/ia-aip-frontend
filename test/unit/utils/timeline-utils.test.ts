@@ -502,12 +502,12 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when hearingBundle feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, true, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(4);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
     });
 
     it('should return relevant events when hearingBundle and uploadAddendumEvidence features enabled', () => {
       const eventsAndStates = getEventsAndStates(true, true, false);
-      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(5);
+      expect(eventsAndStates.appealHearingRequirementsSectionEvents.length).to.be.eqls(6);
     });
 
     it('should return relevant events when hearingBundle feature disabled', () => {

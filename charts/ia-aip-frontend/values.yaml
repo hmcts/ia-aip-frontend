@@ -20,6 +20,7 @@ nodejs:
     DOC_MANAGEMENT_URL: "http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     IA_CASE_PAYMENTS_API_URL: "http://ia-case-payments-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     PAYMENTS_API_URL: "http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    REF_DATA_API_URL: "http://rd-commondata-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
     PCQ_URL: "https://pcq.{{ .Values.global.environment }}.platform.hmcts.net"
     PCQ_RETURN_URL: "immigration-appeal.{{ .Values.global.environment }}.platform.hmcts.net/about-appeal"
     DOCMOSIS_RENDER_URL: "https://docmosis.{{ .Values.global.environment }}.platform.hmcts.net/rs/render"

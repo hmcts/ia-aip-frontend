@@ -174,6 +174,22 @@ describe('Fee support refund Controller', () => {
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.appealSubmitted.asylumSupportRefund);
     });
 
+    it('when in edit mode should validate and redirect asylum-support-refund.njk and reset isEdit flag', async () => {
+      req.body['answer'] = 'asylumSupportFromHo';
+      req.query = { 'edit': '' };
+      await postFeeSupport()(req as Request, res as Response, next);
+      expect(req.session.appeal.application.lateRemissionOption).to.be.eql('asylumSupportFromHo');
+      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.asylumSupportRefund}(?!.*\\bedit\\b)`));
+      expect(req.session.appeal.application.isEdit).to.be.undefined;
+    });
+
+    it('when called with edit param should render fee-support-refund.njk and update session', async () => {
+      req.query = { 'edit': '' };
+      await getFeeSupport(req as Request, res as Response, next);
+      expect(req.session.appeal.application.isEdit).to.have.eq(true);
+      expect(res.render).to.have.been.calledOnce.calledWith('ask-for-fee-remission/fee-support-refund.njk');
+    });
+
     it('should redirect to correct path according to the asylum support selected value', async () => {
       const testData = [
         {
@@ -234,7 +250,7 @@ describe('Fee support refund Controller', () => {
     });
   });
 
-  describe('Asylum support refund Flag off validations', () => {
+  describe('When Flag is switched off expectations', () => {
     beforeEach(() => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(false);

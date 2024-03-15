@@ -44,16 +44,16 @@ function postCheckYourAnswersRefund(updateAppealService: UpdateAppealService) {
 async function createSummaryRowsFrom(req: Request) {
   const application = req.session.appeal.application;
   const editParameter = '?edit';
-  const remissionOption = application.remissionOption;
-  const asylumSupportRefNumber = application.asylumSupportRefNumber;
-  const helpWithFeesOption = application.helpWithFeesOption;
-  const helpWithFeesRefNumber = application.helpWithFeesRefNumber;
-  const localAuthorityLetter = application.localAuthorityLetters;
+  const lateRemissionOption = application.lateRemissionOption;
+  const lateAsylumSupportRefNumber = application.lateAsylumSupportRefNumber;
+  const lateHelpWithFeesOption = application.lateHelpWithFeesOption;
+  const lateHelpWithFeesRefNumber = application.lateHelpWithFeesRefNumber;
+  const lateLocalAuthorityLetters = application.lateLocalAuthorityLetters;
   const rows = [];
 
-  if (remissionOption) {
-    let rowValue = [i18n.pages.remissionOptionPage.options[remissionOption].text];
-    if (remissionOption === 'iWantToGetHelpWithFees') {
+  if (lateRemissionOption) {
+    let rowValue = [i18n.pages.remissionOptionPage.options[lateRemissionOption].text];
+    if (lateRemissionOption === 'iWantToGetHelpWithFees') {
       rowValue = [i18n.pages.remissionOptionPage.noneOfTheseStatements];
     }
     const feeStatementRow = addSummaryRow(
@@ -64,21 +64,21 @@ async function createSummaryRowsFrom(req: Request) {
     rows.push(feeStatementRow);
   }
 
-  if (asylumSupportRefNumber) {
+  if (lateAsylumSupportRefNumber) {
     const asylumSupportRefNumberRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.asylumSupportRefNumber,
-      [asylumSupportRefNumber],
+      [lateAsylumSupportRefNumber],
       paths.appealSubmitted.asylumSupportRefund + editParameter
     );
     rows.push(asylumSupportRefNumberRow);
   }
 
-  if (helpWithFeesOption && helpWithFeesOption !== 'willPayForAppeal') {
+  if (lateHelpWithFeesOption && lateHelpWithFeesOption !== 'willPayForAppeal') {
     let helpWithFeeValue = '';
-    if (helpWithFeesOption === 'wantToApply') {
+    if (lateHelpWithFeesOption === 'wantToApply') {
       helpWithFeeValue = i18n.pages.helpWithFees.checkAndSendWantToApply;
     } else {
-      helpWithFeeValue = i18n.pages.helpWithFees.options[helpWithFeesOption].text;
+      helpWithFeeValue = i18n.pages.helpWithFees.options[lateHelpWithFeesOption].text;
     }
     const helpWithFeesRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.helpWithFees,
@@ -88,16 +88,16 @@ async function createSummaryRowsFrom(req: Request) {
     rows.push(helpWithFeesRow);
   }
 
-  if (helpWithFeesRefNumber) {
+  if (lateHelpWithFeesRefNumber) {
     const helpWithFeeRefNumberRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.helpWithFeesRefNumber,
-      [helpWithFeesRefNumber],
+      [lateHelpWithFeesRefNumber],
       paths.appealSubmitted.helpWithFeesReferenceNumberRefund + editParameter
     );
     rows.push(helpWithFeeRefNumberRow);
   }
 
-  if (localAuthorityLetter && localAuthorityLetter.length > 0) {
+  if (lateLocalAuthorityLetters && lateLocalAuthorityLetters.length > 0) {
     const localAuthorityLetterRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter,
       application.localAuthorityLetters.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),

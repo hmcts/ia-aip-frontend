@@ -4,7 +4,8 @@ import {
   checkEnableProvideMoreEvidenceSection,
   getAppealRefNumber,
   getApplicationOverview,
-  getHearingDetails, isPostDecisionState,
+  getHearingDetails,
+  isPostDecisionState,
   setupApplicationOverviewController,
   showAppealRequestSection,
   showAppealRequestSectionInAppealEndedStatus,
@@ -125,6 +126,7 @@ describe('Confirmation Page Controller', () => {
 
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.MAKE_APPLICATION, false).resolves(true)
+      .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true)
       .withArgs(req as Request, FEATURE_FLAGS.FTPA, false).resolves(true);
 
     next = sandbox.stub() as NextFunction;
@@ -140,7 +142,7 @@ describe('Confirmation Page Controller', () => {
     expect(routerGetStub).to.have.been.calledWith(paths.common.overview);
   });
 
-  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name#2', async () => {
     req.idam = {
       userDetails: {
         uid: 'anId',
@@ -196,7 +198,69 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false
+    });
+  });
+
+  it('getApplicationOverview should render application-overview.njk with options and IDAM name#1', async () => {
+    req.idam = {
+      userDetails: {
+        uid: 'user-id',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.appealReferenceNumber = 'appealNumber';
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    const expectedStages = [{
+      title: 'Your appeal<br/> details',
+      ariaLabel: 'Your appeal details stage',
+      active: true,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> argument',
+      ariaLabel: 'Your appeal argument stage',
+      active: false,
+      completed: false
+    }, {
+      title: 'Your hearing<br/> details',
+      ariaLabel: 'Your hearing details stage',
+      active: false,
+      completed: false
+    }, {
+      title: 'Your appeal<br/> decision',
+      ariaLabel: 'Your appeal decision stage',
+      active: false,
+      completed: false
+    }];
+
+    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
+      name: 'Alex Developer',
+      appealRefNumber: 'appealNumber',
+      applicationNextStep: expectedNextStep,
+      history: expectedHistory,
+      stages: expectedStages,
+      saved: false,
+      ended: false,
+      askForMoreTimeInFlight: false,
+      askForMoreTime: false,
+      saveAndAskForMoreTime: false,
+      provideMoreEvidenceSection: false,
+      showAppealRequests: false,
+      showAppealRequestsInAppealEndedStatus: false,
+      showHearingRequests: false,
+      showPayLaterLink: false,
+      ftpaFeatureEnabled: true,
+      hearingDetails: null,
+      showChangeRepresentation: false,
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false
     });
   });
 
@@ -255,67 +319,8 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
-    });
-  });
-
-  it('getApplicationOverview should render application-overview.njk with options and IDAM name', async () => {
-    req.idam = {
-      userDetails: {
-        uid: 'user-id',
-        name: 'Alex Developer',
-        given_name: 'Alex',
-        family_name: 'Developer',
-        sub: 'email@test.com'
-      }
-    };
-    req.session.appeal.appealStatus = 'appealStarted';
-    req.session.appeal.appealReferenceNumber = 'appealNumber';
-
-    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-    const expectedStages = [{
-      title: 'Your appeal<br/> details',
-      ariaLabel: 'Your appeal details stage',
-      active: true,
-      completed: false
-    }, {
-      title: 'Your appeal<br/> argument',
-      ariaLabel: 'Your appeal argument stage',
-      active: false,
-      completed: false
-    }, {
-      title: 'Your hearing<br/> details',
-      ariaLabel: 'Your hearing details stage',
-      active: false,
-      completed: false
-    }, {
-      title: 'Your appeal<br/> decision',
-      ariaLabel: 'Your appeal decision stage',
-      active: false,
-      completed: false
-    }];
-
-    expect(res.render).to.have.been.calledOnce.calledWith('application-overview.njk', {
-      name: 'Alex Developer',
-      appealRefNumber: 'appealNumber',
-      applicationNextStep: expectedNextStep,
-      history: expectedHistory,
-      stages: expectedStages,
-      saved: false,
-      ended: false,
-      askForMoreTimeInFlight: false,
-      askForMoreTime: false,
-      saveAndAskForMoreTime: false,
-      provideMoreEvidenceSection: false,
-      showAppealRequests: false,
-      showAppealRequestsInAppealEndedStatus: false,
-      showHearingRequests: false,
-      showPayLaterLink: false,
-      ftpaFeatureEnabled: true,
-      hearingDetails: null,
-      showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false
     });
   });
 
@@ -387,11 +392,33 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false
     });
   });
 
-  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options and entered name @justthis', async () => {
+  it('should render with only showAskForFeeRemission property', async function() {
+    req.idam = {
+      userDetails: {
+        uid: 'user-id',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'appealStarted';
+    req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+    req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
+    req.session.appeal.paymentStatus = 'Paid';
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(res.render).to.have.been.calledOnce;
+    expect(res.render).to.have.been.calledWith('application-overview.njk', sinon.match.has('showAskForFeeRemission', true));
+  });
+
+  it('getApplicationOverview should render with appealRefNumber application-overview.njk with options, and entered name @justthis', async () => {
     req.idam = {
       userDetails: {
         uid: 'user-id',
@@ -461,7 +488,8 @@ describe('Confirmation Page Controller', () => {
       ftpaFeatureEnabled: true,
       hearingDetails: null,
       showChangeRepresentation: false,
-      showFtpaApplicationLink: false
+      showFtpaApplicationLink: false,
+      showAskForFeeRemission: false
     });
   });
 
@@ -676,4 +704,5 @@ describe('Confirmation Page Controller', () => {
     const result = showFtpaApplicationLink(appeal, true);
     expect(result).to.equal(false);
   });
-});
+})
+;

@@ -17,7 +17,6 @@ async function getAsylumSupport(req: Request, res: Response, next: NextFunction)
       previousPage: paths.appealSubmitted.feeSupportRefund,
       formAction: paths.appealSubmitted.asylumSupportRefund,
       asylumSupportRefNumber,
-      saveAndContinue: true,
       refundJourney: true
     });
   } catch (error) {
@@ -39,7 +38,6 @@ function postAsylumSupport() {
           previousPage: paths.appealSubmitted.asylumSupportRefund,
           pageTitle: i18n.pages.asylumSupportPage.title,
           formAction: paths.appealSubmitted.asylumSupportRefund,
-          saveAndContinue: true,
           refundJourney: true
         });
       }

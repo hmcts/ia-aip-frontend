@@ -719,6 +719,11 @@ describe('update-appeal-service', () => {
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
             remissionOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             journeyType: 'aip',
             subscriptions: [
               {
@@ -751,6 +756,11 @@ describe('update-appeal-service', () => {
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
             remissionOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -784,6 +794,11 @@ describe('update-appeal-service', () => {
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
             remissionOption: null,
+            lateAsylumSupportRefNumber: null,
+            lateHelpWithFeesOption: null,
+            lateHelpWithFeesRefNumber: null,
+            lateLocalAuthorityLetters: null,
+            lateRemissionOption: null,
             subscriptions: [
               {
                 value: {
@@ -851,6 +866,11 @@ describe('update-appeal-service', () => {
           'helpWithFeesRefNumber': null,
           'localAuthorityLetters': null,
           'remissionOption': null,
+          'lateAsylumSupportRefNumber': null,
+          'lateHelpWithFeesOption': null,
+          'lateHelpWithFeesRefNumber': null,
+          'lateLocalAuthorityLetters': null,
+          'lateRemissionOption': null,
           'reviewTimeExtensionRequired': 'Yes',
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
@@ -866,6 +886,7 @@ describe('update-appeal-service', () => {
         }
       );
     });
+
     it('converts time extension to makeAnApplicationEvidence', () => {
       emptyApplication.documentMap = [{ id: 'fileId', url: 'someurl' }] as DocumentMap[];
       emptyApplication.makeAnApplicationEvidence = [
@@ -887,6 +908,11 @@ describe('update-appeal-service', () => {
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
         'remissionOption': null,
+        'lateAsylumSupportRefNumber': null,
+        'lateHelpWithFeesOption': null,
+        'lateHelpWithFeesRefNumber': null,
+        'lateLocalAuthorityLetters': null,
+        'lateRemissionOption': null,
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -922,6 +948,11 @@ describe('update-appeal-service', () => {
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
         'remissionOption': null,
+        'lateAsylumSupportRefNumber': null,
+        'lateHelpWithFeesOption': null,
+        'lateHelpWithFeesRefNumber': null,
+        'lateLocalAuthorityLetters': null,
+        'lateRemissionOption': null,
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',
@@ -1288,6 +1319,17 @@ describe('update-appeal-service', () => {
                 dateUploaded: '2020-01-01',
                 'description': 'Some evidence 1',
                 'tag': 'additionalEvidence'
+              }],
+              lateRemissionOption: 'test',
+              lateAsylumSupportRefNumber: 'test',
+              lateHelpWithFeesOption: 'test',
+              lateHelpWithFeesRefNumber: 'HWF-123',
+              lateLocalAuthorityLetters: [{
+                name: 'somefile.png',
+                fileId: '00000000-0000-0000-0000-000000000000',
+                dateUploaded: '2020-01-01',
+                'description': 'Some evidence 1',
+                'tag': 'additionalEvidence'
               }]
             } as AppealApplication,
             reasonsForAppeal: {
@@ -1384,6 +1426,25 @@ describe('update-appeal-service', () => {
         'helpWithFeesOption': 'test',
         'helpWithFeesRefNumber': 'HWF-123',
         'localAuthorityLetters': [
+          {
+            'id': '00000000-0000-0000-0000-000000000000',
+            'value': {
+              'dateUploaded': '2020-01-01',
+              'description': 'Some evidence 1',
+              'tag': 'additionalEvidence',
+              'document': {
+                'document_filename': 'somefile.png',
+                'document_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000',
+                'document_binary_url': 'http://dm-store:4506/documents/00000000-0000-0000-0000-000000000000/binary'
+              }
+            }
+          }
+        ],
+        'lateRemissionOption': 'test',
+        'lateAsylumSupportRefNumber': 'test',
+        'lateHelpWithFeesOption': 'test',
+        'lateHelpWithFeesRefNumber': 'HWF-123',
+        'lateLocalAuthorityLetters': [
           {
             'id': '00000000-0000-0000-0000-000000000000',
             'value': {

@@ -23,7 +23,6 @@ function postStepsToHelpWithFees() {
   return async (req: Request, res: Response, next: NextFunction) => {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     if (!refundFeatureEnabled) return res.redirect(paths.common.overview);
-
     try {
       return res.redirect(paths.appealSubmitted.helpWithFeesReferenceNumberRefund);
     } catch (error) {

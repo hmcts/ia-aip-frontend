@@ -1,9 +1,9 @@
 import express, { NextFunction, Request, Response } from 'express';
 import {
-  getFeeWaiver,
-  postFeeWaiver,
-  setupFeeWaiverRefundController
-} from '../../../../app/controllers/ask-for-fee-remission/fee-waiver-refund';
+  getStepsToHelpWithFees,
+  postStepsToHelpWithFees,
+  setupStepToHelpWithFeesRefundController
+} from '../../../../app/controllers/ask-for-fee-remission/steps-to-help-with-fees-refund';
 
 import { FEATURE_FLAGS } from '../../../../app/data/constants';
 import { paths } from '../../../../app/paths';
@@ -11,7 +11,7 @@ import LaunchDarklyService from '../../../../app/service/launchDarkly-service';
 import Logger from '../../../../app/utils/logger';
 import { expect, sinon } from '../../../utils/testUtils';
 
-describe('Fee waiver Refund Controller', function () {
+describe('Steps to help with fees Refund Controller', function () {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;
@@ -56,7 +56,7 @@ describe('Fee waiver Refund Controller', function () {
   afterEach(() => {
     sandbox.restore();
   });
-  describe('setupFeeWaiverController', () => {
+  describe('setupStepToHelpWithFeesRefundController', () => {
     beforeEach(() => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
@@ -71,51 +71,36 @@ describe('Fee waiver Refund Controller', function () {
       const routerPOSTStub: sinon.SinonStub = sandbox.stub(express.Router as never, 'post');
       const middleware = [];
 
-      setupFeeWaiverRefundController(middleware);
-      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.feeWaiverRefund);
-      expect(routerPOSTStub).to.have.been.calledWith(paths.appealSubmitted.feeWaiverRefund);
+      setupStepToHelpWithFeesRefundController(middleware);
+      expect(routerGetStub).to.have.been.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund);
+      expect(routerPOSTStub).to.have.been.calledWith(paths.appealSubmitted.stepsToApplyForHelpWithFeesRefund);
     });
 
-    it('should render fee-waiver.njk', async () => {
-      await getFeeWaiver(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/fee-waiver.njk', {
-        previousPage: paths.appealSubmitted.feeSupportRefund,
+    it('should render steps-to-help-with-fees.njk', async () => {
+      await getStepsToHelpWithFees(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/steps-to-help-with-fees.njk', {
+        previousPage: paths.appealSubmitted.helpWithFeesRefund,
         refundJourney: true
       });
     });
 
-    it('should redirect CYA page', async () => {
-      await postFeeWaiver()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.checkYourAnswersRefund);
+    it('should redirect help-with-fees-ref-number.njk', async () => {
+      await postStepsToHelpWithFees()(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWith(paths.appealSubmitted.helpWithFeesReferenceNumberRefund);
     });
 
     it('when in edit mode should redirect check-and-send.njk and reset isEdit flag', async () => {
       req.query = { 'edit': '' };
-      await postFeeWaiver()(req as Request, res as Response, next);
-      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.checkYourAnswersRefund}(?!.*\\bedit\\b)`));
+      await postStepsToHelpWithFees()(req as Request, res as Response, next);
+      expect(res.redirect).to.have.been.calledWithMatch(new RegExp(`${paths.appealSubmitted.helpWithFeesReferenceNumberRefund}(?!.*\\bedit\\b)`));
       expect(req.session.appeal.application.isEdit).to.be.undefined;
     });
 
     it('when called with edit param should render fee-waiver.njk and update session', async () => {
       req.query = { 'edit': '' };
-      await getFeeWaiver(req as Request, res as Response, next);
+      await getStepsToHelpWithFees(req as Request, res as Response, next);
       expect(req.session.appeal.application.isEdit).to.have.eq(true);
-      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/fee-waiver.njk');
-    });
-
-    it('should reset values from other journeys if it present', async () => {
-      let application = req.session.appeal.application;
-      application.lateRemissionOption = 'test value';
-      application.lateAsylumSupportRefNumber = 'test value';
-      application.lateHelpWithFeesOption = 'test value';
-      application.lateHelpWithFeesRefNumber = 'test value';
-      application.lateLocalAuthorityLetters = [];
-
-      await postFeeWaiver()(req as Request, res as Response, next);
-      expect(application.lateRemissionOption).to.be.eq('test value');
-      expect(application.lateHelpWithFeesOption).to.be.null;
-      expect(application.lateHelpWithFeesRefNumber).to.be.null;
-      expect(application.lateLocalAuthorityLetters).to.be.null;
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/fee-support/steps-to-help-with-fees.njk');
     });
   });
 
@@ -130,12 +115,12 @@ describe('Fee waiver Refund Controller', function () {
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
-      await getFeeWaiver(req as Request, res as Response, next);
+      await getStepsToHelpWithFees(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
     });
 
     it('should redirect to overview page when feature flag OFF', async () => {
-      await postFeeWaiver()(req as Request, res as Response, next);
+      await postStepsToHelpWithFees()(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledOnce.calledWith(paths.common.overview);
     });
   });
@@ -144,7 +129,7 @@ describe('Fee waiver Refund Controller', function () {
     it('getFeeWaiver should catch exception and call next with the error', async () => {
       const error = new Error('an error');
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').throws(error);
-      await getFeeWaiver(req as Request, res as Response, next);
+      await getStepsToHelpWithFees(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

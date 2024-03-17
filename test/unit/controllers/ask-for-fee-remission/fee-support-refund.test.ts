@@ -190,7 +190,7 @@ describe('Fee support refund Controller', () => {
       expect(res.render).to.have.been.calledOnce.calledWith('ask-for-fee-remission/fee-support-refund.njk');
     });
 
-    it('should redirect to correct path according to the asylum support selected value', async () => {
+    it('should redirect to correct path according to the fee support selected value', async () => {
       const testData = [
         {
           input: 'asylumSupportFromHo',

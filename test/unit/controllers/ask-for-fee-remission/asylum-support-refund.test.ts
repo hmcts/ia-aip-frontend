@@ -88,7 +88,7 @@ describe('Asylum support refund Controller', function () {
       });
     });
 
-    it('should validate and redirect task-list.njk', async () => {
+    it('should validate and redirect CYA page', async () => {
       req.body['asylumSupportRefNumber'] = '12345';
       await postAsylumSupport()(req as Request, res as Response, next);
       expect(req.session.appeal.application.lateAsylumSupportRefNumber).to.be.eql('12345');

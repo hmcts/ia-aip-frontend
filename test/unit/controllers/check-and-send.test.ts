@@ -314,6 +314,17 @@ describe('Check and Send Controller', () => {
       });
     });
 
+    it('should render check-and-send-page.njk, dlrmFeeRemissionFlag with dlrmFeeRemissionFlag flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        dlrmFeeRemissionFlag: true
+      });
+    });
+
     it('should catch exception and call next with the error', async () => {
       req.session.appeal = createDummyAppealApplication();
       const error = new Error('an error');

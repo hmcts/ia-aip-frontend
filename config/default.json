@@ -88,7 +88,8 @@
     "afterSubmission": 5,
     "pendingPayment": 14,
     "afterReasonsForAppeal": 14,
-    "afterCQSubmission": 7
+    "afterCQSubmission": 7,
+    "outOfCountry": 28
   },
   "features": {
     "askForMoreTime": false,

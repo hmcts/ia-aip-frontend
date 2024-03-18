@@ -461,6 +461,13 @@
         "panel": "You have sent your appeal details",
         "textBullet1": "The Tribunal will check the information you sent and let you know if you need to pay a fee",
         "textBullet2": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that"
+      },
+      "withRemissionOptionAndLate": {
+        "panel": "Your late appeal details have been sent",
+        "textBullet1": "You have sent a late appeal and have told the Tribunal you believe you do not have to pay some or all the fee",
+        "textBullet2": "The Tribunal will first check the information you sent about the fee and let you know if you need to pay",
+        "textBullet3": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ dateOutOfCountryAppeal }}</span> but it might take longer than that",
+        "textBullet4": "The Tribunal will then look at the reasons your appeal was late and let you know what will happen next"
       }
     },
     "confirmationPaidLater": {

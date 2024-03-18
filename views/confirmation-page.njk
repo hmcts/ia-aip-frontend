@@ -3,7 +3,9 @@
 {% block content %}
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 
-  {% if appealWithRemissionOption or paPayLater %}
+  {% if appealWithRemissionOption or late %}
+    {% set panelTitle = i18n.pages.successPage.withRemissionOptionAndLate.panel %}
+  {% elif appealWithRemissionOption or paPayLater %}
     {% set panelTitle = i18n.pages.successPage.withRemissionOption.panel %}
   {% elif paPayNow or eaHuEu %}
     {% set panelTitle = i18n.pages.successPage.payNowTitle %}

@@ -100,7 +100,7 @@ async function createSummaryRowsFrom(req: Request) {
   if (lateLocalAuthorityLetters && lateLocalAuthorityLetters.length > 0) {
     const localAuthorityLetterRow = addSummaryRow(
       i18n.pages.checkYourAnswers.rowTitles.localAuthorityLetter,
-      application.localAuthorityLetters.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
+      application.lateLocalAuthorityLetters.map(evidence => `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='${paths.common.documentViewer}/${evidence.fileId}'>${evidence.name}</a>`),
       paths.appealSubmitted.localAuthorityLetterRefund + editParameter,
       Delimiter.BREAK_LINE
     );
@@ -118,6 +118,7 @@ function setupCheckYourAnswersRefundController(middleware: Middleware[], updateA
 
 export {
   getCheckYourAnswersRefund,
+  postCheckYourAnswersRefund,
   setupCheckYourAnswersRefundController,
   createSummaryRowsFrom
 };

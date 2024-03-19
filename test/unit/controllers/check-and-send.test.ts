@@ -15,7 +15,6 @@ import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import { addSummaryRow } from '../../../app/utils/summary-list';
 import { formatTextForCYA } from '../../../app/utils/utils';
-import { helpWithFeesRefNumberValidation } from '../../../app/utils/validations/fields-validations';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { createDummyAppealApplication } from '../mockData/mock-appeal';
@@ -170,7 +169,7 @@ describe('createSummaryRowsFrom', () => {
       it(`should be ${description}`, () => {
         req.session.appeal.application.helpWithFeesOption = input;
         const helpWithFeesRow = addSummaryRow('Help with fees', [expectedResponse], paths.appealStarted.helpWithFees + editParameter);
-        mockedRows.push(localAuthorityLettersRow);
+        mockedRows.push(helpWithFeesRow);
         expect(rows).to.be.deep.equal(mockedRows);
         mockedRows.pop();
       });

@@ -1,0 +1,26 @@
+{% block beforeContent %}
+{% endblock %}
+{% set pageTitleName = i18n.pages.feeSupportConfirmationPage.title %}
+
+{% extends "layout.njk" %}
+
+{% block content %}
+  {% from "govuk/components/panel/macro.njk" import govukPanel %}
+  {{ govukPanel({
+    titleText: i18n.pages.feeSupportConfirmationPage.title,
+    classes: mainClasses
+  }) }}
+  <h2 class="govuk-heading-m">{{ i18n.pages.feeSupportConfirmationPage.whatHappensNext }}</h2>
+  <div>
+    <ul class="govuk-list govuk-list--bullet govuk-!-padding-left-4">
+      <li>{{ i18n.pages.feeSupportConfirmationPage.bullet1 | safe }}</li>
+      <li>{{ i18n.pages.feeSupportConfirmationPage.bullet2 | eval | safe }}</li>
+    </ul>
+  </div>
+
+  {{ govukButton({
+    text: i18n.common.buttons.seeProgress,
+    href: paths.common.overview
+  }) }}
+  {{ contactUs() }}
+{% endblock %}

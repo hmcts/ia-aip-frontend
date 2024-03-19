@@ -866,6 +866,7 @@
       "noLongerRepresentingMyself": "I am no longer representing myself",
       "iWantTo": "I want to...",
       "withdrawAppeal": "Withdraw my appeal",
+      "askForFeeRemission": "Ask for a fee remission",
       "appealRequests": {
         "sectionHeading": "Appeal requests",
         "askToChangeDetails": "Ask to change some of your details",
@@ -3661,8 +3662,18 @@
           "value": "noneOfTheseStatements",
           "text": "None of these statements apply to me",
           "hint":  "You may still be able to get help to pay the fee"
+        },
+        "iWantToGetHelpWithFees": {
+          "value": "iWantToGetHelpWithFees",
+          "text": "I want to get help with fees"
         }
-      }
+      },
+      "refundTitle": "Why are you asking for a fee remission?",
+      "refundParagraph1": "You do not have to pay a fee in certain circumstances. For example, if you get asylum support. This is called a fee remission.",
+      "refundParagraph2": "If you believe you did not have to pay the fee for this appeal, you can ask the Tribunal to give your money back.",
+      "refundParagraph3": "Select the reason you believe you did not have to pay the fee.",
+      "selectOne": "<p>Select one</p>",
+      "noneOfTheseStatements": "None of these statements apply to me"
     },
     "asylumSupportPage": {
       "title": "What is your asylum support reference number?",
@@ -3675,7 +3686,8 @@
     "feeWaiverPage": {
       "title": "Home Office fee waiver",
       "legend1": "You do not have to pay the fee for this appeal if you got a fee waiver for the application to the Home Office that you are now appealing.",
-      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal."
+      "legend2": "The Tribunal will check with the Home Office that you had a fee waiver after you submit the appeal.",
+      "legendForRefund": "The Tribunal will check with the Home Office that you had a fee waiver."
     },
     "uploadLocalAuthorityLetter": {
       "title": "Upload local authority letter",
@@ -3712,11 +3724,13 @@
         }
       },
       "checkAndSendWantToApply": "I want to apply for help with fees",
-      "checkAndSendWillPayForAppeal": "I want to pay for the appeal now"
+      "checkAndSendWillPayForAppeal": "I want to pay for the appeal now",
+      "refundsNote": "The fee you paid for this appeal is £{{ fee }}. You may be able to get a full or partial refund if you:"
     },
     "stepsToHelpWithFees": {
       "title": "Apply for help with fees",
       "tips": "Follow these steps to submit a help with fees application along with this appeal.",
+      "tipsRefund": "Follow these steps to submit a help with fees application.",
       "bullet1": "Go to <a href=\"https://helpwithcourtfees.service.gov.uk/checklist/\" target=\"_blank\">apply for help with fees (opens in a new tab)</a>",
       "bullet2": "When you are asked to enter a court or tribunal form number, enter IAFT-1",
       "bullet3": "Make a note of the help with fees reference number you get when you complete your help with fees application",
@@ -3728,6 +3742,12 @@
       "paragraph": "You will have received this number when you applied for help with fees. This reference must not have been used for a previous appeal.",
       "helpWithFeesReferenceNumberLabel": "Enter your help with fees reference number",
       "hint": "For example, HWF-A1B-23C"
+    },
+    "feeSupportConfirmationPage": {
+      "title": "You have asked the Tribunal for a fee remission",
+      "whatHappensNext": "What happens next",
+      "bullet1": "A Legal Officer will check the information you sent and let you know if your fee will be refunded",
+      "bullet2": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that"
     }
   },
   "error": {

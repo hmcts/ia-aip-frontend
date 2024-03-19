@@ -12,7 +12,7 @@
             errorList: errorList
         }) }}
     {% endif %}
-    <form action="{{ paths.appealStarted.helpWithFeesReferenceNumber }}" method="post">
+    <form action="{{ formAction }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% call govukFieldset({
             legend: {
@@ -38,8 +38,12 @@
                     text:  errors['helpWithFeesRefNumber'].text
                 } if errors['helpWithFeesRefNumber']
             }) }}
-
-            {{ saveButtons() }}
+            {% if refundJourney %}
+                {{ continueButton() }}
+                {{ canelButton() }}
+            {% else %}
+                {{ saveButtons() }}
+            {% endif %}
         {% endcall %}
     </form>
     {{ contactUs() }}

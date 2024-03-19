@@ -188,6 +188,13 @@ interface CaseData {
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
   correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
+
+  //Late remission(refund) values:
+  lateRemissionOption?: string;
+  lateAsylumSupportRefNumber?: string;
+  lateHelpWithFeesOption?: string;
+  lateHelpWithFeesRefNumber?: string;
+  lateLocalAuthorityLetters?: Collection<DocumentWithMetaData>[];
 }
 
 interface Application<T> {

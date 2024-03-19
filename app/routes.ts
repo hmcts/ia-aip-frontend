@@ -21,6 +21,18 @@ import { setupStepToHelpWithFeesController } from './controllers/appeal-applicat
 import { setupTaskListController } from './controllers/appeal-application/task-list';
 import { setupTypeOfAppealController } from './controllers/appeal-application/type-of-appeal';
 import { setupApplicationOverviewController } from './controllers/application-overview';
+import { setupAsylumSupportRefundController } from './controllers/ask-for-fee-remission/asylum-support-refund';
+import { setupCheckYourAnswersRefundController } from './controllers/ask-for-fee-remission/check-your-answers-refund';
+import { setConfirmationRefundController } from './controllers/ask-for-fee-remission/confirmation-page';
+import { setupFeeSupportRefundController } from './controllers/ask-for-fee-remission/fee-support-refund';
+import { setupFeeWaiverRefundController } from './controllers/ask-for-fee-remission/fee-waiver-refund';
+import {
+  setupHelpWithFeesReferenceNumberRefundController
+} from './controllers/ask-for-fee-remission/help-with-fees-reference-number-refund';
+import { setupHelpWithFeesRefundController } from './controllers/ask-for-fee-remission/help-with-fees-refund';
+import {
+  setupStepToHelpWithFeesRefundController
+} from './controllers/ask-for-fee-remission/steps-to-help-with-fees-refund';
 import { setupAskForMoreTimeController } from './controllers/ask-for-more-time/ask-for-more-time';
 import { setupChangeRepresentationControllers } from './controllers/changing-representation';
 import { setupCQAnythingElseAnswerController } from './controllers/clarifying-questions/anything-else-answer';
@@ -198,6 +210,7 @@ import { setupSecrets } from './setupSecrets';
 import './controllers/appeal-application/home-office-details-upload-decision-letter';
 import './controllers/appeal-application/pay-now';
 import './controllers/appeal-application/upload-local-authority-letter';
+import './controllers/ask-for-fee-remission/upload-local-authority-letter-refund';
 
 const config = setupSecrets();
 const sessionLoggerEnabled: boolean = config.get('session.useLogger');
@@ -226,11 +239,19 @@ const homeOfficeDetailsController = setupHomeOfficeDetailsController(middleware,
 const typeOfAppealController = setupTypeOfAppealController(middleware, updateAppealService);
 const decisionTypeController = setupDecisionTypeController(middleware, updateAppealService);
 const feeSupportController = setupFeeSupportController(middleware, updateAppealService);
+const feeSupportRefundController = setupFeeSupportRefundController(middleware);
 const asylumSupportController = setupAsylumSupportController(middleware, updateAppealService);
+const asylumSupportRefundController = setupAsylumSupportRefundController(middleware);
 const feeWaiverController = setupFeeWaiverController(middleware, updateAppealService);
+const feeWaiverRefundController = setupFeeWaiverRefundController(middleware);
 const helpWithFeesController = setupHelpWithFeesController(middleware, updateAppealService);
+const helpWithFeesRefundController = setupHelpWithFeesRefundController(middleware);
 const helpWithFeesReferenceNumberController = setupHelpWithFeesReferenceNumberController(middleware, updateAppealService);
+const helpWithFeesReferenceNumberRefundController = setupHelpWithFeesReferenceNumberRefundController(middleware);
 const stepsToHelpWithFeesController = setupStepToHelpWithFeesController(middleware, updateAppealService);
+const stepsToHelpWithFeesRefundController = setupStepToHelpWithFeesRefundController(middleware);
+const checkYourAnswersRefundController = setupCheckYourAnswersRefundController(middleware, updateAppealService);
+const confirmationRefundController = setConfirmationRefundController(middleware);
 const personalDetailsController = setupPersonalDetailsController(middleware, { updateAppealService, osPlacesClient });
 const contactDetailsController = setupContactDetailsController(middleware, updateAppealService);
 const checkAndSendController = setupCheckAndSendController(middleware, updateAppealService, paymentService);
@@ -362,11 +383,19 @@ router.use(personalDetailsController);
 router.use(typeOfAppealController);
 router.use(decisionTypeController);
 router.use(feeSupportController);
+router.use(feeSupportRefundController);
 router.use(asylumSupportController);
+router.use(asylumSupportRefundController);
 router.use(feeWaiverController);
+router.use(feeWaiverRefundController);
 router.use(helpWithFeesController);
+router.use(helpWithFeesRefundController);
 router.use(helpWithFeesReferenceNumberController);
+router.use(helpWithFeesReferenceNumberRefundController);
 router.use(stepsToHelpWithFeesController);
+router.use(stepsToHelpWithFeesRefundController);
+router.use(checkYourAnswersRefundController);
+router.use(confirmationRefundController);
 router.use(contactDetailsController);
 router.use(confirmationController);
 router.use(checkAndSendController);

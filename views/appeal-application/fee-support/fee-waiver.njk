@@ -9,12 +9,18 @@
             errorList: errorList
         }) }}
     {% endif %}
-    <form method="post" action={{ paths.awaitingReasonsForAppeal.feeWaiver }}>
+    <form method="post" action={{ formAction }}>
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         <h1 class="govuk-heading-xl">{{ i18n.pages.feeWaiverPage.title }}</h1>
         <p>{{ i18n.pages.feeWaiverPage.legend1 }}</p>
-        <p>{{ i18n.pages.feeWaiverPage.legend2 }}</p>
-        {{ continueButton() }}
+        {% if refundJourney %}
+            <p>{{ i18n.pages.feeWaiverPage.legendForRefund }}</p>
+            {{ continueButton() }}
+            {{ canelButton() }}
+        {% else %}
+            <p>{{ i18n.pages.feeWaiverPage.legend2 }}</p>
+            {{ continueButton() }}
+        {% endif %}
     </form>
     {{ contactUs() }}
 {% endblock %}

@@ -11,7 +11,8 @@ export const FEATURE_FLAGS = {
   FTPA: 'aip-ftpa-feature',
   USE_CCD_DOCUMENT_AM: 'use-ccd-document-am',
   DLRM_FEE_REMISSION_FEATURE_FLAG: 'dlrm-fee-remission-feature-flag',
-  DLRM_SETASIDE_FEATURE_FLAG: 'dlrm-setaside-feature-flag'
+  DLRM_SETASIDE_FEATURE_FLAG: 'dlrm-setaside-feature-flag',
+  DLRM_REFUND_FEATURE_FLAG: 'dlrm-refund-feature-flag'
 };
 
 export const APPLICANT_TYPE = {

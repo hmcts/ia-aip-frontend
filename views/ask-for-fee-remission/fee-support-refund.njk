@@ -1,0 +1,33 @@
+{% set pageTitleName = pageTitle %}
+{% from "components/radio-button-question.njk" import radioButtonQuestion %}
+
+{% extends "layout.njk" %}
+
+{% block content %}
+    {% if errorList %}
+        {{ govukErrorSummary({
+            titleText: i18n.error.summary.title,
+            descriptionText: i18n.error.summary.descriptionText,
+            errorList: errorList
+        }) }}
+    {% endif %}
+    <form action="{{ formAction }}" method="post">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <p>{{ i18n.pages.remissionOptionPage.refundParagraph1 }}</p>
+        <p>{{ i18n.pages.remissionOptionPage.refundParagraph2 }}</p>
+        <p>{{ i18n.pages.remissionOptionPage.refundParagraph3 }}</p>
+
+        {{ radioButtonQuestion(
+            question.name or 'answer',
+            question.options,
+            question.title | eval,
+            question.titleIsheading or true,
+            question.hint | eval | safe if question.hint,
+            error[question.name].text,
+            question.inline
+        ) }}
+        {{ continueButton() }}
+        {{ canelButton() }}
+    </form>
+    {{ contactUs() }}
+{% endblock %}

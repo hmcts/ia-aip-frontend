@@ -1,4 +1,3 @@
-{% set pageTitleName = i18n.pages.homeOfficePage.title %}
 {% extends "layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -12,7 +11,8 @@
             errorList: errorList
         }) }}
     {% endif %}
-    <form action="{{ paths.appealStarted.asylumSupport }}" method="post">
+
+    <form action="{{ formAction }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
         {% call govukFieldset({
             legend: {
@@ -44,8 +44,12 @@
                     text:  errors['asylumSupportRefNumber'].text
                 } if errors['asylumSupportRefNumber']
             }) }}
-
-            {{ saveButtons() }}
+            {% if refundJourney %}
+                {{ continueButton() }}
+                {{ canelButton() }}
+            {% else %}
+                {{ saveButtons() }}
+            {% endif %}
         {% endcall %}
     </form>
     {{ contactUs() }}

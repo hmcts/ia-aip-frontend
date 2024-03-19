@@ -165,7 +165,6 @@ describe('Task List Controller', () => {
       } ];
     req.session.appeal.application.appealType = 'protection';
     req.session.appeal.application.decisionHearingFeeOption = 'someThing';
-
     await getTaskList(req as Request, res as Response, next);
     expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/task-list.njk', { data: mockData });
   });

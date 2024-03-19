@@ -29,6 +29,7 @@
       "confirmAndSend": "Confirm and send",
       "continueUseNewService": "Continue to use the new service",
       "submitYourAppeal": "Submit your appeal",
+      "submit": "Submit",
       "addAnotherWitness": "Add another witness",
       "addAnotherLanguage": "Add another language"
     },
@@ -292,14 +293,22 @@
         "sponsorsAddress": "Sponsor's Address",
         "sponsorsContactDetails": "Sponsor's contact details",
         "sponsorsHasAccessToInformation": "Sponsor has access to information",
-        "decisionType": "Decision Type",
+        "decisionType": "Decision type",
         "whatDateDidYouLeaveTheUKAfterYourProtectionClaimWasRefused": "What date did you leave the UK after your Protection claim was refused?",
         "whatDateDidYouLeaveTheUKAfterYourApplicationToStayInTheCountryWasRefused": "What date did you leave the UK after your application to stay in the country was refused?",
         "feeStatement": "Fee statement",
         "asylumSupportRefNumber": "Asylum support reference number",
         "helpWithFees": "Help with fees",
         "helpWithFeesRefNumber": "Help with fees reference number",
-        "localAuthorityLetter": "Local authority letter"
+        "aboutTheAppeal": "About the appeal",
+        "personalDetails": "Personal details",
+        "feeDetails": "Fee details",
+        "feeSupportStatus": "Fee support status",
+        "asylumSupportReferenceNumber": "Asylum Support reference number",
+        "feeSupportType": "Fee support type",
+        "localAuthorityLetter": "Local Authority letter",
+        "helpWithFeesReferenceNumber": "Help with fees reference number",
+        "paymentStatus": "Payment status"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -403,8 +412,7 @@
         "If you provide evidence that is not in English, you must also provide an English translation of that evidence"
       ],
       "fileUploadTitle": "Upload a file",
-      "uploadedFileTitle": "Uploaded file",
-      "fileUploadTitleDlrmFeeRemission": "<span class='govuk-body govuk-!-font-weight-bold'> Upload local authority letter</span><br></br>"
+      "uploadedFileTitle": "Uploaded file"
     },
     "successPage": {
       "title": "Your appeal details have been sent",
@@ -454,6 +462,13 @@
         "panel": "You have sent your appeal details",
         "textBullet1": "The Tribunal will check the information you sent and let you know if you need to pay a fee",
         "textBullet2": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ date }}</span> but it might take longer than that"
+      },
+      "withRemissionOptionAndLate": {
+        "panel": "Your late appeal details have been sent",
+        "textBullet1": "You have sent a late appeal and have told the Tribunal you believe you do not have to pay some or all the fee",
+        "textBullet2": "The Tribunal will first check the information you sent about the fee and let you know if you need to pay",
+        "textBullet3": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ dateOutOfCountryAppeal }}</span> but it might take longer than that",
+        "textBullet4": "The Tribunal will then look at the reasons your appeal was late and let you know what will happen next"
       }
     },
     "confirmationPaidLater": {
@@ -886,8 +901,8 @@
         },
         "appealSubmittedDlrmFeeRemission": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
-          "feeDetails": "There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
-          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay fee.",
+          "feeDetails": "There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay a fee.",
           "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
         },
         "pendingPayment": {
@@ -915,8 +930,8 @@
         },
         "lateAppealSubmittedDlrmFeeRemission": {
           "detailsSent": "Your appeal details have been sent to the Tribunal.",
-          "feeDetails": "There is a fee for this Appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
-          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay fee.",
+          "feeDetails": "There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.",
+          "tribunalCheck": "The Tribunal will check the information you sent and let you know if you need to pay a fee.",
           "dueDate": "This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that."
         },
         "lateAppealRejected": {
@@ -1098,15 +1113,24 @@
           "decision": "A judge has <b> {{ applicationNextStep.decision }} </b> your appeal. <br>",
           "description": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a> <br> <p> If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to appeal to the Upper Tribunal. </p>",
           "descriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.decisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
+          "updatedDescriptionFtpaEnabled": "<p>The Decision and Reasons document includes the reasons the judge made this decision. You should read it carefully.</p><br> <a href={{ paths.common.updatedDecisionAndReasonsViewer }}>Read the Decision and Reasons document</a>",
           "info": {
             "title": "Helpful Information",
             "titleFtpaEnabled": "Appeal Information",
             "text": "If you disagree with this decision, you have until <span class=\"govuk-!-font-weight-bold\">{{ applicationNextStep.deadline }}</span> to apply for permission to appeal to the Upper Tribunal.",
             "url": "<a class=\"govuk-link\" href=\"https://www.gov.uk/upper-tribunal-immigration-asylum\">How to appeal to the Upper Tribunal (Opens in a new window)</a>",
             "urlFtpaEnabled": "<a href=\"{{ paths.ftpa.ftpaApplication }}\">Apply for permission to appeal to the Upper Tribunal</a>"
+          },
+          "underRule32": {
+            "description": "A judge has reviewed your appeal decision and decided that your appeal should be heard again. <br>",
+            "url": "<a href={{ paths.common.decisionAndReasonsViewerWithRule32 }}>Read the reasons for this decision</a> <br>",
+            "info": {
+              "title": "What happens next",
+              "text": "There will be a new hearing for this appeal. The Tribunal will contact you soon to ask if there is anything you will need at the hearing."
+            }
           }
         },
-        "ftpaSubmitted":{
+        "ftpaSubmitted": {
           "description": {
             "appellant": [
               "A judge will decide your application for permission to appeal to the Upper Tribunal.",
@@ -1555,9 +1579,11 @@
             {
               "title": "Useful documents",
               "text": "Decision and Reasons",
-              "href": "{{ paths.common.decisionAndReasonsViewer }}"
+              "href": ""
             }
-          ]
+          ],
+          "originalLinks": "{{ paths.common.decisionAndReasonsViewer }}",
+          "updatedLinks": "{{ paths.common.updatedDecisionAndReasonsViewer }}"
         },
         "applyForFTPAAppellant": {
           "text": "You applied for permission to appeal to the Upper Tribunal.",
@@ -1615,6 +1641,34 @@
                 "href": "{{ paths.common.directionHistoryViewer }}"
               }
             ]
+          }
+        },
+        "updateTribunalDecision": {
+          "underRule31": {
+            "fromAllowedToDismissedText": "The Tribunal changed the appeal decision from allowed to dismissed.",
+            "fromDismissedToAllowedText": "The Tribunal changed the appeal decision from dismissed to allowed.",
+            "newDecisionAndReasonsDocument": {
+              "text": "The Tribunal created a new Decision and Reasons document for your appeal",
+              "links": [
+                {
+                  "title": "Useful documents",
+                  "text": "See the new Decisions and Reasons",
+                  "href": "{{ paths.common.updatedDecisionAndReasonsViewer }}"
+                }
+              ]
+            }
+          },
+          "underRule32": {
+            "documentOfReasonsForTheDecision": {
+              "text": "The Tribunal decided that your appeal will be heard again.",
+              "links": [
+                {
+                  "title": "Useful documents",
+                  "text": "Reasons for the decision",
+                  "href": "{{ paths.common.decisionAndReasonsViewerWithRule32 }}"
+                }
+              ]
+            }
           }
         }
       }
@@ -1902,7 +1956,14 @@
       },
       "decisionsAndReasons": {
         "title": "Decision and Reasons",
+        "originalSubTitle": "Original Decision and Reasons",
+        "correctedSubTitle": "Corrected Decision and Reasons ",
+        "summariseChanges": "What has been corrected",
         "description": "This document is in two parts.  The first part includes the decision and information on what happens next.  The second part includes detailed reasons for the judge's decision"
+      },
+      "updatedTribunalDecisionWithRule32": {
+        "title": "Reasons for decision",
+        "documentText": "Reasons your appeal will be heard again"
       },
       "ftpaApplication": {
         "title": {

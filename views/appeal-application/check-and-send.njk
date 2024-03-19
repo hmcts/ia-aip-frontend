@@ -18,6 +18,8 @@
 
   {% if payNow %}
     {% set buttonCopy = i18n.common.buttons.payNow  %}
+  {% elif dlrmFeeRemissionFlag %}
+    {% set buttonCopy = i18n.common.buttons.submit  %}
   {% else %}
     {% set buttonCopy = i18n.common.buttons.submitYourAppeal  %}
   {% endif %}

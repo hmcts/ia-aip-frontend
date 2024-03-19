@@ -10,7 +10,9 @@ import {
   getAppellantApplications,
   getFtpaApplicantType,
   hasPendingTimeExtension,
-  isFtpaFeatureEnabled
+  isFtpaFeatureEnabled,
+  isUpdateTribunalDecideWithRule31,
+  isUpdateTribunalDecideWithRule32
 } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
@@ -563,6 +565,7 @@ async function getAppealApplicationNextStep(req: Request) {
 
       let decidedDescriptionParagraphs;
       let decidedInfo;
+      let decision;
 
       if (ftpaEnabled) {
         decidedDescriptionParagraphs = [
@@ -588,8 +591,27 @@ async function getAppealApplicationNextStep(req: Request) {
         };
       }
 
+      if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled) && req.session.appeal.updatedAppealDecision) {
+        decision = req.session.appeal.updatedAppealDecision.toLowerCase();
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.decision,
+          i18n.pages.overviewPage.doThisNext.decided.updatedDescriptionFtpaEnabled
+        ];
+      } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled)) {
+        decidedDescriptionParagraphs = [
+          i18n.pages.overviewPage.doThisNext.decided.underRule32.description,
+          i18n.pages.overviewPage.doThisNext.decided.underRule32.url
+        ];
+        decidedInfo = {
+          title: i18n.pages.overviewPage.doThisNext.decided.underRule32.info.title,
+          text: i18n.pages.overviewPage.doThisNext.decided.underRule32.info.text
+        };
+      } else {
+        decision = req.session.appeal.isDecisionAllowed;
+      }
+
       doThisNextSection = {
-        decision: req.session.appeal.isDecisionAllowed,
+        decision: decision,
         descriptionParagraphs: decidedDescriptionParagraphs,
         info: decidedInfo,
         cta: {},
@@ -654,7 +676,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
   }
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag);
+  doThisNextSection.deadline = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
   return doThisNextSection;
 }
 

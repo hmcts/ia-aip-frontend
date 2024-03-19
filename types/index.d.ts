@@ -159,6 +159,11 @@ interface Appeal {
   addendumEvidence?: AdditionalEvidenceDocument[];
   pcqId?: string;
   isDecisionAllowed?: string;
+  updateTribunalDecisionList?: string;
+  updatedAppealDecision?: string;
+  typesOfUpdateTribunalDecision?: DynamicList;
+  updateTribunalDecisionAndReasonsFinalCheck?: string;
+  rule32NoticeDocs?: Evidence;
   appealOutOfCountry?: string;
   ftpaApplicantType?: string;
   ftpaAppellantEvidenceDocuments?: Evidence[];
@@ -191,6 +196,7 @@ interface Appeal {
   ftpaApplicationAppellantDocument?: Evidence;
   ftpaAppellantDecisionRemadeRule32Text?: string;
   ftpaRespondentDecisionRemadeRule32Text?: string;
+  updatedDecisionAndReasons?: DecisionAndReasons[];
 }
 
 interface Hearing {
@@ -456,4 +462,14 @@ type Middleware = (req: Express.Request, res: Express.Response, next: any) => vo
 
 interface ApplicationStatus {
   [key: string]: Task;
+}
+
+interface DecisionAndReasons {
+  id: string;
+  updatedDecisionDate: string;
+  dateCoverLetterDocumentUploaded: string;
+  coverLetterDocument: Evidence;
+  dateDocumentAndReasonsDocumentUploaded?: string;
+  documentAndReasonsDocument?: Evidence;
+  summariseChanges?: string;
 }

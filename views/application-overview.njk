@@ -99,7 +99,9 @@
             {% if applicationNextStep.info.text and ftpaFeatureEnabled %}
               <p>{{ applicationNextStep.info.text | eval | safe }}</p>
             {% endif %}
-            <p>{{ applicationNextStep.info.url | eval | safe }}</p>
+            {% if applicationNextStep.info.url %}
+              <p>{{ applicationNextStep.info.url | eval | safe }}</p>
+            {% endif %}
           {% endif %}
         </div>
         {{ timeline(history) }}

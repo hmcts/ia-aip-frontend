@@ -3,14 +3,11 @@ import {
   getAppealLate,
   postAppealLate,
   postAppealLateDeleteFile,
-  postAppealLateUploadFile,
   setupOutOfTimeController
 } from '../../../app/controllers/appeal-application/out-of-time';
-import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import { paths } from '../../../app/paths';
 import { DocumentManagementService } from '../../../app/service/document-management-service';
-import LaunchDarklyService from '../../../app/service/launchDarkly-service';
 import UpdateAppealService from '../../../app/service/update-appeal-service';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
@@ -88,21 +85,15 @@ describe('Out of time controller', () => {
   });
 
   describe('getAppealLate', () => {
-    it('should render home-office-letter-sent.njk', async () => {
-      await getAppealLate(req as Request, res as Response, next);
+    it('should render home-office-letter-sent.njk', () => {
+      getAppealLate(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
     });
 
-    it('should render appeal-late.njk when drlm set aside is enabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      await getAppealLate(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('appeal-application/home-office/appeal-late.njk');
-    });
-
-    it('should catch exception and call next with the error', async () => {
+    it('should catch exception and call next with the error', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
-      await getAppealLate(req as Request, res as Response, next);
+      getAppealLate(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });
@@ -200,40 +191,6 @@ describe('Out of time controller', () => {
       expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
     });
 
-    it('should not delete previous evidence or upload new evidence when dlrm set aside is enabled', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-      req.body['appeal-late'] = whyAmLate;
-      req.file = file as Express.Multer.File;
-      req.session.appeal.application.lateAppeal.evidence = evidenceExample;
-      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
-      req.session.appeal.documentMap = [ documentMap ];
-
-      const lateAppeal: LateAppeal = {
-        evidence: evidenceExample,
-        reason: whyAmLate
-      };
-      const appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          lateAppeal
-        }
-      };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
-        application: {
-          lateAppeal
-        }
-      } as Appeal);
-      await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(documentManagementService.deleteFile).to.not.have.been.calledWith(req, evidenceExample.fileId);
-      expect(documentManagementService.uploadFile).to.not.have.been.calledWith(req);
-      expect(req.session.appeal.application.lateAppeal.reason).to.be.equal(whyAmLate);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidenceExample);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.checkAndSend);
-    });
-
     it('when in edit mode should validate and redirect to CYA and reset isEdit flag', async () => {
       req.session.appeal.application.isEdit = true;
       req.body['appeal-late'] = 'My explanation why am late';
@@ -314,62 +271,6 @@ describe('Out of time controller', () => {
       const error = new Error('an error');
       res.render = sandbox.stub().throws(error);
       await postAppealLate(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWith(error);
-    });
-  });
-
-  describe('postAppealLate', () => {
-    const whyAmLate = 'My explanation why am late';
-    const file = {
-      originalname: 'file.png',
-      mimetype: 'type'
-    };
-
-    const evidence: Evidence = {
-      name: file.originalname,
-      fileId: 'someUUID'
-    };
-    it('should delete previous evidence and upload new evidence', async () => {
-      req.file = file as Express.Multer.File;
-      req.session.appeal.application.lateAppeal.evidence = evidenceExample;
-      req.session.appeal.application.lateAppeal.reason = 'someReason';
-      const documentMap = { id: 'someUUID', url: 'docStoreURLToFile' };
-      req.session.appeal.documentMap = [ documentMap ];
-      const documentUploadResponse: DocumentUploadResponse = {
-        fileId: 'someUUID',
-        name: 'file.png'
-      };
-      const lateAppeal: LateAppeal = {
-        reason: 'someReason',
-        evidence: documentUploadResponse
-      };
-      const appeal = {
-        ...req.session.appeal,
-        application: {
-          ...req.session.appeal.application,
-          lateAppeal
-        }
-      };
-      updateAppealService.submitEventRefactored = sandbox.stub().returns({
-        application: {
-          lateAppeal
-        }
-      } as Appeal);
-      documentManagementService.uploadFile = sandbox.stub().returns(documentUploadResponse);
-      await postAppealLateUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
-
-      expect(updateAppealService.submitEventRefactored).to.have.been.calledWith(Events.EDIT_APPEAL, appeal, 'idamUID', 'atoken');
-      expect(documentManagementService.deleteFile).to.have.been.calledWith(req, evidenceExample.fileId);
-      expect(documentManagementService.uploadFile).to.have.been.calledWith(req);
-      expect(req.session.appeal.application.lateAppeal.evidence).to.be.deep.equal(evidence);
-      expect(res.redirect).to.have.been.calledWith(paths.appealStarted.appealLate);
-    });
-
-    it('should catch exception and call next with the error', async () => {
-      const error = new Error('an error');
-      req.file = file as Express.Multer.File;
-      documentManagementService.uploadFile = sandbox.stub().throws(error);
-      await postAppealLateUploadFile(documentManagementService as DocumentManagementService, updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
   });

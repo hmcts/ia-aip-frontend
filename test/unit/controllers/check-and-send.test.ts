@@ -90,24 +90,6 @@ describe('createSummaryRowsFrom', () => {
     expect(rows).to.be.deep.equal(mockedRows);
   });
 
-  it('should not create evidence row when appeal is late with evidence and dlrm set aside enabled', async () => {
-    sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-    req.session.appeal.application.isAppealLate = true;
-    req.session.appeal.application.lateAppeal = {
-      reason: 'The reason why I am late',
-      evidence: {
-        fileId: 'fileId',
-        name: 'filename'
-      }
-    };
-
-    const rows: any[] = await createSummaryRowsFrom(req as Request);
-    const appealLateRow = addSummaryRow('Reason for late appeal', [formatTextForCYA(req.session.appeal.application.lateAppeal.reason)], paths.appealStarted.appealLate);
-    const mockedRows: SummaryRow[] = getMockedSummaryRows();
-    mockedRows.push(appealLateRow);
-    expect(rows).to.be.deep.equal(mockedRows);
-  });
-
   it('should create rows when appeal type is deprivation payments flag is ON', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.CARD_PAYMENTS, false).resolves(true);
     req.session.appeal.application.rpDcAppealHearingOption = 'decisionWithHearing';
@@ -328,6 +310,17 @@ describe('Check and Send Controller', () => {
         previousPage: paths.appealStarted.taskList,
         fee: '140',
         payNow: true
+      });
+    });
+
+    it('should render check-and-send-page.njk, dlrmFeeRemissionFlag with dlrmFeeRemissionFlag flag is ON', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal = createDummyAppealApplication();
+      await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
+        summaryRows: sinon.match.any,
+        previousPage: paths.appealStarted.taskList,
+        dlrmFeeRemissionFlag: true
       });
     });
 

@@ -14,7 +14,6 @@ const paths = {
     homeOfficeDecisionLetterUpload: '/home-office-upload-decision-letter/upload',
     homeOfficeDecisionLetterDelete: '/home-office-upload-decision-letter/delete',
     appealLate: '/late-appeal',
-    appealLateUploadEvidence: '/late-appeal/upload',
     uploadEvidence: '/home-office/upload-evidence',
     deleteEvidence: '/home-office/delete-evidence',
     typeOfAppeal: '/appeal-type',
@@ -242,9 +241,11 @@ const paths = {
     hearingNoticeViewer: '/hearing-notice',
     hearingBundleViewer: '/hearing-bundle',
     decisionAndReasonsViewer: '/decision-reasons',
+    decisionAndReasonsViewerWithRule32: '/decision-reasons-with-rule32',
     ftpaAppellantApplicationViewer: '/ftpa-appellant-application',
     ftpaDecisionViewer: '/ftpa-decision',
     directionHistoryViewer: '/direction-history/:id',
+    updatedDecisionAndReasonsViewer: '/updated-decision-reasons',
 
     // Ask for more time
     askForMoreTimeReason: '/ask-for-more-time',

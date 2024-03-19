@@ -1,6 +1,11 @@
 import config from 'config';
 import { Request } from 'express';
 import moment from 'moment';
+import { Events } from '../data/events';
+import {
+  isUpdateTribunalDecideWithRule31,
+  isUpdateTribunalDecideWithRule32
+} from '../utils/utils';
 import { dayMonthYearFormat } from './date-utils';
 import { appealHasNoRemissionOption } from './remission-utils';
 
@@ -50,12 +55,21 @@ function getFormattedEventHistoryDate(history: HistoryEvent[], eventTagToLookFor
  * @param req the request containing the appeal information
  * @returns deadline for the appeallnt to respond to Judge's decision
  */
-function getDueDateForAppellantToRespondToJudgeDecision(req: Request) {
-  const finalDecisionAndReasonsPdfDoc = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf');
+function getDueDateForAppellantToRespondToJudgeDecision(req: Request, ftpaSetAsideFeatureEnabled: Boolean = false) {
+
+  let theDateOfdecisionAndReasons;
+  if (isUpdateTribunalDecideWithRule31(req, ftpaSetAsideFeatureEnabled.valueOf())) {
+    theDateOfdecisionAndReasons = req.session.appeal.history.find(history => history.id === Events.UPDATE_TRIBUNAL_DECISION.id).createdDate;
+  } else if (isUpdateTribunalDecideWithRule32(req, ftpaSetAsideFeatureEnabled.valueOf())) {
+    return null;
+  } else {
+    theDateOfdecisionAndReasons = req.session.appeal.finalDecisionAndReasonsDocuments.find(doc => doc.tag === 'finalDecisionAndReasonsPdf').dateUploaded;
+  }
+
   let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
   // if it's out of country appeal it's 28 days otherwise it's 14 days
   let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : 14;
-  return moment(finalDecisionAndReasonsPdfDoc.dateUploaded).add(noOfDays, 'days').format(dayMonthYearFormat);
+  return moment(theDateOfdecisionAndReasons).add(noOfDays, 'days').format(dayMonthYearFormat);
 }
 
 /**
@@ -75,7 +89,7 @@ function getDueDateForAppellantToRespondToFtpaDecision(req: Request) {
  * @param req the request containing  all the directions in session
  * @param dlrmFeeRemissionFlag value of DLRM_FEE_REMISSION_FEATURE_FLAG
  */
-function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemissionFlag: Boolean = false): string {
+function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemissionFlag: Boolean = false, ftpaSetAsideFeatureEnabled: Boolean = false): string {
 
   const history = req.session.appeal.history;
   let formattedDeadline;
@@ -152,7 +166,7 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
       formattedDeadline = getFormattedDirectionDueDate(req.session.appeal.directions, ['legalRepresentativeHearingRequirements']);
       break;
     case 'decided':
-      formattedDeadline = getDueDateForAppellantToRespondToJudgeDecision(req);
+      formattedDeadline = getDueDateForAppellantToRespondToJudgeDecision(req, ftpaSetAsideFeatureEnabled);
       break;
     default: {
       formattedDeadline = 'TBC';

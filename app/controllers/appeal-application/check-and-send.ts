@@ -11,10 +11,10 @@ import LaunchDarklyService from '../../service/launchDarkly-service';
 import PaymentService from '../../service/payments-service';
 import UpdateAppealService from '../../service/update-appeal-service';
 import { getFee, payNowForApplicationNeeded } from '../../utils/payments-utils';
+import { appealHasRemissionOption } from '../../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
-import { appealHasRemissionOption } from '../../utils/remission-utils';
 
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);

@@ -14,6 +14,7 @@ import { getFee, payNowForApplicationNeeded } from '../../utils/payments-utils';
 import { addSummaryRow, Delimiter } from '../../utils/summary-list';
 import { formatTextForCYA } from '../../utils/utils';
 import { statementOfTruthValidation } from '../../utils/validations/fields-validations';
+import { appealHasRemissionOption } from '../../utils/remission-utils';
 
 async function createSummaryRowsFrom(req: Request) {
   const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, false);
@@ -286,8 +287,8 @@ function getCheckAndSend(paymentService: PaymentService) {
     try {
       const defaultFlag = (process.env.DEFAULT_LAUNCH_DARKLY_FLAG === 'true');
       const paymentsFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.CARD_PAYMENTS, defaultFlag);
-      const dlrmFeeRemissionFlag = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
-
+      const { application } = req.session.appeal;
+      const hasRemissionOption = appealHasRemissionOption(application);
       const summaryRows = await createSummaryRowsFrom(req);
       const { paymentReference = null } = req.session.appeal;
       let fee;
@@ -304,7 +305,7 @@ function getCheckAndSend(paymentService: PaymentService) {
         ...(paymentsFlag && payNow) && { fee: fee.calculated_amount },
         ...(paymentsFlag && !appealPaid) && { payNow },
         ...(paymentsFlag && appealPaid) && { appealPaid },
-        ...(dlrmFeeRemissionFlag) && { dlrmFeeRemissionFlag }
+        ...(hasRemissionOption) && { hasRemissionOption }
       });
     } catch (error) {
       next(error);

@@ -734,7 +734,7 @@ export default class UpdateAppealService {
           return {
             ...evidence.fileId && { id: evidence.fileId },
             value: {
-              dateUploaded: evidence.dateUploaded,
+              dateUploaded: evidence.dateUploaded || '',
               description: evidence.description,
               tag: 'additionalEvidence',
               document: {
@@ -765,7 +765,7 @@ export default class UpdateAppealService {
       }
 
       caseData.lateHelpWithFeesRefNumber = null;
-      if (appeal.application.helpWithFeesRefNumber) {
+      if (appeal.application.lateHelpWithFeesRefNumber) {
         caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
       }
 
@@ -778,7 +778,7 @@ export default class UpdateAppealService {
           return {
             ...evidence.fileId && { id: evidence.fileId },
             value: {
-              dateUploaded: evidence.dateUploaded,
+              dateUploaded: evidence.dateUploaded || '',
               description: evidence.description,
               tag: 'additionalEvidence',
               document: {

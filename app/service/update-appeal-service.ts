@@ -705,27 +705,11 @@ export default class UpdateAppealService {
         caseData.appealType = appeal.application.appealType;
       }
 
-      caseData.remissionOption = null;
-      if (appeal.application.remissionOption) {
-        caseData.remissionOption = appeal.application.remissionOption;
-      }
+      caseData.remissionOption = appeal.application.remissionOption || null;
+      caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber || null;
+      caseData.helpWithFeesOption = appeal.application.helpWithFeesOption || null;
+      caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber || null;
 
-      caseData.asylumSupportRefNumber = null;
-      if (appeal.application.asylumSupportRefNumber) {
-        caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
-      }
-
-      caseData.helpWithFeesOption = null;
-      if (appeal.application.helpWithFeesOption) {
-        caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
-      }
-
-      caseData.helpWithFeesRefNumber = null;
-      if (appeal.application.helpWithFeesRefNumber) {
-        caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
-      }
-
-      caseData.localAuthorityLetters = null;
       if (appeal.application.localAuthorityLetters) {
         const evidences: Evidence[] = appeal.application.localAuthorityLetters;
 
@@ -735,8 +719,10 @@ export default class UpdateAppealService {
             ...evidence.fileId && { id: evidence.fileId },
             value: {
               dateUploaded: evidence.dateUploaded,
-              description: evidence.description,
               tag: 'additionalEvidence',
+              description: evidence.description || '',
+              suppliedBy: evidence.suppliedBy || '',
+              uploadedBy: evidence.uploadedBy || '',
               document: {
                 document_filename: evidence.name,
                 document_url: documentLocationUrl,
@@ -745,31 +731,17 @@ export default class UpdateAppealService {
             }
           } as Collection<DocumentWithMetaData>;
         });
+      } else {
+        caseData.localAuthorityLetters = null;
       }
 
       caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
-      caseData.lateRemissionOption = null;
-      if (appeal.application.lateRemissionOption) {
-        caseData.lateRemissionOption = appeal.application.lateRemissionOption;
-      }
+      caseData.lateRemissionOption = appeal.application.lateRemissionOption || null;
+      caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber || null;
+      caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption || null;
+      caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber || null;
 
-      caseData.lateAsylumSupportRefNumber = null;
-      if (appeal.application.lateAsylumSupportRefNumber) {
-        caseData.lateAsylumSupportRefNumber = appeal.application.lateAsylumSupportRefNumber;
-      }
-
-      caseData.lateHelpWithFeesOption = null;
-      if (appeal.application.lateHelpWithFeesOption) {
-        caseData.lateHelpWithFeesOption = appeal.application.lateHelpWithFeesOption;
-      }
-
-      caseData.lateHelpWithFeesRefNumber = null;
-      if (appeal.application.helpWithFeesRefNumber) {
-        caseData.lateHelpWithFeesRefNumber = appeal.application.lateHelpWithFeesRefNumber;
-      }
-
-      caseData.lateLocalAuthorityLetters = null;
       if (appeal.application.lateLocalAuthorityLetters) {
         const evidences: Evidence[] = appeal.application.lateLocalAuthorityLetters;
 
@@ -778,8 +750,10 @@ export default class UpdateAppealService {
           return {
             ...evidence.fileId && { id: evidence.fileId },
             value: {
-              dateUploaded: evidence.dateUploaded,
-              description: evidence.description,
+              dateUploaded: evidence.dateUploaded || '',
+              description: evidence.description || '',
+              suppliedBy: evidence.suppliedBy || '',
+              uploadedBy: evidence.uploadedBy || '',
               tag: 'additionalEvidence',
               document: {
                 document_filename: evidence.name,
@@ -789,6 +763,8 @@ export default class UpdateAppealService {
             }
           } as Collection<DocumentWithMetaData>;
         });
+      } else {
+        caseData.lateLocalAuthorityLetters = null;
       }
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
@@ -1231,6 +1207,7 @@ export default class UpdateAppealService {
     });
     return ccdCQ;
   }
+
   // TODO: remove method if not needed
   private addCcdTimeExtension(askForMoreTime, appeal, caseData) {
 

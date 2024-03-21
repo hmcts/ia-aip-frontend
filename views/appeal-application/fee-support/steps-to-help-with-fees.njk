@@ -29,24 +29,18 @@
             </ol>
         </div>
 
-        <div class="save-buttons__container">
+        {% if refundJourney %}
+            {{ continueButton() }}
+            {{ canelButton() }}
+        {% else %}
+            {{ continueButton() }}
             {{ govukButton({
-                name: 'continue',
-                text: i18n.common.buttons.continue,
-                classes: "govuk-!-margin-right-1"
+                text: i18n.common.buttons.saveForLater,
+                name: "saveForLater",
+                value: "saveForLater",
+                classes: "govuk-button--secondary"
             }) }}
-
-            {% if refundJourney %}
-                {{ canelButton() }}
-            {% else %}
-                {{ govukButton({
-                    text: i18n.common.buttons.saveForLater,
-                    name: "saveForLater",
-                    value: "saveForLater",
-                    classes: "govuk-button--secondary"
-                }) }}
-            {% endif %}
-        </div>
+        {% endif %}
     </form>
     {{ contactUs() }}
 {% endblock %}

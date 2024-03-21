@@ -1570,13 +1570,17 @@ describe('update-appeal-service', () => {
             }
           }
         ],
-        'reasonsForAppealDateUploaded': '2020-01-02',
-        'submitTimeExtensionReason': 'ask for more time reason',
-        'submitTimeExtensionEvidence': []
+        'reasonsForAppealDateUploaded': '2020-01-02'
       };
     });
 
     it('updates case with ccd', async () => {
+      expectedCaseData = {
+        ...expectedCaseData,
+        submitTimeExtensionReason: 'ask for more time reason',
+        submitTimeExtensionEvidence: []
+      };
+
       await updateAppealServiceBis.submitEvent(Events.EDIT_APPEAL, req as Request);
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.EDIT_APPEAL,
@@ -1590,6 +1594,12 @@ describe('update-appeal-service', () => {
     });
 
     it('submits case with ccd', async () => {
+      expectedCaseData = {
+        ...expectedCaseData,
+        submitTimeExtensionReason: 'ask for more time reason',
+        submitTimeExtensionEvidence: []
+      };
+
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_APPEAL, req as Request);
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.SUBMIT_APPEAL,
@@ -1603,6 +1613,12 @@ describe('update-appeal-service', () => {
     });
 
     it('submits ReasonsForAppeal with ccd', async () => {
+      expectedCaseData = {
+        ...expectedCaseData,
+        submitTimeExtensionReason: 'ask for more time reason',
+        submitTimeExtensionEvidence: []
+      };
+
       await updateAppealServiceBis.submitEvent(Events.SUBMIT_REASONS_FOR_APPEAL, req as Request);
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.SUBMIT_REASONS_FOR_APPEAL,
@@ -1671,6 +1687,24 @@ describe('update-appeal-service', () => {
 
       expectedCaseData = {
         ...expectedCaseData,
+        isInterpreterServicesNeeded: 'Yes',
+        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
+        isHearingLoopNeeded: 'Yes',
+        isHearingRoomNeeded: 'Yes',
+        multimediaEvidence: 'Yes',
+        multimediaEvidenceDescription: 'I do not own the equipment',
+        singleSexCourt: 'Yes',
+        singleSexCourtType: 'All female',
+        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
+        inCameraCourt: 'Yes',
+        inCameraCourtDescription: 'The reason why I would need a private appointment',
+        physicalOrMentalHealthIssues: 'Yes',
+        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
+        pastExperiences: 'Yes',
+        pastExperiencesDescription: 'Past experiences description',
+        additionalRequests: 'Yes',
+        additionalRequestsDescription: 'Anything else description',
+        datesToAvoidYesNo: 'Yes',
         datesToAvoid: [{
           value: {
             dateToAvoid: '2020-06-23',
@@ -1679,24 +1713,8 @@ describe('update-appeal-service', () => {
         }, {
           value: { dateToAvoid: '2020-06-24', dateToAvoidReason: 'I need this day off' }
         }],
-        datesToAvoidYesNo: 'Yes',
-        inCameraCourt: 'Yes',
-        inCameraCourtDescription: 'The reason why I would need a private appointment',
-        interpreterLanguage: [{ value: { language: 'Afar', languageDialect: 'A dialect' } }],
-        isHearingLoopNeeded: 'Yes',
-        isHearingRoomNeeded: 'Yes',
-        isInterpreterServicesNeeded: 'Yes',
-        multimediaEvidence: 'Yes',
-        multimediaEvidenceDescription: 'I do not own the equipment',
-        pastExperiences: 'Yes',
-        pastExperiencesDescription: 'Past experiences description',
-        physicalOrMentalHealthIssues: 'Yes',
-        physicalOrMentalHealthIssuesDescription: 'Reason for mental health conditions',
-        singleSexCourt: 'Yes',
-        singleSexCourtType: 'All female',
-        singleSexCourtTypeDescription: 'The reason why I will need an all-female',
-        additionalRequests: 'Yes',
-        additionalRequestsDescription: 'Anything else description'
+        submitTimeExtensionReason: 'ask for more time reason',
+        submitTimeExtensionEvidence: []
       };
       expect(ccdService2.updateAppeal).to.have.been.called.calledWith(
         Events.SUBMIT_CMA_REQUIREMENTS,

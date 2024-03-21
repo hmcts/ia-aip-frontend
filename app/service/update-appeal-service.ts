@@ -718,7 +718,7 @@ export default class UpdateAppealService {
           return {
             ...evidence.fileId && { id: evidence.fileId },
             value: {
-              dateUploaded: evidence.dateUploaded,
+              dateUploaded: evidence.dateUploaded || '',
               tag: 'additionalEvidence',
               description: evidence.description || '',
               suppliedBy: evidence.suppliedBy || '',

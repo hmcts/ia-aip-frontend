@@ -1506,6 +1506,7 @@ describe('update-appeal-service', () => {
             }
           }
         ],
+        'feeSupportPersisted': 'Yes',
         'lateRemissionOption': 'test',
         'lateAsylumSupportRefNumber': 'test',
         'lateHelpWithFeesOption': 'test',
@@ -1525,7 +1526,6 @@ describe('update-appeal-service', () => {
             }
           }
         ],
-        'feeSupportPersisted': 'Yes',
         'appellantEmailAddress': 'email@example.net',
         'subscriptions': [
           {

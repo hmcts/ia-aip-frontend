@@ -3,6 +3,7 @@ import { INTERNAL_SERVER_ERROR, NOT_FOUND } from 'http-status-codes';
 import Logger, { getLogLabel } from '../utils/logger';
 
 const logLabel: string = getLogLabel(__filename);
+
 /**
  * Page not found errors (404) with content negotiation that returns a html page when supported or error as json or text if unsupported
  */
@@ -18,8 +19,16 @@ function serverErrorHandler(err: any, req: Request, res: Response, next: NextFun
   const logger: Logger = req.app.locals.logger;
   logger.exception(err, logLabel);
 
+  let callBackErrors = '';
+  if (err.error && err.error.callbackErrors && err.error.callbackErrors.length > 0) {
+    callBackErrors = err.error.callbackErrors.map(e => e).join(' ');
+  }
+
   res.status(INTERNAL_SERVER_ERROR);
-  res.render('errors/500.njk', { err });
+  res.render('errors/500.njk', {
+    err,
+    callBackErrors
+  });
 }
 
 export { pageNotFoundHandler, serverErrorHandler };

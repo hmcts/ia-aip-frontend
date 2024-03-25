@@ -217,6 +217,29 @@ describe('application-state-utils', () => {
       });
     });
 
+    it('get correct \'Do This next section\' when application status is pendingPayment and dlrm fee support is' +
+      ' on', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.appealStatus = 'pendingPayment';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.appealOutOfCountry = 'Yes';
+
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.eql({
+        cta: null,
+        deadline: '07 March 2020',
+        descriptionParagraphs: [
+          'Your appeal details have been sent to the Tribunal.',
+          'There is a fee for this appeal. You told the Tribunal that you believe you do not have to pay some or all of the fee.',
+          'The Tribunal will check the information you sent and let you know if you need to pay a fee.',
+          'This should be by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.'
+        ],
+        allowedAskForMoreTime: false
+      });
+    });
+
     it('when application status is listing should get correct \'Do This next section\'', async () => {
       req.session.appeal.appealStatus = 'listing';
       const result = await getAppealApplicationNextStep(req as Request);

@@ -16,7 +16,7 @@ import {
 } from '../utils/utils';
 import { getHearingCentre, getHearingCentreEmail, getHearingDate, getHearingTime } from './cma-hearing-details';
 import { getDeadline, getDueDateForAppellantToRespondToFtpaDecision } from './event-deadline-date-finder';
-import { appealHasNoRemissionOption } from './remission-utils';
+import { appealHasNoRemissionOption, appealHasRemissionOption } from './remission-utils';
 
 interface DoThisNextSection {
   descriptionParagraphs: string[];
@@ -619,20 +619,33 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'pendingPayment':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          isLate ? i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSentLate : i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
-          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
-          i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
-        ],
-        cta: {
-          link: {
-            text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
-            url: paths.common.payLater
-          }
-        },
-        allowedAskForMoreTime: false
-      };
+      if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.tribunalCheck,
+            i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.dueDate
+          ],
+          cta: null,
+          allowedAskForMoreTime: false
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            isLate ? i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSentLate : i18n.pages.overviewPage.doThisNext.pendingPayment.detailsSent,
+            i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate,
+            i18n.pages.overviewPage.doThisNext.pendingPayment.dueDate1
+          ],
+          cta: {
+            link: {
+              text: i18n.pages.overviewPage.doThisNext.pendingPayment.payForYourAppeal,
+              url: paths.common.payLater
+            }
+          },
+          allowedAskForMoreTime: false
+        };
+      }
       break;
     case 'ftpaSubmitted':
       doThisNextSection = {

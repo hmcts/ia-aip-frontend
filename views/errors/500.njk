@@ -6,6 +6,9 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">{{ i18n.error.error500.header }}</h1>
       <p class="govuk-body">{{ i18n.error.error500.tryAgain }}</p>
+      {% if callBackErrors %}
+        <p class="govuk-body">{{ callBackErrors | safe }}</p>
+      {% endif %}
      {{ contactUsErrorPages() }}
     </div>
   </div>

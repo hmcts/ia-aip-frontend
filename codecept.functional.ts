@@ -9,6 +9,10 @@ exports.config = {
   },
   teardown: async () => {
     await ourTeardown();
+    console.log('---------------------');
+    // @ts-ignore
+    console.log(global.testFailed)
+    console.log('---------------------');
   },
   helpers: {
     Puppeteer: {

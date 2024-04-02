@@ -103,13 +103,8 @@ export async function teardown() {
   } finally {
     // @ts-ignore
     logger.trace(`Tests failed is ${global.testFailed}`, 'label');
-    console.log('---------------------');
-    // @ts-ignore
-    console.log(global.testFailed);
-    console.log('---------------------');
     // @ts-ignore
     if (global.testFailed) {
-      console.log('Tests failed');
       process.exit(1);
     } else {
       process.exit(0);

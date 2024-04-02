@@ -19,8 +19,8 @@ exports.config = {
       }
     },
     FailedTest: {
-      require: './test/e2e-test/helpers/failedTestHelper.js',
-    },
+      require: './test/e2e-test/helpers/failedTestHelper.js'
+    }
   },
   gherkin: {
     features: './test/functional/features/' + config.get('functionalTests'),

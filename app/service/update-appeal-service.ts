@@ -488,6 +488,7 @@ export default class UpdateAppealService {
       ftpaApplicationRespondentDocument: ftpaApplicationRespondentDocument,
       ftpaApplicationAppellantDocument: ftpaApplicationAppellantDocument,
       readonlyApplicationEnabled: true,
+      sourceOfRemittal: caseData.sourceOfRemittal,
       application: {
         appellantOutOfCountryAddress: caseData.appellantOutOfCountryAddress,
         homeOfficeRefNumber: caseData.homeOfficeReferenceNumber,

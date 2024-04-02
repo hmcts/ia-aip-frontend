@@ -37,6 +37,11 @@ function constructEventObject(event: HistoryEvent, req: Request) {
     eventContent = i18n.pages.overviewPage.timeline['decideFtpa'][ftpaApplicantType];
   }
 
+  if (Events.MARK_APPEAL_AS_REMITTED.id === event.id) {
+    const sourceOfRemittal = req.session.appeal.sourceOfRemittal;
+    eventContent = i18n.pages.overviewPage.timeline[event.id][sourceOfRemittal];
+  }
+
   let eventObject = eventContent
       ? {
         date: moment(event.createdDate).format('DD MMMM YYYY'),
@@ -270,7 +275,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     ...(appealHearingRequirementsSection && appealHearingRequirementsSection.length > 0) &&
     { appealHearingRequirementsSection: appealHearingRequirementsSection },
     appealArgumentSection: argumentSection,
-    appealDetailsSection: appealDetailsSection
+    appealDetailsSection: appealDetailsSection,
+    sourceOfRemittal: req.session.appeal.sourceOfRemittal
   };
 }
 
@@ -310,7 +316,8 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
 
   if (ftpaSetAsideFeatureEnabled) {
     appealDecisionSectionEvents.push(
-        Events.DECIDE_FTPA_APPLICATION.id
+        Events.DECIDE_FTPA_APPLICATION.id,
+        Events.MARK_APPEAL_AS_REMITTED.id
     );
   }
 

@@ -188,6 +188,7 @@ interface CaseData {
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
   correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
+  sourceOfRemittal?: string;
 }
 
 interface Application<T> {

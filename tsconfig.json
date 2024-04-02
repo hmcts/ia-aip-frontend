@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "target": "esnext",
     "strict": false,
+    "strictNullChecks": true,
     "typeRoots": [
       "./types",
       "./node_modules/@types"

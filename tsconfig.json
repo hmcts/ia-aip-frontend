@@ -10,6 +10,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "target": "esnext",
+    "strict": false,
     "typeRoots": [
       "./types",
       "./node_modules/@types"

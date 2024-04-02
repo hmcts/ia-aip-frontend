@@ -43,6 +43,7 @@ const clientConfig = {
         target: 'web',
         output: {
             path: path.resolve(__dirname, '../build'),
+            publicPath: "/build/",
             filename: 'all.js'
         },
         resolve: {

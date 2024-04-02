@@ -8,7 +8,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "skipLibCheck": true, // do not check types in node_modules folder
+    "skipLibCheck": true,
     "target": "esnext",
     "typeRoots": [
       "./types",

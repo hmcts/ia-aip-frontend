@@ -439,3 +439,10 @@ type Middleware = (req: Express.Request, res: Express.Response, next: any) => vo
 interface ApplicationStatus {
   [key: string]: Task;
 }
+
+declare module NodeJS {
+  interface Global {
+    testFailed: boolean
+  }
+}
+

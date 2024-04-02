@@ -100,7 +100,6 @@ export async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    logger.trace(`Tests failed is ${global.testFailed}`, 'label');
     if (global.testFailed) {
       process.exit(1);
     } else {

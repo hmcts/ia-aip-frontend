@@ -4,7 +4,7 @@ As a citizen
 I want be able to capture my sponsor details for an out of country appeal
 
 Scenario: Complete appeal application
-  Given I am authenticated as a valid appellant
+  Given I have logged in as an appellant in state "appealStarted"
   When I visit the overview page
   And I click continue
   Then I should see the task-list page

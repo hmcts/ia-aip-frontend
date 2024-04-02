@@ -27,12 +27,7 @@ const serverConfig = {
                 {
                     test: /\.ts$/,
                     use: [
-                        {
-                            loader: 'ts-loader',
-                            options: {
-                                transpileOnly: true
-                            }
-                        }
+                        'ts-loader',
                     ]
                 }
             ]

@@ -5,7 +5,7 @@ import expectCt from 'expect-ct';
 import express from 'express';
 import helmet from 'helmet';
 import webpack from 'webpack';
-import webpackDevMiddleware, type { Options } from 'webpack-dev-middleware';
+import webpackDevMiddleware, { Options } from 'webpack-dev-middleware';
 import internationalization from '../locale/en.json';
 import webpackDevConfig from '../webpack/webpack.dev.js';
 import { configureIdam, configureLogger, configureNunjucks, configureS2S } from './app-config';
@@ -57,6 +57,7 @@ function createApp() {
   if (environment === 'development' || environment === 'test') {
     const [ serverDevConfig, clientDevConfig ] = webpackDevConfig;
     const compiler = webpack([ serverDevConfig, clientDevConfig ]);
+    // @ts-ignore
     const options = { stats: 'errors-only' } as Options;
     const wpDevMiddleware = webpackDevMiddleware(compiler, options);
     app.use(wpDevMiddleware);

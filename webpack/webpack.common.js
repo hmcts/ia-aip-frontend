@@ -27,7 +27,12 @@ const serverConfig = {
                 {
                     test: /\.ts$/,
                     use: [
-                        'ts-loader',
+                        {
+                            loader: 'ts-loader',
+                            options: {
+                                transpileOnly: true
+                            }
+                        }
                     ]
                 }
             ]
@@ -43,7 +48,6 @@ const clientConfig = {
         target: 'web',
         output: {
             path: path.resolve(__dirname, '../build'),
-            publicPath: "/build/",
             filename: 'all.js'
         },
         resolve: {

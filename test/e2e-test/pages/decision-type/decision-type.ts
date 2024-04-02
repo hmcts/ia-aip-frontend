@@ -19,7 +19,17 @@ module.exports = {
     });
 
     When(/^I click on the decision-type link$/, async () => {
-      await I.click('#typeOfDecisionLink');
+      for (let i = 0; i < 3; i++) {
+        try {
+          await I.click('a[href*="' + paths.appealStarted.decisionType + '"]');
+          await I.waitInUrl(paths.appealStarted.decisionType, 20);
+          await I.seeInCurrentUrl(paths.appealStarted.decisionType);
+          break;
+        } catch (e) {
+          await I.seeInCurrentUrl(paths.appealStarted.taskList);
+        }
+      }
+      await I.seeInCurrentUrl(paths.appealStarted.decisionType);
     });
 
     When(/^I click on Decision with hearing as my type of decision and click Save and continue$/, async () => {

@@ -6,8 +6,16 @@ const testUrl = config.get('testUrl');
 module.exports = {
   typeOfAppeal(I) {
     When(/^I click on the type-of-appeal link$/, async () => {
-      await I.click('Appeal type');
-      await I.waitInUrl(paths.appealStarted.appealOutOfCountry,20);
+      for (let i = 0; i < 3; i++) {
+        try {
+          await I.click('a[href*="' + paths.appealStarted.appealOutOfCountry + '"]');
+          await I.waitInUrl(paths.appealStarted.appealOutOfCountry, 20);
+          await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
+          break;
+        } catch (e) {
+          await I.seeInCurrentUrl(paths.appealStarted.taskList);
+        }
+      }
       await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
     });
     When(/^I go into the Appeal type task$/, async () => {

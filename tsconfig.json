@@ -14,5 +14,11 @@
       "./types",
       "./node_modules/@types"
     ]
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/@types/node/index.d.ts"
+  ]
 }

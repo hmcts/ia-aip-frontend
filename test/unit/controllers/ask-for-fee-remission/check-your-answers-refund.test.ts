@@ -197,7 +197,8 @@ describe('CYA Refund Controller', function () {
       const appeal: Appeal = {
         ...req.session.appeal,
         application: {
-          ...req.session.appeal.application
+          ...req.session.appeal.application,
+          refundRequested: true
         }
       };
 

@@ -718,6 +718,8 @@ describe('update-appeal-service', () => {
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            refundRequested: 'No',
+            remissionDecision: null,
             remissionOption: null,
             lateAsylumSupportRefNumber: null,
             lateHelpWithFeesOption: null,
@@ -755,6 +757,8 @@ describe('update-appeal-service', () => {
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            refundRequested: 'No',
+            remissionDecision: null,
             remissionOption: null,
             lateAsylumSupportRefNumber: null,
             lateHelpWithFeesOption: null,
@@ -793,6 +797,8 @@ describe('update-appeal-service', () => {
             helpWithFeesOption: null,
             helpWithFeesRefNumber: null,
             localAuthorityLetters: null,
+            refundRequested: 'No',
+            remissionDecision: null,
             remissionOption: null,
             lateAsylumSupportRefNumber: null,
             lateHelpWithFeesOption: null,
@@ -865,6 +871,8 @@ describe('update-appeal-service', () => {
           'helpWithFeesOption': null,
           'helpWithFeesRefNumber': null,
           'localAuthorityLetters': null,
+          'refundRequested': 'No',
+          'remissionDecision': null,
           'remissionOption': null,
           'lateAsylumSupportRefNumber': null,
           'lateHelpWithFeesOption': null,
@@ -907,6 +915,8 @@ describe('update-appeal-service', () => {
         'helpWithFeesOption': null,
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
+        'refundRequested': 'No',
+        'remissionDecision': null,
         'remissionOption': null,
         'lateAsylumSupportRefNumber': null,
         'lateHelpWithFeesOption': null,
@@ -947,6 +957,8 @@ describe('update-appeal-service', () => {
         'helpWithFeesOption': null,
         'helpWithFeesRefNumber': null,
         'localAuthorityLetters': null,
+        'refundRequested': 'No',
+        'remissionDecision': null,
         'remissionOption': null,
         'lateAsylumSupportRefNumber': null,
         'lateHelpWithFeesOption': null,
@@ -1396,7 +1408,9 @@ describe('update-appeal-service', () => {
                 dateUploaded: '2020-01-01',
                 'description': 'Some evidence 1',
                 'tag': 'additionalEvidence'
-              }]
+              }],
+              refundRequested: true,
+              remissionDecision: 'approved'
             } as AppealApplication,
             reasonsForAppeal: {
               applicationReason: 'I\'ve decided to appeal because ...',
@@ -1506,6 +1520,9 @@ describe('update-appeal-service', () => {
             }
           }
         ],
+        'feeSupportPersisted': 'Yes',
+        'refundRequested': 'Yes',
+        'remissionDecision': 'approved',
         'lateRemissionOption': 'test',
         'lateAsylumSupportRefNumber': 'test',
         'lateHelpWithFeesOption': 'test',
@@ -1525,7 +1542,6 @@ describe('update-appeal-service', () => {
             }
           }
         ],
-        'feeSupportPersisted': 'Yes',
         'appellantEmailAddress': 'email@example.net',
         'subscriptions': [
           {

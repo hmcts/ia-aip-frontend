@@ -285,7 +285,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     appealArgumentSection: argumentSection,
     appealDetailsSection: appealDetailsSection,
     ...(appealRemissionSection && appealRemissionSection.length > 0) &&
-    { appealRemissionSection: appealRemissionSection },
+    { appealRemissionSection: appealRemissionSection }
   };
 }
 

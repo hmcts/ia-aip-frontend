@@ -765,6 +765,35 @@ describe('Detail viewer Controller', () => {
       });
     });
 
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission and and DLRM fee' +
+      ' refund flags are ON and remissionOption is asylumSupportFromHo', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      expectedSummaryRowsWithDlrmFeeRemission.feeDetailsRows.push(
+        { key: { text: 'Fee amount' }, value: { html: '£140' } },
+        { key: { text: 'Payment status' }, value: { html: 'Paid' } },
+        { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested' } },
+        { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+      );
+
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
+
     it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and' +
       ' remissionOption is parentGetSupportFromLocalAuthority', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);

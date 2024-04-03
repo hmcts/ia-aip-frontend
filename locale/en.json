@@ -1561,6 +1561,16 @@
             }
           ]
         },
+        "refundAppeal": {
+          "text": "You asked the Tribunal for a fee remission.",
+          "links": [
+            {
+              "title": "What you sent",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
+            }
+          ]
+        },
         "listCase": {
           "text": "Your hearing was listed.",
           "textForEditListCase": "Your hearing details were updated.",

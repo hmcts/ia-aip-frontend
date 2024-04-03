@@ -249,6 +249,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
   const directionsHistory = getDirectionHistory(req);
+  let paymentEvent = [];
   let appealRemissionSection: any[];
   let argumentSection: any[];
   if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application)) {
@@ -261,15 +262,15 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
       .sort((a: any, b: any) => b.dateObject - a.dateObject);
   } else if (paymentStatus === 'Paid') {
-    const paymentEvent = [{
+    paymentEvent = [{
       date: moment(paymentDate).format('DD MMMM YYYY'),
       dateObject: new Date(paymentDate),
       text: i18n.pages.overviewPage.timeline.paymentAppeal.text || null,
       links: i18n.pages.overviewPage.timeline.paymentAppeal.links
     }];
-    argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
-      .sort((a: any, b: any) => b.dateObject - a.dateObject);
   }
+  argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
+    .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
   const updatedTribunalDecisionDocumentHistory = getUpdateTribunalDecisionDocumentHistory(req, ftpaSetAsideFeatureEnabled);
@@ -283,7 +284,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     { appealHearingRequirementsSection: appealHearingRequirementsSection },
     appealArgumentSection: argumentSection,
     appealDetailsSection: appealDetailsSection,
-    appealRemissionSection: appealRemissionSection
+    ...(appealRemissionSection && appealRemissionSection.length > 0) &&
+    { appealRemissionSection: appealRemissionSection },
   };
 }
 

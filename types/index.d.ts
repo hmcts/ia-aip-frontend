@@ -317,6 +317,9 @@ interface AppealApplication {
   lateHelpWithFeesOption?: string;
   lateHelpWithFeesRefNumber?: string;
   lateLocalAuthorityLetters?: Evidence[];
+
+  refundRequested?: boolean;
+  remissionDecision?: string;
 }
 
 interface CmaRequirements {

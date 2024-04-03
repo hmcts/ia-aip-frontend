@@ -13,6 +13,8 @@
     {% endif %}
     <form action="{{ formAction }}" method="post">
         <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        <h1 class="govuk-heading-xl">{{ i18n.pages.remissionOptionPage.refundTitle }}</h1>
+
         <p>{{ i18n.pages.remissionOptionPage.refundParagraph1 }}</p>
         <p>{{ i18n.pages.remissionOptionPage.refundParagraph2 }}</p>
         <p>{{ i18n.pages.remissionOptionPage.refundParagraph3 }}</p>
@@ -20,7 +22,7 @@
         {{ radioButtonQuestion(
             question.name or 'answer',
             question.options,
-            question.title | eval,
+            "",
             question.titleIsheading or true,
             question.hint | eval | safe if question.hint,
             error[question.name].text,

@@ -68,7 +68,6 @@ export async function bootstrap() {
   const documentManagementStoreConfigs = dyson.getConfigurations(documentManagementStoreOptions);
   dyson.registerServices(documentManagementStoreApp, documentManagementStoreOptions, documentManagementStoreConfigs);
   documentManagementStoreServer = documentManagementStoreApp.listen(20003);
-  // @ts-ignore
   global.testFailed = false;
 }
 function closeServerWithPromise(server) {
@@ -101,11 +100,10 @@ export async function teardown() {
   } catch (e) {
     logger.exception(e, logLabel);
   } finally {
-    // @ts-ignore
     if (global.testFailed) {
       process.exit(1);
     } else {
-      process.exit();
+      process.exit(0);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { application, NextFunction, Request, Response, Router } from 'express';
 import _ from 'lodash';
 import moment from 'moment';
 import { FEATURE_FLAGS } from '../data/constants';
@@ -156,7 +156,12 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
       const showHearingRequests = showHearingRequestSection(req.session.appeal.appealStatus, makeApplicationFeatureEnabled)
           && !isPostDecisionState(appealStatus, ftpaFeatureEnabled);
-      const showAskForFeeRemission = refundFeatureEnabled && 'Paid' === paymentStatus;
+
+      const application = req.session.appeal.application;
+
+      const showAskForFeeRemission = refundFeatureEnabled
+        && 'Paid' === paymentStatus
+        && (!application.refundRequested || application.refundRequested && !!application.remissionDecision);
 
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,

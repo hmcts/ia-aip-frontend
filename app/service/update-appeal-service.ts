@@ -530,6 +530,8 @@ export default class UpdateAppealService {
         helpWithFeesRefNumber: caseData.helpWithFeesRefNumber,
         ...caseData.localAuthorityLetters && { localAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.localAuthorityLetters, documentMap) },
         feeSupportPersisted: caseData.feeSupportPersisted ? yesNoToBool(caseData.feeSupportPersisted) : undefined,
+        refundRequested: caseData.refundRequested ? yesNoToBool(caseData.refundRequested) : undefined,
+        remissionDecision: caseData.remissionDecision,
         lateRemissionOption: caseData.lateRemissionOption,
         lateAsylumSupportRefNumber: caseData.lateAsylumSupportRefNumber,
         lateHelpWithFeesOption: caseData.lateHelpWithFeesOption,
@@ -748,6 +750,13 @@ export default class UpdateAppealService {
       }
 
       caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+
+      caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
+
+      caseData.remissionDecision = null;
+      if (appeal.application.remissionDecision) {
+        caseData.remissionDecision = appeal.application.remissionDecision;
+      }
 
       caseData.lateRemissionOption = null;
       if (appeal.application.lateRemissionOption) {

@@ -3687,7 +3687,7 @@
     },
     "asylumSupportPage": {
       "title": "What is your asylum support reference number?",
-      "legend1": "The Tribunal will check your reference number is valid after your submit your appeal.",
+      "legend1": "The Tribunal will check your reference number is valid after you submit your appeal.",
       "legend2": "If you do not know your reference number, contact <a href=\"https://www.migranthelpuk.org/\" target=\"_blank\">Migrant Help (opens in a new tab)</a> on 0808 8010 503 or <a href='mailto:proofofsupport@migranthelpuk.org' class='govuk-link--no-visited-state govuk-body govuk-!-margin-bottom-3'>proofofsupport@migranthelpuk.org</a>.",
       "attentionNotice": "Your asylum support reference number is not your Home Office reference number",
       "asylumSupportReferenceNumberLabel": "Enter your asylum support reference number",

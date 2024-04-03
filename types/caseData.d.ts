@@ -195,6 +195,9 @@ interface CaseData {
   lateHelpWithFeesOption?: string;
   lateHelpWithFeesRefNumber?: string;
   lateLocalAuthorityLetters?: Collection<DocumentWithMetaData>[];
+
+  refundRequested?: string;
+  remissionDecision?: string;
 }
 
 interface Application<T> {

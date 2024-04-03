@@ -83,11 +83,11 @@ withNightlyPipeline(type, product, component) {
     if (!params.skipFortifyScan) {
         enableFortifyScan()
     }
-    if (!params.skipSecurityScan) {
-        enableSecurityScan(urlExclusions: urlExclusions, scanType: "frontend")
-    }
     if (!params.skipCrossBrowserTests) {
         enableCrossBrowserTest()
+    }
+    if (!params.skipSecurityScan) {
+        enableSecurityScan(urlExclusions: urlExclusions, scanType: "frontend")
     }
     if (!params.skipFullFunctionalTests) {
         enableFullFunctionalTest(180)

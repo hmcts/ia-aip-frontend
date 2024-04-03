@@ -20,7 +20,7 @@ module.exports = {
     When(/^I click on Home office details$/, async () => {
       for (let i = 0; i < 3; i++) {
         try {
-          await I.click('a[href*="' + paths.appealStarted.details + '"]');
+          await I.click('#homeOfficeDetailsLink');
           await I.waitInUrl(paths.appealStarted.details, 20);
           await I.seeInCurrentUrl(paths.appealStarted.details);
           break;

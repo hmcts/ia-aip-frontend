@@ -21,7 +21,7 @@ module.exports = {
     When(/^I click on the decision-type link$/, async () => {
       for (let i = 0; i < 3; i++) {
         try {
-          await I.click('a[href*="' + paths.appealStarted.decisionType + '"]');
+          await I.click('#typeOfDecisionLink');
           await I.waitInUrl(paths.appealStarted.decisionType, 20);
           await I.seeInCurrentUrl(paths.appealStarted.decisionType);
           break;

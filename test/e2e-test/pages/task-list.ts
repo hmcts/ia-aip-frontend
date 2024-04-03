@@ -41,7 +41,7 @@ module.exports = {
     When('I click Your personal details', async () => {
       for (let i = 0; i < 3; i++) {
         try {
-          await I.click('a[href*="' + paths.appealStarted.name + '"]');
+          await I.click('#personalDetailsLink');
           await I.waitInUrl(paths.appealStarted.name, 20);
           await I.seeInCurrentUrl(paths.appealStarted.name);
           break;

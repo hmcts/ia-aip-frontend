@@ -30,7 +30,7 @@ module.exports = {
     Given(/^I click the contact details link$/, async () => {
       for (let i = 0; i < 3; i++) {
         try {
-          await I.click('a[href*="' + paths.appealStarted.contactDetails + '"]');
+          await I.click('#contactDetailsLink');
           await I.waitInUrl(paths.appealStarted.contactDetails, 20);
           await I.seeInCurrentUrl(paths.appealStarted.contactDetails);
           break;

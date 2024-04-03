@@ -8,7 +8,7 @@ module.exports = {
     When(/^I click on the type-of-appeal link$/, async () => {
       for (let i = 0; i < 3; i++) {
         try {
-          await I.click('a[href*="' + paths.appealStarted.appealOutOfCountry + '"]');
+          await I.click('#typeOfAppealLink');
           await I.waitInUrl(paths.appealStarted.appealOutOfCountry, 20);
           await I.seeInCurrentUrl(paths.appealStarted.appealOutOfCountry);
           break;

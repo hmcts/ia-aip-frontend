@@ -37,6 +37,7 @@ module.exports = {
           break;
         } else {
           await I.amOnPage(exuiBaseUrl + 'auth/logout');
+          await I.amOnPage(exuiBaseUrl);
           await I.waitForElement('#username', 30);
           await I.fillField('#username', config.get('testAccounts.testLawFirmAUsername'));
           await I.fillField('#password', config.get('testAccounts.testLawFirmAPassword'));

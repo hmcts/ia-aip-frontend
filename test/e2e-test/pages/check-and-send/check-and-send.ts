@@ -13,7 +13,7 @@ module.exports = {
     When(/^I click on the check and send your appeal link$/, async () => {
       for (let i = 0; i < 3; i++) {
         try {
-          await I.click('a[href*="' + paths.appealStarted.checkAndSend + '"]');
+          await I.click('#checkAndSendLink');
           await I.waitInUrl(paths.appealStarted.checkAndSend, 20);
           await I.seeInCurrentUrl(paths.appealStarted.checkAndSend);
           break;

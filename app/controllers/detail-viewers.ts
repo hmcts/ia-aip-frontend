@@ -237,7 +237,12 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   // fee section
   if (appealHasRemissionOption(application)) {
     const fee = getFee(req.session.appeal);
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    const { paymentStatus = null } = req.session.appeal;
     feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+    if (refundFeatureEnabled && paymentStatus === 'Paid') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+    }
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, ['Fee support requested'], null));
     if (application.remissionOption === 'asylumSupportFromHo') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));

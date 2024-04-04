@@ -8,6 +8,7 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
+import { appealHasRemissionOption } from './remission-utils';
 import {
   getAppellantApplications,
   getApplicant,
@@ -217,6 +218,8 @@ function getUpdateTribunalDecisionDocumentHistory(req: Request, ftpaSetAsideFeat
 async function getAppealApplicationHistory(req: Request, updateAppealService: UpdateAppealService) {
   const authenticationService = updateAppealService.getAuthenticationService();
   const headers: SecurityHeaders = await authenticationService.getSecurityHeaders(req);
+
+  const { application } = req.session.appeal;
   const ccdService = updateAppealService.getCcdService();
   req.session.appeal.history = await ccdService.getCaseHistory(req.idam.userDetails.uid, req.session.appeal.ccdCaseId, headers);
 
@@ -224,6 +227,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
   const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
+  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
   const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
@@ -244,8 +248,20 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const applicationEvents = getApplicationEvents(req);
   const submitCQHistory = getSubmitClarifyingQuestionsEvents(req.session.appeal.history, req.session.appeal.directions || []);
   const { paymentStatus, paAppealTypeAipPaymentOption = null, paymentDate } = req.session.appeal;
+  const directionsHistory = getDirectionHistory(req);
   let paymentEvent = [];
-  if (paymentStatus === 'Paid') {
+  let appealRemissionSection: any[];
+  let argumentSection: any[];
+  if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application)) {
+    const remissionEvent = [{
+      date: moment(paymentDate).format('DD MMMM YYYY'),
+      dateObject: new Date(paymentDate),
+      text: i18n.pages.overviewPage.timeline.refundAppeal.text || null,
+      links: i18n.pages.overviewPage.timeline.refundAppeal.links
+    }];
+    appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
+      .sort((a: any, b: any) => b.dateObject - a.dateObject);
+  } else if (paymentStatus === 'Paid') {
     paymentEvent = [{
       date: moment(paymentDate).format('DD MMMM YYYY'),
       dateObject: new Date(paymentDate),
@@ -253,10 +269,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
       links: i18n.pages.overviewPage.timeline.paymentAppeal.links
     }];
   }
-
-  const directionsHistory = getDirectionHistory(req);
-
-  const argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
+  argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
 
   const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
@@ -270,7 +283,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     ...(appealHearingRequirementsSection && appealHearingRequirementsSection.length > 0) &&
     { appealHearingRequirementsSection: appealHearingRequirementsSection },
     appealArgumentSection: argumentSection,
-    appealDetailsSection: appealDetailsSection
+    appealDetailsSection: appealDetailsSection,
+    ...(appealRemissionSection && appealRemissionSection.length > 0) &&
+    { appealRemissionSection: appealRemissionSection }
   };
 }
 

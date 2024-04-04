@@ -1,9 +1,12 @@
 import { Request } from 'express';
+import { FEATURE_FLAGS } from '../../../app/data/constants';
 import { Events } from '../../../app/data/events';
 import LaunchDarklyService from '../../../app/service/launchDarkly-service';
+import UpdateAppealService from '../../../app/service/update-appeal-service';
 import Logger from '../../../app/utils/logger';
 import {
   constructSection,
+  getAppealApplicationHistory,
   getApplicationEvents,
   getDirectionHistory,
   getEventsAndStates,
@@ -754,6 +757,60 @@ describe('timeline-utils', () => {
     it('should return relevant events when ftpa set aside feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, true);
       expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(2);
+    });
+  });
+
+  describe('getAppealApplicationHistory', () => {
+    it('should return the correct sections when paymentStatus is "Paid" and refundFeatureEnabled is true', async () => {
+
+      const history = [
+        {
+          'id': 'uploadAdditionalEvidence',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        },
+        {
+          'id': 'uploadAddendumEvidenceLegalRep',
+          'createdDate': '2020-04-14T14:53:26.099',
+          'user': {
+            'id': 'legal-rep'
+          }
+        }
+      ] as HistoryEvent[];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '03 April 2024',
+          'dateObject': new Date('2024-04-03T08:00:30.233Z'),
+          'text': 'You asked the Tribunal for a fee remission.',
+          'links': [
+            {
+              'title': 'What you sent',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionSection).to.deep.eq(expectedResult);
     });
   });
 });

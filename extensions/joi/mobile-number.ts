@@ -57,7 +57,7 @@ module.exports = joi => {
       const formatName = schema.$_getFlag('format') || defaults.format;
 
       try {
-        if (!value.match(new RegExp(/^[+0].*\d$/))) {
+        if (!value.match(new RegExp(/^[+\d].*\d$/))) {
           throw new Error('The string supplied did not begin with a \'+\' or a \'0\'');
         }
 

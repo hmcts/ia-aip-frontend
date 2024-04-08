@@ -67,11 +67,15 @@ module.exports = joi => {
         }
 
         let mobilePhoneNumber = phoneUtil.parse(value, defaultCountry);
-        if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
-          mobilePhoneNumber = phoneUtil.parse(value, '');
+        try {
           if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
-            throw new Error('The string supplied did not seem to be a phone number');
+            mobilePhoneNumber = phoneUtil.parse(value, '');
+            if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
+              throw new Error('The string supplied did not seem to be a phone number');
+            }
           }
+        } catch {
+          throw new Error('The string supplied did not seem to be a phone number');
         }
 
         if (phoneUtil.getNumberType(mobilePhoneNumber) !== phoneNumberType.MOBILE) {

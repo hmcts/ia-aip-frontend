@@ -1243,7 +1243,8 @@
           "appealDecisionSection": "Your appeal decision",
           "appealHearingRequirementsSection": "Your hearing details",
           "appealArgumentSection": "Your appeal argument",
-          "appealDetailsSection": "Your appeal details"
+          "appealDetailsSection": "Your appeal details",
+          "appealRemissionSection": "Your appeal details"
         },
         "asyncStitchingComplete": {
           "text": "The hearing bundle is ready to view.",

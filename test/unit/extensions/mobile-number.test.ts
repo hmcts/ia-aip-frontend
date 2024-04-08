@@ -74,7 +74,6 @@ describe('Joi MobilePhoneNumber Extension', () => {
         '.',
         'aa',
         '1a1234567890',
-        '1234567890',
         '0123456789a',
         '¢07182710274'
       ];
@@ -96,7 +95,8 @@ describe('Joi MobilePhoneNumber Extension', () => {
         '00448081570192',
         '0044 808 157 0192',
         '+448081570192',
-        '+44 808 157 0192'
+        '+44 808 157 0192',
+        '1234567890'
       ];
 
       const schema = joi.mobilePhoneNumber();

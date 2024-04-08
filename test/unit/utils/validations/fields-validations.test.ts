@@ -381,23 +381,37 @@ describe('fields-validations', () => {
       });
     });
 
-    describe('yesOrNoRequiredValidation', () => {
-      it('no error if yes selected', () => {
-        const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
+    it('should fail validation if phone number ends with a non digit', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '0127722222a'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
 
-        expect(validationResult).to.deep.equal(null);
-      });
+    it('should fail validation if phone number starts with anything but + or 0', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '¢07899999999'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+  });
 
-      it('error if yes on no not selected', () => {
-        const validationResult = yesOrNoRequiredValidation({}, 'error message');
-        const expectedResponse = {};
-        expectedResponse['answer'] = {
-          'href': '#answer',
-          'key': 'answer',
-          'text': 'error message'
-        };
-        expect(validationResult).to.deep.equal(expectedResponse);
-      });
+  describe('yesOrNoRequiredValidation', () => {
+    it('no error if yes selected', () => {
+      const validationResult = yesOrNoRequiredValidation({ answer: 'yes' }, 'error message');
+
+      expect(validationResult).to.deep.equal(null);
+    });
+
+    it('error if yes on no not selected', () => {
+      const validationResult = yesOrNoRequiredValidation({}, 'error message');
+      const expectedResponse = {};
+      expectedResponse['answer'] = {
+        'href': '#answer',
+        'key': 'answer',
+        'text': 'error message'
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
     });
   });
 

@@ -49,20 +49,29 @@ module.exports = joi => {
        * In the case where the parameters aren't provided it will default to use this values
        */
       const defaults = {
+        country: 'GB',
         format: 'e164'
       };
 
+      const defaultCountry = schema.$_getFlag('defaultCountry') || defaults.country;
       const formatName = schema.$_getFlag('format') || defaults.format;
 
       try {
+        if (!value.match(new RegExp(/^[+0].*\d$/))) {
+          throw new Error('The string supplied did not begin with a \'+\' or a \'0\'');
+        }
+
         const format = supportedTypes[formatName];
         if (format === undefined) {
           throw new Error('Invalid format value: must be one of [e164, international, national, rfc3966]');
         }
 
-        const mobilePhoneNumber = phoneUtil.parse(value);
+        let mobilePhoneNumber = phoneUtil.parse(value, defaultCountry);
         if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
-          throw new Error('The string supplied did not seem to be a valid phone number');
+          mobilePhoneNumber = phoneUtil.parse(value, "");
+          if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
+            throw new Error('The string supplied did not seem to be a phone number');
+          }
         }
 
         if (phoneUtil.getNumberType(mobilePhoneNumber) !== phoneNumberType.MOBILE) {
@@ -75,7 +84,7 @@ module.exports = joi => {
         const knownErrors = [
           {
             error: 'string.mobilePhoneNumber.invalid.string',
-            errorMessages: [ 'The string supplied did not seem to be a phone number', 'Phone number too short after IDD' ]
+            errorMessages: [ 'The string supplied did not seem to be a phone number', 'Phone number too short after IDD', 'The string supplied did not begin with a \'+\' or a \'0\'' ]
           },
           {
             error: 'string.mobilePhoneNumber.invalid.mobile',

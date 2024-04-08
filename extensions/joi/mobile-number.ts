@@ -67,7 +67,8 @@ module.exports = joi => {
         }
         let mobilePhoneNumber = phoneUtil.parse(value, defaults.country);
         if (defaultCountry === defaults.country) {
-          if (!phoneUtil.isValidNumberForRegion(mobilePhoneNumber, defaults.country)) {
+          if (!phoneUtil.isValidNumberForRegion(mobilePhoneNumber, defaults.country) ||
+              (value.slice(0,2) === '44')) {
             throw new Error('The string supplied did not seem to be a UK phone number');
           }
         } else {

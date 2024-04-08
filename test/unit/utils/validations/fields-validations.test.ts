@@ -489,6 +489,13 @@ describe('fields-validations', () => {
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
+    it('should fail validation if mobile phone number is a +44 but missing +', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '447899999999'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
     it('should pass validation when a mobile phone number is entered', () => {
       const validationResult = sponsorContactDetailsValidation({
         selections: 'text-message',

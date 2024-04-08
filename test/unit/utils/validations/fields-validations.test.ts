@@ -479,14 +479,14 @@ describe('fields-validations', () => {
       testSponsorContactDetailsValidation({
         selections: 'text-message',
         'text-message-value': 'qwerty'
-      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should fail validation if mobile phone number not a mobile phone number', () => {
       testSponsorContactDetailsValidation({
         selections: 'text-message',
         'text-message-value': '01277222222'
-      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should pass validation when a mobile phone number is entered', () => {
@@ -528,7 +528,7 @@ describe('fields-validations', () => {
         testSponsorContactDetailsValidation({
           selections: 'text-message',
           'text-message-value': phoneNumber
-        }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+        }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
       });
     });
 
@@ -583,14 +583,14 @@ describe('fields-validations', () => {
       testSponsorContactDetailsValidation({
         selections: 'text-message',
         'text-message-value': '0127722222a'
-      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
     it('should fail validation if phone number starts with anything but + or 0', () => {
       testSponsorContactDetailsValidation({
         selections: 'text-message',
         'text-message-value': '¢07899999999'
-      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
   });
 

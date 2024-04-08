@@ -473,8 +473,8 @@ function sponsorContactDetailsValidation(obj: object) {
           then: Joi.extend(MobilePhoneNumberExtension).mobilePhoneNumber().format('e164').defaultCountry('GB')
               .messages({
                 'string.empty': i18n.validationErrors.phoneEmpty,
-                'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.phoneFormat,
-                'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.phoneFormat
+                'string.mobilePhoneNumber.invalid.string': i18n.validationErrors.ukPhoneFormat,
+                'string.mobilePhoneNumber.invalid.mobile': i18n.validationErrors.ukPhoneFormat
               }),
           otherwise: Joi.any()
         })

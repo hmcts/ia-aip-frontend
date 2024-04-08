@@ -3535,6 +3535,7 @@
     "emailFormat": "Enter an email address in the correct format, like name@example.com",
     "phoneEmpty": "Enter a phone number",
     "phoneFormat": "Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999",
+    "ukPhoneFormat": "Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982",
     "hasSponsor": "Select yes if you have a sponsor",
     "sponsorGivenNames": "Enter your sponsor's given name or names",
     "sponsorFamilyName": "Enter your sponsor's family name or names",

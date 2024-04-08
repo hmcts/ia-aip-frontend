@@ -65,18 +65,18 @@ module.exports = joi => {
         if (format === undefined) {
           throw new Error('Invalid format value: must be one of [e164, international, national, rfc3966]');
         }
-        let mobilePhoneNumber;
-        if (defaultCountry == defaults.country) {
-          mobilePhoneNumber = phoneUtil.parse(value, defaults.country);
-
+        let mobilePhoneNumber = phoneUtil.parse(value, defaults.country);
+        if (defaultCountry === defaults.country) {
           if (!phoneUtil.isValidNumberForRegion(mobilePhoneNumber, defaults.country)) {
             throw new Error('The string supplied did not seem to be a UK phone number');
           }
         } else {
           try {
-            mobilePhoneNumber = phoneUtil.parse(value, defaultCountry);
             if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
-              throw new Error('The string supplied did not seem to be a phone number');
+              mobilePhoneNumber = phoneUtil.parse(value, defaultCountry);
+              if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
+                throw new Error('The string supplied did not seem to be a phone number');
+              }
             }
           } catch {
             throw new Error('The string supplied did not seem to be a phone number');

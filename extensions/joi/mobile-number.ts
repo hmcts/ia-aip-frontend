@@ -53,7 +53,7 @@ module.exports = joi => {
         format: 'e164'
       };
 
-      const defaultCountry = schema.$_getFlag('defaultCountry') || defaults.country;
+      const defaultCountry = schema.$_getFlag('defaultCountry') || '';
       const formatName = schema.$_getFlag('format') || defaults.format;
 
       try {
@@ -65,17 +65,22 @@ module.exports = joi => {
         if (format === undefined) {
           throw new Error('Invalid format value: must be one of [e164, international, national, rfc3966]');
         }
+        let mobilePhoneNumber;
+        if (defaultCountry == defaults.country) {
+          mobilePhoneNumber = phoneUtil.parse(value, defaults.country);
 
-        let mobilePhoneNumber = phoneUtil.parse(value, defaultCountry);
-        try {
-          if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
-            mobilePhoneNumber = phoneUtil.parse(value, '');
+          if (!phoneUtil.isValidNumberForRegion(mobilePhoneNumber, defaults.country)) {
+            throw new Error('The string supplied did not seem to be a UK phone number');
+          }
+        } else {
+          try {
+            mobilePhoneNumber = phoneUtil.parse(value, defaultCountry);
             if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
               throw new Error('The string supplied did not seem to be a phone number');
             }
+          } catch {
+            throw new Error('The string supplied did not seem to be a phone number');
           }
-        } catch {
-          throw new Error('The string supplied did not seem to be a phone number');
         }
 
         if (![phoneNumberType.MOBILE, phoneNumberType.FIXED_LINE_OR_MOBILE].includes(phoneUtil.getNumberType(mobilePhoneNumber))) {
@@ -88,7 +93,7 @@ module.exports = joi => {
         const knownErrors = [
           {
             error: 'string.mobilePhoneNumber.invalid.string',
-            errorMessages: [ 'The string supplied did not seem to be a phone number', 'Phone number too short after IDD', 'The string supplied did not begin with a \'+\' or a \'0\'' ]
+            errorMessages: [ 'The string supplied did not seem to be a phone number', 'The string supplied did not seem to be a UK phone number', 'Phone number too short after IDD', 'The string supplied did not begin with a \'+\' or a \'0\'' ]
           },
           {
             error: 'string.mobilePhoneNumber.invalid.mobile',

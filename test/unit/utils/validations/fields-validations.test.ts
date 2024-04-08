@@ -8,7 +8,9 @@ import {
   homeOfficeNumberValidation,
   isDateInRange,
   reasonForAppealDecisionValidation,
-  selectedRequiredValidation, selectedRequiredValidationDialect,
+  selectedRequiredValidation,
+  selectedRequiredValidationDialect,
+  sponsorContactDetailsValidation,
   statementOfTruthValidation,
   textAreaValidation,
   yesOrNoRequiredValidation
@@ -426,6 +428,166 @@ describe('fields-validations', () => {
 
     it('should fail validation if phone number starts with anything but + or 0', () => {
       testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '¢07899999999'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+  });
+
+  describe('sponsorContactDetailsValidation', () => {
+    function testSponsorContactDetailsValidation(object, key, message) {
+      const validationResult = sponsorContactDetailsValidation(object);
+      const expectedResponse = {};
+      expectedResponse[key] = {
+        'href': `#${key}`,
+        'key': key,
+        'text': message
+      };
+      expect(validationResult).to.deep.equal(expectedResponse);
+    }
+
+    it('should fail validation if no type of contact details found', () => {
+      testSponsorContactDetailsValidation({ selections: '' }, 'selections', 'Select at least one of the contact options');
+    });
+
+    it('should fail validation if no email entered', () => {
+      testSponsorContactDetailsValidation({ selections: 'email' }, 'email-value', 'Enter an email address');
+      testSponsorContactDetailsValidation({ selections: 'email', 'email-value': '' }, 'email-value', 'Enter an email address');
+    });
+
+    it('should fail validation if email not in correct format', () => {
+      testSponsorContactDetailsValidation(
+          { selections: 'email', 'email-value': 'not an email' },
+          'email-value',
+          'Enter an email address in the correct format, like name@example.com'
+      );
+    });
+
+    it('should pass validation when an email is entered', () => {
+      const validationResult = contactDetailsValidation({ selections: 'email', 'email-value': 'foo@bar.com' });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation if no mobile phone number entered entered', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': ''
+      }, 'text-message-value', 'Enter a phone number');
+    });
+
+    it('should fail validation if mobile phone number not incorrect format', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': 'qwerty'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+
+    it('should fail validation if mobile phone number not a mobile phone number', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '01277222222'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+
+    it('should pass validation when a mobile phone number is entered', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation when an international mobile phone number is entered', () => {
+      const phoneNumbers: string[] = [
+        '+86 138 0013 8000',
+        '+91 987 654 3210',
+        '+62 812 345 6789',
+        '+1 212 456 7890',
+        '+55 11 98765 4321',
+        '+7 912 345 6789',
+        '+92 333 123 4567',
+        '+234 802 345 6789',
+        '+880 1712 345 678',
+        '+81 90 1234 5678',
+        '+49 171 234 5678',
+        '+63 917 123 4567',
+        '+52 55 1234 5678',
+        '+98 912 345 6789',
+        '+20 10 1234 5678',
+        '+39 333 123 4567',
+        '+44 791 112 3456',
+        '+84 912 345 678',
+        '+90 532 123 4567',
+        '+33 7 56 78 90 12',
+        '+66 92 345 6789',
+        '+27 82 345 6789',
+        '+57 321 123 4567',
+        '+380 97 123 4567',
+        '+54 911 1234 5678'];
+      phoneNumbers.forEach((phoneNumber: string) => {
+        testSponsorContactDetailsValidation({
+          selections: 'text-message',
+          'text-message-value': phoneNumber
+        }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+      });
+    });
+
+    it('should pass validation when an email and mobile phone number is entered', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'email,text-message',
+        'email-value': 'foo@bar.com',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an invalid email entered but only text-message selected', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'text-message',
+        'email-value': 'invalid',
+        'text-message-value': '07899999999'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should pass validation when an invalid mobile number entered but only email selected', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'email',
+        'email-value': 'foo@bar.com',
+        'text-message-value': 'invalid'
+      });
+      expect(validationResult).to.equal(null);
+    });
+
+    it('should fail validation when an email and mobile phone number are not entered', () => {
+      const validationResult = sponsorContactDetailsValidation({
+        selections: 'email,text-message',
+        'email-value': '',
+        'text-message-value': ''
+      });
+      expect(validationResult).to.deep.equal({
+        'email-value': {
+          'href': '#email-value',
+          'key': 'email-value',
+          'text': 'Enter an email address'
+        },
+        'text-message-value': {
+          'href': '#text-message-value',
+          'key': 'text-message-value',
+          'text': 'Enter a phone number'
+        }
+      });
+    });
+
+    it('should fail validation if phone number ends with a non digit', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '0127722222a'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+
+    it('should fail validation if phone number starts with anything but + or 0', () => {
+      testSponsorContactDetailsValidation({
         selections: 'text-message',
         'text-message-value': '¢07899999999'
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');

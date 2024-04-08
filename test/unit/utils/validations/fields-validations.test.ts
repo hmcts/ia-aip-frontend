@@ -360,14 +360,14 @@ describe('fields-validations', () => {
         '+27 82 345 6789',
         '+57 321 123 4567',
         '+380 97 123 4567',
-        '+54 911 1234 5678']
+        '+54 911 1234 5678'];
       phoneNumbers.forEach((phoneNumber: string) => {
         let validationResult = contactDetailsValidation({
           selections: 'text-message',
           'text-message-value': phoneNumber
         });
         expect(validationResult, `${phoneNumber} failed validation`).to.equal(null);
-      })
+      });
     });
 
     it('should pass validation when an email and mobile phone number is entered', () => {

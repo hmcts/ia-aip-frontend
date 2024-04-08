@@ -49,11 +49,9 @@ module.exports = joi => {
        * In the case where the parameters aren't provided it will default to use this values
        */
       const defaults = {
-        country: 'GB',
         format: 'e164'
       };
 
-      const defaultCountry = schema.$_getFlag('defaultCountry') || defaults.country;
       const formatName = schema.$_getFlag('format') || defaults.format;
 
       try {
@@ -62,9 +60,9 @@ module.exports = joi => {
           throw new Error('Invalid format value: must be one of [e164, international, national, rfc3966]');
         }
 
-        const mobilePhoneNumber = phoneUtil.parse(value, defaultCountry);
+        const mobilePhoneNumber = phoneUtil.parse(value);
         if (!phoneUtil.isValidNumber(mobilePhoneNumber)) {
-          throw new Error('The string supplied did not seem to be a phone number');
+          throw new Error('The string supplied did not seem to be a valid phone number');
         }
 
         if (phoneUtil.getNumberType(mobilePhoneNumber) !== phoneNumberType.MOBILE) {

@@ -334,6 +334,42 @@ describe('fields-validations', () => {
       expect(validationResult).to.equal(null);
     });
 
+    it('should pass validation when an international mobile phone number is entered', () => {
+      const phoneNumbers: string[] = [
+        '+86 138 0013 8000',
+        '+91 987 654 3210',
+        '+62 812 345 6789',
+        '+1 212 456 7890',
+        '+55 11 98765 4321',
+        '+7 912 345 6789',
+        '+92 333 123 4567',
+        '+234 802 345 6789',
+        '+880 1712 345 678',
+        '+81 90 1234 5678',
+        '+49 171 234 5678',
+        '+63 917 123 4567',
+        '+52 55 1234 5678',
+        '+98 912 345 6789',
+        '+20 10 1234 5678',
+        '+39 333 123 4567',
+        '+44 791 112 3456',
+        '+84 912 345 678',
+        '+90 532 123 4567',
+        '+33 7 56 78 90 12',
+        '+66 92 345 6789',
+        '+27 82 345 6789',
+        '+57 321 123 4567',
+        '+380 97 123 4567',
+        '+54 911 1234 5678']
+      phoneNumbers.forEach((phoneNumber: string) => {
+        let validationResult = contactDetailsValidation({
+          selections: 'text-message',
+          'text-message-value': phoneNumber
+        });
+        expect(validationResult, `${phoneNumber} failed validation`).to.equal(null);
+      })
+    });
+
     it('should pass validation when an email and mobile phone number is entered', () => {
       const validationResult = contactDetailsValidation({
         selections: 'email,text-message',

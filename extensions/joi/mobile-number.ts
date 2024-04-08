@@ -78,7 +78,7 @@ module.exports = joi => {
           throw new Error('The string supplied did not seem to be a phone number');
         }
 
-        if (phoneUtil.getNumberType(mobilePhoneNumber) !== phoneNumberType.MOBILE) {
+        if (![phoneNumberType.MOBILE, phoneNumberType.FIXED_LINE_OR_MOBILE].includes(phoneUtil.getNumberType(mobilePhoneNumber))) {
           throw new Error('The phone supplied did not seem to be a valid mobile phone number');
         }
 

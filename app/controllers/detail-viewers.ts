@@ -249,12 +249,9 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     if (refundFeatureEnabled && paymentStatus === 'Paid') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
     }
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));
 
-    if (refundFeatureEnabled) {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));
-    }
-
-    if (refundFeatureEnabled && hasFeeRemissionDecision(req)) {
+    if (hasFeeRemissionDecision(req)) {
       feeDetailsRows.push(...getDecisionReasonRowForAppealDetails(req));
     }
 

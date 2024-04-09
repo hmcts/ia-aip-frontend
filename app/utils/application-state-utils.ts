@@ -120,6 +120,7 @@ async function getAppealApplicationNextStep(req: Request) {
   const ftpaApplicantType = getFtpaApplicantType(req.session.appeal);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   const dlrmFeeRemissionFlag: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false);
+  const deadLineDate = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
 
   let descriptionParagraphs;
   let respondBy;
@@ -154,7 +155,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
@@ -174,7 +175,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         const paragraphs = eventByLegalRep(req, Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id, 'listing')
           ? [
@@ -231,7 +232,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
@@ -330,7 +331,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
@@ -346,7 +347,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
@@ -433,7 +434,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         descriptionParagraphs = [
           i18n.pages.overviewPage.doThisNext.submitHearingRequirements.description,
@@ -516,7 +517,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         const hearingBundleFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.HEARING_BUNDLE, false);
         if (!hearingBundleFeatureEnabled) {
@@ -584,7 +585,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         doThisNextSection = {
           descriptionParagraphs: [
@@ -604,7 +605,7 @@ async function getAppealApplicationNextStep(req: Request) {
       if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
-        doThisNextSection = getFeeRemissionParagraph();
+        doThisNextSection = getFeeRemissionParagraph(deadLineDate);
       } else {
         let decidedDescriptionParagraphs;
         let decidedInfo;
@@ -720,7 +721,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
   }
-  doThisNextSection.deadline = getDeadline(currentAppealStatus, req, dlrmFeeRemissionFlag, ftpaSetAsideFeatureEnabled);
+  doThisNextSection.deadline = deadLineDate;
   return doThisNextSection;
 }
 
@@ -792,8 +793,9 @@ function getRemissionDecisionParagraphs(req: Request) {
   return doThisNextSection;
 }
 
-function getFeeRemissionParagraph() {
-  return {
+function getFeeRemissionParagraph(deadLineDate: string) {
+  let doThisNextSection: DoThisNextSection;
+  doThisNextSection = {
     descriptionParagraphs: [
       i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.detailsSent,
       i18n.pages.overviewPage.doThisNext.appealSubmittedDlrmFeeRemission.feeDetails,
@@ -803,6 +805,8 @@ function getFeeRemissionParagraph() {
     cta: null,
     allowedAskForMoreTime: false
   };
+  doThisNextSection.deadline = deadLineDate;
+  return doThisNextSection;
 }
 
 function remissionDecisionEventIsTheLatest(req: Request) {
@@ -823,5 +827,10 @@ export {
   getMoveAppealOfflineReason,
   getMoveAppealOfflineDate,
   isPreAddendumEvidenceUploadState,
-  eventByLegalRep
+  eventByLegalRep,
+  isEventLatestInHistoryList,
+  requestFeeRemissionEventIsTheLatest,
+  remissionDecisionEventIsTheLatest,
+  getFeeRemissionParagraph,
+  getRemissionDecisionParagraphs
 };

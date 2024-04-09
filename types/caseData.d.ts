@@ -198,6 +198,7 @@ interface CaseData {
 
   refundRequested?: string;
   remissionDecision?: string;
+  previousRemissionDetails?: RemissionDetailsCollection[];
 }
 
 interface Application<T> {
@@ -335,4 +336,20 @@ interface CcdDecisionAndReasons {
 interface DynamicList {
   value?: Value;
   list_items?: Value[];
+}
+
+interface RemissionDetailsCollection {
+  id?: number | string;
+  value?: RemissionDetails;
+}
+
+interface RemissionDetails {
+  feeAmount?: string;
+  amountRemitted?: string;
+  amountLeftToPay?: string;
+  feeRemissionType?: string;
+  remissionDecision?: string;
+  asylumSupportReference?: string;
+  remissionDecisionReason?: string;
+  helpWithFeesReferenceNumber?: string;
 }

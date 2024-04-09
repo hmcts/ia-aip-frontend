@@ -311,7 +311,6 @@ interface AppealApplication {
   helpWithFeesRefNumber?: string;
   localAuthorityLetters?: Evidence[];
 
-  //Late remission(refund) values:
   lateRemissionOption?: string;
   lateAsylumSupportRefNumber?: string;
   lateHelpWithFeesOption?: string;
@@ -320,6 +319,9 @@ interface AppealApplication {
 
   refundRequested?: boolean;
   remissionDecision?: string;
+  amountLeftToPay?: string;
+  remissionDecisionReason?: string;
+  previousRemissionDetails?: RemissionDetails[];
 }
 
 interface CmaRequirements {
@@ -441,7 +443,7 @@ interface Direction {
   explanation: string;
   uniqueId: string;
   clarifyingQuestions?: ClarifyingQuestion;
-  directionType?:  string;
+  directionType?: string;
 }
 
 interface ClarifyingQuestion<T> {
@@ -475,4 +477,16 @@ interface DecisionAndReasons {
   dateDocumentAndReasonsDocumentUploaded?: string;
   documentAndReasonsDocument?: Evidence;
   summariseChanges?: string;
+}
+
+interface RemissionDetails {
+  id?: string;
+  feeAmount?: string;
+  amountRemitted?: string;
+  amountLeftToPay?: string;
+  feeRemissionType?: string;
+  remissionDecision?: string;
+  asylumSupportReference?: string;
+  remissionDecisionReason?: string;
+  helpWithFeesReferenceNumber?: string;
 }

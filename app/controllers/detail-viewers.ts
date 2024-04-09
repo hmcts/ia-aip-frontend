@@ -234,16 +234,9 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])
   ], null, Delimiter.BREAK_LINE));
 
-  // fee section
+// fee section
   if (appealHasRemissionOption(application)) {
-    const fee = getFee(req.session.appeal);
-    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-    const { paymentStatus = null } = req.session.appeal;
-    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-    if (refundFeatureEnabled && paymentStatus === 'Paid') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
-    }
-    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, ['Fee support requested'], null));
+    await addPaymentDetails(req, application, feeDetailsRows);
     if (application.remissionOption === 'asylumSupportFromHo') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
     } else if (application.remissionOption === 'feeWaiverFromHo') {
@@ -268,6 +261,38 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     personalDetailsRows,
     feeDetailsRows
   };
+}
+
+async function addPaymentDetails(req: Request, application: AppealApplication, feeDetailsRows: any[]) {
+  const fee = getFee(req.session.appeal);
+  const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+  const { paymentStatus = null } = req.session.appeal;
+  feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+
+  if (refundFeatureEnabled && paymentStatus === 'Paid') {
+    if (application.remissionDecision === 'approved' || application.remissionDecision === 'partiallyApproved') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, ['To be refunded'], null));
+    } else {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+    }
+  }
+
+  if (application.remissionDecision === 'approved') {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+      ['Fee support request granted'], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [`£${fee.calculated_amount}`], null));
+  } else if (application.remissionDecision === 'partiallyApproved') {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+      ['Fee support request partially granted'], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToRefund, [`£${application.amountLeftToPay}`], null));
+  } else if (application.remissionDecision === 'rejected') {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+      ['Fee support requested refused'], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
+  } else {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+      ['Fee support requested'], null));
+  }
 }
 
 function setupAnswersReasonsForAppeal(req: Request, fromLegalRep: boolean): Array<any> {

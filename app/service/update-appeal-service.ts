@@ -163,6 +163,7 @@ export default class UpdateAppealService {
     let documentMap: DocumentMap[] = [];
     let updatedDecisionAndReasons: DecisionAndReasons[] = null;
     let rule32NoticeDocs: Evidence = null;
+    let previousRemissionDetails: RemissionDetails[] = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -467,6 +468,23 @@ export default class UpdateAppealService {
       rule32NoticeDocs = this.mapSupportingDocumentToEvidence(caseData.rule32NoticeDocument, documentMap);
     }
 
+    if (caseData.previousRemissionDetails) {
+      const previousRemissionDetailsData = caseData.previousRemissionDetails || [];
+      previousRemissionDetails = previousRemissionDetailsData.map(remissionDetail => {
+        return {
+          id: remissionDetail.id,
+          feeAmount: remissionDetail.value.feeAmount,
+          amountRemitted: remissionDetail.value.amountRemitted,
+          amountLeftToPay: remissionDetail.value.amountLeftToPay,
+          feeRemissionType: remissionDetail.value.feeRemissionType,
+          remissionDecision: remissionDetail.value.remissionDecision,
+          asylumSupportReference: remissionDetail.value.asylumSupportReference,
+          remissionDecisionReason: remissionDetail.value.remissionDecisionReason,
+          helpWithFeesReferenceNumber: remissionDetail.value.helpWithFeesReferenceNumber
+        } as RemissionDetails;
+      });
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -536,7 +554,8 @@ export default class UpdateAppealService {
         lateAsylumSupportRefNumber: caseData.lateAsylumSupportRefNumber,
         lateHelpWithFeesOption: caseData.lateHelpWithFeesOption,
         lateHelpWithFeesRefNumber: caseData.lateHelpWithFeesRefNumber,
-        ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) }
+        ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) },
+        previousRemissionDetails: previousRemissionDetails
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,

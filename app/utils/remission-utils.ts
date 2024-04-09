@@ -4,14 +4,10 @@ import { convertToAmountOfMoneyDividedBy100 } from './payments-utils';
 import { addSummaryRow } from './summary-list';
 
 function appealHasRemissionOption(application: AppealApplication) {
-  return [
-      'asylumSupportFromHo',
-      'feeWaiverFromHo',
-      'under18GetSupportFromLocalAuthority',
-      'parentGetSupportFromLocalAuthority'
-    ].includes(application.remissionOption) ||
-    ('noneOfTheseStatements' === application.remissionOption || 'iWantToGetHelpWithFees' === application.remissionOption) &&
-    ('wantToApply' === application.helpWithFeesOption || 'alreadyApplied' === application.helpWithFeesOption)
+  return ['asylumSupportFromHo', 'feeWaiverFromHo', 'under18GetSupportFromLocalAuthority', 'parentGetSupportFromLocalAuthority']
+      .includes(application.remissionOption) ||
+    ['noneOfTheseStatements','iWantToGetHelpWithFees'].includes(application.remissionOption)
+    && ['wantToApply','alreadyApplied'].includes(application.helpWithFeesOption)
     && application.helpWithFeesRefNumber;
 }
 

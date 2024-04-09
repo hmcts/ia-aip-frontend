@@ -12,7 +12,7 @@ import { appealHasRemissionOption } from './remission-utils';
 import {
   getAppellantApplications,
   getApplicant,
-  getFtpaApplicantType,
+  getFtpaApplicantType, getLatestUpdateRemissionDecionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   isFtpaFeatureEnabled,
   isNonStandardDirectionEnabled,
@@ -251,7 +251,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const directionsHistory = getDirectionHistory(req);
   let paymentEvent = [];
   let appealRemissionSection: any[];
+  let appealRemissionDecisionSection: any[];
   let argumentSection: any[];
+
   if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application)) {
     const remissionEvent = [{
       date: moment(paymentDate).format('DD MMMM YYYY'),
@@ -269,8 +271,21 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
       links: i18n.pages.overviewPage.timeline.paymentAppeal.links
     }];
   }
+
   argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
+
+  if (refundFeatureEnabled && application.remissionDecision) {
+    const latestUpdateRemissionDecisionHistory = getLatestUpdateRemissionDecionsEventHistory(req, refundFeatureEnabled);
+    const decisionRemissionEvent = [{
+      date: moment(latestUpdateRemissionDecisionHistory.createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(latestUpdateRemissionDecisionHistory.createdDate),
+      text: i18n.pages.overviewPage.timeline.feeRemissionDecision.text || null,
+      links: i18n.pages.overviewPage.timeline.feeRemissionDecision.links
+    }];
+
+    appealRemissionDecisionSection = decisionRemissionEvent.concat(appealRemissionSection);
+  }
 
   const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);
   const updatedTribunalDecisionDocumentHistory = getUpdateTribunalDecisionDocumentHistory(req, ftpaSetAsideFeatureEnabled);
@@ -285,7 +300,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     appealArgumentSection: argumentSection,
     appealDetailsSection: appealDetailsSection,
     ...(appealRemissionSection && appealRemissionSection.length > 0) &&
-    { appealRemissionSection: appealRemissionSection }
+    { appealRemissionSection: appealRemissionSection },
+    ...(appealRemissionDecisionSection && appealRemissionDecisionSection.length > 0) &&
+    { appealRemissionDecisionSection: appealRemissionDecisionSection }
   };
 }
 

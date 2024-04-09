@@ -214,7 +214,7 @@
     },
     "decisionTypePage": {
       "title": "How do you want your appeal to be decided?",
-      "hint" : {
+      "hint": {
         "withoutFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal.</p><p>Select an option</p>",
         "withFee": "<p>You can choose to have a judge decide your appeal with or without a hearing.</p><h2 class='govuk-heading-m'>If you choose with a hearing</h2><p>A judge will decide your appeal at a hearing that you can attend. The fee for this is £140.</p><h2 class='govuk-heading-m'>If you choose without a hearing</h2><p>A judge will decide your appeal by looking at the information and evidence you send the Tribunal. The fee for this is £80.</p><p>Select an option</p>"
       },
@@ -308,7 +308,9 @@
         "feeSupportType": "Fee support type",
         "localAuthorityLetter": "Local Authority letter",
         "helpWithFeesReferenceNumber": "Help with fees reference number",
-        "paymentStatus": "Payment status"
+        "paymentStatus": "Payment status",
+        "reasonForDecision": "Reason for decision",
+        "feeToPay": "Fee to pay"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",
@@ -1235,6 +1237,33 @@
               "The Tribunal will contact you when the review of your appeal decision is complete."
             ]
           }
+        },
+        "remissionDecided": {
+          "approved": {
+            "detailsSent": "Your appeal details have been sent to the Tribunal.",
+            "legalOfficerCheck": "A Legal Officer will contact you to tell you what happens next. This should be by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.deadline }}</span> but it might take longer than that.",
+            "helpFulInfo": "<b>Helpful information</b>",
+            "href": "<a href={{ paths.common.tribunalCaseworker }}>What is a Tribunal Caseworker?</a>"
+          },
+          "rejected": {
+            "feeForAppeal": "The fee for this appeal is £{{ applicationNextStep.feeForAppeal }}.",
+            "dueDate": "If you do not pay the fee by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.",
+            "payForAppeal": "<a href={{ paths.common.payLater }}>Pay for the appeal</a>"
+          },
+          "partiallyApproved": {
+            "feeForAppeal": "The fee for this appeal is £{{ applicationNextStep.feeLeftToPay }}.",
+            "dueDate": "If you do not pay the fee by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.",
+            "howToPay": "<b>How to pay the fee</b>",
+            "bulletText1": "1. Call the Tribunal on 0300 123 1711, then select option 4",
+            "bulletText2": "2. Provide your 16-digit online case reference number: 1234-1234-1234-1234",
+            "bulletText3": "3. Make the payment with a debit or credit card"
+          },
+          "feeSupportRequested": "Fee support requested",
+          "feeSupportStatusApproved": "Fee support request approved",
+          "feeSupportStatusRefused": "Fee support request refused",
+          "feeSupportStatusPartiallyApproved": "Fee support partially approved",
+          "partiallyApprovedDecisionReason": "Based on the evidence provided the Tribunal believes the appellant would be able to afford a reduced fee of £{{ feeLeftToPay }}.",
+          "refusedDecisionReason": "Based on the evidence provided the Tribunal believes the appellant has enough money to pay for the appeal without support."
         }
       },
       "timeline": {
@@ -1680,6 +1709,16 @@
               ]
             }
           }
+        },
+        "feeRemissionDecision": {
+          "text": "Your request for fee support was decided.",
+          "links": [
+            {
+              "title": "What the Tribunal said",
+              "text": "Your appeal details",
+              "href": "{{ paths.common.appealDetailsViewer }}"
+            }
+          ]
         }
       }
     },
@@ -2848,7 +2887,6 @@
           "content": [
             "We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page, or think we’re not meeting accessibility requirements, contact:",
             "<ul><li>email <a class=\"govuk-link\" href=\"mailto:contactia@justice.gov.uk\">contactia@justice.gov.uk</a></li><li>call +44 (0) 300 123 1711</li><li>Opening Hours - Monday to Friday, 8:30am to 5pm</li></ul>"
-
           ]
         },
         {
@@ -2878,7 +2916,6 @@
             "This website is partially compliant with the <a class='govuk-link' target='_blank' rel='noopener noreferrer' href='https://www.w3.org/TR/WCAG21/'>Web Content Accessibility Guidelines version 2.1</a> AA standard, due to the non-compliances, listed below."
           ]
         },
-
         {
           "title": "Non-accessible content",
           "content": [
@@ -3650,7 +3687,7 @@
     },
     "remissionOptionPage": {
       "title": "Do you have to pay the fee?",
-      "hint" : "<p>The fee for this appeal is £{{ fee }}. You do not have to pay the fee if one of the following statements applies to you.</p><p>Select one</p>",
+      "hint": "<p>The fee for this appeal is £{{ fee }}. You do not have to pay the fee if one of the following statements applies to you.</p><p>Select one</p>",
       "options": {
         "asylumSupportFromHo": {
           "value": "asylumSupportFromHo",
@@ -3671,7 +3708,7 @@
         "noneOfTheseStatements": {
           "value": "noneOfTheseStatements",
           "text": "None of these statements apply to me",
-          "hint":  "You may still be able to get help to pay the fee"
+          "hint": "You may still be able to get help to pay the fee"
         },
         "iWantToGetHelpWithFees": {
           "value": "iWantToGetHelpWithFees",

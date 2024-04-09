@@ -24,17 +24,6 @@
       </div>
     {% endif %}
 
-    {% if history.appealRemissionSection | length > 0 %}
-      <div class="govuk-!-margin-bottom-3">
-        <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealRemissionSection }}</h3>
-        <div class="timeline-section">
-          {% for event in history.appealRemissionSection %}
-            {% include "components/event-in-timeline.njk" %}
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
-
     {% if history.appealArgumentSection | length > 0  and not history.appealRemissionSection | length > 0 %}
       <div class="govuk-!-margin-bottom-3">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealArgumentSection }}</h3>
@@ -50,6 +39,18 @@
       <div class="govuk-!-margin-bottom-3">
         <h3 class="govuk-heading-s govuk-!-margin-bottom-0">{{ i18n.pages.overviewPage.timeline.sections.appealDetailsSection }}</h3>
         <div class="timeline-section">
+          {% if history.appealRemissionDecisionSection | length > 0 %}
+            {% for event in history.appealRemissionDecisionSection %}
+              {% include "components/event-in-timeline.njk" %}
+            {% endfor %}
+          {% endif %}
+
+          {% if history.appealRemissionSection | length > 0 and not history.appealRemissionDecisionSection | length > 0 %}
+            {% for event in history.appealRemissionSection %}
+              {% include "components/event-in-timeline.njk" %}
+            {% endfor %}
+          {% endif %}
+
           {% for event in history.appealDetailsSection %}
             {% include "components/event-in-timeline.njk" %}
           {% endfor %}

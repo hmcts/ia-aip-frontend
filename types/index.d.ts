@@ -529,3 +529,9 @@ interface AppellantWitnessConfigValue {
   witnessValue?: string;
   appellantValue: string;
 }
+
+declare module NodeJS {
+  interface Global {
+    testFailed: boolean
+  }
+}

@@ -27,7 +27,12 @@ const serverConfig = {
                 {
                     test: /\.ts$/,
                     use: [
-                        'ts-loader',
+                        {
+                            loader: 'ts-loader',
+                            options: {
+                                transpileOnly: true
+                            }
+                        }
                     ]
                 }
             ]
@@ -61,7 +66,10 @@ const clientConfig = {
                             }
                         },
                         {
-                            loader: 'ts-loader'
+                            loader: 'ts-loader',
+                            options: {
+                                transpileOnly: true
+                            }
                         }
                     ]
                 },

@@ -17,6 +17,9 @@ exports.config = {
       chrome: {
         ignoreHTTPSErrors: true
       }
+    },
+    FailedTest: {
+      require: './test/e2e-test/helpers/failedTestHelper.js'
     }
   },
   gherkin: {

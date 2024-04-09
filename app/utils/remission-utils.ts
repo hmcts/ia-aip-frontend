@@ -5,7 +5,7 @@ function appealHasRemissionOption(application: AppealApplication) {
     'under18GetSupportFromLocalAuthority',
     'parentGetSupportFromLocalAuthority'
   ].includes(application.remissionOption) ||
-    'noneOfTheseStatements' === application.remissionOption &&
+    ('noneOfTheseStatements' === application.remissionOption || 'iWantToGetHelpWithFees' === application.remissionOption) &&
     ('wantToApply' === application.helpWithFeesOption || 'alreadyApplied' === application.helpWithFeesOption)
     && application.helpWithFeesRefNumber;
 }

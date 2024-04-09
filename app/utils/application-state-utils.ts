@@ -151,7 +151,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'appealSubmitted':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -171,7 +171,7 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'listing':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -198,7 +198,7 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'lateAppealSubmitted':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag &&
         requestFeeRemissionEventIsTheLatest(req)) {
@@ -228,7 +228,7 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'awaitingRespondentEvidence':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -327,7 +327,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'caseUnderReview':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -343,7 +343,7 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'respondentReview':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -430,7 +430,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'submitHearingRequirements':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -513,7 +513,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'prepareForHearing':
     case 'finalBundling':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -581,7 +581,7 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'preHearing':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -601,7 +601,7 @@ async function getAppealApplicationNextStep(req: Request) {
       }
       break;
     case 'decided':
-      if (remissionDecisionEventIsTheLatest(req, dlrmFeeRemissionFlag)) {
+      if (dlrmFeeRemissionFlag && remissionDecisionEventIsTheLatest(req)) {
         doThisNextSection = getRemissionDecisionParagraphs(req);
       } else if (dlrmFeeRemissionFlag && requestFeeRemissionEventIsTheLatest(req)) {
         doThisNextSection = getFeeRemissionParagraph();
@@ -805,8 +805,8 @@ function getFeeRemissionParagraph() {
   };
 }
 
-function remissionDecisionEventIsTheLatest(req: Request, dlrmFeeRemissionFlag: boolean) {
-  return hasFeeRemissionDecision(req, dlrmFeeRemissionFlag) && isEventLatestInHistoryList(req, Events.RECORD_REMISSION_DECISION.id);
+function remissionDecisionEventIsTheLatest(req: Request) {
+  return hasFeeRemissionDecision(req) && isEventLatestInHistoryList(req, Events.RECORD_REMISSION_DECISION.id);
 }
 
 function requestFeeRemissionEventIsTheLatest(req: Request) {

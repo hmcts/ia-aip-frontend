@@ -11,12 +11,12 @@ function appealHasNoRemissionOption(application: AppealApplication) {
   return 'noneOfTheseStatements' === application.remissionOption && 'willPayForAppeal' === application.helpWithFeesOption;
 }
 
-function hasFeeRemissionDecision(req: Request, dlrmFeeRemissionFlag: boolean) {
-  return dlrmFeeRemissionFlag && !!req.session.appeal.application.remissionDecision;
+function hasFeeRemissionDecision(req: Request) {
+  return !!req.session.appeal.application.remissionDecision;
 }
 
-function getFeeSupportStatusForAppealDetails(req: Request, dlrmFeeRemissionFlag: boolean) {
-  if (hasFeeRemissionDecision(req, dlrmFeeRemissionFlag)) {
+function getFeeSupportStatusForAppealDetails(req: Request) {
+  if (hasFeeRemissionDecision(req)) {
     const remissionDecision = req.session.appeal.application.remissionDecision;
     switch (remissionDecision) {
       case 'approved':

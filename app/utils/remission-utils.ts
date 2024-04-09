@@ -34,6 +34,8 @@ function getFeeSupportStatusForAppealDetails(req: Request) {
 function getDecisionReasonRowForAppealDetails(req: Request) {
   const remissionDecision = req.session.appeal.application.remissionDecision;
   switch (remissionDecision) {
+    case 'approved':
+      return [];
     case 'partiallyApproved':
       const amountLeftToPay = convertToAmountOfMoneyDividedBy100(req.session.appeal.application.amountLeftToPay);
       return [

@@ -1,11 +1,17 @@
 import { Request } from 'express';
 import Logger from '../../../app/utils/logger';
-import { appealHasNoRemissionOption, appealHasRemissionOption } from '../../../app/utils/remission-utils';
+import {
+  appealHasNoRemissionOption,
+  appealHasRemissionOption, getDecisionReasonRowForAppealDetails, getFeeSupportStatusForAppealDetails,
+  hasFeeRemissionDecision
+} from '../../../app/utils/remission-utils';
+import { addSummaryRow } from '../../../app/utils/summary-list';
+import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 
 describe('Remission fields utils', () => {
   let sandbox: sinon.SinonSandbox;
-  let req: Partial<Request>;
+  let req: Request;
   const logger: Logger = new Logger();
 
   beforeEach(() => {
@@ -27,7 +33,7 @@ describe('Remission fields utils', () => {
           logger
         }
       } as any
-    } as Partial<Request>;
+    } as Request;
   });
 
   afterEach(() => {
@@ -98,7 +104,13 @@ describe('Remission fields utils', () => {
       }
     ];
 
-    remissionOptiondata.forEach(({ remissionOption, helpWithFeesOption, helpWithFeesRefNumber, expectedResponse, description }) => {
+    remissionOptiondata.forEach(({
+                                   remissionOption,
+                                   helpWithFeesOption,
+                                   helpWithFeesRefNumber,
+                                   expectedResponse,
+                                   description
+                                 }) => {
       it(`should be ${description}`, () => {
         appeal.application.remissionOption = remissionOption;
         appeal.application.helpWithFeesOption = helpWithFeesOption;
@@ -115,6 +127,129 @@ describe('Remission fields utils', () => {
     appeal.application.helpWithFeesOption = 'willPayForAppeal';
 
     expect(appealHasNoRemissionOption(appeal.application)).to.be.deep.equal(true);
+  });
+
+  it('check appeal has or has not remission decision', () => {
+    const { appeal } = req.session;
+    const remissionOptiondata = [
+      {
+        remissionDecision: 'approved',
+        expectedResponse: true,
+        description: 'Decision approved'
+      },
+      {
+        remissionDecision: undefined,
+        expectedResponse: false,
+        description: 'Decision does not exists'
+      },
+      {
+        remissionDecision: null,
+        expectedResponse: false,
+        description: 'Decision does not exists'
+      },
+      {
+        remissionDecision: '',
+        expectedResponse: false,
+        description: 'Decision does not exists'
+      }];
+
+    remissionOptiondata.forEach(({
+                                   remissionDecision,
+                                   expectedResponse,
+                                   description
+                                 }) => {
+      it(`should be ${description}`, () => {
+        appeal.application.remissionDecision = remissionDecision;
+        expect(hasFeeRemissionDecision(req)).to.be.deep.equal(expectedResponse);
+      });
+    });
+  });
+
+  it('appeal has no remission option', () => {
+    const { appeal } = req.session;
+    appeal.application.appealType = 'protection';
+    appeal.application.remissionOption = 'noneOfTheseStatements';
+    appeal.application.helpWithFeesOption = 'willPayForAppeal';
+
+    expect(appealHasNoRemissionOption(appeal.application)).to.be.deep.equal(true);
+  });
+
+  it('should return proper fee support status for appeal details', () => {
+    const { appeal } = req.session;
+    const testData = [
+      {
+        remissionDecision: 'approved',
+        expectedResponse: i18n.pages.overviewPage.doThisNext.remissionDecided.feeSupportStatusApproved,
+        description: 'Decision approved'
+      },
+      {
+        remissionDecision: 'partiallyApproved',
+        expectedResponse: i18n.pages.overviewPage.doThisNext.remissionDecided.feeSupportStatusPartiallyApproved,
+        description: 'Decision partiallyApproved'
+      },
+      {
+        remissionDecision: 'rejected',
+        expectedResponse: i18n.pages.overviewPage.doThisNext.remissionDecided.feeSupportStatusRefused,
+        description: 'Decision rejected'
+      },
+      {
+        remissionDecision: undefined,
+        expectedResponse: i18n.pages.overviewPage.doThisNext.remissionDecided.feeSupportStatusRefused,
+        description: 'Decision does not exists'
+      }
+    ];
+
+    testData.forEach(({
+                                   remissionDecision,
+                                   expectedResponse,
+                                   description
+                                 }) => {
+      it(`should be ${description}`, () => {
+        appeal.application.remissionDecision = remissionDecision;
+        expect(getFeeSupportStatusForAppealDetails(req)).to.be.deep.equal(expectedResponse);
+      });
+    });
+  });
+
+  it('should return proper decision reason row for appeal details', () => {
+    const { appeal } = req.session;
+    appeal.application.amountLeftToPay = '4000';
+    const testData = [
+      {
+        remissionDecision: 'approved',
+        expectedResponse: [],
+        description: 'Decision approved'
+      },
+      {
+        remissionDecision: 'partiallyApproved',
+        expectedResponse: [
+          addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
+            [i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApprovedDecisionReason
+              .replace('{{ feeLeftToPay }}', '40')], null),
+          addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToPay, ['£' + '40'], null)
+        ],
+        description: 'Decision partiallyApproved'
+      },
+      {
+        remissionDecision: 'rejected',
+        expectedResponse: [
+          addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
+            [i18n.pages.overviewPage.doThisNext.remissionDecided.refusedDecisionReason], null)
+        ],
+        description: 'Decision rejected'
+      }
+    ];
+
+    testData.forEach(({
+                        remissionDecision,
+                        expectedResponse,
+                        description
+                      }) => {
+      it(`should be ${description}`, () => {
+        appeal.application.remissionDecision = remissionDecision;
+        expect(getDecisionReasonRowForAppealDetails(req)).to.be.deep.equal(expectedResponse);
+      });
+    });
   });
 
 });

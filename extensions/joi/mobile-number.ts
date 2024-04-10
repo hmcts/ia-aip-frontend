@@ -57,8 +57,8 @@ module.exports = joi => {
       const formatName = schema.$_getFlag('format') || defaults.format;
 
       try {
-        if (!value.match(new RegExp(/^[+\d].*\d$/))) {
-          throw new Error('The string supplied did not begin with a \'+\' or a \'0\'');
+        if (!value.match(new RegExp(/^[+\d][^+]*\d$/))) {
+          throw new Error('The string supplied did not begin with a \'+\' or a digit');
         }
 
         const format = supportedTypes[formatName];
@@ -94,7 +94,7 @@ module.exports = joi => {
         const knownErrors = [
           {
             error: 'string.mobilePhoneNumber.invalid.string',
-            errorMessages: [ 'The string supplied did not seem to be a phone number', 'The string supplied did not seem to be a UK phone number', 'Phone number too short after IDD', 'The string supplied did not begin with a \'+\' or a \'0\'' ]
+            errorMessages: [ 'The string supplied did not seem to be a phone number', 'The string supplied did not seem to be a UK phone number', 'Phone number too short after IDD', 'The string supplied did not begin with a \'+\' or a digit' ]
           },
           {
             error: 'string.mobilePhoneNumber.invalid.mobile',

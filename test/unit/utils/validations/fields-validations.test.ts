@@ -362,7 +362,8 @@ describe('fields-validations', () => {
         '+27 82 345 6789',
         '+57 321 123 4567',
         '+380 97 123 4567',
-        '+54 911 1234 5678'];
+        '+54 911 1234 5678',
+        '+54 911-1234-5678'];
       phoneNumbers.forEach((phoneNumber: string) => {
         let validationResult = contactDetailsValidation({
           selections: 'text-message',
@@ -426,7 +427,14 @@ describe('fields-validations', () => {
       }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
     });
 
-    it('should fail validation if phone number starts with anything but + or 0', () => {
+    it('should fail validation if mobile phone number has multiple +44', () => {
+      testContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '+++447899999999'
+      }, 'text-message-value', 'Enter a mobile phone number, like 07700 900 982 or +61 2 9999 9999');
+    });
+
+    it('should fail validation if phone number starts with anything but + or a digit', () => {
       testContactDetailsValidation({
         selections: 'text-message',
         'text-message-value': '¢07899999999'
@@ -493,6 +501,13 @@ describe('fields-validations', () => {
       testSponsorContactDetailsValidation({
         selections: 'text-message',
         'text-message-value': '447899999999'
+      }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
+    });
+
+    it('should fail validation if mobile phone number has multiple +44', () => {
+      testSponsorContactDetailsValidation({
+        selections: 'text-message',
+        'text-message-value': '+++447899999999'
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
@@ -600,7 +615,7 @@ describe('fields-validations', () => {
       }, 'text-message-value', 'Enter a UK mobile phone number, like 07700 900 982 or +44 7700 900 982');
     });
 
-    it('should fail validation if phone number starts with anything but + or 0', () => {
+    it('should fail validation if phone number starts with anything but + or a digit', () => {
       testSponsorContactDetailsValidation({
         selections: 'text-message',
         'text-message-value': '¢07899999999'

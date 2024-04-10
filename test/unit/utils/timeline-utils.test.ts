@@ -818,7 +818,7 @@ describe('timeline-utils', () => {
       const history = [
         {
           'id': 'recordRemissionDecision',
-          'createdDate': '2024-03-07T15:36:26.099'
+          'createdDate': '2024-03-07'
         }
       ] as HistoryEvent[];
 
@@ -840,7 +840,7 @@ describe('timeline-utils', () => {
       const expectedResult = [
         {
           'date': '07 March 2024',
-          'dateObject': new Date('2024-03-07T14:36:26.099Z'),
+          'dateObject': new Date('2024-03-07'),
           'text': 'Your request for fee support was decided.',
           'links': [
             {

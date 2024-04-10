@@ -817,20 +817,6 @@ describe('timeline-utils', () => {
 
       const history = [
         {
-          'id': 'uploadAdditionalEvidence',
-          'createdDate': '2020-04-14T14:53:26.099',
-          'user': {
-            'id': 'legal-rep'
-          }
-        },
-        {
-          'id': 'uploadAddendumEvidenceLegalRep',
-          'createdDate': '2020-04-14T14:53:26.099',
-          'user': {
-            'id': 'legal-rep'
-          }
-        },
-        {
           'id': 'recordRemissionDecision',
           'createdDate': '2024-03-07T15:36:26.099'
         }

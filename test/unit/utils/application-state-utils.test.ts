@@ -181,11 +181,10 @@ describe('application-state-utils', () => {
       ' next section\'', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
         .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-
-      req.session.appeal.appealStatus = 'appealSubmitted';
-      req.session.appeal.application.remissionOption = 'iWantToGetHelpWithFees';
-      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
-      req.session.appeal.history = [
+      const { appeal } = req.session;
+      appeal.appealStatus = 'appealSubmitted';
+      appeal.application.remissionOption = 'feeWaiverFromHo';
+      appeal.history = [
         {
           'id': 'requestFeeRemission',
           'createdDate': '2020-02-22T15:36:26.099'
@@ -310,8 +309,7 @@ describe('application-state-utils', () => {
 
       req.session.appeal.application.isAppealLate = true;
       req.session.appeal.appealStatus = 'lateAppealSubmitted';
-      req.session.appeal.application.remissionOption = 'iWantToGetHelpWithFees';
-      req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
       req.session.appeal.history = [
         {
           'id': 'requestFeeRemission',
@@ -1773,8 +1771,7 @@ describe('application-state-utils', () => {
 
   it('check requestFeeRemissionEventIsTheLatest work as expected', async () => {
     const { appeal } = req.session;
-    req.session.appeal.application.remissionOption = 'iWantToGetHelpWithFees';
-    req.session.appeal.application.helpWithFeesOption = 'wantToApply';
+    appeal.application.remissionOption = 'feeWaiverFromHo';
     appeal.history = [
       {
         'id': 'requestFeeRemission',
@@ -1793,10 +1790,10 @@ describe('application-state-utils', () => {
     ' next section\'', async () => {
     sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
       .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
-
-    req.session.appeal.appealStatus = 'appealSubmitted';
-    req.session.appeal.application.remissionDecision = 'approved';
-    req.session.appeal.history = [
+    const { appeal } = req.session;
+    appeal.appealStatus = 'appealSubmitted';
+    appeal.application.remissionDecision = 'approved';
+    appeal.history = [
       {
         'id': 'recordRemissionDecision',
         'createdDate': '2020-02-22T15:36:26.099'

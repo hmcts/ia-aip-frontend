@@ -198,6 +198,8 @@ interface CaseData {
 
   refundRequested?: string;
   remissionDecision?: string;
+  remissionRejectedDatePlus14days?: string;
+  amountLeftToPay?: string;
 }
 
 interface Application<T> {

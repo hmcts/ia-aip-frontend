@@ -219,5 +219,9 @@ export const Events = {
   REQUEST_FEE_REMISSION: {
     id: 'requestFeeRemission',
     description: 'Request fee remission'
+  },
+  RECORD_REMISSION_DECISION: {
+    id: 'recordRemissionDecision',
+    description: 'Record remission decision'
   }
 };

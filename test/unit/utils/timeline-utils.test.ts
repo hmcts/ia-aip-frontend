@@ -787,17 +787,17 @@ describe('timeline-utils', () => {
 
     it('should return relevant events when ftpa feature disabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(1);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(2);
     });
 
     it('should return relevant events when ftpa feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, true, false);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(5);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(6);
     });
 
     it('should return relevant events when ftpa set aside feature enabled', () => {
       const eventsAndStates = getEventsAndStates(false, false, false, true);
-      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(2);
+      expect(eventsAndStates.appealDecisionSectionEvents.length).to.be.eqls(3);
     });
   });
 });

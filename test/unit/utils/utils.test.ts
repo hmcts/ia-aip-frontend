@@ -7,8 +7,10 @@ import {
   formatTextForCYA,
   getApplicationType,
   getFtpaApplicantType,
+  getLatestUpdateRemissionDecionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   hasPendingTimeExtension,
+  isRemissionDecisionDecided,
   isUpdateTribunalDecide,
   isUpdateTribunalDecideWithRule31,
   isUpdateTribunalDecideWithRule32,
@@ -219,7 +221,10 @@ describe('utils', () => {
 
   describe('getApplicationType', () => {
     it('Valid type', () => {
-      expect(getApplicationType('Judge\'s review of application decision')).to.include({ code: 'askJudgeReview', type: 'Judge\'s review of application decision' });
+      expect(getApplicationType('Judge\'s review of application decision')).to.include({
+        code: 'askJudgeReview',
+        type: 'Judge\'s review of application decision'
+      });
       expect(getApplicationType('Other')).to.include({ code: 'askSomethingElse', type: 'Other' });
     });
 
@@ -378,6 +383,84 @@ describe('utils', () => {
         }
       ] as HistoryEvent[];
       expect(getLatestUpdateTribunalDecisionHistory(req as Request, true)).to.eq(null);
+    });
+  });
+
+  describe('Remission decision utils', () => {
+    it('isRemissionDecisionDecided', () => {
+      const { appeal } = req.session;
+      const testData = [
+        {
+          history: undefined,
+          remissionDecision: 'approved',
+          expectedResponse: false,
+          description: 'False'
+        },
+        {
+          history: undefined,
+          remissionDecision: undefined,
+          expectedResponse: false,
+          description: 'False'
+        },
+        {
+          history: [
+            {
+              'id': 'recordRemissionDecision',
+              'createdDate': '2024-03-07T15:36:26.099'
+            }
+          ] as HistoryEvent[],
+          remissionDecision: undefined,
+          expectedResponse: false,
+          description: 'False'
+        },
+        {
+          history: [
+            {
+              'id': 'recordRemissionDecision',
+              'createdDate': '2024-03-07T15:36:26.099'
+            }
+          ] as HistoryEvent[],
+          remissionDecision: 'approved',
+          expectedResponse: true,
+          description: 'True'
+        }
+      ];
+
+      testData.forEach(({
+                          history,
+                          remissionDecision,
+                          expectedResponse,
+                          description
+                        }) => {
+        it(`should be ${description}`, () => {
+          appeal.application.remissionDecision = remissionDecision;
+          appeal.history = history;
+          expect(isRemissionDecisionDecided(req as Request, true)).to.be.deep.equal(expectedResponse);
+        });
+      });
+    });
+
+    it('getLatestUpdateRemissionDecionsEventHistory', () => {
+      const { appeal } = req.session;
+      appeal.application.remissionDecision = 'approved';
+      appeal.history = [
+        {
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-03-07T15:36:26.099'
+        },
+        {
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-04-07T15:36:26.099'
+        },
+        {
+          'id': 'updateTribunalDecision',
+          'createdDate': '2024-03-07T15:36:26.099'
+        }
+      ] as HistoryEvent[];
+
+      const latesHistoryEvent = getLatestUpdateRemissionDecionsEventHistory(req as Request, true);
+      expect(latesHistoryEvent.id).to.be.deep.equal('recordRemissionDecision');
+      expect(latesHistoryEvent.createdDate).to.be.deep.equal('2024-04-07T15:36:26.099');
     });
   });
 });

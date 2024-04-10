@@ -320,6 +320,8 @@ interface AppealApplication {
 
   refundRequested?: boolean;
   remissionDecision?: string;
+  remissionRejectedDatePlus14days?: string;
+  amountLeftToPay?: string;
 }
 
 interface CmaRequirements {

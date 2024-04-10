@@ -812,5 +812,60 @@ describe('timeline-utils', () => {
       const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
       expect(result.appealRemissionSection).to.deep.eq(expectedResult);
     });
+
+    it('should return the correct sections when fee remission is decided', async () => {
+
+      const history = [
+        {
+          'id': 'recordRemissionDecision',
+          'createdDate': '2024-03-07'
+        }
+      ] as HistoryEvent[];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
+      req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.remissionDecision = 'approved';
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '07 March 2024',
+          'dateObject': new Date('2024-03-07'),
+          'text': 'Your request for fee support was decided.',
+          'links': [
+            {
+              'title': 'What the Tribunal said',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        },
+        {
+          'date': '03 April 2024',
+          'dateObject': new Date('2024-04-03T08:00:30.233Z'),
+          'text': 'You asked the Tribunal for a fee remission.',
+          'links': [
+            {
+              'title': 'What you sent',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
+    });
   });
 });

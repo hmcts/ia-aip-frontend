@@ -147,6 +147,9 @@
                        {% elif showAppealRequestsInAppealEndedStatus %}
                           <p><a class="govuk-link" href='{{ paths.makeApplication.reinstate }}'>{{ i18n.pages.overviewPage.appealRequests.askReinstateAppeal }}</a></p>
                           <p><a class="govuk-link" href='{{ paths.makeApplication.judgesReview }}'>{{ i18n.pages.overviewPage.appealRequests.askJudgeToReview}}</a></p>
+                          {% if showAskForSomethingInEndedState %}
+                            <p><a class="govuk-link" href='{{ paths.makeApplication.other }}'>{{ i18n.pages.overviewPage.appealRequests.askForSomethingElse }}</a></p>
+                          {% endif %}
                       {% endif %}
               </div>
           {% endif %}

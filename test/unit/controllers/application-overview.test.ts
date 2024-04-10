@@ -199,7 +199,8 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false
     });
   });
 
@@ -260,7 +261,8 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false
     });
   });
 
@@ -320,7 +322,8 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false
     });
   });
 
@@ -393,7 +396,8 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false
     });
   });
 
@@ -489,8 +493,36 @@ describe('Confirmation Page Controller', () => {
       hearingDetails: null,
       showChangeRepresentation: false,
       showFtpaApplicationLink: false,
-      showAskForFeeRemission: false
+      showAskForFeeRemission: false,
+      showAskForSomethingInEndedState: false
     });
+  });
+
+  it('should render showAskForSomethingInEndedState property when the state in ended', async () => {
+    req.idam = {
+      userDetails: {
+        uid: 'user-id',
+        name: 'Alex Developer',
+        given_name: 'Alex',
+        family_name: 'Developer',
+        sub: 'email@test.com'
+      }
+    };
+    req.session.appeal.appealStatus = 'ended';
+    req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
+    req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
+    req.session.appeal.application.personalDetails.givenNames = 'Appellant';
+    req.session.appeal.application.personalDetails.familyName = 'Name';
+    req.session.appeal.hearing = {
+      hearingCentre: 'taylorHouse',
+      date: '2024-04-09T20:30:00.000',
+      time: '240'
+    };
+
+    await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
+
+    expect(res.render).to.have.been.calledOnce;
+    expect(res.render).to.have.been.calledWith('application-overview.njk', sinon.match.has('showAskForSomethingInEndedState', true));
   });
 
   it('getApplicationOverview should catch an exception and call next()', async () => {

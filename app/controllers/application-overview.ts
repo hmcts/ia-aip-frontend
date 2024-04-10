@@ -163,6 +163,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         && 'Paid' === paymentStatus
         && (!application.refundRequested || application.refundRequested && !!application.remissionDecision);
 
+      const showAskForSomethingInEndedState = refundFeatureEnabled && showAppealRequestsInAppealEndedStatus;
+
       return res.render('application-overview.njk', {
         name: loggedInUserFullName,
         appealRefNumber: appealRefNumber,
@@ -183,7 +185,8 @@ function getApplicationOverview(updateAppealService: UpdateAppealService) {
         hearingDetails,
         showChangeRepresentation,
         showFtpaApplicationLink: showFtpaApplicationLink(req.session.appeal, ftpaFeatureEnabled),
-        showAskForFeeRemission
+        showAskForFeeRemission,
+        showAskForSomethingInEndedState
       });
     } catch (e) {
       next(e);

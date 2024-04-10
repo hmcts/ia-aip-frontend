@@ -189,6 +189,7 @@ interface CaseData {
   localAuthorityLetters?: Collection<DocumentWithMetaData>[];
   correctedDecisionAndReasons: Collection<CcdDecisionAndReasons>[];
   sourceOfRemittal?: string;
+  remittalDocuments: Collection<CcdRemittalDetails>[];
 }
 
 interface Application<T> {
@@ -320,6 +321,12 @@ interface CcdDecisionAndReasons {
   dateDocumentAndReasonsDocumentUploaded?: string;
   documentAndReasonsDocument?: SupportingDocument;
   summariseChanges?: string;
+  [key: string]: any;
+}
+
+interface CcdRemittalDetails {
+  decisionDocument: DocumentWithMetaData;
+  otherRemittalDocs?: Collection<DocumentWithMetaData>[];
   [key: string]: any;
 }
 

@@ -56,6 +56,50 @@ describe('timeline-utils', () => {
 
   describe('constructSection', () => {
 
+    it('Should construct the remittals section', () => {
+      const { appeal } = req.session;
+      const remittalSection = [Events.MARK_APPEAL_AS_REMITTED.id];
+      const testData = [
+        {
+          sourceOfRemittal: 'Upper Tribunal',
+          description: 'Upper Tribunal scenario'
+        },
+        {
+          sourceOfRemittal: 'Court of Appeal',
+          description: 'Court of Appeal scenario'
+        }
+      ];
+
+      const history = [
+        {
+          'id': 'markAppealAsRemitted',
+          'createdDate': '2020-04-14T14:53:26.099'
+        }
+      ] as HistoryEvent[];
+
+      testData.forEach(({
+                          sourceOfRemittal,
+                          description
+                        }) => {
+        it(`should be ${description}`, () => {
+          appeal.sourceOfRemittal = sourceOfRemittal;
+          const result = constructSection(remittalSection, history, null, req as Request);
+          expect(result).to.deep.eq(
+            [{
+              'date': '14 April 2020',
+              'dateObject': new Date('2020-04-14T14:53:26.099'),
+              'text': `The ${sourceOfRemittal} decided the appeal will be heard again by the First-tier Tribunal.`,
+              'links': [{
+                'title': 'Useful documents',
+                'text': `${sourceOfRemittal} documents`,
+                'href': '{{ paths.common.remittalDocumentsViewer }}'
+              }]
+            }]
+          );
+        });
+      });
+    });
+
     it('Should construct the appeal details section', () => {
       req.session.appeal.timeExtensionEventsMap = [];
       const appealDetailsSection = [Events.SUBMIT_APPEAL.id];

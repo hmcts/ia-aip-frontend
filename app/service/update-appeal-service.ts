@@ -163,6 +163,7 @@ export default class UpdateAppealService {
     let documentMap: DocumentMap[] = [];
     let updatedDecisionAndReasons: DecisionAndReasons[] = null;
     let rule32NoticeDocs: Evidence = null;
+    let remittalDocuments: RemittalDetails[] = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -246,6 +247,26 @@ export default class UpdateAppealService {
           ...ccdDecisionAndReasons.value,
           coverLetterDocument: coverLetterDocument,
           documentAndReasonsDocument: documentAndReasonsDocument
+        };
+      });
+    }
+
+    if (caseData.remittalDocuments) {
+      remittalDocuments = caseData.remittalDocuments.map((ccdRemittalDetails: Collection<CcdRemittalDetails>): RemittalDetails => {
+        let decisionDocument: Evidence;
+        let otherRemittalDocs: Evidence[];
+        if (ccdRemittalDetails.value.decisionDocument && ccdRemittalDetails.value.decisionDocument.document) {
+          decisionDocument = this.mapSupportingDocumentToEvidence(ccdRemittalDetails.value.decisionDocument.document, documentMap);
+        }
+        if (ccdRemittalDetails.value.otherRemittalDocs) {
+          otherRemittalDocs = this.mapDocsWithMetadataToEvidenceArray(ccdRemittalDetails.value.otherRemittalDocs, documentMap);
+        }
+
+        return {
+          id: ccdRemittalDetails.id,
+          ...ccdRemittalDetails.value,
+          decisionDocument: decisionDocument,
+          otherRemittalDocs: otherRemittalDocs
         };
       });
     }
@@ -539,6 +560,7 @@ export default class UpdateAppealService {
       },
       ...(_.has(caseData, 'directions')) && { directions },
       ...(_.has(caseData, 'correctedDecisionAndReasons')) && { updatedDecisionAndReasons },
+      ...(_.has(caseData, 'remittalDocuments')) && { remittalDocuments },
       ...draftClarifyingQuestionsAnswers && { draftClarifyingQuestionsAnswers },
       ...caseData.clarifyingQuestionsAnswers && { clarifyingQuestionsAnswers: this.mapCcdClarifyingQuestionsToAppeal(caseData.clarifyingQuestionsAnswers, documentMap) },
       cmaRequirements,

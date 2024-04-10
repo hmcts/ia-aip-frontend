@@ -303,7 +303,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     Events.END_APPEAL_AUTOMATICALLY.id,
     Events.RECORD_OUT_OF_TIME_DECISION.id
   ];
-  const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
+  const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id, Events.MARK_APPEAL_AS_REMITTED.id];
 
   if (ftpaFeatureEnabled) {
     appealDecisionSectionEvents.push(
@@ -316,8 +316,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
 
   if (ftpaSetAsideFeatureEnabled) {
     appealDecisionSectionEvents.push(
-        Events.DECIDE_FTPA_APPLICATION.id,
-        Events.MARK_APPEAL_AS_REMITTED.id
+        Events.DECIDE_FTPA_APPLICATION.id
     );
   }
 

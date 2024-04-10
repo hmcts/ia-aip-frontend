@@ -670,6 +670,7 @@ async function getAppealApplicationNextStep(req: Request) {
       break;
     case 'remitted':
       doThisNextSection = {
+        cta: {},
         descriptionParagraphs: [i18n.pages.overviewPage.doThisNext.remitted.decision],
         sourceOfRemittal: req.session.appeal.sourceOfRemittal
       };

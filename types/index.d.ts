@@ -198,6 +198,8 @@ interface Appeal {
   ftpaRespondentDecisionRemadeRule32Text?: string;
   updatedDecisionAndReasons?: DecisionAndReasons[];
   sourceOfRemittal?: string;
+  remittalDocuments?: RemittalDetails[];
+
 }
 
 interface Hearing {
@@ -404,8 +406,7 @@ interface AppealType {
 }
 
 interface IdamDetails {
-  uid?: string;
-  id?: string;
+  uid: string;
   name: string;
   given_name: string;
   family_name: string;
@@ -467,4 +468,10 @@ interface DecisionAndReasons {
   dateDocumentAndReasonsDocumentUploaded?: string;
   documentAndReasonsDocument?: Evidence;
   summariseChanges?: string;
+}
+
+interface RemittalDetails {
+  id: string;
+  decisionDocument: Evidence;
+  otherRemittalDocs?: Evidence[];
 }

@@ -220,5 +220,5 @@ export const Events = {
     id: 'markAppealAsRemitted',
     summary: 'Mark appeal as remitted',
     description: 'Mark appeal as remitted'
-  },
+  }
 };

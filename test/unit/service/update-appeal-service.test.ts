@@ -1304,6 +1304,24 @@ describe('update-appeal-service', () => {
     });
   });
 
+  describe('remissionRejectedDatePlus14days and amountLeftToPay mappings', () => {
+    const caseData: Partial<CaseData> = {
+      'remissionRejectedDatePlus14days': '2022-01-26',
+      'amountLeftToPay': '4000'
+    };
+
+    const appeal: Partial<CcdCaseDetails> = {
+      case_data: caseData as CaseData
+    };
+
+    it('should map remissionRejectedDatePlus14days and amountLeftToPay', () => {
+      const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+
+      expect(mappedAppeal.application.amountLeftToPay).eq('4000');
+      expect(mappedAppeal.application.remissionRejectedDatePlus14days).eq('2022-01-26');
+    });
+  });
+
   describe('submitEvent', () => {
     let expectedCaseData: Partial<CaseData>;
     let ccdService2: Partial<CcdService>;

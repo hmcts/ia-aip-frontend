@@ -10,7 +10,12 @@ import LaunchDarklyService from '../service/launchDarkly-service';
 import { getHearingCentreEmail } from '../utils/cma-hearing-details';
 import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
-import { appealHasNoRemissionOption, appealHasRemissionOption } from '../utils/remission-utils';
+import {
+  appealHasNoRemissionOption,
+  appealHasRemissionOption, getDecisionReasonRowForAppealDetails,
+  getFeeSupportStatusForAppealDetails,
+  hasFeeRemissionDecision
+} from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
   boolToYesNo,
@@ -58,8 +63,8 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
     }
 
     const address = application.personalDetails.address
-      && _.isEmpty(application.personalDetails.address)
-        ? null : application.personalDetails.address;
+    && _.isEmpty(application.personalDetails.address)
+      ? null : application.personalDetails.address;
 
     rowsCont = [
       addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateLetterSent, [formatDate(toIsoDate(application.dateLetterSent))], null),
@@ -164,6 +169,7 @@ async function getAppealDetails(req: Request): Promise<Array<any>> {
   }
   return rows;
 }
+
 async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
   const { application } = req.session.appeal;
   const nation = application.personalDetails.stateless === 'isStateless' ? 'Stateless' : countryList.find(country => country.value === application.personalDetails.nationality).name;
@@ -234,9 +240,21 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     ...(application.contactDetails.wantsSms ? [application.contactDetails.phone] : [])
   ], null, Delimiter.BREAK_LINE));
 
-// fee section
+  // fee section
   if (appealHasRemissionOption(application)) {
     await addPaymentDetails(req, application, feeDetailsRows);
+    const fee = getFee(req.session.appeal);
+    const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
+    const { paymentStatus = null } = req.session.appeal;
+    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
+    if (refundFeatureEnabled && paymentStatus === 'Paid') {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+    }
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));
+
+    if (hasFeeRemissionDecision(req)) {
+      feeDetailsRows.push(...getDecisionReasonRowForAppealDetails(req));
+    }
     if (application.remissionOption === 'asylumSupportFromHo') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [application.asylumSupportRefNumber], null));
     } else if (application.remissionOption === 'feeWaiverFromHo') {
@@ -662,16 +680,16 @@ function getRespondentApplicationDetails(application: Collection<Application<Evi
   };
 
   return decision === 'Pending'
-      ? {
-        ...options,
-        whatNextList: whatNextPending
-      } : {
-        ...options,
-        response,
-        whatNext: whatNextDecided,
-        responseTitle: i18n.pages.detailViewers.makeAnApplication.respondent.response.title,
-        responseDescription: i18n.pages.detailViewers.makeAnApplication.respondent.response.description
-      };
+    ? {
+      ...options,
+      whatNextList: whatNextPending
+    } : {
+      ...options,
+      response,
+      whatNext: whatNextDecided,
+      responseTitle: i18n.pages.detailViewers.makeAnApplication.respondent.response.title,
+      responseDescription: i18n.pages.detailViewers.makeAnApplication.respondent.response.description
+    };
 }
 
 function getAppellantApplicationDetails(application: Collection<Application<Evidence>>) {
@@ -693,8 +711,8 @@ function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection
     const questionKey = applicationType.parent ? applicationType.parent : applicationType.code;
     const decisionKey = data.decision.toLowerCase();
     const whatNextSource = data.applicant === 'Respondent'
-        ? i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext
-        : i18n.pages.detailViewers.makeAnApplication.appellant.whatNext;
+      ? i18n.pages.detailViewers.makeAnApplication.respondent.response.whatNext
+      : i18n.pages.detailViewers.makeAnApplication.appellant.whatNext;
     return whatNextSource[questionKey][decisionKey] ? whatNextSource[questionKey][decisionKey] : whatNextSource.default[decisionKey];
   }
   return null;
@@ -703,7 +721,18 @@ function getMakeAnApplicationDecisionWhatNext(makeAnApplicationEvent: Collection
 function getCmaRequirementsViewer(req: Request, res: Response, next: NextFunction) {
   try {
     let previousPage: string = paths.common.overview;
-    const { interpreter, stepFree, hearingLoop, multiEvidence, sexAppointment, privateAppointment, physicalOrMental, pastExperiences, anythingElse, dateToAvoid } = setupCmaRequirementsViewer(req);
+    const {
+      interpreter,
+      stepFree,
+      hearingLoop,
+      multiEvidence,
+      sexAppointment,
+      privateAppointment,
+      physicalOrMental,
+      pastExperiences,
+      anythingElse,
+      dateToAvoid
+    } = setupCmaRequirementsViewer(req);
     return res.render('detail-viewers/cma-requirements-details-viewer.njk', {
       previousPage: previousPage,
       interpreter: interpreter,
@@ -912,14 +941,14 @@ function getFtpaAppellantApplication(req: Request, res: Response, next: NextFunc
     const data = [];
 
     if (ftpaGrounds && ftpaGrounds.length) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ formatTextForCYA(ftpaGrounds) ]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [formatTextForCYA(ftpaGrounds)]));
     }
     attachFtpaDocuments(ftpaEvidenceDocuments, data, i18n.pages.detailViewers.ftpaApplication.evidence);
     if (ftpaAppellantApplicationDate) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat)) ]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [formatTextForCYA(moment(ftpaAppellantApplicationDate).format(dayMonthYearFormat))]));
     }
     if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length) {
-      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
+      data.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [formatTextForCYA(ftpaOutOfTimeApplicationReason)]));
     }
     attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
 
@@ -974,22 +1003,22 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
       attachFtpaDocuments(ftpaEvidenceDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.evidence);
     }
     if (ftpaApplicationDate) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat)) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat))]));
     }
     if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length && isGrantedOrPartiallyGranted) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [formatTextForCYA(ftpaOutOfTimeApplicationReason)]));
     }
     if (isGrantedOrPartiallyGranted) {
       attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
     }
     if (ftpaDecision && ftpaDecision.length) {
-      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [ formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision]) ]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision])]));
       if (ftpaSetAsideFeatureEnabled) {
         if (ftpaDecision === 'reheardRule35') {
           attachFtpaDocuments(ftpaR35RespondentDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
         } else if (ftpaDecision === 'remadeRule31' || ftpaDecision === 'remadeRule32') {
           if (ftpaRespondentDecisionRemadeRule32Text && ftpaRespondentDecisionRemadeRule32Text.length) {
-            data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decisionReasons, [ formatTextForCYA(ftpaRespondentDecisionRemadeRule32Text) ]));
+            data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decisionReasons, [formatTextForCYA(ftpaRespondentDecisionRemadeRule32Text)]));
           }
         }
       }
@@ -1001,7 +1030,7 @@ async function getFtpaRespondentDecisionDetails(req: Request, res: Response, nex
       attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
     }
     if (ftpaDecisionDate) {
-      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [ formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat)) ]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat))]));
     }
 
     return res.render('ftpa-application/ftpa-decision-details-viewer.njk', {
@@ -1037,24 +1066,24 @@ async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next
     };
 
     if (ftpaGrounds) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [ formatTextForCYA(ftpaGrounds) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.grounds, [formatTextForCYA(ftpaGrounds)]));
     }
     attachFtpaDocuments(ftpaEvidenceDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.evidence);
     if (ftpaApplicationDate) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [ formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat)) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.date, [formatTextForCYA(moment(ftpaApplicationDate).format(dayMonthYearFormat))]));
     }
     if (ftpaOutOfTimeApplicationReason && ftpaOutOfTimeApplicationReason.length) {
-      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [ formatTextForCYA(ftpaOutOfTimeApplicationReason) ]));
+      data.application.push(addSummaryRow(i18n.pages.detailViewers.ftpaApplication.outOfTimeReason, [formatTextForCYA(ftpaOutOfTimeApplicationReason)]));
     }
     attachFtpaDocuments(ftpaOutOfTimeApplicationDocuments, data.application, i18n.pages.detailViewers.ftpaApplication.outOfTimeEvidence);
     if (ftpaDecision && ftpaDecision.length) {
-      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [ formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision]) ]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decision, [formatTextForCYA(i18n.pages.detailViewers.ftpaDecision.decisionOutcomeType[ftpaDecision])]));
       if (ftpaSetAsideFeatureEnabled) {
         if (ftpaDecision === 'reheardRule35') {
           attachFtpaDocuments(ftpaR35AppellantDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
         } else if (ftpaDecision === 'remadeRule31' || ftpaDecision === 'remadeRule32') {
           if (ftpaAppellantDecisionRemadeRule32Text && ftpaAppellantDecisionRemadeRule32Text.length) {
-            data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decisionReasons, [ formatTextForCYA(ftpaAppellantDecisionRemadeRule32Text) ]));
+            data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.decisionReasons, [formatTextForCYA(ftpaAppellantDecisionRemadeRule32Text)]));
           }
         }
       }
@@ -1066,7 +1095,7 @@ async function getFtpaAppellantDecisionDetails(req: Request, res: Response, next
       attachFtpaDocuments(ftpaDecisionAndReasonsDocument, data.decision, i18n.pages.detailViewers.ftpaDecision.decisionDocument);
     }
     if (ftpaDecisionDate) {
-      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [ formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat)) ]));
+      data.decision.push(addSummaryRow(i18n.pages.detailViewers.ftpaDecision.date, [formatTextForCYA(moment(ftpaDecisionDate).format(dayMonthYearFormat))]));
     }
 
     return res.render('ftpa-application/ftpa-decision-details-viewer.njk', {

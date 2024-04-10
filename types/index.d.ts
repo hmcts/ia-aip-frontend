@@ -322,6 +322,7 @@ interface AppealApplication {
   amountLeftToPay?: string;
   remissionDecisionReason?: string;
   previousRemissionDetails?: RemissionDetails[];
+  remissionRejectedDatePlus14days?: string;
 }
 
 interface CmaRequirements {

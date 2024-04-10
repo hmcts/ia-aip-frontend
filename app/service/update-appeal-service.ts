@@ -555,6 +555,8 @@ export default class UpdateAppealService {
         lateHelpWithFeesOption: caseData.lateHelpWithFeesOption,
         lateHelpWithFeesRefNumber: caseData.lateHelpWithFeesRefNumber,
         ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) },
+        ...caseData.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: caseData.remissionRejectedDatePlus14days },
+        ...caseData.amountLeftToPay && { amountLeftToPay: caseData.amountLeftToPay },
         previousRemissionDetails: previousRemissionDetails
       },
       reasonsForAppeal: {
@@ -1153,7 +1155,9 @@ export default class UpdateAppealService {
       },
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
-      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime }
+      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime },
+      ...appeal.application.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application.remissionRejectedDatePlus14days },
+      ...appeal.application.amountLeftToPay && { amountLeftToPay: appeal.application.amountLeftToPay }
     };
     return caseData;
   }

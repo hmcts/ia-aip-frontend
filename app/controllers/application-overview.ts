@@ -22,10 +22,7 @@ function getAppealRefNumber(appealRef: string) {
 }
 
 function checkAppealEnded(appealStatus: string): boolean {
-  if (appealStatus && appealStatus.toUpperCase() === 'ENDED') {
-    return true;
-  }
-  return false;
+  return appealStatus && appealStatus.toUpperCase() === 'ENDED';
 }
 
 function getAppellantName(req: Request) {

@@ -37,7 +37,7 @@ import { expectedEventsWithCmaRequirements } from '../mockData/events/expectatio
 
 const express = require('express');
 
-describe('Detail viewer Controller', () => {
+describe('DetailViewController', () => {
   let sandbox: sinon.SinonSandbox;
   let req: Partial<Request>;
   let res: Partial<Response>;

@@ -336,6 +336,7 @@ declare namespace CodeceptJS {
     say: () => any;
     retryStep(opts: string): void;
     retries(times: number): void;
+    checkIfLogInIsSuccessful(timeout: number): Promise<boolean>;
   }
 
 }

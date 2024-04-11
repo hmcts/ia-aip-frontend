@@ -471,6 +471,11 @@ export default class UpdateAppealService {
     if (caseData.previousRemissionDetails) {
       const previousRemissionDetailsData = caseData.previousRemissionDetails || [];
       previousRemissionDetails = previousRemissionDetailsData.map(remissionDetail => {
+        let localAuthorityLetters = [];
+        if (remissionDetail.value.localAuthorityLetters && remissionDetail.value.localAuthorityLetters.length > 0) {
+          let documentMapLocalAuthorityLetters: DocumentMap[] = [];
+          localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMapLocalAuthorityLetters);
+        }
         return {
           id: remissionDetail.id,
           feeAmount: remissionDetail.value.feeAmount,
@@ -480,7 +485,9 @@ export default class UpdateAppealService {
           remissionDecision: remissionDetail.value.remissionDecision,
           asylumSupportReference: remissionDetail.value.asylumSupportReference,
           remissionDecisionReason: remissionDetail.value.remissionDecisionReason,
-          helpWithFeesReferenceNumber: remissionDetail.value.helpWithFeesReferenceNumber
+          helpWithFeesReferenceNumber: remissionDetail.value.helpWithFeesReferenceNumber,
+          helpWithFeesOption: remissionDetail.value.helpWithFeesOption,
+          localAuthorityLetters: localAuthorityLetters
         } as RemissionDetails;
       });
     }
@@ -557,7 +564,8 @@ export default class UpdateAppealService {
         ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) },
         ...caseData.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: caseData.remissionRejectedDatePlus14days },
         ...caseData.amountLeftToPay && { amountLeftToPay: caseData.amountLeftToPay },
-        previousRemissionDetails: previousRemissionDetails
+        previousRemissionDetails: previousRemissionDetails,
+        remissionDecisionReason: caseData.remissionDecisionReason
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -1155,9 +1163,7 @@ export default class UpdateAppealService {
       },
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
-      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime },
-      ...appeal.application.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application.remissionRejectedDatePlus14days },
-      ...appeal.application.amountLeftToPay && { amountLeftToPay: appeal.application.amountLeftToPay }
+      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime }
     };
     return caseData;
   }

@@ -490,4 +490,6 @@ interface RemissionDetails {
   asylumSupportReference?: string;
   remissionDecisionReason?: string;
   helpWithFeesReferenceNumber?: string;
+  helpWithFeesOption?: string;
+  localAuthorityLetters?: Evidence[];
 }

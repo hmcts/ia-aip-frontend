@@ -309,9 +309,11 @@
         "localAuthorityLetter": "Local Authority letter",
         "helpWithFeesReferenceNumber": "Help with fees reference number",
         "amountToRefund": "Amount to refund",
+        "feeToRefund": "Fee to refund",
         "paymentStatus": "Payment status",
         "reasonForDecision": "Reason for decision",
-        "feeToPay": "Fee to pay"
+        "feeToPay": "Fee to pay",
+        "dateOfApplication": "Date of application"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",

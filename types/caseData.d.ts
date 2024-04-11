@@ -201,6 +201,7 @@ interface CaseData {
   previousRemissionDetails?: RemissionDetailsCollection[];
   remissionRejectedDatePlus14days?: string;
   amountLeftToPay?: string;
+  remissionDecisionReason?: string;
 }
 
 interface Application<T> {
@@ -342,10 +343,10 @@ interface DynamicList {
 
 interface RemissionDetailsCollection {
   id?: number | string;
-  value?: RemissionDetails;
+  value?: RemissionDetailsData;
 }
 
-interface RemissionDetails {
+interface RemissionDetailsData {
   feeAmount?: string;
   amountRemitted?: string;
   amountLeftToPay?: string;
@@ -354,4 +355,6 @@ interface RemissionDetails {
   asylumSupportReference?: string;
   remissionDecisionReason?: string;
   helpWithFeesReferenceNumber?: string;
+  helpWithFeesOption?: string;
+  localAuthorityLetters?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
 }

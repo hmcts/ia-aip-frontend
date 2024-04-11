@@ -1,0 +1,16 @@
+.govuk-summary-history {
+  border: 1px solid #bfc1c3;
+  margin-bottom: 35px;
+}
+.govuk-summary-history-header {
+  background-color: #f3f2f1;
+  > div {
+    padding: 12px 20px;
+  }
+}
+.govuk-summary-history-body {
+  padding: 0px 20px;
+  .govuk-summary-list__row:last-child {
+    border-bottom: none;
+  }
+}

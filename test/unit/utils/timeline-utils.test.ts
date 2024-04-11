@@ -783,6 +783,7 @@ describe('timeline-utils', () => {
       req.session.appeal.paymentStatus = 'Paid';
       req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
       req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
+      req.session.appeal.application.isLateRemissionRequest = true;
 
       const fakeUpdateAppealService = {
         getAuthenticationService: sinon.stub().returns({
@@ -826,6 +827,7 @@ describe('timeline-utils', () => {
       req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
       req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
       req.session.appeal.application.remissionDecision = 'approved';
+      req.session.appeal.application.isLateRemissionRequest = true;
 
       const fakeUpdateAppealService = {
         getAuthenticationService: sinon.stub().returns({

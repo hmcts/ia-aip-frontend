@@ -218,20 +218,6 @@ describe('Type of appeal Controller', () => {
         questionId: '2'
       });
     });
-
-    it('should catch exception and call next with the error if question ID too large', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(null, 'aip-ooc-feature', false).resolves(false);
-      req.body = {
-        questionId: '1000000000000000000'
-      };
-      req.session.eligibility = {};
-
-      const expectedErr = sinon.match.instanceOf(RangeError)
-          .and(sinon.match.has('message', 'Question ID is out of range'));
-
-      await eligibilityQuestionPost(req as Request, res as Response, next);
-      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
-    });
   });
 
   describe('getEligible', () => {
@@ -257,12 +243,21 @@ describe('Type of appeal Controller', () => {
       expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });
 
+    it('should catch exception and call next with the error if question ID too large', function () {
+      req.session.eligibility = {};
+      req.body.questionId = '100000000000000000000';
+      const expectedErr = sinon.match.instanceOf(RangeError)
+          .and(sinon.match.has('message', 'Question ID is out of range'));
+      getEligible(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
+    });
+
     it('should catch exception and call next with the error if ID too large', function () {
       req.session.eligibility = {};
       req.query = { id: '1000000000000' };
       const expectedErr = sinon.match.instanceOf(RangeError)
           .and(sinon.match.has('message', 'ID is out of range'));
-      eligibilityQuestionPost(req as Request, res as Response, next);
+      getEligible(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });
 

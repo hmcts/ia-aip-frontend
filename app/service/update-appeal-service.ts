@@ -538,7 +538,8 @@ export default class UpdateAppealService {
         lateHelpWithFeesRefNumber: caseData.lateHelpWithFeesRefNumber,
         ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) },
         ...caseData.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: caseData.remissionRejectedDatePlus14days },
-        ...caseData.amountLeftToPay && { amountLeftToPay: caseData.amountLeftToPay }
+        ...caseData.amountLeftToPay && { amountLeftToPay: caseData.amountLeftToPay },
+        isLateRemissionRequest: caseData.isLateRemissionRequest ? yesNoToBool(caseData.isLateRemissionRequest) : undefined
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -754,6 +755,7 @@ export default class UpdateAppealService {
       caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
       caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
+      caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
 
       caseData.remissionDecision = null;
       if (appeal.application.remissionDecision) {

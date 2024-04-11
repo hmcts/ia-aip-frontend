@@ -8,11 +8,12 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
-import { appealHasRemissionOption } from './remission-utils';
+import { appealHasRemissionOption, paymentForAppealHasBeenMade } from './remission-utils';
 import {
   getAppellantApplications,
   getApplicant,
-  getFtpaApplicantType, getLatestUpdateRemissionDecionsEventHistory,
+  getFtpaApplicantType,
+  getLatestUpdateRemissionDecionsEventHistory,
   getLatestUpdateTribunalDecisionHistory,
   isFtpaFeatureEnabled,
   isNonStandardDirectionEnabled,
@@ -254,7 +255,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   let appealRemissionDecisionSection: any[];
   let argumentSection: any[];
 
-  if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application)) {
+  if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && application.isLateRemissionRequest) {
     const remissionEvent = [{
       date: moment(paymentDate).format('DD MMMM YYYY'),
       dateObject: new Date(paymentDate),
@@ -263,7 +264,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
     appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
       .sort((a: any, b: any) => b.dateObject - a.dateObject);
-  } else if (paymentStatus === 'Paid') {
+  } else if (paymentStatus === 'Paid' && paymentForAppealHasBeenMade(req)) {
     paymentEvent = [{
       date: moment(paymentDate).format('DD MMMM YYYY'),
       dateObject: new Date(paymentDate),
@@ -284,7 +285,11 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
       links: i18n.pages.overviewPage.timeline.feeRemissionDecision.links
     }];
 
-    appealRemissionDecisionSection = decisionRemissionEvent.concat(appealRemissionSection);
+    if (appealRemissionSection) {
+      appealRemissionDecisionSection = decisionRemissionEvent.concat(appealRemissionSection);
+    } else {
+      appealRemissionDecisionSection = decisionRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);
+    }
   }
 
   const updatedTribunalDecisionHistory = getUpdateTribunalDecisionHistory(req, ftpaSetAsideFeatureEnabled);

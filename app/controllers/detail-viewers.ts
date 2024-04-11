@@ -12,8 +12,10 @@ import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
 import {
   appealHasNoRemissionOption,
-  appealHasRemissionOption, getDecisionReasonRowForAppealDetails,
+  appealHasRemissionOption,
+  getDecisionReasonRowForAppealDetails,
   getFeeSupportStatusForAppealDetails,
+  getPaymentStatusRow,
   hasFeeRemissionDecision
 } from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
@@ -246,8 +248,8 @@ async function getAppealDlrmFeeRemissionDetails(req: Request): Promise<any> {
     const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
     const { paymentStatus = null } = req.session.appeal;
     feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-    if (refundFeatureEnabled && paymentStatus === 'Paid') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+    if (refundFeatureEnabled) {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [getPaymentStatusRow(req)], null));
     }
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));
 

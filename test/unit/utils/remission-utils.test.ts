@@ -2,8 +2,12 @@ import { Request } from 'express';
 import Logger from '../../../app/utils/logger';
 import {
   appealHasNoRemissionOption,
-  appealHasRemissionOption, getDecisionReasonRowForAppealDetails, getFeeSupportStatusForAppealDetails,
-  hasFeeRemissionDecision
+  appealHasRemissionOption,
+  getDecisionReasonRowForAppealDetails,
+  getFeeSupportStatusForAppealDetails,
+  getPaymentStatusRow,
+  hasFeeRemissionDecision,
+  paymentForAppealHasBeenMade
 } from '../../../app/utils/remission-utils';
 import { addSummaryRow } from '../../../app/utils/summary-list';
 import i18n from '../../../locale/en.json';
@@ -200,10 +204,10 @@ describe('Remission fields utils', () => {
     ];
 
     testData.forEach(({
-                                   remissionDecision,
-                                   expectedResponse,
-                                   description
-                                 }) => {
+                        remissionDecision,
+                        expectedResponse,
+                        description
+                      }) => {
       it(`should be ${description}`, () => {
         appeal.application.remissionDecision = remissionDecision;
         expect(getFeeSupportStatusForAppealDetails(req)).to.be.deep.equal(expectedResponse);
@@ -252,4 +256,120 @@ describe('Remission fields utils', () => {
     });
   });
 
+  it('paymentForAppealHasBeenMade', () => {
+    const { appeal } = req.session;
+    appeal.history = [
+      {
+        'id': 'recordRemissionDecision',
+        'createdDate': '2024-03-07T15:36:26.099'
+      },
+      {
+        'id': 'recordRemissionDecision',
+        'createdDate': '2024-04-07T15:36:26.099'
+      },
+      {
+        'id': 'updateTribunalDecision',
+        'createdDate': '2024-03-07T15:36:26.099'
+      }
+    ] as HistoryEvent[];
+
+    const testData = [
+      {
+        history: [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2024-03-07T15:36:26.099'
+          },
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2024-04-07T15:36:26.099'
+          },
+          {
+            'id': 'updateTribunalDecision',
+            'createdDate': '2024-03-07T15:36:26.099'
+          }
+        ] as HistoryEvent[],
+        expectedResponse: false,
+        description: 'False'
+      },
+      {
+        history: [
+          {
+            'id': 'paymentAppeal',
+            'createdDate': '2024-03-07T15:36:26.099'
+          }
+        ] as HistoryEvent[],
+        expectedResponse: true,
+        description: 'True'
+      }];
+
+    testData.forEach(({
+                        history,
+                        expectedResponse,
+                        description
+                      }) => {
+      it(`should be ${description}`, () => {
+        expect(paymentForAppealHasBeenMade(req)).to.be.deep.equal(expectedResponse);
+      });
+    });
+  });
+
+  it('getPaymentStatusRow', () => {
+    const { appeal } = req.session;
+    appeal.paymentStatus = 'Paid';
+    const testData = [
+      {
+        remissionDecision: 'approved',
+        history: [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2024-04-07T15:36:26.099'
+          }
+        ] as HistoryEvent[],
+        response: 'No payment needed',
+        description: 'No payment needed'
+      },
+      {
+        remissionDecision: 'partiallyApproved',
+        history: [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2024-04-07T15:36:26.099'
+          }
+        ] as HistoryEvent[],
+        response: 'Not paid',
+        description: 'Not paid'
+      },
+      {
+        remissionDecision: 'partiallyApproved',
+        history: [
+          {
+            'id': 'rejected',
+            'createdDate': '2024-04-07T15:36:26.099'
+          }
+        ] as HistoryEvent[],
+        response: 'Not paid',
+        description: 'Not paid'
+      },
+      {
+        remissionDecision: null,
+        history: null,
+        response: 'Paid',
+        description: 'Paid'
+      }
+    ];
+
+    testData.forEach(({
+                        remissionDecision,
+                        history,
+                        response,
+                        description
+                      }) => {
+      it(`should be ${description}`, () => {
+        appeal.application.remissionDecision = remissionDecision;
+        appeal.history = history;
+        expect(getPaymentStatusRow(req)).to.be.deep.equal(response);
+      });
+    });
+  });
 });

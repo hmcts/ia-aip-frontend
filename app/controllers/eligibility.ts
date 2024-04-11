@@ -44,7 +44,7 @@ async function eligibilityQuestionGet(req: Request, res: Response, next: NextFun
 async function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction) {
   try {
     const questionId = req.body.questionId;
-    if (questionId !== undefined && parseInt(questionId.toString()) > 10000000) {
+    if (questionId !== undefined && Number(questionId.toString()) > 10000000) {
       throw RangeError('Question ID is out of range');
     }
     const answer = req.body.answer;

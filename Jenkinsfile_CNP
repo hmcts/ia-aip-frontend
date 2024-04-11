@@ -1,8 +1,12 @@
 #!groovy
-properties(
-    [[$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
-     pipelineTriggers([[$class: 'GitHubPushTrigger']])]
-)
+properties([
+    [$class: 'GithubProjectProperty', projectUrlStr: 'https://github.com/hmcts/ia-aip-frontend'],
+     pipelineTriggers([[$class: 'GitHubPushTrigger']
+     ]),
+    parameters([
+        string(name: 'ZAP_URL_EXCLUSIONS', defaultValue: "-config globalexcludeurl.url_list.url\\(1\\).regex=\\'.*/assets/images.*\\' -config globalexcludeurl.url_list.url\\(2\\).regex=\\'.*/assets/stylesheets.*\\' -config globalexcludeurl.url_list.url\\(3\\).regex=\\'.*/assets/javascripts.*\\' -config globalexcludeurl.url_list.url\\(4\\).regex='^https?:\\/\\/.*\\/(?:.*ruxitagentjs.*)+\$' -config globalexcludeurl.url_list.url\\(5\\).regex=\\'.*terms-and-conditions.*\\' -config globalexcludeurl.url_list.url\\(6\\).regex=\\'.*privacy-policy.*\\' -config globalexcludeurl.url_list.url\\(7\\).regex=\\'.*/contact-us.*\\' -config globalexcludeurl.url_list.url\\(8\\).regex=\\'.*/login.*\\' -config globalexcludeurl.url_list.url\\(9\\).regex=\\'.*/cookies.*\\' -config globalexcludeurl.url_list.url\\(10\\).regex=\\'.*/cookie-preferences.*\\' -config globalexcludeurl.url_list.url\\(11\\).regex=\\'.*/robots.txt\\' -config globalexcludeurl.url_list.url\\(12\\).regex=\\'.*/sitemap.*\\' -config globalexcludeurl.url_list.url\\(13\\).regex=\\'.*jquery-3.4.1.min.js\\'")
+    ])
+])
 
 @Library("Infrastructure")
 
@@ -45,6 +49,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+def urlExclusions = params.ZAP_URL_EXCLUSIONS
 
 withPipeline("nodejs", product, component) {
 
@@ -55,6 +60,7 @@ withPipeline("nodejs", product, component) {
 
   enableAksStagingDeployment()
   disableLegacyDeployment()
+  enableSecurityScan(urlExclusions: urlExclusions, scanType: "frontend")
 
   env.S2S_MICROSERVICE_NAME = 'iac'
   env.S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'

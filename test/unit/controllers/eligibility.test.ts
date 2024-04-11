@@ -243,6 +243,24 @@ describe('Type of appeal Controller', () => {
       expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });
 
+    it('should catch exception and call next with the error if question ID too large', function () {
+      req.session.eligibility = {};
+      req.body.questionId = '100000000000000000000';
+      const expectedErr = sinon.match.instanceOf(RangeError)
+          .and(sinon.match.has('message', 'Question ID is out of range'));
+      getEligible(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
+    });
+
+    it('should catch exception and call next with the error if ID too large', function () {
+      req.session.eligibility = {};
+      req.query = { id: '1000000000000' };
+      const expectedErr = sinon.match.instanceOf(RangeError)
+          .and(sinon.match.has('message', 'ID is out of range'));
+      getEligible(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
+    });
+
     it('should redirect to first question if the users has gone directly to the eligible page', () => {
       getEligible(req as Request, res as Response, next);
       expect(res.redirect).to.have.been.calledWith(paths.common.questions);
@@ -278,6 +296,15 @@ describe('Type of appeal Controller', () => {
           previousPage: `${paths.common.questions}?id=0`
         }
       );
+    });
+
+    it('should catch exception and call next with the error if ID too large', async function () {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, 'aip-ooc-feature', false).resolves(true);
+      req.query = { id: '1000000000000' };
+      const expectedErr = sinon.match.instanceOf(RangeError)
+          .and(sinon.match.has('message', 'ID is out of range'));
+      await getIneligible(req as Request, res as Response, next);
+      expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });
 
     it('should catch exception and call next with the error', async function () {

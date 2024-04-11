@@ -44,6 +44,9 @@ async function eligibilityQuestionGet(req: Request, res: Response, next: NextFun
 async function eligibilityQuestionPost(req: Request, res: Response, next: NextFunction) {
   try {
     const questionId = req.body.questionId;
+    if (questionId != undefined && parseInt(questionId.toString()) > 10000000) {
+      throw RangeError('Question ID is out of range')
+    }
     const answer = req.body.answer;
     const i18nEligibility = await getI18nEligibility();
     const validation = yesOrNoRequiredValidation(req.body, i18nEligibility[questionId].errorMessage);
@@ -88,7 +91,9 @@ function getEligible(req: Request, res: Response, next: NextFunction) {
       req.session.eligibility = {};
       return res.redirect(paths.common.questions);
     }
-
+    if (req.query.id != undefined && parseInt(req.query.id.toString()) > 10000000) {
+      throw RangeError('ID is out of range')
+    }
     res.render('eligibility/eligible-page.njk', {
       previousPage: `${paths.common.questions}?id=${req.query.id}`
     });
@@ -101,6 +106,9 @@ async function getIneligible(req: Request, res: Response, next: NextFunction) {
   try {
     const i18nIneligible = await getI18nIneligible();
     const questionId: string = req.query.id as string;
+    if (req.query.id != undefined && parseInt(req.query.id.toString()) > 10000000) {
+      throw RangeError('ID is out of range')
+    }
     res.render('eligibility/ineligible-page.njk', {
       ...i18nIneligible[questionId],
       previousPage: `${paths.common.questions}?id=${req.query.id}`

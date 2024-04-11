@@ -89,6 +89,7 @@ function configureHelmet(app) {
     directives: {
       defaultSrc: [ '\'self\'' ],
       fontSrc: [ '\'self\' data:' ],
+      'form-action': [ '\'self\'', '*/start-representing-yourself/confirm-case-details' ],
       scriptSrc: [
         '\'self\'',
         '\'unsafe-inline\'',

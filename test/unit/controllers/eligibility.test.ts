@@ -262,7 +262,7 @@ describe('Type of appeal Controller', () => {
       req.query = { id: '1000000000000' };
       const expectedErr = sinon.match.instanceOf(RangeError)
           .and(sinon.match.has('message', 'ID is out of range'));
-      eligibilityQuestionPost(req as Request, res as Response, next);
+      getEligible(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWithMatch(sinon.match(expectedErr));
     });
 

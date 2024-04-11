@@ -163,7 +163,7 @@
     "launchdarkly-node-server-sdk/async": "^3.2.2",
     "terser-webpack-plugin/terser": "^4.8.1",
     "dyson/lodash": "^4.17.21",
-    "codeceptjs/axios": "^0.21.2",
+    "codeceptjs/axios": "^0.28.0",
     "browserify-sign": "^4.2.2",
     "copy-webpack-plugin/glob-parent": "^5.1.2",
     "sauce-connect-launcher/async": "^2.6.4",

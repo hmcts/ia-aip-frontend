@@ -88,7 +88,7 @@ function configureHelmet(app) {
   app.use(helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: [ '\'self\'' ],
-      'form-action': 'self',
+      'form-action': [ '\'self\'' ],
       fontSrc: [ '\'self\' data:' ],
       scriptSrc: [
         '\'self\'',

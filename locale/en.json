@@ -1234,6 +1234,9 @@
               "The Tribunal will contact you when the review of your appeal decision is complete."
             ]
           }
+        },
+        "remitted": {
+          "decision": "The {{ applicationNextStep.sourceOfRemittal }} has decided that this appeal will be heard again by the First-tier Tribunal. <br><br> <a href={{ paths.common.remittalDocumentsViewer }}>See the {{ applicationNextStep.sourceOfRemittal }} documents</a> <br><br> <b>What happens next</b> <br><br> There will be a new hearing for this appeal. The Tribunal will contact you to let you know what to do next. <br><br> You can <a href={{ paths.common.provideMoreEvidenceForm }}>provide more evidence for this appeal</a> to the Tribunal, if you have it."
         }
       },
       "timeline": {
@@ -1669,6 +1672,29 @@
               ]
             }
           }
+        },
+        "markAppealAsRemitted": {
+          "Upper Tribunal": {
+            "text": "The Upper Tribunal decided the appeal will be heard again by the First-tier Tribunal.",
+            "links": [
+              {
+                "title": "Useful documents",
+                "text": "Upper Tribunal documents",
+                "href": "{{ paths.common.remittalDocumentsViewer }}"
+              }
+            ]
+          },
+          "Court of Appeal": {
+            "text": "The Court of Appeal decided the appeal will be heard again by the First-tier Tribunal.",
+            "links": [
+              {
+                "title": "Useful documents",
+                "text": "Court of Appeal documents",
+                "href": "{{ paths.common.remittalDocumentsViewer }}"
+              }
+            ]
+          }
+          
         }
       }
     },
@@ -1688,6 +1714,13 @@
       },
       "hoDocuments": {
         "title": "Home Office documents about your case"
+      },
+      "remittalDocuments": {
+        "title": "Remittal documents",
+        "subtitle": "Remittal documents ",
+        "dateUploadedLabel": "Date uploaded",
+        "documentLabel": "Document",
+        "documentDescriptionLabel": "Document description"
       },
       "reasonsForAppealCheckAnswersHistory": {
         "title": "Why you think the Home Office is wrong",

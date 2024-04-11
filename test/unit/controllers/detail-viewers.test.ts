@@ -19,7 +19,9 @@ import {
   getMakeAnApplicationViewer,
   getNoticeEndedAppeal,
   getOutOfTimeDecisionViewer,
-  getReasonsForAppealViewer, getRespondentApplicationSummaryRows,
+  getReasonsForAppealViewer,
+  getRemittalDocumentsViewer,
+  getRespondentApplicationSummaryRows,
   getUpdatedDecisionAndReasonsViewer,
   getUpdatedTribunalDecisionWithRule32Viewer,
   setupCmaRequirementsViewer,
@@ -4165,6 +4167,116 @@ describe('Detail viewer Controller', () => {
         res.render = sandbox.stub().throws(error);
 
         await getUpdatedDecisionAndReasonsViewer(req as Request, res as Response, next);
+        expect(next).to.have.been.calledWith(error);
+      });
+    });
+  });
+
+  describe('should render remittal documents page', () => {
+    const remittalDocuments: RemittalDetails[] = [
+      {
+        id: '1',
+        decisionDocument: {
+          fileId: '6fc7d1fd-f9c3-418f-a767-ba5c00c0863f',
+          name: 'CA-2023-000001-Decision-to-remit.pdf',
+          dateUploaded: '2024-04-08'
+        },
+        otherRemittalDocs: [
+          {
+            id: '1',
+            fileId: '7a1e760b-670f-4029-bcb3-17c640971a1f',
+            name: 'upload-test-other-remittal-doc.pdf',
+            dateUploaded: '2024-04-08',
+            description: 'Test description 1'
+          }
+        ]
+      },
+      {
+        id: '2',
+        decisionDocument: {
+          fileId: '6fc7d1fd-f9c3-418f-a767-ba5c00c08635',
+          name: 'CA-2023-000002-Decision-to-remit.pdf',
+          dateUploaded: '2024-04-08'
+        },
+        otherRemittalDocs: [
+          {
+            id: '1',
+            fileId: '7a1e760b-670f-4029-bcb3-17c640971a15',
+            name: 'upload-test-other-remittal-doc.pdf',
+            dateUploaded: '2024-04-08',
+            description: 'Test description 2'
+          }
+        ]
+      }
+    ];
+    it('should render templates/details-viewer-remittal.njk with remittal documents collection', async () => {
+      req.session.appeal.remittalDocuments = remittalDocuments;
+      const expectedSummaryList: SummaryList[] = [
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
+              value: { html: '08 April 2024' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c0863f'>CA-2023-000001-Decision-to-remit.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
+              value: { html: '08 April 2024' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/7a1e760b-670f-4029-bcb3-17c640971a1f'>upload-test-other-remittal-doc.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel },
+              value: { html: 'Test description 1' }
+            }
+          ],
+          title: i18n.pages.detailViewers.remittalDocuments.subtitle + '1'
+        },
+        {
+          summaryRows: [
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
+              value: { html: '08 April 2024' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/6fc7d1fd-f9c3-418f-a767-ba5c00c08635'>CA-2023-000002-Decision-to-remit.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.dateUploadedLabel },
+              value: { html: '08 April 2024' }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentLabel },
+              value: { html: `<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/7a1e760b-670f-4029-bcb3-17c640971a15'>upload-test-other-remittal-doc.pdf</a>` }
+            },
+            {
+              key: { text: i18n.pages.detailViewers.remittalDocuments.documentDescriptionLabel },
+              value: { html: 'Test description 2' }
+            }
+          ],
+          title: i18n.pages.detailViewers.remittalDocuments.subtitle + '2'
+        }
+      ];
+
+      await getRemittalDocumentsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-viewer-remittal.njk', {
+        title: i18n.pages.detailViewers.remittalDocuments.title,
+        remittalDocs: expectedSummaryList,
+        previousPage: paths.common.overview
+      });
+
+      it('should catch error and call next with it', async () => {
+        req.session.appeal.remittalDocuments = remittalDocuments;
+        const error = new Error('an error');
+        res.render = sandbox.stub().throws(error);
+
+        await getRemittalDocumentsViewer(req as Request, res as Response, next);
         expect(next).to.have.been.calledWith(error);
       });
     });

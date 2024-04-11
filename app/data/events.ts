@@ -215,5 +215,10 @@ export const Events = {
     id: 'decideFtpaApplication',
     summary: 'Decide FTPA application',
     description: 'Decide FTPA application'
+  },
+  MARK_APPEAL_AS_REMITTED: {
+    id: 'markAppealAsRemitted',
+    summary: 'Mark appeal as remitted',
+    description: 'Mark appeal as remitted'
   }
 };

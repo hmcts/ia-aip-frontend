@@ -202,6 +202,7 @@ interface CaseData {
   remissionRejectedDatePlus14days?: string;
   amountLeftToPay?: string;
   remissionDecisionReason?: string;
+  isLateRemissionRequest?: string;
 }
 
 interface Application<T> {

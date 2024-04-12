@@ -12,9 +12,12 @@ import { dayMonthYearFormat, formatDate } from '../utils/date-utils';
 import { getFee } from '../utils/payments-utils';
 import {
   appealHasNoRemissionOption,
-  appealHasRemissionOption, getDecisionReasonRowForAppealDetails,
+  appealHasRemissionOption,
+  getDecisionReasonRowForAppealDetails,
   getFeeSupportStatusForAppealDetails,
-  hasFeeRemissionDecision
+  getPaymentStatusRow,
+  hasFeeRemissionDecision,
+  paymentForAppealHasBeenMade
 } from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
 import {
@@ -280,12 +283,10 @@ async function addPaymentDetails(req: Request, application: AppealApplication, f
   const { paymentStatus = null } = req.session.appeal;
   feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
 
-  if (refundFeatureEnabled && paymentStatus === 'Paid') {
-    if (application.remissionDecision === 'approved' || application.remissionDecision === 'partiallyApproved') {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, ['To be refunded'], null));
-    } else {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
-    }
+  if (refundFeatureEnabled) {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [getPaymentStatusRow(req)], null));
+  }
+  if (refundFeatureEnabled && paymentForAppealHasBeenMade(req)) {
     if (application.remissionDecision === 'approved') {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
         ['Fee support request granted'], null));
@@ -301,7 +302,7 @@ async function addPaymentDetails(req: Request, application: AppealApplication, f
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
     }
   } else {
-    if (refundFeatureEnabled && paymentStatus !== 'Paid') {
+    if (refundFeatureEnabled && !paymentForAppealHasBeenMade(req)) {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
     }
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));

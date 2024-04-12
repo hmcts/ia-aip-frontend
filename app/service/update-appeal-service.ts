@@ -565,7 +565,8 @@ export default class UpdateAppealService {
         ...caseData.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: caseData.remissionRejectedDatePlus14days },
         ...caseData.amountLeftToPay && { amountLeftToPay: caseData.amountLeftToPay },
         previousRemissionDetails: previousRemissionDetails,
-        remissionDecisionReason: caseData.remissionDecisionReason
+        remissionDecisionReason: caseData.remissionDecisionReason,
+        isLateRemissionRequest: caseData.isLateRemissionRequest ? yesNoToBool(caseData.isLateRemissionRequest) : undefined
       },
       reasonsForAppeal: {
         applicationReason: caseData.reasonsForAppealDecision,
@@ -781,6 +782,7 @@ export default class UpdateAppealService {
       caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
 
       caseData.refundRequested = appeal.application.refundRequested ? YesOrNo.YES : YesOrNo.NO;
+      caseData.isLateRemissionRequest = appeal.application.isLateRemissionRequest ? YesOrNo.YES : YesOrNo.NO;
 
       caseData.remissionDecision = null;
       if (appeal.application.remissionDecision) {
@@ -1163,7 +1165,9 @@ export default class UpdateAppealService {
       },
       ...appeal.ftpaAppellantGrounds && { ftpaAppellantGrounds: appeal.ftpaAppellantGrounds },
       ...appeal.ftpaAppellantOutOfTimeExplanation && { ftpaAppellantOutOfTimeExplanation: appeal.ftpaAppellantOutOfTimeExplanation },
-      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime }
+      ...appeal.ftpaAppellantSubmissionOutOfTime && { ftpaAppellantSubmissionOutOfTime: appeal.ftpaAppellantSubmissionOutOfTime },
+      ...appeal.application.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: appeal.application.remissionRejectedDatePlus14days },
+      ...appeal.application.amountLeftToPay && { amountLeftToPay: appeal.application.amountLeftToPay }
     };
     return caseData;
   }

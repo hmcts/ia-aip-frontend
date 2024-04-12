@@ -173,7 +173,8 @@ describe('update-appeal-service', () => {
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
       isHearingLoopNeeded: 'true',
-      hearingCentre: 'birmingham'
+      hearingCentre: 'birmingham',
+
     };
 
   });
@@ -1240,6 +1241,61 @@ describe('update-appeal-service', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
 
         expect(mappedAppeal.rule32NoticeDocs.name).eq('rule32.pdf');
+      });
+    });
+
+    describe('previousRemissionDetails', () => {
+      const caseData: Partial<CaseData> = {
+        previousRemissionDetails:
+        [{
+          id: '1',
+          value: {
+            feeAmount: '2000',
+            amountRemitted: '1000',
+            amountLeftToPay: '1000',
+            feeRemissionType: 'type1',
+            remissionDecision: 'decission1',
+            asylumSupportReference: 'refNumber1',
+            remissionDecisionReason: 'decission',
+            helpWithFeesReferenceNumber: 'refNumber2',
+            helpWithFeesOption: 'helpOption',
+            localAuthorityLetters: [
+              {
+                id: 'fa35dcae-ae4c-462d-9cce-6878326875b0',
+                value: {
+                  tag: 'additionalEvidence',
+                  document: {
+                    document_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4',
+                    document_filename: '1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf',
+                    document_binary_url: 'http://dm-store:4506/documents/02f4b97c-0dfa-49b1-9262-a6cbd399a7c4/binary'
+                  },
+                  dateUploaded: ''
+                }
+              }
+            ]
+          } as RemissionDetailsData
+        }] as RemissionDetailsCollection[]
+      };
+
+      const appeal: Partial<CcdCaseDetails> = {
+        case_data: caseData as CaseData
+      };
+      it.only('should map previousRemissionDetails', () => {
+        const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
+        expect(mappedAppeal.application.previousRemissionDetails[0].id).to.be.equals('1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].feeAmount).to.be.equals('2000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].amountRemitted).to.be.equals('1000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].amountLeftToPay).to.be.equals('1000');
+        expect(mappedAppeal.application.previousRemissionDetails[0].feeRemissionType).to.be.equals('type1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecision).to.be.equals('decission1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].asylumSupportReference).to.be.equals('refNumber1');
+        expect(mappedAppeal.application.previousRemissionDetails[0].remissionDecisionReason).to.be.equals('decission');
+        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesReferenceNumber).to.be.equals('refNumber2');
+        expect(mappedAppeal.application.previousRemissionDetails[0].helpWithFeesOption).to.be.equals('helpOption');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].id).to.be.equals('fa35dcae-ae4c-462d-9cce-6878326875b0');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].name).to.be.equals('1135444116_9abd250e95f14a43b5c42d9f72547779-280823-1412-88.pdf');
+        expect(mappedAppeal.application.previousRemissionDetails[0].localAuthorityLetters[0].tag).to.be.equals('additionalEvidence');
+
       });
     });
 

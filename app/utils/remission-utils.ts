@@ -54,6 +54,8 @@ function getDecisionReasonRowForAppealDetails(req: Request) {
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
           [i18n.pages.overviewPage.doThisNext.remissionDecided.refusedDecisionReason], null)
       ];
+    default:
+      return [];
   }
 }
 

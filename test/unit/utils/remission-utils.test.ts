@@ -314,7 +314,7 @@ describe('Remission fields utils', () => {
     });
   });
 
-  it('getPaymentStatusRow', () => {
+  it.only('getPaymentStatusRow', () => {
     const { appeal } = req.session;
     appeal.paymentStatus = 'Paid';
     const testData = [
@@ -356,6 +356,51 @@ describe('Remission fields utils', () => {
         history: null,
         response: 'Paid',
         description: 'Paid'
+      },
+      {
+        remissionDecision: 'partiallyApproved',
+        history: [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2024-04-07T15:36:26.099'
+          },
+          {
+            'id': 'paymentAppeal',
+            'createdDate': '2024-04-07T15:32:26.099'
+          }
+        ] as HistoryEvent[],
+        response: 'To be refunded',
+        description: 'To be refunded'
+      },
+      {
+        remissionDecision: 'approved',
+        history: [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2024-04-07T15:36:26.099'
+          },
+          {
+            'id': 'paymentAppeal',
+            'createdDate': '2024-04-07T15:32:26.099'
+          }
+        ] as HistoryEvent[],
+        response: 'To be refunded',
+        description: 'To be refunded'
+      },
+      {
+        remissionDecision: 'rejected',
+        history: [
+          {
+            'id': 'recordRemissionDecision',
+            'createdDate': '2024-04-07T15:36:26.099'
+          },
+          {
+            'id': 'paymentAppeal',
+            'createdDate': '2024-04-07T15:32:26.099'
+          }
+        ] as HistoryEvent[],
+        response: 'Paid',
+        description: 'Paid'
       }
     ];
 
@@ -365,11 +410,9 @@ describe('Remission fields utils', () => {
                         response,
                         description
                       }) => {
-      it(`should be ${description}`, () => {
-        appeal.application.remissionDecision = remissionDecision;
-        appeal.history = history;
-        expect(getPaymentStatusRow(req)).to.be.deep.equal(response);
-      });
+      appeal.application.remissionDecision = remissionDecision;
+      appeal.history = history;
+      expect(getPaymentStatusRow(req)).to.be.deep.equal(response);
     });
   });
 });

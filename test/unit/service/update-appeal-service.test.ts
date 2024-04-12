@@ -1280,7 +1280,7 @@ describe('update-appeal-service', () => {
       const appeal: Partial<CcdCaseDetails> = {
         case_data: caseData as CaseData
       };
-      it.only('should map previousRemissionDetails', () => {
+      it('should map previousRemissionDetails', () => {
         const mappedAppeal = updateAppealService.mapCcdCaseToAppeal(appeal as CcdCaseDetails);
         expect(mappedAppeal.application.previousRemissionDetails[0].id).to.be.equals('1');
         expect(mappedAppeal.application.previousRemissionDetails[0].feeAmount).to.be.equals('2000');

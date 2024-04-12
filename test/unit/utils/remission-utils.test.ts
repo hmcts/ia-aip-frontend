@@ -314,7 +314,7 @@ describe('Remission fields utils', () => {
     });
   });
 
-  it.only('getPaymentStatusRow', () => {
+  it('getPaymentStatusRow', () => {
     const { appeal } = req.session;
     appeal.paymentStatus = 'Paid';
     const testData = [

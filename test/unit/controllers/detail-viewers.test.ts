@@ -605,8 +605,8 @@ describe('DetailViewController', () => {
           { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET  LONDON United Kingdom W1W 7RT' } },
           { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
         ],
-        'feeDetailsRows': [
-        ]
+        'feeDetailsRows': [],
+        'feeHistoryRows': []
       };
     });
 
@@ -658,8 +658,7 @@ describe('DetailViewController', () => {
       });
     });
 
-    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has' +
-      ' sponsor not in Uk', async () => {
+    it('should render detail-viewers/details-with-fees-viewer.njk when dlrm fee remission flag is ON and has sponsor not in Uk', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
 
       expectedSummaryRowsWithDlrmFeeRemission.aboutAppealRows[0].value.html = 'No'; // appellant in uk

@@ -16,7 +16,6 @@ import {
   getDecisionReasonRowForAppealDetails,
   getFeeSupportStatusForAppealDetails,
   getPaymentStatusRow,
-  hasFeeRemissionDecision,
   paymentForAppealHasBeenMade
 } from '../utils/remission-utils';
 import { addSummaryRow, Delimiter } from '../utils/summary-list';
@@ -301,17 +300,11 @@ async function addPaymentDetails(req: Request, application: AppealApplication, f
         ['Fee support requested refused'], null));
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
     }
-  } else {
-    if (refundFeatureEnabled && !paymentForAppealHasBeenMade(req)) {
-      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
-    }
+  } else if (refundFeatureEnabled && !paymentForAppealHasBeenMade(req)) {
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));
-
-    if (hasFeeRemissionDecision(req)) {
-      feeDetailsRows.push(...getDecisionReasonRowForAppealDetails(req));
-    }
-    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
-      ['Fee support requested'], null));
+    feeDetailsRows.push(...getDecisionReasonRowForAppealDetails(req));
+  } else {
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));
   }
 }
 
@@ -327,7 +320,7 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
   application.previousRemissionDetails.forEach((remissionDetail: RemissionDetails, index: number) => {
     const row = [];
     row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.dateOfApplication,
-      [getRecordRemissionDate(req, index)], null));
+      [getRecordRemissionDate(req, index, application.previousRemissionDetails.length)], null));
     if (remissionDetail.asylumSupportReference) {
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.asylumSupportReferenceNumber, [remissionDetail.asylumSupportReference], null));
     }
@@ -360,10 +353,12 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
   });
 }
 
-function getRecordRemissionDate(req: Request, index: number): String {
+function getRecordRemissionDate(req: Request, index: number, previousRemissionDetailsSize: number): String {
   const recordRemissionDecissionEvents = req.session.appeal.history.filter(entry => entry.id === 'recordRemissionDecision');
-  if (recordRemissionDecissionEvents.length >= index) {
+  if (recordRemissionDecissionEvents.length === previousRemissionDetailsSize) {
     return moment(recordRemissionDecissionEvents[index].createdDate).format(dayMonthYearFormat);
+  } else if (recordRemissionDecissionEvents.length > previousRemissionDetailsSize) {
+    return moment(recordRemissionDecissionEvents[index + 1].createdDate).format(dayMonthYearFormat);
   }
 }
 

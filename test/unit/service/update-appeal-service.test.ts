@@ -173,8 +173,7 @@ describe('update-appeal-service', () => {
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
       isHearingLoopNeeded: 'true',
-      hearingCentre: 'birmingham',
-
+      hearingCentre: 'birmingham'
     };
 
   });

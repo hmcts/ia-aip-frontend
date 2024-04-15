@@ -764,11 +764,9 @@ function getRemissionDecisionParagraphs(req: Request) {
           i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.feeForAppeal,
           i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.dueDate,
           i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.howToPay,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.bulletText1,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.bulletText2,
-          i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.bulletText3
+          i18n.pages.overviewPage.doThisNext.remissionDecided.partiallyApproved.bulletText
         ],
-        cta: null,
+        cta: {},
         allowedAskForMoreTime: false
       };
       doThisNextSection.feeLeftToPay = convertToAmountOfMoneyDividedBy100(req.session.appeal.application.amountLeftToPay);
@@ -781,7 +779,7 @@ function getRemissionDecisionParagraphs(req: Request) {
           i18n.pages.overviewPage.doThisNext.remissionDecided.rejected.dueDate,
           i18n.pages.overviewPage.doThisNext.remissionDecided.rejected.payForAppeal
         ],
-        cta: null,
+        cta: {},
         allowedAskForMoreTime: false
       };
       doThisNextSection.feeForAppeal = getFee(req.session.appeal).calculated_amount;

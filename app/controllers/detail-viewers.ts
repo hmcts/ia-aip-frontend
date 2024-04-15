@@ -315,7 +315,6 @@ function getAmountToRefund(calculatedAmount, amountLeftToPay) {
 async function addPreviousRemissionDetails(req: Request, application: AppealApplication, feeHistoryRows: any[]) {
   const fee = getFee(req.session.appeal);
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-  const { paymentStatus = null } = req.session.appeal;
 
   application.previousRemissionDetails.forEach((remissionDetail: RemissionDetails, index: number) => {
     const row = [];
@@ -333,7 +332,7 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
     if (remissionDetail.helpWithFeesReferenceNumber) {
       row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.helpWithFeesReferenceNumber, [remissionDetail.helpWithFeesReferenceNumber], null));
     }
-    if (refundFeatureEnabled && paymentStatus === 'Paid') {
+    if (refundFeatureEnabled) {
       if (remissionDetail.remissionDecision === 'Approved') {
         row.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
           ['Fee support request granted'], null));

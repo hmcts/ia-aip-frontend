@@ -911,6 +911,132 @@ describe('DetailViewController', () => {
       await getAppealDetailsViewer(req as Request, res as Response, next);
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
+
+    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there are previousRemissionDetails', async () => {
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+      req.session.appeal.feeWithHearing = '140';
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.application.remissionDecision = 'approved';
+
+      req.session.appeal.application.previousRemissionDetails = [{
+        id: '1',
+        feeAmount: '1000',
+        amountRemitted: '1000',
+        amountLeftToPay: '1000',
+        remissionDecision: 'Approved',
+        asylumSupportReference: 'refNum'
+      } as RemissionDetails, {
+        id: '1',
+        feeAmount: '1000',
+        amountRemitted: '1000',
+        amountLeftToPay: '1000',
+        remissionDecision: 'Partially approved',
+        remissionDecisionReason: 'Decision 1',
+        helpWithFeesReferenceNumber: 'Help with fees'
+      } as RemissionDetails, {
+        id: '1',
+        feeAmount: '2000',
+        amountRemitted: '1000',
+        amountLeftToPay: '1000',
+        remissionDecision: 'Rejected',
+        remissionDecisionReason: 'Decision 2',
+        localAuthorityLetters: [{
+          id: '1',
+          fileId: 'file Id 1',
+          name: 'file_1_name',
+          tag: 'tag1'
+        }] as Evidence[]
+      } as RemissionDetails ];
+      const historyEvent = {
+        id: 'recordRemissionDecision',
+        event: {
+          eventName: '',
+          description: ''
+        },
+        user: {
+          id: '',
+          lastName: '',
+          firstName: ''
+        },
+        createdDate: '2021-06-15T14:23:34.581353',
+        caseTypeVersion: 1,
+        state: {
+          id: '',
+          name: ''
+        },
+        data: '' } as HistoryEvent;
+      req.session.appeal.history = [ historyEvent, historyEvent, historyEvent ];
+
+      expectedSummaryRowsWithDlrmFeeRemission = {
+        'aboutAppealRows': [
+          { key: { text: 'In the UK' }, value: { html: 'Yes' } },
+          { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
+          { key: { text: 'Date letter sent' }, value: { html: '16 February 2020' } },
+          { key: { text: 'Home Office decision letter' },
+            value: {
+              html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/f1d73cba-a117-4a0c-acf3-d8b787c984d7'>unnamed.jpg</a><br><a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/3d8bf49d-766f-4f41-b814-e82a04dec002'>Screenshot 2021-06-10 at 13.01.57.png</a>"
+            }
+          },
+          { key: { text: 'Sponsor' }, value: { html: 'No' } },
+          { key: { text: 'Appeal type' }, value: { html: 'Protection' } },
+          { key: { text: 'Decision Type' }, value: { html: 'Decision with a hearing' } },
+          { key: { text: 'Reason for late appeal' }, value: { html: 'a reason for being late' } },
+          { key: { text: 'Supporting evidence' },
+            value: {
+              html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/318c373c-dd10-4deb-9590-04282653715d'>MINI-UK-66-reg.jpg</a>"
+            }
+          }
+        ],
+        'personalDetailsRows': [
+          { key: { text: 'Name' }, value: { html: 'Pablo Ramirez' } },
+          { key: { text: 'Date of birth' }, value: { html: '20 July 1988' } },
+          { key: { text: 'Nationality' }, value: { html: 'Albania' } },
+          { key: { text: 'Address' }, value: { html: '60 GREAT PORTLAND STREET  LONDON United Kingdom W1W 7RT' } },
+          { key: { text: 'Contact details' }, value: { html: 'test@email.com<br>7759991234' } }
+        ],
+        'feeDetailsRows': [
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Payment status' }, value: {  html: 'No payment needed' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support request approved' } },
+          { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+        ],
+        'feeHistoryRows': [
+          [
+            { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
+            { key: { text: 'Asylum Support reference number' }, value: { html: 'refNum' } },
+            { key: { text: 'Fee support status' }, value: {  html: 'Fee support request granted' } },
+            { key: { text: 'Fee to refund' }, value: { html: '£140' } }
+          ],
+          [
+            { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
+            { key: { text: 'Help with fees reference number' }, value: { html: 'Help with fees' } },
+            { key: { text: 'Fee support status' }, value: {  html: 'Fee support request partially granted' } },
+            { key: { text: 'Reason for decision' }, value: {  html: 'Decision 1' } },
+            { key: { text: 'Fee to refund' }, value: { html: '£130' } }
+          ], [
+            { key: { text: 'Date of application' }, value: { html: '15 June 2021' } },
+            { key: { text: 'Local Authority letter' }, value: { html: "<a class='govuk-link' target='_blank' rel='noopener noreferrer' href='/view/document/file Id 1'>file_1_name</a>" } },
+            { key: { text: 'Fee support status' }, value: {  html: 'Fee support requested refused' } },
+            { key: { text: 'Reason for decision' }, value: {  html: 'Decision 2' } }
+          ]
+        ]
+      };
+
+      await getAppealDetailsViewer(req as Request, res as Response, next);
+      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+        title: i18n.pages.detailViewers.appealDetails.title,
+        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+        previousPage: paths.common.overview,
+        data: expectedSummaryRowsWithDlrmFeeRemission
+      });
+    });
   });
 
   describe('getAppealDetailsViewer', () => {

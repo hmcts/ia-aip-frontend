@@ -34,6 +34,8 @@ import * as summaryUtils from '../../../app/utils/summary-list';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithCmaRequirements } from '../mockData/events/expectation/expected-history-cma-requirements';
+import moment from 'moment/moment';
+import {dayMonthYearFormat} from '../../../app/utils/date-utils';
 
 const express = require('express');
 
@@ -912,18 +914,8 @@ describe('DetailViewController', () => {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there are previousRemissionDetails', async () => {
-      sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
-        .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
-      req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
-      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
-      req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
-      req.session.appeal.feeWithHearing = '140';
-      req.session.appeal.paymentStatus = 'Paid';
-      req.session.appeal.application.remissionDecision = 'approved';
-
-      req.session.appeal.application.previousRemissionDetails = [{
+    describe('', async () => {
+      const previousRemissionDetails = [{
         id: '1',
         feeAmount: '1000',
         amountRemitted: '1000',
@@ -952,27 +944,8 @@ describe('DetailViewController', () => {
           tag: 'tag1'
         }] as Evidence[]
       } as RemissionDetails ];
-      const historyEvent = {
-        id: 'recordRemissionDecision',
-        event: {
-          eventName: '',
-          description: ''
-        },
-        user: {
-          id: '',
-          lastName: '',
-          firstName: ''
-        },
-        createdDate: '2021-06-15T14:23:34.581353',
-        caseTypeVersion: 1,
-        state: {
-          id: '',
-          name: ''
-        },
-        data: '' } as HistoryEvent;
-      req.session.appeal.history = [ historyEvent, historyEvent, historyEvent ];
 
-      expectedSummaryRowsWithDlrmFeeRemission = {
+      const expectedSummaryRowsWithDlrmFeeRemission = {
         'aboutAppealRows': [
           { key: { text: 'In the UK' }, value: { html: 'Yes' } },
           { key: { text: 'Home Office reference number' }, value: { html: 'A1234567' } },
@@ -1026,17 +999,95 @@ describe('DetailViewController', () => {
           ]
         ]
       };
+      const historyEvent = {
+        id: 'recordRemissionDecision',
+        event: {
+          eventName: '',
+          description: ''
+        },
+        user: {
+          id: '',
+          lastName: '',
+          firstName: ''
+        },
+        createdDate: '2021-06-15T14:23:34.581353',
+        caseTypeVersion: 1,
+        state: {
+          id: '',
+          name: ''
+        },
+        data: '' } as HistoryEvent;
 
-      await getAppealDetailsViewer(req as Request, res as Response, next);
-      expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
-        title: i18n.pages.detailViewers.appealDetails.title,
-        aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
-        personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
-        feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
-        previousPage: paths.common.overview,
-        data: expectedSummaryRowsWithDlrmFeeRemission
+      it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there are previousRemissionDetails', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+        req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.paymentStatus = 'Paid';
+        req.session.appeal.application.remissionDecision = 'approved';
+
+        req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
+        req.session.appeal.history = [ historyEvent, historyEvent, historyEvent ];
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+
+      it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there are previousRemissionDetails and recordRemissionDecision are more than previousRemissionDetails', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+        req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.paymentStatus = 'Paid';
+        req.session.appeal.application.remissionDecision = 'approved';
+
+        req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
+
+        const historyEventDayBefore = {
+          id: 'recordRemissionDecision',
+          event: {
+            eventName: '',
+            description: ''
+          },
+          user: {
+            id: '',
+            lastName: '',
+            firstName: ''
+          },
+          createdDate: '2021-06-14T14:23:34.581353',
+          caseTypeVersion: 1,
+          state: {
+            id: '',
+            name: ''
+          },
+          data: '' } as HistoryEvent;
+        req.session.appeal.history = [ historyEventDayBefore, historyEvent, historyEvent, historyEvent ];
+
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemission
+        });
       });
     });
+
   });
 
   describe('getAppealDetailsViewer', () => {
@@ -4323,5 +4374,4 @@ describe('DetailViewController', () => {
       });
     });
   });
-
 });

@@ -1257,9 +1257,7 @@
             "feeForAppeal": "The fee for this appeal is £{{ applicationNextStep.feeLeftToPay }}.",
             "dueDate": "If you do not pay the fee by <span class='govuk-body govuk-!-font-weight-bold'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.",
             "howToPay": "<b>How to pay the fee</b>",
-            "bulletText1": "1. Call the Tribunal on 0300 123 1711, then select option 4",
-            "bulletText2": "2. Provide your 16-digit online case reference number: 1234-1234-1234-1234",
-            "bulletText3": "3. Make the payment with a debit or credit card"
+            "bulletText": "1. Call the Tribunal on 0300 123 1711, then select option 4<br />2. Provide your 16-digit online case reference number: 1234-1234-1234-1234<br />3. Make the payment with a debit or credit card"
           },
           "feeSupportRequested": "Fee support requested",
           "feeSupportStatusApproved": "Fee support request approved",

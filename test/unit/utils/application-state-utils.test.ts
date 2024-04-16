@@ -1840,7 +1840,7 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     expect(result).to.eql({
-      cta: null,
+      cta: {},
       deadline: '07 March 2020',
       feeLeftToPay: '40',
       remissionRejectedDatePlus14days: '2022-03-12',
@@ -1848,9 +1848,7 @@ describe('application-state-utils', () => {
         'The fee for this appeal is £{{ applicationNextStep.feeLeftToPay }}.',
         'If you do not pay the fee by <span class=\'govuk-body govuk-!-font-weight-bold\'>{{ applicationNextStep.remissionRejectedDatePlus14days }}</span> the Tribunal will end the appeal.',
         '<b>How to pay the fee</b>',
-        '1. Call the Tribunal on 0300 123 1711, then select option 4',
-        '2. Provide your 16-digit online case reference number: 1234-1234-1234-1234',
-        '3. Make the payment with a debit or credit card'
+        '1. Call the Tribunal on 0300 123 1711, then select option 4<br />2. Provide your 16-digit online case reference number: 1234-1234-1234-1234<br />3. Make the payment with a debit or credit card'
       ],
       allowedAskForMoreTime: false
     });
@@ -1879,7 +1877,7 @@ describe('application-state-utils', () => {
     const result = await getAppealApplicationNextStep(req as Request);
 
     expect(result).to.eql({
-      cta: null,
+      cta: {},
       deadline: '07 March 2020',
       feeForAppeal: '140',
       remissionRejectedDatePlus14days: '2022-03-12',

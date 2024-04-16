@@ -34,8 +34,6 @@ import * as summaryUtils from '../../../app/utils/summary-list';
 import i18n from '../../../locale/en.json';
 import { expect, sinon } from '../../utils/testUtils';
 import { expectedEventsWithCmaRequirements } from '../mockData/events/expectation/expected-history-cma-requirements';
-import moment from 'moment/moment';
-import {dayMonthYearFormat} from '../../../app/utils/date-utils';
 
 const express = require('express');
 

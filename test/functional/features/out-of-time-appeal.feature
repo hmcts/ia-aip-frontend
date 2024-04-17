@@ -4,7 +4,7 @@ Feature: Out of Time appeal @outOfTimeAppeal
   I need to explain why my appeal is late
 
 Scenario: Explain the reason why my appeal is late
-  Given I am authenticated as a valid appellant
+  Given I have logged in as an appellant in state "appealStarted"
   Then I click continue
 
   Then I see "Tell us about your appeal" in title

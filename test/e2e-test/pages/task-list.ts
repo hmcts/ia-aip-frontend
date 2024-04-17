@@ -39,7 +39,17 @@ module.exports = {
     });
 
     When('I click Your personal details', async () => {
-      await I.click('Your personal details');
+      for (let i = 0; i < 3; i++) {
+        try {
+          await I.click('#personalDetailsLink');
+          await I.waitInUrl(paths.appealStarted.name, 20);
+          await I.seeInCurrentUrl(paths.appealStarted.name);
+          break;
+        } catch (e) {
+          await I.seeInCurrentUrl(paths.appealStarted.taskList);
+        }
+      }
+      await I.seeInCurrentUrl(paths.appealStarted.name);
     });
   }
 };

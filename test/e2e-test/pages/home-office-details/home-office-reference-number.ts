@@ -18,7 +18,17 @@ module.exports = {
     });
 
     When(/^I click on Home office details$/, async () => {
-      await I.click('a[href*="' + paths.appealStarted.details + '"]');
+      for (let i = 0; i < 3; i++) {
+        try {
+          await I.click('#homeOfficeDetailsLink');
+          await I.waitInUrl(paths.appealStarted.details, 20);
+          await I.seeInCurrentUrl(paths.appealStarted.details);
+          break;
+        } catch (e) {
+          await I.seeInCurrentUrl(paths.appealStarted.taskList);
+        }
+      }
+      await I.seeInCurrentUrl(paths.appealStarted.details);
     });
 
     Then(/^I should be taken to the home office ref number page$/, async () => {

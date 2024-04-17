@@ -324,6 +324,10 @@ interface AppealApplication {
   previousRemissionDetails?: RemissionDetails[];
   remissionRejectedDatePlus14days?: string;
   isLateRemissionRequest?: boolean;
+  paidAmount?: string;
+  feeUpdateReasonAdvice?: string;
+  feeUpdateReason?: string;
+  newFeeAmount?: string;
 }
 
 interface CmaRequirements {

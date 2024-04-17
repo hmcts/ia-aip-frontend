@@ -21,6 +21,7 @@ import {
   isUpdateTribunalDecideWithRule31,
   isUpdateTribunalDecideWithRule32
 } from './utils';
+import {boolean} from 'joi';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.
@@ -229,7 +230,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   const ftpaFeatureEnabled: boolean = await isFtpaFeatureEnabled(req);
   const ftpaSetAsideFeatureEnabled: boolean = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_SETASIDE_FEATURE_FLAG, false);
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
-  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled);
+  const eventsAndStates = getEventsAndStates(uploadAddendumEvidenceFeatureEnabled, hearingBundleFeatureEnabled, ftpaFeatureEnabled, ftpaSetAsideFeatureEnabled, refundFeatureEnabled);
 
   const appealDecisionSection = constructSection(eventsAndStates.appealDecisionSectionEvents, req.session.appeal.history, null, req);
   const appealHearingRequirementsSection = constructSection(
@@ -314,7 +315,8 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
   hearingBundleFeatureEnabled: boolean,
   ftpaFeatureEnabled: boolean,
-  ftpaSetAsideFeatureEnabled: boolean) {
+  ftpaSetAsideFeatureEnabled: boolean,
+  refundFeatureEnabled: boolean = false) {
   const appealHearingRequirementsSectionEvents = [
     Events.SUBMIT_AIP_HEARING_REQUIREMENTS.id,
     Events.STITCHING_BUNDLE_COMPLETE.id,
@@ -351,7 +353,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     );
   }
 
-  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];
+  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id, refundFeatureEnabled ? Events.MANAGE_A_FEE_UPDATE.id : null];
   const appealArgumentSectionStates = [
     States.APPEAL_SUBMITTED.id,
     States.CLARIFYING_QUESTIONS_SUBMITTED.id,

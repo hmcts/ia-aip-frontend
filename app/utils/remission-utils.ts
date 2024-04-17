@@ -54,6 +54,8 @@ function getDecisionReasonRowForAppealDetails(req: Request) {
         addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision,
           [i18n.pages.overviewPage.doThisNext.remissionDecided.refusedDecisionReason], null)
       ];
+    default:
+      return [];
   }
 }
 
@@ -71,7 +73,11 @@ function getPaymentStatusRow(req: Request) {
           return i18n.pages.overviewPage.doThisNext.remissionDecided.paymentPending.decisionRejectedPaymentStatus;
       }
     } else {
-      // TODO Will be done as a part of RIA-8086 for PAID Remissions
+      if (remissionDecision === 'approved' || remissionDecision === 'partiallyApproved') {
+        return 'To be refunded';
+      } else {
+        return paymentStatus;
+      }
     }
   } else {
     return paymentStatus;

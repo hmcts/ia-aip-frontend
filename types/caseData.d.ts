@@ -198,8 +198,10 @@ interface CaseData {
 
   refundRequested?: string;
   remissionDecision?: string;
+  previousRemissionDetails?: RemissionDetailsCollection[];
   remissionRejectedDatePlus14days?: string;
   amountLeftToPay?: string;
+  remissionDecisionReason?: string;
   isLateRemissionRequest?: string;
 }
 
@@ -338,4 +340,22 @@ interface CcdDecisionAndReasons {
 interface DynamicList {
   value?: Value;
   list_items?: Value[];
+}
+
+interface RemissionDetailsCollection {
+  id?: number | string;
+  value?: RemissionDetailsData;
+}
+
+interface RemissionDetailsData {
+  feeAmount?: string;
+  amountRemitted?: string;
+  amountLeftToPay?: string;
+  feeRemissionType?: string;
+  remissionDecision?: string;
+  asylumSupportReference?: string;
+  remissionDecisionReason?: string;
+  helpWithFeesReferenceNumber?: string;
+  helpWithFeesOption?: string;
+  localAuthorityLetters?: Collection<DocumentWithDescription | DocumentWithMetaData>[];
 }

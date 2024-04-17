@@ -163,6 +163,7 @@ export default class UpdateAppealService {
     let documentMap: DocumentMap[] = [];
     let updatedDecisionAndReasons: DecisionAndReasons[] = null;
     let rule32NoticeDocs: Evidence = null;
+    let previousRemissionDetails: RemissionDetails[] = null;
 
     const appellantContactDetails = subscriptions.reduce((contactDetails, subscription) => {
       const value = subscription.value;
@@ -467,6 +468,30 @@ export default class UpdateAppealService {
       rule32NoticeDocs = this.mapSupportingDocumentToEvidence(caseData.rule32NoticeDocument, documentMap);
     }
 
+    if (caseData.previousRemissionDetails) {
+      const previousRemissionDetailsData = caseData.previousRemissionDetails || [];
+      previousRemissionDetails = previousRemissionDetailsData.map(remissionDetail => {
+        let localAuthorityLetters = [];
+        if (remissionDetail.value.localAuthorityLetters && remissionDetail.value.localAuthorityLetters.length > 0) {
+          let documentMapLocalAuthorityLetters: DocumentMap[] = [];
+          localAuthorityLetters = this.mapDocsWithMetadataToEvidenceArray(remissionDetail.value.localAuthorityLetters, documentMapLocalAuthorityLetters);
+        }
+        return {
+          id: remissionDetail.id,
+          feeAmount: remissionDetail.value.feeAmount,
+          amountRemitted: remissionDetail.value.amountRemitted,
+          amountLeftToPay: remissionDetail.value.amountLeftToPay,
+          feeRemissionType: remissionDetail.value.feeRemissionType,
+          remissionDecision: remissionDetail.value.remissionDecision,
+          asylumSupportReference: remissionDetail.value.asylumSupportReference,
+          remissionDecisionReason: remissionDetail.value.remissionDecisionReason,
+          helpWithFeesReferenceNumber: remissionDetail.value.helpWithFeesReferenceNumber,
+          helpWithFeesOption: remissionDetail.value.helpWithFeesOption,
+          localAuthorityLetters: localAuthorityLetters
+        } as RemissionDetails;
+      });
+    }
+
     const appeal: Appeal = {
       ccdCaseId: ccdCase.id,
       appealStatus: ccdCase.state,
@@ -539,6 +564,8 @@ export default class UpdateAppealService {
         ...caseData.lateLocalAuthorityLetters && { lateLocalAuthorityLetters: this.mapDocsWithMetadataToEvidenceArray(caseData.lateLocalAuthorityLetters, documentMap) },
         ...caseData.remissionRejectedDatePlus14days && { remissionRejectedDatePlus14days: caseData.remissionRejectedDatePlus14days },
         ...caseData.amountLeftToPay && { amountLeftToPay: caseData.amountLeftToPay },
+        previousRemissionDetails: previousRemissionDetails,
+        remissionDecisionReason: caseData.remissionDecisionReason,
         isLateRemissionRequest: caseData.isLateRemissionRequest ? yesNoToBool(caseData.isLateRemissionRequest) : undefined
       },
       reasonsForAppeal: {

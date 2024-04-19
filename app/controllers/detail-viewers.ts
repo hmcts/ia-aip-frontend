@@ -299,6 +299,9 @@ async function addPaymentDetails(req: Request, application: AppealApplication, f
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
         ['Fee support requested refused'], null));
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForDecision, [application.remissionDecisionReason], null));
+    } else {
+      feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus,
+        [i18n.pages.overviewPage.doThisNext.remissionDecided.feeSupportRequested], null));
     }
   } else if (refundFeatureEnabled && !paymentForAppealHasBeenMade(req)) {
     feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeSupportStatus, [getFeeSupportStatusForAppealDetails(req)], null));

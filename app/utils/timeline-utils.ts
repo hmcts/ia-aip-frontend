@@ -21,7 +21,6 @@ import {
   isUpdateTribunalDecideWithRule31,
   isUpdateTribunalDecideWithRule32
 } from './utils';
-import {boolean} from 'joi';
 
 /**
  * Construct an event object used in the sections, pulls the content of the event from the translations file.

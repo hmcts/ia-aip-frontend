@@ -912,7 +912,7 @@ describe('DetailViewController', () => {
       expect(next).to.have.been.calledOnce.calledWith(error);
     });
 
-    describe('', async () => {
+    describe('Remission decision', async () => {
       const previousRemissionDetails = [{
         id: '1',
         feeAmount: '1000',
@@ -1038,6 +1038,38 @@ describe('DetailViewController', () => {
           feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
           previousPage: paths.common.overview,
           data: expectedSummaryRowsWithDlrmFeeRemission
+        });
+      });
+      it('should render detail-viewers/details-with-fees-viewer.njk with history entries when dlrm fee remission and fee refund flags are ON and there is no remission decision yet', async () => {
+        sandbox.stub(LaunchDarklyService.prototype, 'getVariation')
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true)
+          .withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+        req.session.appeal.paAppealTypeAipPaymentOption = 'payLater';
+        req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
+        req.session.appeal.application.asylumSupportRefNumber = 'supportRefNumber';
+        req.session.appeal.feeWithHearing = '140';
+        req.session.appeal.paymentStatus = 'Paid';
+        req.session.appeal.application.previousRemissionDetails = previousRemissionDetails;
+        req.session.appeal.history = [ historyEvent, historyEvent, historyEvent ];
+
+        const feeDetails = [
+          { key: { text: 'Fee amount' }, value: { html: '£140' } },
+          { key: { text: 'Payment status' }, value: {  html: 'Paid' } },
+          { key: { text: 'Fee support status' }, value: { html: 'Fee support requested' } },
+          { key: { text: 'Asylum Support reference number' }, value: { html: 'supportRefNumber' } }
+        ];
+        const expectedSummaryRowsWithDlrmFeeRemissionCustom = {
+          ...expectedSummaryRowsWithDlrmFeeRemission,
+          'feeDetailsRows': feeDetails
+        };
+        await getAppealDetailsViewer(req as Request, res as Response, next);
+        expect(res.render).to.have.been.calledWith('templates/details-with-fees-viewer.njk', {
+          title: i18n.pages.detailViewers.appealDetails.title,
+          aboutTheAppealTitle: i18n.pages.checkYourAnswers.rowTitles.aboutTheAppeal,
+          personalDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.personalDetails,
+          feeDetailsTitle: i18n.pages.checkYourAnswers.rowTitles.feeDetails,
+          previousPage: paths.common.overview,
+          data: expectedSummaryRowsWithDlrmFeeRemissionCustom
         });
       });
 

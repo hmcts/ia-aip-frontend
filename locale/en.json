@@ -317,7 +317,9 @@
         "feeAmountPaid": "Fee amount paid",
         "reasonForFeeChange": "Reason for fee change",
         "decisionTypeChanged": "Decision type changed",
-        "amountToBeRefund": "Amount to be refunded"
+        "amountToBeRefund": "Amount to be refunded",
+        "additionalPaymentRequested": "Additional payment requested",
+        "toBeRefunded": "To be refunded"
       },
       "supportingEvidence": "<a href='{{ evidenceUrl }}' class='govuk-link'>{{ evidence }}</a>",
       "decisionType": "Decision Type",

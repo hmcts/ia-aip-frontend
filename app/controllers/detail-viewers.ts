@@ -283,15 +283,8 @@ async function addPaymentDetails(req: Request, application: AppealApplication, f
   const refundFeatureEnabled = await LaunchDarklyService.getInstance().getVariation(req, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false);
   const { paymentStatus = null } = req.session.appeal;
   feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmount, [`£${fee.calculated_amount}`]) : null);
-  if (application.feeUpdateReason) {
-    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(application.paidAmount)]) : null);
-    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange,[i18n.pages.checkYourAnswers.rowTitles.decisionTypeChanged], null));
-    // if (fee.calculated_amount > application.paidAmount)
-
-    // const { paymentStatus = null } = req.session.appeal;
-    // feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
-    // "decisionTypeChanged": "Decision type changed",
-    //   "amountToBeRefund": "Amount to be refunded"
+  if (application.feeUpdateTribunalAction) {
+    addFeeUpdatePaymentSection(application, feeDetailsRows, fee, paymentStatus);
   } else {
     if (refundFeatureEnabled) {
       feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [getPaymentStatusRow(req)], null));
@@ -365,6 +358,25 @@ async function addPreviousRemissionDetails(req: Request, application: AppealAppl
     }
     feeHistoryRows.push(row);
   });
+}
+
+function addFeeUpdatePaymentSection(application: AppealApplication, feeDetailsRows: any[], fee: { code: string; calculated_amount: any; version: string }, paymentStatus) {
+  if (application.feeUpdateTribunalAction === 'additionalPayment') {
+    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(application.paidAmount)]) : null);
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles.decisionTypeChanged], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [i18n.pages.checkYourAnswers.rowTitles.additionalPaymentRequested], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeToPay, [calculateAmountToPounds(application.manageFeeRequestedAmount)], null));
+
+  } else if (application.feeUpdateTribunalAction === 'refund') {
+    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(application.paidAmount)]) : null);
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles.decisionTypeChanged], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [i18n.pages.checkYourAnswers.rowTitles.toBeRefunded], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.amountToBeRefund, [calculateAmountToPounds(application.manageFeeRefundedAmount)], null));
+  } else if (application.feeUpdateTribunalAction === 'noAction') {
+    feeDetailsRows.push(fee ? addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.feeAmountPaid, [calculateAmountToPounds(application.paidAmount)]) : null);
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.reasonForFeeChange, [i18n.pages.checkYourAnswers.rowTitles.decisionTypeChanged], null));
+    feeDetailsRows.push(addSummaryRow(i18n.pages.checkYourAnswers.rowTitles.paymentStatus, [paymentStatus], null));
+  }
 }
 
 function getRecordRemissionDate(req: Request, index: number, previousRemissionDetailsSize: number): String {

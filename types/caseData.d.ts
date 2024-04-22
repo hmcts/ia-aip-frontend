@@ -203,10 +203,10 @@ interface CaseData {
   amountLeftToPay?: string;
   remissionDecisionReason?: string;
   isLateRemissionRequest?: string;
+  feeUpdateTribunalAction?: string;
+  manageFeeRefundedAmount?: string;
+  manageFeeRequestedAmount?: string;
   paidAmount?: string;
-  feeUpdateReasonAdvice?: string;
-  feeUpdateReason?: string;
-  newFeeAmount?: string;
 }
 
 interface Application<T> {

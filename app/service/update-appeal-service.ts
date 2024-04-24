@@ -713,7 +713,7 @@ export default class UpdateAppealService {
       }
 
       if (appeal.application.helpWithFeesRefNumber) {
-        caseData.helpWithFeesOption = appeal.application.helpWithFeesRefNumber;
+        caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
       }
 
       if (appeal.application.localAuthorityLetters) {

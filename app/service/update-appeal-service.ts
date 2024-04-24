@@ -700,27 +700,22 @@ export default class UpdateAppealService {
         caseData.appealType = appeal.application.appealType;
       }
 
-      caseData.remissionOption = null;
       if (appeal.application.remissionOption) {
         caseData.remissionOption = appeal.application.remissionOption;
       }
 
-      caseData.asylumSupportRefNumber = null;
       if (appeal.application.asylumSupportRefNumber) {
         caseData.asylumSupportRefNumber = appeal.application.asylumSupportRefNumber;
       }
 
-      caseData.helpWithFeesOption = null;
       if (appeal.application.helpWithFeesOption) {
         caseData.helpWithFeesOption = appeal.application.helpWithFeesOption;
       }
 
-      caseData.helpWithFeesRefNumber = null;
       if (appeal.application.helpWithFeesRefNumber) {
         caseData.helpWithFeesRefNumber = appeal.application.helpWithFeesRefNumber;
       }
 
-      caseData.localAuthorityLetters = null;
       if (appeal.application.localAuthorityLetters) {
         const evidences: Evidence[] = appeal.application.localAuthorityLetters;
 
@@ -742,7 +737,9 @@ export default class UpdateAppealService {
         });
       }
 
-      caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+      if (appeal.application.feeSupportPersisted) {
+        caseData.feeSupportPersisted = appeal.application.feeSupportPersisted ? YesOrNo.YES : YesOrNo.NO;
+      }
 
       if (appeal.application.contactDetails && (appeal.application.contactDetails.email || appeal.application.contactDetails.phone)) {
         const subscription: Subscription = {

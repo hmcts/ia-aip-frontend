@@ -7,7 +7,7 @@ import {
   isUpdateTribunalDecideWithRule32
 } from '../utils/utils';
 import { dayMonthYearFormat } from './date-utils';
-import { appealHasNoRemissionOption } from './remission-utils';
+import { appealHasNoRemissionOption, appealHasRemissionOption } from './remission-utils';
 
 const daysToWaitAfterSubmission = config.get('daysToWait.afterSubmission');
 const daysToWaitAfterReasonsForAppeal = config.get('daysToWait.afterReasonsForAppeal');
@@ -114,7 +114,13 @@ function getDeadline(currentAppealStatus: string, req: Request, dlrmFeeRemission
       break;
     }
     case 'pendingPayment': {
-      formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitPendingPayment);
+      if (dlrmFeeRemissionFlag && appealHasRemissionOption(req.session.appeal.application)) {
+        let appealOutOfCountry = req.session.appeal.appealOutOfCountry;
+        let noOfDays = (appealOutOfCountry && appealOutOfCountry === 'Yes') ? 28 : daysToWaitAfterReasonsForAppeal;
+        formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', noOfDays);
+      } else {
+        formattedDeadline = getFormattedEventHistoryDate(history, 'submitAppeal', daysToWaitPendingPayment);
+      }
       break;
     }
     case 'awaitingReasonsForAppeal':

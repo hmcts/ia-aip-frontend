@@ -314,14 +314,16 @@ describe('Check and Send Controller', () => {
       });
     });
 
-    it('should render check-and-send-page.njk, dlrmFeeRemissionFlag with dlrmFeeRemissionFlag flag is ON', async () => {
+    it('should render check-and-send-page.njk, hasRemissionOption with appeal with remission and dlrmFeeRemissionFlag' +
+      ' flag is ON', async () => {
       sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_FEE_REMISSION_FEATURE_FLAG, false).resolves(true);
       req.session.appeal = createDummyAppealApplication();
+      req.session.appeal.application.remissionOption = 'asylumSupportFromHo';
       await getCheckAndSend(paymentService as PaymentService)(req as Request, res as Response, next);
       expect(res.render).to.have.been.calledOnce.calledWith('appeal-application/check-and-send.njk', {
         summaryRows: sinon.match.any,
         previousPage: paths.appealStarted.taskList,
-        dlrmFeeRemissionFlag: true
+        hasRemissionOption: true
       });
     });
 

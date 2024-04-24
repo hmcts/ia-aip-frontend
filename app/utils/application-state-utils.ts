@@ -47,6 +47,7 @@ interface DoThisNextSection {
   removeAppealFromOnlineReason?: string;
   removeAppealFromOnlineDate?: string;
   decision?: string;
+  utAppealReferenceNumber?: string;
 }
 
 /**
@@ -489,18 +490,38 @@ async function getAppealApplicationNextStep(req: Request) {
       };
       break;
     case 'ended':
-      doThisNextSection = {
-        descriptionParagraphs: [
-          i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
-          i18n.pages.overviewPage.doThisNext.ended.ctaReview
-        ],
-        cta: {
-          url: null,
-          ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
-        },
-        allowedAskForMoreTime: false,
-        hearingCentreEmail: getHearingCentreEmail(req)
-      };
+      if (transferredToUpperTribunal(req)) {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.transferredToUt.description,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.explanation,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.utAppealReferenceNumber,
+            i18n.pages.overviewPage.doThisNext.transferredToUt.utAction
+          ],
+          info: {
+            title: i18n.pages.overviewPage.doThisNext.transferredToUt.usefulDocuments.title,
+            url: i18n.pages.overviewPage.doThisNext.transferredToUt.usefulDocuments.url
+          },
+          usefulDocuments: {
+            title: i18n.pages.overviewPage.doThisNext.transferredToUt.info.title,
+            url: i18n.pages.overviewPage.doThisNext.transferredToUt.info.description
+          },
+          utAppealReferenceNumber: req.session.appeal.utAppealReferenceNumber
+        };
+      } else {
+        doThisNextSection = {
+          descriptionParagraphs: [
+            i18n.pages.overviewPage.doThisNext.ended.ctaInstruction,
+            i18n.pages.overviewPage.doThisNext.ended.ctaReview
+          ],
+          cta: {
+            url: null,
+            ctaTitle: i18n.pages.overviewPage.doThisNext.ended.ctaTitle
+          },
+          allowedAskForMoreTime: false,
+          hearingCentreEmail: getHearingCentreEmail(req)
+        };
+      }
       break;
     case 'appealTakenOffline':
       doThisNextSection = {
@@ -637,11 +658,16 @@ function eventByLegalRep(req: Request, eventId: string, state: string): boolean 
     && event.user.id !== req.idam.userDetails.uid).length > 0;
 }
 
+function transferredToUpperTribunal(req: Request): boolean {
+  return req.session.appeal.utAppealReferenceNumber == null ? false : true;
+}
+
 export {
   getAppealApplicationNextStep,
   getAppealStatus,
   getMoveAppealOfflineReason,
   getMoveAppealOfflineDate,
   isPreAddendumEvidenceUploadState,
-  eventByLegalRep
+  eventByLegalRep,
+  transferredToUpperTribunal
 };

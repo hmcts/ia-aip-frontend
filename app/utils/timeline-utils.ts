@@ -253,7 +253,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
   let paymentEvent = [];
   let appealRemissionSection: any[];
   let appealRemissionDecisionSection: any[];
+  let manageAFeeUpdate: any[];
   let argumentSection: any[];
+  const manageAFeeUpdateEvents = req.session.appeal.history.filter(event => Events.MANAGE_A_FEE_UPDATE.id.includes(event.id));
 
   if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && application.isLateRemissionRequest) {
     const remissionEvent = [{
@@ -264,6 +266,13 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
     appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
       .sort((a: any, b: any) => b.dateObject - a.dateObject);
+  } else if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && !application.isLateRemissionRequest && manageAFeeUpdateEvents.length > 0) {
+    manageAFeeUpdate = [{
+      date: moment(manageAFeeUpdateEvents[0].createdDate).format('DD MMMM YYYY'),
+      dateObject: new Date(manageAFeeUpdateEvents[0].createdDate),
+      text: i18n.pages.overviewPage.timeline.manageFeeUpdate.text || null,
+      links: i18n.pages.overviewPage.timeline.manageFeeUpdate.links
+    }];
   } else if (paymentStatus === 'Paid' && paymentForAppealHasBeenMade(req)) {
     paymentEvent = [{
       date: moment(paymentDate).format('DD MMMM YYYY'),
@@ -285,7 +294,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
       links: i18n.pages.overviewPage.timeline.feeRemissionDecision.links
     }];
 
-    if (appealRemissionSection) {
+    if (manageAFeeUpdate) {
+      appealRemissionDecisionSection = manageAFeeUpdate;
+    } else if (appealRemissionSection) {
       appealRemissionDecisionSection = decisionRemissionEvent.concat(appealRemissionSection);
     } else {
       appealRemissionDecisionSection = decisionRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);
@@ -352,7 +363,7 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     );
   }
 
-  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id, refundFeatureEnabled ? Events.MANAGE_A_FEE_UPDATE.id : null];
+  const appealDetailsSectionEvents = [Events.SUBMIT_APPEAL.id, Events.PAY_AND_SUBMIT_APPEAL.id];
   const appealArgumentSectionStates = [
     States.APPEAL_SUBMITTED.id,
     States.CLARIFYING_QUESTIONS_SUBMITTED.id,

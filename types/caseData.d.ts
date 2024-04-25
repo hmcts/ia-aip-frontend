@@ -182,6 +182,7 @@ interface CaseData {
   ftpaApplicationRespondentDocument: SupportingDocument;
   ftpaAppellantDecisionRemadeRule32Text?: string;
   ftpaRespondentDecisionRemadeRule32Text?: string;
+  utAppealReferenceNumber?: string;
   remissionOption?: string;
   asylumSupportRefNumber?: string;
   helpWithFeesOption?: string;

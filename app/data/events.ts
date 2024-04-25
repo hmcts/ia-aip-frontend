@@ -211,6 +211,11 @@ export const Events = {
     summary: 'Decision without a hearing',
     description: 'Decision without a hearing'
   },
+  MARK_AS_READY_FOR_UT_TRANSFER: {
+    id: 'markAsReadyForUtTransfer',
+    summary: 'Transfer appeal to Upper Tribunal',
+    description: 'Transfer appeal to Upper Tribunal'
+  },
   DECIDE_FTPA_APPLICATION: {
     id: 'decideFtpaApplication',
     summary: 'Decide FTPA application',

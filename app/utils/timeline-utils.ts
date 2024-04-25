@@ -8,6 +8,7 @@ import { paths } from '../paths';
 import { SecurityHeaders } from '../service/authentication-service';
 import LaunchDarklyService from '../service/launchDarkly-service';
 import UpdateAppealService from '../service/update-appeal-service';
+import { transferredToUpperTribunal } from './application-state-utils';
 import {
   getAppellantApplications,
   getApplicant,
@@ -295,7 +296,8 @@ function getEventsAndStates(uploadAddendumEvidenceFeatureEnabled: boolean,
     Events.REQUEST_HEARING_REQUIREMENTS_FEATURE.id,
     Events.END_APPEAL.id,
     Events.END_APPEAL_AUTOMATICALLY.id,
-    Events.RECORD_OUT_OF_TIME_DECISION.id
+    Events.RECORD_OUT_OF_TIME_DECISION.id,
+    Events.MARK_AS_READY_FOR_UT_TRANSFER.id
   ];
   const appealDecisionSectionEvents = [Events.SEND_DECISION_AND_REASONS.id];
 

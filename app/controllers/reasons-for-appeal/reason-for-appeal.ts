@@ -140,11 +140,12 @@ function postSupportingEvidenceSubmit(updateAppealService: UpdateAppealService) 
         }
         return res.redirect(paths.common.overview + '?saved');
       } else {
-        if (req.session.appeal.reasonsForAppeal.evidences === undefined) {
+        const evidences: Evidence[] = [ ...(req.session.appeal.reasonsForAppeal.evidences || []) ];
+        if (evidences === undefined || !evidences.length) {
           const validation = [ {
-            href: 'uploadFile',
+            href: '#file-upload',
             text: i18n.validationErrors.fileUpload.noFileSelected,
-            value: '#uploadFile'
+            value: '#file-upload'
           } ];
           return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {
             errorList: Object.values(validation),
@@ -183,8 +184,8 @@ function postSupportingEvidenceUploadFile(documentManagementService: DocumentMan
       } else {
         let validationError;
         validationError = res.locals.multerError
-          ? { uploadFile: createStructuredError('uploadFile', res.locals.multerError) }
-          : { uploadFile: createStructuredError('uploadFile', i18n.validationErrors.fileUpload.noFileSelected) };
+          ? { uploadFile: createStructuredError('file-upload', res.locals.multerError) }
+          : { uploadFile: createStructuredError('file-upload', i18n.validationErrors.fileUpload.noFileSelected) };
         const evidences = req.session.appeal.reasonsForAppeal.evidences || {};
 
         return res.render('reasons-for-appeal/supporting-evidence-upload-page.njk', {

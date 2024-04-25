@@ -223,5 +223,10 @@ export const Events = {
   RECORD_REMISSION_DECISION: {
     id: 'recordRemissionDecision',
     description: 'Record remission decision'
+  },
+  MANAGE_A_FEE_UPDATE: {
+    id: 'manageFeeUpdate',
+    summary: 'Manage a fee update',
+    description: 'Manage a fee update'
   }
 };

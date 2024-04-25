@@ -173,7 +173,11 @@ describe('update-appeal-service', () => {
       isInterpreterServicesNeeded: 'false',
       isHearingRoomNeeded: 'true',
       isHearingLoopNeeded: 'true',
-      hearingCentre: 'birmingham'
+      hearingCentre: 'birmingham',
+      feeUpdateTribunalAction: 'refund',
+      manageFeeRefundedAmount: '1000',
+      manageFeeRequestedAmount: '1500',
+      paidAmount: '2000'
     };
 
   });
@@ -229,6 +233,10 @@ describe('update-appeal-service', () => {
       expect(req.session.appeal.application.sponsorFamilyName).eq('ABC XYZ');
       expect(req.session.appeal.application.sponsorNameForDisplay).eq('ABC XYZ');
       expect(req.session.appeal.application.sponsorAuthorisation).eq('ABC XYZ');
+      expect(req.session.appeal.application.feeUpdateTribunalAction).eq('refund');
+      expect(req.session.appeal.application.manageFeeRefundedAmount).eq('1000');
+      expect(req.session.appeal.application.manageFeeRequestedAmount).eq('1500');
+      expect(req.session.appeal.application.paidAmount).eq('2000');
     });
 
     it('load time extensions when no time extensions', async () => {

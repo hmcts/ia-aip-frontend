@@ -482,6 +482,7 @@ export default class UpdateAppealService {
       updateTribunalDecisionAndReasonsFinalCheck: caseData.updateTribunalDecisionAndReasonsFinalCheck,
       rule32NoticeDocs: rule32NoticeDocs,
       appealOutOfCountry: caseData.appealOutOfCountry,
+      utAppealReferenceNumber: caseData.utAppealReferenceNumber,
       nonStandardDirectionEnabled: true,
       ftpaR35AppellantDocument: reheardRule35AppellantDocument,
       ftpaR35RespondentDocument: reheardRule35RespondentDocument,

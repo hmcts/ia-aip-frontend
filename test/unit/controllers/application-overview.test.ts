@@ -185,6 +185,7 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       ended: false,
+      transferredToUt: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
@@ -244,6 +245,7 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       ended: false,
+      transferredToUt: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
@@ -304,6 +306,7 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       ended: false,
+      transferredToUt: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
@@ -332,6 +335,7 @@ describe('Confirmation Page Controller', () => {
     req.session.appeal.appealStatus = 'appealStarted';
     req.session.appeal.application.homeOfficeRefNumber = 'A1234567';
     req.session.appeal.appealReferenceNumber = 'RP/50004/2020';
+    req.session.appeal.utAppealReferenceNumber = null;
 
     await getApplicationOverview(updateAppealService as UpdateAppealService)(req as Request, res as Response, next);
 
@@ -376,6 +380,7 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       ended: false,
+      transferredToUt: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
       saveAndAskForMoreTime: false,
@@ -450,6 +455,7 @@ describe('Confirmation Page Controller', () => {
       stages: expectedStages,
       saved: false,
       ended: false,
+      transferredToUt: false,
       askForMoreTimeInFlight: false,
       askForMoreTime: false,
       saveAndAskForMoreTime: false,

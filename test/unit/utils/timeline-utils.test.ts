@@ -870,7 +870,7 @@ describe('timeline-utils', () => {
       expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
     });
 
-    it('should return the correct sections when manageAFeeUpdate event is in history', async () => {
+    it('should return the correct sections when manageAFeeUpdate event is in history with remission', async () => {
       const date1 = new Date('2024-04-14');
       const history = [
         {
@@ -887,6 +887,47 @@ describe('timeline-utils', () => {
       req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
       req.session.appeal.application.remissionOption = 'feeWaiverFromHo';
       req.session.appeal.application.remissionDecision = 'approved';
+
+      const fakeUpdateAppealService = {
+        getAuthenticationService: sinon.stub().returns({
+          getSecurityHeaders: sinon.stub().resolves({ /* fake security headers */ })
+        }),
+        getCcdService: sinon.stub().returns({
+          getCaseHistory: sinon.stub().resolves(history)
+        })
+      };
+      sandbox.stub(LaunchDarklyService.prototype, 'getVariation').withArgs(req as Request, FEATURE_FLAGS.DLRM_REFUND_FEATURE_FLAG, false).resolves(true);
+
+      const expectedResult = [
+        {
+          'date': '14 April 2024',
+          'dateObject': date1,
+          'text': 'The fee for this appeal has changed.',
+          'links': [
+            {
+              'title': 'What\'s changed',
+              'text': 'Your appeal details',
+              'href': '{{ paths.common.appealDetailsViewer }}'
+            }
+          ]
+        }
+      ];
+
+      const result = await getAppealApplicationHistory(req as Request, fakeUpdateAppealService as unknown as UpdateAppealService);
+      expect(result.appealRemissionDecisionSection).to.deep.eq(expectedResult);
+    });
+
+    it('should return the correct sections when manageAFeeUpdate event is in history without remission', async () => {
+      const date1 = new Date('2024-04-14');
+      const history = [
+        {
+          'id': 'manageFeeUpdate',
+          'createdDate': date1
+        }
+      ];
+
+      req.session.appeal.paymentStatus = 'Paid';
+      req.session.appeal.paymentDate = '2024-04-03T08:00:30.233+0000';
 
       const fakeUpdateAppealService = {
         getAuthenticationService: sinon.stub().returns({

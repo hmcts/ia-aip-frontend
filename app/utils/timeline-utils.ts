@@ -266,7 +266,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
     }];
     appealRemissionSection = appealArgumentSection.concat(applicationEvents, remissionEvent, submitCQHistory, directionsHistory)
       .sort((a: any, b: any) => b.dateObject - a.dateObject);
-  } else if (paymentStatus === 'Paid' && refundFeatureEnabled && appealHasRemissionOption(application) && !application.isLateRemissionRequest && manageAFeeUpdateEvents.length > 0) {
+  } else if (paymentStatus === 'Paid' && refundFeatureEnabled && !application.isLateRemissionRequest && manageAFeeUpdateEvents.length > 0) {
     manageAFeeUpdate = [{
       date: moment(manageAFeeUpdateEvents[0].createdDate).format('DD MMMM YYYY'),
       dateObject: new Date(manageAFeeUpdateEvents[0].createdDate),
@@ -284,8 +284,9 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
 
   argumentSection = appealArgumentSection.concat(applicationEvents, paymentEvent, submitCQHistory, directionsHistory)
     .sort((a: any, b: any) => b.dateObject - a.dateObject);
-
-  if (refundFeatureEnabled && application.remissionDecision) {
+  if (manageAFeeUpdate) {
+    appealRemissionDecisionSection = manageAFeeUpdate;
+  } else if (refundFeatureEnabled && application.remissionDecision) {
     const latestUpdateRemissionDecisionHistory = getLatestUpdateRemissionDecionsEventHistory(req, refundFeatureEnabled);
     const decisionRemissionEvent = [{
       date: moment(latestUpdateRemissionDecisionHistory.createdDate).format('DD MMMM YYYY'),
@@ -294,9 +295,7 @@ async function getAppealApplicationHistory(req: Request, updateAppealService: Up
       links: i18n.pages.overviewPage.timeline.feeRemissionDecision.links
     }];
 
-    if (manageAFeeUpdate) {
-      appealRemissionDecisionSection = manageAFeeUpdate;
-    } else if (appealRemissionSection) {
+    if (appealRemissionSection) {
       appealRemissionDecisionSection = decisionRemissionEvent.concat(appealRemissionSection);
     } else {
       appealRemissionDecisionSection = decisionRemissionEvent.concat(applicationEvents, submitCQHistory, directionsHistory);

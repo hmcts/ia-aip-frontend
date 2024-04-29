@@ -620,6 +620,7 @@ export default class UpdateAppealService {
       ...caseData.feeDescription && { feeDescription: caseData.feeDescription },
       ...caseData.feeVersion && { feeVersion: caseData.feeVersion },
       ...caseData.feeAmountGbp && { feeAmountGbp: caseData.feeAmountGbp },
+      ...caseData.newFeeAmount && { newFeeAmount: caseData.newFeeAmount },
       ...caseData.ftpaApplicantType && { ftpaApplicantType: caseData.ftpaApplicantType },
       ...caseData.ftpaAppellantEvidenceDocuments && { ftpaAppellantEvidenceDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantEvidenceDocuments, documentMap) },
       ...caseData.ftpaAppellantGroundsDocuments && { ftpaAppellantGroundsDocuments: this.mapAdditionalEvidenceToDocumentWithDescriptionArray(caseData.ftpaAppellantGroundsDocuments, documentMap) },

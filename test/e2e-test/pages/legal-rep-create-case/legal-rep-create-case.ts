@@ -90,7 +90,7 @@ module.exports = {
       await I.click('Continue');
       await I.waitForText('Check your answers', 60);
       await I.click('Save and continue');
-      await I.waitForText('Your appeal details have been saved', 60);
+      await I.waitForText('Do this next', 60);
       await I.click('Close and Return to case details');
       await I.waitForText('Current progress of the case', 60);
       await I.selectOption('#next-step', 'Submit your appeal');

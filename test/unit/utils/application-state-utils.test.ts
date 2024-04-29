@@ -957,6 +957,32 @@ describe('application-state-utils', () => {
         }
       );
     });
+
+    it('when EJP application status is ended should get the correct Do this next section. @ended', async () => {
+      req.session.appeal.appealStatus = 'ended';
+      req.session.appeal.utAppealReferenceNumber = 'refNumber';
+      const result = await getAppealApplicationNextStep(req as Request);
+
+      expect(result).to.deep.include(
+        {
+          descriptionParagraphs: [
+            'Your appeal has been moved to the Upper Tribunal, which is a higher tribunal than the First-tier tribunal.',
+            'This is because you also have an expedited section 82A appeal in the Upper Tribunal, with the following appeal reference:',
+            '{{ applicationNextStep.utAppealReferenceNumber }}',
+            'An Upper Tribunal judge will decide both appeals at the same time.'
+          ],
+          info: {
+            title: 'Helpful Information',
+            url: '<a class=\"govuk-link\" href=\"https://www.gov.uk/courts-tribunals/upper-tribunal-immigration-and-asylum-chamber\" target=\"_blank\">Find out more about the Upper Tribunal, including contact details</a>. (Opens in a new window)'
+          },
+          usefulDocuments: {
+            title: 'What happens next',
+            url: '\nThe upper tribunal may contact you about this appeal.<br /><br />If you still have to respond to a question about your appeal from the First-tier Tribunal, you should tell the Upper Tribunal. The Upper Tribunal will decide what will happen next.'
+          },
+          utAppealReferenceNumber: 'refNumber'
+        }
+      );
+    });
   });
 
   it('when application status is prepareForHearing should get correct Do this next section.', async () => {

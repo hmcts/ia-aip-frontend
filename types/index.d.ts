@@ -186,6 +186,7 @@ interface Appeal {
   ftpaAppellantDecisionDate?: string;
   nonStandardDirectionEnabled?: boolean;
   readonlyApplicationEnabled?: boolean;
+  utAppealReferenceNumber?: string;
 }
 
 interface Hearing {

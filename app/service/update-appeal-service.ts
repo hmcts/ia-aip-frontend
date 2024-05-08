@@ -430,6 +430,7 @@ export default class UpdateAppealService {
       removeAppealFromOnlineDate: formatDate(caseData.removeAppealFromOnlineDate),
       isDecisionAllowed: caseData.isDecisionAllowed,
       appealOutOfCountry: caseData.appealOutOfCountry,
+      utAppealReferenceNumber: caseData.utAppealReferenceNumber,
       nonStandardDirectionEnabled: true,
       readonlyApplicationEnabled: true,
       application: {

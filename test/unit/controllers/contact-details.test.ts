@@ -1019,7 +1019,7 @@ describe('Contact details Controller', () => {
         const error: ValidationError = {
           href: '#text-message-value',
           key: 'text-message-value',
-          text: i18n.validationErrors.phoneFormat
+          text: i18n.validationErrors.ukPhoneFormat
         };
 
         const expectedData = {

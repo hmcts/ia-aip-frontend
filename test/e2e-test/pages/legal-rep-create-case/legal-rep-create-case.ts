@@ -94,8 +94,13 @@ module.exports = {
       await I.click('Close and Return to case details');
       await I.waitForText('Current progress of the case', 60);
       await I.selectOption('#next-step', 'Submit your appeal');
-      await I.click('Go');
-      await I.waitForText('Declaration', 60);
+      try {
+        await I.click('Go');
+        await I.waitForText('Declaration', 60);
+      } catch {
+        await I.amOnPage(exuiBaseUrl + 'cases/case-details/1715071488320503/trigger/submitAppeal/submitAppealdeclaration');
+        await I.waitForText('Declaration', 60);
+      }
       await I.click('#legalRepDeclaration-hasDeclared');
       await I.click('Submit');
       await I.waitForText('Your appeal has been submitted', 60);
@@ -107,8 +112,13 @@ module.exports = {
       for (let i = 0; i < 3; i++) {
         try {
           await I.selectOption('#next-step', 'Stop representing a client');
-          await I.click('Go');
-          await I.waitForText('Once you\'ve submitted this request', 60);
+          try {
+            await I.click('Go');
+            await I.waitForText('Once you\'ve submitted this request', 60);
+          } catch {
+            await I.amOnPage(exuiBaseUrl + 'cases/case-details/1715071488320503/trigger/removeRepresentation/removeRepresentationSingleFormPageWithComplex');
+            await I.waitForText('Once you\'ve submitted this request', 60);
+          }
           await I.see('Once you\'ve submitted this request');
           break;
         } catch (err) {

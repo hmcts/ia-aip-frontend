@@ -5,6 +5,7 @@ let caseReferenceNumber;
 let firstName;
 let lastName;
 let exuiBaseUrl;
+let appealReference;
 
 const testUrl = config.get('testUrl');
 const date = new Date();
@@ -93,14 +94,10 @@ module.exports = {
       await I.waitForText('Do this next', 60);
       await I.click('Close and Return to case details');
       await I.waitForText('Current progress of the case', 60);
+      const currentUrl = await I.grabCurrentUrl();
+      appealReference = currentUrl.split('case-details/')[1].split('#')[0].replaceAll('/', '')
       await I.selectOption('#next-step', 'Submit your appeal');
-      try {
-        await I.click('Go');
-        await I.waitForText('Declaration', 60);
-      } catch {
-        await I.amOnPage(exuiBaseUrl + 'cases/case-details/1715071488320503/trigger/submitAppeal/submitAppealdeclaration');
-        await I.waitForText('Declaration', 60);
-      }
+      await I.handleNextStep('Declaration', 'submitAppeal/submitAppealdeclaration', appealReference);
       await I.click('#legalRepDeclaration-hasDeclared');
       await I.click('Submit');
       await I.waitForText('Your appeal has been submitted', 60);
@@ -112,13 +109,7 @@ module.exports = {
       for (let i = 0; i < 3; i++) {
         try {
           await I.selectOption('#next-step', 'Stop representing a client');
-          try {
-            await I.click('Go');
-            await I.waitForText('Once you\'ve submitted this request', 60);
-          } catch {
-            await I.amOnPage(exuiBaseUrl + 'cases/case-details/1715071488320503/trigger/removeRepresentation/removeRepresentationSingleFormPageWithComplex');
-            await I.waitForText('Once you\'ve submitted this request', 60);
-          }
+          await I.handleNextStep('Once you\'ve submitted this request', 'removeRepresentation/removeRepresentationSingleFormPageWithComplex', appealReference)
           await I.see('Once you\'ve submitted this request');
           break;
         } catch (err) {

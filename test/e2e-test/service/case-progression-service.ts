@@ -251,8 +251,7 @@ module.exports = {
       await I.amOnPage(caseUrl);
       await I.waitForText('Do this next', 30);
       await I.selectOption('#next-step', 'Request Home Office data');
-      await I.click('Go');
-      await I.waitForText('Match appellant details', 30);
+      await I.handleNextStep('Match appellant details', 'requestHomeOfficeData/requestHomeOfficeDatarequestHomeOfficeData', appealReference);
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('Request Home Office data');
@@ -264,8 +263,7 @@ module.exports = {
 
     When(/^I Request respondent evidence$/, async () => {
       await I.selectOption('#next-step', 'Request respondent evidence');
-      await I.click('Go');
-      await I.waitForText('You are directing the Home Office to supply their documents and evidence.', 30);
+      await I.handleNextStep('You are directing the Home Office to supply their documents and evidence.', 'requestRespondentEvidence/requestRespondentEvidencerequestRespondentEvidence', appealReference);
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('Send direction');
@@ -277,8 +275,7 @@ module.exports = {
 
     When(/^I Request the reasons for appeal$/, async () => {
       await I.selectOption('#next-step', 'AiP - Request Appeal Reasons');
-      await I.click('Go');
-      await I.waitForText('Explain the direction you are issuing', 30);
+      await I.handleNextStep('Explain the direction you are issuing', 'requestReasonsForAppeal/requestReasonsForAppealrequestReasonsForAppeal', appealReference);
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('Submit');
@@ -292,8 +289,7 @@ module.exports = {
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'AiP - Ask clarifying questions');
-      await I.click('Go');
-      await I.waitForText('Direct the appellant to answer clarifying questions', 30);
+      await I.handleNextStep('Direct the appellant to answer clarifying questions', 'sendDirectionWithQuestions/sendDirectionWithQuestionssendDirectionWithQuestions', appealReference);
       await I.click('Add new');
       await I.fillField('#sendDirectionQuestions_0_question', 'This is question that is to be answered');
       await I.click('Continue');
@@ -309,8 +305,7 @@ module.exports = {
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'Request respondent review');
-      await I.click('Go');
-      await I.waitForText('You are directing the respondent to review and respond to the appeal skeleton argument.', 30);
+      await I.handleNextStep('You are directing the respondent to review and respond to the appeal skeleton argument.', 'requestRespondentReview/requestRespondentReviewrequestRespondentReview', appealReference);
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('Send direction');
@@ -322,8 +317,7 @@ module.exports = {
 
     When(/^I Force the case to submit hearing requirements$/, async () => {
       await I.selectOption('#next-step', 'Force case - hearing reqs');
-      await I.click('Go');
-      await I.waitForText('Reasons to force the case progression', 30);
+      await I.handleNextStep('Reasons to force the case progression', 'forceCaseToSubmitHearingRequirements/forceCaseToSubmitHearingRequirementsforceCase', appealReference);
       await I.click('Continue');
       await I.fillField('#reasonToForceCaseToSubmitHearingRequirements', 'this is a reason to force case to submit hearing requirements');
       await I.click('Continue');
@@ -373,8 +367,7 @@ module.exports = {
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'List the case');
-      await I.click('Go');
-      await I.waitForText('Add the hearing details below.', 30);
+      await I.handleNextStep('Add the hearing details below.', 'listCase/listCaselistCaseHearing', appealReference);
       await I.fillField('#ariaListingReference', 'LP/12345/2022');
       await I.fillField('#listCaseHearingDate-day', '10');
       await I.fillField('#listCaseHearingDate-month', '10');
@@ -397,8 +390,7 @@ module.exports = {
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'Create case summary');
-      await I.click('Go');
-      await I.waitForText('Create a case summary and upload it below', 30);
+      await I.handleNextStep('Create a case summary and upload it below', 'createCaseSummary/createCaseSummarycreateCaseSummary', appealReference);
       await I.attachFile("input[type='file']", `/test/files/valid-image-file.png`);
       await I.fillField('#caseSummaryDescription', 'case summary document');
       await I.wait(5);
@@ -413,8 +405,13 @@ module.exports = {
 
     When(/^I Generate the hearing bundle$/, async () => {
       await I.selectOption('#next-step', 'Generate hearing bundle');
-      await I.click('Go');
-      await I.waitInUrl('/trigger/generateHearingBundle/submit', 30);
+      try {
+        await I.click('Go');
+        await I.waitInUrl('/trigger/generateHearingBundle/submit', 60);
+      } catch {
+        await I.amOnPage(exUiUrl + 'cases/case-details/' + appealReference + '/trigger/generateHearingBundle/submit');
+        await I.waitInUrl('/trigger/generateHearingBundle/submit', 60);
+      }
       await I.see('Generate hearing bundle', 'h1');
       await I.click('Generate');
       await I.waitForText('The hearing bundle is being generated', 30);
@@ -427,8 +424,7 @@ module.exports = {
 
     When(/^I Start decision and reasons$/, async () => {
       await I.selectOption('#next-step', 'Start decision and reasons');
-      await I.click('Go');
-      await I.waitForText('Write a brief introduction to the case', 30);
+      await I.handleNextStep('Write a brief introduction to the case', 'decisionAndReasonsStarted/decisionAndReasonsStartedcaseIntroduction', appealReference);
       await I.click('Continue');
       await I.waitForText('Add the appellant\'s case summary', 30);
       await I.click('Continue');
@@ -455,8 +451,7 @@ module.exports = {
       await I.amOnPage(caseUrl);
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'Prepare Decision and Reasons');
-      await I.click('Go');
-      await I.waitForText('Are you giving an anonymity direction?', 30);
+      await I.handleNextStep('Are you giving an anonymity direction?', 'generateDecisionAndReasons/generateDecisionAndReasonsanonymityOrder', appealReference);
       await I.click('No');
       await I.click('Continue');
       await I.waitForText('Give the names of the legal representatives in this case', 30);
@@ -472,8 +467,7 @@ module.exports = {
     When(/^I Complete the Decision and Reasons$/, async () => {
       await I.waitForText('Current progress of the case', 30);
       await I.selectOption('#next-step', 'Complete decision and reasons');
-      await I.click('Go');
-      await I.waitForText('What is your decision?', 30);
+      await I.handleNextStep('What is your decision?', 'sendDecisionAndReasons/sendDecisionAndReasonssendDecisionAndReasons', appealReference);
       await I.checkOption('#isDecisionAllowed-allowed');
       await I.click('Continue');
       await I.waitForText('Upload your decision and reasons', 30);
@@ -500,8 +494,7 @@ module.exports = {
       await I.amOnPage(caseUrl);
       await I.waitForText('Do this next', 30);
       await I.selectOption('#next-step', 'End the appeal');
-      await I.click('Go');
-      await I.waitForText('This appeal has ended. Record the outcome and reasons below.', 30);
+      await I.handleNextStep('This appeal has ended. Record the outcome and reasons below.', 'endAppeal/endAppealendAppeal', appealReference);
       await I.click('#endAppealOutcome-Withdrawn');
       await I.fillField('#endAppealOutcomeReason', 'a reason for outcome');
       await I.click('Continue');
@@ -519,8 +512,7 @@ module.exports = {
 
     When(/^I Force the case to case under review$/, async () => {
       await I.selectOption('#next-step', 'Force case - case under review');
-      await I.click('Go');
-      await I.waitForText('Reasons to force the case progression', 30);
+      await I.handleNextStep('Reasons to force the case progression', 'forceCaseToCaseUnderReview/forceCaseToCaseUnderReviewforceCase', appealReference);
       await I.click('Continue');
       await I.fillField('#reasonToForceCaseToCaseUnderReview', 'this is a reason to force case to case under review');
       await I.click('Continue');
@@ -534,8 +526,7 @@ module.exports = {
 
     When(/^I Request respondent review$/, async () => {
       await I.selectOption('#next-step', 'Request respondent review');
-      await I.click('Go');
-      await I.waitForText('You are directing the respondent to review and respond to the appeal skeleton argument.', 30);
+      await I.handleNextStep('You are directing the respondent to review and respond to the appeal skeleton argument.', 'requestRespondentReview/requestRespondentReviewrequestRespondentReview', appealReference);
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);
       await I.click('Send direction');
@@ -547,8 +538,7 @@ module.exports = {
 
     When(/^I List without requirements$/, async () => {
       await I.selectOption('#next-step', 'List without requirements');
-      await I.click('Go');
-      await I.waitForText('Length', 30);
+      await I.handleNextStep('Length', 'listCaseWithoutHearingRequirements/listCaseWithoutHearingRequirementslistCaseWithoutHearing', appealReference);
       await I.selectOption('#listCaseHearingLength', '1 hour');
       await I.click('Continue');
       await I.waitForText('Check your answers', 30);

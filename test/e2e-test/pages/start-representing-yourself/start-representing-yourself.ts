@@ -42,10 +42,11 @@ module.exports = {
 
     When('I get the NoC required data from the sent notification', async () => {
       let response = await notifyClient.getNotifications();
-      let data = await response.data.notifications.filter(item => item.template.id === 'abb94a28-62e3-4aea-9dba-9bdea1f6c9ec');
+      let data = await response.data.notifications.filter(item => item.template.id === '7d2b7690-12d4-43b4-8793-cd505d8033a9');
       let emailBody = data[0].body;
+      console.log(emailBody);
       let usefulInfo = emailBody.split('Enter your online case reference number: ')[1]
-                                .split('The security code is valid')[0]
+                                .split('*Follow the instructions to access your case')[0]
                                 .split('*Enter this security code: ');
       caseReferenceNumber = usefulInfo[0].trim();
       accessCode = usefulInfo[1].trim();

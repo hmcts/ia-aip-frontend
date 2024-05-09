@@ -95,7 +95,7 @@ module.exports = {
       await I.click('Close and Return to case details');
       await I.waitForText('Current progress of the case', 60);
       const currentUrl = await I.grabCurrentUrl();
-      appealReference = currentUrl.split('case-details/')[1].split('#')[0].replaceAll('/', '')
+      appealReference = currentUrl.split('case-details/')[1].split('#')[0].replaceAll('/', '');
       await I.selectOption('#next-step', 'Submit your appeal');
       await I.handleNextStep('Declaration', 'submitAppeal/submitAppealdeclaration', appealReference);
       await I.click('#legalRepDeclaration-hasDeclared');
@@ -109,7 +109,7 @@ module.exports = {
       for (let i = 0; i < 3; i++) {
         try {
           await I.selectOption('#next-step', 'Stop representing a client');
-          await I.handleNextStep('Once you\'ve submitted this request', 'removeRepresentation/removeRepresentationSingleFormPageWithComplex', appealReference)
+          await I.handleNextStep('Once you\'ve submitted this request', 'removeRepresentation/removeRepresentationSingleFormPageWithComplex', appealReference);
           await I.see('Once you\'ve submitted this request');
           break;
         } catch (err) {

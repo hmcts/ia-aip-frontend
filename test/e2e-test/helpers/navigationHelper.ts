@@ -1,5 +1,5 @@
 'use strict';
-import configFile from "config";
+import configFile from 'config';
 
 const assert = require('assert');
 const HelperClass = require('@codeceptjs/helper');

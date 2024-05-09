@@ -44,6 +44,7 @@ module.exports = {
       let response = await notifyClient.getNotifications();
       let data = await response.data.notifications.filter(item => item.template.id === '7d2b7690-12d4-43b4-8793-cd505d8033a9');
       let emailBody = data[0].body;
+      // tslint:disable:no-console
       console.log(emailBody);
       let usefulInfo = emailBody.split('Enter your online case reference number: ')[1]
                                 .split('*Follow the instructions to access your case')[0]

@@ -22,7 +22,7 @@ class NavigationHelper extends HelperClass {
   async checkIfExUiLogInIsSuccessful() {
     const helper = this.helpers['Puppeteer']; // Or change to another Helper
     try {
-      await helper.wait(3);
+      await helper.wait(15);
       assert.ok(helper.page.url().includes('cases'));
       await helper.waitForText('Sign out', 30);
       await helper.see('Sign out');

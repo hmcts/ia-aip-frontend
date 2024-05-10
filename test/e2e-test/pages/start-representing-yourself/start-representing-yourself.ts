@@ -7,11 +7,31 @@ const testUrl = config.get('testUrl');
 let NotifyClient = require('notifications-node-client').NotifyClient;
 const govNotifyApiKey = config.get('govNotify.accessKey');
 let notifyClient = new NotifyClient(govNotifyApiKey);
-let caseReferenceNumber;
-let appealRef;
-let accessCode;
-let firstName;
-let lastName;
+let caseReferenceNumber: string;
+let appealRef: string;
+let accessCode: string;
+let firstName: string;
+let lastName: string;
+
+function setCaseReferenceNumber(caseReferenceNumber: string) {
+  this.caseReferenceNumber = caseReferenceNumber;
+}
+
+function setAppealRef(appealRef: string) {
+  this.appealRef = appealRef;
+}
+
+function setAccessCode(accessCode: string) {
+  this.accessCode = accessCode;
+}
+
+function setFirstName(firstName: string) {
+  this.firstName = firstName;
+}
+
+function setLastName(lastName: string) {
+  this.lastName = lastName;
+}
 
 module.exports = {
   startRepresentingYourself(I) {
@@ -41,28 +61,23 @@ module.exports = {
     });
 
     When('I get the NoC required data from the sent notification', async () => {
-      let response = await notifyClient.getNotifications();
-      // template ID from govnotify.template.removeRepresentation.appellant.email in ia-case-notifications-api/src/main/resources/application.yaml
-      let data = await response.data.notifications.filter(item => item.template.id === '7d2b7690-12d4-43b4-8793-cd505d8033a9');
-      let emailBody: string = await data[0].body;
-      // tslint:disable:no-console
-      console.log('1: ' + emailBody.split('Enter your online case reference number: ')[1]);
-      // tslint:disable:no-console
-      console.log('2: ' + emailBody.split('Enter your online case reference number: ')[1]
-          .split('*Follow the instructions to access your case')[0]);
-      // tslint:disable:no-console
-      console.log('3: ' + emailBody.split('Enter your online case reference number: ')[1]
-          .split('*Follow the instructions to access your case')[0]
-          .split('*Enter this security code: '));
-      let usefulInfo = emailBody.split('Enter your online case reference number: ')[1]
-                            .split('*Follow the instructions to access your case')[0]
-                            .split('*Enter this security code: ');
-      caseReferenceNumber = usefulInfo[0].trim();
-      accessCode = usefulInfo[1].trim();
-      let name = emailBody.split('Appellant name:')[1].split('The online service:')[0].trim();
-      firstName = name.split(' ')[0];
-      lastName = name.split(' ')[1];
-      appealRef = emailBody.split('HMCTS reference:')[1].split('Appellant name:')[0].trim();
+      notifyClient.getNotifications()
+          .then((response: any) => {
+            let emailBody = response.data.notifications.filter(item => item.template.id === '7d2b7690-12d4-43b4-8793-cd505d8033a9')[0].body;
+            let usefulInfo = emailBody.split('Enter your online case reference number: ')[1]
+                .split('*Follow the instructions to access your case')[0]
+                .split('*Enter this security code: ');
+            setCaseReferenceNumber(usefulInfo[0].trim());
+            setAccessCode(usefulInfo[1].trim());
+            let name = emailBody.split('Appellant name:')[1].split('The online service:')[0].trim();
+            setFirstName(name.split(' ')[0]);
+            setLastName(name.split(' ')[1]);
+            setAppealRef(emailBody.split('HMCTS reference:')[1].split('Appellant name:')[0].trim());
+          })
+          .catch((error: any) => {
+            // Handle errors if any
+            console.error('Error fetching notifications:', error);
+          });
     });
 
     Then('I see enter case number page content', async () => {
@@ -77,7 +92,7 @@ module.exports = {
 
     When('I enter the case reference number from notification', async () => {
       await I.waitForElement('#caseReferenceNumber', 60);
-      await I.fillField('#caseReferenceNumber', caseReferenceNumber);
+      await I.fillField('#caseReferenceNumber', this.caseReferenceNumber);
     });
 
     Then('I see enter security code page content', async () => {

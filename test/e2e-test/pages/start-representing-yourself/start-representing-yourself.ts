@@ -131,12 +131,12 @@ module.exports = {
     });
 
     When('I grab the appeal reference from ExUi', async () => {
-      let element: Locator = new Locator('ccd-markdown > div > markdown > h1').first()
+      let element: Locator = new Locator('ccd-markdown > div > markdown > h1').first();
       await I.waitForElement(element);
       await I.see(element);
       let caseRecordText: string = await I.grabTextFrom(element);
       let appealReference: string = caseRecordText.split('record for ')[1].trim();
       setAppealRef(appealReference);
-    })
+    });
   }
 };

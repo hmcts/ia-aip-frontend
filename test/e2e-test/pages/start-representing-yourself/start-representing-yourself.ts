@@ -13,24 +13,24 @@ let accessCode: string;
 let firstName: string;
 let lastName: string;
 
-function setCaseReferenceNumber(caseReferenceNumber: string) {
-  this.caseReferenceNumber = caseReferenceNumber;
+function setCaseReferenceNumber(value: string) {
+  caseReferenceNumber = value;
 }
 
-function setAppealRef(appealRef: string) {
-  this.appealRef = appealRef;
+function setAppealRef(value: string) {
+  appealRef = value;
 }
 
-function setAccessCode(accessCode: string) {
-  this.accessCode = accessCode;
+function setAccessCode(value: string) {
+  accessCode = value;
 }
 
-function setFirstName(firstName: string) {
-  this.firstName = firstName;
+function setFirstName(value: string) {
+  firstName = value;
 }
 
-function setLastName(lastName: string) {
-  this.lastName = lastName;
+function setLastName(value: string) {
+  lastName = value;
 }
 
 module.exports = {
@@ -92,7 +92,7 @@ module.exports = {
 
     When('I enter the case reference number from notification', async () => {
       await I.waitForElement('#caseReferenceNumber', 60);
-      await I.fillField('#caseReferenceNumber', this.caseReferenceNumber);
+      await I.fillField('#caseReferenceNumber', caseReferenceNumber);
     });
 
     Then('I see enter security code page content', async () => {

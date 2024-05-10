@@ -7,11 +7,31 @@ const testUrl = config.get('testUrl');
 let NotifyClient = require('notifications-node-client').NotifyClient;
 const govNotifyApiKey = config.get('govNotify.accessKey');
 let notifyClient = new NotifyClient(govNotifyApiKey);
-let caseReferenceNumber;
-let appealRef;
-let accessCode;
-let firstName;
-let lastName;
+let caseReferenceNumber: string;
+let appealRef: string;
+let accessCode: string;
+let firstName: string;
+let lastName: string;
+
+function setCaseReferenceNumber(value: string) {
+  caseReferenceNumber = value;
+}
+
+function setAppealRef(value: string) {
+  appealRef = value;
+}
+
+function setAccessCode(value: string) {
+  accessCode = value;
+}
+
+function setFirstName(value: string) {
+  firstName = value;
+}
+
+function setLastName(value: string) {
+  lastName = value;
+}
 
 module.exports = {
   startRepresentingYourself(I) {
@@ -41,18 +61,23 @@ module.exports = {
     });
 
     When('I get the NoC required data from the sent notification', async () => {
-      let response = await notifyClient.getNotifications();
-      let data = await response.data.notifications.filter(item => item.template.id === 'abb94a28-62e3-4aea-9dba-9bdea1f6c9ec');
-      let emailBody = data[0].body;
-      let usefulInfo = emailBody.split('Enter your online case reference number: ')[1]
-                                .split('The security code is valid')[0]
-                                .split('*Enter this security code: ');
-      caseReferenceNumber = usefulInfo[0].trim();
-      accessCode = usefulInfo[1].trim();
-      let name = emailBody.split('Appellant name:')[1].split('The online service:')[0].trim();
-      firstName = name.split(' ')[0];
-      lastName = name.split(' ')[1];
-      appealRef = emailBody.split('HMCTS reference:')[1].split('Appellant name:')[0].trim();
+      notifyClient.getNotifications()
+          .then((response: any) => {
+            let emailBody = response.data.notifications.filter(item => item.template.id === '7d2b7690-12d4-43b4-8793-cd505d8033a9')[0].body;
+            let usefulInfo = emailBody.split('Enter your online case reference number: ')[1]
+                .split('*Follow the instructions to access your case')[0]
+                .split('*Enter this security code: ');
+            setCaseReferenceNumber(usefulInfo[0].trim());
+            setAccessCode(usefulInfo[1].trim());
+            let name = emailBody.split('*Name: ')[1].split('*Date of birth: ')[0].trim().split(' ');
+            setFirstName(name[0]);
+            setLastName(name[1]);
+          })
+          .catch((error: any) => {
+            // Handle errors if any
+            // tslint:disable:no-console
+            console.error('Error fetching notifications:', error);
+          });
     });
 
     Then('I see enter case number page content', async () => {
@@ -103,6 +128,14 @@ module.exports = {
       await I.see(appealRef);
       await I.see('Nothing to do next');
       await I.see('Your appeal details have been sent to the Tribunal.');
+    });
+
+    When('I grab the appeal reference from ExUi', async () => {
+      let locator = 'ccd-markdown > div > markdown > h1';
+      await I.waitForElement(locator);
+      let caseRecordText: string = await I.grabTextFrom(locator);
+      let appealReference: string = caseRecordText.split('record for ')[1].trim();
+      setAppealRef(appealReference);
     });
   }
 };

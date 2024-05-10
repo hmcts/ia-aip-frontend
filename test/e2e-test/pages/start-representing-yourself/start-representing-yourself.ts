@@ -42,13 +42,14 @@ module.exports = {
 
     When('I get the NoC required data from the sent notification', async () => {
       let response = await notifyClient.getNotifications();
+      // template ID from govnotify.template.removeRepresentation.appellant.email in ia-case-notifications-api/src/main/resources/application.yaml
       let data = await response.data.notifications.filter(item => item.template.id === '7d2b7690-12d4-43b4-8793-cd505d8033a9');
       let emailBody: string = await data[0].body;
       // tslint:disable:no-console
       console.log('1: ' + emailBody.split('Enter your online case reference number: ')[1]);
       // tslint:disable:no-console
       console.log('2: ' + emailBody.split('Enter your online case reference number: ')[1]
-          .split('*Follow the instructions to access your case')[0])
+          .split('*Follow the instructions to access your case')[0]);
       // tslint:disable:no-console
       console.log('3: ' + emailBody.split('Enter your online case reference number: ')[1]
           .split('*Follow the instructions to access your case')[0]

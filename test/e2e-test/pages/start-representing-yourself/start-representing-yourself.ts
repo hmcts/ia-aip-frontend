@@ -76,6 +76,7 @@ module.exports = {
           })
           .catch((error: any) => {
             // Handle errors if any
+            // tslint:disable:no-console
             console.error('Error fetching notifications:', error);
           });
     });

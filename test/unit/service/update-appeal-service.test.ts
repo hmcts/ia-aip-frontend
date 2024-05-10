@@ -713,12 +713,6 @@ describe('update-appeal-service', () => {
             appellantPhoneNumber: '07123456789',
             appellantInUk: 'undefined',
             gwfReferenceNumber: null,
-            asylumSupportRefNumber: null,
-            feeSupportPersisted: 'No',
-            helpWithFeesOption: null,
-            helpWithFeesRefNumber: null,
-            localAuthorityLetters: null,
-            remissionOption: null,
             journeyType: 'aip',
             subscriptions: [
               {
@@ -745,12 +739,6 @@ describe('update-appeal-service', () => {
             journeyType: 'aip',
             appellantInUk: 'undefined',
             gwfReferenceNumber: null,
-            asylumSupportRefNumber: null,
-            feeSupportPersisted: 'No',
-            helpWithFeesOption: null,
-            helpWithFeesRefNumber: null,
-            localAuthorityLetters: null,
-            remissionOption: null,
             appellantEmailAddress: 'abc@example.net',
             subscriptions: [
               {
@@ -778,12 +766,6 @@ describe('update-appeal-service', () => {
             appellantInUk: 'undefined',
             appellantPhoneNumber: '07123456789',
             gwfReferenceNumber: null,
-            asylumSupportRefNumber: null,
-            feeSupportPersisted: 'No',
-            helpWithFeesOption: null,
-            helpWithFeesRefNumber: null,
-            localAuthorityLetters: null,
-            remissionOption: null,
             subscriptions: [
               {
                 value: {
@@ -845,12 +827,6 @@ describe('update-appeal-service', () => {
           'journeyType': 'aip',
           'appellantInUk': 'undefined',
           'gwfReferenceNumber': null,
-          'asylumSupportRefNumber': null,
-          'feeSupportPersisted': 'No',
-          'helpWithFeesOption': null,
-          'helpWithFeesRefNumber': null,
-          'localAuthorityLetters': null,
-          'remissionOption': null,
           'reviewTimeExtensionRequired': 'Yes',
           'submitTimeExtensionReason': 'more time reason',
           'submitTimeExtensionEvidence': [
@@ -881,12 +857,6 @@ describe('update-appeal-service', () => {
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
-        'asylumSupportRefNumber': null,
-        'feeSupportPersisted': 'No',
-        'helpWithFeesOption': null,
-        'helpWithFeesRefNumber': null,
-        'localAuthorityLetters': null,
-        'remissionOption': null,
         'makeAnApplicationEvidence': [
           {
             'id': 'id',
@@ -916,12 +886,6 @@ describe('update-appeal-service', () => {
         'journeyType': 'aip',
         'appellantInUk': 'undefined',
         'gwfReferenceNumber': null,
-        'asylumSupportRefNumber': null,
-        'feeSupportPersisted': 'No',
-        'helpWithFeesOption': null,
-        'helpWithFeesRefNumber': null,
-        'localAuthorityLetters': null,
-        'remissionOption': null,
         'uploadTheNoticeOfDecisionDocs': [
           {
             'id': 'fileId',
